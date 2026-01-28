@@ -1,0 +1,17 @@
+{
+  "version": "7.9.0",
+  "installedAt": "2026-01-28T14:56:49.534Z",
+  "updatedAt": "2026-01-28T14:56:49.534Z",
+  "projectName": "pennyfarthing-orchestrator",
+  "installationType": "symlink",
+  "nodeModulesPath": "node_modules/@pennyfarthing/core/pennyfarthing-dist",
+  "managedPaths": [
+    ".claude/agents",
+    ".claude/commands",
+    ".claude/guides",
+    ".claude/skills",
+    ".claude/personas",
+    ".claude/scripts"
+  ],
+  "fileHashes": {}
+}

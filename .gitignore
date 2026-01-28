@@ -1,0 +1,17 @@
+node_modules/
+.DS_Store
+*.log
+
+# Session state (local only, not committed)
+.session/
+
+# Local config overrides
+.pennyfarthing.local.yaml
+
+
+# Pennyfarthing runtime
+.session/*
+!.session/.gitkeep
+.claude/settings.local.json
+.claude/persona-config.local.yaml
+.pennyfarthing/config.local.yaml
