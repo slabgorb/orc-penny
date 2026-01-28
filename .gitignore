@@ -15,3 +15,8 @@ node_modules/
 .claude/settings.local.json
 .claude/persona-config.local.yaml
 .pennyfarthing/config.local.yaml
+pennyfarthing/
+
+# Symlinked from node_modules/pennyfarthing
+.claude/commands
+.claude/skills

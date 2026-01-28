@@ -7,5 +7,7 @@
   "scripts": {
     "postinstall": "pennyfarthing update || true"
   },
-  "dependencies": {}
+  "dependencies": {
+    "pennyfarthing": "^6.6.0"
+  }
 }
