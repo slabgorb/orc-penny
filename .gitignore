@@ -20,3 +20,12 @@ pennyfarthing/
 # Symlinked from node_modules/pennyfarthing
 .claude/commands
 .claude/skills
+
+# Runtime state files
+*.pid
+*-pid
+*-port
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json

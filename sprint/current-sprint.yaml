@@ -1782,7 +1782,7 @@ epics:
           The data is already available via parseStoryData() - just needs UI.
         points: 3
         priority: P1
-        status: in_progress
+        status: done
         repos: pennyfarthing
         branch: feat/64-19-expandable-story-ui
         workflow: tdd
@@ -1792,4 +1792,5 @@ epics:
           - Shows epic context (parent epic, sibling stories)
           - Jira links clickable
           - Points and status for each story
+        completed: "2026-01-28"
     jira: MSSCI-12465
