@@ -29,3 +29,17 @@ pennyfarthing/
 !package.json
 !package-lock.json
 !tsconfig.json
+
+# Pennyfarthing runtime
+.session/*
+!.session/.gitkeep
+.claude/settings.local.json
+.claude/persona-config.local.yaml
+.pennyfarthing/config.local.yaml
+
+# Runtime state files (Cyclist, bells, etc)
+*.pid
+*-pid
+*-port
+.pennyfarthing/*.json
+.cyclist-*
