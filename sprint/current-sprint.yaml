@@ -852,7 +852,8 @@ epics:
           published npm package.
         points: 1
         priority: P1
-        status: backlog
+        status: done
+        completed: "2026-01-29"
         repos: pennyfarthing
         workflow: trivial
   - id: epic-61
