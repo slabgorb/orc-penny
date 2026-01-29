@@ -1907,7 +1907,7 @@ epics:
           Conductor is a standard api+ui orchestrator pattern.
         points: 2
         priority: P1
-        status: pending
+        status: done
         repos: conductor-orchestrator
         workflow: trivial
         acceptance_criteria:
@@ -1915,6 +1915,10 @@ epics:
           - Run pennyfarthing init
           - Verify /sm agent loads correctly
           - Verify build passes
+        completed: "2026-01-29"
+        notes: |
+          Updated to 8.0.2 (includes fixes for find-root.sh).
+          Discovered issues: node_modules detection order, .pennyfarthing/scripts/ path.
       - id: "66-2"
         title: "Update clip-orchestrator to 8.0.0"
         description: |
