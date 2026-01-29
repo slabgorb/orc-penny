@@ -77,6 +77,27 @@ portraits-all:
     just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" portraits-all
 
 # =============================================================================
+# Development - orchestrator sync with pennyfarthing
+# =============================================================================
+
+# Watch pennyfarthing for changes and auto-rebuild (runs pnpm dev)
+dev:
+    cd {{pennyfarthing}} && pnpm dev
+
+# Manual sync: rebuild pennyfarthing (symlinks auto-update via npm link)
+sync:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo "Building pennyfarthing..."
+    cd {{pennyfarthing}} && npm run build
+    echo "✓ Pennyfarthing rebuilt"
+    echo "✓ Symlinks automatically updated (npm link in place)"
+    # Show version for confirmation
+    echo ""
+    echo "Linked version:"
+    cat {{pennyfarthing}}/VERSION
+
+# =============================================================================
 # Orchestrator-specific tasks
 # =============================================================================
 
