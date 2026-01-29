@@ -1480,21 +1480,23 @@ epics:
         description: ""
         points: 2
         priority: P2
-        status: backlog
+        status: cancelled
         repos: pennyfarthing
         workflow: tdd
         acceptance_criteria: []
         jira: MSSCI-12420
+        notes: BMAD handled differently - imports via BikeLane
       - id: MSSCI-12421
         title: "PRD import support"
         description: ""
         points: 2
         priority: P2
-        status: backlog
+        status: cancelled
         repos: pennyfarthing
         workflow: tdd
         acceptance_criteria: []
         jira: MSSCI-12421
+        notes: BMAD handled differently - imports via BikeLane
       - id: MSSCI-12601
         title: "Explore orchestrator repo pattern and scaffolding"
         description: |
@@ -1512,11 +1514,13 @@ epics:
           This is an exploration story - output is a recommendation, not implementation.
         points: 1
         priority: P2
-        status: backlog
+        status: done
         repos: pennyfarthing
         workflow: research
         acceptance_criteria: []
         jira: MSSCI-12601
+        completed: "2026-01-29"
+        notes: Documented in CLAUDE.md - orchestrator pattern established
     jira: MSSCI-12415
   # ===========================================================================
   # EPIC: Cyclist UX Polish (epic-64) - NEW

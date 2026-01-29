@@ -13,6 +13,14 @@ repos:
     build_command: npm run build
     lint_command: npm run lint
 
+  pennyfarthing:
+    path: pennyfarthing
+    type: framework
+    language: typescript
+    test_command: pnpm test
+    build_command: pnpm build
+    lint_command: pnpm lint
+
 # Multi-repo example (uncomment and modify):
 # repos:
 #   api:
