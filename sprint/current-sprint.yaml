@@ -1900,25 +1900,6 @@ epics:
     marker: release-validation
     repos: multiple
     stories:
-      - id: "66-1"
-        title: "Update conductor-orchestrator to 8.0.0"
-        description: |
-          Update conductor-orchestrator to use Pennyfarthing 8.0.0.
-          Conductor is a standard api+ui orchestrator pattern.
-        points: 2
-        priority: P1
-        status: done
-        repos: conductor-orchestrator
-        workflow: trivial
-        acceptance_criteria:
-          - npm install @pennyfarthing/core@^8.0.0
-          - Run pennyfarthing init
-          - Verify /sm agent loads correctly
-          - Verify build passes
-        completed: "2026-01-29"
-        notes: |
-          Updated to 8.0.2 (includes fixes for find-root.sh).
-          Discovered issues: node_modules detection order, .pennyfarthing/scripts/ path.
       - id: "66-2"
         title: "Update clip-orchestrator to 8.0.0"
         description: |

@@ -453,3 +453,8 @@ completed:
     points: 2
     completed: 2026-01-28
     pr: 528
+  - id: 66-1
+    epic: epic-66
+    title: "Update conductor-orchestrator to 8.0.0"
+    points: 2
+    completed: 2026-01-29
