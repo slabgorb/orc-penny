@@ -8,10 +8,10 @@ sprint:
   status: active
   velocity_target: 22
 summary:
-  total_points: 190
+  total_points: 198
   completed_points: 133
   cancelled_points: 6
-  remaining_points: 51
+  remaining_points: 59
   notes: |
     Sprint 12 includes work from multiple epics that were tracked in Jira but
     not in local sprint YAML. This file has been reconciled with Jira Sprint 276.
@@ -1879,3 +1879,82 @@ epics:
         jira: MSSCI-12606
     type: epic
     jira: MSSCI-12602
+  # ===========================================================================
+  # EPIC: Pennyfarthing 8.0.0 Orchestrator Updates (epic-66)
+  # ===========================================================================
+  - id: epic-66
+    type: epic
+    title: "Epic: Pennyfarthing 8.0.0 Orchestrator Updates"
+    description: |
+      Update all orchestrator repos to Pennyfarthing 8.0.0. The 8.0.0 release
+      includes breaking changes to script path resolution (BASH_SOURCE-first
+      instead of run.sh bootstrap). Each orchestrator needs:
+      - Update @pennyfarthing/core to ^8.0.0
+      - Re-run pennyfarthing init to update symlinks
+      - Verify build and tests pass
+      - Test agent invocation works correctly
+    points: 8
+    completed_points: 0
+    priority: P1
+    status: in_progress
+    marker: release-validation
+    repos: multiple
+    stories:
+      - id: "66-1"
+        title: "Update conductor-orchestrator to 8.0.0"
+        description: |
+          Update conductor-orchestrator to use Pennyfarthing 8.0.0.
+          Conductor is a standard api+ui orchestrator pattern.
+        points: 2
+        priority: P1
+        status: pending
+        repos: conductor-orchestrator
+        workflow: trivial
+        acceptance_criteria:
+          - npm install @pennyfarthing/core@^8.0.0
+          - Run pennyfarthing init
+          - Verify /sm agent loads correctly
+          - Verify build passes
+      - id: "66-2"
+        title: "Update clip-orchestrator to 8.0.0"
+        description: |
+          Update clip-orchestrator to use Pennyfarthing 8.0.0.
+        points: 2
+        priority: P1
+        status: pending
+        repos: clip-orchestrator
+        workflow: trivial
+        acceptance_criteria:
+          - npm install @pennyfarthing/core@^8.0.0
+          - Run pennyfarthing init
+          - Verify /sm agent loads correctly
+          - Verify build passes
+      - id: "66-3"
+        title: "Update siemulator-orchestrator to 8.0.0"
+        description: |
+          Update siemulator-orchestrator to use Pennyfarthing 8.0.0.
+          Siemulator is a standard api+ui orchestrator pattern.
+        points: 2
+        priority: P1
+        status: pending
+        repos: siemulator-orchestrator
+        workflow: trivial
+        acceptance_criteria:
+          - npm install @pennyfarthing/core@^8.0.0
+          - Run pennyfarthing init
+          - Verify /sm agent loads correctly
+          - Verify build passes
+      - id: "66-4"
+        title: "Update poller-orchestrator to 8.0.0"
+        description: |
+          Update poller-orchestrator to use Pennyfarthing 8.0.0.
+        points: 2
+        priority: P1
+        status: pending
+        repos: poller-orchestrator
+        workflow: trivial
+        acceptance_criteria:
+          - npm install @pennyfarthing/core@^8.0.0
+          - Run pennyfarthing init
+          - Verify /sm agent loads correctly
+          - Verify build passes
