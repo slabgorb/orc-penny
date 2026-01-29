@@ -1,46 +1,90 @@
 # CLAUDE.md - Pennyfarthing Orchestrator
 
-This is the orchestrator repo for Pennyfarthing agent development. It manages sprint tracking, agent sessions, and workflow coordination while the Pennyfarthing framework source lives in a separate nested repo.
+This is the orchestrator repo for Pennyfarthing framework development. It manages sprint tracking, agent sessions, and coordinates work on the framework itself.
 
 ## Project Overview
 
-This repo orchestrates AI agents through BikeLane workflows for development work. The `pennyfarthing/` directory is a separate git repo (gitignored) that provides the framework via npm link.
+Unlike other orchestrators (conductor, siemulator) which coordinate api/ui subrepos, this orchestrator manages the **pennyfarthing framework** as an inlined development repo. The framework source lives in `pennyfarthing/` and changes here are the primary focus.
 
 ## Repository Structure
 
 ```
 pennyfarthing-orchestrator/      # This repo (orchestrator)
-├── .claude/                     # Claude Code discovery
-│   ├── commands/                # Symlinks to node_modules
-│   └── skills/                  # Symlinks to node_modules
-├── .pennyfarthing/              # Symlinks to node_modules/@pennyfarthing/core
+├── .claude/                     # Claude Code discovery (symlinks to node_modules)
+├── .pennyfarthing/              # Runtime framework (symlinks to node_modules/@pennyfarthing/core)
 │   ├── agents/                  # Agent definitions
 │   ├── guides/                  # Behavior guides
 │   ├── personas/                # Themed personas
 │   ├── scripts/                 # Utility scripts
 │   ├── workflows/               # Workflow definitions
-│   └── sidecars/                # Agent learning files (local, writable)
-├── sprint/                      # Sprint tracking
+│   └── sidecars/                # Agent learning files (local, writable, NOT symlinked)
+├── pennyfarthing/               # INLINED: Framework source repo for development
+│   ├── pennyfarthing-dist/      # Built output (published to npm)
+│   ├── pennyfarthing_scripts/   # Python scripts
+│   ├── packages/                # NPM packages
+│   ├── tests/                   # Test suite
+│   ├── scenarios/               # Test scenarios
+│   └── benchmarks/              # Performance benchmarks
+├── sprint/                      # Sprint tracking for framework work
 │   ├── current-sprint.yaml      # Active sprint
-│   ├── archive/                 # Completed stories
+│   ├── future.yaml              # Backlog
+│   ├── completed.yaml           # Done archive
+│   ├── archive/                 # Old stories
 │   └── context/                 # Epic context files
 ├── .session/                    # Active work sessions
-├── docs/adr/                    # Architecture Decision Records
-└── pennyfarthing/               # SEPARATE GIT REPO (gitignored)
+├── docs/                        # Documentation
+│   ├── adr/                     # Architecture Decision Records
+│   └── research/                # Research notes
+├── repos.yaml                   # Repository configuration
+└── justfile                     # Task runner recipes
 ```
 
-## Orchestrator Pattern
+## Architecture
 
-This follows the same pattern as other orchestrator repos:
-- `conductor/` → `conductor-api/`, `conductor-ui/`
-- `siemulator/` → `siemulator-api/`, `siemulator-ui/`
-- `poller-orchestrator/` → poller apps (external)
+This orchestrator differs from others:
 
-**Key principle:** Sprint management and agent housekeeping stay in the orchestrator. Application code lives in separate repos.
+| Orchestrator | Pattern | Subrepos |
+|--------------|---------|----------|
+| conductor | api + ui | conductor-api/, conductor-ui/ |
+| siemulator | api + ui | siemulator-api/, siemulator-ui/ |
+| **pennyfarthing-orchestrator** | framework dev | pennyfarthing/ (inlined) |
+
+**Key principle:** Sprint management stays in the orchestrator. Framework development happens in the inlined `pennyfarthing/` directory.
+
+## Development Workflow
+
+### Framework Changes (Primary Work)
+```bash
+# Work in the inlined pennyfarthing repo
+cd pennyfarthing
+pnpm install
+pnpm build
+
+# Test changes
+pnpm test
+
+# Commits go to the pennyfarthing repo
+git add . && git commit -m "feat: add new feature"
+git push origin <branch>
+```
+
+### Orchestrator-Only Changes
+```bash
+# Sprint files, session management, docs
+# These stay in pennyfarthing-orchestrator repo
+git add sprint/ && git commit -m "chore(sprint): update status"
+```
+
+## Just Commands
+
+Run `just help` to see available recipes. Key commands:
+- `just dev-start` - Start development environment
+- `just test` - Run tests
+- `just build` - Build framework
 
 ## Workflows
 
-Use `/workflow list` to see available workflows, `/workflow start <name>` to begin.
+Use `/workflow list` to see available workflows, `/workflow` to check current status.
 
 **Main workflows:**
 - `tdd` - Test-driven development (SM → TEA → Dev → Reviewer)
@@ -56,23 +100,11 @@ Use `/workflow list` to see available workflows, `/workflow start <name>` to beg
 - `/architect` - System design
 - `/pm` - Product Manager
 
-## Development Workflow
-
-```bash
-# Build pennyfarthing (from nested repo)
-cd pennyfarthing
-npm run build
-npm link
-
-# Orchestrator picks up changes via node_modules symlinks
-```
-
 ## Sprint Management
 
 - `/sprint status` - View current sprint
 - `/sprint backlog` - Available stories
 - `/sprint work` - Start a story
-- `/story finish` - Complete current story
 
 ## Commits
 
@@ -84,8 +116,14 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 
 ## Important Notes
 
-1. **Never edit `.pennyfarthing/` symlinked directories** - they point to node_modules
-2. **Sidecars are local** - `.pennyfarthing/sidecars/` is writable, captures agent learnings
-3. **Sprint YAML access** - Use scripts, never edit directly
-4. **Framework changes** - Make in `pennyfarthing/` repo, rebuild, npm link
-5. **PRs for pennyfarthing** - Go to the pennyfarthing repo, not this orchestrator
+1. **Two git repos in play:**
+   - `pennyfarthing-orchestrator/` - orchestrator repo (sprint, sessions, docs)
+   - `pennyfarthing/` - framework repo (inlined, separate git history)
+
+2. **Never edit `.pennyfarthing/` symlinked directories** - they point to node_modules
+
+3. **Sidecars are local** - `.pennyfarthing/sidecars/` is writable, captures agent learnings
+
+4. **Sprint YAML access** - Use scripts, never edit directly
+
+5. **Publishing framework** - After changes in `pennyfarthing/`, build and publish to npm

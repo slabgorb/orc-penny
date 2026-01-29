@@ -1,0 +1,30 @@
+# Repository Configuration for pennyfarthing-orchestrator
+# This is a framework-development orchestrator with the pennyfarthing repo inlined
+
+repos:
+  orchestrator:
+    path: .
+    type: orchestrator
+    description: Sprint management and framework development coordination
+    language: javascript
+    build_command: npm install
+
+  pennyfarthing:
+    path: pennyfarthing
+    type: framework
+    description: Inlined pennyfarthing framework source (for development)
+    language: typescript
+    test_command: pnpm test
+    build_command: pnpm build
+    lint_command: pnpm lint
+    notes: |
+      This is the pennyfarthing framework repo, cloned inline for development.
+      Changes here should be committed to the pennyfarthing repo, not the orchestrator.
+      After building, the pennyfarthing-dist/ output is published to npm as @pennyfarthing/core.
+
+# Architecture notes:
+# - Unlike other orchestrators (conductor, siemulator) which have api/ui subrepos,
+#   this orchestrator manages the pennyfarthing framework itself
+# - .pennyfarthing/ contains symlinks to node_modules/@pennyfarthing/core/pennyfarthing-dist/
+# - pennyfarthing/ is the full framework source for development (gitignored optional clone)
+# - Sprint tracking in sprint/ applies to framework development work
