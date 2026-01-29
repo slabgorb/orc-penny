@@ -93,3 +93,10 @@ if (existsSync(join(dir, 'pennyfarthing-dist'))) {
 ---
 
 *Add gotchas discovered during development below*
+
+## Shell Standardization: zsh
+
+**Standard:** All Pennyfarthing scripts use `#!/usr/bin/env zsh`, not bash.
+
+If zsh scripts fail to find standard utilities (wc, tr, etc.), the issue is PATH configuration in the user's zsh environment, not the script. Don't change scripts to bash.
+
