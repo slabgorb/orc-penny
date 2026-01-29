@@ -1,35 +1,42 @@
 # CLAUDE.md - Pennyfarthing Orchestrator
 
-This is the orchestrator repo for Pennyfarthing agent development. This repo uses Pennyfarthing as an installed package.
+This is the orchestrator repo for Pennyfarthing agent development. It manages sprint tracking, agent sessions, and workflow coordination while the Pennyfarthing framework source lives in a separate nested repo.
 
 ## Project Overview
 
-This repo orchestrates AI agents through BikeLane workflows for development work. The framework is installed via npm link to the local pennyfarthing repo.
+This repo orchestrates AI agents through BikeLane workflows for development work. The `pennyfarthing/` directory is a separate git repo (gitignored) that provides the framework via npm link.
 
-## Key Paths
+## Repository Structure
 
 ```
-.claude/                     # Claude Code discovery
-├── commands/                # Built-in + custom commands
-├── skills/                  # Built-in + custom skills
-└── project/                 # Project customizations
-
-.pennyfarthing/              # Pennyfarthing content (symlinks to node_modules)
-├── agents/                  # Agent definitions
-├── guides/                  # Behavior guides
-├── personas/                # Themed personas
-├── scripts/                 # Utility scripts
-├── workflows/               # Workflow definitions
-└── sidecars/                # Agent learning files (local, writable)
-
-sprint/                      # Sprint tracking
-├── current-sprint.yaml      # Active sprint
-├── archive/                 # Completed stories
-└── context/                 # Epic context files
-
-.session/                    # Active work sessions
-docs/adr/                    # Architecture Decision Records
+pennyfarthing-orchestrator/      # This repo (orchestrator)
+├── .claude/                     # Claude Code discovery
+│   ├── commands/                # Symlinks to node_modules
+│   └── skills/                  # Symlinks to node_modules
+├── .pennyfarthing/              # Symlinks to node_modules/@pennyfarthing/core
+│   ├── agents/                  # Agent definitions
+│   ├── guides/                  # Behavior guides
+│   ├── personas/                # Themed personas
+│   ├── scripts/                 # Utility scripts
+│   ├── workflows/               # Workflow definitions
+│   └── sidecars/                # Agent learning files (local, writable)
+├── sprint/                      # Sprint tracking
+│   ├── current-sprint.yaml      # Active sprint
+│   ├── archive/                 # Completed stories
+│   └── context/                 # Epic context files
+├── .session/                    # Active work sessions
+├── docs/adr/                    # Architecture Decision Records
+└── pennyfarthing/               # SEPARATE GIT REPO (gitignored)
 ```
+
+## Orchestrator Pattern
+
+This follows the same pattern as other orchestrator repos:
+- `conductor/` → `conductor-api/`, `conductor-ui/`
+- `siemulator/` → `siemulator-api/`, `siemulator-ui/`
+- `poller-orchestrator/` → poller apps (external)
+
+**Key principle:** Sprint management and agent housekeeping stay in the orchestrator. Application code lives in separate repos.
 
 ## Workflows
 
@@ -52,13 +59,12 @@ Use `/workflow list` to see available workflows, `/workflow start <name>` to beg
 ## Development Workflow
 
 ```bash
-# Update pennyfarthing from local development
-cd ~/Projects/pennyfarthing
+# Build pennyfarthing (from nested repo)
+cd pennyfarthing
 npm run build
 npm link
 
-# This repo picks up changes automatically via npm link
-pennyfarthing update  # Refresh symlinks if needed
+# Orchestrator picks up changes via node_modules symlinks
 ```
 
 ## Sprint Management
@@ -81,4 +87,5 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 1. **Never edit `.pennyfarthing/` symlinked directories** - they point to node_modules
 2. **Sidecars are local** - `.pennyfarthing/sidecars/` is writable, captures agent learnings
 3. **Sprint YAML access** - Use scripts, never edit directly
-4. **Framework changes** - Make in `~/Projects/pennyfarthing`, then rebuild
+4. **Framework changes** - Make in `pennyfarthing/` repo, rebuild, npm link
+5. **PRs for pennyfarthing** - Go to the pennyfarthing repo, not this orchestrator

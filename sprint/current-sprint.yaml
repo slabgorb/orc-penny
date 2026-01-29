@@ -844,6 +844,17 @@ epics:
         completed: 2026-01-27
         repos: pennyfarthing
         workflow: trivial
+      - id: MSSCI-12602
+        title: "Published npm package missing PYTHONPATH fix"
+        description: |
+          The run.sh in @pennyfarthing/core@7.9.1 doesn't set PYTHONPATH for Python
+          scripts. This causes Python imports to fail when running scripts via the
+          published npm package.
+        points: 1
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
+        workflow: trivial
   - id: epic-61
     type: epic
     title: "Epic: Reflector Marker Consolidation"
@@ -1410,14 +1421,21 @@ epics:
           - L2+ routes to prd workflow
         jira: MSSCI-12417
       - id: MSSCI-12418
-        title: "Enterprise workflow hooks"
-        description: ""
-        points: 3
+        title: "BMAD 6.0 Integration Guide"
+        description: |
+          Document Pennyfarthing as the implementation layer for BMAD artifacts.
+          Clear guide for management showing complementary relationship.
+        points: 2
         priority: P2
-        status: backlog
+        status: done
+        completed: "2026-01-29"
         repos: pennyfarthing
-        workflow: tdd
-        acceptance_criteria: []
+        workflow: trivial
+        acceptance_criteria:
+          - Integration guide exists at docs/bmad-integration.md
+          - Guide is scannable (bullets, tables, no walls of text)
+          - Explains handoff point clearly
+          - Addresses "why both tools" question
         jira: MSSCI-12418
       - id: MSSCI-12419
         title: "Brownfield discovery command"
@@ -1476,6 +1494,28 @@ epics:
         workflow: tdd
         acceptance_criteria: []
         jira: MSSCI-12421
+      - id: MSSCI-12601
+        title: "Explore orchestrator repo pattern and scaffolding"
+        description: |
+          Research and document the orchestrator repo pattern used across projects:
+          - conductor/ → conductor-api/, conductor-ui/
+          - siemulator/ → siemulator-api/, siemulator-ui/
+          - poller-orchestrator/ → poller apps
+          - pennyfarthing-orchestrator/ → pennyfarthing/
+
+          Explore options for:
+          1. Documenting the pattern formally
+          2. Creating scaffolding/template for new orchestrator repos
+          3. Possible `pennyfarthing init-orchestrator` command
+
+          This is an exploration story - output is a recommendation, not implementation.
+        points: 1
+        priority: P2
+        status: backlog
+        repos: pennyfarthing
+        workflow: research
+        acceptance_criteria: []
+        jira: MSSCI-12601
     jira: MSSCI-12415
   # ===========================================================================
   # EPIC: Cyclist UX Polish (epic-64) - NEW
