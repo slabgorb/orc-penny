@@ -2477,7 +2477,7 @@ epics:
           - Update any references to sidebar in other modules
         points: 2
         priority: P1
-        status: backlog
+        status: done
         repos: pennyfarthing
         workflow: trivial
         acceptance_criteria:
@@ -2485,3 +2485,4 @@ epics:
           - SIDEBAR tab no longer appears in tab bar
           - No JavaScript errors from missing sidebar
           - All former sidebar content accessible via other panels
+        completed: "2026-01-30"
