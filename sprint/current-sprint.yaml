@@ -1952,3 +1952,158 @@ epics:
           - Run pennyfarthing init
           - Verify /sm agent loads correctly
           - Verify build passes
+  - id: epic-67
+    title: 'Epic: Pennyfarthing Python CLI'
+    description: |
+      Unified CLI entry point using Click. Phase 1 covers agent activation
+      commands (highest frequency). Phase 2 covers core operations.
+    points: 19
+    priority: P1
+    marker: infrastructure
+    repos: pennyfarthing
+    status: backlog
+    stories:
+      - id: MSSCI-12656
+        title: Add Click dependency and create CLI entry point
+        description: |
+          Add click>=8.0,<9.0 to pyproject.toml. Create pennyfarthing_scripts/cli.py
+          with @click.group() entry point and lazy-loaded subgroups.
+        points: 2
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        workflow: tdd
+        acceptance_criteria:
+          - click added to dependencies in pyproject.toml
+          - python -m pennyfarthing_scripts.cli --help shows command groups
+          - Startup time < 200ms verified
+          - All imports are lazy (inside functions)
+        jira: MSSCI-12656
+        completed: "2026-01-30"
+      - id: MSSCI-12657
+        title: Implement pf workflow check command
+        description: |
+          Create workflow/cli.py with check command. Detects workflow state
+          and outputs story ID, phase, owner.
+        points: 2
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
+        workflow: tdd
+        acceptance_criteria:
+          - pf workflow check returns workflow state
+          - --json flag outputs JSON format
+          - Exit code 0 for all states (including empty)
+        jira: MSSCI-12657
+      - id: MSSCI-12658
+        title: Implement pf workflow phase-check command
+        description: "Create phase-check command that verifies phase ownership for a \ngiven workflow and phase. Returns owner agent name.\n"
+        points: 2
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
+        workflow: tdd
+        acceptance_criteria:
+          - pf workflow phase-check <workflow> <phase> returns owner
+          - Exit code 0 always
+        jira: MSSCI-12658
+      - id: MSSCI-12659
+        title: Implement pf agent start command
+        description: |
+          Create agent/cli.py with start command. Loads agent session, persona,
+          sidecar memory, and sprint context. Highest-frequency command.
+        points: 3
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
+        workflow: tdd
+        acceptance_criteria:
+          - pf agent start <name> starts session
+          - --session-id and --no-persona options work
+          - Outputs session ID and full agent context
+          - Calls existing prime module
+        jira: MSSCI-12659
+      - id: MSSCI-12660
+        title: Update agent command files to use Python CLI
+        description: |
+          Update agent command files (sm.md, dev.md, etc.) to use Python CLI
+          invocation instead of bash scripts.
+        points: 2
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
+        workflow: trivial
+        acceptance_criteria:
+          - All agent commands use Python CLI invocation
+          - Bash scripts remain available as fallback
+        jira: MSSCI-12660
+      - id: MSSCI-12661
+        title: Add startup benchmark to CI
+        description: |
+          Add CI step that measures CLI startup time and fails if > 200ms.
+        points: 1
+        priority: P2
+        status: backlog
+        repos: pennyfarthing
+        workflow: trivial
+        acceptance_criteria:
+          - CI job measures startup time
+          - Fails build if startup > 200ms
+        jira: MSSCI-12661
+      - id: MSSCI-12662
+        title: Migrate sprint/cli.py to Click
+        description: |
+          Convert existing argparse-based sprint/cli.py to Click decorators.
+          Integrate with main CLI entry point.
+        points: 2
+        priority: P2
+        status: backlog
+        repos: pennyfarthing
+        workflow: tdd
+        acceptance_criteria:
+          - sprint commands use @click.command() decorators
+          - Registered with main pf group
+        jira: MSSCI-12662
+      - id: MSSCI-12663
+        title: Implement pf workflow handoff command
+        description: |
+          Create handoff command that emits CYCLIST handoff markers.
+          Replaces handoff-marker.sh.
+        points: 2
+        priority: P2
+        status: backlog
+        repos: pennyfarthing
+        workflow: tdd
+        acceptance_criteria:
+          - pf workflow handoff <agent> emits marker
+          - Output format matches handoff-marker.sh
+        jira: MSSCI-12663
+      - id: MSSCI-12664
+        title: Implement pf sprint story command
+        description: |
+          Add story <id> command to get story details by ID.
+        points: 1
+        priority: P2
+        status: backlog
+        repos: pennyfarthing
+        workflow: tdd
+        acceptance_criteria:
+          - pf sprint story 67-1 returns story details
+          - --json flag for structured output
+        jira: MSSCI-12664
+      - id: MSSCI-12665
+        title: Integration tests for bash/Python parity
+        description: |
+          Create integration tests that compare bash and Python command output.
+        points: 2
+        priority: P2
+        status: backlog
+        repos: pennyfarthing
+        workflow: tdd
+        acceptance_criteria:
+          - Test suite covers all Phase 1 commands
+          - Compares bash vs Python output
+          - Runs in CI
+        jira: MSSCI-12665
+    type: epic
+    jira: MSSCI-12655
