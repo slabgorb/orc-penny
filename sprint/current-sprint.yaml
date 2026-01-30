@@ -2051,13 +2051,14 @@ epics:
           Add CI step that measures CLI startup time and fails if > 200ms.
         points: 1
         priority: P2
-        status: backlog
+        status: done
         repos: pennyfarthing
         workflow: trivial
         acceptance_criteria:
           - CI job measures startup time
           - Fails build if startup > 200ms
         jira: MSSCI-12661
+        completed: "2026-01-30"
       - id: MSSCI-12662
         title: Migrate sprint/cli.py to Click
         description: |
