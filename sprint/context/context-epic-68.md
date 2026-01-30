@@ -8,19 +8,26 @@ Promote sidebar sections to independent top-level tabs using existing VerticalPa
 
 - **Epic ID**: epic-68
 - **JIRA Key**: MSSCI-12676
-- **Points**: 8
+- **Points**: 12
 - **Priority**: P1
-- **Status**: backlog
+- **Status**: active
 - **Repository**: pennyfarthing
 
 ## New Tabs
 
-The following new tabs will be added alongside existing SIDEBAR and SETTINGS:
+The following new tabs will be added alongside existing SETTINGS:
 
-1. **BACKGROUND** - Background tasks panel
-2. **TODOS** - Todo/task list panel
-3. **SPRINT** - Story/sprint awareness panel
+1. **BACKGROUND** - Background tasks panel ✅
+2. **TODOS** - Todo/task list panel ✅
+3. **SPRINT** - Story/sprint awareness panel ✅
 4. **GIT** - Git status panel
+
+## Sidebar Removal
+
+After all sections are moved to dedicated panels, the sidebar becomes empty and can be removed:
+
+5. **Persona → Message Panel Header** - Move portrait/persona to top of message panel
+6. **Remove Sidebar** - Delete sidebar entirely once empty
 
 ## Technical Approach
 
@@ -63,6 +70,24 @@ Extract git section from sidebar into its own VerticalPanel. Wire up existing gi
 - Panel toggles on tab click
 - Badge shows dirty file count
 - Multi-repo status renders correctly
+
+### 68-5: Move Portrait/Persona section to Message panel header (2 points)
+Move the persona section (portrait, character name, theme, quote) from sidebar to the top of the message panel. This is the final sidebar section that needs a new home.
+
+**Acceptance Criteria:**
+- Persona info displays at top of message panel
+- Portrait thumbnail, character name, theme visible
+- Click opens persona popup modal (existing functionality)
+- Persona section removed from sidebar
+
+### 68-6: Remove sidebar panel entirely (2 points)
+With all sections moved to dedicated panels and message panel header, remove the now-empty sidebar.
+
+**Acceptance Criteria:**
+- Sidebar element removed from HTML
+- SIDEBAR tab no longer appears in tab bar
+- No JavaScript errors from missing sidebar
+- All former sidebar content accessible via other panels
 
 ## Implementation Details
 
