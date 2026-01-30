@@ -458,3 +458,8 @@ completed:
     title: "Update conductor-orchestrator to 8.0.0"
     points: 2
     completed: 2026-01-29
+  - id: 67-1
+    epic: MSSCI-11715
+    title: "Editor mode toggle: rich text vs plain textarea"
+    points: 2
+    completed: 2026-01-30

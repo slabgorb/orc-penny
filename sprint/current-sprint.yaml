@@ -51,10 +51,10 @@ epics:
     type: epic
     jira: MSSCI-11715
     title: "Epic: Cyclist UI/UX Improvements"
-    points: 2
+    points: 4
     completed_points: 2
     priority: P2
-    status: done
+    status: active
     stories:
       - id: MSSCI-11725
         jira: MSSCI-11725
