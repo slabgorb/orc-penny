@@ -1987,7 +1987,10 @@ epics:
           and outputs story ID, phase, owner.
         points: 2
         priority: P1
-        status: backlog
+        status: done
+        completed: "2026-01-30"
+        delivered_in: MSSCI-12656
+        notes: Implemented as part of MSSCI-12656 CLI entry point
         repos: pennyfarthing
         workflow: tdd
         acceptance_criteria:
@@ -2000,7 +2003,10 @@ epics:
         description: "Create phase-check command that verifies phase ownership for a \ngiven workflow and phase. Returns owner agent name.\n"
         points: 2
         priority: P1
-        status: backlog
+        status: done
+        completed: "2026-01-30"
+        delivered_in: MSSCI-12656
+        notes: Implemented as part of MSSCI-12656 CLI entry point
         repos: pennyfarthing
         workflow: tdd
         acceptance_criteria:
@@ -2071,7 +2077,10 @@ epics:
           Replaces handoff-marker.sh.
         points: 2
         priority: P2
-        status: backlog
+        status: done
+        completed: "2026-01-30"
+        delivered_in: MSSCI-12656
+        notes: Implemented as part of MSSCI-12656 CLI entry point
         repos: pennyfarthing
         workflow: tdd
         acceptance_criteria:
