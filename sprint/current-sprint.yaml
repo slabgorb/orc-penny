@@ -2082,13 +2082,14 @@ epics:
           Add story <id> command to get story details by ID.
         points: 1
         priority: P2
-        status: backlog
+        status: done
         repos: pennyfarthing
         workflow: tdd
         acceptance_criteria:
           - pf sprint story 67-1 returns story details
           - --json flag for structured output
         jira: MSSCI-12664
+        completed: "2026-01-30"
       - id: MSSCI-12665
         title: Integration tests for bash/Python parity
         description: |
