@@ -2408,7 +2408,7 @@ epics:
           - Move todos rendering from sidebar to panel
         points: 2
         priority: P1
-        status: backlog
+        status: done
         repos: pennyfarthing
         workflow: tdd
         acceptance_criteria:
@@ -2416,6 +2416,7 @@ epics:
           - Panel toggles on tab click
           - Progress shows in tab (e.g., "3/5")
           - Existing todo rendering works in new location
+        completed: "2026-01-30"
       - id: 68-3
         title: Create Sprint panel as top-level tab
         description: |
