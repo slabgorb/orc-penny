@@ -2427,7 +2427,7 @@ epics:
           - Move story, sprint stats, ACs, epic context to panel
         points: 2
         priority: P1
-        status: backlog
+        status: done
         repos: pennyfarthing
         workflow: tdd
         acceptance_criteria:
@@ -2435,6 +2435,7 @@ epics:
           - Panel toggles on tab click
           - Story, sprint stats, ACs all render in panel
           - Epic context expandable section works
+        completed: "2026-01-30"
       - id: 68-4
         title: Create Git panel as top-level tab
         description: |
