@@ -2020,7 +2020,8 @@ epics:
           sidecar memory, and sprint context. Highest-frequency command.
         points: 3
         priority: P1
-        status: backlog
+        status: done
+        completed: "2026-01-30"
         repos: pennyfarthing
         workflow: tdd
         acceptance_criteria:
