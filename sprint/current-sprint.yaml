@@ -2451,9 +2451,10 @@ epics:
           - Move git status rendering from sidebar to panel
         points: 2
         priority: P1
-        status: backlog
+        status: done
+        completed: '2026-01-30'
         repos: pennyfarthing
-        workflow: tdd
+        workflow: trivial
         acceptance_criteria:
           - GIT tab visible in tab bar
           - Panel toggles on tab click
