@@ -2461,29 +2461,6 @@ epics:
           - Panel toggles on tab click
           - Badge shows dirty file count
           - Multi-repo status renders correctly
-      - id: 68-5
-        title: Move Portrait/Persona section to Message panel header
-        description: |
-          Move the persona section (portrait, character name, theme, quote) from
-          sidebar to the top of the message panel. This is the final sidebar section
-          that needs a new home before the sidebar can be removed.
-
-          Implementation:
-          - Add persona header section to #message-panel (above message-view)
-          - Move portrait, character-name, theme-name, character-quote elements
-          - Compact layout for header position (horizontal, minimal height)
-          - Keep persona popup modal functionality working
-          - Remove persona-section from sidebar HTML
-        points: 2
-        priority: P1
-        status: backlog
-        repos: pennyfarthing
-        workflow: trivial
-        acceptance_criteria:
-          - Persona info displays at top of message panel
-          - Portrait thumbnail, character name, theme visible
-          - Click opens persona popup modal (existing functionality)
-          - Persona section removed from sidebar
       - id: 68-6
         title: Remove sidebar panel entirely
         description: |

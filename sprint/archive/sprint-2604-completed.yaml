@@ -468,3 +468,8 @@ completed:
     title: "Migrate sprint/cli.py to Click"
     points: 2
     completed: 2026-01-30
+  - id: 68-5
+    epic: epic-68
+    title: "Move Portrait/Persona section to Message panel header"
+    points: 2
+    completed: 2026-01-30
