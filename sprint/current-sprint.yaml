@@ -2037,13 +2037,14 @@ epics:
           invocation instead of bash scripts.
         points: 2
         priority: P1
-        status: backlog
+        status: done
         repos: pennyfarthing
         workflow: trivial
         acceptance_criteria:
           - All agent commands use Python CLI invocation
           - Bash scripts remain available as fallback
         jira: MSSCI-12660
+        completed: "2026-01-30"
       - id: MSSCI-12661
         title: Add startup benchmark to CI
         description: |
