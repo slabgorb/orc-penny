@@ -545,6 +545,12 @@ future:
       blocked_by: null
       total_points: 5
       epics: []
+    - name: "Python CLI Migration"
+      description: "Replace fragile bash script symlinks with a unified Python CLI (`pf`) that \nagents can invoke reliably via module resolution. Eliminates path-related \nerrors that waste agent context on debugging instead of productive work.\n\nKey decisions:\n- Click library for decorator-based CLI (per PRD FR18)\n- Lazy loading for <200ms startup time\n- Phased migration: bash preserved during transition\n\nPRD: docs/planning/prd.md\nArchitecture: docs/planning/architecture.md\n"
+      status: ready
+      blocked_by: null
+      total_points: 19
+      epics: []
 # =============================================================================
 # SUMMARY
 # =============================================================================
