@@ -2353,3 +2353,106 @@ epics:
         completed: "2026-01-30"
     type: epic
     jira: MSSCI-12655
+  - id: epic-68
+    type: epic
+    jira: MSSCI-12676
+    title: 'Epic: Cyclist Sidebar Panels to Top-Level Tabs'
+    description: |
+      Promote sidebar sections to independent top-level tabs using existing
+      VerticalPanel infrastructure. Sections currently compete for vertical
+      space in the sidebar - promoting them to tabs gives each its own panel.
+
+      New tabs: BACKGROUND, TODOS, SPRINT, GIT (alongside existing SIDEBAR, SETTINGS)
+
+      Uses existing VerticalPanel class - no new resize infrastructure needed.
+    points: 8
+    priority: P1
+    status: backlog
+    repos: pennyfarthing
+    stories:
+      - id: 68-1
+        title: Create Background Tasks panel as top-level tab
+        description: |
+          Extract background-tasks section from sidebar into its own VerticalPanel.
+          Add BACKGROUND tab to tab bar. Wire up existing background-tasks.js
+          module to render in new panel.
+
+          Implementation:
+          - Add #background-panel to index.html
+          - Create BackgroundPanel class extending VerticalPanel
+          - Add tab button with badge support for task count
+          - Move background tasks rendering from sidebar to panel
+        points: 2
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        workflow: tdd
+        acceptance_criteria:
+          - BACKGROUND tab visible in tab bar
+          - Panel toggles on tab click
+          - Badge shows active task count
+          - Existing task rendering works in new location
+        completed: "2026-01-30"
+      - id: 68-2
+        title: Create Todos panel as top-level tab
+        description: |
+          Extract todos section from sidebar into its own VerticalPanel.
+          Add TODOS tab to tab bar. Wire up existing tasks.js module.
+
+          Implementation:
+          - Add #todos-panel to index.html
+          - Create TodosPanel class extending VerticalPanel
+          - Add tab button with progress indicator (X/Y)
+          - Move todos rendering from sidebar to panel
+        points: 2
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
+        workflow: tdd
+        acceptance_criteria:
+          - TODOS tab visible in tab bar
+          - Panel toggles on tab click
+          - Progress shows in tab (e.g., "3/5")
+          - Existing todo rendering works in new location
+      - id: 68-3
+        title: Create Sprint panel as top-level tab
+        description: |
+          Extract story/sprint section from sidebar into its own VerticalPanel.
+          Add SPRINT tab to tab bar. Wire up existing story.js module.
+          Include AC section within this panel.
+
+          Implementation:
+          - Add #sprint-panel to index.html
+          - Create SprintPanel class extending VerticalPanel
+          - Move story, sprint stats, ACs, epic context to panel
+        points: 2
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
+        workflow: tdd
+        acceptance_criteria:
+          - SPRINT tab visible in tab bar
+          - Panel toggles on tab click
+          - Story, sprint stats, ACs all render in panel
+          - Epic context expandable section works
+      - id: 68-4
+        title: Create Git panel as top-level tab
+        description: |
+          Extract git section from sidebar into its own VerticalPanel.
+          Add GIT tab to tab bar. Wire up existing git.js module.
+
+          Implementation:
+          - Add #git-panel to index.html
+          - Create GitPanel class extending VerticalPanel
+          - Add tab button with dirty file count badge
+          - Move git status rendering from sidebar to panel
+        points: 2
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
+        workflow: tdd
+        acceptance_criteria:
+          - GIT tab visible in tab bar
+          - Panel toggles on tab click
+          - Badge shows dirty file count
+          - Multi-repo status renders correctly
