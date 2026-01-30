@@ -71,7 +71,7 @@ Code blocks in skill files are documentation, not executed. Use:
 Script to analyze archived sessions for behavioral drift:
 
 ```bash
-.pennyfarthing/scripts/core/run.sh health/drift-detection.sh [--verbose]
+.pennyfarthing/scripts/health/drift-detection.sh [--verbose]
 ```
 
 **Drift signals:**
