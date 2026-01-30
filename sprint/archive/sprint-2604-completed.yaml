@@ -463,3 +463,8 @@ completed:
     title: "Editor mode toggle: rich text vs plain textarea"
     points: 2
     completed: 2026-01-30
+  - id: MSSCI-12662
+    epic: epic-67
+    title: "Migrate sprint/cli.py to Click"
+    points: 2
+    completed: 2026-01-30

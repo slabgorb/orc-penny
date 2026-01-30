@@ -2059,20 +2059,6 @@ epics:
           - Fails build if startup > 200ms
         jira: MSSCI-12661
         completed: "2026-01-30"
-      - id: MSSCI-12662
-        title: Migrate sprint/cli.py to Click
-        description: |
-          Convert existing argparse-based sprint/cli.py to Click decorators.
-          Integrate with main CLI entry point.
-        points: 2
-        priority: P2
-        status: backlog
-        repos: pennyfarthing
-        workflow: tdd
-        acceptance_criteria:
-          - sprint commands use @click.command() decorators
-          - Registered with main pf group
-        jira: MSSCI-12662
       - id: MSSCI-12663
         title: Implement pf workflow handoff command
         description: |
