@@ -2066,13 +2066,14 @@ epics:
           Integrate with main CLI entry point.
         points: 2
         priority: P2
-        status: backlog
+        status: done
         repos: pennyfarthing
         workflow: tdd
         acceptance_criteria:
           - sprint commands use @click.command() decorators
           - Registered with main pf group
         jira: MSSCI-12662
+        completed: "2026-01-30"
       - id: MSSCI-12663
         title: Implement pf workflow handoff command
         description: |
