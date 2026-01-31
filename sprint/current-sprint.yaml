@@ -2486,3 +2486,246 @@ epics:
           - No JavaScript errors from missing sidebar
           - All former sidebar content accessible via other panels
         completed: "2026-01-30"
+  - id: epic-69
+    title: 'Epic: Core Conversation Experience'
+    description: |
+      Users can have conversations with Claude using a React-based
+      interface with streaming responses, markdown rendering, and
+      tool call display. Includes subagent message grouping as spans.
+    points: 10
+    priority: P1
+    marker: cyclist-react
+    repos: pennyfarthing
+    status: in_progress
+    stories:
+      - id: MSSCI-12697
+        title: React + Tailwind Build Pipeline
+        description: |
+          Add React 18, ReactDOM, Tailwind CSS to Cyclist Electron app.
+          Configure Vite/esbuild for React compilation. Create bridge
+          between vanilla JS and React mount points. Hot reload support.
+        points: 2
+        priority: P0
+        status: done
+        repos: pennyfarthing
+        jira: MSSCI-12697
+        completed: "2026-01-31"
+      - id: MSSCI-12698
+        title: MessageView Component with Streaming
+        description: |
+          React-based message view with streaming text, markdown rendering,
+          syntax-highlighted code blocks, tool call display. Subagent messages
+          grouped as collapsible spans with type/name identification.
+        points: 5
+        priority: P0
+        status: backlog
+        repos: pennyfarthing
+        jira: MSSCI-12698
+      - id: MSSCI-12699
+        title: StatsStrip Component
+        description: |
+          Shows context %, model badge, PWD, Jira user, GitHub user.
+          Real-time updates, warning colors at 70%/90% thresholds.
+        points: 1
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
+        jira: MSSCI-12699
+      - id: MSSCI-12700
+        title: PersonaHeader Component
+        description: |
+          Agent portrait, character name/role, clickable popup with details.
+          Theme-aware styling for quick project identification across
+          multiple Cyclist instances.
+        points: 2
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
+        jira: MSSCI-12700
+    type: epic
+    jira: MSSCI-12696
+  - id: epic-70
+    title: 'Epic: Flexible Workspace'
+    description: |
+      Users can arrange their workspace - dragging panels between
+      sidebars, collapsing what they don't need, and having the
+      layout remembered per-project.
+    points: 7
+    priority: P1
+    marker: cyclist-react
+    repos: pennyfarthing
+    status: backlog
+    stories:
+      - id: 70-1
+        title: Docking System Foundation
+        description: |
+          Integrate FlexLayout or Dockview. Message view fixed center.
+          Left/right sidebars with tabbed panels. Existing panel inventory
+          (Changed, Diffs, Debug, Sprint, Progress, Background, Git, Settings).
+        points: 3
+        priority: P0
+        status: backlog
+        repos: pennyfarthing
+      - id: 70-2
+        title: Panel Drag-and-Drop
+        description: |
+          Drag panels between sidebars, reorder tabs. Ghost preview,
+          drop zone highlighting. Message view rejects drops.
+        points: 2
+        priority: P0
+        status: backlog
+        repos: pennyfarthing
+      - id: 70-3
+        title: Layout Persistence
+        description: |
+          Save/restore panel positions, widths, collapsed states per-project
+          in .pennyfarthing/config.local.yaml. Independent layouts per project.
+        points: 2
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
+    type: epic
+  - id: epic-71
+    title: 'Epic: Codebase Awareness'
+    description: |
+      Users can see what files Claude modified, review diffs with
+      syntax highlighting, and monitor their context usage.
+    points: 8
+    priority: P1
+    marker: cyclist-react
+    repos: pennyfarthing
+    status: backlog
+    stories:
+      - id: 71-1
+        title: FileTree Component
+        description: |
+          List of modified files with paths, status (created/modified/deleted),
+          directory grouping. Click to open in DiffViewer. Badge with count.
+          Real-time updates.
+        points: 2
+        priority: P0
+        status: backlog
+        repos: pennyfarthing
+      - id: 71-2
+        title: DiffViewer Component
+        description: |
+          Side-by-side or unified diff view. Syntax highlighting per file type.
+          Green additions, red deletions. Keyboard navigation between hunks.
+          Toggle partial/full file view.
+        points: 3
+        priority: P0
+        status: backlog
+        repos: pennyfarthing
+      - id: 71-3
+        title: ContextIndicator Component
+        description: |
+          Visual context % bar with threshold colors (green/amber/red).
+          Real-time updates. Subtle warning at 90%. Tooltip with exact
+          token count.
+        points: 1
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
+      - id: 71-4
+        title: ApprovalModal Component
+        description: |
+          Tool permission modal with command preview. Keyboard-first
+          (Enter approve, Escape reject). Red accent for destructive actions.
+          "Always allow" checkbox. Non-blocking overlay.
+        points: 2
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
+    type: epic
+  - id: epic-72
+    title: 'Epic: Command & Navigation'
+    description: |
+      Users can navigate the entire application via keyboard,
+      access any action through the command palette.
+    points: 6
+    priority: P2
+    marker: cyclist-react
+    repos: pennyfarthing
+    status: backlog
+    stories:
+      - id: 72-1
+        title: Command Palette
+        description: |
+          Cmd+Shift+P opens searchable palette. Filter commands by typing.
+          Categories (Panels, Navigation, Settings, Agents). Shows shortcuts.
+          Enter executes, Escape closes. Recent commands at top.
+        points: 3
+        priority: P0
+        status: backlog
+        repos: pennyfarthing
+      - id: 72-2
+        title: ModeSwitch Component
+        description: |
+          3-way toggle: Plan/Manual/Accept. Sliding highlight animation.
+          Cmd+1/2/3 shortcuts. Tooltip explains each mode.
+        points: 1
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
+      - id: 72-3
+        title: Keyboard Shortcut System
+        description: |
+          Never override system shortcuts (Cmd+R/W/Q/T). Cyclist uses
+          Cmd+Shift+* prefix. Panel focus Cmd+Shift+1/2/3. Navigation
+          Cmd+[/]. All shortcuts documented in command palette.
+        points: 2
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
+    type: epic
+  - id: epic-73
+    title: 'Epic: Visual Customization & Accessibility'
+    description: |
+      Users can customize their visual experience and use the
+      application with assistive technology. WCAG AA compliance.
+    points: 9
+    priority: P2
+    marker: cyclist-react
+    repos: pennyfarthing
+    status: backlog
+    stories:
+      - id: 73-1
+        title: Color Palette System
+        description: |
+          Switch between Midnight (dark), Daylight (light), High Contrast.
+          Immediate update without restart. Per-project persistence in
+          config.local.yaml. CSS variables, no hardcoded colors.
+        points: 2
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
+      - id: 73-2
+        title: Font Customization
+        description: |
+          UI font (System, Inter, custom) and Code font (System mono,
+          JetBrains Mono, Fira Code, custom). Global persistence.
+          Tailwind size scale. Immediate apply.
+        points: 2
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
+      - id: 73-3
+        title: Responsive Breakpoints
+        description: |
+          <1024px: auto-collapse sidebars. 1024-1440px: default layout.
+          >1440px: expanded panels. Min 800x600. Smooth transitions.
+        points: 2
+        priority: P2
+        status: backlog
+        repos: pennyfarthing
+      - id: 73-4
+        title: Accessibility Compliance
+        description: |
+          WCAG AA: ARIA labels on all interactive elements, visible focus
+          indicators, logical tab order, 4.5:1 contrast, prefers-reduced-motion
+          support, screen reader announcements for streaming, skip links.
+        points: 3
+        priority: P2
+        status: backlog
+        repos: pennyfarthing
+    type: epic
