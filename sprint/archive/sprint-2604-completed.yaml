@@ -483,3 +483,8 @@ completed:
     title: "PersonaHeader Component"
     points: 2
     completed: 2026-01-31
+  - id: MSSCI-12706
+    epic: epic-70
+    title: "Layout Persistence"
+    points: 2
+    completed: 2026-01-31

@@ -2602,16 +2602,6 @@ epics:
         repos: pennyfarthing
         jira: MSSCI-12705
         completed: "2026-01-31"
-      - id: MSSCI-12706
-        title: Layout Persistence
-        description: |
-          Save/restore panel positions, widths, collapsed states per-project
-          in .pennyfarthing/config.local.yaml. Independent layouts per project.
-        points: 2
-        priority: P1
-        status: backlog
-        repos: pennyfarthing
-        jira: MSSCI-12706
     type: epic
     jira: MSSCI-12703
   - id: epic-71
