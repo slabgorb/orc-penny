@@ -2623,9 +2623,10 @@ epics:
           Toggle partial/full file view.
         points: 3
         priority: P0
-        status: backlog
+        status: done
         repos: pennyfarthing
         jira: MSSCI-12711
+        completed: "2026-01-31"
       - id: MSSCI-12712
         title: ContextIndicator Component
         description: |
