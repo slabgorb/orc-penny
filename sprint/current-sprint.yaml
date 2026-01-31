@@ -8,10 +8,10 @@ sprint:
   status: active
   velocity_target: 22
 summary:
-  total_points: 198
+  total_points: 200
   completed_points: 133
   cancelled_points: 6
-  remaining_points: 59
+  remaining_points: 61
   notes: 'Sprint 12 includes work from multiple epics that were tracked in Jira but
 
     not in local sprint YAML. This file has been reconciled with Jira Sprint 276.
@@ -2492,7 +2492,7 @@ epics:
       Users can have conversations with Claude using a React-based
       interface with streaming responses, markdown rendering, and
       tool call display. Includes subagent message grouping as spans.
-    points: 10
+    points: 12
     priority: P1
     marker: cyclist-react
     repos: pennyfarthing
@@ -2543,6 +2543,22 @@ epics:
         status: backlog
         repos: pennyfarthing
         jira: MSSCI-12700
+      - id: MSSCI-12717
+        jira: MSSCI-12717
+        title: Wire React MessageView to App.tsx
+        description: |
+          App.tsx currently returns null - MessageView component exists but isn't
+          mounted. Wire up:
+          1. App.tsx renders MessageView in #react-root
+          2. Connect to window.electronAPI.claude.onMessage/onComplete/onError
+          3. Manage messages state array, pass to MessageView as props
+          4. Remove vanilla JS message-view-init.js dependency for message display
+          This is BLOCKING - Cyclist is unusable without message display.
+        points: 2
+        priority: P0
+        status: done
+        repos: pennyfarthing
+        workflow: trivial
     type: epic
     jira: MSSCI-12696
   - id: epic-70
