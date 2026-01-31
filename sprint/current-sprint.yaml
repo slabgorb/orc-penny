@@ -2557,7 +2557,7 @@ epics:
     repos: pennyfarthing
     status: backlog
     stories:
-      - id: 70-1
+      - id: MSSCI-12704
         title: Docking System Foundation
         description: |
           Integrate FlexLayout or Dockview. Message view fixed center.
@@ -2567,7 +2567,8 @@ epics:
         priority: P0
         status: backlog
         repos: pennyfarthing
-      - id: 70-2
+        jira: MSSCI-12704
+      - id: MSSCI-12705
         title: Panel Drag-and-Drop
         description: |
           Drag panels between sidebars, reorder tabs. Ghost preview,
@@ -2576,7 +2577,8 @@ epics:
         priority: P0
         status: backlog
         repos: pennyfarthing
-      - id: 70-3
+        jira: MSSCI-12705
+      - id: MSSCI-12706
         title: Layout Persistence
         description: |
           Save/restore panel positions, widths, collapsed states per-project
@@ -2585,7 +2587,9 @@ epics:
         priority: P1
         status: backlog
         repos: pennyfarthing
+        jira: MSSCI-12706
     type: epic
+    jira: MSSCI-12703
   - id: epic-71
     title: 'Epic: Codebase Awareness'
     description: |
