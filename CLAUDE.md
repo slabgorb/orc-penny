@@ -78,7 +78,7 @@ git add sprint/ && git commit -m "chore(sprint): update status"
 ## Just Commands
 
 Run `just help` to see available recipes. Key commands:
-- `just dev-start` - Start development environment
+- `just dev` - Start development environment
 - `just test` - Run tests
 - `just build` - Build framework
 

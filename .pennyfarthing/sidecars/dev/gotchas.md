@@ -94,9 +94,30 @@ if (existsSync(join(dir, 'pennyfarthing-dist'))) {
 
 *Add gotchas discovered during development below*
 
+## Cyclist UI: React is Primary, Vanilla is Deprecated
+
+**React docking workspace is the correct UI system.** The vanilla JS panels in `#container` are deprecated.
+
+Structure:
+- `#react-root` → `.cyclist-app` → `.docking-workspace` - **USE THIS**
+- `#container` → `#content-area` → legacy panels - **DEPRECATED**
+
+When debugging Cyclist UI issues, focus on the React components in `packages/cyclist/src/public/components/`.
+
 ## Shell Standardization: zsh
 
 **Standard:** All Pennyfarthing scripts use `#!/usr/bin/env zsh`, not bash.
 
 If zsh scripts fail to find standard utilities (wc, tr, etc.), the issue is PATH configuration in the user's zsh environment, not the script. Don't change scripts to bash.
+
+## Cyclist: Use Web Mode for Debugging
+
+**For debugging Cyclist UI, use web mode instead of Electron:**
+
+```bash
+cd packages/cyclist
+CYCLIST_PROJECT_DIR=/path/to/project npm run dev:web
+```
+
+This starts an Express server on port 1898 (or next available). Use Playwright to inspect the DOM and debug layout issues.
 
