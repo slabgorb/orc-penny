@@ -2647,9 +2647,10 @@ epics:
           token count.
         points: 1
         priority: P1
-        status: backlog
+        status: done
         repos: pennyfarthing
         jira: MSSCI-12712
+        completed: "2026-01-31"
       - id: MSSCI-12713
         title: ApprovalModal Component
         description: |
