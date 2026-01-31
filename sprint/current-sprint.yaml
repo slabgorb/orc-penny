@@ -2603,7 +2603,7 @@ epics:
     repos: pennyfarthing
     status: backlog
     stories:
-      - id: 71-1
+      - id: MSSCI-12710
         title: FileTree Component
         description: |
           List of modified files with paths, status (created/modified/deleted),
@@ -2613,7 +2613,8 @@ epics:
         priority: P0
         status: backlog
         repos: pennyfarthing
-      - id: 71-2
+        jira: MSSCI-12710
+      - id: MSSCI-12711
         title: DiffViewer Component
         description: |
           Side-by-side or unified diff view. Syntax highlighting per file type.
@@ -2623,7 +2624,8 @@ epics:
         priority: P0
         status: backlog
         repos: pennyfarthing
-      - id: 71-3
+        jira: MSSCI-12711
+      - id: MSSCI-12712
         title: ContextIndicator Component
         description: |
           Visual context % bar with threshold colors (green/amber/red).
@@ -2633,7 +2635,8 @@ epics:
         priority: P1
         status: backlog
         repos: pennyfarthing
-      - id: 71-4
+        jira: MSSCI-12712
+      - id: MSSCI-12713
         title: ApprovalModal Component
         description: |
           Tool permission modal with command preview. Keyboard-first
@@ -2643,7 +2646,9 @@ epics:
         priority: P1
         status: backlog
         repos: pennyfarthing
+        jira: MSSCI-12713
     type: epic
+    jira: MSSCI-12709
   - id: epic-72
     title: 'Epic: Command & Navigation'
     description: |
