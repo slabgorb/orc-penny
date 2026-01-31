@@ -551,6 +551,29 @@ future:
       blocked_by: null
       total_points: 19
       epics: []
+    # ==========================================================================
+    # CYCLIST REACT MIGRATION
+    # Imported from: docs/planning/cyclist-react-migration-epics.md
+    # Date: 2026-01-31
+    # ==========================================================================
+    - name: "Cyclist React Migration"
+      description: |
+        Transform Cyclist from vanilla JS to React + shadcn/ui + Tailwind CSS,
+        implementing flexible workspace layout while maintaining the sacred
+        center message view.
+
+        Key decisions:
+        - React 18 + shadcn/ui + Tailwind CSS stack
+        - FlexLayout or Dockview for docking system (TBD spike)
+        - Phased migration: vanilla JS coexists during transition
+        - Message view is "sacred center" - never moves
+
+        UX Spec: docs/planning/ux-design-specification.md
+        Epics Doc: docs/planning/cyclist-react-migration-epics.md
+      status: ready
+      blocked_by: null
+      total_points: 40
+      epics: []
 # =============================================================================
 # SUMMARY
 # =============================================================================
@@ -560,12 +583,14 @@ future:
 # Repository Optimization         |   -   |    -   | CANCELLED (epic-55)
 # Quality & Scale                 |   2   |   40   | backlog
 # Technical Debt                  |   0   |    5   | backlog
+# Python CLI Migration            |   0   |   19   | ready
+# Cyclist React Migration         |   5   |   40   | ready
 # --------------------------------|-------|--------|------------------
-# TOTAL                           |   8   |   89   |
+# TOTAL                           |  13   |  148   |
 #
-# Epic Numbering Used: 39-46
-# Next Available Epic Number: 65
+# Epic Numbering Used: 39-46, 69-73
+# Next Available Epic Number: 74
 #
-# Note: Epics 56-63 were used in Sprint 12 and are tracked in current-sprint.yaml
+# Note: Epics 56-68 were used in Sprint 12 and are tracked in current-sprint.yaml
 # epic-55 cancelled - nested build was the actual issue, not portrait size
 # =============================================================================
