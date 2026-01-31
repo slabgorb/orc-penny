@@ -2522,17 +2522,6 @@ epics:
         repos: pennyfarthing
         jira: MSSCI-12698
         completed: "2026-01-31"
-      - id: MSSCI-12700
-        title: PersonaHeader Component
-        description: |
-          Agent portrait, character name/role, clickable popup with details.
-          Theme-aware styling for quick project identification across
-          multiple Cyclist instances.
-        points: 2
-        priority: P1
-        status: backlog
-        repos: pennyfarthing
-        jira: MSSCI-12700
       - id: MSSCI-12717
         jira: MSSCI-12717
         title: Wire React MessageView to App.tsx

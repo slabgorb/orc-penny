@@ -478,3 +478,8 @@ completed:
     title: "StatsStrip Component"
     points: 1
     completed: 2026-01-31
+  - id: MSSCI-12700
+    epic: epic-69
+    title: "PersonaHeader Component"
+    points: 2
+    completed: 2026-01-31
