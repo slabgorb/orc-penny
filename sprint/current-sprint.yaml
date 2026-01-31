@@ -2576,9 +2576,10 @@ epics:
           drop zone highlighting. Message view rejects drops.
         points: 2
         priority: P0
-        status: backlog
+        status: done
         repos: pennyfarthing
         jira: MSSCI-12705
+        completed: "2026-01-31"
       - id: MSSCI-12706
         title: Layout Persistence
         description: |
