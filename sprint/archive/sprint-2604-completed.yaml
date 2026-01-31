@@ -473,3 +473,8 @@ completed:
     title: "Move Portrait/Persona section to Message panel header"
     points: 2
     completed: 2026-01-30
+  - id: MSSCI-12699
+    epic: epic-69
+    title: "StatsStrip Component"
+    points: 1
+    completed: 2026-01-31
