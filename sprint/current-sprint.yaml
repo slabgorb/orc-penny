@@ -2549,6 +2549,33 @@ epics:
         status: done
         repos: pennyfarthing
         workflow: trivial
+      - id: MSSCI-12729
+        jira: MSSCI-12729
+        title: Stop/Reset Controls and Escape Key
+        description: |
+          Users cannot stop Claude when it's running off the rails:
+          - Escape key doesn't stop Claude
+          - No visible Stop button when Claude is running
+          - No visible Reset button to clear session
+
+          Add visible controls and keyboard handling:
+          1. Stop button - visible when running, calls ClaudeService.abort()
+          2. Reset button - clears session via ClaudeService.resetSession()
+          3. Escape key - global handler to stop Claude (SIGINT, double-press SIGKILL)
+        points: 3
+        priority: P0
+        status: backlog
+        repos: pennyfarthing
+        workflow: tdd
+        acceptance_criteria:
+          - Stop button appears when Claude is actively running
+          - Stop button disappears when Claude finishes
+          - Clicking Stop immediately kills the Claude process
+          - Reset button is always visible
+          - Reset button clears the session and message history
+          - Escape key stops Claude when pressed once
+          - Double Escape forcefully kills Claude (SIGKILL)
+          - Visual feedback shows "Stopping..." state
     type: epic
     jira: MSSCI-12696
   - id: epic-70
