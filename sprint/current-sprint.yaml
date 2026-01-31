@@ -2686,9 +2686,10 @@ epics:
           Enter executes, Escape closes. Recent commands at top.
         points: 3
         priority: P0
-        status: in_progress
+        status: done
         repos: pennyfarthing
         jira: MSSCI-12721
+        completed: "2026-01-31"
       - id: 72-2
         title: ModeSwitch Component
         description: |
