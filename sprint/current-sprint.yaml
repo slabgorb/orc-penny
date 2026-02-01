@@ -1410,9 +1410,10 @@ epics:
           for Claude's context, not user display.
         points: 2
         priority: P1
-        status: backlog
+        status: done
         repos: pennyfarthing
         jira: MSSCI-12783
+        completed: "2026-02-01"
       - id: MSSCI-12784
         title: "Bug: Background Task Timer Doesn't Update While Watching"
         description: |
