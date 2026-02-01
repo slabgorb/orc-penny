@@ -121,3 +121,18 @@ CYCLIST_PROJECT_DIR=/path/to/project npm run dev:web
 
 This starts an Express server on port 1898 (or next available). Use Playwright to inspect the DOM and debug layout issues.
 
+## Tailwind v4: Use `@import "tailwindcss"` Not `@tailwind` Directives
+
+**Cyclist uses Tailwind v4.** The old v3 syntax (`@tailwind base; @tailwind components; @tailwind utilities;`) does NOT work correctly with v4's tree-shaking.
+
+```css
+/* WRONG - Tailwind v3 syntax, causes styles to be tree-shaken */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CORRECT - Tailwind v4 syntax */
+@import "tailwindcss";
+```
+
+Custom CSS classes written after `@import "tailwindcss"` will be preserved. With the old syntax, custom classes may be silently removed during build even if they're used in components.
