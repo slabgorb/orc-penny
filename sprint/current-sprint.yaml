@@ -2170,9 +2170,10 @@ epics:
           This unblocks the entire reflector/handoff workflow system.
         points: 5
         priority: P0
-        status: backlog
+        status: done
         repos: pennyfarthing
         jira: MSSCI-12787
+        completed: "2026-02-01"
       - id: MSSCI-12785
         title: "Fix Panel Data Rendering (Git, Progress, Debug)"
         description: |
