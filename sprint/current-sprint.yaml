@@ -8,971 +8,16 @@ sprint:
   status: active
   velocity_target: 22
 summary:
-  total_points: 200
-  completed_points: 133
-  cancelled_points: 6
-  remaining_points: 61
-  notes: 'Sprint 12 includes work from multiple epics that were tracked in Jira but
-
-    not in local sprint YAML. This file has been reconciled with Jira Sprint 276.
-
-
-    Completed Epics:
-
-    - MSSCI-11705: Runtime Permission Management (1 story carried over)
-
-    - MSSCI-11715: Cyclist UI/UX Improvements (1 story carried over)
-
-    - MSSCI-11942: WheelHub Notification Consolidation (7 stories, all done)
-
-    - MSSCI-11952: Skill Frontmatter Enhancement (13 stories, all done)
-
-    - MSSCI-12042: VS Code Extension (9 stories, all done)
-
-    - MSSCI-12077: Stepped Workflow Support (9 stories, all done)
-
-    - MSSCI-12131: BikeLane BMAD Workflow Imports (15 stories, all done)
-
-    - MSSCI-12122: VS Code Extension UX/UI Pass (5 done, 3 cancelled)
-
-'
+  total_points: 308
+  completed_points: 252
+  cancelled_points: 8
+  remaining_points: 48
+  notes: Completed epics archived in sprint/archive/sprint-2604-completed.yaml
 epics:
-  - id: MSSCI-11715
-    type: epic
-    jira: MSSCI-11715
-    title: 'Epic: Cyclist UI/UX Improvements'
-    points: 4
-    completed_points: 2
-    priority: P2
-    status: active
-    stories:
-      - id: MSSCI-11725
-        jira: MSSCI-11725
-        title: Line numbers in file diffs
-        points: 2
-        status: done
-        completed: 2026-01-18
-  - id: epic-56
-    type: epic
-    title: 'Epic: Glanceable Status Awareness'
-    description: 'Users can monitor their Pennyfarthing session at a glance without clicking
-
-      anything - context level, permission mode, and active model are always
-
-      visible in the status bar. Includes WheelHub connection infrastructure.
-
-      FRs: FR1-5 (status bar), FR16-19 (WheelHub integration)
-
-'
-    points: 13
-    completed_points: 0
-    priority: P0
-    status: in_progress
-    marker: vscode
-    repos: pennyfarthing
-    jira: MSSCI-12226
-    stories:
-      - id: 56-1
-        jira: MSSCI-12227
-        title: WheelHub Connection Infrastructure
-        description: 'Extension connects to WheelHub WebSocket on activation, subscribes to
-
-          /context, /agent, /gearshift, /story channels. Graceful degradation
-
-          with "Connecting..." state and 2-second retry interval.
-
-'
-        points: 5
-        priority: P0
-        status: done
-        completed: 2026-01-22
-        repos: pennyfarthing
-      - id: 56-2
-        jira: MSSCI-12230
-        title: Context Meter Status Bar Item
-        description: 'Display context usage in status bar: `CONTEXT: 54k (31%)`
-
-          Color states: green (<60%), yellow (60-80%), red (>80%)
-
-          Updates within 1 second of WheelHub event.
-
-'
-        points: 3
-        priority: P0
-        status: done
-        repos: pennyfarthing
-        assigned_to: Keith Avery
-        completed: '2026-01-22'
-      - id: 56-3
-        jira: MSSCI-12229
-        title: Gearshift Mode Status Bar Item
-        description: 'Display current permission mode: PLAN, MANUAL, ACCEPT, or TURBO.
-
-          Updates within 1 second of WheelHub /gearshift event.
-
-'
-        points: 2
-        priority: P0
-        status: done
-        repos: pennyfarthing
-        completed: '2026-01-22'
-      - id: 56-4
-        jira: MSSCI-12228
-        title: Model Indicator Status Bar Item
-        description: 'Display active Claude model (e.g., OPUS 4-5) in status bar.
-
-          Updates on session start via WheelHub /model channel.
-
-'
-        points: 3
-        priority: P0
-        status: done
-        repos: pennyfarthing
-        completed: '2026-01-22'
-  - id: epic-57
-    type: epic
-    title: 'Epic: Agent Identity & Emotional Connection'
-    description: 'Users can see and connect with their current agent persona - portrait,
-
-      name, and theme visible in the sidebar, creating the emotional connection
-
-      that makes Pennyfarthing engaging.
-
-      FRs: FR6-10 (persona card, portrait, theme)
-
-'
-    points: 8
-    completed_points: 0
-    priority: P0
-    status: in_progress
-    marker: vscode
-    repos: pennyfarthing
-    jira: MSSCI-12189
-    stories:
-      - id: 57-1
-        jira: MSSCI-12191
-        title: Persona Card Webview
-        description: 'Sidebar webview with agent portrait image, character name prominently
-
-          displayed, and theme name/badge. Populates within 2 seconds of activation.
-
-'
-        points: 3
-        priority: P0
-        status: done
-        repos: pennyfarthing
-        completed: '2026-01-23'
-      - id: 57-2
-        jira: MSSCI-12192
-        title: Portrait Loading with Caching
-        description: 'Load portraits from CDN: https://cdn.pennyfarthing.dev/portraits/{theme}/{agent}.png
-
-          Cache locally after first load. Fallback to default on failure.
-
-          Support all 102 themes.
-
-'
-        points: 3
-        priority: P0
-        status: done
-        repos: pennyfarthing
-        branch: feat/57-2-portrait-caching
-        workflow: tdd
-        completed: '2026-01-23'
-      - id: 57-3
-        jira: MSSCI-12193
-        title: Real-time Agent Updates
-        description: 'Persona card updates when WheelHub broadcasts new agent on /agent channel.
-
-          Portrait, name, and theme badge all update within 1 second.
-
-'
-        points: 2
-        priority: P0
-        status: done
-        repos: pennyfarthing
-        branch: feat/57-3-realtime-agent-updates
-        workflow: tdd
-        completed: '2026-01-23'
-  - id: epic-58
-    type: epic
-    title: 'Epic: Sprint & Story Awareness'
-    description: 'Users can see their current story, sprint status, and branch health
-
-      without leaving VS Code - full workflow awareness via the sidebar tree view.
-
-      FRs: FR11-15 (story, sprint, branch, file watcher)
-
-'
-    points: 8
-    completed_points: 0
-    priority: P1
-    status: backlog
-    marker: vscode
-    repos: pennyfarthing
-    jira: MSSCI-12236
-    stories:
-      - id: 58-1
-        jira: MSSCI-12237
-        title: Story Status Tree View
-        description: 'Display current story title from .session/{story-id}-session.md
-
-          or "No active story" indicator in sidebar tree view.
-
-'
-        points: 2
-        priority: P0
-        status: done
-        repos: pennyfarthing
-        branch: feat/58-1-story-status-tree-view
-        workflow: tdd
-        completed: '2026-01-23'
-      - id: 58-2
-        jira: MSSCI-12238
-        title: Sprint Metrics Display
-        description: 'Display remaining points, in-progress points, and sprint end date
-
-          from sprint/current-sprint.yaml in sidebar tree view.
-
-'
-        points: 2
-        priority: P0
-        status: done
-        repos: pennyfarthing
-        completed: '2026-01-23'
-      - id: 58-3
-        jira: MSSCI-12239
-        title: Branch Status Indicator
-        description: 'Display CLEAN/DIRTY indicator based on git uncommitted changes.
-
-'
-        points: 2
-        priority: P1
-        status: cancelled
-        repos: pennyfarthing
-        cancellation_reason: VS Code already provides git status; keeping existing Cyclist git UI as-is
-      - id: 58-4
-        jira: MSSCI-12240
-        title: File Watcher Integration
-        description: 'Watch .session/ and sprint/current-sprint.yaml for changes.
-
-          Update tree view within 500ms of file change.
-
-'
-        points: 2
-        priority: P1
-        status: cancelled
-        cancelled_reason: VS Code extension potentially being deprecated
-        repos: pennyfarthing
-  - id: standalone
-    type: misc
-    title: Standalone Stories
-    points: 18
-    completed_points: 11
-    status: in_progress
-    stories:
-      - id: MSSCI-11799
-        jira: MSSCI-11799
-        title: Detect Jira-only stories missing from sprint YAML
-        points: 3
-        status: done
-        completed: 2026-01-17
-      - id: MSSCI-12235
-        jira: MSSCI-12235
-        title: Cyclist environment detection and reflector refinement
-        description: 'Add reliable detection for whether Claude Code is running inside Cyclist
-
-          (for autohandoff support). Refine reflector code for better integration.
-
-'
-        points: 3
-        priority: P1
-        status: done
-        completed: 2026-01-22
-        repos: pennyfarthing
-      - id: MSSCI-12274
-        jira: MSSCI-12274
-        title: Support images in queued messages via base64 encoding
-        description: 'When a user pastes an image and submits while Claude is processing,
-
-          the image data is lost because the message queue only stores text strings.
-
-          Extend the queue to store message objects with both text and images array,
-
-          preserving base64-encoded image data for deferred submission.
-
-'
-        points: 3
-        priority: P1
-        status: done
-        repos: pennyfarthing
-        completed: '2026-01-22'
-      - id: MSSCI-12346
-        jira: MSSCI-12346
-        title: Improve init/update/doctor for legacy install cleanup
-        description: "When installing Pennyfarthing over a legacy install (or updating), stale\nfiles can remain that conflict with or shadow Pennyfarthing's proper files.\n\nDiscovered in ~/Projects/conductor:\n- `.claude/scripts/statusline.sh` (legacy, simplified) shadows\n  `.pennyfarthing/scripts/misc/statusline.sh` (proper, feature-rich)\n- `settings.local.json` may point to wrong statusline path\n- `.claude/persona-config.yaml` may conflict with `.pennyfarthing/config.local.yaml`\n\nImplementation:\n- `init`: Detect legacy `.claude/scripts/` files, offer to remove or migrate\n- `update`: Check for stale files that shadow pennyfarthing-dist symlinks\n- `doctor`: Add check for conflicting statusline scripts, fix path in settings\n- All: Validate statusline path in settings.local.json points to correct location\n\nAcceptance Criteria:\n- [ ] doctor --fix removes stale `.claude/scripts/statusline.sh` if pennyfarthing one exists\n- [ ] doctor --fix updates settings.local.json statusline path if wrong\n- [ ] init warns about legacy files and offers cleanup\n- [ ] update cleans up known legacy file patterns\n"
-        points: 3
-        priority: P1
-        status: done
-        completed: '2026-01-23'
-        repos: pennyfarthing
-        branch: feat/MSSCI-12346-legacy-cleanup
-        workflow: tdd
-      - id: MSSCI-12520
-        title: 'Bell mode: inject queued messages after tool use'
-        description: "When Bell mode is enabled, queued messages are injected into the conversation\ncontext after each tool use, rather than waiting for Claude to finish. This\nlets users provide feedback mid-turn without aborting Claude's work.\n\nImplementation:\n- Add Bell mode toggle to settings (off by default)\n- Hook into tool_result event in OTEL receiver\n- When Bell mode on and queue non-empty, dequeue message and inject as user turn\n- Claude continues processing but now sees the injected message in context\n- UI shows \U0001F514 indicator when Bell mode is active\n\nMetaphor: Like ringing a bike bell - you get attention without stopping traffic.\n"
-        points: 5
-        priority: P2
-        status: done
-        repos: pennyfarthing
-        branch: feat/MSSCI-12275-bell-mode
-        workflow: tdd
-        completed: '2026-01-22'
-      - id: MSSCI-12523
-        title: 'Cyclist UX polish: persona popup and controls refinement'
-        description: "Improve Cyclist visual terminal UX with focus on persona popup presentation,\ncontrol button styling, and keyboard shortcut rationalization.\n\nPersona Popup Enhancements:\n- Remove VOICE section (keep STYLE, BACKGROUND, QUIRKS)\n- Add team roster on right side of popup\n- Hover over team member shows their portrait/details (live preview)\n- Show team statistics (tier rankings)\n- Show agent statistics (lift over baseline from Job Fair benchmarks)\n- Smooth open/close animations\n\nControl Button Polish:\n- Convert RELAY button to icon-only with bicycle icon \U0001F6B2\n- Convert BELL button to icon-only with bell icon \U0001F514\n- Consistent sizing and hover states for icon buttons\n- Tooltips explaining each control on hover\n\nKeyboard Shortcut Rationalization:\n- Audit all current keyboard shortcuts for collisions\n- Design non-conflicting shortcut scheme\n- Ensure shortcuts don't fire when typing in text inputs\n- Create modal manager for Escape key priority\n- Replace naked 's'/'a' keys with Cmd+Enter variants\n\nBehaviors (BDD scenarios):\n- GIVEN the RELAY button WHEN rendered THEN show bicycle icon only (no text)\n- GIVEN the BELL button WHEN rendered THEN show bell icon only (no text)\n- GIVEN any icon button WHEN hovered THEN show tooltip with label\n- GIVEN persona popup opens WHEN team roster visible THEN show all theme agents\n- GIVEN user hovers team member WHEN in popup THEN preview that agent's details\n- GIVEN persona popup WHEN rendered THEN show team tier and agent lift stats\n- GIVEN user is typing in input WHEN shortcut key pressed THEN do not trigger\n- GIVEN Escape pressed WHEN multiple modals open THEN close topmost only\n"
-        points: 5
-        priority: P2
-        status: done
-        repos: pennyfarthing
-        branch: feat/MSSCI-12403-persona-popup-redesign
-        workflow: bdd
-        completed: '2026-01-25'
-      - id: MSSCI-12524
-        title: Remove ungated DEBUG console.log in otlp-receiver.ts
-        description: 'Lines 756-769 in otlp-receiver.ts have DEBUG console.log statements that
-
-          are NOT gated by the otelDebugEnabled flag. These spam the console every
-
-          time a Task tool is used in production.
-
-
-          Fix: Gate these logs behind `if (otelDebugEnabled)` or remove them.
-
-
-          Found via: tail -f /tmp/cyclist.log
-
-'
-        points: 1
-        priority: P1
-        status: done
-        repos: pennyfarthing
-        workflow: trivial
-      - id: MSSCI-12509
-        title: Remove debug logging in api/settings.ts
-        description: 'Line 282 in api/settings.ts has a debug console.log that logs
-
-          `process.resourcesPath` every time themes are loaded:
-
-
-          console.log(''[Themes API] process.resourcesPath:'', process.resourcesPath);
-
-
-          This logs "undefined" in dev mode which is noisy. Remove or gate behind
-
-          a debug flag.
-
-
-          Found via: tail -f /tmp/cyclist.log
-
-'
-        points: 1
-        priority: P2
-        status: done
-        completed: 2026-01-27
-        repos: pennyfarthing
-        workflow: trivial
-      - id: MSSCI-12602
-        title: Published npm package missing PYTHONPATH fix
-        description: 'The run.sh in @pennyfarthing/core@7.9.1 doesn''t set PYTHONPATH for Python
-
-          scripts. This causes Python imports to fail when running scripts via the
-
-          published npm package.
-
-'
-        points: 1
-        priority: P1
-        status: done
-        completed: '2026-01-29'
-        repos: pennyfarthing
-        workflow: trivial
-  - id: epic-62
-    type: epic
-    title: 'Epic: Hook Infrastructure Improvements'
-    description: 'Improve Claude Code hook infrastructure for better maintainability,
-
-      cross-platform compatibility, and testability.
-
-'
-    priority: P1
-    status: in_progress
-    repos: pennyfarthing
-    stories:
-      - id: MSSCI-12393
-        jira: MSSCI-12393
-        title: JavaScript question-reflector hook with bash wrapper
-        description: 'Rewrite question-reflector-check.sh in JavaScript for maintainability.
-
-          Current bash implementation has cross-platform issues (tac vs tail -r)
-
-          and complex regex patterns that are hard to test.
-
-
-          Add PreToolUse hook for AskUserQuestion tool to ensure all question
-
-          paths emit reflector markers.
-
-
-          Implementation:
-
-          - Create question-reflector-check.mjs with clear pattern detection
-
-          - Thin bash wrapper that passes stdin to node script
-
-          - Add AskUserQuestion PreToolUse hook entry in settings.json
-
-          - Stop hook catches text-based questions
-
-          - PreToolUse hook catches AskUserQuestion tool use
-
-'
-        points: 3
-        priority: P1
-        status: done
-        repos: pennyfarthing
-        workflow: tdd
-        branch: feat/MSSCI-12393-js-question-reflector
-        completed: '2026-01-24'
-        acceptance_criteria:
-          - Question mark at end of message detected
-          - Question mark mid-message detected (followed by more content)
-          - Implicit questions detected (would you like, should I)
-          - Choice offerings detected
-          - Messages WITH proper markers pass through
-          - Code blocks do not trigger false positives
-          - Rhetorical questions do not trigger
-          - AskUserQuestion tool use requires marker
-      - id: MSSCI-12521
-        jira: MSSCI-12521
-        title: Sprint and Story YAML validators
-        description: 'Create validation scripts for Pennyfarthing YAML files to catch
-
-          structural errors early. Validators should be runnable via just
-
-          recipes and optionally as pre-commit hooks.
-
-
-          Implementation:
-
-          - sprint-yaml-validator.mjs - validates current-sprint.yaml structure
-
-          - story-yaml-validator.mjs - validates story fields and relationships
-
-          - epic-yaml-validator.mjs - validates epic structure and story references
-
-          - Support both current sprint and archived sprints
-
-
-          Validation rules:
-
-          - Required fields present (id, title, status, points)
-
-          - Status values are valid (backlog, in_progress, done, cancelled)
-
-          - Points are numeric
-
-          - Jira keys follow pattern MSSCI-NNNNN
-
-          - Branch names follow convention
-
-          - No duplicate story IDs within sprint
-
-          - Epic stories reference valid story IDs
-
-'
-        points: 3
-        priority: P2
-        status: done
-        repos: pennyfarthing
-        workflow: tdd
-        branch: feature/MSSCI-12394-sprint-yaml-validators
-        acceptance_criteria:
-          - Sprint YAML validates structure and required fields
-          - Story entries validate all required fields
-          - Epic entries validate story references
-          - Clear error messages for validation failures
-          - Can validate archived sprints
-          - just validate-sprint recipe works
-        completed: '2026-01-25'
-      - id: MSSCI-12522
-        jira: MSSCI-12522
-        title: Refactor turbo mode into independent relay toggle
-        description: 'Currently ''turbo'' mode conflates two behaviors:
-
-          1. Auto-accept file edits (gearshift)
-
-          2. Auto-handoff between agents (relay)
-
-
-          Agents frequently misinterpret ''turbo'' as meaning ''skip all safeguards''
-
-          when it really just means ''auto-handoff''.
-
-
-          Refactor into:
-
-          - Gearshift modes (mutually exclusive): plan, manual, accept
-
-          - Relay mode (independent toggle): on/off
-
-
-          Current ''turbo'' behavior = accept + relay:on
-
-
-          Implementation:
-
-          - Update CyclistSettings type in settings.ts
-
-          - Add relay_mode: boolean to WorkflowSettings
-
-          - Remove ''turbo'' from PermissionMode type
-
-          - Update UI gearshift controls
-
-          - Add separate relay toggle in UI
-
-          - Migrate existing turbo configs to accept + relay:on
-
-          - Update all hooks to check relay_mode instead of turbo
-
-'
-        points: 5
-        priority: P1
-        status: done
-        repos: pennyfarthing
-        branch: feat/MSSCI-12395-relay-toggle
-        workflow: tdd
-        completed: '2026-01-24'
-        acceptance_criteria:
-          - Gearshift only has plan/manual/accept modes
-          - Relay is independent on/off toggle
-          - accept + relay:on = old turbo behavior
-          - manual + relay:on works (ask permission but auto-handoff)
-          - Existing turbo configs migrate correctly
-          - UI shows both controls clearly
-  - id: epic-63
-    type: epic
-    jira: MSSCI-12394
-    title: 'Epic: Script Parallelism & Python Migration'
-    description: 'Improve Pennyfarthing script performance through parallelism and migrate
-
-      JavaScript utility scripts to Python for better maintainability, subprocess
-
-      handling, and async patterns.
-
-
-      Phase 1: Quick parallelism wins in existing bash/JS
-
-      Phase 2: Port Jira sync scripts to Python
-
-      Phase 3: Port other utility scripts to Python
-
-      Phase 4: Establish Python patterns for future scripts
-
-'
-    priority: P2
-    status: in_progress
-    repos: pennyfarthing
-    stories:
-      - id: 63-1
-        jira: MSSCI-12522
-        title: Fix background tasks WebSocket broadcast
-        description: 'Background tasks panel in Cyclist never shows background agents.
-
-          Root cause: callbacks in main.ts only broadcast to Electron IPC,
-
-          not to WebSocket clients via broadcastBackgroundTaskEvent().
-
-
-          Two-line fix: add broadcastBackgroundTaskEvent() calls to both
-
-          setBackgroundTaskStartCallback and setBackgroundTaskCallback.
-
-'
-        points: 1
-        priority: P0
-        status: done
-        repos: pennyfarthing
-        branch: feat/parallelism-and-background-tasks
-        completed: '2026-01-24'
-      - id: 63-2
-        jira: MSSCI-12396
-        title: Parallelize git-status-all.sh
-        description: 'Run git status checks across repos in parallel using & + wait pattern.
-
-          Capture output to temp files to maintain ordered display.
-
-          Also parallelize summary count collection.
-
-'
-        points: 1
-        priority: P1
-        status: done
-        repos: pennyfarthing
-        branch: feat/parallelism-and-background-tasks
-        completed: '2026-01-24'
-      - id: 63-3
-        jira: MSSCI-12397
-        title: Parallelize create-feature-branches.sh
-        description: 'Run branch creation/checkout across repos in parallel when processing
-
-          "all" repos. Capture output to temp files for ordered display.
-
-          Rebuild PROCESSED_REPOS array from temp file for verification phase.
-
-'
-        points: 1
-        priority: P1
-        status: done
-        repos: pennyfarthing
-        branch: feat/parallelism-and-background-tasks
-        completed: '2026-01-24'
-      - id: 63-4
-        jira: MSSCI-12398
-        title: Create Python script infrastructure
-        description: "Formalize existing Python infrastructure and create shared package.\n\nExisting foundation:\n- .venv with Python 3.14, httpx, pyyaml, torch, diffusers\n- scripts/generate-portraits.py (400 lines, good patterns)\n- pennyfarthing-dist/scripts/test/*-judge.py (SWE-bench evaluation)\n\nWork needed:\n- Add pyproject.toml at project root to formalize dependencies\n- Create pennyfarthing_scripts/ package structure\n- Extract shared utilities from generate-portraits.py patterns:\n  - Config loading (graceful degradation for optional deps)\n  - Sprint YAML parsing\n  - Jira client wrapper (around jira CLI)\n- Add just recipe: `just py <script>` to run with venv python\n- Document Python patterns in dev-patterns skill\n"
-        points: 2
-        priority: P1
-        status: done
-        repos: pennyfarthing
-        completed: '2026-01-24'
-      - id: 63-5
-        jira: MSSCI-12399
-        title: Port jira-sync.mjs to Python
-        description: 'Rewrite jira-sync.mjs in Python with:
-
-          - Async httpx for parallel Jira API calls
-
-          - Batch-then-report architecture (collect work, execute parallel, report)
-
-          - Proper progress display with rich or similar
-
-          - Type hints throughout
-
-'
-        points: 3
-        priority: P1
-        status: done
-        repos: pennyfarthing
-        branch: feat/63-5-jira-sync-python
-        workflow: tdd
-        completed: '2026-01-24'
-      - id: 63-6
-        jira: MSSCI-12400
-        title: Port jira-bidirectional-sync.mjs to Python
-        description: 'Rewrite jira-bidirectional-sync.mjs in Python with:
-
-          - Async execution of YAML and Jira updates in parallel
-
-          - Better conflict detection and resolution
-
-          - Structured logging
-
-'
-        points: 2
-        priority: P1
-        status: done
-        repos: pennyfarthing
-        branch: feat/63-6-jira-bidirectional-sync-python
-        workflow: tdd
-        completed: '2026-01-25'
-      - id: 63-7
-        jira: MSSCI-12401
-        title: Port remaining Jira scripts to Python
-        description: 'Port jira-lib.mjs, jira-sync-story.mjs, and jira-epic-creation scripts
-
-          to Python. Consolidate shared Jira logic into pennyfarthing_scripts.jira
-
-          module.
-
-'
-        points: 3
-        priority: P2
-        status: done
-        repos: pennyfarthing
-        branch: feat/63-7-jira-scripts-python
-        workflow: tdd
-        completed: '2026-01-25'
-      - id: 63-8
-        jira: MSSCI-12402
-        title: Port git utility scripts to Python
-        description: 'Port git-status-all.sh and create-feature-branches.sh to Python for:
-
-          - Better error handling
-
-          - asyncio.gather for parallel git operations
-
-          - Consistent output formatting
-
-          - Cross-platform compatibility
-
-'
-        points: 3
-        priority: P2
-        status: done
-        repos: pennyfarthing
-        branch: feature/MSSCI-12402-port-git-scripts-python
-        assigned_to: Keith Avery
-        workflow: tdd
-        completed: '2026-01-25'
-      - id: 63-9
-        jira: MSSCI-12413
-        title: Reorganize pennyfarthing_scripts into fan-out CLI pattern
-        description: 'Restructure pennyfarthing_scripts to match skill invocations:
-
-
-          Target structure:
-
-          - jira.py (CLI) → jira/ (library modules)
-
-          - sprint.py (CLI) → sprint/ (library modules)
-
-          - story.py (CLI) → story/ (library modules)
-
-          - common/ (shared: output.py, config.py)
-
-
-          Each CLI maps 1:1 with skill args:
-
-          - /jira [view|claim|sync|...] → python -m pennyfarthing_scripts.jira [subcommand]
-
-          - /sprint [status|work|archive|...] → python -m pennyfarthing_scripts.sprint [subcommand]
-
-          - /story [size|template|create|...] → python -m pennyfarthing_scripts.story [subcommand]
-
-
-          Benefits:
-
-          - Clear division of responsibility
-
-          - Agents understand CLI ↔ skill mapping
-
-          - Library modules importable independently
-
-          - Easier testing and maintenance
-
-'
-        points: 5
-        priority: P1
-        status: done
-        repos: pennyfarthing
-        workflow: tdd
-  - id: epic-40
-    type: epic
-    title: 'Epic: Scale Adaptation and Brownfield Support'
-    description: 'Adopt BMAD''s scale-adaptive approach and add brownfield codebase discovery.
-
-      Add upward scaling for larger initiatives (Level 0-4) and brownfield
-
-      analysis for existing codebases.
-
-'
-    priority: P2
-    status: backlog
-    repos: pennyfarthing
-    stories:
-      - id: MSSCI-12416
-        title: Define scale levels
-        description: 'Define Pennyfarthing''s scale level system aligned with BMAD 6.0.
-
-          Scale levels determine workflow routing - small fixes go to quick-spec,
-
-          larger initiatives get full PRD treatment.
-
-'
-        points: 2
-        priority: P2
-        status: done
-        branch: feat/40-1-scale-levels
-        workflow: tdd
-        repos: pennyfarthing
-        acceptance_criteria: []
-        jira: MSSCI-12416
-        completed: '2026-01-25'
-      - id: MSSCI-12417
-        title: Quick-spec workflow
-        description: 'Wire scale level detection into workflow initiation flow.
-
-          When user starts a new initiative, detect scale level from description
-
-          and route to appropriate workflow (trivial/quick-spec/prd).
-
-
-          Deliverables:
-
-          - Add /workflow init command or update /workflow start
-
-          - Call detect_scale_level() from pennyfarthing_scripts.workflow
-
-          - Prompt user to confirm or override detected level
-
-          - Route to appropriate workflow based on level
-
-          - Verify quick-spec workflow (already imported) works with L1
-
-'
-        points: 3
-        priority: P2
-        status: done
-        branch: feat/MSSCI-12417-workflow-init
-        repos: pennyfarthing
-        workflow: tdd
-        acceptance_criteria:
-          - User describes work, scale level auto-detected
-          - User can override detected level
-          - L0 routes to trivial workflow
-          - L1 routes to quick-spec workflow
-          - L2+ routes to prd workflow
-        jira: MSSCI-12417
-      - id: MSSCI-12418
-        title: BMAD 6.0 Integration Guide
-        description: 'Document Pennyfarthing as the implementation layer for BMAD artifacts.
-
-          Clear guide for management showing complementary relationship.
-
-'
-        points: 2
-        priority: P2
-        status: done
-        completed: '2026-01-29'
-        repos: pennyfarthing
-        workflow: trivial
-        acceptance_criteria:
-          - Integration guide exists at docs/bmad-integration.md
-          - Guide is scannable (bullets, tables, no walls of text)
-          - Explains handoff point clearly
-          - Addresses "why both tools" question
-        jira: MSSCI-12418
-      - id: MSSCI-12419
-        title: Brownfield discovery command
-        description: 'Create /brownfield skill that analyzes existing codebases and generates
-
-          AI-ready documentation. Uses parallel file scanning to identify project
-
-          type, tech stack, architecture patterns, and conventions.
-
-
-          Implementation:
-
-          - pennyfarthing_scripts/brownfield/discover.py - Main discovery logic
-
-          - Uses existing pennyfarthing_scripts.common.output for formatting
-
-          - Parallel directory scanning with asyncio
-
-          - Output to docs/brownfield/ or _bmad-output/ format
-
-
-          Generates documentation matching _bmad-output structure:
-
-          - project-overview.md - Executive summary and architecture
-
-          - source-tree-analysis.md - Annotated directory structure
-
-          - technology-stack.md - Complete tech stack reference
-
-          - architecture-patterns.md - Code patterns and conventions
-
-          - critical-rules.md - Implementation rules and constraints
-
-          - ai-guidance.md - Guidance for AI agents
-
-'
-        points: 5
-        priority: P2
-        status: done
-        repos: pennyfarthing
-        branch: feat/MSSCI-12419-brownfield-discovery
-        workflow: tdd
-        assigned_to: Keith Avery
-        completed: '2026-01-25'
-        acceptance_criteria:
-          - /brownfield scan command generates project overview
-          - Detects project type (monorepo, single package, etc.)
-          - Identifies tech stack from package.json, pyproject.toml, etc.
-          - Extracts architecture patterns from code structure
-          - Generates AI guidance document
-          - Supports depth levels (quick/standard/deep)
-          - Output matches _bmad-output format
-        jira: MSSCI-12419
-      - id: MSSCI-12420
-        title: Brownfield convention adoption
-        description: ''
-        points: 2
-        priority: P2
-        status: cancelled
-        repos: pennyfarthing
-        workflow: tdd
-        acceptance_criteria: []
-        jira: MSSCI-12420
-        notes: BMAD handled differently - imports via BikeLane
-      - id: MSSCI-12421
-        title: PRD import support
-        description: ''
-        points: 2
-        priority: P2
-        status: cancelled
-        repos: pennyfarthing
-        workflow: tdd
-        acceptance_criteria: []
-        jira: MSSCI-12421
-        notes: BMAD handled differently - imports via BikeLane
-      - id: MSSCI-12601
-        title: Explore orchestrator repo pattern and scaffolding
-        description: 'Research and document the orchestrator repo pattern used across projects:
-
-          - conductor/ → conductor-api/, conductor-ui/
-
-          - siemulator/ → siemulator-api/, siemulator-ui/
-
-          - poller-orchestrator/ → poller apps
-
-          - pennyfarthing-orchestrator/ → pennyfarthing/
-
-
-          Explore options for:
-
-          1. Documenting the pattern formally
-
-          2. Creating scaffolding/template for new orchestrator repos
-
-          3. Possible `pennyfarthing init-orchestrator` command
-
-
-          This is an exploration story - output is a recommendation, not implementation.
-
-'
-        points: 1
-        priority: P2
-        status: done
-        repos: pennyfarthing
-        workflow: research
-        acceptance_criteria: []
-        jira: MSSCI-12601
-        completed: '2026-01-29'
-        notes: Documented in CLAUDE.md - orchestrator pattern established
-    jira: MSSCI-12415
   - id: epic-64
     type: epic
     title: 'Epic: Cyclist UX Polish'
-    description: 'Improve Cyclist terminal UX based on UX Overview PRD - fix bugs, polish
-
-      existing features, and add missing visibility. Covers DIFFS panel, stats
-
-      strip, sidebar sections, tab bar, and fresh start state management.
-
-'
+    description: Improve Cyclist terminal UX based on UX Overview PRD - fix bugs, polish existing features, and add missing visibility. Covers DIFFS panel, stats strip, sidebar sections, tab bar, and fresh start state management.
     priority: P1
     status: backlog
     repos: pennyfarthing
@@ -980,13 +25,7 @@ epics:
     stories:
       - id: MSSCI-12466
         title: 'DIFFS panel: Show file line numbers instead of diff-relative'
-        description: 'Line numbers in diff viewer show position within the diff, not actual
-
-          file line numbers. Developer needs to know which line in the file to
-
-          navigate to.
-
-'
+        description: Line numbers in diff viewer show position within the diff, not actual file line numbers. Developer needs to know which line in the file to navigate to.
         points: 2
         priority: P1
         status: done
@@ -1000,11 +39,7 @@ epics:
         completed: '2026-01-27'
       - id: MSSCI-12467
         title: 'DIFFS panel: Fix file opener for $EDITOR'
-        description: 'Clicking file path header in diff viewer should open the file in the
-
-          user''s configured editor. Currently broken.
-
-'
+        description: Clicking file path header in diff viewer should open the file in the user's configured editor. Currently broken.
         points: 1
         priority: P1
         status: done
@@ -1017,11 +52,7 @@ epics:
         completed: '2026-01-27'
       - id: MSSCI-12468
         title: 'DIFFS panel: Improve combined diff view'
-        description: 'Combined diff view needs better UX showing original → final state
-
-          with proper context.
-
-'
+        description: Combined diff view needs better UX showing original → final state with proper context.
         points: 2
         priority: P1
         status: done
@@ -1035,16 +66,7 @@ epics:
         completed: '2026-01-27'
       - id: MSSCI-12469
         title: 'Stats strip: Redesign layout with identity context'
-        description: 'Redesign stats strip to show:
-
-          PWD (responsive: short when narrow, full when wide) → Jira email →
-
-          GitHub username → spacer → Claude model → Context %
-
-
-          Remove: context tokens, usage limits
-
-'
+        description: 'Redesign stats strip to show: PWD (responsive: short when narrow, full when wide) → Jira email → GitHub username → spacer → Claude model → Context % Remove: context tokens, usage limits'
         points: 3
         priority: P1
         status: done
@@ -1060,11 +82,7 @@ epics:
         completed: '2026-01-28'
       - id: MSSCI-12470
         title: 'Tab bar: Fix indicator sync on startup'
-        description: 'On app startup, Message and Sidebar panels are open but their tab
-
-          indicators don''t show active state. Must click twice to sync.
-
-'
+        description: On app startup, Message and Sidebar panels are open but their tab indicators don't show active state. Must click twice to sync.
         points: 1
         priority: P1
         status: done
@@ -1077,24 +95,13 @@ epics:
         completed: '2026-01-27'
       - id: MSSCI-12471
         title: 'Fresh start: Audit and fix stale data on load'
-        description: 'On fresh load, many panels show stale data. Audit all stateful
-
-          components and ensure clean state on:
+        description: 'On fresh load, many panels show stale data. Audit all stateful components and ensure clean state on:
 
           - App start
 
           - Clear button
 
-          - TirePump (context clear)
-
-
-          Components to audit: tab indicators, stats strip, persona section,
-
-          story section, CHANGED/DIFFS panels, tasks section, background tasks,
-
-          BikeLane section, git section, quick actions.
-
-'
+          - TirePump (context clear) Components to audit: tab indicators, stats strip, persona section, story section, CHANGED/DIFFS panels, tasks section, background tasks, BikeLane section, git section, quick actions.'
         points: 3
         priority: P1
         status: done
@@ -1110,11 +117,7 @@ epics:
         completed: '2026-01-28'
       - id: MSSCI-12472
         title: 'Persona section: Remove OCEAN scores and helper updates'
-        description: 'Remove OCEAN score bars and helper real-time updates from persona
-
-          section. These add noise without value.
-
-'
+        description: Remove OCEAN score bars and helper real-time updates from persona section. These add noise without value.
         points: 1
         priority: P1
         status: done
@@ -1128,13 +131,7 @@ epics:
         completed: '2026-01-27'
       - id: MSSCI-12473
         title: 'Persona section: Random catchphrase on activation'
-        description: 'Instead of showing static quote, pick random catchphrase from theme''s
-
-          catchphrases array on agent activation. Quote stays fixed until next
-
-          agent switch.
-
-'
+        description: Instead of showing static quote, pick random catchphrase from theme's catchphrases array on agent activation. Quote stays fixed until next agent switch.
         points: 2
         priority: P1
         status: done
@@ -1148,9 +145,7 @@ epics:
         completed: '2026-01-28'
       - id: MSSCI-12474
         title: 'Persona section: Tighten layout'
-        description: 'Reduce vertical sprawl in persona section for more compact display.
-
-'
+        description: Reduce vertical sprawl in persona section for more compact display.
         points: 1
         priority: P1
         status: done
@@ -1163,11 +158,7 @@ epics:
         completed: '2026-01-27'
       - id: MSSCI-12475
         title: 'Story section: Expandable sprint/epic details'
-        description: 'Make story section expandable to show full sprint and epic context
-
-          without needing to open YAML files.
-
-'
+        description: Make story section expandable to show full sprint and epic context without needing to open YAML files.
         points: 5
         priority: P2
         status: done
@@ -1182,11 +173,7 @@ epics:
         jira: MSSCI-12475
       - id: MSSCI-12476
         title: 'BikeLane section: Show workflow status when active'
-        description: 'BikeLane section exists but is hidden. Make it visible when a
-
-          workflow is active.
-
-'
+        description: BikeLane section exists but is hidden. Make it visible when a workflow is active.
         points: 3
         priority: P2
         status: done
@@ -1203,11 +190,7 @@ epics:
         completed: '2026-01-27'
       - id: MSSCI-12477
         title: 'Background tasks: Implement subagent visibility'
-        description: 'Background tasks section exists but doesn''t work. Implement proper
-
-          visibility for subagents and long-running tasks.
-
-'
+        description: Background tasks section exists but doesn't work. Implement proper visibility for subagents and long-running tasks.
         points: 5
         priority: P2
         status: done
@@ -1223,29 +206,7 @@ epics:
         completed: '2026-01-27'
       - id: MSSCI-12551
         title: 'BikeLane: Fix workflow display - remove from story, show in bikelane'
-        description: 'Workflow steps displaying in story panel instead of bikelane panel,
-
-          AND bikelane panel not displaying workflow data at all.
-
-
-          Problems:
-
-          1. story.js renders workflow to #workflow-progress in story section
-
-          2. bikelane section receives data but doesn''t display (hidden/not wired)
-
-
-          Fix:
-
-          1. Remove updateWorkflowProgress() from story.js
-
-          2. Remove #workflow-progress from story section HTML
-
-          3. Ensure bikelane section visible when workflow active
-
-          4. Wire bikelane.update() to display workflow data
-
-'
+        description: 'Workflow steps displaying in story panel instead of bikelane panel, AND bikelane panel not displaying workflow data at all. Problems: 1. story.js renders workflow to #workflow-progress in story section 2. bikelane section receives data but doesn''t display (hidden/not wired) Fix: 1. Remove updateWorkflowProgress() from story.js 2. Remove #workflow-progress from story section HTML 3. Ensure bikelane section visible when workflow active 4. Wire bikelane.update() to display workflow data'
         points: 3
         priority: P1
         status: done
@@ -1262,11 +223,7 @@ epics:
         completed: '2026-01-28'
       - id: MSSCI-12478
         title: 'Theme schema: Consolidate quote → catchphrases'
-        description: 'Some themes have quote field, others have catchphrases array.
-
-          Consolidate all to use catchphrases array only.
-
-'
+        description: Some themes have quote field, others have catchphrases array. Consolidate all to use catchphrases array only.
         points: 3
         priority: P3
         status: done
@@ -1281,13 +238,7 @@ epics:
         completed: '2026-01-28'
       - id: MSSCI-12552
         title: 'Bug: BikeLane panel shows ''No active story'' with active session'
-        description: 'BikeLane panel in Cyclist displays "No active story" even when
-
-          .session/{story-id}-session.md exists with an in-progress story.
-
-          Panel should detect and display the active story.
-
-'
+        description: BikeLane panel in Cyclist displays "No active story" even when .session/{story-id}-session.md exists with an in-progress story. Panel should detect and display the active story.
         points: 2
         priority: P1
         status: done
@@ -1300,12 +251,7 @@ epics:
         completed: '2026-01-28'
       - id: 64-19
         title: 'Story section: Implement expandable UI (MSSCI-12475 follow-up)'
-        description: 'MSSCI-12475 delivered the data layer (SprintStory, EpicContext interfaces
-
-          and parser functions in story-parser.ts) but the UI was never implemented.
-
-
-          This story completes the work:
+        description: 'MSSCI-12475 delivered the data layer (SprintStory, EpicContext interfaces and parser functions in story-parser.ts) but the UI was never implemented. This story completes the work:
 
           - Add expandable section HTML to index.html
 
@@ -1313,12 +259,7 @@ epics:
 
           - Add CSS for expandable/collapsible styling
 
-          - Wire up Jira link clicks
-
-
-          The data is already available via parseStoryData() - just needs UI.
-
-'
+          - Wire up Jira link clicks The data is already available via parseStoryData() - just needs UI.'
         points: 3
         priority: P1
         status: done
@@ -1333,489 +274,141 @@ epics:
           - Points and status for each story
         completed: '2026-01-28'
       - id: MSSCI-12779
-        title: "Bug: Stats Strip Not Visible"
-        description: |
-          The stats strip at the bottom of the Cyclist window is not
-          visible. Should show PWD, Jira email, GitHub username,
-          Claude model, and context percentage.
+        title: 'Bug: Stats Strip Not Visible'
+        description: The stats strip at the bottom of the Cyclist window is not visible. Should show PWD, Jira email, GitHub username, Claude model, and context percentage.
         points: 1
         priority: P1
         status: done
         repos: pennyfarthing
         jira: MSSCI-12779
-        completed: "2026-02-01"
+        completed: '2026-02-01'
       - id: MSSCI-12780
-        title: "Bug: Progress Panel Shows Raw Markers Instead of Content"
-        description: |
-          The Progress panel shows raw marker characters (>, *) instead
-          of actual task content. The progress bar shows 3/7 but:
-          - IN PROGRESS section shows only ">"
-          - PENDING section shows only "*" bullets with no text
-          - COMPLETED section shows count but no task details
+        title: 'Bug: Progress Panel Shows Raw Markers Instead of Content'
+        description: 'The Progress panel shows raw marker characters (>, *) instead of actual task content. The progress bar shows 3/7 but:
 
-          Expected: Task subjects/descriptions should be displayed.
+          - IN PROGRESS section shows only ">"
+
+          - PENDING section shows only "*" bullets with no text
+
+          - COMPLETED section shows count but no task details Expected: Task subjects/descriptions should be displayed.'
         points: 2
         priority: P1
         status: done
         repos: pennyfarthing
         jira: MSSCI-12780
-        completed: "2026-02-01"
+        completed: '2026-02-01'
       - id: MSSCI-12781
-        title: "Bug: Git Panel Shows Nothing"
-        description: |
-          The Git panel is empty, showing only a "*" marker with no
-          actual git status content. Should display branch info,
-          changed files, and repo status.
+        title: 'Bug: Git Panel Shows Nothing'
+        description: The Git panel is empty, showing only a "*" marker with no actual git status content. Should display branch info, changed files, and repo status.
         points: 1
         priority: P1
         status: done
         repos: pennyfarthing
         jira: MSSCI-12781
         workflow: trivial
-        completed: "2026-02-01"
+        completed: '2026-02-01'
       - id: MSSCI-12782
-        title: "Bug: Debug Panel Formatting and Missing OTEL Data"
-        description: |
-          Two issues with the Debug panel:
-
-          1. Poor formatting - TOKEN STATS shows raw JSON blob instead of
-             nicely formatted statistics. Should display as readable cards
-             or formatted table.
-
-          2. Missing OTEL data - Debug panel was designed to show OTEL
-             telemetry (tool calls, spans, timing) but only shows basic
-             context usage stats. The OTEL integration is not displaying.
-
-          Expected:
-          - Token stats formatted as readable UI (not raw JSON)
-          - OTEL spans/traces displayed (tool invocations, durations)
-          - Hierarchical view of agent activity
+        title: 'Bug: Debug Panel Formatting and Missing OTEL Data'
+        description: "Two issues with the Debug panel:\n1. Poor formatting - TOKEN STATS shows raw JSON blob instead of\n   nicely formatted statistics. Should display as readable cards\n   or formatted table.\n2. Missing OTEL data - Debug panel was designed to show OTEL\n   telemetry (tool calls, spans, timing) but only shows basic\n   context usage stats. The OTEL integration is not displaying.\nExpected:\n- Token stats formatted as readable UI (not raw JSON)\n- OTEL spans/traces displayed (tool invocations, durations)\n- Hierarchical view of agent activity"
         points: 3
         priority: P2
         status: backlog
         repos: pennyfarthing
         jira: MSSCI-12782
       - id: MSSCI-12783
-        title: "Bug: Skill Content Displayed as User Message"
-        description: |
-          When skills are loaded/read, the full skill markdown content
-          is displayed in the message view as a user message. This spams
-          the conversation with internal context that should be hidden.
-
-          Example: Loading /sprint skill shows the entire skill file
-          content in a blue user message bubble.
-
-          Expected: Skill loading should be silent or show only a brief
-          indicator (e.g., "Loaded /sprint skill"). The full content is
-          for Claude's context, not user display.
+        title: 'Bug: Skill Content Displayed as User Message'
+        description: 'When skills are loaded/read, the full skill markdown content is displayed in the message view as a user message. This spams the conversation with internal context that should be hidden. Example: Loading /sprint skill shows the entire skill file content in a blue user message bubble. Expected: Skill loading should be silent or show only a brief indicator (e.g., "Loaded /sprint skill"). The full content is for Claude''s context, not user display.'
         points: 2
         priority: P1
         status: done
         repos: pennyfarthing
         jira: MSSCI-12783
-        completed: "2026-02-01"
+        completed: '2026-02-01'
       - id: MSSCI-12784
-        title: "Bug: Background Task Timer Doesn't Update While Watching"
-        description: |
-          The background task timer doesn't update in real-time while
-          viewing the Background tab. The elapsed time is recorded
-          correctly, but the UI doesn't refresh to show it.
-
-          Repro:
-          1. Start a background task
-          2. Switch to Background tab and watch
-          3. Timer appears frozen
-
-          Workaround: Click to another tab and back to see updated time.
-
-          Expected: Timer should update every second while visible.
-          Likely missing setInterval or React state update.
+        title: 'Bug: Background Task Timer Doesn''t Update While Watching'
+        description: 'The background task timer doesn''t update in real-time while viewing the Background tab. The elapsed time is recorded correctly, but the UI doesn''t refresh to show it. Repro: 1. Start a background task 2. Switch to Background tab and watch 3. Timer appears frozen Workaround: Click to another tab and back to see updated time. Expected: Timer should update every second while visible. Likely missing setInterval or React state update.'
         points: 2
         priority: P2
         status: backlog
         repos: pennyfarthing
         jira: MSSCI-12784
       - id: MSSCI-12787
-        title: "Implement CYCLIST Marker Parsing and Action Buttons"
-        description: |
-          CRITICAL: The reflector hook enforces markers but nothing reads them.
+        title: Implement CYCLIST Marker Parsing and Action Buttons
+        description: 'CRITICAL: The reflector hook enforces markers but nothing reads them. Port from deleted vanilla JS (message-enrichment.js + controls.js):
 
-          Port from deleted vanilla JS (message-enrichment.js + controls.js):
           - Parse <!-- CYCLIST:HANDOFF:/agent --> → Show handoff button
+
           - Parse <!-- CYCLIST:QUESTION:yesno --> → Show Yes/No buttons
+
           - Parse <!-- CYCLIST:QUESTION:open --> → Show text input
+
           - Parse <!-- CYCLIST:CHOICES:a,b,c --> → Show choice buttons
-          - Parse <!-- CYCLIST:CONTINUE --> → Show Continue button
 
-          Implementation:
+          - Parse <!-- CYCLIST:CONTINUE --> → Show Continue button Implementation:
+
           - Add marker parsing to MessageView or Message component
-          - Create ActionButtons component for rendering controls
-          - Wire button clicks to appropriate actions (send message, trigger handoff)
-          - Hide raw marker HTML from display
 
-          This unblocks the entire reflector/handoff workflow system.
+          - Create ActionButtons component for rendering controls
+
+          - Wire button clicks to appropriate actions (send message, trigger handoff)
+
+          - Hide raw marker HTML from display This unblocks the entire reflector/handoff workflow system.'
         points: 5
         priority: P0
         status: done
         repos: pennyfarthing
         jira: MSSCI-12787
-        completed: "2026-02-01"
+        completed: '2026-02-01'
       - id: MSSCI-12785
-        title: "Fix Panel Data Rendering (Git, Progress, Debug)"
-        description: |
-          Multiple panels exist but show no/broken content:
+        title: Fix Panel Data Rendering (Git, Progress, Debug)
+        description: 'Multiple panels exist but show no/broken content: Git Panel (MSSCI-12781):
 
-          Git Panel (MSSCI-12781):
           - Shows only "*" marker, no actual git data
-          - Need to fetch/display branch, changed files, repo status
 
-          Progress Panel (MSSCI-12780):
+          - Need to fetch/display branch, changed files, repo status Progress Panel (MSSCI-12780):
+
           - Shows raw markers (>, *) instead of task content
-          - Need to render task subjects and descriptions
 
-          Debug Panel (MSSCI-12782):
+          - Need to render task subjects and descriptions Debug Panel (MSSCI-12782):
+
           - Shows raw JSON for token stats
-          - Missing OTEL span/trace display
-          - Format stats as readable UI
 
-          Common pattern: panels have structure but aren't wired to data sources.
-          Check IPC channels and ensure data flows from main process to React.
+          - Missing OTEL span/trace display
+
+          - Format stats as readable UI Common pattern: panels have structure but aren''t wired to data sources. Check IPC channels and ensure data flows from main process to React.'
         points: 5
         priority: P1
         status: backlog
         repos: pennyfarthing
         jira: MSSCI-12785
       - id: MSSCI-12786
-        title: "Stats Strip and Collapsed Sections"
-        description: |
-          Stats Strip (MSSCI-12779):
+        title: Stats Strip and Collapsed Sections
+        description: 'Stats Strip (MSSCI-12779):
+
           - Component exists (StatsStrip.tsx) but not visible
+
           - Check if mounted in App.tsx layout
-          - Verify CSS positioning (should be bottom of window)
 
-          Collapsed Sections:
+          - Verify CSS positioning (should be bottom of window) Collapsed Sections:
+
           - Deleted collapsed-sections.js handled section expand/collapse
-          - Need React state management for panel sections
-          - Persist collapse state to config.local.yaml
 
-          Sidebar sections from deleted sidebar/*.js:
+          - Need React state management for panel sections
+
+          - Persist collapse state to config.local.yaml Sidebar sections from deleted sidebar/*.js:
+
           - Most functionality moved to panel components
-          - Verify all section data is rendering
+
+          - Verify all section data is rendering'
         points: 3
         priority: P2
         status: backlog
         repos: pennyfarthing
         jira: MSSCI-12786
     jira: MSSCI-12465
-  - id: epic-67
-    title: 'Epic: Pennyfarthing Python CLI'
-    description: 'Unified CLI entry point using Click. Phase 1 covers agent activation
-
-      commands (highest frequency). Phase 2 covers core operations.
-
-'
-    points: 19
-    priority: P1
-    marker: infrastructure
-    repos: pennyfarthing
-    status: backlog
-    stories:
-      - id: MSSCI-12656
-        title: Add Click dependency and create CLI entry point
-        description: 'Add click>=8.0,<9.0 to pyproject.toml. Create pennyfarthing_scripts/cli.py
-
-          with @click.group() entry point and lazy-loaded subgroups.
-
-'
-        points: 2
-        priority: P1
-        status: done
-        repos: pennyfarthing
-        workflow: tdd
-        acceptance_criteria:
-          - click added to dependencies in pyproject.toml
-          - python -m pennyfarthing_scripts.cli --help shows command groups
-          - Startup time < 200ms verified
-          - All imports are lazy (inside functions)
-        jira: MSSCI-12656
-        completed: '2026-01-30'
-      - id: MSSCI-12657
-        title: Implement pf workflow check command
-        description: 'Create workflow/cli.py with check command. Detects workflow state
-
-          and outputs story ID, phase, owner.
-
-'
-        points: 2
-        priority: P1
-        status: done
-        completed: '2026-01-30'
-        delivered_in: MSSCI-12656
-        notes: Implemented as part of MSSCI-12656 CLI entry point
-        repos: pennyfarthing
-        workflow: tdd
-        acceptance_criteria:
-          - pf workflow check returns workflow state
-          - --json flag outputs JSON format
-          - Exit code 0 for all states (including empty)
-        jira: MSSCI-12657
-      - id: MSSCI-12658
-        title: Implement pf workflow phase-check command
-        description: "Create phase-check command that verifies phase ownership for a \ngiven workflow and phase. Returns owner agent name.\n"
-        points: 2
-        priority: P1
-        status: done
-        completed: '2026-01-30'
-        delivered_in: MSSCI-12656
-        notes: Implemented as part of MSSCI-12656 CLI entry point
-        repos: pennyfarthing
-        workflow: tdd
-        acceptance_criteria:
-          - pf workflow phase-check <workflow> <phase> returns owner
-          - Exit code 0 always
-        jira: MSSCI-12658
-      - id: MSSCI-12659
-        title: Implement pf agent start command
-        description: 'Create agent/cli.py with start command. Loads agent session, persona,
-
-          sidecar memory, and sprint context. Highest-frequency command.
-
-'
-        points: 3
-        priority: P1
-        status: done
-        completed: '2026-01-30'
-        repos: pennyfarthing
-        workflow: tdd
-        acceptance_criteria:
-          - pf agent start <name> starts session
-          - --session-id and --no-persona options work
-          - Outputs session ID and full agent context
-          - Calls existing prime module
-        jira: MSSCI-12659
-      - id: MSSCI-12660
-        title: Update agent command files to use Python CLI
-        description: 'Update agent command files (sm.md, dev.md, etc.) to use Python CLI
-
-          invocation instead of bash scripts.
-
-'
-        points: 2
-        priority: P1
-        status: done
-        repos: pennyfarthing
-        workflow: trivial
-        acceptance_criteria:
-          - All agent commands use Python CLI invocation
-          - Bash scripts remain available as fallback
-        jira: MSSCI-12660
-        completed: '2026-01-30'
-      - id: MSSCI-12661
-        title: Add startup benchmark to CI
-        description: 'Add CI step that measures CLI startup time and fails if > 200ms.
-
-'
-        points: 1
-        priority: P2
-        status: done
-        repos: pennyfarthing
-        workflow: trivial
-        acceptance_criteria:
-          - CI job measures startup time
-          - Fails build if startup > 200ms
-        jira: MSSCI-12661
-        completed: '2026-01-30'
-      - id: MSSCI-12663
-        title: Implement pf workflow handoff command
-        description: 'Create handoff command that emits CYCLIST handoff markers.
-
-          Replaces handoff-marker.sh.
-
-'
-        points: 2
-        priority: P2
-        status: done
-        completed: '2026-01-30'
-        delivered_in: MSSCI-12656
-        notes: Implemented as part of MSSCI-12656 CLI entry point
-        repos: pennyfarthing
-        workflow: tdd
-        acceptance_criteria:
-          - pf workflow handoff <agent> emits marker
-          - Output format matches handoff-marker.sh
-        jira: MSSCI-12663
-      - id: MSSCI-12664
-        title: Implement pf sprint story command
-        description: 'Add story <id> command to get story details by ID.
-
-'
-        points: 1
-        priority: P2
-        status: done
-        repos: pennyfarthing
-        workflow: tdd
-        acceptance_criteria:
-          - pf sprint story 67-1 returns story details
-          - --json flag for structured output
-        jira: MSSCI-12664
-        completed: '2026-01-30'
-      - id: MSSCI-12665
-        title: Integration tests for bash/Python parity
-        description: 'Create integration tests that compare bash and Python command output.
-
-'
-        points: 2
-        priority: P2
-        status: done
-        repos: pennyfarthing
-        workflow: tdd
-        acceptance_criteria:
-          - Test suite covers all Phase 1 commands
-          - Compares bash vs Python output
-          - Runs in CI
-        jira: MSSCI-12665
-        completed: "2026-01-30"
-    type: epic
-    jira: MSSCI-12655
-  - id: epic-68
-    type: epic
-    jira: MSSCI-12676
-    title: 'Epic: Cyclist Sidebar Panels to Top-Level Tabs'
-    description: |
-      Promote sidebar sections to independent top-level tabs using existing
-      VerticalPanel infrastructure. Sections currently compete for vertical
-      space in the sidebar - promoting them to tabs gives each its own panel.
-
-      New tabs: BACKGROUND, TODOS, SPRINT, GIT (alongside existing SETTINGS)
-
-      Final step: Move persona to message panel header and remove sidebar entirely.
-
-      Uses existing VerticalPanel class - no new resize infrastructure needed.
-    points: 12
-    priority: P1
-    status: active
-    repos: pennyfarthing
-    stories:
-      - id: 68-1
-        title: Create Background Tasks panel as top-level tab
-        description: |
-          Extract background-tasks section from sidebar into its own VerticalPanel.
-          Add BACKGROUND tab to tab bar. Wire up existing background-tasks.js
-          module to render in new panel.
-
-          Implementation:
-          - Add #background-panel to index.html
-          - Create BackgroundPanel class extending VerticalPanel
-          - Add tab button with badge support for task count
-          - Move background tasks rendering from sidebar to panel
-        points: 2
-        priority: P1
-        status: done
-        repos: pennyfarthing
-        workflow: tdd
-        acceptance_criteria:
-          - BACKGROUND tab visible in tab bar
-          - Panel toggles on tab click
-          - Badge shows active task count
-          - Existing task rendering works in new location
-        completed: "2026-01-30"
-      - id: 68-2
-        title: Create Todos panel as top-level tab
-        description: |
-          Extract todos section from sidebar into its own VerticalPanel.
-          Add TODOS tab to tab bar. Wire up existing tasks.js module.
-
-          Implementation:
-          - Add #todos-panel to index.html
-          - Create TodosPanel class extending VerticalPanel
-          - Add tab button with progress indicator (X/Y)
-          - Move todos rendering from sidebar to panel
-        points: 2
-        priority: P1
-        status: done
-        repos: pennyfarthing
-        workflow: tdd
-        acceptance_criteria:
-          - TODOS tab visible in tab bar
-          - Panel toggles on tab click
-          - Progress shows in tab (e.g., "3/5")
-          - Existing todo rendering works in new location
-        completed: "2026-01-30"
-      - id: 68-3
-        title: Create Sprint panel as top-level tab
-        description: |
-          Extract story/sprint section from sidebar into its own VerticalPanel.
-          Add SPRINT tab to tab bar. Wire up existing story.js module.
-          Include AC section within this panel.
-
-          Implementation:
-          - Add #sprint-panel to index.html
-          - Create SprintPanel class extending VerticalPanel
-          - Move story, sprint stats, ACs, epic context to panel
-        points: 2
-        priority: P1
-        status: done
-        repos: pennyfarthing
-        workflow: tdd
-        acceptance_criteria:
-          - SPRINT tab visible in tab bar
-          - Panel toggles on tab click
-          - Story, sprint stats, ACs all render in panel
-          - Epic context expandable section works
-        completed: "2026-01-30"
-      - id: 68-4
-        title: Create Git panel as top-level tab
-        description: |
-          Extract git section from sidebar into its own VerticalPanel.
-          Add GIT tab to tab bar. Wire up existing git.js module.
-
-          Implementation:
-          - Add #git-panel to index.html
-          - Create GitPanel class extending VerticalPanel
-          - Add tab button with dirty file count badge
-          - Move git status rendering from sidebar to panel
-        points: 2
-        priority: P1
-        status: done
-        completed: '2026-01-30'
-        repos: pennyfarthing
-        workflow: trivial
-        acceptance_criteria:
-          - GIT tab visible in tab bar
-          - Panel toggles on tab click
-          - Badge shows dirty file count
-          - Multi-repo status renders correctly
-      - id: 68-6
-        title: Remove sidebar panel entirely
-        description: |
-          With all sections moved to dedicated panels (Background, Todos, Sprint,
-          Git) and message panel header (Persona), the sidebar is now empty.
-          Remove it completely.
-
-          Implementation:
-          - Remove #sidebar element from index.html
-          - Remove sidebar-panel.js module
-          - Remove SIDEBAR tab from tab bar
-          - Update PanelManager to not register sidebar
-          - Clean up sidebar-related CSS
-          - Update any references to sidebar in other modules
-        points: 2
-        priority: P1
-        status: done
-        repos: pennyfarthing
-        workflow: trivial
-        acceptance_criteria:
-          - Sidebar element removed from HTML
-          - SIDEBAR tab no longer appears in tab bar
-          - No JavaScript errors from missing sidebar
-          - All former sidebar content accessible via other panels
-        completed: "2026-01-30"
   - id: epic-70
     title: 'Epic: Flexible Workspace'
-    description: |
-      Users can arrange their workspace - dragging panels between
-      sidebars, collapsing what they don't need, and having the
-      layout remembered per-project.
+    description: Users can arrange their workspace - dragging panels between sidebars, collapsing what they don't need, and having the layout remembered per-project.
     points: 7
     priority: P1
     marker: cyclist-react
@@ -1824,38 +417,25 @@ epics:
     stories:
       - id: MSSCI-12704
         title: Docking System Foundation
-        description: |
-          Integrate FlexLayout or Dockview. Message view fixed center.
-          Left/right sidebars with tabbed panels. Existing panel inventory
-          (Changed, Diffs, Debug, Sprint, Progress, Background, Git, Settings).
+        description: Integrate FlexLayout or Dockview. Message view fixed center. Left/right sidebars with tabbed panels. Existing panel inventory (Changed, Diffs, Debug, Sprint, Progress, Background, Git, Settings).
         points: 3
         priority: P0
         status: done
         repos: pennyfarthing
         jira: MSSCI-12704
-        completed: "2026-01-31"
+        completed: '2026-01-31'
       - id: MSSCI-12705
         title: Panel Drag-and-Drop
-        description: |
-          Drag panels between sidebars, reorder tabs. Ghost preview,
-          drop zone highlighting. Message view rejects drops.
+        description: Drag panels between sidebars, reorder tabs. Ghost preview, drop zone highlighting. Message view rejects drops.
         points: 2
         priority: P0
         status: done
         repos: pennyfarthing
         jira: MSSCI-12705
-        completed: "2026-01-31"
+        completed: '2026-01-31'
       - id: MSSCI-12778
-        title: "Bug: Panel Resize Not Working"
-        description: |
-          Panel resize handles show hover state and cursor changes to
-          resize icon, but dragging does not actually resize the panels.
-          The resize interaction is visually indicated but non-functional.
-
-          Expected: Dragging the resize handle between panels should
-          resize them proportionally.
-
-          Actual: Hover/cursor states work, but drag has no effect.
+        title: 'Bug: Panel Resize Not Working'
+        description: 'Panel resize handles show hover state and cursor changes to resize icon, but dragging does not actually resize the panels. The resize interaction is visually indicated but non-functional. Expected: Dragging the resize handle between panels should resize them proportionally. Actual: Hover/cursor states work, but drag has no effect.'
         points: 2
         priority: P1
         status: backlog
@@ -1863,60 +443,9 @@ epics:
         jira: MSSCI-12778
     type: epic
     jira: MSSCI-12703
-  - id: epic-71
-    title: 'Epic: Codebase Awareness'
-    description: |
-      Users can see what files Claude modified, review diffs with
-      syntax highlighting, and monitor their context usage.
-    points: 8
-    priority: P1
-    marker: cyclist-react
-    repos: pennyfarthing
-    status: backlog
-    stories:
-      - id: MSSCI-12710
-        title: FileTree Component
-        description: |
-          List of modified files with paths, status (created/modified/deleted),
-          directory grouping. Click to open in DiffViewer. Badge with count.
-          Real-time updates.
-        points: 2
-        priority: P0
-        status: done
-        repos: pennyfarthing
-        jira: MSSCI-12710
-        completed: "2026-01-31"
-      - id: MSSCI-12711
-        title: DiffViewer Component
-        description: |
-          Side-by-side or unified diff view. Syntax highlighting per file type.
-          Green additions, red deletions. Keyboard navigation between hunks.
-          Toggle partial/full file view.
-        points: 3
-        priority: P0
-        status: done
-        repos: pennyfarthing
-        jira: MSSCI-12711
-        completed: "2026-01-31"
-      - id: MSSCI-12712
-        title: ContextIndicator Component
-        description: |
-          Visual context % bar with threshold colors (green/amber/red).
-          Real-time updates. Subtle warning at 90%. Tooltip with exact
-          token count.
-        points: 1
-        priority: P1
-        status: done
-        repos: pennyfarthing
-        jira: MSSCI-12712
-        completed: "2026-01-31"
-    type: epic
-    jira: MSSCI-12709
   - id: epic-72
     title: 'Epic: Command & Navigation'
-    description: |
-      Users can navigate the entire application via keyboard,
-      access any action through the command palette.
+    description: Users can navigate the entire application via keyboard, access any action through the command palette.
     points: 6
     priority: P2
     marker: cyclist-react
@@ -1925,21 +454,16 @@ epics:
     stories:
       - id: 72-1
         title: Command Palette
-        description: |
-          Cmd+Shift+P opens searchable palette. Filter commands by typing.
-          Categories (Panels, Navigation, Settings, Agents). Shows shortcuts.
-          Enter executes, Escape closes. Recent commands at top.
+        description: Cmd+Shift+P opens searchable palette. Filter commands by typing. Categories (Panels, Navigation, Settings, Agents). Shows shortcuts. Enter executes, Escape closes. Recent commands at top.
         points: 3
         priority: P0
         status: done
         repos: pennyfarthing
         jira: MSSCI-12721
-        completed: "2026-01-31"
+        completed: '2026-01-31'
       - id: MSSCI-12773
         title: ModeSwitch Component
-        description: |
-          3-way toggle: Plan/Manual/Accept. Sliding highlight animation.
-          Cmd+1/2/3 shortcuts. Tooltip explains each mode.
+        description: '3-way toggle: Plan/Manual/Accept. Sliding highlight animation. Cmd+1/2/3 shortcuts. Tooltip explains each mode.'
         points: 1
         priority: P1
         status: backlog
@@ -1947,22 +471,17 @@ epics:
         jira: MSSCI-12773
       - id: 72-3
         title: Keyboard Shortcut System
-        description: |
-          Never override system shortcuts (Cmd+R/W/Q/T). Cyclist uses
-          Cmd+Shift+* prefix. Panel focus Cmd+Shift+1/2/3. Navigation
-          Cmd+[/]. All shortcuts documented in command palette.
+        description: Never override system shortcuts (Cmd+R/W/Q/T). Cyclist uses Cmd+Shift+* prefix. Panel focus Cmd+Shift+1/2/3. Navigation Cmd+[/]. All shortcuts documented in command palette.
         points: 2
         priority: P1
         status: done
         repos: pennyfarthing
-        completed: "2026-02-01"
+        completed: '2026-02-01'
     type: epic
     jira: MSSCI-12720
   - id: epic-73
     title: 'Epic: Visual Customization & Accessibility'
-    description: |
-      Users can customize their visual experience and use the
-      application with assistive technology. WCAG AA compliance.
+    description: Users can customize their visual experience and use the application with assistive technology. WCAG AA compliance.
     points: 9
     priority: P2
     marker: cyclist-react
@@ -1971,10 +490,7 @@ epics:
     stories:
       - id: MSSCI-12768
         title: Color Palette System
-        description: |
-          Switch between Midnight (dark), Daylight (light), High Contrast.
-          Immediate update without restart. Per-project persistence in
-          config.local.yaml. CSS variables, no hardcoded colors.
+        description: Switch between Midnight (dark), Daylight (light), High Contrast. Immediate update without restart. Per-project persistence in config.local.yaml. CSS variables, no hardcoded colors.
         points: 2
         priority: P1
         status: backlog
@@ -1982,10 +498,7 @@ epics:
         jira: MSSCI-12768
       - id: MSSCI-12769
         title: Font Customization
-        description: |
-          UI font (System, Inter, custom) and Code font (System mono,
-          JetBrains Mono, Fira Code, custom). Global persistence.
-          Tailwind size scale. Immediate apply.
+        description: UI font (System, Inter, custom) and Code font (System mono, JetBrains Mono, Fira Code, custom). Global persistence. Tailwind size scale. Immediate apply.
         points: 2
         priority: P1
         status: backlog
@@ -1993,9 +506,7 @@ epics:
         jira: MSSCI-12769
       - id: MSSCI-12770
         title: Responsive Breakpoints
-        description: |
-          <1024px: auto-collapse sidebars. 1024-1440px: default layout.
-          >1440px: expanded panels. Min 800x600. Smooth transitions.
+        description: '<1024px: auto-collapse sidebars. 1024-1440px: default layout. >1440px: expanded panels. Min 800x600. Smooth transitions.'
         points: 2
         priority: P2
         status: backlog
@@ -2003,10 +514,7 @@ epics:
         jira: MSSCI-12770
       - id: MSSCI-12771
         title: Accessibility Compliance
-        description: |
-          WCAG AA: ARIA labels on all interactive elements, visible focus
-          indicators, logical tab order, 4.5:1 contrast, prefers-reduced-motion
-          support, screen reader announcements for streaming, skip links.
+        description: 'WCAG AA: ARIA labels on all interactive elements, visible focus indicators, logical tab order, 4.5:1 contrast, prefers-reduced-motion support, screen reader announcements for streaming, skip links.'
         points: 3
         priority: P2
         status: backlog
@@ -2014,21 +522,15 @@ epics:
         jira: MSSCI-12771
       - id: MSSCI-12776
         title: Theme-Aware Subagent Display Messages
-        description: |
-          Replace raw subagent prompts with friendly, themed messages in the
-          Cyclist UI. When a subagent runs, show the Helper persona from the
-          current theme with a user-friendly description instead of the
-          technical prompt text.
+        description: 'Replace raw subagent prompts with friendly, themed messages in the Cyclist UI. When a subagent runs, show the Helper persona from the current theme with a user-friendly description instead of the technical prompt text. Example: Instead of "You are the testing-runner subagent. Run the tests for Story 72-2..." show "The Six-Fingered Man Detector" (helper) with "Running tests to verify the RED state..." Implementation:
 
-          Example: Instead of "You are the testing-runner subagent. Run the
-          tests for Story 72-2..." show "The Six-Fingered Man Detector" (helper)
-          with "Running tests to verify the RED state..."
-
-          Implementation:
           - Parse subagent type from Task tool invocation
-          - Look up current agent's helper persona from theme
+
+          - Look up current agent''s helper persona from theme
+
           - Generate friendly message from subagent context
-          - Display helper name, portrait (if available), and friendly message
+
+          - Display helper name, portrait (if available), and friendly message'
         points: 3
         priority: P1
         status: backlog
@@ -2036,18 +538,19 @@ epics:
         jira: MSSCI-12776
       - id: MSSCI-12777
         title: User Avatar from GitHub/Gravatar
-        description: |
-          Replace the default user headshot with the user's actual profile
-          picture from GitHub or Gravatar. Improves personalization and
-          visual identity in the Cyclist UI.
+        description: 'Replace the default user headshot with the user''s actual profile picture from GitHub or Gravatar. Improves personalization and visual identity in the Cyclist UI. Implementation:
 
-          Implementation:
           - Get git user.email from local config
+
           - Try GitHub API first (gh api /user or search by email)
+
           - Fall back to Gravatar hash (MD5 of lowercase email)
+
           - Cache avatar locally to avoid repeated API calls
+
           - Show default silhouette if both fail
-          - Display in message headers for user messages
+
+          - Display in message headers for user messages'
         points: 2
         priority: P2
         status: backlog
@@ -2056,26 +559,22 @@ epics:
     type: epic
     jira: MSSCI-12767
   - id: MSSCI-12793
-    title: "Epic: Tiered Context Injection System"
-    description: |
-      Implement session-aware context tiers to reduce token overhead from agent
-      context injection. Currently Cyclist sends ~4000 tokens via --append-system-prompt
-      on every turn, even when resuming sessions where the agent already has context.
+    title: 'Epic: Tiered Context Injection System'
+    description: 'Implement session-aware context tiers to reduce token overhead from agent context injection. Currently Cyclist sends ~4000 tokens via --append-system-prompt on every turn, even when resuming sessions where the agent already has context. Four context tiers based on session state:
 
-      Four context tiers based on session state:
       - FULL (~4000): First turn of new session
+
       - REFRESH (~600): Resumed session, same agent
+
       - HANDOFF (~700): Resumed session, different agent
-      - MINIMAL (~200): Deep conversation (turn 3+), same agent
 
-      Success metrics:
+      - MINIMAL (~200): Deep conversation (turn 3+), same agent Success metrics:
+
       - System prompt tokens per turn < 1000 avg (currently ~4000)
-      - Time to 'Prompt too long' error: 2x current
-      - Agent persona consistency: no regression
 
-      Projected savings: 84% token reduction for typical sessions.
+      - Time to ''Prompt too long'' error: 2x current
 
-      Context Doc: sprint/context/MSSCI-12787-reference/tiered-context-story-draft.md
+      - Agent persona consistency: no regression Projected savings: 84% token reduction for typical sessions. Context Doc: sprint/context/MSSCI-12787-reference/tiered-context-story-draft.md'
     points: 18
     completed_points: 0
     priority: P1
@@ -2085,26 +584,30 @@ epics:
     stories:
       - id: MSSCI-12795
         title: Session state tracking in ClaudeService
-        description: |
-          Add SessionContextState interface to ClaudeService:
+        description: 'Add SessionContextState interface to ClaudeService:
+
           - Track lastAgent, turnCount, injectedComponents
+
           - Update on each message
-          - Reset on resetSession()
+
+          - Reset on resetSession()'
         points: 3
         priority: P0
-        status: backlog
+        status: done
         repos: pennyfarthing
         jira: MSSCI-12795
+        completed: "2026-02-01"
       - id: MSSCI-12796
         title: Tier selection logic
-        description: |
-          Implement selectContextTier() function with decision logic:
-          - No lastAgent → FULL
-          - Different agent → HANDOFF
-          - Same agent, turn > 3 → MINIMAL
-          - Else → REFRESH
+        description: 'Implement selectContextTier() function with decision logic:
 
-          Unit tests for all tier transitions.
+          - No lastAgent → FULL
+
+          - Different agent → HANDOFF
+
+          - Same agent, turn > 3 → MINIMAL
+
+          - Else → REFRESH Unit tests for all tier transitions.'
         points: 2
         priority: P0
         status: backlog
@@ -2112,11 +615,13 @@ epics:
         jira: MSSCI-12796
       - id: MSSCI-12797
         title: Python prime tier support
-        description: |
-          Add --tier argument to prime script:
+        description: 'Add --tier argument to prime script:
+
           - Implement tier-specific component loading
+
           - Add compressed persona format
-          - Maintain backward compatibility (default FULL)
+
+          - Maintain backward compatibility (default FULL)'
         points: 5
         priority: P0
         status: backlog
@@ -2124,11 +629,13 @@ epics:
         jira: MSSCI-12797
       - id: MSSCI-12798
         title: TypeScript tier integration
-        description: |
-          Wire tier selection into message flow:
+        description: 'Wire tier selection into message flow:
+
           - Call selectContextTier() before getPrimeContext()
+
           - Pass tier to Python script
-          - Update state after successful message
+
+          - Update state after successful message'
         points: 3
         priority: P0
         status: backlog
@@ -2136,11 +643,13 @@ epics:
         jira: MSSCI-12798
       - id: MSSCI-12799
         title: Debug panel tier display
-        description: |
-          Show current tier in DebugPanel:
+        description: 'Show current tier in DebugPanel:
+
           - Add tier to ContextInfo interface
+
           - Display tier badge with color coding
-          - Show potential savings
+
+          - Show potential savings'
         points: 2
         priority: P1
         status: backlog
@@ -2148,11 +657,13 @@ epics:
         jira: MSSCI-12799
       - id: MSSCI-12800
         title: Component-level token tracking
-        description: |
-          Add token counting per component:
+        description: 'Add token counting per component:
+
           - Approximate token count per component
+
           - Pass breakdown to UI
-          - Collapsible component list in DebugPanel
+
+          - Collapsible component list in DebugPanel'
         points: 3
         priority: P1
         status: backlog
