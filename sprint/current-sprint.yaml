@@ -472,9 +472,10 @@ epics:
         description: Switch between Midnight (dark), Daylight (light), High Contrast. Immediate update without restart. Per-project persistence in config.local.yaml. CSS variables, no hardcoded colors.
         points: 2
         priority: P1
-        status: backlog
+        status: done
         repos: pennyfarthing
         jira: MSSCI-12768
+        completed: "2026-02-01"
       - id: MSSCI-12769
         title: Font Customization
         description: UI font (System, Inter, custom) and Code font (System mono, JetBrains Mono, Fira Code, custom). Global persistence. Tailwind size scale. Immediate apply.
