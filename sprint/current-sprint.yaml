@@ -2752,7 +2752,7 @@ epics:
         status: backlog
         repos: pennyfarthing
         jira: MSSCI-12771
-      - id: 73-5
+      - id: MSSCI-12776
         title: Theme-Aware Subagent Display Messages
         description: |
           Replace raw subagent prompts with friendly, themed messages in the
@@ -2773,5 +2773,6 @@ epics:
         priority: P1
         status: backlog
         repos: pennyfarthing
+        jira: MSSCI-12776
     type: epic
     jira: MSSCI-12767
