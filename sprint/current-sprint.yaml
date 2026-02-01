@@ -536,6 +536,23 @@ epics:
         status: backlog
         repos: pennyfarthing
         jira: MSSCI-12777
+      - id: MSSCI-12817
+        title: Wire ThemePalette component into Cyclist UI
+        description: 'The ThemePalette component (MSSCI-12768) was built and tested but never integrated into the UI. Need to add the color palette picker to a visible location. Options: Add to SettingsPanel as Color Palette section, add to Command Palette as theme action, or add to header/stats strip. Keyboard shortcuts (Cmd/Ctrl+Shift+T) already work but visual picker not rendered.'
+        points: 2
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
+        workflow: trivial
+        acceptance_criteria:
+          - ThemePalette component rendered in UI (SettingsPanel or CommandPalette)
+          - User can visually select from 8 color presets
+          - Selection persists via existing IPC mechanism
+        jira: MSSCI-12817
+        priority: P2
+        status: backlog
+        repos: pennyfarthing
+        jira: MSSCI-12777
     type: epic
     jira: MSSCI-12767
   - id: MSSCI-12793
