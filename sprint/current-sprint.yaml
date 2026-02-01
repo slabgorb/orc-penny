@@ -2651,17 +2651,6 @@ epics:
         repos: pennyfarthing
         jira: MSSCI-12712
         completed: "2026-01-31"
-      - id: MSSCI-12713
-        title: ApprovalModal Component
-        description: |
-          Tool permission modal with command preview. Keyboard-first
-          (Enter approve, Escape reject). Red accent for destructive actions.
-          "Always allow" checkbox. Non-blocking overlay.
-        points: 2
-        priority: P1
-        status: backlog
-        repos: pennyfarthing
-        jira: MSSCI-12713
     type: epic
     jira: MSSCI-12709
   - id: epic-72

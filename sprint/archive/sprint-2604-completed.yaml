@@ -488,3 +488,9 @@ completed:
     title: "Layout Persistence"
     points: 2
     completed: 2026-01-31
+  - id: MSSCI-12713
+    epic: epic-71
+    title: "ApprovalModal Component"
+    points: 2
+    completed: 2026-02-01
+    pr: 588
