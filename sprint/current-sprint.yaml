@@ -438,7 +438,7 @@ epics:
         description: 'Panel resize handles show hover state and cursor changes to resize icon, but dragging does not actually resize the panels. The resize interaction is visually indicated but non-functional. Expected: Dragging the resize handle between panels should resize them proportionally. Actual: Hover/cursor states work, but drag has no effect.'
         points: 2
         priority: P1
-        status: backlog
+        status: done
         repos: pennyfarthing
         jira: MSSCI-12778
     type: epic
