@@ -2148,6 +2148,76 @@ epics:
         status: backlog
         repos: pennyfarthing
         jira: MSSCI-12784
+      - id: MSSCI-12787
+        title: "Implement CYCLIST Marker Parsing and Action Buttons"
+        description: |
+          CRITICAL: The reflector hook enforces markers but nothing reads them.
+
+          Port from deleted vanilla JS (message-enrichment.js + controls.js):
+          - Parse <!-- CYCLIST:HANDOFF:/agent --> → Show handoff button
+          - Parse <!-- CYCLIST:QUESTION:yesno --> → Show Yes/No buttons
+          - Parse <!-- CYCLIST:QUESTION:open --> → Show text input
+          - Parse <!-- CYCLIST:CHOICES:a,b,c --> → Show choice buttons
+          - Parse <!-- CYCLIST:CONTINUE --> → Show Continue button
+
+          Implementation:
+          - Add marker parsing to MessageView or Message component
+          - Create ActionButtons component for rendering controls
+          - Wire button clicks to appropriate actions (send message, trigger handoff)
+          - Hide raw marker HTML from display
+
+          This unblocks the entire reflector/handoff workflow system.
+        points: 5
+        priority: P0
+        status: backlog
+        repos: pennyfarthing
+        jira: MSSCI-12787
+      - id: MSSCI-12785
+        title: "Fix Panel Data Rendering (Git, Progress, Debug)"
+        description: |
+          Multiple panels exist but show no/broken content:
+
+          Git Panel (MSSCI-12781):
+          - Shows only "*" marker, no actual git data
+          - Need to fetch/display branch, changed files, repo status
+
+          Progress Panel (MSSCI-12780):
+          - Shows raw markers (>, *) instead of task content
+          - Need to render task subjects and descriptions
+
+          Debug Panel (MSSCI-12782):
+          - Shows raw JSON for token stats
+          - Missing OTEL span/trace display
+          - Format stats as readable UI
+
+          Common pattern: panels have structure but aren't wired to data sources.
+          Check IPC channels and ensure data flows from main process to React.
+        points: 5
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
+        jira: MSSCI-12785
+      - id: MSSCI-12786
+        title: "Stats Strip and Collapsed Sections"
+        description: |
+          Stats Strip (MSSCI-12779):
+          - Component exists (StatsStrip.tsx) but not visible
+          - Check if mounted in App.tsx layout
+          - Verify CSS positioning (should be bottom of window)
+
+          Collapsed Sections:
+          - Deleted collapsed-sections.js handled section expand/collapse
+          - Need React state management for panel sections
+          - Persist collapse state to config.local.yaml
+
+          Sidebar sections from deleted sidebar/*.js:
+          - Most functionality moved to panel components
+          - Verify all section data is rendering
+        points: 3
+        priority: P2
+        status: backlog
+        repos: pennyfarthing
+        jira: MSSCI-12786
     jira: MSSCI-12465
   - id: epic-65
     title: 'Epic: Separate Meta Scripts from Distributed Scripts'
