@@ -2774,5 +2774,24 @@ epics:
         status: backlog
         repos: pennyfarthing
         jira: MSSCI-12776
+      - id: MSSCI-12777
+        title: User Avatar from GitHub/Gravatar
+        description: |
+          Replace the default user headshot with the user's actual profile
+          picture from GitHub or Gravatar. Improves personalization and
+          visual identity in the Cyclist UI.
+
+          Implementation:
+          - Get git user.email from local config
+          - Try GitHub API first (gh api /user or search by email)
+          - Fall back to Gravatar hash (MD5 of lowercase email)
+          - Cache avatar locally to avoid repeated API calls
+          - Show default silhouette if both fail
+          - Display in message headers for user messages
+        points: 2
+        priority: P2
+        status: backlog
+        repos: pennyfarthing
+        jira: MSSCI-12777
     type: epic
     jira: MSSCI-12767
