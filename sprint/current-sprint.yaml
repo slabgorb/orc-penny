@@ -2050,6 +2050,43 @@ epics:
           - Jira links clickable
           - Points and status for each story
         completed: '2026-01-28'
+      - id: MSSCI-12779
+        title: "Bug: Stats Strip Not Visible"
+        description: |
+          The stats strip at the bottom of the Cyclist window is not
+          visible. Should show PWD, Jira email, GitHub username,
+          Claude model, and context percentage.
+        points: 1
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
+        jira: MSSCI-12779
+      - id: MSSCI-12780
+        title: "Bug: Progress Panel Shows Raw Markers Instead of Content"
+        description: |
+          The Progress panel shows raw marker characters (>, *) instead
+          of actual task content. The progress bar shows 3/7 but:
+          - IN PROGRESS section shows only ">"
+          - PENDING section shows only "*" bullets with no text
+          - COMPLETED section shows count but no task details
+
+          Expected: Task subjects/descriptions should be displayed.
+        points: 2
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
+        jira: MSSCI-12780
+      - id: MSSCI-12781
+        title: "Bug: Git Panel Shows Nothing"
+        description: |
+          The Git panel is empty, showing only a "*" marker with no
+          actual git status content. Should display branch info,
+          changed files, and repo status.
+        points: 1
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
+        jira: MSSCI-12781
     jira: MSSCI-12465
   - id: epic-65
     title: 'Epic: Separate Meta Scripts from Distributed Scripts'
@@ -2602,6 +2639,22 @@ epics:
         repos: pennyfarthing
         jira: MSSCI-12705
         completed: "2026-01-31"
+      - id: MSSCI-12778
+        title: "Bug: Panel Resize Not Working"
+        description: |
+          Panel resize handles show hover state and cursor changes to
+          resize icon, but dragging does not actually resize the panels.
+          The resize interaction is visually indicated but non-functional.
+
+          Expected: Dragging the resize handle between panels should
+          resize them proportionally.
+
+          Actual: Hover/cursor states work, but drag has no effect.
+        points: 2
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
+        jira: MSSCI-12778
     type: epic
     jira: MSSCI-12703
   - id: epic-71
