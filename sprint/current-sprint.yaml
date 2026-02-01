@@ -2879,8 +2879,9 @@ epics:
           Cmd+[/]. All shortcuts documented in command palette.
         points: 2
         priority: P1
-        status: backlog
+        status: done
         repos: pennyfarthing
+        completed: "2026-02-01"
     type: epic
     jira: MSSCI-12720
   - id: epic-73
