@@ -2058,7 +2058,7 @@ epics:
           Claude model, and context percentage.
         points: 1
         priority: P1
-        status: backlog
+        status: in_progress
         repos: pennyfarthing
         jira: MSSCI-12779
       - id: MSSCI-12780
@@ -2127,6 +2127,27 @@ epics:
         status: backlog
         repos: pennyfarthing
         jira: MSSCI-12783
+      - id: MSSCI-12784
+        title: "Bug: Background Task Timer Doesn't Update While Watching"
+        description: |
+          The background task timer doesn't update in real-time while
+          viewing the Background tab. The elapsed time is recorded
+          correctly, but the UI doesn't refresh to show it.
+
+          Repro:
+          1. Start a background task
+          2. Switch to Background tab and watch
+          3. Timer appears frozen
+
+          Workaround: Click to another tab and back to see updated time.
+
+          Expected: Timer should update every second while visible.
+          Likely missing setInterval or React state update.
+        points: 2
+        priority: P2
+        status: backlog
+        repos: pennyfarthing
+        jira: MSSCI-12784
     jira: MSSCI-12465
   - id: epic-65
     title: 'Epic: Separate Meta Scripts from Distributed Scripts'
