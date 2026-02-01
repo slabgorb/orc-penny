@@ -444,9 +444,10 @@ epics:
         description: '3-way toggle: Plan/Manual/Accept. Sliding highlight animation. Cmd+1/2/3 shortcuts. Tooltip explains each mode.'
         points: 1
         priority: P1
-        status: backlog
+        status: done
         repos: pennyfarthing
         jira: MSSCI-12773
+        completed: "2026-02-01"
       - id: 72-3
         title: Keyboard Shortcut System
         description: Never override system shortcuts (Cmd+R/W/Q/T). Cyclist uses Cmd+Shift+* prefix. Panel focus Cmd+Shift+1/2/3. Navigation Cmd+[/]. All shortcuts documented in command palette.
