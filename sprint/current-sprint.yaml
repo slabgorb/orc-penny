@@ -2752,5 +2752,26 @@ epics:
         status: backlog
         repos: pennyfarthing
         jira: MSSCI-12771
+      - id: 73-5
+        title: Theme-Aware Subagent Display Messages
+        description: |
+          Replace raw subagent prompts with friendly, themed messages in the
+          Cyclist UI. When a subagent runs, show the Helper persona from the
+          current theme with a user-friendly description instead of the
+          technical prompt text.
+
+          Example: Instead of "You are the testing-runner subagent. Run the
+          tests for Story 72-2..." show "The Six-Fingered Man Detector" (helper)
+          with "Running tests to verify the RED state..."
+
+          Implementation:
+          - Parse subagent type from Task tool invocation
+          - Look up current agent's helper persona from theme
+          - Generate friendly message from subagent context
+          - Display helper name, portrait (if available), and friendly message
+        points: 3
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
     type: epic
     jira: MSSCI-12767
