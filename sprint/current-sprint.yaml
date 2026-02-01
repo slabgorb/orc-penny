@@ -2109,6 +2109,24 @@ epics:
         status: backlog
         repos: pennyfarthing
         jira: MSSCI-12782
+      - id: MSSCI-12783
+        title: "Bug: Skill Content Displayed as User Message"
+        description: |
+          When skills are loaded/read, the full skill markdown content
+          is displayed in the message view as a user message. This spams
+          the conversation with internal context that should be hidden.
+
+          Example: Loading /sprint skill shows the entire skill file
+          content in a blue user message bubble.
+
+          Expected: Skill loading should be silent or show only a brief
+          indicator (e.g., "Loaded /sprint skill"). The full content is
+          for Claude's context, not user display.
+        points: 2
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
+        jira: MSSCI-12783
     jira: MSSCI-12465
   - id: epic-65
     title: 'Epic: Separate Meta Scripts from Distributed Scripts'
