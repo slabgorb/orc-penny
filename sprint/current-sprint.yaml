@@ -359,28 +359,6 @@ epics:
         repos: pennyfarthing
         jira: MSSCI-12787
         completed: '2026-02-01'
-      - id: MSSCI-12785
-        title: Fix Panel Data Rendering (Git, Progress, Debug)
-        description: 'Multiple panels exist but show no/broken content: Git Panel (MSSCI-12781):
-
-          - Shows only "*" marker, no actual git data
-
-          - Need to fetch/display branch, changed files, repo status Progress Panel (MSSCI-12780):
-
-          - Shows raw markers (>, *) instead of task content
-
-          - Need to render task subjects and descriptions Debug Panel (MSSCI-12782):
-
-          - Shows raw JSON for token stats
-
-          - Missing OTEL span/trace display
-
-          - Format stats as readable UI Common pattern: panels have structure but aren''t wired to data sources. Check IPC channels and ensure data flows from main process to React.'
-        points: 5
-        priority: P1
-        status: backlog
-        repos: pennyfarthing
-        jira: MSSCI-12785
       - id: MSSCI-12786
         title: Stats Strip and Collapsed Sections
         description: 'Stats Strip (MSSCI-12779):

@@ -494,3 +494,8 @@ completed:
     points: 2
     completed: 2026-02-01
     pr: 588
+  - id: MSSCI-12785
+    epic: epic-64
+    title: "Fix Panel Data Rendering (Git, Progress, Debug)"
+    points: 5
+    completed: 2026-02-01
