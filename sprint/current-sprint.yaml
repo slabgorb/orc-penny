@@ -2086,9 +2086,11 @@ epics:
           changed files, and repo status.
         points: 1
         priority: P1
-        status: backlog
+        status: done
         repos: pennyfarthing
         jira: MSSCI-12781
+        workflow: trivial
+        completed: "2026-02-01"
       - id: MSSCI-12782
         title: "Bug: Debug Panel Formatting and Missing OTEL Data"
         description: |
@@ -2664,10 +2666,11 @@ epics:
       interface with streaming responses, markdown rendering, and
       tool call display. Includes subagent message grouping as spans.
     points: 12
+    completed_points: 12
     priority: P1
     marker: cyclist-react
     repos: pennyfarthing
-    status: in_progress
+    status: done
     stories:
       - id: MSSCI-12697
         title: React + Tailwind Build Pipeline
@@ -2724,7 +2727,8 @@ epics:
           3. Escape key - global handler to stop Claude (SIGINT, double-press SIGKILL)
         points: 3
         priority: P0
-        status: in_progress
+        status: done
+        completed: "2026-02-01"
         repos: pennyfarthing
         workflow: tdd
         acceptance_criteria:
