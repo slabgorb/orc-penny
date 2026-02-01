@@ -610,9 +610,10 @@ epics:
           - Else → REFRESH Unit tests for all tier transitions.'
         points: 2
         priority: P0
-        status: backlog
+        status: done
         repos: pennyfarthing
         jira: MSSCI-12796
+        completed: "2026-02-01"
       - id: MSSCI-12797
         title: Python prime tier support
         description: 'Add --tier argument to prime script:
