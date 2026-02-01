@@ -2676,7 +2676,7 @@ epics:
         repos: pennyfarthing
         jira: MSSCI-12721
         completed: "2026-01-31"
-      - id: 72-2
+      - id: MSSCI-12773
         title: ModeSwitch Component
         description: |
           3-way toggle: Plan/Manual/Accept. Sliding highlight animation.
@@ -2685,6 +2685,7 @@ epics:
         priority: P1
         status: backlog
         repos: pennyfarthing
+        jira: MSSCI-12773
       - id: 72-3
         title: Keyboard Shortcut System
         description: |
