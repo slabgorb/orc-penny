@@ -2074,9 +2074,10 @@ epics:
           Expected: Task subjects/descriptions should be displayed.
         points: 2
         priority: P1
-        status: backlog
+        status: done
         repos: pennyfarthing
         jira: MSSCI-12780
+        completed: "2026-02-01"
       - id: MSSCI-12781
         title: "Bug: Git Panel Shows Nothing"
         description: |
