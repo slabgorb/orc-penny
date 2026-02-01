@@ -655,9 +655,10 @@ epics:
           - Show potential savings'
         points: 2
         priority: P1
-        status: backlog
+        status: done
         repos: pennyfarthing
         jira: MSSCI-12799
+        completed: "2026-02-01"
       - id: MSSCI-12800
         title: Component-level token tracking
         description: 'Add token counting per component:
