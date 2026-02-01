@@ -550,9 +550,10 @@ epics:
           - Selection persists via existing IPC mechanism
         jira: MSSCI-12817
         priority: P2
-        status: backlog
+        status: done
         repos: pennyfarthing
         jira: MSSCI-12777
+        completed: "2026-02-01"
     type: epic
     jira: MSSCI-12767
   - id: MSSCI-12793
