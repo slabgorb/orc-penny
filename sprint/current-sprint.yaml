@@ -2087,6 +2087,28 @@ epics:
         status: backlog
         repos: pennyfarthing
         jira: MSSCI-12781
+      - id: MSSCI-12782
+        title: "Bug: Debug Panel Formatting and Missing OTEL Data"
+        description: |
+          Two issues with the Debug panel:
+
+          1. Poor formatting - TOKEN STATS shows raw JSON blob instead of
+             nicely formatted statistics. Should display as readable cards
+             or formatted table.
+
+          2. Missing OTEL data - Debug panel was designed to show OTEL
+             telemetry (tool calls, spans, timing) but only shows basic
+             context usage stats. The OTEL integration is not displaying.
+
+          Expected:
+          - Token stats formatted as readable UI (not raw JSON)
+          - OTEL spans/traces displayed (tool invocations, durations)
+          - Hierarchical view of agent activity
+        points: 3
+        priority: P2
+        status: backlog
+        repos: pennyfarthing
+        jira: MSSCI-12782
     jira: MSSCI-12465
   - id: epic-65
     title: 'Epic: Separate Meta Scripts from Distributed Scripts'
