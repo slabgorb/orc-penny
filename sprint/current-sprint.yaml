@@ -2058,9 +2058,10 @@ epics:
           Claude model, and context percentage.
         points: 1
         priority: P1
-        status: in_progress
+        status: done
         repos: pennyfarthing
         jira: MSSCI-12779
+        completed: "2026-02-01"
       - id: MSSCI-12780
         title: "Bug: Progress Panel Shows Raw Markers Instead of Content"
         description: |
