@@ -107,6 +107,27 @@
 | reviewer | 3 files |
 | architect | 3 files |
 
+## Post-Retro Decision: VS Code Extension Deprecated
+
+**Decision Date**: 2026-02-02
+**Decision**: Deprecate and remove the VS Code extension entirely
+
+**Rationale**:
+- Cyclist (Electron app) provides superior UX for Pennyfarthing workflows
+- VS Code Chat API limitations constrain agent interaction patterns
+- Maintenance burden of two UI surfaces not justified
+- Extension was 38 points of investment (MSSCI-12042 + MSSCI-12122) but Cyclist delivers better value
+
+**Action Taken**:
+- Removed `pennyfarthing/packages/vscode-extension/` directory
+- Created ADR-0015 documenting the deprecation decision
+- Historical session files in `sprint/archive/` preserved for reference
+
+**Impact**:
+- ~43 source/test files removed
+- No user-facing impact (extension was internal/experimental)
+- Simplifies monorepo structure
+
 ---
 
 *Retro facilitated by Hawkeye Pierce (SM Agent)*
