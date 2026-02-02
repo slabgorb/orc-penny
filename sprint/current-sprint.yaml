@@ -394,6 +394,29 @@ epics:
           - Tirepump integration auto-handoff back to original agent
           - Nested patches supported (patch-stack is a stack)
         jira: MSSCI-12848
+      - id: MSSCI-12849
+        title: Missing AC & BikeLane panels in Progress tab
+        description: |
+          The React migration removed vanilla JS implementations of the Acceptance Criteria
+          checklist and BikeLane workflow visualization. Data layer exists in story-parser.ts
+          but React components were never created. Port from deleted js/sidebar/acceptance-criteria.js
+          and js/sidebar/bikelane.js (commit 9aea4f371).
+        points: 3
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        workflow: tdd
+        branch: feat/MSSCI-12849-ac-bikelane-panels
+        acceptance_criteria:
+          - AC checklist displays with progress count (X/Y)
+          - AC items show completed/pending state
+          - BikeLane shows workflow type badge (TDD, trivial, etc)
+          - BikeLane shows phase progress visualization
+          - BikeLane shows phase history timeline
+          - Both panels collapse/expand with persistence
+          - Both update when session file changes
+        jira: MSSCI-12849
+        completed: "2026-02-02"
     jira: MSSCI-12465
   - id: epic-70
     title: 'Epic: Flexible Workspace'
