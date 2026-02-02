@@ -523,9 +523,10 @@ epics:
         description: 'Fix broken tests discovered during MSSCI-12771 review: marker-actions test assertion failing, build test timeout, 81 test files with failures.'
         points: 2
         priority: P1
-        status: backlog
+        status: in_progress
         repos: pennyfarthing
         workflow: trivial
+        branch: feat/MSSCI-12856-fix-cyclist-test-failures
         jira: MSSCI-12856
       - id: MSSCI-12776
         title: Theme-Aware Subagent Display Messages
