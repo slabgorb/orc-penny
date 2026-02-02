@@ -562,18 +562,186 @@ future:
         implementing flexible workspace layout while maintaining the sacred
         center message view.
 
-        Key decisions:
-        - React 18 + shadcn/ui + Tailwind CSS stack
-        - FlexLayout or Dockview for docking system (TBD spike)
-        - Phased migration: vanilla JS coexists during transition
-        - Message view is "sacred center" - never moves
+        Status: MOSTLY COMPLETE (Sprint 12)
+        - Core migration done: MessageView, panels, docking, accessibility
+        - Remaining: vanilla JS utilities conversion, tool use visualization
 
         UX Spec: docs/planning/ux-design-specification.md
         Epics Doc: docs/planning/cyclist-react-migration-epics.md
-      status: ready
+      status: mostly_complete
       blocked_by: null
-      total_points: 40
-      epics: []
+      total_points: 65
+      completed_points: 40
+      epics:
+        - id: epic-74
+          title: "Epic: Tool Use Visualization"
+          description: |
+            Improve tool use display in the message view with human-readable
+            summaries and proper visual hierarchy.
+
+            Current state: ToolCallBlock shows tool name + raw input
+            Target state: Stacked tool history with intent summaries
+
+            Key requirements:
+            - Tool uses show human-readable intent summary
+            - Results in collapsible block underneath
+            - Previous tool uses between messages shown collapsed as stack
+            - Current/active tool use shown prominently
+          points: 13
+          priority: P1
+          marker: cyclist-react
+          repos: pennyfarthing
+          status: planning
+          stories:
+            - id: 74-1
+              title: "Tool intent summarizer"
+              description: |
+                Create a utility that generates human-readable summaries of tool use intent:
+                - Read: "Reading file src/foo.ts"
+                - Bash: "Running git status" or "Installing dependencies"
+                - Glob: "Finding TypeScript files in src/"
+                - Grep: "Searching for 'TODO' in codebase"
+                - Write: "Creating new file config.json"
+                - Edit: "Updating function in utils.ts"
+                - Task: "Launching explore agent to find error handlers"
+                Use tool name + input parameters to generate contextual summary.
+              points: 3
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+              acceptance_criteria:
+                - Generates readable summary for all common tools
+                - Handles edge cases gracefully (unknown tools show name + truncated input)
+                - Extracts meaningful context from input parameters
+            - id: 74-2
+              title: "Collapsible tool result display"
+              description: |
+                Enhance ToolCallBlock to show results in a proper collapsible block:
+                - Results collapsed by default (show "▶ Result (X lines)")
+                - Expand to show full result with syntax highlighting
+                - Large results (>50 lines) show truncated preview with "Show all"
+                - Copy button for result content
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+              acceptance_criteria:
+                - Results collapsed by default
+                - Line count shown in collapsed state
+                - Large results truncated with expand option
+                - Copy to clipboard button
+            - id: 74-3
+              title: "Tool use stack between messages"
+              description: |
+                Group consecutive tool uses between assistant messages into a
+                collapsible stack:
+                - Show count: "5 tool calls" with expand/collapse
+                - Collapsed: show just the summary line for each
+                - Expanded: show full ToolCallBlock for each
+                - Current/pending tool use always shown expanded
+                - Visual hierarchy: current tool prominent, history dimmed
+              points: 5
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+              acceptance_criteria:
+                - Consecutive tool uses grouped into collapsible stack
+                - Stack shows count when collapsed
+                - Individual tool summaries visible when expanded
+                - Active/pending tool always visible
+                - Clear visual distinction between current and historical
+            - id: 74-4
+              title: "Tool use visual design polish"
+              description: |
+                Apply consistent visual design to tool use blocks:
+                - Status indicators (pending spinner, success checkmark, error X)
+                - Color coding by tool type (read=blue, write=orange, bash=green)
+                - Elapsed time for completed tools
+                - Error results highlighted with red border
+                - Consistent with Cyclist design system
+              points: 3
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+              acceptance_criteria:
+                - Status indicators for pending/success/error
+                - Tool type color coding
+                - Elapsed time display
+                - Error state styling
+        - id: epic-75
+          title: "Epic: Vanilla JS to React Hooks Migration"
+          description: |
+            Convert remaining vanilla JS utilities to proper React hooks and
+            components for better integration with the React architecture.
+
+            Files to migrate (~3100 lines):
+            - message-view/*.js (markdown, renderers, quick-actions, syntax)
+            - slash-commands.js
+            - avatar-service.ts
+            - color-presets.ts / font-presets.ts
+            - subagent-display.ts
+          points: 12
+          priority: P2
+          marker: cyclist-react
+          repos: pennyfarthing
+          status: planning
+          stories:
+            - id: 75-1
+              title: "useMarkdownParser hook"
+              description: |
+                Convert markdown-parser.js to a React hook that handles:
+                - Markdown to HTML conversion
+                - Code block extraction and syntax highlighting
+                - Link handling and sanitization
+                - Memoization for performance
+              points: 3
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+            - id: 75-2
+              title: "useSyntaxHighlighter hook"
+              description: |
+                Convert syntax-highlighter.js to a React hook:
+                - Language detection
+                - Highlight.js or Prism integration
+                - Theme-aware coloring
+                - Lazy loading of language grammars
+              points: 2
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+            - id: 75-3
+              title: "useSlashCommands hook"
+              description: |
+                Convert slash-commands.js to a React hook:
+                - Command parsing and completion
+                - Suggestions dropdown integration
+                - Command history
+              points: 2
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+            - id: 75-4
+              title: "useQuickActions hook"
+              description: |
+                Convert quick-actions.js marker detection to React:
+                - CYCLIST marker parsing
+                - Action button rendering
+                - Handoff/question/choices handling
+                Already partially done in QuickActions.tsx, complete the migration.
+              points: 2
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+            - id: 75-5
+              title: "Remove vanilla JS dependencies"
+              description: |
+                After hooks are complete, remove the vanilla JS files and update
+                all imports. Verify no regressions in message rendering.
+              points: 3
+              priority: P2
+              status: planning
+              repos: pennyfarthing
 # =============================================================================
 # SUMMARY
 # =============================================================================
@@ -584,13 +752,14 @@ future:
 # Quality & Scale                 |   2   |   40   | backlog
 # Technical Debt                  |   0   |    5   | backlog
 # Python CLI Migration            |   0   |   19   | ready
-# Cyclist React Migration         |   5   |   40   | ready
+# Cyclist React Follow-up         |   2   |   25   | planning
 # --------------------------------|-------|--------|------------------
-# TOTAL                           |  13   |  148   |
+# TOTAL                           |  10   |  133   |
 #
-# Epic Numbering Used: 39-46, 69-73
-# Next Available Epic Number: 74
+# Epic Numbering Used: 39-46, 69-75
+# Next Available Epic Number: 76
 #
 # Note: Epics 56-68 were used in Sprint 12 and are tracked in current-sprint.yaml
 # epic-55 cancelled - nested build was the actual issue, not portrait size
+# Epics 69-73 completed in Sprint 12 (Cyclist React Migration core)
 # =============================================================================
