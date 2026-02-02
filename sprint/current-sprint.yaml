@@ -546,11 +546,12 @@ epics:
         description: 'Fix broken tests discovered during MSSCI-12771 review: marker-actions test assertion failing, build test timeout, 81 test files with failures.'
         points: 2
         priority: P1
-        status: in_progress
+        status: done
         repos: pennyfarthing
         workflow: trivial
         branch: feat/MSSCI-12856-fix-cyclist-test-failures
         jira: MSSCI-12856
+        completed: "2026-02-02"
       - id: MSSCI-12776
         title: Theme-Aware Subagent Display Messages
         description: 'Replace raw subagent prompts with friendly, themed messages in the Cyclist UI. When a subagent runs, show the Helper persona from the current theme with a user-friendly description instead of the technical prompt text. Example: Instead of "You are the testing-runner subagent. Run the tests for Story 72-2..." show "The Six-Fingered Man Detector" (helper) with "Running tests to verify the RED state..." Implementation:
