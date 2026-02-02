@@ -501,9 +501,12 @@ epics:
         description: '<1024px: auto-collapse sidebars. 1024-1440px: default layout. >1440px: expanded panels. Min 800x600. Smooth transitions.'
         points: 2
         priority: P2
-        status: backlog
+        status: done
         repos: pennyfarthing
+        workflow: tdd
+        branch: feature/MSSCI-12770-responsive-breakpoints
         jira: MSSCI-12770
+        completed: "2026-02-02"
       - id: MSSCI-12771
         title: Accessibility Compliance
         description: 'WCAG AA: ARIA labels on all interactive elements, visible focus indicators, logical tab order, 4.5:1 contrast, prefers-reduced-motion support, screen reader announcements for streaming, skip links.'
