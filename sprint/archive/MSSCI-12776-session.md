@@ -16,7 +16,7 @@
 | Field | Value |
 |-------|-------|
 | **Workflow** | tdd |
-| **Phase** | finish |
+| **Phase** | approved |
 | **Repos** | pennyfarthing |
 | **Branch** | feat/MSSCI-12776-themed-subagent-messages |
 | **Session Started** | 2026-02-02 |
@@ -414,5 +414,57 @@ This story is **READY FOR CODE REVIEW** by Reviewer (River). All blocking issues
 **Pattern observed:** Good self-contained component pattern - SubagentSpan manages its own state via internal hook call, props available for testing overrides.
 
 **Tests:** 25/25 passing. AC1-AC5 all covered. Integration tests verify hook + component interaction.
+
+**Handoff:** To SM (Zoe) for finish-story
+
+---
+
+## Dev Assessment (Bug Fix - Missing Message Enrichment)
+
+**Bug:** Manual testing revealed subagent messages still showing raw prompt text. Previous implementation was correct for UI components, but messages were never enriched at the IPC layer.
+
+**Root Cause:** When a Task tool is invoked, we track `{ taskId, description, subagentType }` in `backgroundTasks`. When messages arrive with `parent_tool_use_id`, we weren't looking up this context to enrich the message before sending to renderer. SubagentSpan received messages without `subagent_name` or `subagent_type` fields.
+
+**Files Changed:**
+- `packages/cyclist/src/otlp-receiver.ts` - Added `getBackgroundTaskByToolId()` for Task lookup
+- `packages/cyclist/src/main.ts` - Added `enrichMessageWithSubagentContext()` to enrich messages before broadcast
+
+**Fix:**
+1. Added `getBackgroundTaskByToolId(toolId)` to look up tracked Task by `tool_use_id`
+2. Added `enrichMessageWithSubagentContext(message)` that checks `parent_tool_use_id`, looks up Task, adds `subagent_name` and `subagent_type`
+3. Call enrichment before `broadcastToRenderer()` in message loop
+
+**Tests:** 25/25 passing (GREEN)
+**TypeScript:** Clean compilation
+**PR:** #614 - fix(cyclist): enrich subagent messages with name and type (MSSCI-12776)
+**Branch:** fix/MSSCI-12776-subagent-enrichment (pushed)
+
+**Handoff:** To Reviewer (River) for code review
+
+---
+
+## Reviewer Assessment (Bug Fix Review)
+
+**Verdict:** APPROVED
+**Merged:** Yes - PR #614 merged to develop
+
+**Data flow traced:** Task tool invocation → `trackBackgroundTask({ taskId, description, subagentType })` → message with `parent_tool_use_id` → `enrichMessageWithSubagentContext()` → `getBackgroundTaskByToolId(parentId)` → enriched message with `subagent_name` and `subagent_type` → `broadcastToRenderer()` → MessageView groups by parent_id, extracts fields → SubagentSpan displays themed helper
+
+**Review Observations:**
+
+| # | Severity | Observation | Location |
+|---|----------|-------------|----------|
+| 1 | [VERIFIED] | Data flow traced end-to-end: Task tracking → message enrichment → UI display | main.ts:1194-1200 → main.ts:252-273 → MessageView.tsx:96-97 |
+| 2 | [VERIFIED] | Lookup handles missing task gracefully (returns null) | otlp-receiver.ts:200 |
+| 3 | [VERIFIED] | Enrichment returns message unchanged when no parent_tool_use_id | main.ts:256-258 |
+| 4 | [VERIFIED] | Type safety with EnrichedSDKMessage intersection type | main.ts:242-246 |
+| 5 | [VERIFIED] | Tests pass (25/25) | Test run confirmed |
+| 6 | [LOW] | Second broadcast path (persona refresh) not enriched - acceptable, internal use only | main.ts:1694 |
+
+**Error Handling:**
+- `getBackgroundTaskByToolId`: Returns `null` if task not found (safe)
+- `enrichMessageWithSubagentContext`: Returns unchanged message on any failure path (safe)
+
+**Security:** No issues. No user input flows to shell. Enrichment adds display metadata only.
 
 **Handoff:** To SM (Zoe) for finish-story
