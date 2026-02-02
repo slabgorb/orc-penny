@@ -1,0 +1,12 @@
+# Sprint TO Sprint 2606 - Completed Stories
+# Jira Sprint ID: 277
+# Archived: 2026-02-02
+
+sprint:
+  name: "TO Sprint 2606"
+  jira_sprint_id: 277
+  jira_sprint_name: "TO Sprint 2606"
+  goal: TBD - awaiting sprint planning
+
+completed:
+  # Completed stories will be appended here by archive-story.sh
