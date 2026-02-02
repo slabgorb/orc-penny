@@ -512,9 +512,12 @@ epics:
         description: 'WCAG AA: ARIA labels on all interactive elements, visible focus indicators, logical tab order, 4.5:1 contrast, prefers-reduced-motion support, screen reader announcements for streaming, skip links.'
         points: 3
         priority: P2
-        status: backlog
+        status: done
         repos: pennyfarthing
+        workflow: tdd
+        branch: feat/MSSCI-12771-accessibility-compliance
         jira: MSSCI-12771
+        completed: "2026-02-02"
       - id: MSSCI-12776
         title: Theme-Aware Subagent Display Messages
         description: 'Replace raw subagent prompts with friendly, themed messages in the Cyclist UI. When a subagent runs, show the Helper persona from the current theme with a user-friendly description instead of the technical prompt text. Example: Instead of "You are the testing-runner subagent. Run the tests for Story 72-2..." show "The Six-Fingered Man Detector" (helper) with "Running tests to verify the RED state..." Implementation:
