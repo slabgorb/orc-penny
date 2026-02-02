@@ -514,9 +514,13 @@ epics:
           - Display helper name, portrait (if available), and friendly message'
         points: 3
         priority: P1
-        status: backlog
+        status: in_review
         repos: pennyfarthing
         jira: MSSCI-12776
+        workflow: tdd
+        branch: feat/MSSCI-12776-themed-subagent-messages
+        pr: 612
+        test_result: GREEN (25/25 passing)
       - id: MSSCI-12777
         title: User Avatar from GitHub/Gravatar
         description: 'Replace the default user headshot with the user''s actual profile picture from GitHub or Gravatar. Improves personalization and visual identity in the Cyclist UI. Implementation:
