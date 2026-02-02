@@ -312,9 +312,12 @@ epics:
         description: "Two issues with the Debug panel:\n1. Poor formatting - TOKEN STATS shows raw JSON blob instead of\n   nicely formatted statistics. Should display as readable cards\n   or formatted table.\n2. Missing OTEL data - Debug panel was designed to show OTEL\n   telemetry (tool calls, spans, timing) but only shows basic\n   context usage stats. The OTEL integration is not displaying.\nExpected:\n- Token stats formatted as readable UI (not raw JSON)\n- OTEL spans/traces displayed (tool invocations, durations)\n- Hierarchical view of agent activity"
         points: 3
         priority: P2
-        status: backlog
+        status: done
         repos: pennyfarthing
         jira: MSSCI-12782
+        workflow: tdd
+        branch: feat/MSSCI-12782-debug-panel-otel
+        completed: "2026-02-02"
       - id: MSSCI-12783
         title: 'Bug: Skill Content Displayed as User Message'
         description: 'When skills are loaded/read, the full skill markdown content is displayed in the message view as a user message. This spams the conversation with internal context that should be hidden. Example: Loading /sprint skill shows the entire skill file content in a blue user message bubble. Expected: Skill loading should be silent or show only a brief indicator (e.g., "Loaded /sprint skill"). The full content is for Claude''s context, not user display.'
