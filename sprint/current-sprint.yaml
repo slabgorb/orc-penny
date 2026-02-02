@@ -719,3 +719,19 @@ epics:
         completed: '2026-02-01'
     type: epic
     jira: MSSCI-12793
+
+standalone_stories:
+  - id: MSSCI-12860
+    title: Squash Latent UX Bugs from React Refactor
+    description: Clean up latent UX issues discovered during the Cyclist React migration. Visual glitches, layout inconsistencies, minor interaction bugs, and polish items.
+    points: 2
+    priority: P1
+    status: done
+    repos: pennyfarthing
+    workflow: trivial
+    jira: MSSCI-12860
+    completed: '2026-02-02'
+    acceptance_criteria:
+      - No visual regressions in main workflows
+      - Consistent styling across all panels
+      - Smooth transitions and interactions
