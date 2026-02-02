@@ -1,7 +1,7 @@
 {
-  "version": "7.9.0",
-  "installedAt": "2026-01-29T00:16:37.313Z",
-  "updatedAt": "2026-01-29T00:16:37.313Z",
+  "version": "9.0.0",
+  "installedAt": "2026-02-02T13:28:26.986Z",
+  "updatedAt": "2026-02-02T13:28:26.986Z",
   "projectName": "pennyfarthing-orchestrator",
   "installationType": "symlink",
   "nodeModulesPath": "node_modules/@pennyfarthing/core/pennyfarthing-dist",
