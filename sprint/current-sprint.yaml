@@ -42,7 +42,8 @@ epics:
           Use tool name + input parameters to generate contextual summary.
         points: 3
         priority: P0
-        status: backlog
+        status: done
+        completed: 2026-02-02
         repos: pennyfarthing
         acceptance_criteria:
           - Generates readable summary for all common tools
