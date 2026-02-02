@@ -146,3 +146,18 @@ if (window.electronAPI?.settings?.get) {
 }
 ```
 
+## Tailwind v4: Use `@import "tailwindcss"` Not `@tailwind` Directives
+
+**Cyclist uses Tailwind v4.** The old v3 syntax (`@tailwind base; @tailwind components; @tailwind utilities;`) does NOT work correctly with v4's tree-shaking.
+
+```css
+/* WRONG - Tailwind v3 syntax, causes styles to be tree-shaken */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CORRECT - Tailwind v4 syntax */
+@import "tailwindcss";
+```
+
+Custom CSS classes written after `@import "tailwindcss"` will be preserved. With the old syntax, custom classes may be silently removed during build even if they're used in components.
