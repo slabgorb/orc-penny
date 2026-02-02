@@ -9,9 +9,9 @@ sprint:
   velocity_target: 22
 summary:
   total_points: 308
-  completed_points: 252
+  completed_points: 254
   cancelled_points: 8
-  remaining_points: 48
+  remaining_points: 46
   notes: Completed epics archived in sprint/archive/sprint-2604-completed.yaml
 epics:
   - id: epic-64
@@ -547,7 +547,7 @@ epics:
         description: 'The ThemePalette component (MSSCI-12768) was built and tested but never integrated into the UI. Need to add the color palette picker to a visible location. Options: Add to SettingsPanel as Color Palette section, add to Command Palette as theme action, or add to header/stats strip. Keyboard shortcuts (Cmd/Ctrl+Shift+T) already work but visual picker not rendered.'
         points: 2
         priority: P1
-        status: backlog
+        status: done
         repos: pennyfarthing
         workflow: trivial
         acceptance_criteria:
@@ -555,10 +555,6 @@ epics:
           - User can visually select from 8 color presets
           - Selection persists via existing IPC mechanism
         jira: MSSCI-12817
-        priority: P2
-        status: done
-        repos: pennyfarthing
-        jira: MSSCI-12777
         completed: "2026-02-01"
     type: epic
     jira: MSSCI-12767
