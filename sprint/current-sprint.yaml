@@ -332,9 +332,10 @@ epics:
         description: 'The background task timer doesn''t update in real-time while viewing the Background tab. The elapsed time is recorded correctly, but the UI doesn''t refresh to show it. Repro: 1. Start a background task 2. Switch to Background tab and watch 3. Timer appears frozen Workaround: Click to another tab and back to see updated time. Expected: Timer should update every second while visible. Likely missing setInterval or React state update.'
         points: 2
         priority: P2
-        status: backlog
+        status: done
         repos: pennyfarthing
         jira: MSSCI-12784
+        completed: "2026-02-02"
       - id: MSSCI-12787
         title: Implement CYCLIST Marker Parsing and Action Buttons
         description: "CRITICAL: The reflector hook enforces markers but nothing reads them. Port from deleted vanilla JS (message-enrichment.js + controls.js):\n- Parse <!-- CYCLIST:HANDOFF:/agent --> → Show handoff button\n- Parse <!-- CYCLIST:QUESTION:yesno --> → Show Yes/No buttons\n- Parse <!-- CYCLIST:QUESTION:open --> → Show text input\n- Parse <!-- CYCLIST:CHOICES:a,b,c --> → Show choice buttons\n- Parse <!-- CYCLIST:CONTINUE --> → Show Continue button Implementation:\n- Add marker parsing to MessageView or Message component\n- Create ActionButtons component for rendering controls\n- Wire button clicks to appropriate actions (send message, trigger handoff)\n- Hide raw marker HTML from display This unblocks the entire reflector/handoff workflow system."
