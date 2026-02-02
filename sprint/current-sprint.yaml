@@ -8,10 +8,10 @@ sprint:
   status: active
   velocity_target: 22
 summary:
-  total_points: 308
+  total_points: 313
   completed_points: 254
   cancelled_points: 8
-  remaining_points: 46
+  remaining_points: 51
   notes: Completed epics archived in sprint/archive/sprint-2604-completed.yaml
 epics:
   - id: epic-64
@@ -368,6 +368,31 @@ epics:
         status: done
         repos: pennyfarthing
         jira: MSSCI-12786
+      - id: 64-patch
+        title: Implement Patch Mode - Interrupt-Driven Bug Fix Workflow
+        description: |
+          Implement "Patch Mode" - a lightweight interrupt workflow for fixing blocking bugs
+          without disrupting active story work. Branch from feature, fix, merge back, restore context.
+        points: 5
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        workflow: tdd
+        branch: feat/74-1-patch-mode-workflow
+        completed: "2026-02-02"
+        notes: "Merged with known issues (state loss on git failure) - monitoring in practice"
+        acceptance_criteria:
+          - /patch "description" command triggers Patch Mode
+          - State preserved (story_id, workflow, phase, agent, feature_branch)
+          - Patch branch created from feature branch (not develop)
+          - Dev-only workflow (no TEA handoff)
+          - Commit format fix(patch) desc [from:STORY-ID]
+          - Merge back to feature branch on completion
+          - Original workflow state restored after merge
+          - Session file includes patches section for archive
+          - Tirepump integration auto-handoff back to original agent
+          - Nested patches supported (patch-stack is a stack)
+        jira: MSSCI-12848
     jira: MSSCI-12465
   - id: epic-70
     title: 'Epic: Flexible Workspace'
