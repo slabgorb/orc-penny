@@ -1,7 +1,7 @@
 # Pennyfarthing Future Work
 # Combined planning and backlog initiatives not yet committed to a sprint
 # These are researched and ready for prioritization when capacity allows
-# Updated: 2026-01-25
+# Updated: 2026-02-02
 #
 # Epic Numbering Used: 39-46, 55 (next available: 64)
 #
@@ -453,52 +453,17 @@ future:
     # ==========================================================================
     - name: "Quality & Scale"
       description: |
-        Quality assurance oversight and scale adaptation capabilities.
+        Scale adaptation capabilities for larger initiatives and brownfield codebases.
         Lower priority work for when core features are stable.
+
+        Note: epic-39 (QA Oversight) CANCELLED 2026-02-02 - BMAD-style ceremony
+        didn't fit our workflow. One useful story (39-6 Release gate) moved to
+        Technical Debt as standalone.
       status: backlog
       blocked_by: null
-      total_points: 40
+      total_points: 17
       epics:
-        - id: epic-39
-          title: Quality Assurance Oversight Capabilities
-          description: |
-            Add BMAD TEA-style quality oversight capabilities to Pennyfarthing.
-            Extend Reviewer with test quality scoring, risk-based prioritization,
-            coverage traceability, NFR assessment, and release gate decisions.
-          points: 23
-          priority: P2
-          marker: quality
-          repos: pennyfarthing
-          status: backlog
-          stories:
-            - id: 39-1
-              title: Test quality review with 0-100 scoring
-              points: 5
-              status: backlog
-            - id: 39-2
-              title: Test quality knowledge base
-              points: 3
-              status: backlog
-            - id: 39-3
-              title: Risk-based test prioritization
-              points: 3
-              status: backlog
-            - id: 39-4
-              title: Coverage traceability
-              points: 5
-              status: backlog
-            - id: 39-5
-              title: NFR assessment skill
-              points: 3
-              status: backlog
-            - id: 39-6
-              title: Release gate integration
-              points: 2
-              status: backlog
-            - id: 39-7
-              title: Reviewer multi-phase review mode
-              points: 2
-              status: backlog
+        # epic-39 CANCELLED - see note above
         - id: epic-40
           title: Scale Adaptation and Brownfield Support
           description: |
@@ -543,7 +508,19 @@ future:
         Infrastructure cleanup and separation of concerns for maintainability.
       status: backlog
       blocked_by: null
-      total_points: 5
+      total_points: 7
+      standalone_stories:
+        - id: 39-6
+          title: Release gate integration
+          description: |
+            Explicit ship criteria before release: CI green, no P0 bugs,
+            version bumped, changelog updated. Prevents "oops we shipped
+            without X" failures. Lightweight checklist, not ceremony.
+            Salvaged from cancelled epic-39.
+          points: 2
+          priority: P3
+          status: backlog
+          repos: pennyfarthing
       epics: []
     - name: "Python CLI Migration"
       description: "Replace fragile bash script symlinks with a unified Python CLI (`pf`) that \nagents can invoke reliably via module resolution. Eliminates path-related \nerrors that waste agent context on debugging instead of productive work.\n\nKey decisions:\n- Click library for decorator-based CLI (per PRD FR18)\n- Lazy loading for <200ms startup time\n- Phased migration: bash preserved during transition\n\nPRD: docs/planning/prd.md\nArchitecture: docs/planning/architecture.md\n"
@@ -749,17 +726,18 @@ future:
 # --------------------------------|-------|--------|------------------
 # Benchmark Reliability           |   6   |   44   | research_complete
 # Repository Optimization         |   -   |    -   | CANCELLED (epic-55)
-# Quality & Scale                 |   2   |   40   | backlog
-# Technical Debt                  |   0   |    5   | backlog
+# Quality & Scale                 |   1   |   17   | backlog
+# Technical Debt                  |   0   |    7   | backlog (incl 39-6)
 # Python CLI Migration            |   0   |   19   | ready
 # Cyclist React Follow-up         |   2   |   25   | planning
 # --------------------------------|-------|--------|------------------
-# TOTAL                           |  10   |  133   |
+# TOTAL                           |   9   |  112   |
 #
-# Epic Numbering Used: 39-46, 69-75
+# Epic Numbering Used: 40-46, 69-75
 # Next Available Epic Number: 76
 #
 # Note: Epics 56-68 were used in Sprint 12 and are tracked in current-sprint.yaml
 # epic-55 cancelled - nested build was the actual issue, not portrait size
+# epic-39 cancelled 2026-02-02 - BMAD QA ceremony, only 39-6 salvaged
 # Epics 69-73 completed in Sprint 12 (Cyclist React Migration core)
 # =============================================================================
