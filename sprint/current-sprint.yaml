@@ -2,8 +2,7 @@ sprint:
   number: 12
   jira_sprint_id: 276
   jira_sprint_name: TO Sprint 2604
-  goal: Complete WheelHub notification consolidation, VS Code extension, stepped workflows,
-    and BMAD imports
+  goal: Complete WheelHub notification consolidation, VS Code extension, stepped workflows, and BMAD imports
   start_date: 2026-01-20
   end_date: 2026-02-02
   status: active
@@ -15,738 +14,641 @@ summary:
   remaining_points: 46
   notes: Completed epics archived in sprint/archive/sprint-2604-completed.yaml
 epics:
-- id: epic-64
-  type: epic
-  title: 'Epic: Cyclist UX Polish'
-  description: Improve Cyclist terminal UX based on UX Overview PRD - fix bugs, polish
-    existing features, and add missing visibility. Covers DIFFS panel, stats strip,
-    sidebar sections, tab bar, and fresh start state management.
-  priority: P1
-  status: backlog
-  repos: pennyfarthing
-  prd: docs/prd/ux-overview.md
-  stories:
-  - id: MSSCI-12466
-    title: 'DIFFS panel: Show file line numbers instead of diff-relative'
-    description: Line numbers in diff viewer show position within the diff, not actual
-      file line numbers. Developer needs to know which line in the file to navigate
-      to.
-    points: 2
+  - id: epic-64
+    type: epic
+    title: 'Epic: Cyclist UX Polish'
+    description: Improve Cyclist terminal UX based on UX Overview PRD - fix bugs, polish existing features, and add missing visibility. Covers DIFFS panel, stats strip, sidebar sections, tab bar, and fresh start state management.
     priority: P1
-    status: done
-    repos: pennyfarthing
-    workflow: tdd
-    branch: feat/MSSCI-12466-diffs-panel-line-numbers
-    acceptance_criteria:
-    - Line numbers in diff view match actual file line numbers
-    - Works for both partial and combined views
-    jira: MSSCI-12466
-    completed: '2026-01-27'
-  - id: MSSCI-12467
-    title: 'DIFFS panel: Fix file opener for $EDITOR'
-    description: Clicking file path header in diff viewer should open the file in
-      the user's configured editor. Currently broken.
-    points: 1
-    priority: P1
-    status: done
-    repos: pennyfarthing
-    workflow: trivial
-    acceptance_criteria:
-    - Click file path opens file in $EDITOR
-    - Falls back gracefully if $EDITOR not set
-    jira: MSSCI-12467
-    completed: '2026-01-27'
-  - id: MSSCI-12468
-    title: 'DIFFS panel: Improve combined diff view'
-    description: "Combined diff view needs better UX showing original \u2192 final\
-      \ state with proper context."
-    points: 2
-    priority: P1
-    status: done
-    repos: pennyfarthing
-    workflow: tdd
-    branch: feat/MSSCI-12468-diffs-combined-view
-    acceptance_criteria:
-    - "Combined view shows clear original \u2192 final transition"
-    - Context lines displayed appropriately
-    jira: MSSCI-12468
-    completed: '2026-01-27'
-  - id: MSSCI-12469
-    title: 'Stats strip: Redesign layout with identity context'
-    description: "Redesign stats strip to show: PWD (responsive: short when narrow,\
-      \ full when wide) \u2192 Jira email \u2192 GitHub username \u2192 spacer \u2192\
-      \ Claude model \u2192 Context % Remove: context tokens, usage limits"
-    points: 3
-    priority: P1
-    status: done
-    repos: pennyfarthing
-    workflow: tdd
-    acceptance_criteria:
-    - PWD responsive (short in narrow window, long in wide)
-    - Jira email displayed from jira CLI config
-    - GitHub username displayed from gh CLI config
-    - Model and context % preserved
-    - Usage limits removed
-    jira: MSSCI-12469
-    completed: '2026-01-28'
-  - id: MSSCI-12470
-    title: 'Tab bar: Fix indicator sync on startup'
-    description: On app startup, Message and Sidebar panels are open but their tab
-      indicators don't show active state. Must click twice to sync.
-    points: 1
-    priority: P1
-    status: done
-    repos: pennyfarthing
-    workflow: trivial
-    acceptance_criteria:
-    - Tab indicators match actual panel state on startup
-    - First click toggles correctly
-    jira: MSSCI-12470
-    completed: '2026-01-27'
-  - id: MSSCI-12471
-    title: 'Fresh start: Audit and fix stale data on load'
-    description: 'On fresh load, many panels show stale data. Audit all stateful components
-      and ensure clean state on:
-
-      - App start
-
-      - Clear button
-
-      - TirePump (context clear) Components to audit: tab indicators, stats strip,
-      persona section, story section, CHANGED/DIFFS panels, tasks section, background
-      tasks, BikeLane section, git section, quick actions.'
-    points: 3
-    priority: P1
-    status: done
-    repos: pennyfarthing
-    workflow: tdd
-    branch: feat/MSSCI-12471-fresh-start-audit
-    acceptance_criteria:
-    - All panels have clear()/reset() methods
-    - Reset called on app start, Clear, TirePump
-    - No localStorage/sessionStorage pollution
-    - All indicators reset to defaults
-    jira: MSSCI-12471
-    completed: '2026-01-28'
-  - id: MSSCI-12472
-    title: 'Persona section: Remove OCEAN scores and helper updates'
-    description: Remove OCEAN score bars and helper real-time updates from persona
-      section. These add noise without value.
-    points: 1
-    priority: P1
-    status: done
-    repos: pennyfarthing
-    workflow: trivial
-    branch: feat/MSSCI-12472-persona-remove-ocean
-    acceptance_criteria:
-    - OCEAN scores removed from UI
-    - Helper task line removed from UI
-    jira: MSSCI-12472
-    completed: '2026-01-27'
-  - id: MSSCI-12473
-    title: 'Persona section: Random catchphrase on activation'
-    description: Instead of showing static quote, pick random catchphrase from theme's
-      catchphrases array on agent activation. Quote stays fixed until next agent switch.
-    points: 2
-    priority: P1
-    status: done
-    repos: pennyfarthing
-    workflow: tdd
-    acceptance_criteria:
-    - Random catchphrase selected from array on agent switch
-    - Falls back to first catchphrase if array has one item
-    - Falls back to quote field if catchphrases missing
-    jira: MSSCI-12473
-    completed: '2026-01-28'
-  - id: MSSCI-12474
-    title: 'Persona section: Tighten layout'
-    description: Reduce vertical sprawl in persona section for more compact display.
-    points: 1
-    priority: P1
-    status: done
-    repos: pennyfarthing
-    workflow: trivial
-    acceptance_criteria:
-    - Persona section more compact
-    - All essential info still visible
-    jira: MSSCI-12474
-    completed: '2026-01-27'
-  - id: MSSCI-12475
-    title: 'Story section: Expandable sprint/epic details'
-    description: Make story section expandable to show full sprint and epic context
-      without needing to open YAML files.
-    points: 5
-    priority: P2
-    status: done
-    completed: '2026-01-28'
-    repos: pennyfarthing
-    workflow: tdd
-    acceptance_criteria:
-    - Expandable section shows all sprint stories
-    - Shows epic context (parent epic, sibling stories)
-    - Jira links clickable
-    - Points and status for each story
-    jira: MSSCI-12475
-  - id: MSSCI-12476
-    title: 'BikeLane section: Show workflow status when active'
-    description: BikeLane section exists but is hidden. Make it visible when a workflow
-      is active.
-    points: 3
-    priority: P2
-    status: done
-    repos: pennyfarthing
-    workflow: tdd
-    branch: feat/MSSCI-12476-bikelane-workflow-status
-    acceptance_criteria:
-    - Section visible when workflow active
-    - Shows workflow name and type badge
-    - Shows current step/phase
-    - Progress visualization
-    - Phase history timeline
-    jira: MSSCI-12476
-    completed: '2026-01-27'
-  - id: MSSCI-12477
-    title: 'Background tasks: Implement subagent visibility'
-    description: Background tasks section exists but doesn't work. Implement proper
-      visibility for subagents and long-running tasks.
-    points: 5
-    priority: P2
-    status: done
-    repos: pennyfarthing
-    workflow: tdd
-    acceptance_criteria:
-    - Shows active subagent tasks
-    - Shows background Bash commands
-    - Status indicators (running/completed/failed)
-    - Duration/elapsed time
-    - Output preview on expand
-    jira: MSSCI-12477
-    completed: '2026-01-27'
-  - id: MSSCI-12551
-    title: 'BikeLane: Fix workflow display - remove from story, show in bikelane'
-    description: 'Workflow steps displaying in story panel instead of bikelane panel,
-      AND bikelane panel not displaying workflow data at all. Problems: 1. story.js
-      renders workflow to #workflow-progress in story section 2. bikelane section
-      receives data but doesn''t display (hidden/not wired) Fix: 1. Remove updateWorkflowProgress()
-      from story.js 2. Remove #workflow-progress from story section HTML 3. Ensure
-      bikelane section visible when workflow active 4. Wire bikelane.update() to display
-      workflow data'
-    points: 3
-    priority: P1
-    status: done
-    repos: pennyfarthing
-    workflow: tdd
-    branch: feat/MSSCI-12551-bikelane-workflow-display
-    acceptance_criteria:
-    - Workflow steps render ONLY in bikelane panel (not story)
-    - Bikelane section VISIBLE when workflow is active
-    - Shows workflow type badge (TDD, trivial, etc)
-    - Shows phase progress with current phase highlighted
-    - Shows phase history timeline
-    jira: MSSCI-12551
-    completed: '2026-01-28'
-  - id: MSSCI-12478
-    title: "Theme schema: Consolidate quote \u2192 catchphrases"
-    description: Some themes have quote field, others have catchphrases array. Consolidate
-      all to use catchphrases array only.
-    points: 3
-    priority: P3
-    status: done
-    repos: pennyfarthing
-    workflow: tdd
-    acceptance_criteria:
-    - Migration script merges quote into catchphrases
-    - All 102 themes updated
-    - quote field removed from schema
-    - Theme validation updated
-    jira: MSSCI-12478
-    completed: '2026-01-28'
-  - id: MSSCI-12552
-    title: 'Bug: BikeLane panel shows ''No active story'' with active session'
-    description: BikeLane panel in Cyclist displays "No active story" even when .session/{story-id}-session.md
-      exists with an in-progress story. Panel should detect and display the active
-      story.
-    points: 2
-    priority: P1
-    status: done
-    repos: cyclist
-    workflow: tdd
-    acceptance_criteria:
-    - BikeLane panel detects .session/*.session.md files
-    - Active story metadata displayed when session exists
-    - Panel updates when session file changes
-    completed: '2026-01-28'
-  - id: 64-19
-    title: 'Story section: Implement expandable UI (MSSCI-12475 follow-up)'
-    description: 'MSSCI-12475 delivered the data layer (SprintStory, EpicContext interfaces
-      and parser functions in story-parser.ts) but the UI was never implemented. This
-      story completes the work:
-
-      - Add expandable section HTML to index.html
-
-      - Add rendering logic to story.js consuming sprintStories/epicContext
-
-      - Add CSS for expandable/collapsible styling
-
-      - Wire up Jira link clicks The data is already available via parseStoryData()
-      - just needs UI.'
-    points: 3
-    priority: P1
-    status: done
-    repos: pennyfarthing
-    branch: feat/64-19-expandable-story-ui
-    workflow: tdd
-    assigned_to: Keith Avery
-    acceptance_criteria:
-    - Expandable section shows all sprint stories
-    - Shows epic context (parent epic, sibling stories)
-    - Jira links clickable
-    - Points and status for each story
-    completed: '2026-01-28'
-  - id: MSSCI-12779
-    title: 'Bug: Stats Strip Not Visible'
-    description: The stats strip at the bottom of the Cyclist window is not visible.
-      Should show PWD, Jira email, GitHub username, Claude model, and context percentage.
-    points: 1
-    priority: P1
-    status: done
-    repos: pennyfarthing
-    jira: MSSCI-12779
-    completed: '2026-02-01'
-  - id: MSSCI-12780
-    title: 'Bug: Progress Panel Shows Raw Markers Instead of Content'
-    description: 'The Progress panel shows raw marker characters (>, *) instead of
-      actual task content. The progress bar shows 3/7 but:
-
-      - IN PROGRESS section shows only ">"
-
-      - PENDING section shows only "*" bullets with no text
-
-      - COMPLETED section shows count but no task details Expected: Task subjects/descriptions
-      should be displayed.'
-    points: 2
-    priority: P1
-    status: done
-    repos: pennyfarthing
-    jira: MSSCI-12780
-    completed: '2026-02-01'
-  - id: MSSCI-12781
-    title: 'Bug: Git Panel Shows Nothing'
-    description: The Git panel is empty, showing only a "*" marker with no actual
-      git status content. Should display branch info, changed files, and repo status.
-    points: 1
-    priority: P1
-    status: done
-    repos: pennyfarthing
-    jira: MSSCI-12781
-    workflow: trivial
-    completed: '2026-02-01'
-  - id: MSSCI-12782
-    title: 'Bug: Debug Panel Formatting and Missing OTEL Data'
-    description: "Two issues with the Debug panel:\n1. Poor formatting - TOKEN STATS\
-      \ shows raw JSON blob instead of\n   nicely formatted statistics. Should display\
-      \ as readable cards\n   or formatted table.\n2. Missing OTEL data - Debug panel\
-      \ was designed to show OTEL\n   telemetry (tool calls, spans, timing) but only\
-      \ shows basic\n   context usage stats. The OTEL integration is not displaying.\n\
-      Expected:\n- Token stats formatted as readable UI (not raw JSON)\n- OTEL spans/traces\
-      \ displayed (tool invocations, durations)\n- Hierarchical view of agent activity"
-    points: 3
-    priority: P2
     status: backlog
     repos: pennyfarthing
-    jira: MSSCI-12782
-  - id: MSSCI-12783
-    title: 'Bug: Skill Content Displayed as User Message'
-    description: 'When skills are loaded/read, the full skill markdown content is
-      displayed in the message view as a user message. This spams the conversation
-      with internal context that should be hidden. Example: Loading /sprint skill
-      shows the entire skill file content in a blue user message bubble. Expected:
-      Skill loading should be silent or show only a brief indicator (e.g., "Loaded
-      /sprint skill"). The full content is for Claude''s context, not user display.'
-    points: 2
+    prd: docs/prd/ux-overview.md
+    stories:
+      - id: MSSCI-12466
+        title: 'DIFFS panel: Show file line numbers instead of diff-relative'
+        description: Line numbers in diff viewer show position within the diff, not actual file line numbers. Developer needs to know which line in the file to navigate to.
+        points: 2
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        workflow: tdd
+        branch: feat/MSSCI-12466-diffs-panel-line-numbers
+        acceptance_criteria:
+          - Line numbers in diff view match actual file line numbers
+          - Works for both partial and combined views
+        jira: MSSCI-12466
+        completed: '2026-01-27'
+      - id: MSSCI-12467
+        title: 'DIFFS panel: Fix file opener for $EDITOR'
+        description: Clicking file path header in diff viewer should open the file in the user's configured editor. Currently broken.
+        points: 1
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        workflow: trivial
+        acceptance_criteria:
+          - Click file path opens file in $EDITOR
+          - Falls back gracefully if $EDITOR not set
+        jira: MSSCI-12467
+        completed: '2026-01-27'
+      - id: MSSCI-12468
+        title: 'DIFFS panel: Improve combined diff view'
+        description: "Combined diff view needs better UX showing original → final state with proper context."
+        points: 2
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        workflow: tdd
+        branch: feat/MSSCI-12468-diffs-combined-view
+        acceptance_criteria:
+          - "Combined view shows clear original → final transition"
+          - Context lines displayed appropriately
+        jira: MSSCI-12468
+        completed: '2026-01-27'
+      - id: MSSCI-12469
+        title: 'Stats strip: Redesign layout with identity context'
+        description: "Redesign stats strip to show: PWD (responsive: short when narrow, full when wide) → Jira email → GitHub username → spacer → Claude model → Context % Remove: context tokens, usage limits"
+        points: 3
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        workflow: tdd
+        acceptance_criteria:
+          - PWD responsive (short in narrow window, long in wide)
+          - Jira email displayed from jira CLI config
+          - GitHub username displayed from gh CLI config
+          - Model and context % preserved
+          - Usage limits removed
+        jira: MSSCI-12469
+        completed: '2026-01-28'
+      - id: MSSCI-12470
+        title: 'Tab bar: Fix indicator sync on startup'
+        description: On app startup, Message and Sidebar panels are open but their tab indicators don't show active state. Must click twice to sync.
+        points: 1
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        workflow: trivial
+        acceptance_criteria:
+          - Tab indicators match actual panel state on startup
+          - First click toggles correctly
+        jira: MSSCI-12470
+        completed: '2026-01-27'
+      - id: MSSCI-12471
+        title: 'Fresh start: Audit and fix stale data on load'
+        description: 'On fresh load, many panels show stale data. Audit all stateful components and ensure clean state on:
+
+          - App start
+
+          - Clear button
+
+          - TirePump (context clear) Components to audit: tab indicators, stats strip, persona section, story section, CHANGED/DIFFS panels, tasks section, background tasks, BikeLane section, git section, quick actions.'
+        points: 3
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        workflow: tdd
+        branch: feat/MSSCI-12471-fresh-start-audit
+        acceptance_criteria:
+          - All panels have clear()/reset() methods
+          - Reset called on app start, Clear, TirePump
+          - No localStorage/sessionStorage pollution
+          - All indicators reset to defaults
+        jira: MSSCI-12471
+        completed: '2026-01-28'
+      - id: MSSCI-12472
+        title: 'Persona section: Remove OCEAN scores and helper updates'
+        description: Remove OCEAN score bars and helper real-time updates from persona section. These add noise without value.
+        points: 1
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        workflow: trivial
+        branch: feat/MSSCI-12472-persona-remove-ocean
+        acceptance_criteria:
+          - OCEAN scores removed from UI
+          - Helper task line removed from UI
+        jira: MSSCI-12472
+        completed: '2026-01-27'
+      - id: MSSCI-12473
+        title: 'Persona section: Random catchphrase on activation'
+        description: Instead of showing static quote, pick random catchphrase from theme's catchphrases array on agent activation. Quote stays fixed until next agent switch.
+        points: 2
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        workflow: tdd
+        acceptance_criteria:
+          - Random catchphrase selected from array on agent switch
+          - Falls back to first catchphrase if array has one item
+          - Falls back to quote field if catchphrases missing
+        jira: MSSCI-12473
+        completed: '2026-01-28'
+      - id: MSSCI-12474
+        title: 'Persona section: Tighten layout'
+        description: Reduce vertical sprawl in persona section for more compact display.
+        points: 1
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        workflow: trivial
+        acceptance_criteria:
+          - Persona section more compact
+          - All essential info still visible
+        jira: MSSCI-12474
+        completed: '2026-01-27'
+      - id: MSSCI-12475
+        title: 'Story section: Expandable sprint/epic details'
+        description: Make story section expandable to show full sprint and epic context without needing to open YAML files.
+        points: 5
+        priority: P2
+        status: done
+        completed: '2026-01-28'
+        repos: pennyfarthing
+        workflow: tdd
+        acceptance_criteria:
+          - Expandable section shows all sprint stories
+          - Shows epic context (parent epic, sibling stories)
+          - Jira links clickable
+          - Points and status for each story
+        jira: MSSCI-12475
+      - id: MSSCI-12476
+        title: 'BikeLane section: Show workflow status when active'
+        description: BikeLane section exists but is hidden. Make it visible when a workflow is active.
+        points: 3
+        priority: P2
+        status: done
+        repos: pennyfarthing
+        workflow: tdd
+        branch: feat/MSSCI-12476-bikelane-workflow-status
+        acceptance_criteria:
+          - Section visible when workflow active
+          - Shows workflow name and type badge
+          - Shows current step/phase
+          - Progress visualization
+          - Phase history timeline
+        jira: MSSCI-12476
+        completed: '2026-01-27'
+      - id: MSSCI-12477
+        title: 'Background tasks: Implement subagent visibility'
+        description: Background tasks section exists but doesn't work. Implement proper visibility for subagents and long-running tasks.
+        points: 5
+        priority: P2
+        status: done
+        repos: pennyfarthing
+        workflow: tdd
+        acceptance_criteria:
+          - Shows active subagent tasks
+          - Shows background Bash commands
+          - Status indicators (running/completed/failed)
+          - Duration/elapsed time
+          - Output preview on expand
+        jira: MSSCI-12477
+        completed: '2026-01-27'
+      - id: MSSCI-12551
+        title: 'BikeLane: Fix workflow display - remove from story, show in bikelane'
+        description: 'Workflow steps displaying in story panel instead of bikelane panel, AND bikelane panel not displaying workflow data at all. Problems: 1. story.js renders workflow to #workflow-progress in story section 2. bikelane section receives data but doesn''t display (hidden/not wired) Fix: 1. Remove updateWorkflowProgress() from story.js 2. Remove #workflow-progress from story section HTML 3. Ensure bikelane section visible when workflow active 4. Wire bikelane.update() to display workflow data'
+        points: 3
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        workflow: tdd
+        branch: feat/MSSCI-12551-bikelane-workflow-display
+        acceptance_criteria:
+          - Workflow steps render ONLY in bikelane panel (not story)
+          - Bikelane section VISIBLE when workflow is active
+          - Shows workflow type badge (TDD, trivial, etc)
+          - Shows phase progress with current phase highlighted
+          - Shows phase history timeline
+        jira: MSSCI-12551
+        completed: '2026-01-28'
+      - id: MSSCI-12478
+        title: "Theme schema: Consolidate quote → catchphrases"
+        description: Some themes have quote field, others have catchphrases array. Consolidate all to use catchphrases array only.
+        points: 3
+        priority: P3
+        status: done
+        repos: pennyfarthing
+        workflow: tdd
+        acceptance_criteria:
+          - Migration script merges quote into catchphrases
+          - All 102 themes updated
+          - quote field removed from schema
+          - Theme validation updated
+        jira: MSSCI-12478
+        completed: '2026-01-28'
+      - id: MSSCI-12552
+        title: 'Bug: BikeLane panel shows ''No active story'' with active session'
+        description: BikeLane panel in Cyclist displays "No active story" even when .session/{story-id}-session.md exists with an in-progress story. Panel should detect and display the active story.
+        points: 2
+        priority: P1
+        status: done
+        repos: cyclist
+        workflow: tdd
+        acceptance_criteria:
+          - BikeLane panel detects .session/*.session.md files
+          - Active story metadata displayed when session exists
+          - Panel updates when session file changes
+        completed: '2026-01-28'
+      - id: 64-19
+        title: 'Story section: Implement expandable UI (MSSCI-12475 follow-up)'
+        description: 'MSSCI-12475 delivered the data layer (SprintStory, EpicContext interfaces and parser functions in story-parser.ts) but the UI was never implemented. This story completes the work:
+
+          - Add expandable section HTML to index.html
+
+          - Add rendering logic to story.js consuming sprintStories/epicContext
+
+          - Add CSS for expandable/collapsible styling
+
+          - Wire up Jira link clicks The data is already available via parseStoryData() - just needs UI.'
+        points: 3
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        branch: feat/64-19-expandable-story-ui
+        workflow: tdd
+        assigned_to: Keith Avery
+        acceptance_criteria:
+          - Expandable section shows all sprint stories
+          - Shows epic context (parent epic, sibling stories)
+          - Jira links clickable
+          - Points and status for each story
+        completed: '2026-01-28'
+      - id: MSSCI-12779
+        title: 'Bug: Stats Strip Not Visible'
+        description: The stats strip at the bottom of the Cyclist window is not visible. Should show PWD, Jira email, GitHub username, Claude model, and context percentage.
+        points: 1
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        jira: MSSCI-12779
+        completed: '2026-02-01'
+      - id: MSSCI-12780
+        title: 'Bug: Progress Panel Shows Raw Markers Instead of Content'
+        description: 'The Progress panel shows raw marker characters (>, *) instead of actual task content. The progress bar shows 3/7 but:
+
+          - IN PROGRESS section shows only ">"
+
+          - PENDING section shows only "*" bullets with no text
+
+          - COMPLETED section shows count but no task details Expected: Task subjects/descriptions should be displayed.'
+        points: 2
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        jira: MSSCI-12780
+        completed: '2026-02-01'
+      - id: MSSCI-12781
+        title: 'Bug: Git Panel Shows Nothing'
+        description: The Git panel is empty, showing only a "*" marker with no actual git status content. Should display branch info, changed files, and repo status.
+        points: 1
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        jira: MSSCI-12781
+        workflow: trivial
+        completed: '2026-02-01'
+      - id: MSSCI-12782
+        title: 'Bug: Debug Panel Formatting and Missing OTEL Data'
+        description: "Two issues with the Debug panel:\n1. Poor formatting - TOKEN STATS shows raw JSON blob instead of\n   nicely formatted statistics. Should display as readable cards\n   or formatted table.\n2. Missing OTEL data - Debug panel was designed to show OTEL\n   telemetry (tool calls, spans, timing) but only shows basic\n   context usage stats. The OTEL integration is not displaying.\nExpected:\n- Token stats formatted as readable UI (not raw JSON)\n- OTEL spans/traces displayed (tool invocations, durations)\n- Hierarchical view of agent activity"
+        points: 3
+        priority: P2
+        status: backlog
+        repos: pennyfarthing
+        jira: MSSCI-12782
+      - id: MSSCI-12783
+        title: 'Bug: Skill Content Displayed as User Message'
+        description: 'When skills are loaded/read, the full skill markdown content is displayed in the message view as a user message. This spams the conversation with internal context that should be hidden. Example: Loading /sprint skill shows the entire skill file content in a blue user message bubble. Expected: Skill loading should be silent or show only a brief indicator (e.g., "Loaded /sprint skill"). The full content is for Claude''s context, not user display.'
+        points: 2
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        jira: MSSCI-12783
+        completed: '2026-02-01'
+      - id: MSSCI-12784
+        title: 'Bug: Background Task Timer Doesn''t Update While Watching'
+        description: 'The background task timer doesn''t update in real-time while viewing the Background tab. The elapsed time is recorded correctly, but the UI doesn''t refresh to show it. Repro: 1. Start a background task 2. Switch to Background tab and watch 3. Timer appears frozen Workaround: Click to another tab and back to see updated time. Expected: Timer should update every second while visible. Likely missing setInterval or React state update.'
+        points: 2
+        priority: P2
+        status: backlog
+        repos: pennyfarthing
+        jira: MSSCI-12784
+      - id: MSSCI-12787
+        title: Implement CYCLIST Marker Parsing and Action Buttons
+        description: "CRITICAL: The reflector hook enforces markers but nothing reads them. Port from deleted vanilla JS (message-enrichment.js + controls.js):\n- Parse <!-- CYCLIST:HANDOFF:/agent --> → Show handoff button\n- Parse <!-- CYCLIST:QUESTION:yesno --> → Show Yes/No buttons\n- Parse <!-- CYCLIST:QUESTION:open --> → Show text input\n- Parse <!-- CYCLIST:CHOICES:a,b,c --> → Show choice buttons\n- Parse <!-- CYCLIST:CONTINUE --> → Show Continue button Implementation:\n- Add marker parsing to MessageView or Message component\n- Create ActionButtons component for rendering controls\n- Wire button clicks to appropriate actions (send message, trigger handoff)\n- Hide raw marker HTML from display This unblocks the entire reflector/handoff workflow system."
+        points: 5
+        priority: P0
+        status: done
+        repos: pennyfarthing
+        jira: MSSCI-12787
+        completed: '2026-02-01'
+      - id: MSSCI-12786
+        title: Stats Strip and Collapsed Sections
+        description: 'Stats Strip (MSSCI-12779):
+
+          - Component exists (StatsStrip.tsx) but not visible
+
+          - Check if mounted in App.tsx layout
+
+          - Verify CSS positioning (should be bottom of window) Collapsed Sections:
+
+          - Deleted collapsed-sections.js handled section expand/collapse
+
+          - Need React state management for panel sections
+
+          - Persist collapse state to config.local.yaml Sidebar sections from deleted sidebar/*.js:
+
+          - Most functionality moved to panel components
+
+          - Verify all section data is rendering'
+        points: 3
+        priority: P2
+        status: done
+        repos: pennyfarthing
+        jira: MSSCI-12786
+    jira: MSSCI-12465
+  - id: epic-70
+    title: 'Epic: Flexible Workspace'
+    description: Users can arrange their workspace - dragging panels between sidebars, collapsing what they don't need, and having the layout remembered per-project.
+    points: 7
     priority: P1
-    status: done
+    marker: cyclist-react
     repos: pennyfarthing
-    jira: MSSCI-12783
-    completed: '2026-02-01'
-  - id: MSSCI-12784
-    title: 'Bug: Background Task Timer Doesn''t Update While Watching'
-    description: 'The background task timer doesn''t update in real-time while viewing
-      the Background tab. The elapsed time is recorded correctly, but the UI doesn''t
-      refresh to show it. Repro: 1. Start a background task 2. Switch to Background
-      tab and watch 3. Timer appears frozen Workaround: Click to another tab and back
-      to see updated time. Expected: Timer should update every second while visible.
-      Likely missing setInterval or React state update.'
-    points: 2
-    priority: P2
     status: backlog
-    repos: pennyfarthing
-    jira: MSSCI-12784
-  - id: MSSCI-12787
-    title: Implement CYCLIST Marker Parsing and Action Buttons
-    description: "CRITICAL: The reflector hook enforces markers but nothing reads\
-      \ them. Port from deleted vanilla JS (message-enrichment.js + controls.js):\n\
-      - Parse <!-- CYCLIST:HANDOFF:/agent --> \u2192 Show handoff button\n- Parse\
-      \ <!-- CYCLIST:QUESTION:yesno --> \u2192 Show Yes/No buttons\n- Parse <!-- CYCLIST:QUESTION:open\
-      \ --> \u2192 Show text input\n- Parse <!-- CYCLIST:CHOICES:a,b,c --> \u2192\
-      \ Show choice buttons\n- Parse <!-- CYCLIST:CONTINUE --> \u2192 Show Continue\
-      \ button Implementation:\n- Add marker parsing to MessageView or Message component\n\
-      - Create ActionButtons component for rendering controls\n- Wire button clicks\
-      \ to appropriate actions (send message, trigger handoff)\n- Hide raw marker\
-      \ HTML from display This unblocks the entire reflector/handoff workflow system."
-    points: 5
-    priority: P0
-    status: done
-    repos: pennyfarthing
-    jira: MSSCI-12787
-    completed: '2026-02-01'
-  - id: MSSCI-12786
-    title: Stats Strip and Collapsed Sections
-    description: 'Stats Strip (MSSCI-12779):
-
-      - Component exists (StatsStrip.tsx) but not visible
-
-      - Check if mounted in App.tsx layout
-
-      - Verify CSS positioning (should be bottom of window) Collapsed Sections:
-
-      - Deleted collapsed-sections.js handled section expand/collapse
-
-      - Need React state management for panel sections
-
-      - Persist collapse state to config.local.yaml Sidebar sections from deleted
-      sidebar/*.js:
-
-      - Most functionality moved to panel components
-
-      - Verify all section data is rendering'
-    points: 3
+    stories:
+      - id: MSSCI-12704
+        title: Docking System Foundation
+        description: Integrate FlexLayout or Dockview. Message view fixed center. Left/right sidebars with tabbed panels. Existing panel inventory (Changed, Diffs, Debug, Sprint, Progress, Background, Git, Settings).
+        points: 3
+        priority: P0
+        status: done
+        repos: pennyfarthing
+        jira: MSSCI-12704
+        completed: '2026-01-31'
+      - id: MSSCI-12705
+        title: Panel Drag-and-Drop
+        description: Drag panels between sidebars, reorder tabs. Ghost preview, drop zone highlighting. Message view rejects drops.
+        points: 2
+        priority: P0
+        status: done
+        repos: pennyfarthing
+        jira: MSSCI-12705
+        completed: '2026-01-31'
+      - id: MSSCI-12778
+        title: 'Bug: Panel Resize Not Working'
+        description: 'Panel resize handles show hover state and cursor changes to resize icon, but dragging does not actually resize the panels. The resize interaction is visually indicated but non-functional. Expected: Dragging the resize handle between panels should resize them proportionally. Actual: Hover/cursor states work, but drag has no effect.'
+        points: 2
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        jira: MSSCI-12778
+    type: epic
+    jira: MSSCI-12703
+  - id: epic-72
+    title: 'Epic: Command & Navigation'
+    description: Users can navigate the entire application via keyboard, access any action through the command palette.
+    points: 6
     priority: P2
+    marker: cyclist-react
+    repos: pennyfarthing
     status: backlog
-    repos: pennyfarthing
-    jira: MSSCI-12786
-  jira: MSSCI-12465
-- id: epic-70
-  title: 'Epic: Flexible Workspace'
-  description: Users can arrange their workspace - dragging panels between sidebars,
-    collapsing what they don't need, and having the layout remembered per-project.
-  points: 7
-  priority: P1
-  marker: cyclist-react
-  repos: pennyfarthing
-  status: backlog
-  stories:
-  - id: MSSCI-12704
-    title: Docking System Foundation
-    description: Integrate FlexLayout or Dockview. Message view fixed center. Left/right
-      sidebars with tabbed panels. Existing panel inventory (Changed, Diffs, Debug,
-      Sprint, Progress, Background, Git, Settings).
-    points: 3
-    priority: P0
-    status: done
-    repos: pennyfarthing
-    jira: MSSCI-12704
-    completed: '2026-01-31'
-  - id: MSSCI-12705
-    title: Panel Drag-and-Drop
-    description: Drag panels between sidebars, reorder tabs. Ghost preview, drop zone
-      highlighting. Message view rejects drops.
-    points: 2
-    priority: P0
-    status: done
-    repos: pennyfarthing
-    jira: MSSCI-12705
-    completed: '2026-01-31'
-  - id: MSSCI-12778
-    title: 'Bug: Panel Resize Not Working'
-    description: 'Panel resize handles show hover state and cursor changes to resize
-      icon, but dragging does not actually resize the panels. The resize interaction
-      is visually indicated but non-functional. Expected: Dragging the resize handle
-      between panels should resize them proportionally. Actual: Hover/cursor states
-      work, but drag has no effect.'
-    points: 2
-    priority: P1
-    status: done
-    repos: pennyfarthing
-    jira: MSSCI-12778
-  type: epic
-  jira: MSSCI-12703
-- id: epic-72
-  title: 'Epic: Command & Navigation'
-  description: Users can navigate the entire application via keyboard, access any
-    action through the command palette.
-  points: 6
-  priority: P2
-  marker: cyclist-react
-  repos: pennyfarthing
-  status: backlog
-  stories:
-  - id: 72-1
-    title: Command Palette
-    description: Cmd+Shift+P opens searchable palette. Filter commands by typing.
-      Categories (Panels, Navigation, Settings, Agents). Shows shortcuts. Enter executes,
-      Escape closes. Recent commands at top.
-    points: 3
-    priority: P0
-    status: done
-    repos: pennyfarthing
-    jira: MSSCI-12721
-    completed: '2026-01-31'
-  - id: MSSCI-12773
-    title: ModeSwitch Component
-    description: '3-way toggle: Plan/Manual/Accept. Sliding highlight animation. Cmd+1/2/3
-      shortcuts. Tooltip explains each mode.'
-    points: 1
-    priority: P1
-    status: done
-    repos: pennyfarthing
-    jira: MSSCI-12773
-    completed: '2026-02-01'
-  - id: 72-3
-    title: Keyboard Shortcut System
-    description: Never override system shortcuts (Cmd+R/W/Q/T). Cyclist uses Cmd+Shift+*
-      prefix. Panel focus Cmd+Shift+1/2/3. Navigation Cmd+[/]. All shortcuts documented
-      in command palette.
-    points: 2
-    priority: P1
-    status: done
-    repos: pennyfarthing
-    completed: '2026-02-01'
-  type: epic
-  jira: MSSCI-12720
-- id: epic-73
-  title: 'Epic: Visual Customization & Accessibility'
-  description: Users can customize their visual experience and use the application
-    with assistive technology. WCAG AA compliance.
-  points: 9
-  priority: P2
-  marker: cyclist-react
-  repos: pennyfarthing
-  status: backlog
-  stories:
-  - id: MSSCI-12768
-    title: Color Palette System
-    description: Switch between Midnight (dark), Daylight (light), High Contrast.
-      Immediate update without restart. Per-project persistence in config.local.yaml.
-      CSS variables, no hardcoded colors.
-    points: 2
-    priority: P1
-    status: done
-    repos: pennyfarthing
-    jira: MSSCI-12768
-    completed: '2026-02-01'
-  - id: MSSCI-12769
-    title: Font Customization
-    description: UI font (System, Inter, custom) and Code font (System mono, JetBrains
-      Mono, Fira Code, custom). Global persistence. Tailwind size scale. Immediate
-      apply.
-    points: 2
-    priority: P1
-    status: done
-    repos: pennyfarthing
-    jira: MSSCI-12769
-    completed: '2026-02-01'
-  - id: MSSCI-12770
-    title: Responsive Breakpoints
-    description: '<1024px: auto-collapse sidebars. 1024-1440px: default layout. >1440px:
-      expanded panels. Min 800x600. Smooth transitions.'
-    points: 2
+    stories:
+      - id: 72-1
+        title: Command Palette
+        description: Cmd+Shift+P opens searchable palette. Filter commands by typing. Categories (Panels, Navigation, Settings, Agents). Shows shortcuts. Enter executes, Escape closes. Recent commands at top.
+        points: 3
+        priority: P0
+        status: done
+        repos: pennyfarthing
+        jira: MSSCI-12721
+        completed: '2026-01-31'
+      - id: MSSCI-12773
+        title: ModeSwitch Component
+        description: '3-way toggle: Plan/Manual/Accept. Sliding highlight animation. Cmd+1/2/3 shortcuts. Tooltip explains each mode.'
+        points: 1
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        jira: MSSCI-12773
+        completed: '2026-02-01'
+      - id: 72-3
+        title: Keyboard Shortcut System
+        description: Never override system shortcuts (Cmd+R/W/Q/T). Cyclist uses Cmd+Shift+* prefix. Panel focus Cmd+Shift+1/2/3. Navigation Cmd+[/]. All shortcuts documented in command palette.
+        points: 2
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        completed: '2026-02-01'
+    type: epic
+    jira: MSSCI-12720
+  - id: epic-73
+    title: 'Epic: Visual Customization & Accessibility'
+    description: Users can customize their visual experience and use the application with assistive technology. WCAG AA compliance.
+    points: 9
     priority: P2
+    marker: cyclist-react
+    repos: pennyfarthing
     status: backlog
-    repos: pennyfarthing
-    jira: MSSCI-12770
-  - id: MSSCI-12771
-    title: Accessibility Compliance
-    description: 'WCAG AA: ARIA labels on all interactive elements, visible focus
-      indicators, logical tab order, 4.5:1 contrast, prefers-reduced-motion support,
-      screen reader announcements for streaming, skip links.'
-    points: 3
-    priority: P2
+    stories:
+      - id: MSSCI-12768
+        title: Color Palette System
+        description: Switch between Midnight (dark), Daylight (light), High Contrast. Immediate update without restart. Per-project persistence in config.local.yaml. CSS variables, no hardcoded colors.
+        points: 2
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        jira: MSSCI-12768
+        completed: '2026-02-01'
+      - id: MSSCI-12769
+        title: Font Customization
+        description: UI font (System, Inter, custom) and Code font (System mono, JetBrains Mono, Fira Code, custom). Global persistence. Tailwind size scale. Immediate apply.
+        points: 2
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        jira: MSSCI-12769
+        completed: '2026-02-01'
+      - id: MSSCI-12770
+        title: Responsive Breakpoints
+        description: '<1024px: auto-collapse sidebars. 1024-1440px: default layout. >1440px: expanded panels. Min 800x600. Smooth transitions.'
+        points: 2
+        priority: P2
+        status: backlog
+        repos: pennyfarthing
+        jira: MSSCI-12770
+      - id: MSSCI-12771
+        title: Accessibility Compliance
+        description: 'WCAG AA: ARIA labels on all interactive elements, visible focus indicators, logical tab order, 4.5:1 contrast, prefers-reduced-motion support, screen reader announcements for streaming, skip links.'
+        points: 3
+        priority: P2
+        status: backlog
+        repos: pennyfarthing
+        jira: MSSCI-12771
+      - id: MSSCI-12776
+        title: Theme-Aware Subagent Display Messages
+        description: 'Replace raw subagent prompts with friendly, themed messages in the Cyclist UI. When a subagent runs, show the Helper persona from the current theme with a user-friendly description instead of the technical prompt text. Example: Instead of "You are the testing-runner subagent. Run the tests for Story 72-2..." show "The Six-Fingered Man Detector" (helper) with "Running tests to verify the RED state..." Implementation:
+
+          - Parse subagent type from Task tool invocation
+
+          - Look up current agent''s helper persona from theme
+
+          - Generate friendly message from subagent context
+
+          - Display helper name, portrait (if available), and friendly message'
+        points: 3
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        jira: MSSCI-12776
+        workflow: tdd
+        branch: feat/MSSCI-12776-themed-subagent-messages
+        pr: 612
+        test_result: GREEN (25/25 passing)
+        completed: '2026-02-02'
+      - id: MSSCI-12777
+        title: User Avatar from GitHub/Gravatar
+        description: 'Replace the default user headshot with the user''s actual profile picture from GitHub or Gravatar. Improves personalization and visual identity in the Cyclist UI. Implementation:
+
+          - Get git user.email from local config
+
+          - Try GitHub API first (gh api /user or search by email)
+
+          - Fall back to Gravatar hash (MD5 of lowercase email)
+
+          - Cache avatar locally to avoid repeated API calls
+
+          - Show default silhouette if both fail
+
+          - Display in message headers for user messages'
+        points: 2
+        priority: P2
+        status: done
+        repos: pennyfarthing
+        jira: MSSCI-12777
+        branch: feat/MSSCI-12777-user-avatar-github-gravatar
+        completed: "2026-02-02"
+      - id: MSSCI-12817
+        title: Wire ThemePalette component into Cyclist UI
+        description: 'The ThemePalette component (MSSCI-12768) was built and tested but never integrated into the UI. Need to add the color palette picker to a visible location. Options: Add to SettingsPanel as Color Palette section, add to Command Palette as theme action, or add to header/stats strip. Keyboard shortcuts (Cmd/Ctrl+Shift+T) already work but visual picker not rendered.'
+        points: 2
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        workflow: trivial
+        acceptance_criteria:
+          - ThemePalette component rendered in UI (SettingsPanel or CommandPalette)
+          - User can visually select from 8 color presets
+          - Selection persists via existing IPC mechanism
+        jira: MSSCI-12817
+        completed: '2026-02-01'
+    type: epic
+    jira: MSSCI-12767
+  - id: MSSCI-12793
+    title: 'Epic: Tiered Context Injection System'
+    description: 'Implement session-aware context tiers to reduce token overhead from agent context injection. Currently Cyclist sends ~4000 tokens via --append-system-prompt on every turn, even when resuming sessions where the agent already has context. Four context tiers based on session state:
+
+      - FULL (~4000): First turn of new session
+
+      - REFRESH (~600): Resumed session, same agent
+
+      - HANDOFF (~700): Resumed session, different agent
+
+      - MINIMAL (~200): Deep conversation (turn 3+), same agent Success metrics:
+
+      - System prompt tokens per turn < 1000 avg (currently ~4000)
+
+      - Time to ''Prompt too long'' error: 2x current
+
+      - Agent persona consistency: no regression Projected savings: 84% token reduction for typical sessions. Context Doc: sprint/context/MSSCI-12787-reference/tiered-context-story-draft.md'
+    points: 18
+    completed_points: 0
+    priority: P1
     status: backlog
+    marker: context-optimization
     repos: pennyfarthing
-    jira: MSSCI-12771
-  - id: MSSCI-12776
-    title: Theme-Aware Subagent Display Messages
-    description: 'Replace raw subagent prompts with friendly, themed messages in the
-      Cyclist UI. When a subagent runs, show the Helper persona from the current theme
-      with a user-friendly description instead of the technical prompt text. Example:
-      Instead of "You are the testing-runner subagent. Run the tests for Story 72-2..."
-      show "The Six-Fingered Man Detector" (helper) with "Running tests to verify
-      the RED state..." Implementation:
+    stories:
+      - id: MSSCI-12795
+        title: Session state tracking in ClaudeService
+        description: 'Add SessionContextState interface to ClaudeService:
 
-      - Parse subagent type from Task tool invocation
+          - Track lastAgent, turnCount, injectedComponents
 
-      - Look up current agent''s helper persona from theme
+          - Update on each message
 
-      - Generate friendly message from subagent context
+          - Reset on resetSession()'
+        points: 3
+        priority: P0
+        status: done
+        repos: pennyfarthing
+        jira: MSSCI-12795
+        completed: '2026-02-01'
+      - id: MSSCI-12796
+        title: Tier selection logic
+        description: "Implement selectContextTier() function with decision logic:\n- No lastAgent → FULL\n- Different agent → HANDOFF\n- Same agent, turn > 3 → MINIMAL\n- Else → REFRESH Unit tests for all tier transitions."
+        points: 2
+        priority: P0
+        status: done
+        repos: pennyfarthing
+        jira: MSSCI-12796
+        completed: '2026-02-01'
+      - id: MSSCI-12797
+        title: Python prime tier support
+        description: 'Add --tier argument to prime script:
 
-      - Display helper name, portrait (if available), and friendly message'
-    points: 3
-    priority: P1
-    status: done
-    repos: pennyfarthing
-    jira: MSSCI-12776
-    workflow: tdd
-    branch: feat/MSSCI-12776-themed-subagent-messages
-    pr: 612
-    test_result: GREEN (25/25 passing)
-    completed: '2026-02-02'
-  - id: MSSCI-12777
-    title: User Avatar from GitHub/Gravatar
-    description: 'Replace the default user headshot with the user''s actual profile
-      picture from GitHub or Gravatar. Improves personalization and visual identity
-      in the Cyclist UI. Implementation:
+          - Implement tier-specific component loading
 
-      - Get git user.email from local config
+          - Add compressed persona format
 
-      - Try GitHub API first (gh api /user or search by email)
+          - Maintain backward compatibility (default FULL)'
+        points: 5
+        priority: P0
+        status: done
+        repos: pennyfarthing
+        jira: MSSCI-12797
+        completed: '2026-02-01'
+      - id: MSSCI-12798
+        title: TypeScript tier integration
+        description: 'Wire tier selection into message flow:
 
-      - Fall back to Gravatar hash (MD5 of lowercase email)
+          - Call selectContextTier() before getPrimeContext()
 
-      - Cache avatar locally to avoid repeated API calls
+          - Pass tier to Python script
 
-      - Show default silhouette if both fail
+          - Update state after successful message'
+        points: 3
+        priority: P0
+        status: done
+        repos: pennyfarthing
+        jira: MSSCI-12798
+        completed: '2026-02-01'
+      - id: MSSCI-12799
+        title: Debug panel tier display
+        description: 'Show current tier in DebugPanel:
 
-      - Display in message headers for user messages'
-    points: 2
-    priority: P2
-    status: in_progress
-    repos: pennyfarthing
-    jira: MSSCI-12777
-    branch: feat/MSSCI-12777-user-avatar-github-gravatar
-  - id: MSSCI-12817
-    title: Wire ThemePalette component into Cyclist UI
-    description: 'The ThemePalette component (MSSCI-12768) was built and tested but
-      never integrated into the UI. Need to add the color palette picker to a visible
-      location. Options: Add to SettingsPanel as Color Palette section, add to Command
-      Palette as theme action, or add to header/stats strip. Keyboard shortcuts (Cmd/Ctrl+Shift+T)
-      already work but visual picker not rendered.'
-    points: 2
-    priority: P1
-    status: done
-    repos: pennyfarthing
-    workflow: trivial
-    acceptance_criteria:
-    - ThemePalette component rendered in UI (SettingsPanel or CommandPalette)
-    - User can visually select from 8 color presets
-    - Selection persists via existing IPC mechanism
-    jira: MSSCI-12817
-    completed: '2026-02-01'
-  type: epic
-  jira: MSSCI-12767
-- id: MSSCI-12793
-  title: 'Epic: Tiered Context Injection System'
-  description: 'Implement session-aware context tiers to reduce token overhead from
-    agent context injection. Currently Cyclist sends ~4000 tokens via --append-system-prompt
-    on every turn, even when resuming sessions where the agent already has context.
-    Four context tiers based on session state:
+          - Add tier to ContextInfo interface
 
-    - FULL (~4000): First turn of new session
+          - Display tier badge with color coding
 
-    - REFRESH (~600): Resumed session, same agent
+          - Show potential savings'
+        points: 2
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        jira: MSSCI-12799
+        completed: '2026-02-01'
+      - id: MSSCI-12800
+        title: Component-level token tracking
+        description: 'Add token counting per component:
 
-    - HANDOFF (~700): Resumed session, different agent
+          - Approximate token count per component
 
-    - MINIMAL (~200): Deep conversation (turn 3+), same agent Success metrics:
+          - Pass breakdown to UI
 
-    - System prompt tokens per turn < 1000 avg (currently ~4000)
-
-    - Time to ''Prompt too long'' error: 2x current
-
-    - Agent persona consistency: no regression Projected savings: 84% token reduction
-    for typical sessions. Context Doc: sprint/context/MSSCI-12787-reference/tiered-context-story-draft.md'
-  points: 18
-  completed_points: 0
-  priority: P1
-  status: backlog
-  marker: context-optimization
-  repos: pennyfarthing
-  stories:
-  - id: MSSCI-12795
-    title: Session state tracking in ClaudeService
-    description: 'Add SessionContextState interface to ClaudeService:
-
-      - Track lastAgent, turnCount, injectedComponents
-
-      - Update on each message
-
-      - Reset on resetSession()'
-    points: 3
-    priority: P0
-    status: done
-    repos: pennyfarthing
-    jira: MSSCI-12795
-    completed: '2026-02-01'
-  - id: MSSCI-12796
-    title: Tier selection logic
-    description: "Implement selectContextTier() function with decision logic:\n- No\
-      \ lastAgent \u2192 FULL\n- Different agent \u2192 HANDOFF\n- Same agent, turn\
-      \ > 3 \u2192 MINIMAL\n- Else \u2192 REFRESH Unit tests for all tier transitions."
-    points: 2
-    priority: P0
-    status: done
-    repos: pennyfarthing
-    jira: MSSCI-12796
-    completed: '2026-02-01'
-  - id: MSSCI-12797
-    title: Python prime tier support
-    description: 'Add --tier argument to prime script:
-
-      - Implement tier-specific component loading
-
-      - Add compressed persona format
-
-      - Maintain backward compatibility (default FULL)'
-    points: 5
-    priority: P0
-    status: done
-    repos: pennyfarthing
-    jira: MSSCI-12797
-    completed: '2026-02-01'
-  - id: MSSCI-12798
-    title: TypeScript tier integration
-    description: 'Wire tier selection into message flow:
-
-      - Call selectContextTier() before getPrimeContext()
-
-      - Pass tier to Python script
-
-      - Update state after successful message'
-    points: 3
-    priority: P0
-    status: done
-    repos: pennyfarthing
-    jira: MSSCI-12798
-    completed: '2026-02-01'
-  - id: MSSCI-12799
-    title: Debug panel tier display
-    description: 'Show current tier in DebugPanel:
-
-      - Add tier to ContextInfo interface
-
-      - Display tier badge with color coding
-
-      - Show potential savings'
-    points: 2
-    priority: P1
-    status: done
-    repos: pennyfarthing
-    jira: MSSCI-12799
-    completed: '2026-02-01'
-  - id: MSSCI-12800
-    title: Component-level token tracking
-    description: 'Add token counting per component:
-
-      - Approximate token count per component
-
-      - Pass breakdown to UI
-
-      - Collapsible component list in DebugPanel'
-    points: 3
-    priority: P1
-    status: done
-    repos: pennyfarthing
-    jira: MSSCI-12800
-    completed: '2026-02-01'
-  type: epic
-  jira: MSSCI-12793
+          - Collapsible component list in DebugPanel'
+        points: 3
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        jira: MSSCI-12800
+        completed: '2026-02-01'
+    type: epic
+    jira: MSSCI-12793
