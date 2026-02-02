@@ -121,3 +121,28 @@ CYCLIST_PROJECT_DIR=/path/to/project npm run dev:web
 
 This starts an Express server on port 1898 (or next available). Use Playwright to inspect the DOM and debug layout issues.
 
+## Vanilla JS Reference Commit
+
+**Commit `9aea4f371`** is where we removed the legacy vanilla JS implementation.
+
+When asking for "vanilla JS" implementations or REST API fallback patterns, use git pickaxe to find the old code:
+```bash
+git show 9aea4f371^:packages/cyclist/src/public/js/<filename>.js
+```
+
+Key files that had REST fallback:
+- `components/SettingsPanel.js` - Theme picker with `/api/settings` fallback
+- `progress-panel.js` - Todos panel (Electron-only, no REST)
+- `sidebar/settings.js` - Settings load/save
+
+Example pattern from vanilla JS:
+```javascript
+// Try IPC first, then HTTP fallback
+if (window.electronAPI?.settings?.get) {
+  settings = await window.electronAPI.settings.get();
+} else {
+  const response = await fetch('/api/settings');
+  if (response.ok) settings = await response.json();
+}
+```
+
