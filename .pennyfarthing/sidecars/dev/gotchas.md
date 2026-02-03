@@ -161,3 +161,78 @@ if (window.electronAPI?.settings?.get) {
 ```
 
 Custom CSS classes written after `@import "tailwindcss"` will be preserved. With the old syntax, custom classes may be silently removed during build even if they're used in components.
+
+## Electron Mode vs Web Mode: Two ClaudeService Instances
+
+**CRITICAL:** After IPC-to-WebSocket migration, React components use WebSocket (`/ws/claude`).
+
+In **web mode**, each WebSocket connection creates its own `ClaudeService` subprocess - this is correct.
+
+In **Electron mode**, the main process (`main.ts`) manages the ClaudeService. The WebSocket endpoint must NOT create a separate ClaudeService or messages won't reach the React UI.
+
+**Solution:** Bridge main process messages to WebSocket clients:
+
+```typescript
+// websocket.ts - detect mode and track clients
+const isElectronMode = process.env.CYCLIST_ELECTRON_MODE === '1';
+const claudeClients = new Set<WebSocket>();
+
+// In Electron mode, don't create ClaudeService per connection
+if (isElectronMode) {
+  claudeClients.add(ws);  // Just track for broadcast
+} else {
+  // Web mode: create ClaudeService per connection
+}
+
+// main.ts - broadcast to WebSocket alongside IPC
+broadcastToRenderer(IPC_CLAUDE_CHANNELS.CLAUDE_MESSAGE, message);
+broadcastClaudeMessage(message);  // Also send to WebSocket clients
+```
+
+**Environment variable:** `CYCLIST_ELECTRON_MODE=1` is set by main.ts before server starts.
+
+## WebSocket Callback Bridge Pattern (Electron Mode)
+
+When WebSocket handlers need to call main process functions, use callback registration to avoid circular imports:
+
+```typescript
+// websocket.ts - define and export callback setters
+type ClaudeSendCallback = (prompt: string, images: PastedImage[],
+  onMessage: (msg: unknown) => void,
+  onComplete: () => void,
+  onError: (err: string) => void) => void;
+
+let claudeSendCallback: ClaudeSendCallback | null = null;
+
+export function setClaudeSendCallback(callback: ClaudeSendCallback): void {
+  claudeSendCallback = callback;
+}
+
+// In WebSocket handler
+if (isElectronMode && claudeSendCallback) {
+  claudeSendCallback(msg.prompt, msg.images || [], onMessage, onComplete, onError);
+}
+
+// main.ts - register callbacks in startProjectWatchers()
+setClaudeSendCallback(async (prompt, images, onMessage, onComplete, onError) => {
+  const service = getClaudeService();
+  for await (const message of service.sendMessage(prompt, { images })) {
+    onMessage(message);
+  }
+  onComplete();
+});
+```
+
+This pattern:
+- Avoids circular imports (websocket.ts doesn't import main.ts)
+- Keeps ClaudeService singleton in main.ts
+- Allows WebSocket to trigger main process functions
+
+## REST API Identity Must Include avatarUrl
+
+The `/api/identity` endpoint returns `{ jiraEmail, githubUsername }`. But `useUserAvatar` expects `avatarUrl`.
+
+**Fix:** Construct avatar URL from username:
+```typescript
+avatarUrl: githubUsername ? `https://avatars.githubusercontent.com/${githubUsername}` : null
+```
