@@ -29,12 +29,13 @@ pennyfarthing-orchestrator/      # This repo (orchestrator)
 │   ├── current-sprint.yaml      # Active sprint
 │   ├── future.yaml              # Backlog
 │   ├── completed.yaml           # Done archive
+│   ├── sprint-template.yaml     # Template for new sprints
 │   ├── archive/                 # Old stories
 │   └── context/                 # Epic context files
 ├── .session/                    # Active work sessions
 ├── docs/                        # Documentation
 │   ├── adr/                     # Architecture Decision Records
-│   └── research/                # Research notes
+│   └── planning/                # Planning documents
 ├── repos.yaml                   # Repository configuration
 └── justfile                     # Task runner recipes
 ```
@@ -90,6 +91,7 @@ Use `/workflow list` to see available workflows, `/workflow` to check current st
 - `tdd` - Test-driven development (SM → TEA → Dev → Reviewer)
 - `trivial` - Quick changes (SM → Dev → Reviewer, skips TEA)
 - `bdd` - Behavior-driven development
+- `agent-docs` - Agent documentation workflow
 
 ## Agent Commands
 
@@ -99,6 +101,10 @@ Use `/workflow list` to see available workflows, `/workflow` to check current st
 - `/reviewer` - Code Reviewer
 - `/architect` - System design
 - `/pm` - Product Manager
+- `/tech-writer` - Documentation
+- `/ux-designer` - UX design
+- `/devops` - Infrastructure and deployment
+- `/orchestrator` - Multi-agent coordination
 
 ## Sprint Management
 
