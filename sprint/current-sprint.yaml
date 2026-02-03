@@ -102,7 +102,7 @@ epics:
           - Consistent with Cyclist design system
         points: 3
         priority: P1
-        status: backlog
+        status: done
         repos: pennyfarthing
         acceptance_criteria:
           - Status indicators for pending/success/error
@@ -110,6 +110,7 @@ epics:
           - Elapsed time display
           - Error state styling
         jira: MSSCI-13402
+        completed: "2026-02-03"
     type: epic
     jira: MSSCI-13394
   - id: epic-75
