@@ -60,7 +60,7 @@ epics:
           - Copy button for result content
         points: 2
         priority: P0
-        status: backlog
+        status: done
         repos: pennyfarthing
         acceptance_criteria:
           - Results collapsed by default
@@ -68,6 +68,7 @@ epics:
           - Large results truncated with expand option
           - Copy to clipboard button
         jira: MSSCI-13398
+        completed: "2026-02-03"
       - id: MSSCI-13400
         title: Tool use stack between messages
         description: |
