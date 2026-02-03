@@ -236,3 +236,65 @@ The `/api/identity` endpoint returns `{ jiraEmail, githubUsername }`. But `useUs
 ```typescript
 avatarUrl: githubUsername ? `https://avatars.githubusercontent.com/${githubUsername}` : null
 ```
+
+## Playwright MCP + Electron: Requires CDP + Internal URL
+
+**Playwright MCP cannot connect directly to Electron apps.** It starts its own Chromium browser.
+The workaround uses CDP to discover the Electron app's internal server URL.
+
+### Step 1: Enable CDP
+
+Electron apps must be started with `--remote-debugging-port=9222`:
+
+```bash
+# Direct (from packages/cyclist directory)
+CYCLIST_PROJECT_DIR=/path/to/project npx electron --remote-debugging-port=9222 dist/main.js
+
+# Via justfile (if cdp flag configured)
+just cyclist here cdp
+
+# Via npm script (add to package.json)
+"dev:cdp": "electron --remote-debugging-port=9222 dist/main.js"
+```
+
+### Step 2: Get Internal Server URL
+
+```bash
+# Get the page list (includes internal server URL)
+curl -s http://localhost:9222/json/list
+```
+
+Response includes the internal URL:
+```json
+[{
+  "title": "Cyclist - Claude Code Dashboard",
+  "url": "http://localhost:60178/",  # <-- Use THIS URL
+  "webSocketDebuggerUrl": "ws://localhost:9222/devtools/page/..."
+}]
+```
+
+### Step 3: Connect Playwright to Internal URL
+
+```
+mcp__playwright__browser_navigate to http://localhost:60178/
+```
+
+**The port changes each launch** - always check `/json/list` first.
+
+### Common Mistakes
+
+1. **Navigating to `http://localhost:9222`** - Shows CDP index page, not your app
+2. **Expecting Playwright to use `connectOverCDP`** - MCP doesn't support this
+3. **Empty `/json/list` response** - App failed to start (check for "Not a Pennyfarthing project" errors)
+
+### Environment Variable for Project Directory
+
+When running Electron directly (not via justfile), set `CYCLIST_PROJECT_DIR`:
+
+```bash
+CYCLIST_PROJECT_DIR=/Users/you/Projects/your-project npx electron --remote-debugging-port=9222 dist/main.js
+```
+
+Without this, Cyclist may fail with "Not a Pennyfarthing project" if `.pennyfarthing/` isn't in the working directory.
+
+See: `interactive-debug` workflow step-01-connect for full detection logic.
