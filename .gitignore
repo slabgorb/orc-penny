@@ -43,3 +43,6 @@ pennyfarthing/
 *-port
 .pennyfarthing/*.json
 .cyclist-*
+
+# Playwright MCP artifacts
+.playwright-mcp/
