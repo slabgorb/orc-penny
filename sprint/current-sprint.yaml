@@ -193,6 +193,47 @@ epics:
         status: backlog
         repos: pennyfarthing
         jira: MSSCI-13973
+      - id: 75-5
+        title: "[BUG] Cyclist UI bugs from interactive debug session"
+        description: |
+          Bugs discovered during interactive Playwright MCP debug session:
+
+          1. **Tab close TypeError** (HIGH)
+             - Every tab close throws TypeError: Cannot read properties of undefined
+             - Tab still closes despite error
+             - Reproducible on all closable tabs
+
+          2. **Stale avatar on message history** (HIGH)
+             - When agent changes (e.g., SM→Dev handoff), ALL historical messages
+               update to show the new agent's avatar instead of original
+             - Avatar should be stored per-message, not derived from current agent
+
+          3. **Hook feedback displays as user message** (MEDIUM)
+             - Stop hook feedback appears with user avatar styling
+             - Should have distinct system/hook styling
+
+          4. **Lowercase tab headers** (MEDIUM - Style)
+             - Tab labels are lowercase: "changed", "diffs", "debug", "message"
+             - Should be Title Case for professionalism
+
+          5. **Inline tool use not showing in messages** (MEDIUM)
+             - Tool calls only visible in debug panel
+             - Recent work should show tool use inline in message thread
+             - May be incomplete feature or rendering bug
+        points: 5
+        priority: P1
+        type: bug
+        status: done
+        completed: "2026-02-03"
+        assignee: kavery
+        repos: pennyfarthing
+        acceptance_criteria:
+          - Tab close works without JavaScript errors
+          - Message avatars persist correctly (show original agent, not current)
+          - Hook feedback has distinct styling from user messages
+          - Tab headers use Title Case
+          - Tool use displays inline in messages (or documented as future feature)
+          - All fixes have regression tests
     type: epic
     jira: MSSCI-13968
   - id: epic-76
