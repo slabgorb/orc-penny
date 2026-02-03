@@ -298,3 +298,130 @@ CYCLIST_PROJECT_DIR=/Users/you/Projects/your-project npx electron --remote-debug
 Without this, Cyclist may fail with "Not a Pennyfarthing project" if `.pennyfarthing/` isn't in the working directory.
 
 See: `interactive-debug` workflow step-01-connect for full detection logic.
+
+## IPC is Deprecated: Use WebSocket APIs
+
+**All Cyclist features use WebSocket**, not Electron IPC. This provides feature parity between Electron and web modes.
+
+```typescript
+// DEPRECATED - don't add new IPC handlers
+ipcMain.handle('some:channel', ...)
+window.electronAPI.someFeature()
+
+// CORRECT - use WebSocket APIs
+// Server: add to websocket.ts or create api/*.ts router
+// Client: use React hooks that connect to /ws/* or /api/*
+```
+
+Key WebSocket endpoints:
+- `/ws/claude` - Send messages, abort, clear
+- `/ws/context` - Context percentage updates
+- `/ws/stats` - Model, PWD, token stats
+- `/ws/settings` - Bell mode, relay mode, workflow settings
+- `/ws/bell` - Bell queue updates
+
+For new features:
+1. Add REST endpoint in `api/*.ts` for one-shot operations
+2. Add WebSocket endpoint in `websocket.ts` for real-time updates
+3. Create React hook in `hooks/use*.ts` that uses fetch/WebSocket
+4. Never add IPC handlers - they're legacy
+
+## Cyclist Skills Not Recognized: Wrong Working Directory
+
+**Symptom:** `/sm`, `/architect`, and other Pennyfarthing skills aren't recognized. The Claude inside Cyclist says "skill wasn't recognized" and tries to find the command files manually.
+
+**Cause:** Cyclist was started from the wrong directory. The Claude subprocess uses `cwd` from `getProjectDirectory()`, which is set based on where Cyclist was launched.
+
+**Diagnosis:** Ask the Claude inside Cyclist to check its working directory:
+```
+List the files in .claude/ directory from your current working directory. Also tell me what your current working directory is.
+```
+
+If it says `.claude/` doesn't exist or the cwd is wrong (e.g., `pennyfarthing/` subdirectory instead of orchestrator root), that's the problem.
+
+**Fix:** Restart Cyclist from the correct directory:
+```bash
+# For dogfooding (orchestrator with inlined pennyfarthing/)
+cd /path/to/pf-2  # NOT pf-2/pennyfarthing
+just cyclist here cdp
+
+# For regular projects
+cd /path/to/your-project  # Where .claude/ and .pennyfarthing/ exist
+just cyclist here
+```
+
+**Root cause:** The `.claude/` directory (with skills and commands) must be in the working directory for Claude Code to discover them. When Cyclist starts Claude with `claude -p`, it passes `cwd: projectDir`. If `projectDir` points to a subdirectory without `.claude/`, skills won't load.
+
+## Token Stats and Multiple Callbacks
+
+**Both Electron IPC and WebSocket need token stats updates.** The original code had a single `setTokenStatsCallback` which got overwritten by main.ts (IPC broadcast), breaking WebSocket broadcasts.
+
+**Solution:** Use listener pattern (like tool events):
+
+```typescript
+// otlp-receiver.ts
+const tokenStatsListeners: ((stats: TokenStats) => void)[] = [];
+
+export function addTokenStatsListener(listener: (stats: TokenStats) => void): () => void {
+  tokenStatsListeners.push(listener);
+  return () => { /* remove */ };
+}
+
+function notifyTokenStatsListeners(stats: TokenStats): void {
+  if (onTokenStatsUpdate) onTokenStatsUpdate(stats);  // Primary (IPC)
+  for (const listener of tokenStatsListeners) {
+    listener(stats);  // Additional (WebSocket, etc.)
+  }
+}
+```
+
+- `setTokenStatsCallback` - Sets primary callback (main.ts for IPC)
+- `addTokenStatsListener` - Adds additional listeners (token-stats.ts for WebSocket)
+
+## Nested Scrollbars in Cyclist UI
+
+**Problem:** Both parent container and child have `overflow: auto`, creating double scrollbars.
+
+**Pattern to avoid:**
+```css
+/* BAD - nested scrollbars */
+.parent { overflow: auto; }
+.parent .child { overflow-y: auto; }
+
+/* GOOD - only leaf scrolls */
+.parent { overflow: hidden; }
+.parent .child { overflow-y: auto; }
+```
+
+In Cyclist, `.message-panel-content` should be `overflow: hidden` because `.message-list` handles scrolling.
+
+## Git Cache Invalidation
+
+**Problem 1: Unnecessary invalidation** - Originally every Edit/Write/Bash invalidated git cache, but most Bash commands don't affect git status (ls, cat, grep, etc.).
+
+**Solution:** `shouldInvalidateGitCache(event)` in `websocket.ts` checks:
+- Edit/Write: only if `success === true`
+- Bash: only if it's a git-modifying command (`git add/commit/checkout/...`) or file-modifying command (`rm/mv/cp/touch/...`) or npm install
+
+```typescript
+// Git commands that change state
+if (/^git\s+(add|commit|checkout|reset|stash|merge|...)/i.test(cmd)) {
+  return true;
+}
+// File-modifying commands
+if (/^(rm|mv|cp|touch|mkdir)/i.test(cmd)) {
+  return true;
+}
+```
+
+**Problem 2: Debounce starvation** - Even with selective invalidation, rapid Edit/Write operations could postpone refresh indefinitely.
+
+**Solution:** Track invalidation start time and enforce max delay (5s):
+
+```typescript
+// Cap delay at max even if events keep coming
+const remainingMaxDelay = Math.max(0, MAX_DELAY - timeSinceStart);
+const actualDelay = Math.min(REFRESH_DELAY, remainingMaxDelay);
+```
+
+**Config:** `REFRESH_DELAY_MS = 1500`, `MAX_INVALIDATION_DELAY_MS = 5000`
