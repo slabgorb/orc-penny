@@ -140,9 +140,10 @@ epics:
           - Memoization for performance
         points: 3
         priority: P1
-        status: backlog
+        status: done
         repos: pennyfarthing
         jira: MSSCI-13969
+        completed: "2026-02-03"
       - id: MSSCI-13970
         title: useSyntaxHighlighter hook
         description: |
