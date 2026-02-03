@@ -81,7 +81,7 @@ epics:
           - Visual hierarchy: current tool prominent, history dimmed
         points: 5
         priority: P0
-        status: backlog
+        status: done
         repos: pennyfarthing
         acceptance_criteria:
           - Consecutive tool uses grouped into collapsible stack
@@ -90,6 +90,7 @@ epics:
           - Active/pending tool always visible
           - Clear visual distinction between current and historical
         jira: MSSCI-13400
+        completed: "2026-02-03"
       - id: MSSCI-13402
         title: Tool use visual design polish
         description: |
