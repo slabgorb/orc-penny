@@ -130,7 +130,7 @@ epics:
     repos: pennyfarthing
     status: backlog
     stories:
-      - id: 75-1
+      - id: MSSCI-13969
         title: useMarkdownParser hook
         description: |
           Convert markdown-parser.js to a React hook that handles:
@@ -142,7 +142,8 @@ epics:
         priority: P1
         status: backlog
         repos: pennyfarthing
-      - id: 75-2
+        jira: MSSCI-13969
+      - id: MSSCI-13970
         title: useSyntaxHighlighter hook
         description: |
           Convert syntax-highlighter.js to a React hook:
@@ -154,7 +155,8 @@ epics:
         priority: P1
         status: backlog
         repos: pennyfarthing
-      - id: 75-3
+        jira: MSSCI-13970
+      - id: MSSCI-13971
         title: useSlashCommands hook
         description: |
           Convert slash-commands.js to a React hook:
@@ -165,7 +167,8 @@ epics:
         priority: P1
         status: backlog
         repos: pennyfarthing
-      - id: 75-4
+        jira: MSSCI-13971
+      - id: MSSCI-13972
         title: useQuickActions hook
         description: |
           Convert quick-actions.js marker detection to React:
@@ -177,7 +180,8 @@ epics:
         priority: P1
         status: backlog
         repos: pennyfarthing
-      - id: 75-5
+        jira: MSSCI-13972
+      - id: MSSCI-13973
         title: Remove vanilla JS dependencies
         description: |
           After hooks are complete, remove the vanilla JS files and update
@@ -186,6 +190,8 @@ epics:
         priority: P2
         status: backlog
         repos: pennyfarthing
+        jira: MSSCI-13973
     type: epic
+    jira: MSSCI-13968
 # Add epics and stories here
 # See sprint/sprint-template.yaml for format reference
