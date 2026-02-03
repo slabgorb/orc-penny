@@ -155,9 +155,10 @@ epics:
           - Lazy loading of language grammars
         points: 2
         priority: P1
-        status: backlog
+        status: done
         repos: pennyfarthing
         jira: MSSCI-13970
+        completed: "2026-02-03"
       - id: MSSCI-13971
         title: useSlashCommands hook
         description: |
@@ -234,6 +235,35 @@ epics:
           - Tab headers use Title Case
           - Tool use displays inline in messages (or documented as future feature)
           - All fixes have regression tests
+      - id: 75-6
+        title: "[BUG] Panel refresh issues - changed files and sprint tabs not updating"
+        description: |
+          During interactive debugging with Playwright MCP, discovered panel refresh issues:
+
+          **Bug 1: Changed Files Panel Not Updating**
+          - Expected: Panel shows files created/modified during session
+          - Actual: Shows "0 files changed" after agent creates multiple files
+          - Hypothesis: Panel only tracks uncommitted changes, loses history after commit
+
+          **Bug 2: Sprint Tab Not Showing Active Story**
+          - Expected: Sprint tab shows active story when session file exists
+          - Actual: Shows "No active story" despite session file at .session/MSSCI-13970-session.md
+          - Hypothesis: No file watcher or WebSocket subscription for session changes
+
+          Relevant components:
+          - ChangedFilesPanel.tsx
+          - SprintPanel.tsx
+          - WebSocket endpoints: /ws/changed, /ws/session
+        points: 3
+        priority: P1
+        type: bug
+        status: backlog
+        repos: pennyfarthing
+        acceptance_criteria:
+          - Changed files panel updates when Write/Edit tools are used
+          - Changed files panel maintains history across commits during session
+          - Sprint tab detects and displays active story from session file
+          - Both panels update in real-time via WebSocket or file watcher
     type: epic
     jira: MSSCI-13968
   - id: epic-76
