@@ -761,16 +761,36 @@ epics:
           - More reliable, catches all file changes regardless of source
           - Simpler implementation without OTEL correlation complexity
 
+          Existing git-cache.ts infrastructure to leverage:
+          - Per-project cache state: Map<string, GitCacheState> with repos, stale flag, lastFetch timestamp
+          - Debounce with backoff: REFRESH_DELAY_MS=1500ms normal, MAX_INVALIDATION_DELAY_MS=5000ms cap
+          - Stale threshold: STALE_THRESHOLD_MS=30000ms forces refresh if cache > 30s old
+          - Request deduplication: concurrent requests wait for same fetchPromise
+          - Callback system: onGitCacheRefresh() broadcasts to WebSocket clients
+          - Per-repo mutex in api/git.ts prevents git lock conflicts
+
+          Cache invalidation triggers (websocket.ts shouldInvalidateGitCache):
+          - Edit/Write tools on success
+          - Bash commands: git state-changing (add, commit, checkout, reset, etc.)
+          - Bash commands: file modifications (rm, mv, cp, touch, mkdir, etc.)
+          - Bash commands: redirects with > operator
+          - Bash commands: package managers (npm install, pnpm add, etc.)
+          - Branch switch: .git/HEAD watcher triggers immediate force refresh (bypasses debounce)
+
           Implementation approach:
-          - Replace OTEL-based file tracking with git status polling/watching
-          - Use git diff for actual diff content
-          - Keep WebSocket real-time updates but source from git
-          - Remove complex tool correlation logic from otlp-receiver.ts
+          - Extend git-cache.ts to also cache file diffs (git diff output)
+          - Add diff content to GitCacheState or create parallel DiffCacheState
+          - Replace OTEL-based file tracking - use existing invalidation triggers
+          - Use git diff for actual diff content instead of toolInput.old_string/new_string
+          - Keep WebSocket real-time updates, source from git cache refresh callbacks
+          - Remove complex tool correlation logic from otlp-receiver.ts (lines 868-949)
 
           Related files:
-          - packages/cyclist/src/otlp-receiver.ts (tool correlation to remove)
-          - packages/cyclist/src/websocket.ts (shouldInvalidateGitCache)
-          - packages/cyclist/src/public/hooks/useDiffs.ts
+          - packages/cyclist/src/git-cache.ts (core caching, extend for diffs)
+          - packages/cyclist/src/api/git.ts (per-repo mutex, add git diff command)
+          - packages/cyclist/src/websocket.ts (shouldInvalidateGitCache - already works)
+          - packages/cyclist/src/otlp-receiver.ts (tool correlation to REMOVE)
+          - packages/cyclist/src/public/hooks/useDiffs.ts (update to use new source)
           - packages/cyclist/src/public/components/panels/ChangedFilesPanel.tsx
         points: 5
         priority: P1
@@ -781,9 +801,11 @@ epics:
         acceptance_criteria:
           - Changed Files panel shows all modified files via git status
           - Diffs panel shows accurate diffs via git diff
-          - Real-time updates when files change (via git status polling or file watching)
+          - Real-time updates use existing debounce/backoff (1.5s normal, 5s max cap)
+          - Cache invalidation on Edit/Write/Bash file modifications (existing logic)
+          - Branch switch triggers immediate refresh (existing .git/HEAD watcher)
           - Works correctly in both Electron and browser modes
           - Bash commands that modify files are properly tracked
-          - Simpler codebase without OTEL tool correlation for diffs
+          - Simpler codebase - remove OTEL tool correlation for diffs from otlp-receiver.ts
     type: epic
     jira: MSSCI-14186
