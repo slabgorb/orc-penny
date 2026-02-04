@@ -1,7 +1,7 @@
 sprint:
   number: 2606
   name: TO Sprint 2606
-  jira_sprint_id: 277
+  jira_sprint_id: 309
   jira_sprint_name: TO Sprint 2606
   goal: Tool use visualization and vanilla JS to React hooks migration
   start_date: 2026-02-02
@@ -431,6 +431,7 @@ epics:
         completed: '2026-02-04'
       - id: MSSCI-14191
         title: '[BUG] Bell mode notifications not working correctly'
+        jira: MSSCI-14237
         description: |
           Bell mode notifications are still not functioning as expected. When enabled,
 
@@ -741,6 +742,7 @@ epics:
         completed: "2026-02-04"
       - id: MSSCI-14212
         title: Changed Files and Diffs panels - use git commands instead of OTEL
+        jira: MSSCI-14238
         description: |
           Refactor the Changed Files and Diffs panels to use git commands directly
           instead of hand-rolling diffs from OTEL tool correlation data.
