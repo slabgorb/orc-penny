@@ -827,5 +827,42 @@ epics:
           - Layout is consistent with other panels
           - No visual glitches or overflow issues
         completed: "2026-02-04"
+      - id: MSSCI-14243
+        title: Settings panel visibility toggles for all panels
+        jira: MSSCI-14243
+        description: |
+          Add a panel visibility section to Settings that shows all registered panels
+          with checkboxes to show/hide them.
+
+          **Problem:**
+          - Closed panels cannot be recovered without knowing the exact restore mechanism
+          - Some panels (AC, Bikelane Workflow, Debug) are not easily accessible
+          - No single place to see all available panels and their visibility state
+
+          **Target state:**
+          - New 'Panel Visibility' section in Settings below existing options
+          - Lists ALL registered panels with checkbox toggles
+          - Checkbox checked = panel visible in workspace
+          - Checkbox unchecked = panel hidden/closed
+          - Clicking checkbox immediately shows/hides the panel
+          - Styling consistent with existing Settings sections
+
+          **Implementation notes:**
+          - Query PANEL_INVENTORY or equivalent registry for complete panel list
+          - Wire to Dockview API to add/remove panels
+          - Ensure ALL panels are registered (AC, Workflow, Debug, etc.)
+          - Persist visibility state to layout config
+        points: 3
+        priority: P1
+        type: feature
+        status: backlog
+        workflow: trivial
+        repos: pennyfarthing
+        acceptance_criteria:
+          - All registered panels appear in Settings list
+          - Checkbox accurately reflects current visibility
+          - Toggling checkbox shows/hides panel immediately
+          - Hidden panels can be restored via this UI
+          - Styling matches existing Settings sections
     type: epic
     jira: MSSCI-14186
