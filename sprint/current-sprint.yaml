@@ -856,7 +856,7 @@ epics:
         points: 3
         priority: P1
         type: feature
-        status: backlog
+        status: done
         workflow: trivial
         repos: pennyfarthing
         acceptance_criteria:
@@ -865,6 +865,7 @@ epics:
           - Toggling checkbox shows/hides panel immediately
           - Hidden panels can be restored via this UI
           - Styling matches existing Settings sections
+        completed: "2026-02-04"
     type: epic
     jira: MSSCI-14186
 stories: []
