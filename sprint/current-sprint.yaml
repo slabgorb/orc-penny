@@ -743,5 +743,47 @@ epics:
           - Commands execute in project root directory
           - Terminal resizes properly when panel resizes
           - Input/output works smoothly with good performance
+      - id: MSSCI-14212
+        title: Changed Files and Diffs panels - use git commands instead of OTEL
+        description: |
+          Refactor the Changed Files and Diffs panels to use git commands directly
+          instead of hand-rolling diffs from OTEL tool correlation data.
+
+          Current state:
+          - Changed Files panel relies on OTEL span correlation to extract file paths
+          - Diffs panel extracts old_string/new_string from Edit tool invocations
+          - This approach is fragile and misses changes from Bash commands
+          - toolInput correlation fails in Electron mode (MSSCI-14190 root cause)
+
+          Target state:
+          - Use `git status` to detect changed files
+          - Use `git diff` to generate actual diffs
+          - More reliable, catches all file changes regardless of source
+          - Simpler implementation without OTEL correlation complexity
+
+          Implementation approach:
+          - Replace OTEL-based file tracking with git status polling/watching
+          - Use git diff for actual diff content
+          - Keep WebSocket real-time updates but source from git
+          - Remove complex tool correlation logic from otlp-receiver.ts
+
+          Related files:
+          - packages/cyclist/src/otlp-receiver.ts (tool correlation to remove)
+          - packages/cyclist/src/websocket.ts (shouldInvalidateGitCache)
+          - packages/cyclist/src/public/hooks/useDiffs.ts
+          - packages/cyclist/src/public/components/panels/ChangedFilesPanel.tsx
+        points: 5
+        priority: P1
+        type: refactor
+        status: backlog
+        workflow: tdd
+        repos: pennyfarthing
+        acceptance_criteria:
+          - Changed Files panel shows all modified files via git status
+          - Diffs panel shows accurate diffs via git diff
+          - Real-time updates when files change (via git status polling or file watching)
+          - Works correctly in both Electron and browser modes
+          - Bash commands that modify files are properly tracked
+          - Simpler codebase without OTEL tool correlation for diffs
     type: epic
     jira: MSSCI-14186
