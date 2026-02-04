@@ -539,16 +539,17 @@ future:
         implementing flexible workspace layout while maintaining the sacred
         center message view.
 
-        Status: MOSTLY COMPLETE (Sprint 12)
-        - Core migration done: MessageView, panels, docking, accessibility
-        - Remaining: vanilla JS utilities conversion, tool use visualization
+        Status: COMPLETE (Sprint 12-13)
+        - Core migration done: MessageView, panels, docking, accessibility (Epics 69-73)
+        - Vanilla JS utilities converted to React hooks (Epic 75)
+        - All 65 points delivered
 
         UX Spec: docs/planning/ux-design-specification.md
         Epics Doc: docs/planning/cyclist-react-migration-epics.md
-      status: mostly_complete
+      status: complete
       blocked_by: null
       total_points: 65
-      completed_points: 40
+      completed_points: 65
       epics: []
 # =============================================================================
 # SUMMARY
@@ -560,7 +561,7 @@ future:
 # Quality & Scale                 |   1   |   17   | backlog
 # Technical Debt                  |   0   |    7   | backlog (incl 39-6)
 # Python CLI Migration            |   0   |   19   | ready
-# Cyclist React Follow-up         |   2   |   25   | planning
+# Cyclist React Migration          |   -   |   65   | COMPLETE
 # --------------------------------|-------|--------|------------------
 # TOTAL                           |   9   |  112   |
 #

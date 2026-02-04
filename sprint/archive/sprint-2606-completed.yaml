@@ -10,3 +10,40 @@ sprint:
 
 completed:
   # Completed stories will be appended here by archive-story.sh
+
+  # epic-75: Epic: Vanilla JS to React Hooks Migration - COMPLETE
+  - id: MSSCI-13969
+    epic: MSSCI-13968
+    title: "useMarkdownParser hook"
+    points: 3
+    completed: 2026-02-03
+  - id: MSSCI-13970
+    epic: MSSCI-13968
+    title: "useSyntaxHighlighter hook"
+    points: 2
+    completed: 2026-02-03
+  - id: MSSCI-13971
+    epic: MSSCI-13968
+    title: "useSlashCommands hook"
+    points: 2
+    completed: 2026-02-03
+  - id: MSSCI-13972
+    epic: MSSCI-13968
+    title: "useQuickActions hook"
+    points: 2
+    completed: 2026-02-03
+  - id: MSSCI-13973
+    epic: MSSCI-13968
+    title: "Remove vanilla JS dependencies"
+    points: 3
+    completed: 2026-02-03
+  - id: 75-5
+    epic: MSSCI-13968
+    title: "[BUG] Cyclist UI bugs from interactive debug session"
+    points: 5
+    completed: 2026-02-03
+  - id: 75-6
+    epic: MSSCI-13968
+    title: "[BUG] Panel refresh issues - changed files and sprint tabs not updating"
+    points: 3
+    completed: 2026-02-03

@@ -1,337 +1,228 @@
 sprint:
-  name: "TO Sprint 2606"
+  name: TO Sprint 2606
   jira_sprint_id: 277
-  jira_sprint_name: "TO Sprint 2606"
+  jira_sprint_name: TO Sprint 2606
   goal: Tool use visualization and vanilla JS to React hooks migration
   start_date: 2026-02-02
   end_date: 2026-02-15
   status: active
-# Completed stories archived to: sprint/archive/sprint-2606-completed.yaml
 epics:
-  - id: epic-74
-    title: 'Epic: Tool Use Visualization'
-    description: |
-      Improve tool use display in the message view with human-readable
-      summaries and proper visual hierarchy.
+- id: epic-74
+  title: 'Epic: Tool Use Visualization'
+  description: 'Improve tool use display in the message view with human-readable
 
-      Current state: ToolCallBlock shows tool name + raw input
-      Target state: Stacked tool history with intent summaries
+    summaries and proper visual hierarchy.
 
-      Key requirements:
-      - Tool uses show human-readable intent summary
-      - Results in collapsible block underneath
-      - Previous tool uses between messages shown collapsed as stack
-      - Current/active tool use shown prominently
-    points: 13
-    priority: P1
-    marker: cyclist-react
-    repos: pennyfarthing
-    status: backlog
-    stories:
-      - id: MSSCI-13395
-        title: Tool intent summarizer
-        description: |
-          Create a utility that generates human-readable summaries of tool use intent:
-          - Read: "Reading file src/foo.ts"
-          - Bash: "Running git status" or "Installing dependencies"
-          - Glob: "Finding TypeScript files in src/"
-          - Grep: "Searching for 'TODO' in codebase"
-          - Write: "Creating new file config.json"
-          - Edit: "Updating function in utils.ts"
-          - Task: "Launching explore agent to find error handlers"
-          Use tool name + input parameters to generate contextual summary.
-        points: 3
-        priority: P0
-        status: done
-        completed: 2026-02-02
-        repos: pennyfarthing
-        acceptance_criteria:
-          - Generates readable summary for all common tools
-          - Handles edge cases gracefully (unknown tools show name + truncated input)
-          - Extracts meaningful context from input parameters
-        jira: MSSCI-13395
-      - id: MSSCI-13398
-        title: Collapsible tool result display
-        description: |
-          Enhance ToolCallBlock to show results in a proper collapsible block:
-          - Results collapsed by default (show "▶ Result (X lines)")
-          - Expand to show full result with syntax highlighting
-          - Large results (>50 lines) show truncated preview with "Show all"
-          - Copy button for result content
-        points: 2
-        priority: P0
-        status: done
-        repos: pennyfarthing
-        acceptance_criteria:
-          - Results collapsed by default
-          - Line count shown in collapsed state
-          - Large results truncated with expand option
-          - Copy to clipboard button
-        jira: MSSCI-13398
-        completed: "2026-02-03"
-      - id: MSSCI-13400
-        title: Tool use stack between messages
-        description: |
-          Group consecutive tool uses between assistant messages into a
-          collapsible stack:
-          - Show count: "5 tool calls" with expand/collapse
-          - Collapsed: show just the summary line for each
-          - Expanded: show full ToolCallBlock for each
-          - Current/pending tool use always shown expanded
-          - Visual hierarchy: current tool prominent, history dimmed
-        points: 5
-        priority: P0
-        status: done
-        repos: pennyfarthing
-        acceptance_criteria:
-          - Consecutive tool uses grouped into collapsible stack
-          - Stack shows count when collapsed
-          - Individual tool summaries visible when expanded
-          - Active/pending tool always visible
-          - Clear visual distinction between current and historical
-        jira: MSSCI-13400
-        completed: "2026-02-03"
-      - id: MSSCI-13402
-        title: Tool use visual design polish
-        description: |
-          Apply consistent visual design to tool use blocks:
-          - Status indicators (pending spinner, success checkmark, error X)
-          - Color coding by tool type (read=blue, write=orange, bash=green)
-          - Elapsed time for completed tools
-          - Error results highlighted with red border
-          - Consistent with Cyclist design system
-        points: 3
-        priority: P1
-        status: done
-        repos: pennyfarthing
-        acceptance_criteria:
-          - Status indicators for pending/success/error
-          - Tool type color coding
-          - Elapsed time display
-          - Error state styling
-        jira: MSSCI-13402
-        completed: "2026-02-03"
-    type: epic
-    jira: MSSCI-13394
-  - id: epic-75
-    title: 'Epic: Vanilla JS to React Hooks Migration'
-    description: |
-      Convert remaining vanilla JS utilities to proper React hooks and
-      components for better integration with the React architecture.
 
-      Files to migrate (~3100 lines):
-      - message-view/*.js (markdown, renderers, quick-actions, syntax)
-      - slash-commands.js
-      - avatar-service.ts
-      - color-presets.ts / font-presets.ts
-      - subagent-display.ts
-    points: 12
-    priority: P2
-    marker: cyclist-react
-    repos: pennyfarthing
+    Current state: ToolCallBlock shows tool name + raw input
+
+    Target state: Stacked tool history with intent summaries
+
+
+    Key requirements:
+
+    - Tool uses show human-readable intent summary
+
+    - Results in collapsible block underneath
+
+    - Previous tool uses between messages shown collapsed as stack
+
+    - Current/active tool use shown prominently
+
+    '
+  points: 13
+  priority: P1
+  marker: cyclist-react
+  repos: pennyfarthing
+  status: backlog
+  stories:
+  - id: MSSCI-13395
+    title: Tool intent summarizer
+    description: 'Create a utility that generates human-readable summaries of tool
+      use intent:
+
+      - Read: "Reading file src/foo.ts"
+
+      - Bash: "Running git status" or "Installing dependencies"
+
+      - Glob: "Finding TypeScript files in src/"
+
+      - Grep: "Searching for ''TODO'' in codebase"
+
+      - Write: "Creating new file config.json"
+
+      - Edit: "Updating function in utils.ts"
+
+      - Task: "Launching explore agent to find error handlers"
+
+      Use tool name + input parameters to generate contextual summary.
+
+      '
+    points: 3
+    priority: P0
     status: done
-    completed: "2026-02-03"
-    stories:
-      - id: MSSCI-13969
-        title: useMarkdownParser hook
-        description: |
-          Convert markdown-parser.js to a React hook that handles:
-          - Markdown to HTML conversion
-          - Code block extraction and syntax highlighting
-          - Link handling and sanitization
-          - Memoization for performance
-        points: 3
-        priority: P1
-        status: done
-        repos: pennyfarthing
-        jira: MSSCI-13969
-        completed: "2026-02-03"
-      - id: MSSCI-13970
-        title: useSyntaxHighlighter hook
-        description: |
-          Convert syntax-highlighter.js to a React hook:
-          - Language detection
-          - Highlight.js or Prism integration
-          - Theme-aware coloring
-          - Lazy loading of language grammars
-        points: 2
-        priority: P1
-        status: done
-        repos: pennyfarthing
-        jira: MSSCI-13970
-        completed: "2026-02-03"
-      - id: MSSCI-13971
-        title: useSlashCommands hook
-        description: |
-          Convert slash-commands.js to a React hook:
-          - Command parsing and completion
-          - Suggestions dropdown integration
-          - Command history
-        points: 2
-        priority: P1
-        status: done
-        completed: "2026-02-03"
-        delivered_in: MSSCI-12717
-        notes: Already implemented as useTabCompletion + useCommandHistory in React Migration
-        repos: pennyfarthing
-        jira: MSSCI-13971
-      - id: MSSCI-13972
-        title: useQuickActions hook
-        description: |
-          Convert quick-actions.js marker detection to React:
-          - CYCLIST marker parsing
-          - Action button rendering
-          - Handoff/question/choices handling
-          Already partially done in QuickActions.tsx, complete the migration.
-        points: 2
-        priority: P1
-        status: done
-        completed: "2026-02-03"
-        delivered_in: MSSCI-12787
-        notes: Already implemented as useMarkerActions hook in CYCLIST Marker Parsing story
-        repos: pennyfarthing
-        jira: MSSCI-13972
-      - id: MSSCI-13973
-        title: Remove vanilla JS dependencies
-        description: |
-          After hooks are complete, remove the vanilla JS files and update
-          all imports. Verify no regressions in message rendering.
-        points: 3
-        priority: P2
-        status: done
-        completed: "2026-02-03"
-        delivered_in: MSSCI-12717
-        notes: Vanilla JS files already removed during React Migration - all files now TypeScript
-        repos: pennyfarthing
-        jira: MSSCI-13973
-      - id: 75-5
-        title: "[BUG] Cyclist UI bugs from interactive debug session"
-        description: |
-          Bugs discovered during interactive Playwright MCP debug session:
+    completed: 2026-02-02
+    repos: pennyfarthing
+    acceptance_criteria:
+    - Generates readable summary for all common tools
+    - Handles edge cases gracefully (unknown tools show name + truncated input)
+    - Extracts meaningful context from input parameters
+    jira: MSSCI-13395
+  - id: MSSCI-13398
+    title: Collapsible tool result display
+    description: 'Enhance ToolCallBlock to show results in a proper collapsible block:
 
-          1. **Tab close TypeError** (HIGH)
-             - Every tab close throws TypeError: Cannot read properties of undefined
-             - Tab still closes despite error
-             - Reproducible on all closable tabs
+      - Results collapsed by default (show "▶ Result (X lines)")
 
-          2. **Stale avatar on message history** (HIGH)
-             - When agent changes (e.g., SM→Dev handoff), ALL historical messages
-               update to show the new agent's avatar instead of original
-             - Avatar should be stored per-message, not derived from current agent
+      - Expand to show full result with syntax highlighting
 
-          3. **Hook feedback displays as user message** (MEDIUM)
-             - Stop hook feedback appears with user avatar styling
-             - Should have distinct system/hook styling
+      - Large results (>50 lines) show truncated preview with "Show all"
 
-          4. **Lowercase tab headers** (MEDIUM - Style)
-             - Tab labels are lowercase: "changed", "diffs", "debug", "message"
-             - Should be Title Case for professionalism
+      - Copy button for result content
 
-          5. **Inline tool use not showing in messages** (MEDIUM)
-             - Tool calls only visible in debug panel
-             - Recent work should show tool use inline in message thread
-             - May be incomplete feature or rendering bug
-        points: 5
-        priority: P1
-        type: bug
-        status: done
-        completed: "2026-02-03"
-        assignee: kavery
-        repos: pennyfarthing
-        acceptance_criteria:
-          - Tab close works without JavaScript errors
-          - Message avatars persist correctly (show original agent, not current)
-          - Hook feedback has distinct styling from user messages
-          - Tab headers use Title Case
-          - Tool use displays inline in messages (or documented as future feature)
-          - All fixes have regression tests
-      - id: 75-6
-        title: "[BUG] Panel refresh issues - changed files and sprint tabs not updating"
-        description: |
-          During interactive debugging with Playwright MCP, discovered panel refresh issues:
+      '
+    points: 2
+    priority: P0
+    status: done
+    repos: pennyfarthing
+    acceptance_criteria:
+    - Results collapsed by default
+    - Line count shown in collapsed state
+    - Large results truncated with expand option
+    - Copy to clipboard button
+    jira: MSSCI-13398
+    completed: '2026-02-03'
+  - id: MSSCI-13400
+    title: Tool use stack between messages
+    description: 'Group consecutive tool uses between assistant messages into a
 
-          **Bug 1: Changed Files Panel Not Updating**
-          - Expected: Panel shows files created/modified during session
-          - Actual: Shows "0 files changed" after agent creates multiple files
-          - Hypothesis: Panel only tracks uncommitted changes, loses history after commit
+      collapsible stack:
 
-          **Bug 2: Sprint Tab Not Showing Active Story**
-          - Expected: Sprint tab shows active story when session file exists
-          - Actual: Shows "No active story" despite session file at .session/MSSCI-13970-session.md
-          - Hypothesis: No file watcher or WebSocket subscription for session changes
+      - Show count: "5 tool calls" with expand/collapse
 
-          Relevant components:
-          - ChangedFilesPanel.tsx
-          - SprintPanel.tsx
-          - WebSocket endpoints: /ws/changed, /ws/session
-        points: 3
-        priority: P1
-        type: bug
-        status: done
-        repos: pennyfarthing
-        acceptance_criteria:
-          - Changed files panel updates when Write/Edit tools are used
-          - Changed files panel maintains history across commits during session
-          - Sprint tab detects and displays active story from session file
-          - Both panels update in real-time via WebSocket or file watcher
-        completed: "2026-02-03"
-    type: epic
-    jira: MSSCI-13968
-  - id: epic-76
-    title: 'Epic: Dockview Panel Migration'
-    description: |
-      Replace hand-rolled panel management with Dockview library.
+      - Collapsed: show just the summary line for each
 
-      Current state: Custom 1,042-line DockingWorkspace.tsx with bugs
-      Target state: Dockview-based workspace with proper panel docking
+      - Expanded: show full ToolCallBlock for each
 
-      dockview-react is already installed but unused. Migration enables:
-      - Floating panels (pop-out windows)
-      - Split views within regions
-      - Panel maximization
-      - Better drag-and-drop UX
-      - Full ARIA accessibility
+      - Current/pending tool use always shown expanded
 
-      See ADR-0019 for technical details.
+      - Visual hierarchy: current tool prominent, history dimmed
+
+      '
+    points: 5
+    priority: P0
+    status: done
+    repos: pennyfarthing
+    acceptance_criteria:
+    - Consecutive tool uses grouped into collapsible stack
+    - Stack shows count when collapsed
+    - Individual tool summaries visible when expanded
+    - Active/pending tool always visible
+    - Clear visual distinction between current and historical
+    jira: MSSCI-13400
+    completed: '2026-02-03'
+  - id: MSSCI-13402
+    title: Tool use visual design polish
+    description: 'Apply consistent visual design to tool use blocks:
+
+      - Status indicators (pending spinner, success checkmark, error X)
+
+      - Color coding by tool type (read=blue, write=orange, bash=green)
+
+      - Elapsed time for completed tools
+
+      - Error results highlighted with red border
+
+      - Consistent with Cyclist design system
+
+      '
+    points: 3
+    priority: P1
+    status: done
+    repos: pennyfarthing
+    acceptance_criteria:
+    - Status indicators for pending/success/error
+    - Tool type color coding
+    - Elapsed time display
+    - Error state styling
+    jira: MSSCI-13402
+    completed: '2026-02-03'
+  type: epic
+  jira: MSSCI-13394
+- id: epic-76
+  title: 'Epic: Dockview Panel Migration'
+  description: 'Replace hand-rolled panel management with Dockview library.
+
+
+    Current state: Custom 1,042-line DockingWorkspace.tsx with bugs
+
+    Target state: Dockview-based workspace with proper panel docking
+
+
+    dockview-react is already installed but unused. Migration enables:
+
+    - Floating panels (pop-out windows)
+
+    - Split views within regions
+
+    - Panel maximization
+
+    - Better drag-and-drop UX
+
+    - Full ARIA accessibility
+
+
+    See ADR-0019 for technical details.
+
+    '
+  points: 8
+  priority: P0
+  marker: cyclist-react
+  repos: pennyfarthing
+  status: in_progress
+  stories:
+  - id: MSSCI-14001
+    title: Replace DockingWorkspace with Dockview
+    description: 'Replace the hand-rolled panel system with Dockview in one pass:
+
+
+      1. Create DockviewWorkspace.tsx using dockview-react
+
+      2. Adapt existing 9 panel components via PanelAdapter pattern
+
+      3. Implement sacred center (MessagePanel locked, cannot close/move)
+
+      4. Migrate layout persistence to Dockview serialization format
+
+      5. Apply Cyclist theme via CSS custom properties
+
+      6. Implement responsive collapse behavior
+
+      7. Update App.tsx to use new workspace
+
+      8. Delete old DockingWorkspace.tsx (~1,042 lines)
+
+      9. Update/fix affected tests
+
+
+      See docs/adr/0019-dockview-migration.md for implementation details.
+
+      '
     points: 8
     priority: P0
-    marker: cyclist-react
+    status: done
     repos: pennyfarthing
-    status: in_progress
-    stories:
-      - id: MSSCI-14001
-        title: Replace DockingWorkspace with Dockview
-        description: |
-          Replace the hand-rolled panel system with Dockview in one pass:
-
-          1. Create DockviewWorkspace.tsx using dockview-react
-          2. Adapt existing 9 panel components via PanelAdapter pattern
-          3. Implement sacred center (MessagePanel locked, cannot close/move)
-          4. Migrate layout persistence to Dockview serialization format
-          5. Apply Cyclist theme via CSS custom properties
-          6. Implement responsive collapse behavior
-          7. Update App.tsx to use new workspace
-          8. Delete old DockingWorkspace.tsx (~1,042 lines)
-          9. Update/fix affected tests
-
-          See docs/adr/0019-dockview-migration.md for implementation details.
-        points: 8
-        priority: P0
-        status: done
-        repos: pennyfarthing
-        acceptance_criteria:
-          - DockingWorkspace.tsx deleted (1,042 lines removed)
-          - DockviewWorkspace.tsx renders all 9 panels
-          - MessagePanel locked in center (cannot close/move)
-          - Panels draggable between sidebars
-          - Layout persists to config.local.yaml
-          - Responsive collapse at <1024px works
-          - Theme matches current Cyclist design
-          - All existing panel functionality preserved
-          - Tests pass
-        jira: MSSCI-14001
-        completed: "2026-02-03"
-    type: epic
-    jira: MSSCI-14000
-# Add epics and stories here
-# See sprint/sprint-template.yaml for format reference
+    acceptance_criteria:
+    - DockingWorkspace.tsx deleted (1,042 lines removed)
+    - DockviewWorkspace.tsx renders all 9 panels
+    - MessagePanel locked in center (cannot close/move)
+    - Panels draggable between sidebars
+    - Layout persists to config.local.yaml
+    - Responsive collapse at <1024px works
+    - Theme matches current Cyclist design
+    - All existing panel functionality preserved
+    - Tests pass
+    jira: MSSCI-14001
+    completed: '2026-02-03'
+  type: epic
+  jira: MSSCI-14000
