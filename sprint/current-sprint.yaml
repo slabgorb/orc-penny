@@ -722,7 +722,7 @@ epics:
         points: 2
         priority: P1
         type: bug
-        status: backlog
+        status: done
         workflow: trivial
         repos: pennyfarthing
         acceptance_criteria:
@@ -731,6 +731,7 @@ epics:
           - Panel shows task type (agent vs shell) and description
           - Click task to view full output via TaskOutput
           - Completed tasks remain visible for session duration
+        completed: "2026-02-04"
     type: epic
     jira: MSSCI-14186
 stories: []
