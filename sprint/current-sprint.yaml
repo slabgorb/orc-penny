@@ -506,7 +506,7 @@ epics:
         points: 3
         priority: P1
         type: enhancement
-        status: backlog
+        status: done
         repos: pennyfarthing
         acceptance_criteria:
           - Epic rows show context existence indicator
@@ -514,6 +514,7 @@ epics:
           - Story status badges are visually distinct (done/todo/blocked/in_progress)
           - Context file existence shown for stories
           - Consistent styling with Cyclist design system
+        completed: "2026-02-04"
     type: epic
     jira: MSSCI-14186
 stories: []
