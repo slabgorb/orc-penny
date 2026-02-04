@@ -736,3 +736,38 @@ epics:
     type: epic
     jira: MSSCI-14186
 stories: []
+      - id: MSSCI-14211
+        title: TTY Panel with xterm.js terminal emulator
+        description: |
+          Add a TTY panel to Cyclist using xterm.js for high-fidelity terminal emulation.
+          
+          **Requirements:**
+          - Embed xterm.js terminal in a Dockview panel
+          - Load user's shell environment (bash/zsh profile)
+          - Open in project root directory
+          - Proper resize handling when panel resizes
+          - Standard terminal features (colors, cursor, scrollback)
+          
+          **Out of scope:**
+          - Multiple terminal instances/tabs
+          - Split panes within terminal
+          - Session persistence across panel close
+          
+          **Technical approach:**
+          - Use xterm.js + xterm-addon-fit for resize
+          - node-pty backend for pseudo-terminal
+          - WebSocket bridge between renderer and main process
+          - Detect user's default shell from environment
+        points: 5
+        priority: P1
+        type: feature
+        status: backlog
+        repos: pennyfarthing
+        acceptance_criteria:
+          - TTY panel available in Dockview panel list
+          - Terminal loads user's shell with environment (PATH, aliases, etc.)
+          - Opens in project root directory
+          - Resizes correctly when panel is resized
+          - Supports ANSI colors and cursor positioning
+          - Scrollback buffer works (arrow up for history, scroll for output)
+          - Panel can be positioned/docked like other panels
