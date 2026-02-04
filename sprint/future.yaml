@@ -696,23 +696,12 @@ future:
                 - All sprint YAML files pass validation
                 - Format matches sprint-template.yaml
                 - ADR-0018 updated with Python implementation notes
-    - name: "Python CLI Migration"
-      description: |
-        Replace fragile bash script symlinks with a unified Python CLI (`pf`) that
-        agents can invoke reliably via module resolution. Eliminates path-related
-        errors that waste agent context on debugging instead of productive work.
-
-        Key decisions:
-        - Click library for decorator-based CLI (per PRD FR18)
-        - Lazy loading for <200ms startup time
-        - Phased migration: bash preserved during transition
-
-        PRD: docs/planning/prd.md
-        Architecture: docs/planning/architecture.md
-      status: ready
-      blocked_by: null
-      total_points: 19
-      epics: []
+    # ==========================================================================
+    # PYTHON CLI MIGRATION - CANCELLED
+    # Reason: Current bash/Python hybrid approach working well enough.
+    # The complexity of full migration doesn't justify the benefits.
+    # Date cancelled: 2026-02-04
+    # ==========================================================================
     # ==========================================================================
     # CYCLIST REACT MIGRATION
     # Imported from: docs/planning/cyclist-react-migration-epics.md
@@ -745,10 +734,10 @@ future:
 # Repository Optimization         |   -   |    -   | CANCELLED (epic-55)
 # Quality & Scale                 |   1   |   17   | backlog
 # Technical Debt                  |   0   |    7   | backlog (incl 39-6)
-# Python CLI Migration            |   0   |   19   | ready
+# Python CLI Migration            |   -   |    -   | CANCELLED
 # Cyclist React Migration          |   -   |   65   | COMPLETE
 # --------------------------------|-------|--------|------------------
-# TOTAL                           |   9   |  112   |
+# TOTAL                           |   8   |   93   |
 #
 # Epic Numbering Used: 40-46, 69-76
 # Next Available Epic Number: 77
@@ -757,4 +746,5 @@ future:
 # epic-55 cancelled - nested build was the actual issue, not portrait size
 # epic-39 cancelled 2026-02-02 - BMAD QA ceremony, only 39-6 salvaged
 # Epics 69-73 completed in Sprint 12 (Cyclist React Migration core)
+# Python CLI Migration cancelled 2026-02-04 - bash/Python hybrid approach sufficient
 # =============================================================================
