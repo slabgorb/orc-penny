@@ -807,5 +807,26 @@ epics:
           - Works correctly in both Electron and browser modes
           - Bash commands that modify files are properly tracked
           - Simpler codebase - remove OTEL tool correlation for diffs from otlp-receiver.ts
+      - id: MSSCI-14213
+        title: '[BUG] Todo panel CSS styling issues'
+        description: |
+          Fix CSS styling issues in the Todo panel.
+
+          Issues to address:
+          - TBD - need to identify specific CSS problems
+
+          Related files:
+          - packages/cyclist/src/public/components/panels/TodoPanel.tsx
+          - packages/cyclist/src/public/styles/ (relevant CSS/SCSS files)
+        points: 2
+        priority: P2
+        type: bug
+        status: backlog
+        workflow: trivial
+        repos: pennyfarthing
+        acceptance_criteria:
+          - Todo panel renders with correct styling
+          - Layout is consistent with other panels
+          - No visual glitches or overflow issues
     type: epic
     jira: MSSCI-14186
