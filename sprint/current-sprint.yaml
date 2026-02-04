@@ -168,7 +168,10 @@ epics:
           - Command history
         points: 2
         priority: P1
-        status: backlog
+        status: done
+        completed: "2026-02-03"
+        delivered_in: MSSCI-12717
+        notes: Already implemented as useTabCompletion + useCommandHistory in React Migration
         repos: pennyfarthing
         jira: MSSCI-13971
       - id: MSSCI-13972
