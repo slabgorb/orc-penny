@@ -1,4 +1,5 @@
 sprint:
+  number: 2606
   name: TO Sprint 2606
   jira_sprint_id: 277
   jira_sprint_name: TO Sprint 2606
@@ -365,7 +366,7 @@ epics:
         points: 8
         priority: P1
         type: enhancement
-        status: backlog
+        status: done
         repos: pennyfarthing
         acceptance_criteria:
           - Current story section shows active story or "Next up" indicator
@@ -377,6 +378,7 @@ epics:
           - Promote button triggers promote-epic.sh and refreshes view
           - All actions have loading states and error handling
           - Panel updates in real-time via WebSocket or polling
+        completed: "2026-02-04"
       - id: MSSCI-14190
         title: "[BUG] Changed Files panel not tracking file modifications"
         description: |
