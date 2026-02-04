@@ -8,513 +8,747 @@ sprint:
   end_date: 2026-02-15
   status: active
 epics:
-  - id: epic-74
-    title: "Epic: Tool Use Visualization"
-    description: |
-      Improve tool use display in the message view with human-readable
-      summaries and proper visual hierarchy.
+- id: epic-74
+  title: 'Epic: Tool Use Visualization'
+  description: 'Improve tool use display in the message view with human-readable
 
-      Current state: ToolCallBlock shows tool name + raw input
-      Target state: Stacked tool history with intent summaries
+    summaries and proper visual hierarchy.
 
-      Key requirements:
-      - Tool uses show human-readable intent summary
-      - Results in collapsible block underneath
-      - Previous tool uses between messages shown collapsed as stack
-      - Current/active tool use shown prominently
-    points: 13
-    priority: P1
-    marker: cyclist-react
-    repos: pennyfarthing
-    status: backlog
-    stories:
-      - id: MSSCI-13395
-        title: Tool intent summarizer
-        description: |
-          Create a utility that generates human-readable summaries of tool use intent:
-          - Read: "Reading file src/foo.ts"
-          - Bash: "Running git status" or "Installing dependencies"
-          - Glob: "Finding TypeScript files in src/"
-          - Grep: "Searching for 'TODO' in codebase"
-          - Write: "Creating new file config.json"
-          - Edit: "Updating function in utils.ts"
-          - Task: "Launching explore agent to find error handlers"
 
-          Use tool name + input parameters to generate contextual summary.
-        points: 3
-        priority: P0
-        status: done
-        completed: 2026-02-02
-        repos: pennyfarthing
-        acceptance_criteria:
-          - Generates readable summary for all common tools
-          - Handles edge cases gracefully (unknown tools show name + truncated input)
-          - Extracts meaningful context from input parameters
-        jira: MSSCI-13395
-      - id: MSSCI-13398
-        title: Collapsible tool result display
-        description: |
-          Enhance ToolCallBlock to show results in a proper collapsible block:
-          - Results collapsed by default (show "▶ Result (X lines)")
-          - Expand to show full result with syntax highlighting
-          - Large results (>50 lines) show truncated preview with "Show all"
-          - Copy button for result content
-        points: 2
-        priority: P0
-        status: done
-        repos: pennyfarthing
-        acceptance_criteria:
-          - Results collapsed by default
-          - Line count shown in collapsed state
-          - Large results truncated with expand option
-          - Copy to clipboard button
-        jira: MSSCI-13398
-        completed: '2026-02-03'
-      - id: MSSCI-13400
-        title: Tool use stack between messages
-        description: |
-          Group consecutive tool uses between assistant messages into a collapsible stack:
-          - Show count: "5 tool calls" with expand/collapse
-          - Collapsed: show just the summary line for each
-          - Expanded: show full ToolCallBlock for each
-          - Current/pending tool use always shown expanded
-          - Visual hierarchy: current tool prominent, history dimmed
-        points: 5
-        priority: P0
-        status: done
-        repos: pennyfarthing
-        acceptance_criteria:
-          - Consecutive tool uses grouped into collapsible stack
-          - Stack shows count when collapsed
-          - Individual tool summaries visible when expanded
-          - Active/pending tool always visible
-          - Clear visual distinction between current and historical
-        jira: MSSCI-13400
-        completed: '2026-02-03'
-      - id: MSSCI-13402
-        title: Tool use visual design polish
-        description: |
-          Apply consistent visual design to tool use blocks:
-          - Status indicators (pending spinner, success checkmark, error X)
-          - Color coding by tool type (read=blue, write=orange, bash=green)
-          - Elapsed time for completed tools
-          - Error results highlighted with red border
-          - Consistent with Cyclist design system
-        points: 3
-        priority: P1
-        status: done
-        repos: pennyfarthing
-        acceptance_criteria:
-          - Status indicators for pending/success/error
-          - Tool type color coding
-          - Elapsed time display
-          - Error state styling
-        jira: MSSCI-13402
-        completed: '2026-02-03'
-    type: epic
-    jira: MSSCI-13394
-  - id: epic-76
-    title: "Epic: Dockview Panel Migration"
-    description: |
-      Replace hand-rolled panel management with Dockview library.
+    Current state: ToolCallBlock shows tool name + raw input
 
-      Current state: Custom 1,042-line DockingWorkspace.tsx with bugs
-      Target state: Dockview-based workspace with proper panel docking
+    Target state: Stacked tool history with intent summaries
 
-      dockview-react is already installed but unused. Migration enables:
-      - Floating panels (pop-out windows)
-      - Split views within regions
-      - Panel maximization
-      - Better drag-and-drop UX
-      - Full ARIA accessibility
 
-      See ADR-0019 for technical details.
-    points: 29
+    Key requirements:
+
+    - Tool uses show human-readable intent summary
+
+    - Results in collapsible block underneath
+
+    - Previous tool uses between messages shown collapsed as stack
+
+    - Current/active tool use shown prominently
+
+    '
+  points: 13
+  priority: P1
+  marker: cyclist-react
+  repos: pennyfarthing
+  status: backlog
+  stories:
+  - id: MSSCI-13395
+    title: Tool intent summarizer
+    description: 'Create a utility that generates human-readable summaries of tool use intent:
+
+      - Read: "Reading file src/foo.ts"
+
+      - Bash: "Running git status" or "Installing dependencies"
+
+      - Glob: "Finding TypeScript files in src/"
+
+      - Grep: "Searching for ''TODO'' in codebase"
+
+      - Write: "Creating new file config.json"
+
+      - Edit: "Updating function in utils.ts"
+
+      - Task: "Launching explore agent to find error handlers"
+
+
+      Use tool name + input parameters to generate contextual summary.
+
+      '
+    points: 3
     priority: P0
-    marker: cyclist-react
+    status: done
+    completed: 2026-02-02
     repos: pennyfarthing
-    status: in_progress
-    stories:
-      - id: MSSCI-14001
-        title: Replace DockingWorkspace with Dockview
-        description: |
-          Replace the hand-rolled panel system with Dockview in one pass:
+    acceptance_criteria:
+    - Generates readable summary for all common tools
+    - Handles edge cases gracefully (unknown tools show name + truncated input)
+    - Extracts meaningful context from input parameters
+    jira: MSSCI-13395
+  - id: MSSCI-13398
+    title: Collapsible tool result display
+    description: 'Enhance ToolCallBlock to show results in a proper collapsible block:
 
-          1. Create DockviewWorkspace.tsx using dockview-react
-          2. Adapt existing 9 panel components via PanelAdapter pattern
-          3. Implement sacred center (MessagePanel locked, cannot close/move)
-          4. Migrate layout persistence to Dockview serialization format
-          5. Apply Cyclist theme via CSS custom properties
-          6. Implement responsive collapse behavior
-          7. Update App.tsx to use new workspace
-          8. Delete old DockingWorkspace.tsx (~1,042 lines)
-          9. Update/fix affected tests
+      - Results collapsed by default (show "▶ Result (X lines)")
 
-          See docs/adr/0019-dockview-migration.md for implementation details.
-        points: 8
-        priority: P0
-        status: done
-        repos: pennyfarthing
-        acceptance_criteria:
-          - DockingWorkspace.tsx deleted (1,042 lines removed)
-          - DockviewWorkspace.tsx renders all 9 panels
-          - MessagePanel locked in center (cannot close/move)
-          - Panels draggable between sidebars
-          - Layout persists to config.local.yaml
-          - Responsive collapse at <1024px works
-          - Theme matches current Cyclist design
-          - All existing panel functionality preserved
-          - Tests pass
-        jira: MSSCI-14001
-        completed: '2026-02-03'
-      - id: MSSCI-14187
-        title: "[BUG] Tab overflow - hidden tabs have no way to be accessed"
-        description: |
-          When sidebars have more tabs than can fit in the visible area, users have
-          no way to access the hidden tabs. Dockview's built-in tab overflow dropdown
-          is not appearing.
+      - Expand to show full result with syntax highlighting
 
-          **Observed behavior:**
-          - More tabs exist than visible space allows
-          - No scroll, no dropdown, no way to access hidden tabs
-          - Panel restore menu only shows closed panels, not overflow tabs
+      - Large results (>50 lines) show truncated preview with "Show all"
 
-          **Expected behavior:**
-          - Dockview should show overflow dropdown (`.dv-tabs-overflow-dropdown-root`)
-          - Or tabs should be horizontally scrollable with visible scrollbar
-          - Hidden tabs should be accessible via some UI mechanism
+      - Copy button for result content
 
-          **Investigation findings:**
-          - Dockview has `disableTabsOverflowList` option (defaults to enabled)
-          - OverflowObserver uses ResizeObserver to detect scrollWidth > clientWidth
-          - When overflow detected, dropdown button appears in `.dv-right-actions-container`
-          - Our CSS does NOT explicitly hide the dropdown
+      '
+    points: 2
+    priority: P0
+    status: done
+    repos: pennyfarthing
+    acceptance_criteria:
+    - Results collapsed by default
+    - Line count shown in collapsed state
+    - Large results truncated with expand option
+    - Copy to clipboard button
+    jira: MSSCI-13398
+    completed: '2026-02-03'
+  - id: MSSCI-13400
+    title: Tool use stack between messages
+    description: 'Group consecutive tool uses between assistant messages into a collapsible stack:
 
-          **Potential causes:**
-          1. `.dv-right-actions-container` has no allocated space
-          2. OverflowObserver not triggering (tabs fit or resize event missed)
-          3. CSS `overflow: hidden` on parent clipping the dropdown
+      - Show count: "5 tool calls" with expand/collapse
 
-          **Files to investigate:**
-          - `packages/cyclist/src/public/components/DockviewWorkspace.tsx`
-          - `packages/cyclist/src/public/styles/dockview-theme.css`
-          - Browser DevTools: check for `.dv-tabs-overflow-dropdown-root` in DOM
-        points: 3
-        priority: P1
-        type: bug
-        status: done
-        repos: pennyfarthing
-        acceptance_criteria:
-          - All sidebar tabs are accessible (via overflow dropdown or scroll)
-          - Dockview overflow dropdown appears when tabs exceed visible width
-          - OR horizontal tab scroll with visible scrollbar works
-          - Tab overflow behavior documented in ADR-0019
-        completed: "2026-02-04"
-      - id: MSSCI-14188
-        title: "Split Progress panel into Workflow, AC, and Todo panels"
-        description: |
-          Now that we have Dockview with proper nested panel support, split the
-          overloaded ProgressPanel into three dedicated panels:
+      - Collapsed: show just the summary line for each
 
-          **Current state:**
-          - ProgressPanel contains internal tabs: Workflow | AC | Todo
-          - User must click into Progress, then click a tab
-          - Takes up one slot in right sidebar
+      - Expanded: show full ToolCallBlock for each
 
-          **Target state:**
-          - Three separate panels: WorkflowPanel, ACPanel, TodoPanel
-          - Each can be independently positioned, collapsed, or closed
-          - Workflow shows BikeLane phase visualization
-          - AC shows acceptance criteria checklist
-          - Todo shows task list with progress
+      - Current/pending tool use always shown expanded
 
-          **Implementation:**
-          1. Extract WorkflowSection → WorkflowPanel
-          2. Extract ACSection → ACPanel (or reuse existing AcceptanceCriteriaPanel)
-          3. Extract TodoSection → TodoPanel
-          4. Update PANEL_INVENTORY and RIGHT_SIDEBAR_PANELS
-          5. Register new panel components
-          6. Delete ProgressPanel.tsx
-          7. Update layout persistence to handle migration
+      - Visual hierarchy: current tool prominent, history dimmed
 
-          **Benefits:**
-          - More flexible workspace layout
-          - Users can close unused panels (e.g., hide AC when not doing TDD)
-          - Better use of Dockview's tab overflow handling
-          - Cleaner component architecture
-        points: 5
-        priority: P2
-        type: enhancement
-        status: backlog
-        repos: pennyfarthing
-        acceptance_criteria:
-          - WorkflowPanel shows BikeLane phase visualization
-          - ACPanel shows acceptance criteria checklist with check/uncheck
-          - TodoPanel shows task list with progress bar
-          - All three panels independently positionable in Dockview
-          - Layout persistence handles migration from old Progress panel
-          - No functionality regression from current ProgressPanel
-      - id: MSSCI-14189
-        title: "Enhanced Sprint Panel with story management and epic actions"
-        description: |
-          Redesign the Sprint panel to be a comprehensive sprint management hub with
-          actionable controls and clear story visibility.
+      '
+    points: 5
+    priority: P0
+    status: done
+    repos: pennyfarthing
+    acceptance_criteria:
+    - Consecutive tool uses grouped into collapsible stack
+    - Stack shows count when collapsed
+    - Individual tool summaries visible when expanded
+    - Active/pending tool always visible
+    - Clear visual distinction between current and historical
+    jira: MSSCI-13400
+    completed: '2026-02-03'
+  - id: MSSCI-13402
+    title: Tool use visual design polish
+    description: 'Apply consistent visual design to tool use blocks:
 
-          **Current state:**
-          - Basic sprint info display
-          - Limited interactivity
-          - No epic/story hierarchy view
+      - Status indicators (pending spinner, success checkmark, error X)
 
-          **Target state:**
+      - Color coding by tool type (read=blue, write=orange, bash=green)
 
-          ## 1. Current Story Section (Top)
-          - Show active story title, ID, points, workflow phase
-          - Link to full story details (AC panel, Workflow panel)
-          - If NO active story: Show "Next up: {story}" with the highest priority
-            backlog story, indicating it's ready to start
+      - Elapsed time for completed tools
 
-          ## 2. Sprint Stories View (Middle)
-          - Collapsible tree view grouped by epic
-          - Each epic shows: title, points done/total, progress bar
-          - Stories under each epic show: ID, title, status badge, points
-          - Status badges: backlog (gray), in_progress (blue), done (green)
-          - Click story to see details or start work
+      - Error results highlighted with red border
 
-          ## 3. Epic Actions
-          - **Archive button** on epics where ALL stories are done
-            - Triggers `archive_epic.py` flow
-            - Removes from sprint, adds to archive
-          - **Complete Epic** action when ready
+      - Consistent with Cyclist design system
 
-          ## 4. Future Work Section (Bottom)
-          - Summary of future.yaml initiatives
-          - Show: initiative name, total points, status, epic count
-          - **Promote button** on each promotable epic
-            - Triggers `promote-epic.sh` flow
-            - Adds epic to current sprint
+      '
+    points: 3
+    priority: P1
+    status: done
+    repos: pennyfarthing
+    acceptance_criteria:
+    - Status indicators for pending/success/error
+    - Tool type color coding
+    - Elapsed time display
+    - Error state styling
+    jira: MSSCI-13402
+    completed: '2026-02-03'
+  type: epic
+  jira: MSSCI-13394
+- id: epic-76
+  title: 'Epic: Dockview Panel Migration'
+  description: 'Replace hand-rolled panel management with Dockview library.
 
-          ## 5. Data Sources
-          - Current story: `/api/session` or session file
-          - Sprint stories: `/api/sprint/stories` (new endpoint)
-          - Future epics: `/api/sprint/future` (new endpoint)
-          - Archive action: `POST /api/sprint/archive-epic/{id}`
-          - Promote action: `POST /api/sprint/promote-epic/{id}`
 
-          **Implementation:**
-          1. Create SprintPanel sections as sub-components
-          2. Add REST endpoints for sprint/future data
-          3. Implement archive/promote action handlers
-          4. Add collapsible epic tree with story list
-          5. Style with consistent Cyclist theme
-        points: 8
-        priority: P1
-        type: enhancement
-        status: done
-        repos: pennyfarthing
-        acceptance_criteria:
-          - Current story section shows active story or "Next up" indicator
-          - Stories grouped by epic in collapsible tree view
-          - Epic progress bars show done/total points
-          - Archive button appears on fully completed epics
-          - Archive action triggers archive_epic.py and refreshes view
-          - Future initiatives section shows promotable epics
-          - Promote button triggers promote-epic.sh and refreshes view
-          - All actions have loading states and error handling
-          - Panel updates in real-time via WebSocket or polling
-        completed: "2026-02-04"
-      - id: MSSCI-14190
-        title: "[BUG] Changed Files panel not tracking file modifications"
-        description: |
-          The Changed Files panel is not detecting or displaying files modified during
-          the session. Need to investigate and fix the file tracking mechanism.
+    Current state: Custom 1,042-line DockingWorkspace.tsx with bugs
 
-          **Observed behavior:**
-          - Panel shows "0 files changed" even after agent creates/modifies files
-          - Files only appear after manual refresh or restart
-          - May lose track of changes after git commits
+    Target state: Dockview-based workspace with proper panel docking
 
-          **Expected behavior:**
-          - Panel updates in real-time when Write/Edit tools are used
-          - Shows cumulative list of all files touched during session
-          - Persists history across commits (session-based, not git-based)
 
-          **Investigation notes:**
-          - Git panel has a working state caching mechanism
-          - Changed panel may need similar approach
-          - Check if WebSocket subscription `/ws/changed` is working
-          - May need to hook into tool execution events
+    dockview-react is already installed but unused. Migration enables:
 
-          **Potential fixes:**
-          1. Subscribe to file system events via chokidar/fs.watch
-          2. Hook into Write/Edit tool execution to track changes
-          3. Use similar caching pattern as GitPanel
-          4. Add session-based change tracking in Electron main process
+    - Floating panels (pop-out windows)
 
-          **Related files:**
-          - `packages/cyclist/src/public/components/panels/ChangedPanel.tsx`
-          - `packages/cyclist/src/api/` (WebSocket handlers)
-          - `packages/cyclist/src/public/hooks/` (data fetching hooks)
-        points: 3
-        priority: P1
-        type: bug
-        status: done
-        repos: pennyfarthing
-        acceptance_criteria:
-          - Changed panel updates when Write tool creates a file
-          - Changed panel updates when Edit tool modifies a file
-          - Change history persists after git commits during session
-          - Panel shows accurate count badge
-          - Real-time updates via WebSocket or polling
-        completed: "2026-02-04"
-      - id: MSSCI-14191
-        title: "[BUG] Bell mode notifications not working correctly"
-        description: |
-          Bell mode notifications are still not functioning as expected. When enabled,
-          the system should provide audio/visual notifications at key workflow events.
+    - Split views within regions
 
-          **Observed behavior:**
-          - Bell mode setting exists in config (`bell_mode: true`)
-          - Notifications not firing or inconsistent
-          - Need to investigate what triggers are missing
+    - Panel maximization
 
-          **Expected behavior:**
-          - Audio bell on phase transitions (handoff between agents)
-          - Visual notification when agent needs user input
-          - Bell on workflow completion
-          - Bell on errors/blockers that need attention
+    - Better drag-and-drop UX
 
-          **Investigation areas:**
-          - Check if bell mode setting is being read correctly
-          - Verify notification triggers in workflow code
-          - Check browser notification permissions
-          - Verify audio file exists and is playable
-          - Check Electron notification API usage
+    - Full ARIA accessibility
 
-          **Related files:**
-          - `.pennyfarthing/config.local.yaml` (bell_mode setting)
-          - `packages/cyclist/src/` (notification handlers)
-          - Workflow phase transition code
-        points: 2
-        priority: P2
-        type: bug
-        status: backlog
-        repos: pennyfarthing
-        acceptance_criteria:
-          - Bell sounds on agent handoff/phase transition
-          - Bell sounds when user input is required
-          - Bell sounds on workflow completion
-          - Bell mode can be toggled in settings
-          - Respects system notification permissions
-      - id: MSSCI-14192
-        title: "[BUG] Sprint panel shows 'No epics in current sprint' despite active epics"
-        description: |
-          The Sprint panel's Current Epics section displays "No epics in current sprint"
-          and suggests promoting from Future Initiatives, even though current-sprint.yaml
-          contains active epics (Epic 74 complete, Epic 76 in progress with 7 stories).
 
-          **Observed behavior:**
-          - Current Epics section shows empty state message
-          - "Promote an epic from Future Initiatives to get started" displayed
-          - Future Initiatives section IS populated correctly
-          - Sprint data clearly exists in current-sprint.yaml
+    See ADR-0019 for technical details.
 
-          **Expected behavior:**
-          - Epic 74 should show as complete (13/13 pts)
-          - Epic 76 should show with progress bar (21/29 pts done)
-          - Stories should be visible under each epic in collapsible tree
+    '
+  points: 29
+  priority: P0
+  marker: cyclist-react
+  repos: pennyfarthing
+  status: in_progress
+  stories:
+  - id: MSSCI-14001
+    title: Replace DockingWorkspace with Dockview
+    description: 'Replace the hand-rolled panel system with Dockview in one pass:
 
-          **Root cause hypothesis:**
-          - API endpoint `/api/sprint/stories` may be returning empty
-          - Frontend may not be calling the correct endpoint
-          - Data transformation may be filtering out epics incorrectly
-          - Possible mismatch between expected and actual response shape
 
-          **Files to investigate:**
-          - packages/cyclist/src/public/components/panels/SprintPanel.tsx
-          - packages/cyclist/src/api/ (sprint-related endpoints)
-          - Browser DevTools Network tab: check /api/sprint/* responses
-        points: 2
-        priority: P1
-        type: bug
-        status: done
-        repos: pennyfarthing
-        acceptance_criteria:
-          - Sprint panel shows Epic 74 with 13/13 points complete
-          - Sprint panel shows Epic 76 with progress (21/29 points)
-          - Stories visible under each epic in collapsible tree
-          - No "No epics" message when epics exist in sprint YAML
-        completed: "2026-02-04"
-      - id: MSSCI-14204
-        title: "[BUG] Panel detail popup jumps in size and uses small images"
-        jira: MSSCI-14204
-        description: |
-          The panel detail popup (shown when hovering over panel names in the restore menu
-          or panel list) has visual polish issues that make it feel unprofessional.
+      1. Create DockviewWorkspace.tsx using dockview-react
 
-          **Observed behavior:**
-          - Dialog box jumps in size as you move mouse down the list of panel names
-          - Each panel has different content length causing layout shift
-          - Popup uses small/thumbnail images instead of larger detail images
+      2. Adapt existing 9 panel components via PanelAdapter pattern
 
-          **Expected behavior:**
-          - Popup maintains consistent dimensions regardless of which panel is hovered
-          - No jarring size jumps when moving between panels
-          - Uses larger, more detailed panel preview images
-          - Smooth, professional feel when browsing panel options
+      3. Implement sacred center (MessagePanel locked, cannot close/move)
 
-          **Implementation approach:**
-          1. Set fixed dimensions for popup container (min-width/min-height or fixed size)
-          2. Content should scroll or truncate rather than resize container
-          3. Identify where panel images are sourced (may need to add larger assets)
-          4. If larger images don't exist, may need to generate/acquire them
-          5. Ensure image container has fixed aspect ratio to prevent shifts
+      4. Migrate layout persistence to Dockview serialization format
 
-          **Investigation needed:**
-          - Where are panel preview images stored?
-          - What image sizes currently exist vs what's needed?
-          - Which component renders the panel detail popup?
-        points: 3
-        priority: P1
-        type: bug
-        status: done
-        repos: pennyfarthing
-        acceptance_criteria:
-          - Popup maintains consistent size when hovering different panels
-          - No layout shift or jumping when moving mouse between panel names
-          - Panel preview images are larger/more detailed
-          - Smooth visual experience when browsing panel list
-        completed: "2026-02-04"
-      - id: MSSCI-14209
-        title: "Sprint panel story metadata indicators (context, jira, status)"
-        jira: MSSCI-14209
-        description: |
-          Enhance the Sprint panel to display richer metadata for each story and epic,
-          giving visibility into readiness state before attempting actions like archive.
+      5. Apply Cyclist theme via CSS custom properties
 
-          **Target state:**
+      6. Implement responsive collapse behavior
 
-          For each EPIC:
-          - Show whether epic tech context exists (sprint/context/context-epic-{N}.md)
-          - "Ready" badge or indicator when context exists
-          - Jira epic link (MSSCI-XXXXX)
+      7. Update App.tsx to use new workspace
 
-          For each STORY:
-          - Status badge: done ✓, todo ○, blocked ⚠, in_progress ●
-          - Jira ticket link (clickable MSSCI-XXXXX)
-          - Context indicator: whether story context file exists
-          - Visual distinction for stories missing required context
-        points: 3
-        priority: P1
-        type: enhancement
-        status: done
-        repos: pennyfarthing
-        acceptance_criteria:
-          - Epic rows show context existence indicator
-          - Story rows show Jira ticket as clickable link
-          - Story status badges are visually distinct (done/todo/blocked/in_progress)
-          - Context file existence shown for stories
-          - Consistent styling with Cyclist design system
-        completed: "2026-02-04"
-    type: epic
-    jira: MSSCI-14186
+      8. Delete old DockingWorkspace.tsx (~1,042 lines)
+
+      9. Update/fix affected tests
+
+
+      See docs/adr/0019-dockview-migration.md for implementation details.
+
+      '
+    points: 8
+    priority: P0
+    status: done
+    repos: pennyfarthing
+    acceptance_criteria:
+    - DockingWorkspace.tsx deleted (1,042 lines removed)
+    - DockviewWorkspace.tsx renders all 9 panels
+    - MessagePanel locked in center (cannot close/move)
+    - Panels draggable between sidebars
+    - Layout persists to config.local.yaml
+    - Responsive collapse at <1024px works
+    - Theme matches current Cyclist design
+    - All existing panel functionality preserved
+    - Tests pass
+    jira: MSSCI-14001
+    completed: '2026-02-03'
+  - id: MSSCI-14187
+    title: '[BUG] Tab overflow - hidden tabs have no way to be accessed'
+    description: 'When sidebars have more tabs than can fit in the visible area, users have
+
+      no way to access the hidden tabs. Dockview''s built-in tab overflow dropdown
+
+      is not appearing.
+
+
+      **Observed behavior:**
+
+      - More tabs exist than visible space allows
+
+      - No scroll, no dropdown, no way to access hidden tabs
+
+      - Panel restore menu only shows closed panels, not overflow tabs
+
+
+      **Expected behavior:**
+
+      - Dockview should show overflow dropdown (`.dv-tabs-overflow-dropdown-root`)
+
+      - Or tabs should be horizontally scrollable with visible scrollbar
+
+      - Hidden tabs should be accessible via some UI mechanism
+
+
+      **Investigation findings:**
+
+      - Dockview has `disableTabsOverflowList` option (defaults to enabled)
+
+      - OverflowObserver uses ResizeObserver to detect scrollWidth > clientWidth
+
+      - When overflow detected, dropdown button appears in `.dv-right-actions-container`
+
+      - Our CSS does NOT explicitly hide the dropdown
+
+
+      **Potential causes:**
+
+      1. `.dv-right-actions-container` has no allocated space
+
+      2. OverflowObserver not triggering (tabs fit or resize event missed)
+
+      3. CSS `overflow: hidden` on parent clipping the dropdown
+
+
+      **Files to investigate:**
+
+      - `packages/cyclist/src/public/components/DockviewWorkspace.tsx`
+
+      - `packages/cyclist/src/public/styles/dockview-theme.css`
+
+      - Browser DevTools: check for `.dv-tabs-overflow-dropdown-root` in DOM
+
+      '
+    points: 3
+    priority: P1
+    type: bug
+    status: done
+    repos: pennyfarthing
+    acceptance_criteria:
+    - All sidebar tabs are accessible (via overflow dropdown or scroll)
+    - Dockview overflow dropdown appears when tabs exceed visible width
+    - OR horizontal tab scroll with visible scrollbar works
+    - Tab overflow behavior documented in ADR-0019
+    completed: '2026-02-04'
+  - id: MSSCI-14188
+    title: Split Progress panel into Workflow, AC, and Todo panels
+    description: 'Now that we have Dockview with proper nested panel support, split the
+
+      overloaded ProgressPanel into three dedicated panels:
+
+
+      **Current state:**
+
+      - ProgressPanel contains internal tabs: Workflow | AC | Todo
+
+      - User must click into Progress, then click a tab
+
+      - Takes up one slot in right sidebar
+
+
+      **Target state:**
+
+      - Three separate panels: WorkflowPanel, ACPanel, TodoPanel
+
+      - Each can be independently positioned, collapsed, or closed
+
+      - Workflow shows BikeLane phase visualization
+
+      - AC shows acceptance criteria checklist
+
+      - Todo shows task list with progress
+
+
+      **Implementation:**
+
+      1. Extract WorkflowSection → WorkflowPanel
+
+      2. Extract ACSection → ACPanel (or reuse existing AcceptanceCriteriaPanel)
+
+      3. Extract TodoSection → TodoPanel
+
+      4. Update PANEL_INVENTORY and RIGHT_SIDEBAR_PANELS
+
+      5. Register new panel components
+
+      6. Delete ProgressPanel.tsx
+
+      7. Update layout persistence to handle migration
+
+
+      **Benefits:**
+
+      - More flexible workspace layout
+
+      - Users can close unused panels (e.g., hide AC when not doing TDD)
+
+      - Better use of Dockview''s tab overflow handling
+
+      - Cleaner component architecture
+
+      '
+    points: 5
+    priority: P2
+    type: enhancement
+    status: backlog
+    repos: pennyfarthing
+    acceptance_criteria:
+    - WorkflowPanel shows BikeLane phase visualization
+    - ACPanel shows acceptance criteria checklist with check/uncheck
+    - TodoPanel shows task list with progress bar
+    - All three panels independently positionable in Dockview
+    - Layout persistence handles migration from old Progress panel
+    - No functionality regression from current ProgressPanel
+  - id: MSSCI-14189
+    title: Enhanced Sprint Panel with story management and epic actions
+    description: "Redesign the Sprint panel to be a comprehensive sprint management hub with\nactionable\
+      \ controls and clear story visibility.\n\n**Current state:**\n- Basic sprint info display\n- Limited\
+      \ interactivity\n- No epic/story hierarchy view\n\n**Target state:**\n\n## 1. Current Story Section\
+      \ (Top)\n- Show active story title, ID, points, workflow phase\n- Link to full story details (AC\
+      \ panel, Workflow panel)\n- If NO active story: Show \"Next up: {story}\" with the highest priority\n\
+      \  backlog story, indicating it's ready to start\n\n## 2. Sprint Stories View (Middle)\n- Collapsible\
+      \ tree view grouped by epic\n- Each epic shows: title, points done/total, progress bar\n- Stories\
+      \ under each epic show: ID, title, status badge, points\n- Status badges: backlog (gray), in_progress\
+      \ (blue), done (green)\n- Click story to see details or start work\n\n## 3. Epic Actions\n- **Archive\
+      \ button** on epics where ALL stories are done\n  - Triggers `archive_epic.py` flow\n  - Removes\
+      \ from sprint, adds to archive\n- **Complete Epic** action when ready\n\n## 4. Future Work Section\
+      \ (Bottom)\n- Summary of future.yaml initiatives\n- Show: initiative name, total points, status,\
+      \ epic count\n- **Promote button** on each promotable epic\n  - Triggers `promote-epic.sh` flow\n\
+      \  - Adds epic to current sprint\n\n## 5. Data Sources\n- Current story: `/api/session` or session\
+      \ file\n- Sprint stories: `/api/sprint/stories` (new endpoint)\n- Future epics: `/api/sprint/future`\
+      \ (new endpoint)\n- Archive action: `POST /api/sprint/archive-epic/{id}`\n- Promote action: `POST\
+      \ /api/sprint/promote-epic/{id}`\n\n**Implementation:**\n1. Create SprintPanel sections as sub-components\n\
+      2. Add REST endpoints for sprint/future data\n3. Implement archive/promote action handlers\n4. Add\
+      \ collapsible epic tree with story list\n5. Style with consistent Cyclist theme\n"
+    points: 8
+    priority: P1
+    type: enhancement
+    status: done
+    repos: pennyfarthing
+    acceptance_criteria:
+    - Current story section shows active story or "Next up" indicator
+    - Stories grouped by epic in collapsible tree view
+    - Epic progress bars show done/total points
+    - Archive button appears on fully completed epics
+    - Archive action triggers archive_epic.py and refreshes view
+    - Future initiatives section shows promotable epics
+    - Promote button triggers promote-epic.sh and refreshes view
+    - All actions have loading states and error handling
+    - Panel updates in real-time via WebSocket or polling
+    completed: '2026-02-04'
+  - id: MSSCI-14190
+    title: '[BUG] Changed Files panel not tracking file modifications'
+    description: 'The Changed Files panel is not detecting or displaying files modified during
+
+      the session. Need to investigate and fix the file tracking mechanism.
+
+
+      **Observed behavior:**
+
+      - Panel shows "0 files changed" even after agent creates/modifies files
+
+      - Files only appear after manual refresh or restart
+
+      - May lose track of changes after git commits
+
+
+      **Expected behavior:**
+
+      - Panel updates in real-time when Write/Edit tools are used
+
+      - Shows cumulative list of all files touched during session
+
+      - Persists history across commits (session-based, not git-based)
+
+
+      **Investigation notes:**
+
+      - Git panel has a working state caching mechanism
+
+      - Changed panel may need similar approach
+
+      - Check if WebSocket subscription `/ws/changed` is working
+
+      - May need to hook into tool execution events
+
+
+      **Potential fixes:**
+
+      1. Subscribe to file system events via chokidar/fs.watch
+
+      2. Hook into Write/Edit tool execution to track changes
+
+      3. Use similar caching pattern as GitPanel
+
+      4. Add session-based change tracking in Electron main process
+
+
+      **Related files:**
+
+      - `packages/cyclist/src/public/components/panels/ChangedPanel.tsx`
+
+      - `packages/cyclist/src/api/` (WebSocket handlers)
+
+      - `packages/cyclist/src/public/hooks/` (data fetching hooks)
+
+      '
+    points: 3
+    priority: P1
+    type: bug
+    status: done
+    repos: pennyfarthing
+    acceptance_criteria:
+    - Changed panel updates when Write tool creates a file
+    - Changed panel updates when Edit tool modifies a file
+    - Change history persists after git commits during session
+    - Panel shows accurate count badge
+    - Real-time updates via WebSocket or polling
+    completed: '2026-02-04'
+  - id: MSSCI-14191
+    title: '[BUG] Bell mode notifications not working correctly'
+    description: 'Bell mode notifications are still not functioning as expected. When enabled,
+
+      the system should provide audio/visual notifications at key workflow events.
+
+
+      **Observed behavior:**
+
+      - Bell mode setting exists in config (`bell_mode: true`)
+
+      - Notifications not firing or inconsistent
+
+      - Need to investigate what triggers are missing
+
+
+      **Expected behavior:**
+
+      - Audio bell on phase transitions (handoff between agents)
+
+      - Visual notification when agent needs user input
+
+      - Bell on workflow completion
+
+      - Bell on errors/blockers that need attention
+
+
+      **Investigation areas:**
+
+      - Check if bell mode setting is being read correctly
+
+      - Verify notification triggers in workflow code
+
+      - Check browser notification permissions
+
+      - Verify audio file exists and is playable
+
+      - Check Electron notification API usage
+
+
+      **Related files:**
+
+      - `.pennyfarthing/config.local.yaml` (bell_mode setting)
+
+      - `packages/cyclist/src/` (notification handlers)
+
+      - Workflow phase transition code
+
+      '
+    points: 2
+    priority: P2
+    type: bug
+    status: backlog
+    repos: pennyfarthing
+    acceptance_criteria:
+    - Bell sounds on agent handoff/phase transition
+    - Bell sounds when user input is required
+    - Bell sounds on workflow completion
+    - Bell mode can be toggled in settings
+    - Respects system notification permissions
+  - id: MSSCI-14192
+    title: '[BUG] Sprint panel shows ''No epics in current sprint'' despite active epics'
+    description: 'The Sprint panel''s Current Epics section displays "No epics in current sprint"
+
+      and suggests promoting from Future Initiatives, even though current-sprint.yaml
+
+      contains active epics (Epic 74 complete, Epic 76 in progress with 7 stories).
+
+
+      **Observed behavior:**
+
+      - Current Epics section shows empty state message
+
+      - "Promote an epic from Future Initiatives to get started" displayed
+
+      - Future Initiatives section IS populated correctly
+
+      - Sprint data clearly exists in current-sprint.yaml
+
+
+      **Expected behavior:**
+
+      - Epic 74 should show as complete (13/13 pts)
+
+      - Epic 76 should show with progress bar (21/29 pts done)
+
+      - Stories should be visible under each epic in collapsible tree
+
+
+      **Root cause hypothesis:**
+
+      - API endpoint `/api/sprint/stories` may be returning empty
+
+      - Frontend may not be calling the correct endpoint
+
+      - Data transformation may be filtering out epics incorrectly
+
+      - Possible mismatch between expected and actual response shape
+
+
+      **Files to investigate:**
+
+      - packages/cyclist/src/public/components/panels/SprintPanel.tsx
+
+      - packages/cyclist/src/api/ (sprint-related endpoints)
+
+      - Browser DevTools Network tab: check /api/sprint/* responses
+
+      '
+    points: 2
+    priority: P1
+    type: bug
+    status: done
+    repos: pennyfarthing
+    acceptance_criteria:
+    - Sprint panel shows Epic 74 with 13/13 points complete
+    - Sprint panel shows Epic 76 with progress (21/29 points)
+    - Stories visible under each epic in collapsible tree
+    - No "No epics" message when epics exist in sprint YAML
+    completed: '2026-02-04'
+  - id: MSSCI-14204
+    title: '[BUG] Panel detail popup jumps in size and uses small images'
+    jira: MSSCI-14204
+    description: 'The panel detail popup (shown when hovering over panel names in the restore menu
+
+      or panel list) has visual polish issues that make it feel unprofessional.
+
+
+      **Observed behavior:**
+
+      - Dialog box jumps in size as you move mouse down the list of panel names
+
+      - Each panel has different content length causing layout shift
+
+      - Popup uses small/thumbnail images instead of larger detail images
+
+
+      **Expected behavior:**
+
+      - Popup maintains consistent dimensions regardless of which panel is hovered
+
+      - No jarring size jumps when moving between panels
+
+      - Uses larger, more detailed panel preview images
+
+      - Smooth, professional feel when browsing panel options
+
+
+      **Implementation approach:**
+
+      1. Set fixed dimensions for popup container (min-width/min-height or fixed size)
+
+      2. Content should scroll or truncate rather than resize container
+
+      3. Identify where panel images are sourced (may need to add larger assets)
+
+      4. If larger images don''t exist, may need to generate/acquire them
+
+      5. Ensure image container has fixed aspect ratio to prevent shifts
+
+
+      **Investigation needed:**
+
+      - Where are panel preview images stored?
+
+      - What image sizes currently exist vs what''s needed?
+
+      - Which component renders the panel detail popup?
+
+      '
+    points: 3
+    priority: P1
+    type: bug
+    status: done
+    repos: pennyfarthing
+    acceptance_criteria:
+    - Popup maintains consistent size when hovering different panels
+    - No layout shift or jumping when moving mouse between panel names
+    - Panel preview images are larger/more detailed
+    - Smooth visual experience when browsing panel list
+    completed: '2026-02-04'
+  - id: MSSCI-14209
+    title: Sprint panel story metadata indicators (context, jira, status)
+    jira: MSSCI-14209
+    description: 'Enhance the Sprint panel to display richer metadata for each story and epic,
+
+      giving visibility into readiness state before attempting actions like archive.
+
+
+      **Target state:**
+
+
+      For each EPIC:
+
+      - Show whether epic tech context exists (sprint/context/context-epic-{N}.md)
+
+      - "Ready" badge or indicator when context exists
+
+      - Jira epic link (MSSCI-XXXXX)
+
+
+      For each STORY:
+
+      - Status badge: done ✓, todo ○, blocked ⚠, in_progress ●
+
+      - Jira ticket link (clickable MSSCI-XXXXX)
+
+      - Context indicator: whether story context file exists
+
+      - Visual distinction for stories missing required context
+
+      '
+    points: 3
+    priority: P1
+    type: enhancement
+    status: backlog
+    repos: pennyfarthing
+    acceptance_criteria:
+    - Epic rows show context existence indicator
+    - Story rows show Jira ticket as clickable link
+    - Story status badges are visually distinct (done/todo/blocked/in_progress)
+    - Context file existence shown for stories
+    - Consistent styling with Cyclist design system
+  - id: MSSCI-14210
+    title: '[BUG] Background panel not detecting background work'
+    jira: MSSCI-14210
+    description: 'The Background panel is not picking up background work (agents or shells running
+
+      in background via run_in_background parameter). Panel should detect and display
+
+      active background tasks but currently shows nothing or stale data.
+
+
+      **Observed behavior:**
+
+      - Background panel shows empty or stale state
+
+      - Tasks launched with run_in_background=true not appearing
+
+      - No visibility into running background agents or shells
+
+
+      **Expected behavior:**
+
+      - Panel shows all active background tasks (agents and shells)
+
+      - Task status updates in real-time (running/completed/failed)
+
+      - Completed tasks shown with output preview
+
+      - Click to view full task output
+
+
+      **Investigation areas:**
+
+      - Check TaskOutput tool integration
+
+      - Verify background task registry in main process
+
+      - Check WebSocket subscription for task updates
+
+      - Compare with how foreground tasks are tracked
+
+
+      **Related files:**
+
+      - packages/cyclist/src/public/components/panels/BackgroundPanel.tsx
+
+      - Background task management in Electron main process
+
+      - WebSocket handlers for task status
+
+      '
+    points: 2
+    priority: P1
+    type: bug
+    status: backlog
+    workflow: trivial
+    repos: pennyfarthing
+    acceptance_criteria:
+    - Background panel shows tasks launched with run_in_background=true
+    - Task status updates in real-time (running/completed/failed)
+    - Panel shows task type (agent vs shell) and description
+    - Click task to view full output via TaskOutput
+    - Completed tasks remain visible for session duration
+  type: epic
+  jira: MSSCI-14186
 stories: []
