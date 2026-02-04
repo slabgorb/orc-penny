@@ -350,7 +350,7 @@ epics:
         points: 5
         priority: P2
         type: enhancement
-        status: backlog
+        status: done
         repos: pennyfarthing
         acceptance_criteria:
           - WorkflowPanel shows BikeLane phase visualization
@@ -359,6 +359,7 @@ epics:
           - All three panels independently positionable in Dockview
           - Layout persistence handles migration from old Progress panel
           - No functionality regression from current ProgressPanel
+        completed: "2026-02-04"
       - id: MSSCI-14189
         title: Enhanced Sprint Panel with story management and epic actions
         description: "Redesign the Sprint panel to be a comprehensive sprint management hub with\nactionable controls and clear story visibility.\n\n**Current state:**\n- Basic sprint info display\n- Limited interactivity\n- No epic/story hierarchy view\n\n**Target state:**\n\n## 1. Current Story Section (Top)\n- Show active story title, ID, points, workflow phase\n- Link to full story details (AC panel, Workflow panel)\n- If NO active story: Show \"Next up: {story}\" with the highest priority\n  backlog story, indicating it's ready to start\n\n## 2. Sprint Stories View (Middle)\n- Collapsible tree view grouped by epic\n- Each epic shows: title, points done/total, progress bar\n- Stories under each epic show: ID, title, status badge, points\n- Status badges: backlog (gray), in_progress (blue), done (green)\n- Click story to see details or start work\n\n## 3. Epic Actions\n- **Archive button** on epics where ALL stories are done\n  - Triggers `archive_epic.py` flow\n  - Removes from sprint, adds to archive\n- **Complete Epic** action when ready\n\n## 4. Future Work Section (Bottom)\n- Summary of future.yaml initiatives\n- Show: initiative name, total points, status, epic count\n- **Promote button** on each promotable epic\n  - Triggers `promote-epic.sh` flow\n  - Adds epic to current sprint\n\n## 5. Data Sources\n- Current story: `/api/session` or session file\n- Sprint stories: `/api/sprint/stories` (new endpoint)\n- Future epics: `/api/sprint/future` (new endpoint)\n- Archive action: `POST /api/sprint/archive-epic/{id}`\n- Promote action: `POST /api/sprint/promote-epic/{id}`\n\n**Implementation:**\n1. Create SprintPanel sections as sub-components\n2. Add REST endpoints for sprint/future data\n3. Implement archive/promote action handlers\n4. Add collapsible epic tree with story list\n5. Style with consistent Cyclist theme\n"
