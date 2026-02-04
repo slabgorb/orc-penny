@@ -425,3 +425,38 @@ const actualDelay = Math.min(REFRESH_DELAY, remainingMaxDelay);
 ```
 
 **Config:** `REFRESH_DELAY_MS = 1500`, `MAX_INVALIDATION_DELAY_MS = 5000`
+
+## PTY Terminal: Use WebSocket, Not Electron IPC
+
+**Problem:** Direct `import { ipcRenderer } from 'electron'` in renderer code causes `__dirname is not defined` error because Vite/esbuild bundles it for browser context where Node.js globals don't exist.
+
+**Wrong approach:**
+```typescript
+// BAD - this gets bundled into browser code
+import { ipcRenderer } from 'electron';
+ipcRenderer.send('pty:spawn', {...});
+```
+
+**Correct approach:** Use WebSocket for cross-platform compatibility (Electron + web mode):
+
+```typescript
+// Server (websocket.ts): Add /ws/pty endpoint using node-pty
+import * as pty from 'node-pty';
+
+ptyWss.on('connection', (ws) => {
+  ws.on('message', (data) => {
+    const msg = JSON.parse(data.toString());
+    if (msg.type === 'spawn') {
+      const ptyProcess = pty.spawn(shell, args, { cwd, env });
+      ptyProcess.onData((output) => ws.send(JSON.stringify({ type: 'data', data: output })));
+    }
+  });
+});
+
+// Client (TTYPanel.tsx): Connect via WebSocket
+const ws = new WebSocket(`ws://${window.location.host}/ws/pty`);
+ws.send(JSON.stringify({ type: 'spawn', cwd: projectRoot }));
+ws.onmessage = (e) => terminal.write(JSON.parse(e.data).data);
+```
+
+This pattern works in both Electron mode (via embedded Express server) and web mode.
