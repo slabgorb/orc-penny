@@ -184,7 +184,10 @@ epics:
           Already partially done in QuickActions.tsx, complete the migration.
         points: 2
         priority: P1
-        status: backlog
+        status: done
+        completed: "2026-02-03"
+        delivered_in: MSSCI-12787
+        notes: Already implemented as useMarkerActions hook in CYCLIST Marker Parsing story
         repos: pennyfarthing
         jira: MSSCI-13972
       - id: MSSCI-13973
