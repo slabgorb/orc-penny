@@ -129,7 +129,8 @@ epics:
     priority: P2
     marker: cyclist-react
     repos: pennyfarthing
-    status: backlog
+    status: done
+    completed: "2026-02-03"
     stories:
       - id: MSSCI-13969
         title: useMarkdownParser hook
@@ -197,7 +198,10 @@ epics:
           all imports. Verify no regressions in message rendering.
         points: 3
         priority: P2
-        status: backlog
+        status: done
+        completed: "2026-02-03"
+        delivered_in: MSSCI-12717
+        notes: Vanilla JS files already removed during React Migration - all files now TypeScript
         repos: pennyfarthing
         jira: MSSCI-13973
       - id: 75-5
