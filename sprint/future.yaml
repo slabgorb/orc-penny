@@ -522,8 +522,193 @@ future:
           status: backlog
           repos: pennyfarthing
       epics: []
+    - name: "Sprint Data Management"
+      description: |
+        Replace fragile YAML editing with deterministic, validated operations.
+        Introduces Python-based yaml_io module that guarantees format consistency,
+        provides auto-fix capabilities, and consolidates sprint/story operations.
+
+        Key deliverables:
+        - Deterministic YAML serialization (same input → byte-identical output)
+        - /sprint story add command (the missing operation)
+        - /sprint validate --fix command (auto-repair)
+        - Pre-commit enforcement
+
+        PRD: docs/planning/prd-sprint-data-management.md
+        ADR: docs/adr/0018-sprint-yaml-script-access.md
+      status: ready
+      blocked_by: null
+      total_points: 17
+      epics:
+        - id: epic-76
+          title: "Sprint Data Management System"
+          description: |
+            Python-based yaml_io module for deterministic sprint YAML operations.
+            Replaces ad-hoc bash scripts with validated, atomic, auto-fixing commands.
+
+            Success criteria:
+            - 100% determinism (same input → byte-identical output)
+            - 100% round-trip integrity (read → write → read = identical)
+            - All format errors auto-repairable via --fix
+          points: 17
+          priority: P1
+          marker: infrastructure
+          repos: pennyfarthing
+          status: planning
+          stories:
+            - id: "76-1"
+              title: "Core yaml_io module with deterministic serialization"
+              description: |
+                Create pennyfarthing_scripts/sprint/yaml_io.py with:
+                - read_sprint(path) → Sprint dataclass
+                - write_sprint(path, sprint) → atomic write
+                - canonical_dump(data) → deterministic YAML string
+
+                Must use ruamel.yaml with explicit config:
+                - Fixed key ordering (per template)
+                - Block scalars for multiline strings
+                - 2-space indentation, no trailing whitespace
+                - Atomic writes (temp file + rename)
+              points: 5
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+              workflow: tdd
+              acceptance_criteria:
+                - Same input produces byte-identical output
+                - Round-trip integrity (read → write → read = identical)
+                - Atomic writes prevent partial file corruption
+                - Key ordering matches sprint-template.yaml
+            - id: "76-2"
+              title: "Sprint validate command with --fix flag"
+              description: |
+                Create /sprint validate command:
+                - Validates YAML syntax
+                - Validates schema (required fields, correct types)
+                - Validates format (indentation, key ordering, string style)
+                - --fix flag auto-repairs format issues
+
+                Error messages must include:
+                - Line number
+                - Field path (e.g., epics[1].stories[3].description)
+                - Fix command suggestion
+              points: 3
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+              workflow: tdd
+              acceptance_criteria:
+                - Detects YAML syntax errors with line numbers
+                - Detects schema violations (missing required fields)
+                - Detects format drift (wrong indentation, key order)
+                - --fix repairs all format errors automatically
+                - Exit code 0 = valid, non-zero = invalid
+            - id: "76-3"
+              title: "Sprint story add command"
+              description: |
+                Create /sprint story add command:
+                  /sprint story add <epic-id> "<title>" <points> [options]
+
+                Options:
+                - --type (feature|bug|chore|refactor)
+                - --priority (P0|P1|P2|P3)
+                - --workflow (tdd|trivial|bdd)
+                - --jira (also create Jira issue)
+
+                Behavior:
+                - Validate epic exists
+                - Generate next story ID
+                - Insert at end of epic's stories list
+                - Validate entire file after insertion
+                - Write atomically
+              points: 3
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+              workflow: tdd
+              acceptance_criteria:
+                - Adds story with all required fields populated
+                - Validates epic exists before adding
+                - Story appears in correct position under epic
+                - File validates after insertion
+                - Atomic write (no partial corruption)
+            - id: "76-4"
+              title: "Sprint story update command"
+              description: |
+                Create /sprint story update command:
+                  /sprint story update <story-id> [field updates]
+
+                Field updates:
+                - --status (backlog|ready|in_progress|done)
+                - --completed (YYYY-MM-DD)
+                - --assigned-to (name)
+                - --points, --priority
+
+                Auto-cleanup: remove assigned_to when status=done
+              points: 2
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+              workflow: tdd
+              acceptance_criteria:
+                - Updates story fields by ID
+                - Finds story across all epics
+                - Auto-removes assigned_to when marking done
+                - Validates and writes atomically
+            - id: "76-5"
+              title: "Pre-commit hook for YAML validation"
+              description: |
+                Add pre-commit hook that runs /sprint validate on all
+                sprint/*.yaml files before allowing commits.
+
+                Requirements:
+                - Run in < 2 seconds
+                - Clear exit codes (0 = pass, non-zero = fail)
+                - Actionable error messages with fix commands
+                - Works in CI (no interactive prompts)
+              points: 2
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+              workflow: trivial
+              acceptance_criteria:
+                - Blocks commits with invalid YAML
+                - Error message includes fix command
+                - Completes in under 2 seconds
+                - Works in non-interactive CI environment
+            - id: "76-6"
+              title: "Migrate existing YAML files to canonical format"
+              description: |
+                Run /sprint validate --fix on all sprint YAML files:
+                - sprint/current-sprint.yaml
+                - sprint/future.yaml
+                - sprint/completed.yaml (if exists)
+                - sprint/archive/*.yaml
+
+                Verify all files match template format after migration.
+                Update ADR-0018 to reflect Python implementation.
+              points: 2
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+              workflow: trivial
+              acceptance_criteria:
+                - All sprint YAML files pass validation
+                - Format matches sprint-template.yaml
+                - ADR-0018 updated with Python implementation notes
     - name: "Python CLI Migration"
-      description: "Replace fragile bash script symlinks with a unified Python CLI (`pf`) that \nagents can invoke reliably via module resolution. Eliminates path-related \nerrors that waste agent context on debugging instead of productive work.\n\nKey decisions:\n- Click library for decorator-based CLI (per PRD FR18)\n- Lazy loading for <200ms startup time\n- Phased migration: bash preserved during transition\n\nPRD: docs/planning/prd.md\nArchitecture: docs/planning/architecture.md\n"
+      description: |
+        Replace fragile bash script symlinks with a unified Python CLI (`pf`) that
+        agents can invoke reliably via module resolution. Eliminates path-related
+        errors that waste agent context on debugging instead of productive work.
+
+        Key decisions:
+        - Click library for decorator-based CLI (per PRD FR18)
+        - Lazy loading for <200ms startup time
+        - Phased migration: bash preserved during transition
+
+        PRD: docs/planning/prd.md
+        Architecture: docs/planning/architecture.md
       status: ready
       blocked_by: null
       total_points: 19
@@ -565,8 +750,8 @@ future:
 # --------------------------------|-------|--------|------------------
 # TOTAL                           |   9   |  112   |
 #
-# Epic Numbering Used: 40-46, 69-75
-# Next Available Epic Number: 76
+# Epic Numbering Used: 40-46, 69-76
+# Next Available Epic Number: 77
 #
 # Note: Epics 56-68 were used in Sprint 12 and are tracked in current-sprint.yaml
 # epic-55 cancelled - nested build was the actual issue, not portrait size
