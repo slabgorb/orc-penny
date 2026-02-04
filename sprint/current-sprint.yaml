@@ -481,7 +481,7 @@ epics:
         points: 2
         priority: P2
         type: bug
-        status: backlog
+        status: cancelled
         repos: pennyfarthing
         acceptance_criteria:
           - Bell sounds on agent handoff/phase transition
@@ -641,7 +641,7 @@ epics:
         points: 3
         priority: P1
         type: enhancement
-        status: backlog
+        status: done
         repos: pennyfarthing
         acceptance_criteria:
           - Epic rows show context existence indicator
@@ -793,7 +793,7 @@ epics:
         points: 5
         priority: P1
         type: refactor
-        status: backlog
+        status: done
         workflow: tdd
         repos: pennyfarthing
         acceptance_criteria:
@@ -805,6 +805,7 @@ epics:
           - Works correctly in both Electron and browser modes
           - Bash commands that modify files are properly tracked
           - Simpler codebase - remove OTEL tool correlation for diffs from otlp-receiver.ts
+        completed: "2026-02-04"
       - id: MSSCI-14213
         title: '[BUG] Todo panel CSS styling issues'
         description: |
@@ -866,3 +867,4 @@ epics:
           - Styling matches existing Settings sections
     type: epic
     jira: MSSCI-14186
+stories: []
