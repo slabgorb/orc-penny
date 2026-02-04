@@ -484,6 +484,36 @@ epics:
           - Panel preview images are larger/more detailed
           - Smooth visual experience when browsing panel list
         completed: "2026-02-04"
+      - id: MSSCI-14209
+        title: "Sprint panel story metadata indicators (context, jira, status)"
+        jira: MSSCI-14209
+        description: |
+          Enhance the Sprint panel to display richer metadata for each story and epic,
+          giving visibility into readiness state before attempting actions like archive.
+
+          **Target state:**
+
+          For each EPIC:
+          - Show whether epic tech context exists (sprint/context/context-epic-{N}.md)
+          - "Ready" badge or indicator when context exists
+          - Jira epic link (MSSCI-XXXXX)
+
+          For each STORY:
+          - Status badge: done ✓, todo ○, blocked ⚠, in_progress ●
+          - Jira ticket link (clickable MSSCI-XXXXX)
+          - Context indicator: whether story context file exists
+          - Visual distinction for stories missing required context
+        points: 3
+        priority: P1
+        type: enhancement
+        status: backlog
+        repos: pennyfarthing
+        acceptance_criteria:
+          - Epic rows show context existence indicator
+          - Story rows show Jira ticket as clickable link
+          - Story status badges are visually distinct (done/todo/blocked/in_progress)
+          - Context file existence shown for stories
+          - Consistent styling with Cyclist design system
     type: epic
     jira: MSSCI-14186
 stories: []
