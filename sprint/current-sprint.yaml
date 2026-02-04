@@ -729,7 +729,7 @@ epics:
         points: 5
         priority: P1
         type: feature
-        status: backlog
+        status: done
         workflow: tdd
         repos: pennyfarthing
         acceptance_criteria:
@@ -738,6 +738,7 @@ epics:
           - Commands execute in project root directory
           - Terminal resizes properly when panel resizes
           - Input/output works smoothly with good performance
+        completed: "2026-02-04"
       - id: MSSCI-14212
         title: Changed Files and Diffs panels - use git commands instead of OTEL
         description: |
