@@ -414,7 +414,7 @@ epics:
         points: 3
         priority: P1
         type: bug
-        status: backlog
+        status: done
         repos: pennyfarthing
         acceptance_criteria:
           - Changed panel updates when Write tool creates a file
@@ -422,6 +422,7 @@ epics:
           - Change history persists after git commits during session
           - Panel shows accurate count badge
           - Real-time updates via WebSocket or polling
+        completed: "2026-02-04"
       - id: MSSCI-14191
         title: "[BUG] Bell mode notifications not working correctly"
         description: |
