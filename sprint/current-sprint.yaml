@@ -444,6 +444,46 @@ epics:
           - Stories visible under each epic in collapsible tree
           - No "No epics" message when epics exist in sprint YAML
         completed: "2026-02-04"
+      - id: MSSCI-14204
+        title: "[BUG] Panel detail popup jumps in size and uses small images"
+        jira: MSSCI-14204
+        description: |
+          The panel detail popup (shown when hovering over panel names in the restore menu
+          or panel list) has visual polish issues that make it feel unprofessional.
+
+          **Observed behavior:**
+          - Dialog box jumps in size as you move mouse down the list of panel names
+          - Each panel has different content length causing layout shift
+          - Popup uses small/thumbnail images instead of larger detail images
+
+          **Expected behavior:**
+          - Popup maintains consistent dimensions regardless of which panel is hovered
+          - No jarring size jumps when moving between panels
+          - Uses larger, more detailed panel preview images
+          - Smooth, professional feel when browsing panel options
+
+          **Implementation approach:**
+          1. Set fixed dimensions for popup container (min-width/min-height or fixed size)
+          2. Content should scroll or truncate rather than resize container
+          3. Identify where panel images are sourced (may need to add larger assets)
+          4. If larger images don't exist, may need to generate/acquire them
+          5. Ensure image container has fixed aspect ratio to prevent shifts
+
+          **Investigation needed:**
+          - Where are panel preview images stored?
+          - What image sizes currently exist vs what's needed?
+          - Which component renders the panel detail popup?
+        points: 3
+        priority: P1
+        type: bug
+        status: done
+        repos: pennyfarthing
+        acceptance_criteria:
+          - Popup maintains consistent size when hovering different panels
+          - No layout shift or jumping when moving mouse between panel names
+          - Panel preview images are larger/more detailed
+          - Smooth visual experience when browsing panel list
+        completed: "2026-02-04"
     type: epic
     jira: MSSCI-14186
 stories: []
