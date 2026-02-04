@@ -10,27 +10,18 @@ sprint:
 epics:
   - id: epic-74
     title: 'Epic: Tool Use Visualization'
-    description: 'Improve tool use display in the message view with human-readable
-
+    description: |
+      Improve tool use display in the message view with human-readable
       summaries and proper visual hierarchy.
 
-
       Current state: ToolCallBlock shows tool name + raw input
-
       Target state: Stacked tool history with intent summaries
 
-
       Key requirements:
-
       - Tool uses show human-readable intent summary
-
       - Results in collapsible block underneath
-
       - Previous tool uses between messages shown collapsed as stack
-
       - Current/active tool use shown prominently
-
-'
     points: 13
     priority: P1
     marker: cyclist-react
@@ -39,7 +30,8 @@ epics:
     stories:
       - id: MSSCI-13395
         title: Tool intent summarizer
-        description: 'Create a utility that generates human-readable summaries of tool use intent:
+        description: |
+          Create a utility that generates human-readable summaries of tool use intent:
 
           - Read: "Reading file src/foo.ts"
 
@@ -47,7 +39,7 @@ epics:
 
           - Glob: "Finding TypeScript files in src/"
 
-          - Grep: "Searching for ''TODO'' in codebase"
+          - Grep: "Searching for'TODO'' in codebase"
 
           - Write: "Creating new file config.json"
 
@@ -58,7 +50,6 @@ epics:
 
           Use tool name + input parameters to generate contextual summary.
 
-'
         points: 3
         priority: P0
         status: done
@@ -71,7 +62,8 @@ epics:
         jira: MSSCI-13395
       - id: MSSCI-13398
         title: Collapsible tool result display
-        description: 'Enhance ToolCallBlock to show results in a proper collapsible block:
+        description: |
+          Enhance ToolCallBlock to show results in a proper collapsible block:
 
           - Results collapsed by default (show "▶ Result (X lines)")
 
@@ -80,8 +72,6 @@ epics:
           - Large results (>50 lines) show truncated preview with "Show all"
 
           - Copy button for result content
-
-'
         points: 2
         priority: P0
         status: done
@@ -95,7 +85,8 @@ epics:
         completed: '2026-02-03'
       - id: MSSCI-13400
         title: Tool use stack between messages
-        description: 'Group consecutive tool uses between assistant messages into a collapsible stack:
+        description: |
+          Group consecutive tool uses between assistant messages into a collapsible stack:
 
           - Show count: "5 tool calls" with expand/collapse
 
@@ -106,8 +97,6 @@ epics:
           - Current/pending tool use always shown expanded
 
           - Visual hierarchy: current tool prominent, history dimmed
-
-'
         points: 5
         priority: P0
         status: done
@@ -122,7 +111,8 @@ epics:
         completed: '2026-02-03'
       - id: MSSCI-13402
         title: Tool use visual design polish
-        description: 'Apply consistent visual design to tool use blocks:
+        description: |
+          Apply consistent visual design to tool use blocks:
 
           - Status indicators (pending spinner, success checkmark, error X)
 
@@ -133,8 +123,6 @@ epics:
           - Error results highlighted with red border
 
           - Consistent with Cyclist design system
-
-'
         points: 3
         priority: P1
         status: done
@@ -150,7 +138,8 @@ epics:
     jira: MSSCI-13394
   - id: epic-76
     title: 'Epic: Dockview Panel Migration'
-    description: 'Replace hand-rolled panel management with Dockview library.
+    description: |
+      Replace hand-rolled panel management with Dockview library.
 
 
       Current state: Custom 1,042-line DockingWorkspace.tsx with bugs
@@ -172,8 +161,6 @@ epics:
 
 
       See ADR-0019 for technical details.
-
-'
     points: 29
     priority: P0
     marker: cyclist-react
@@ -182,7 +169,8 @@ epics:
     stories:
       - id: MSSCI-14001
         title: Replace DockingWorkspace with Dockview
-        description: 'Replace the hand-rolled panel system with Dockview in one pass:
+        description: |
+          Replace the hand-rolled panel system with Dockview in one pass:
 
 
           1. Create DockviewWorkspace.tsx using dockview-react
@@ -205,8 +193,6 @@ epics:
 
 
           See docs/adr/0019-dockview-migration.md for implementation details.
-
-'
         points: 8
         priority: P0
         status: done
@@ -225,9 +211,10 @@ epics:
         completed: '2026-02-03'
       - id: MSSCI-14187
         title: '[BUG] Tab overflow - hidden tabs have no way to be accessed'
-        description: 'When sidebars have more tabs than can fit in the visible area, users have
+        description: |
+          When sidebars have more tabs than can fit in the visible area, users have
 
-          no way to access the hidden tabs. Dockview''s built-in tab overflow dropdown
+          no way to access the hidden tabs. Dockview's built-in tab overflow dropdown
 
           is not appearing.
 
@@ -278,7 +265,6 @@ epics:
 
           - Browser DevTools: check for `.dv-tabs-overflow-dropdown-root` in DOM
 
-'
         points: 3
         priority: P1
         type: bug
@@ -292,7 +278,8 @@ epics:
         completed: '2026-02-04'
       - id: MSSCI-14188
         title: Split Progress panel into Workflow, AC, and Todo panels
-        description: 'Now that we have Dockview with proper nested panel support, split the
+        description: |
+          Now that we have Dockview with proper nested panel support, split the
 
           overloaded ProgressPanel into three dedicated panels:
 
@@ -342,11 +329,10 @@ epics:
 
           - Users can close unused panels (e.g., hide AC when not doing TDD)
 
-          - Better use of Dockview''s tab overflow handling
+          - Better use of Dockview's tab overflow handling
 
           - Cleaner component architecture
 
-'
         points: 5
         priority: P2
         type: enhancement
@@ -381,7 +367,8 @@ epics:
         completed: '2026-02-04'
       - id: MSSCI-14190
         title: '[BUG] Changed Files panel not tracking file modifications'
-        description: 'The Changed Files panel is not detecting or displaying files modified during
+        description: |
+          The Changed Files panel is not detecting or displaying files modified during
 
           the session. Need to investigate and fix the file tracking mechanism.
 
@@ -433,8 +420,6 @@ epics:
           - `packages/cyclist/src/api/` (WebSocket handlers)
 
           - `packages/cyclist/src/public/hooks/` (data fetching hooks)
-
-'
         points: 3
         priority: P1
         type: bug
@@ -449,7 +434,8 @@ epics:
         completed: '2026-02-04'
       - id: MSSCI-14191
         title: '[BUG] Bell mode notifications not working correctly'
-        description: 'Bell mode notifications are still not functioning as expected. When enabled,
+        description: |
+          Bell mode notifications are still not functioning as expected. When enabled,
 
           the system should provide audio/visual notifications at key workflow events.
 
@@ -494,8 +480,6 @@ epics:
           - `packages/cyclist/src/` (notification handlers)
 
           - Workflow phase transition code
-
-'
         points: 2
         priority: P2
         type: bug
@@ -509,7 +493,8 @@ epics:
           - Respects system notification permissions
       - id: MSSCI-14192
         title: '[BUG] Sprint panel shows ''No epics in current sprint'' despite active epics'
-        description: 'The Sprint panel''s Current Epics section displays "No epics in current sprint"
+        description: |
+          The Sprint panel's Current Epics section displays "No epics in current sprint"
 
           and suggests promoting from Future Initiatives, even though current-sprint.yaml
 
@@ -555,7 +540,6 @@ epics:
 
           - Browser DevTools Network tab: check /api/sprint/* responses
 
-'
         points: 2
         priority: P1
         type: bug
@@ -570,7 +554,8 @@ epics:
       - id: MSSCI-14204
         title: '[BUG] Panel detail popup jumps in size and uses small images'
         jira: MSSCI-14204
-        description: 'The panel detail popup (shown when hovering over panel names in the restore menu
+        description: |
+          The panel detail popup (shown when hovering over panel names in the restore menu
 
           or panel list) has visual polish issues that make it feel unprofessional.
 
@@ -603,7 +588,7 @@ epics:
 
           3. Identify where panel images are sourced (may need to add larger assets)
 
-          4. If larger images don''t exist, may need to generate/acquire them
+          4. If larger images don't exist, may need to generate/acquire them
 
           5. Ensure image container has fixed aspect ratio to prevent shifts
 
@@ -616,7 +601,6 @@ epics:
 
           - Which component renders the panel detail popup?
 
-'
         points: 3
         priority: P1
         type: bug
@@ -631,7 +615,8 @@ epics:
       - id: MSSCI-14209
         title: Sprint panel story metadata indicators (context, jira, status)
         jira: MSSCI-14209
-        description: 'Enhance the Sprint panel to display richer metadata for each story and epic,
+        description: |
+          Enhance the Sprint panel to display richer metadata for each story and epic,
 
           giving visibility into readiness state before attempting actions like archive.
 
@@ -657,8 +642,6 @@ epics:
           - Context indicator: whether story context file exists
 
           - Visual distinction for stories missing required context
-
-'
         points: 3
         priority: P1
         type: enhancement
@@ -673,7 +656,8 @@ epics:
       - id: MSSCI-14210
         title: '[BUG] Background panel not detecting background work'
         jira: MSSCI-14210
-        description: 'The Background panel is not picking up background work (agents or shells running
+        description: |
+          The Background panel is not picking up background work (agents or shells running
 
           in background via run_in_background parameter). Panel should detect and display
 
@@ -718,8 +702,6 @@ epics:
           - Background task management in Electron main process
 
           - WebSocket handlers for task status
-
-'
         points: 2
         priority: P1
         type: bug
@@ -733,41 +715,33 @@ epics:
           - Click task to view full output via TaskOutput
           - Completed tasks remain visible for session duration
         completed: "2026-02-04"
-    type: epic
-    jira: MSSCI-14186
-stories: []
       - id: MSSCI-14211
-        title: TTY Panel with xterm.js terminal emulator
+        title: TTY Panel with xterm.js
         description: |
-          Add a TTY panel to Cyclist using xterm.js for high-fidelity terminal emulation.
-          
-          **Requirements:**
-          - Embed xterm.js terminal in a Dockview panel
-          - Load user's shell environment (bash/zsh profile)
-          - Open in project root directory
-          - Proper resize handling when panel resizes
-          - Standard terminal features (colors, cursor, scrollback)
-          
-          **Out of scope:**
-          - Multiple terminal instances/tabs
-          - Split panes within terminal
-          - Session persistence across panel close
-          
-          **Technical approach:**
-          - Use xterm.js + xterm-addon-fit for resize
-          - node-pty backend for pseudo-terminal
-          - WebSocket bridge between renderer and main process
-          - Detect user's default shell from environment
+          Add a terminal panel using xterm.js for high-fidelity terminal emulation.
+          Users can run commands directly in the panel with their shell environment loaded.
+
+          Requirements:
+          - Use xterm.js for terminal rendering
+          - Load user's shell environment (zsh/bash profile)
+          - Working directory set to project root
+          - Proper resize handling as panel is resized
+          - Good performance and responsiveness
+
+          Out of scope:
+          - Multiple terminals
+          - Split panes
         points: 5
         priority: P1
         type: feature
         status: backlog
+        workflow: tdd
         repos: pennyfarthing
         acceptance_criteria:
-          - TTY panel available in Dockview panel list
-          - Terminal loads user's shell with environment (PATH, aliases, etc.)
-          - Opens in project root directory
-          - Resizes correctly when panel is resized
-          - Supports ANSI colors and cursor positioning
-          - Scrollback buffer works (arrow up for history, scroll for output)
-          - Panel can be positioned/docked like other panels
+          - xterm.js terminal renders in panel
+          - User's shell environment is loaded correctly
+          - Commands execute in project root directory
+          - Terminal resizes properly when panel resizes
+          - Input/output works smoothly with good performance
+    type: epic
+    jira: MSSCI-14186
