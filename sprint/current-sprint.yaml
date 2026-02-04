@@ -9,28 +9,19 @@ sprint:
   status: active
 epics:
   - id: epic-74
-    title: 'Epic: Tool Use Visualization'
-    description: 'Improve tool use display in the message view with human-readable
-
+    title: "Epic: Tool Use Visualization"
+    description: |
+      Improve tool use display in the message view with human-readable
       summaries and proper visual hierarchy.
 
-
       Current state: ToolCallBlock shows tool name + raw input
-
       Target state: Stacked tool history with intent summaries
 
-
       Key requirements:
-
       - Tool uses show human-readable intent summary
-
       - Results in collapsible block underneath
-
       - Previous tool uses between messages shown collapsed as stack
-
       - Current/active tool use shown prominently
-
-'
     points: 13
     priority: P1
     marker: cyclist-react
@@ -39,25 +30,17 @@ epics:
     stories:
       - id: MSSCI-13395
         title: Tool intent summarizer
-        description: 'Create a utility that generates human-readable summaries of tool use intent:
-
+        description: |
+          Create a utility that generates human-readable summaries of tool use intent:
           - Read: "Reading file src/foo.ts"
-
           - Bash: "Running git status" or "Installing dependencies"
-
           - Glob: "Finding TypeScript files in src/"
-
-          - Grep: "Searching for ''TODO'' in codebase"
-
+          - Grep: "Searching for 'TODO' in codebase"
           - Write: "Creating new file config.json"
-
           - Edit: "Updating function in utils.ts"
-
           - Task: "Launching explore agent to find error handlers"
 
           Use tool name + input parameters to generate contextual summary.
-
-'
         points: 3
         priority: P0
         status: done
@@ -70,17 +53,12 @@ epics:
         jira: MSSCI-13395
       - id: MSSCI-13398
         title: Collapsible tool result display
-        description: 'Enhance ToolCallBlock to show results in a proper collapsible block:
-
+        description: |
+          Enhance ToolCallBlock to show results in a proper collapsible block:
           - Results collapsed by default (show "▶ Result (X lines)")
-
           - Expand to show full result with syntax highlighting
-
           - Large results (>50 lines) show truncated preview with "Show all"
-
           - Copy button for result content
-
-'
         points: 2
         priority: P0
         status: done
@@ -94,21 +72,13 @@ epics:
         completed: '2026-02-03'
       - id: MSSCI-13400
         title: Tool use stack between messages
-        description: 'Group consecutive tool uses between assistant messages into a
-
-          collapsible stack:
-
+        description: |
+          Group consecutive tool uses between assistant messages into a collapsible stack:
           - Show count: "5 tool calls" with expand/collapse
-
           - Collapsed: show just the summary line for each
-
           - Expanded: show full ToolCallBlock for each
-
           - Current/pending tool use always shown expanded
-
           - Visual hierarchy: current tool prominent, history dimmed
-
-'
         points: 5
         priority: P0
         status: done
@@ -123,19 +93,13 @@ epics:
         completed: '2026-02-03'
       - id: MSSCI-13402
         title: Tool use visual design polish
-        description: 'Apply consistent visual design to tool use blocks:
-
+        description: |
+          Apply consistent visual design to tool use blocks:
           - Status indicators (pending spinner, success checkmark, error X)
-
           - Color coding by tool type (read=blue, write=orange, bash=green)
-
           - Elapsed time for completed tools
-
           - Error results highlighted with red border
-
           - Consistent with Cyclist design system
-
-'
         points: 3
         priority: P1
         status: done
@@ -150,31 +114,21 @@ epics:
     type: epic
     jira: MSSCI-13394
   - id: epic-76
-    title: 'Epic: Dockview Panel Migration'
-    description: 'Replace hand-rolled panel management with Dockview library.
-
+    title: "Epic: Dockview Panel Migration"
+    description: |
+      Replace hand-rolled panel management with Dockview library.
 
       Current state: Custom 1,042-line DockingWorkspace.tsx with bugs
-
       Target state: Dockview-based workspace with proper panel docking
 
-
       dockview-react is already installed but unused. Migration enables:
-
       - Floating panels (pop-out windows)
-
       - Split views within regions
-
       - Panel maximization
-
       - Better drag-and-drop UX
-
       - Full ARIA accessibility
 
-
       See ADR-0019 for technical details.
-
-'
     points: 29
     priority: P0
     marker: cyclist-react
@@ -183,31 +137,20 @@ epics:
     stories:
       - id: MSSCI-14001
         title: Replace DockingWorkspace with Dockview
-        description: 'Replace the hand-rolled panel system with Dockview in one pass:
-
+        description: |
+          Replace the hand-rolled panel system with Dockview in one pass:
 
           1. Create DockviewWorkspace.tsx using dockview-react
-
           2. Adapt existing 9 panel components via PanelAdapter pattern
-
           3. Implement sacred center (MessagePanel locked, cannot close/move)
-
           4. Migrate layout persistence to Dockview serialization format
-
           5. Apply Cyclist theme via CSS custom properties
-
           6. Implement responsive collapse behavior
-
           7. Update App.tsx to use new workspace
-
           8. Delete old DockingWorkspace.tsx (~1,042 lines)
-
           9. Update/fix affected tests
 
-
           See docs/adr/0019-dockview-migration.md for implementation details.
-
-'
         points: 8
         priority: P0
         status: done
@@ -454,7 +397,7 @@ epics:
         points: 2
         priority: P2
         type: bug
-        status: done
+        status: backlog
         repos: pennyfarthing
         acceptance_criteria:
           - Bell sounds on agent handoff/phase transition
@@ -462,6 +405,44 @@ epics:
           - Bell sounds on workflow completion
           - Bell mode can be toggled in settings
           - Respects system notification permissions
+      - id: MSSCI-14192
+        title: "[BUG] Sprint panel shows 'No epics in current sprint' despite active epics"
+        description: |
+          The Sprint panel's Current Epics section displays "No epics in current sprint"
+          and suggests promoting from Future Initiatives, even though current-sprint.yaml
+          contains active epics (Epic 74 complete, Epic 76 in progress with 7 stories).
+
+          **Observed behavior:**
+          - Current Epics section shows empty state message
+          - "Promote an epic from Future Initiatives to get started" displayed
+          - Future Initiatives section IS populated correctly
+          - Sprint data clearly exists in current-sprint.yaml
+
+          **Expected behavior:**
+          - Epic 74 should show as complete (13/13 pts)
+          - Epic 76 should show with progress bar (21/29 pts done)
+          - Stories should be visible under each epic in collapsible tree
+
+          **Root cause hypothesis:**
+          - API endpoint `/api/sprint/stories` may be returning empty
+          - Frontend may not be calling the correct endpoint
+          - Data transformation may be filtering out epics incorrectly
+          - Possible mismatch between expected and actual response shape
+
+          **Files to investigate:**
+          - packages/cyclist/src/public/components/panels/SprintPanel.tsx
+          - packages/cyclist/src/api/ (sprint-related endpoints)
+          - Browser DevTools Network tab: check /api/sprint/* responses
+        points: 2
+        priority: P1
+        type: bug
+        status: done
+        repos: pennyfarthing
+        acceptance_criteria:
+          - Sprint panel shows Epic 74 with 13/13 points complete
+          - Sprint panel shows Epic 76 with progress (21/29 points)
+          - Stories visible under each epic in collapsible tree
+          - No "No epics" message when epics exist in sprint YAML
         completed: "2026-02-04"
     type: epic
     jira: MSSCI-14186
