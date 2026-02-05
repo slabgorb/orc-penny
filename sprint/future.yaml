@@ -541,7 +541,7 @@ future:
         Prior work: Epic 33 (MSSCI-11705) - 4/5 stories complete
       status: research_complete
       blocked_by: null
-      total_points: 21
+      total_points: 23
       epics:
         - id: epic-78
           title: "Cyclist Permission System"
@@ -643,6 +643,19 @@ future:
               priority: P3
               status: backlog
               repos: pennyfarthing
+            - id: "78-9"
+              title: "Smooth plan mode exit with tirepump choice"
+              description: |
+                ExitPlanMode should transition smoothly without requiring
+                manual user intervention to accept. After plan approval,
+                offer a choice for whether to tirepump (commit/push) the
+                resulting changes before continuing. Currently plan mode
+                exit is clunky and requires the user to manually set
+                accept mode.
+              points: 2
+              priority: P2
+              status: backlog
+              repos: pennyfarthing
     # Sprint Data Management - PROMOTED to current sprint (epic-77)
     # Removed 2026-02-05: now tracked in current-sprint.yaml
     # ==========================================================================
@@ -683,7 +696,7 @@ future:
 # Repository Optimization         |   -   |    -   | CANCELLED (epic-55)
 # Quality & Scale                 |   1   |   17   | backlog
 # Technical Debt                  |   0   |    7   | backlog (incl 39-6)
-# Cyclist Permission System       |   1   |   21   | backlog
+# Cyclist Permission System       |   1   |   23   | backlog
 # Sprint Data Management          |   -   |   17   | PROMOTED to current sprint
 # Python CLI Migration            |   -   |    -   | CANCELLED
 # Cyclist React Migration          |   -   |   65   | COMPLETE
