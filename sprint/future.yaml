@@ -522,24 +522,8 @@ future:
           status: backlog
           repos: pennyfarthing
       epics: []
-    - name: "Sprint Data Management"
-      description: |
-        Replace fragile YAML editing with deterministic, validated operations.
-        Introduces Python-based yaml_io module that guarantees format consistency,
-        provides auto-fix capabilities, and consolidates sprint/story operations.
-
-        Key deliverables:
-        - Deterministic YAML serialization (same input → byte-identical output)
-        - /sprint story add command (the missing operation)
-        - /sprint validate --fix command (auto-repair)
-        - Pre-commit enforcement
-
-        PRD: docs/planning/prd-sprint-data-management.md
-        ADR: docs/adr/0018-sprint-yaml-script-access.md
-      status: ready
-      blocked_by: null
-      total_points: 17
-      epics: []
+    # Sprint Data Management - PROMOTED to current sprint (epic-77)
+    # Removed 2026-02-05: now tracked in current-sprint.yaml
     # ==========================================================================
     # PYTHON CLI MIGRATION - CANCELLED
     # Reason: Current bash/Python hybrid approach working well enough.
@@ -578,10 +562,11 @@ future:
 # Repository Optimization         |   -   |    -   | CANCELLED (epic-55)
 # Quality & Scale                 |   1   |   17   | backlog
 # Technical Debt                  |   0   |    7   | backlog (incl 39-6)
+# Sprint Data Management          |   -   |   17   | PROMOTED to current sprint
 # Python CLI Migration            |   -   |    -   | CANCELLED
 # Cyclist React Migration          |   -   |   65   | COMPLETE
 # --------------------------------|-------|--------|------------------
-# TOTAL                           |   8   |   93   |
+# TOTAL                           |   8   |   76   | (excl promoted/cancelled/complete)
 #
 # Epic Numbering Used: 40-46, 69-76
 # Next Available Epic Number: 77
