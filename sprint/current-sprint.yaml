@@ -98,7 +98,7 @@ epics:
           - Write atomically
         points: 3
         priority: P0
-        status: backlog
+        status: done
         repos: pennyfarthing
         workflow: tdd
         acceptance_criteria:
@@ -107,6 +107,7 @@ epics:
           - Story appears in correct position under epic
           - File validates after insertion
           - Atomic write (no partial corruption)
+        completed: "2026-02-05"
       - id: 76-4
         jira: MSSCI-14257
         title: Sprint story update command

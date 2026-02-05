@@ -279,3 +279,12 @@ Run `--fix` on all existing files to canonicalize format.
 - [Existing validator](/pennyfarthing/pennyfarthing_scripts/sprint/validator.py)
 - [Existing loader](/pennyfarthing/pennyfarthing_scripts/sprint/loader.py)
 - [ruamel.yaml documentation](https://yaml.readthedocs.io/)
+
+## Story Contexts
+
+Detailed context for each remaining story lives in separate files:
+
+- [`context-MSSCI-14256.md`](context-MSSCI-14256.md) — 76-3: Sprint story add command
+- [`context-MSSCI-14257.md`](context-MSSCI-14257.md) — 76-4: Sprint story update command
+- [`context-MSSCI-14258.md`](context-MSSCI-14258.md) — 76-5: Pre-commit hook for YAML validation
+- [`context-MSSCI-14259.md`](context-MSSCI-14259.md) — 76-6: Migrate existing YAML files to canonical format
