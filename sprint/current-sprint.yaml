@@ -41,7 +41,7 @@ epics:
           - Atomic writes (temp file + rename)
         points: 5
         priority: P0
-        status: backlog
+        status: done
         repos: pennyfarthing
         workflow: tdd
         acceptance_criteria:
@@ -49,6 +49,7 @@ epics:
           - Round-trip integrity (read → write → read = identical)
           - Atomic writes prevent partial file corruption
           - Key ordering matches sprint-template.yaml
+        completed: "2026-02-05"
       - id: 76-2
         jira: MSSCI-14255
         title: Sprint validate command with --fix flag
