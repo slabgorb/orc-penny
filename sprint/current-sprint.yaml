@@ -7,5 +7,67 @@ sprint:
   end_date: 2026-02-15
   status: active
   number: 2606
-epics: []
+epics:
+  # ===========================================================================
+  # EPIC 79: Stepped Workflow Infrastructure
+  # ===========================================================================
+  - id: MSSCI-14298
+    type: epic
+    title: "Epic: Stepped Workflow Infrastructure"
+    description: |
+      Fix stepped workflow support in Cyclist and the framework. Stepped
+      workflows (epics-and-stories, prd, research, etc.) use a subdirectory
+      pattern with workflow.yaml + steps/ that is not handled by existing
+      code paths. Two bugs identified:
+      1. Session state never updates (step advancement not wired up)
+      2. WorkflowPanel can't find subdirectory workflow definitions
+    priority: P1
+    status: in_progress
+    repos: pennyfarthing
+    stories:
+      - id: MSSCI-14299
+        title: "Wire up stepped workflow session state advancement"
+        description: |
+          Stepped workflows complete all steps but the session file stays
+          frozen at Step 1 / 0% / in_progress. The TypeScript API exists
+          in packages/core/src/workflow/session-state.ts (completeStep,
+          updateWorkflowState, updateSessionContent) but nothing calls it.
+          No CLI command, no HTTP endpoint, no skill exposes step advancement.
+
+          Fix: Expose step completion via a mechanism Claude can invoke
+          (CLI script, skill, or hook) so session state updates as steps
+          complete. Affects 12+ stepped workflows.
+        points: 5
+        priority: P0
+        status: backlog
+        repos: pennyfarthing
+        workflow: tdd
+        acceptance_criteria:
+          - Session file Current Step increments when a step completes
+          - Session file Steps Completed array populates correctly
+          - Session file Status changes to completed when all steps done
+          - Completion percentage updates in session file
+          - Works for all stepped workflows (epics-and-stories, prd, research, etc.)
+      - id: MSSCI-14300
+        title: "Add subdirectory workflow lookup to getWorkflowPhases"
+        description: |
+          getWorkflowPhases() in packages/cyclist/src/story-parser.ts only
+          checks for flat-file workflows (e.g. tdd.yaml) but 16 workflows
+          use the subdirectory pattern (e.g. epics-and-stories/workflow.yaml).
+          Panel shows "No active workflow" for all subdirectory workflows.
+
+          Fix: Add {name}/workflow.yaml search paths alongside {name}.yaml
+          in all three lookup locations (.pennyfarthing/workflows/,
+          .claude/workflows/, pennyfarthing-dist/workflows/). Also handle
+          stepped workflow type (steps → phases mapping for panel display).
+        points: 3
+        priority: P0
+        status: backlog
+        repos: pennyfarthing
+        workflow: tdd
+        acceptance_criteria:
+          - getWorkflowPhases finds subdirectory workflow definitions
+          - WorkflowPanel displays stepped workflow progress (step N of M)
+          - Existing flat-file workflow lookup still works
+          - All 16 subdirectory workflows discoverable by panel
 stories: []
