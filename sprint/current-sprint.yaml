@@ -147,7 +147,7 @@ epics:
           - Works in CI (no interactive prompts)
         points: 2
         priority: P1
-        status: backlog
+        status: done
         repos: pennyfarthing
         workflow: trivial
         acceptance_criteria:
@@ -155,6 +155,7 @@ epics:
           - Error message includes fix command
           - Completes in under 2 seconds
           - Works in non-interactive CI environment
+        completed: "2026-02-05"
       - id: 76-6
         jira: MSSCI-14259
         title: Migrate existing YAML files to canonical format
