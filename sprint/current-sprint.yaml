@@ -18,9 +18,10 @@ epics:
       Fix stepped workflow support in Cyclist and the framework. Stepped
       workflows (epics-and-stories, prd, research, etc.) use a subdirectory
       pattern with workflow.yaml + steps/ that is not handled by existing
-      code paths. Two bugs identified:
+      code paths. Three issues identified:
       1. Session state never updates (step advancement not wired up)
       2. WorkflowPanel can't find subdirectory workflow definitions
+      3. No way to see available/applicable workflows in the panel
     priority: P1
     status: in_progress
     repos: pennyfarthing
@@ -39,7 +40,7 @@ epics:
           complete. Affects 12+ stepped workflows.
         points: 5
         priority: P0
-        status: backlog
+        status: done
         repos: pennyfarthing
         workflow: tdd
         acceptance_criteria:
@@ -48,6 +49,7 @@ epics:
           - Session file Status changes to completed when all steps done
           - Completion percentage updates in session file
           - Works for all stepped workflows (epics-and-stories, prd, research, etc.)
+        completed: "2026-02-05"
       - id: MSSCI-14300
         title: "Add subdirectory workflow lookup to getWorkflowPhases"
         description: |
@@ -62,7 +64,7 @@ epics:
           stepped workflow type (steps → phases mapping for panel display).
         points: 3
         priority: P0
-        status: backlog
+        status: done
         repos: pennyfarthing
         workflow: tdd
         acceptance_criteria:
@@ -70,4 +72,29 @@ epics:
           - WorkflowPanel displays stepped workflow progress (step N of M)
           - Existing flat-file workflow lookup still works
           - All 16 subdirectory workflows discoverable by panel
+        completed: "2026-02-05"
+      - id: MSSCI-14301
+        title: "Show available applicable workflows in WorkflowPanel"
+        description: |
+          WorkflowPanel currently only shows the active workflow (if any).
+          When no workflow is active it shows "No active workflow" with no
+          way to discover what workflows are available. Even when a workflow
+          is active, users cannot see alternatives.
+
+          Fix: Add a section to WorkflowPanel that lists available workflows
+          applicable to the current context. Filter by triggers, tags, or
+          project type. Allow users to see stepped vs phased workflows and
+          start new ones from the panel. Requires a backend endpoint or
+          API to enumerate available workflow definitions and their metadata.
+        points: 3
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
+        workflow: tdd
+        acceptance_criteria:
+          - WorkflowPanel shows list of available workflows when no workflow is active
+          - Available workflows are filtered by applicability to current project context
+          - Each workflow entry shows name, type (stepped/phased), and description
+          - User can identify which workflows are startable from the panel
+          - List updates when project context changes
 stories: []
