@@ -46,3 +46,6 @@ pennyfarthing/
 
 # Playwright MCP artifacts
 .playwright-mcp/
+
+# Plan files
+.plan
