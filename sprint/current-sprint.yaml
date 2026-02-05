@@ -66,7 +66,7 @@ epics:
           - Fix command suggestion
         points: 3
         priority: P0
-        status: backlog
+        status: done
         repos: pennyfarthing
         workflow: tdd
         acceptance_criteria:
@@ -75,6 +75,8 @@ epics:
           - Detects format drift (wrong indentation, key order)
           - --fix repairs all format errors automatically
           - Exit code 0 = valid, non-zero = invalid
+        started: "2026-02-05"
+        completed: "2026-02-05"
       - id: 76-3
         jira: MSSCI-14256
         title: Sprint story add command
