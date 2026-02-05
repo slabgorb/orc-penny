@@ -1,5 +1,4 @@
 sprint:
-  number: 2606
   name: TO Sprint 2606
   jira_sprint_id: 309
   jira_sprint_name: TO Sprint 2606
@@ -7,8 +6,10 @@ sprint:
   start_date: 2026-02-02
   end_date: 2026-02-15
   status: active
+  number: 2606
 epics:
   - id: epic-76
+    type: epic
     title: 'Epic: Sprint Data Management System'
     description: |
       Python-based yaml_io module for deterministic sprint YAML operations.
@@ -18,12 +19,12 @@ epics:
       - 100% determinism (same input → byte-identical output)
       - 100% round-trip integrity (read → write → read = identical)
       - All format errors auto-repairable via --fix
-    points: 17
     priority: P1
-    marker: infrastructure
-    repos: pennyfarthing
     status: backlog
+    repos: pennyfarthing
     jira: MSSCI-14253
+    points: 17
+    marker: infrastructure
     stories:
       - id: 76-1
         jira: MSSCI-14254
@@ -67,6 +68,7 @@ epics:
         points: 3
         priority: P0
         status: done
+        started: "2026-02-05"
         repos: pennyfarthing
         workflow: tdd
         acceptance_criteria:
@@ -75,7 +77,6 @@ epics:
           - Detects format drift (wrong indentation, key order)
           - --fix repairs all format errors automatically
           - Exit code 0 = valid, non-zero = invalid
-        started: "2026-02-05"
         completed: "2026-02-05"
       - id: 76-3
         jira: MSSCI-14256
@@ -170,12 +171,12 @@ epics:
           Update ADR-0018 to reflect Python implementation.
         points: 2
         priority: P1
-        status: backlog
+        status: done
         repos: pennyfarthing
         workflow: trivial
         acceptance_criteria:
           - All sprint YAML files pass validation
           - Format matches sprint-template.yaml
           - ADR-0018 updated with Python implementation notes
-    type: epic
+        completed: '2026-02-05'
 stories: []
