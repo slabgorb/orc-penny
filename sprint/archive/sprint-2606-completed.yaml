@@ -141,3 +141,35 @@ completed:
     title: "Settings panel visibility toggles for all panels"
     points: 3
     completed: 2026-02-04
+
+  # epic-76: Epic: Sprint Data Management System - COMPLETE
+  - id: 76-1
+    epic: MSSCI-14253
+    title: "Core yaml_io module with deterministic serialization"
+    points: 5
+    completed: 2026-02-05
+  - id: 76-2
+    epic: MSSCI-14253
+    title: "Sprint validate command with --fix flag"
+    points: 3
+    completed: 2026-02-05
+  - id: 76-3
+    epic: MSSCI-14253
+    title: "Sprint story add command"
+    points: 3
+    completed: 2026-02-05
+  - id: 76-4
+    epic: MSSCI-14253
+    title: "Sprint story update command"
+    points: 2
+    completed: 2026-02-05
+  - id: 76-5
+    epic: MSSCI-14253
+    title: "Pre-commit hook for YAML validation"
+    points: 2
+    completed: 2026-02-05
+  - id: 76-6
+    epic: MSSCI-14253
+    title: "Migrate existing YAML files to canonical format"
+    points: 2
+    completed: 2026-02-05
