@@ -124,7 +124,7 @@ epics:
           Auto-cleanup: remove assigned_to when status=done
         points: 2
         priority: P1
-        status: backlog
+        status: done
         repos: pennyfarthing
         workflow: tdd
         acceptance_criteria:
@@ -132,6 +132,7 @@ epics:
           - Finds story across all epics
           - Auto-removes assigned_to when marking done
           - Validates and writes atomically
+        completed: "2026-02-05"
       - id: 76-5
         jira: MSSCI-14258
         title: Pre-commit hook for YAML validation
