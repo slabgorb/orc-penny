@@ -189,18 +189,6 @@ epics:
         status: done
         repos: pennyfarthing
         completed: '2026-02-06'
-      - id: MSSCI-14325
-        jira: MSSCI-14325
-        title: Connect /permissions skill to grant store
-        description: |
-          Wire existing /permissions skill to settings-store.ts
-          for list/grant/revoke/show operations. Ensure always-grants
-          can be revoked from .claude/settings.local.json.
-        points: 2
-        priority: P2
-        status: done
-        repos: pennyfarthing
-        completed: "2026-02-06"
       - id: MSSCI-14326
         jira: MSSCI-14326
         title: Workflow permission presets
