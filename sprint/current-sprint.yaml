@@ -107,7 +107,7 @@ epics:
     status: in_progress
     repos: pennyfarthing
     jira: MSSCI-14317
-    points: 21
+    points: 24
     marker: cyclist
     stories:
       - id: MSSCI-14318
@@ -231,6 +231,34 @@ epics:
         priority: P2
         status: done
         repos: pennyfarthing
+        completed: "2026-02-06"
+      - id: MSSCI-14395
+        jira: MSSCI-14395
+        title: Render AskUserQuestion tool via Reflector QuickActions
+        description: |
+          When Claude uses the AskUserQuestion tool, Cyclist renders it
+          as a generic collapsed ToolCallBlock with raw JSON. The user
+          has no way to select an answer. Fix: detect AskUserQuestion
+          tool_use messages in the stream and render them through the
+          existing Reflector QuickActions UI (buttons for choices,
+          yes/no, open text). Send the user's selection back as a
+          message via the /ws/claude WebSocket, same as existing
+          QuickActions responses. Requires intercepting the tool_use
+          in MessageView or ToolCallBlock and converting the tool
+          input (questions array with options) into the QuickActions
+          format that useMarkerActions already supports.
+        points: 3
+        priority: P1
+        status: done
+        repos: pennyfarthing
+        workflow: tdd
+        acceptance_criteria:
+          - AskUserQuestion tool_use renders interactive buttons instead of collapsed JSON
+          - Single-select questions show clickable option buttons
+          - Multi-select questions show checkboxes or toggleable buttons
+          - User selection is sent back to Claude via WebSocket as a message
+          - Existing Reflector marker QuickActions continue to work unchanged
+          - ToolCallBlock still renders normally for all other tool types
         completed: "2026-02-06"
   - id: epic-85
     title: 'Epic: Clean Install Consolidation'
