@@ -723,6 +723,110 @@ future:
               priority: P1
               status: planning
               repos: pennyfarthing
+    - name: "Agent Collaboration"
+      description: |
+        Graduated agent collaboration system: Tandem consultation (Phase 1)
+        for mid-phase specialist Q&A, then native Claude Code Agent Teams
+        (Phase 2) for true parallel execution. Tandem works in -p mode;
+        native teams require interactive sessions.
+
+        Prior art: ADR-0012 (Tandem Agent Pairing), PRD (artifacts/prd-tandem.md)
+        Context: sprint/context/context-epic-86.md
+      status: planning
+      blocked_by:
+      total_points: 36
+      epics:
+        - id: epic-86
+          title: "Agent Collaboration — Tandem to Teams"
+          description: |
+            Phase 1 (15 pts): Tandem consultation protocol — workflow YAML
+            tandem: blocks, structured request/response with Sonnet partner,
+            dialogue file persistence, agent tandem awareness, templates.
+
+            Phase 2 (13 pts): Native Agent Teams integration — feature detection,
+            persona injection via spawn prompts, execution_mode: team in workflow
+            YAML, gate-to-task-dependency adapter.
+
+            Phase 3 (8 pts): Cyclist integration — TandemPanel for dialogue
+            visualization, TeamPanel for native team status/messaging.
+          points: 36
+          priority: P1
+          marker: infrastructure
+          repos: pennyfarthing
+          status: planning
+          stories:
+            - id: "86-1"
+              title: "Workflow schema: tandem: block"
+              points: 3
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "86-2"
+              title: "Consultation protocol implementation"
+              points: 3
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "86-3"
+              title: "Dialogue file management"
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "86-4"
+              title: "Agent tandem awareness"
+              points: 3
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "86-5"
+              title: "Tandem workflow templates"
+              points: 2
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+            - id: "86-6"
+              title: "Tandem metrics and token tracking"
+              points: 2
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+            - id: "86-7"
+              title: "Feature detection: native teams capability"
+              points: 2
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+            - id: "86-8"
+              title: "Persona injection via spawn prompts"
+              points: 3
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+            - id: "86-9"
+              title: "Workflow schema: execution_mode: team"
+              points: 3
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+            - id: "86-10"
+              title: "Gate-to-task-dependency adapter"
+              points: 5
+              priority: P2
+              status: planning
+              repos: pennyfarthing
+            - id: "86-11"
+              title: "Cyclist: Tandem dialogue panel"
+              points: 3
+              priority: P2
+              status: planning
+              repos: pennyfarthing
+            - id: "86-12"
+              title: "Cyclist: Native team panel"
+              points: 5
+              priority: P3
+              status: planning
+              repos: pennyfarthing
     - name: "Quality & Scale"
       description: |
         Scale adaptation capabilities for larger initiatives and brownfield codebases.
