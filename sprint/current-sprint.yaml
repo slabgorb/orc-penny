@@ -314,10 +314,11 @@ epics:
           manifest. Doctor should pass after update completes.
         points: 5
         priority: P0
-        status: backlog
+        status: done
         repos: pennyfarthing
         workflow: tdd
         jira: MSSCI-14371
+        completed: "2026-02-06"
       - id: MSSCI-14372
         title: Update doctor to validate new file layout
         description: |
