@@ -122,6 +122,7 @@ Cyclist Renderer (React 19)
 | 78-6 | Wire grant persistence across all three scopes | 3 | P1 | 78-3, 78-4 |
 | 78-7 | Connect /permissions skill to grant store | 2 | P2 | 78-6 |
 | 78-8 | Workflow permission presets | 2 | P3 | 78-6 |
+| 78-9 | Agent-level permission scoping | 3 | P1 | 78-3 |
 
 ### Story Notes
 
@@ -140,6 +141,8 @@ Cyclist Renderer (React 19)
 **78-7**: Wire existing `/permissions` skill to `settings-store.ts` for list/grant/revoke. Mostly connecting existing code.
 
 **78-8**: Growth feature. Integrate `workflow-permissions.ts` schema into workflow startup. Batch approval modal on agent activation. Session-scoped grants.
+
+**78-9**: Thread agent identity through the permission flow. `agent-session.sh` already sets the active agent name — pass it from the hook script through to WheelHub and into the grant store. ApprovalModal shows which agent is requesting. Grants can be scoped to a specific agent (e.g., "allow dev:Bash:*") or apply to all agents (current behavior). Grant matching checks agent identity when scope is agent-specific. Depends on 78-3 (grant checking in WheelHub).
 
 ## Constraints
 

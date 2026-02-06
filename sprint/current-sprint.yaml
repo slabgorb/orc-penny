@@ -200,6 +200,21 @@ epics:
         priority: P3
         status: backlog
         repos: pennyfarthing
+      - id: MSSCI-14392
+        jira: MSSCI-14392
+        title: Agent-level permission scoping
+        description: |
+          Permission grants currently apply globally — any agent gets the
+          same grants. Add agent identity to the permission request flow
+          so grants can be scoped per-agent. Thread agent name through
+          PreToolUse hook → WheelHub → ApprovalModal → grant storage.
+          Enables rules like "allow dev to run bash freely but require
+          approval for reviewer".
+        points: 3
+        priority: P1
+        status: backlog
+        repos: pennyfarthing
+        workflow: tdd
       - id: MSSCI-14327
         jira: MSSCI-14327
         title: Smooth plan mode exit with tirepump choice
