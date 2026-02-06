@@ -11,45 +11,30 @@ epics:
   - id: MSSCI-14298
     type: epic
     title: 'Epic: Stepped Workflow Infrastructure'
-    description: 'Fix stepped workflow support in Cyclist and the framework. Stepped
-
+    description: |
+      Fix stepped workflow support in Cyclist and the framework. Stepped
       workflows (epics-and-stories, prd, research, etc.) use a subdirectory
-
       pattern with workflow.yaml + steps/ that is not handled by existing
-
       code paths. Three issues identified:
-
       1. Session state never updates (step advancement not wired up)
-
-      2. WorkflowPanel can''t find subdirectory workflow definitions
-
+      2. WorkflowPanel can't find subdirectory workflow definitions
       3. No way to see available/applicable workflows in the panel
-
-'
     priority: P1
     status: in_progress
     repos: pennyfarthing
     stories:
       - id: MSSCI-14299
         title: Wire up stepped workflow session state advancement
-        description: 'Stepped workflows complete all steps but the session file stays
-
+        description: |
+          Stepped workflows complete all steps but the session file stays
           frozen at Step 1 / 0% / in_progress. The TypeScript API exists
-
           in packages/core/src/workflow/session-state.ts (completeStep,
-
           updateWorkflowState, updateSessionContent) but nothing calls it.
-
           No CLI command, no HTTP endpoint, no skill exposes step advancement.
 
-
           Fix: Expose step completion via a mechanism Claude can invoke
-
           (CLI script, skill, or hook) so session state updates as steps
-
           complete. Affects 12+ stepped workflows.
-
-'
         points: 5
         priority: P0
         status: done
@@ -64,7 +49,16 @@ epics:
         completed: '2026-02-05'
       - id: MSSCI-14300
         title: Add subdirectory workflow lookup to getWorkflowPhases
-        description: "getWorkflowPhases() in packages/cyclist/src/story-parser.ts only\nchecks for flat-file workflows (e.g. tdd.yaml) but 16 workflows\nuse the subdirectory pattern (e.g. epics-and-stories/workflow.yaml).\nPanel shows \"No active workflow\" for all subdirectory workflows.\n\nFix: Add {name}/workflow.yaml search paths alongside {name}.yaml\nin all three lookup locations (.pennyfarthing/workflows/,\n.claude/workflows/, pennyfarthing-dist/workflows/). Also handle\nstepped workflow type (steps → phases mapping for panel display).\n"
+        description: |
+          getWorkflowPhases() in packages/cyclist/src/story-parser.ts only
+          checks for flat-file workflows (e.g. tdd.yaml) but 16 workflows
+          use the subdirectory pattern (e.g. epics-and-stories/workflow.yaml).
+          Panel shows "No active workflow" for all subdirectory workflows.
+
+          Fix: Add {name}/workflow.yaml search paths alongside {name}.yaml
+          in all three lookup locations (.pennyfarthing/workflows/,
+          .claude/workflows/, pennyfarthing-dist/workflows/). Also handle
+          stepped workflow type (steps → phases mapping for panel display).
         points: 3
         priority: P0
         status: done
@@ -78,26 +72,17 @@ epics:
         completed: '2026-02-05'
       - id: MSSCI-14301
         title: Show available applicable workflows in WorkflowPanel
-        description: 'WorkflowPanel currently only shows the active workflow (if any).
-
+        description: |
+          WorkflowPanel currently only shows the active workflow (if any).
           When no workflow is active it shows "No active workflow" with no
-
           way to discover what workflows are available. Even when a workflow
-
           is active, users cannot see alternatives.
 
-
           Fix: Add a section to WorkflowPanel that lists available workflows
-
           applicable to the current context. Filter by triggers, tags, or
-
           project type. Allow users to see stepped vs phased workflows and
-
           start new ones from the panel. Requires a backend endpoint or
-
           API to enumerate available workflow definitions and their metadata.
-
-'
         points: 3
         priority: P1
         status: done
@@ -113,15 +98,11 @@ epics:
   - id: epic-78
     type: epic
     title: 'Epic: Cyclist Permission System'
-    description: 'Wire existing approval gate, hook script, WheelHub router,
-
+    description: |
+      Wire existing approval gate, hook script, WheelHub router,
       ApprovalModal, and grant storage into a single working permission
-
       flow. Remove the legacy IPC path. Enable one-time, session, and
-
       permanent permission grants through Cyclist UI.
-
-'
     priority: P0
     status: in_progress
     repos: pennyfarthing
@@ -132,15 +113,11 @@ epics:
       - id: MSSCI-14318
         jira: MSSCI-14318
         title: Remove legacy IPC approval path
-        description: 'Remove old /approval-request endpoint from main.ts,
-
+        description: |
+          Remove old /approval-request endpoint from main.ts,
           Electron IPC permission-request/resolveHookApproval handlers,
-
           and interceptBashToolUse from approval-gate.ts. Generic
-
           interceptToolUse remains.
-
-'
         points: 2
         priority: P0
         status: done
@@ -149,15 +126,11 @@ epics:
       - id: MSSCI-14320
         jira: MSSCI-14320
         title: Update and register PreToolUse hook
-        description: 'Update cyclist-pretooluse-hook.js to POST to
-
+        description: |
+          Update cyclist-pretooluse-hook.js to POST to
           /api/hook-request (not old /approval-request). Register
-
           hook in .claude/settings.local.json under hooks.PreToolUse.
-
           Handle WheelHub unreachable gracefully (return ask).
-
-'
         points: 3
         priority: P0
         status: done
@@ -166,15 +139,11 @@ epics:
       - id: MSSCI-14321
         jira: MSSCI-14321
         title: Integrate grant checking into WheelHub hook router
-        description: 'Wire settings-store.ts grant checking into hook-request.ts
-
+        description: |
+          Wire settings-store.ts grant checking into hook-request.ts
           handler. Auto-approve matching grants, broadcast to WebSocket
-
           when no match. Handle once/session/always grant lifecycle.
-
           Return ask when no UI clients connected.
-
-'
         points: 3
         priority: P0
         status: done
@@ -183,15 +152,11 @@ epics:
       - id: MSSCI-14322
         jira: MSSCI-14322
         title: Mount ApprovalModal in React component tree
-        description: 'Import and render ApprovalModal in App.tsx at top level.
-
+        description: |
+          Import and render ApprovalModal in App.tsx at top level.
           Connect WebSocket subscription for hook-request events.
-
           Wire hook-response sending on user decision. Queue
-
           concurrent requests (show one at a time, no stacking).
-
-'
         points: 3
         priority: P0
         status: done
@@ -200,17 +165,12 @@ epics:
       - id: MSSCI-14323
         jira: MSSCI-14323
         title: Add severity classification to hook request flow
-        description: 'Classify tool requests as safe/normal/destructive in
-
+        description: |
+          Classify tool requests as safe/normal/destructive in
           WheelHub before broadcasting. Integrate dangerous-path.ts
-
           for path-based classification. Include severity and
-
           contextual warnings in WebSocket broadcast. Visual
-
           treatment in ApprovalModal (red border for destructive).
-
-'
         points: 3
         priority: P1
         status: done
@@ -219,30 +179,23 @@ epics:
       - id: MSSCI-14324
         jira: MSSCI-14324
         title: Wire grant persistence across all three scopes
-        description: 'Ensure once grants auto-revoke after single use, session
-
+        description: |
+          Ensure once grants auto-revoke after single use, session
           grants clear on session end, always grants persist to
-
           .claude/settings.local.json. Implement glob pattern
-
           matching for scope (e.g. npm * matches npm test).
-
-'
         points: 3
         priority: P1
         status: done
         repos: pennyfarthing
-        completed: "2026-02-06"
+        completed: '2026-02-06'
       - id: MSSCI-14325
         jira: MSSCI-14325
         title: Connect /permissions skill to grant store
-        description: 'Wire existing /permissions skill to settings-store.ts
-
+        description: |
+          Wire existing /permissions skill to settings-store.ts
           for list/grant/revoke/show operations. Ensure always-grants
-
           can be revoked from .claude/settings.local.json.
-
-'
         points: 2
         priority: P2
         status: backlog
@@ -250,13 +203,10 @@ epics:
       - id: MSSCI-14326
         jira: MSSCI-14326
         title: Workflow permission presets
-        description: 'Integrate workflow-permissions.ts schema into workflow
-
+        description: |
+          Integrate workflow-permissions.ts schema into workflow
           startup. Show batch approval modal on agent activation
-
           when presets exist. Store approved presets as session grants.
-
-'
         points: 2
         priority: P3
         status: backlog
@@ -264,34 +214,24 @@ epics:
       - id: MSSCI-14327
         jira: MSSCI-14327
         title: Smooth plan mode exit with tirepump choice
-        description: 'ExitPlanMode should transition smoothly without requiring
-
+        description: |
+          ExitPlanMode should transition smoothly without requiring
           manual user intervention to accept. After plan approval,
-
           offer a choice for whether to tirepump (commit/push) the
-
           resulting changes before continuing. Currently plan mode
-
           exit is clunky and requires the user to manually set
-
           accept mode.
-
-'
         points: 2
         priority: P2
         status: backlog
         repos: pennyfarthing
   - id: epic-85
     title: 'Epic: Clean Install Consolidation'
-    description: 'Move all Pennyfarthing-managed files under .pennyfarthing/, update
-
+    description: |
+      Move all Pennyfarthing-managed files under .pennyfarthing/, update
       init to bootstrap then hand off to interactive workflow, update
-
       update to migrate old layouts, and validate with end-to-end tests
-
       against real repos.
-
-'
     points: 34
     priority: P0
     marker: install
@@ -300,46 +240,36 @@ epics:
     stories:
       - id: MSSCI-14365
         title: Audit and map all files Pennyfarthing produces outside .pennyfarthing
-        description: 'Complete inventory of every file and directory Pennyfarthing
-
+        description: |
+          Complete inventory of every file and directory Pennyfarthing
           creates outside .pennyfarthing/. Each file gets a migration
-
           plan: move, symlink, or deprecate.
-
-'
         points: 2
         priority: P0
         status: done
         repos: pennyfarthing
         workflow: trivial
         jira: MSSCI-14365
-        completed: "2026-02-06"
+        completed: '2026-02-06'
       - id: MSSCI-14366
         title: Move settings.local.json generation into .pennyfarthing
-        description: 'Generate settings.local.json at .pennyfarthing/settings.local.json
-
+        description: |
+          Generate settings.local.json at .pennyfarthing/settings.local.json
           with a symlink at .claude/settings.local.json. Migrate existing
-
           installs on update.
-
-'
         points: 3
         priority: P0
-        status: backlog
+        status: in_progress
         repos: pennyfarthing
         workflow: tdd
         jira: MSSCI-14366
       - id: MSSCI-14367
         title: Move persona-config.yaml into .pennyfarthing
-        description: 'Consolidate persona/theme configuration to
-
+        description: |
+          Consolidate persona/theme configuration to
           .pennyfarthing/config.local.yaml exclusively. Update all code
-
           paths that read persona config. Doctor detects and migrates
-
           the old .claude/persona-config.yaml location.
-
-'
         points: 3
         priority: P1
         status: backlog
@@ -348,15 +278,11 @@ epics:
         jira: MSSCI-14367
       - id: MSSCI-14368
         title: Move project hooks into .pennyfarthing/project
-        description: 'Move project-specific hooks (setup-env.sh etc.) from
-
+        description: |
+          Move project-specific hooks (setup-env.sh etc.) from
           .claude/project/ to .pennyfarthing/project/. Update
-
           settings.local.json hook paths. Clean up .claude/project/
-
           if empty after migration.
-
-'
         points: 3
         priority: P1
         status: backlog
@@ -365,13 +291,10 @@ epics:
         jira: MSSCI-14368
       - id: MSSCI-14369
         title: Consolidate sidecars directory
-        description: 'Ensure sidecars live only at .pennyfarthing/sidecars/.
-
+        description: |
+          Ensure sidecars live only at .pennyfarthing/sidecars/.
           Merge any .claude/sidecars/ content on update. Remove
-
           stale references throughout the codebase.
-
-'
         points: 2
         priority: P2
         status: backlog
@@ -380,15 +303,11 @@ epics:
         jira: MSSCI-14369
       - id: MSSCI-14370
         title: Update init command for bootstrapping install
-        description: 'Rework pennyfarthing init to do minimal bootstrapping
-
+        description: |
+          Rework pennyfarthing init to do minimal bootstrapping
           (create .pennyfarthing, install core files, register hooks)
-
           then hand off to an interactive setup workflow for theme
-
           selection, sprint setup, and persona configuration.
-
-'
         points: 5
         priority: P0
         status: backlog
@@ -397,15 +316,11 @@ epics:
         jira: MSSCI-14370
       - id: MSSCI-14371
         title: Update update command for file migration
-        description: 'Rework pennyfarthing update to detect files in old .claude/
-
+        description: |
+          Rework pennyfarthing update to detect files in old .claude/
           locations and migrate them to .pennyfarthing/ equivalents.
-
           Create symlinks where Claude Code expects files. Update
-
           manifest. Doctor should pass after update completes.
-
-'
         points: 5
         priority: P0
         status: backlog
@@ -414,15 +329,11 @@ epics:
         jira: MSSCI-14371
       - id: MSSCI-14372
         title: Update doctor to validate new file layout
-        description: 'Extend pennyfarthing doctor to check files are in correct
-
+        description: |
+          Extend pennyfarthing doctor to check files are in correct
           .pennyfarthing/ locations. Flag old-location files with
-
           migration instructions. --fix migrates automatically.
-
           Preserve existing Cyclist spawn-helper check.
-
-'
         points: 3
         priority: P1
         status: backlog
@@ -431,17 +342,12 @@ epics:
         jira: MSSCI-14372
       - id: MSSCI-14373
         title: End-to-end test - fresh repo install
-        description: 'Automated test that creates a new empty git repo, runs
-
+        description: |
+          Automated test that creates a new empty git repo, runs
           pennyfarthing init, validates with doctor, and exercises
-
           the just scripts (dev, test, build). Iteratively adjust
-
           scripts and restart until everything passes. Clean up
-
           temp repo afterward.
-
-'
         points: 5
         priority: P0
         status: backlog
@@ -450,17 +356,12 @@ epics:
         jira: MSSCI-14373
       - id: MSSCI-14374
         title: End-to-end test - existing repo upgrade
-        description: 'Automated test that sets up an old-style install with
-
+        description: |
+          Automated test that sets up an old-style install with
           files in .claude/ locations, runs pennyfarthing update,
-
           and validates migration. Doctor should pass, files should
-
           be in .pennyfarthing/, symlinks should exist for Claude
-
           Code compatibility. Clean up afterward.
-
-'
         points: 3
         priority: P0
         status: backlog
