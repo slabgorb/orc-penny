@@ -173,8 +173,9 @@ epics:
           treatment in ApprovalModal (red border for destructive).
         points: 3
         priority: P1
-        status: backlog
+        status: done
         repos: pennyfarthing
+        completed: "2026-02-06"
       - id: MSSCI-14324
         jira: MSSCI-14324
         title: Wire grant persistence across all three scopes
