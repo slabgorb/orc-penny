@@ -378,4 +378,18 @@ epics:
         jira: MSSCI-14374
     type: epic
     jira: MSSCI-14364
-stories: []
+stories:
+  - id: MSSCI-14394
+    jira: MSSCI-14394
+    title: "[BUG] Subagent spans never clear on task completion"
+    description: |
+      transformMessage() in MessagePanel.tsx drops tool_result blocks
+      from user-type SDK messages. The existing cleanup code at lines
+      279-287 never fires because the tool_result never becomes a
+      MessageData. Fix: extract tool_result from user messages so
+      completed subagent groups are removed from the view.
+    points: 2
+    priority: P0
+    status: in_progress
+    repos: pennyfarthing
+    workflow: trivial
