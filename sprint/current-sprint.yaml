@@ -198,8 +198,9 @@ epics:
           can be revoked from .claude/settings.local.json.
         points: 2
         priority: P2
-        status: backlog
+        status: done
         repos: pennyfarthing
+        completed: "2026-02-06"
       - id: MSSCI-14326
         jira: MSSCI-14326
         title: Workflow permission presets
