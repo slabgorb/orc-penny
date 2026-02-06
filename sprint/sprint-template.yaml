@@ -65,7 +65,7 @@ epics:
 #
 # Sprint fields:
 #   name            - "TO Sprint YYWW" format, matches team convention
-#   jira_sprint_id  - Numeric Jira sprint ID (e.g., 276)
+#   jira_sprint_id  - Numeric Jira sprint ID (from current-sprint.yaml)
 #   jira_sprint_name - Jira sprint name (typically matches name)
 #   goal            - Brief sprint objective
 #   start_date      - YYYY-MM-DD format

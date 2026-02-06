@@ -15,7 +15,7 @@
 ### DEC-SM-005: Team Sprint Alignment
 **Date:** January 2026
 **Decision:** Adopt team sprint naming convention `TO Sprint YYWW` with Jira sprint ID
-**Format:** `name: "TO Sprint 2604"` + `jira_sprint_id: 276` + `jira_sprint_name: "TO Sprint 2604"`
+**Format:** `name: "TO Sprint YYWW"` + `jira_sprint_id: NNN` + `jira_sprint_name: "TO Sprint YYWW"`
 **Rationale:** Sprints are timeboxed by team calendar, not by points completed
 **Updated:** January 2026 - renamed `jira_id` to `jira_sprint_id` and added `jira_sprint_name` for clarity
 

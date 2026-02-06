@@ -1,51 +1,5 @@
-# Pennyfarthing Future Work
-# Combined planning and backlog initiatives not yet committed to a sprint
-# These are researched and ready for prioritization when capacity allows
-# Updated: 2026-02-02
-#
-# Epic Numbering Used: 39-46, 55 (next available: 64)
-#
-# =============================================================================
-# COMPLETED INITIATIVES (for historical reference)
-# =============================================================================
-# VS Code Extension (21 pts) - COMPLETE Sprint 12
-#   - Epic 56: Glanceable Status Awareness (13 pts) → MSSCI-12226 (done)
-#   - Epic 57: Agent Identity & Emotional Connection (8 pts) → MSSCI-12189 (done)
-#   - Epic 58: Sprint & Story Awareness (8 pts) → MSSCI-12236 (done, partial cancel)
-#   - Epic 59: Chat Integration (5 pts) - CANCELLED (VS Code extension deprioritized)
-#
-# Reflector Marker Consolidation - COMPLETE Sprint 12
-#   - Epic 60: Marker Module (8 pts) → MSSCI-12369 (done, partial cancel)
-#   - Epic 61: Duplicate of 60 → MSSCI-12315 (done)
-#
-# Hook Infrastructure (epic-62 in sprint) - IN PROGRESS Sprint 12
-#   - 2 stories done, 1 backlog
-#
-# Script Parallelism & Python Migration (epic-63 in sprint) - IN PROGRESS Sprint 12
-#   - 5 stories done, 3 backlog
-#
-# BikeLane BMAD Workflow Imports - COMPLETE Sprint 12
-#   - Epic 54 → MSSCI-12131 (40 pts done)
-#
-# =============================================================================
-# BENCHMARK RELIABILITY - Scientific Evaluation
-# Research-backed improvements to agent benchmarking
-# Total: 44 points across 6 epics
-#
-# Phase 1 (P1): Epics 41-43 = 21 pts (scoring + anchors + traps)
-# Phase 2 (P2): Epics 44-46 = 23 pts (validation + references + calibration)
-#
-# Success Metrics:
-#   - Inter-judge Krippendorff's Alpha > 0.65
-#   - False positive detection < 10%
-#   - TEA variance CV < 15%
-# =============================================================================
-
 future:
   initiatives:
-    # ==========================================================================
-    # BENCHMARK RELIABILITY - Scientific Evaluation
-    # ==========================================================================
     - name: "Benchmark Reliability"
       description: |
         Research-backed improvements to agent benchmarking methodology.
@@ -443,14 +397,6 @@ future:
               priority: P1
               status: planning
               repos: pennyfarthing
-    # ==========================================================================
-    # REPOSITORY OPTIMIZATION - CANCELLED
-    # ==========================================================================
-    # epic-55 (CDN Portrait Storage) cancelled - nested build issue was the
-    # actual problem, not portrait size. Repo size acceptable after fixing builds.
-    # ==========================================================================
-    # QUALITY & SCALE - Future Initiatives (Lower Priority)
-    # ==========================================================================
     - name: "Quality & Scale"
       description: |
         Scale adaptation capabilities for larger initiatives and brownfield codebases.
@@ -460,10 +406,9 @@ future:
         didn't fit our workflow. One useful story (39-6 Release gate) moved to
         Technical Debt as standalone.
       status: backlog
-      blocked_by: null
+      blocked_by:
       total_points: 17
       epics:
-        # epic-39 CANCELLED - see note above
         - id: epic-40
           title: Scale Adaptation and Brownfield Support
           description: |
@@ -500,14 +445,11 @@ future:
               title: PRD import support
               points: 2
               status: backlog
-    # ==========================================================================
-    # TECHNICAL DEBT - Infrastructure Cleanup
-    # ==========================================================================
     - name: "Technical Debt"
       description: |
         Infrastructure cleanup and separation of concerns for maintainability.
       status: backlog
-      blocked_by: null
+      blocked_by:
       total_points: 7
       standalone_stories:
         - id: 39-6
@@ -522,53 +464,37 @@ future:
           status: backlog
           repos: pennyfarthing
       epics: []
-    - name: "Python CLI Migration"
-      description: "Replace fragile bash script symlinks with a unified Python CLI (`pf`) that \nagents can invoke reliably via module resolution. Eliminates path-related \nerrors that waste agent context on debugging instead of productive work.\n\nKey decisions:\n- Click library for decorator-based CLI (per PRD FR18)\n- Lazy loading for <200ms startup time\n- Phased migration: bash preserved during transition\n\nPRD: docs/planning/prd.md\nArchitecture: docs/planning/architecture.md\n"
-      status: ready
-      blocked_by: null
-      total_points: 19
+    - name: "Cyclist Permission System"
+      description: |
+        Wire the existing permission components into a working end-to-end
+        approval flow. When Claude Code needs permission for any tool action,
+        Cyclist shows an approval modal, the user decides (once/session/always),
+        and work continues. Remove legacy IPC path, consolidate on WheelHub
+        WebSocket architecture.
+
+        PRD: artifacts/prd.md
+        Architecture: artifacts/architecture.md
+        Epic Context: sprint/context/context-epic-78.md
+        Prior work: Epic 33 (MSSCI-11705) - 4/5 stories complete
+      status: research_complete
+      blocked_by:
+      total_points: 23
       epics: []
-    # ==========================================================================
-    # CYCLIST REACT MIGRATION
-    # Imported from: docs/planning/cyclist-react-migration-epics.md
-    # Date: 2026-01-31
-    # ==========================================================================
     - name: "Cyclist React Migration"
       description: |
         Transform Cyclist from vanilla JS to React + shadcn/ui + Tailwind CSS,
         implementing flexible workspace layout while maintaining the sacred
         center message view.
 
-        Status: MOSTLY COMPLETE (Sprint 12)
-        - Core migration done: MessageView, panels, docking, accessibility
-        - Remaining: vanilla JS utilities conversion, tool use visualization
+        Status: COMPLETE (Sprint 12-13)
+        - Core migration done: MessageView, panels, docking, accessibility (Epics 69-73)
+        - Vanilla JS utilities converted to React hooks (Epic 75)
+        - All 65 points delivered
 
         UX Spec: docs/planning/ux-design-specification.md
         Epics Doc: docs/planning/cyclist-react-migration-epics.md
-      status: mostly_complete
-      blocked_by: null
+      status: complete
+      blocked_by:
       total_points: 65
-      completed_points: 40
+      completed_points: 65
       epics: []
-# =============================================================================
-# SUMMARY
-# =============================================================================
-# Initiative                      | Epics | Points | Status
-# --------------------------------|-------|--------|------------------
-# Benchmark Reliability           |   6   |   44   | research_complete
-# Repository Optimization         |   -   |    -   | CANCELLED (epic-55)
-# Quality & Scale                 |   1   |   17   | backlog
-# Technical Debt                  |   0   |    7   | backlog (incl 39-6)
-# Python CLI Migration            |   0   |   19   | ready
-# Cyclist React Follow-up         |   2   |   25   | planning
-# --------------------------------|-------|--------|------------------
-# TOTAL                           |   9   |  112   |
-#
-# Epic Numbering Used: 40-46, 69-75
-# Next Available Epic Number: 76
-#
-# Note: Epics 56-68 were used in Sprint 12 and are tracked in current-sprint.yaml
-# epic-55 cancelled - nested build was the actual issue, not portrait size
-# epic-39 cancelled 2026-02-02 - BMAD QA ceremony, only 39-6 salvaged
-# Epics 69-73 completed in Sprint 12 (Cyclist React Migration core)
-# =============================================================================
