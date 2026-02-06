@@ -278,10 +278,11 @@ epics:
           the old .claude/persona-config.yaml location.
         points: 3
         priority: P1
-        status: backlog
+        status: done
         repos: pennyfarthing
         workflow: tdd
         jira: MSSCI-14367
+        completed: "2026-02-06"
       - id: MSSCI-14368
         title: Move project hooks into .pennyfarthing/project
         description: |
