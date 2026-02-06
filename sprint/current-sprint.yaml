@@ -300,10 +300,11 @@ epics:
           selection, sprint setup, and persona configuration.
         points: 5
         priority: P0
-        status: backlog
+        status: done
         repos: pennyfarthing
         workflow: tdd
         jira: MSSCI-14370
+        completed: "2026-02-06"
       - id: MSSCI-14371
         title: Update update command for file migration
         description: |
