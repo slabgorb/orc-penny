@@ -397,6 +397,332 @@ future:
               priority: P1
               status: planning
               repos: pennyfarthing
+    - name: "Codebase Observatory"
+      description: |
+        Transform the Debug panel into an integrated Codebase Observatory —
+        a suite of diagnostic tools that surface code health, detect quality
+        issues, and help agents understand the codebase they work in.
+
+        The panel becomes a lightweight launcher with a composite health gauge.
+        Each tool opens a full-featured dialog for display and interactive tuning.
+        All backend analysis is Python-first (pennyfarthing_scripts/).
+
+        Design doc: docs/planning/codebase-observatory.md
+        Origin: Architect + Party Mode brainstorm (2026-02-06)
+      status: planning
+      blocked_by:
+      total_points: 34
+      epics:
+        - id: epic-79
+          title: "Dialog Infrastructure + Hotspot Refactor"
+          description: |
+            Create shared ToolDialog component, migrate HotspotsPanel into a
+            dialog launched from Debug panel, remove Hotspots as a standalone
+            dockview panel. Add tool launcher button row to DebugPanel.
+            Fix hotspot analysis to skip orchestrator repos and filter non-code
+            artifacts (dotfiles, images, config, generated files).
+          points: 8
+          priority: P1
+          marker: cyclist
+          repos: pennyfarthing
+          status: planning
+          stories:
+            - id: "79-1"
+              title: "Create ToolDialog shared component"
+              description: |
+                New component: components/dialogs/ToolDialog.tsx
+                Wraps shadcn Dialog with max-w-5xl sizing, standard header/footer,
+                and close button. All observatory tools will use this wrapper.
+              points: 1
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "79-2"
+              title: "Migrate HotspotsPanel into HotspotsDialog"
+              description: |
+                Move HotspotsPanel content into components/dialogs/HotspotsDialog.tsx
+                using ToolDialog wrapper. Remove HotspotsPanel from PANEL_INVENTORY,
+                RIGHT_SIDEBAR_PANELS, PANEL_TITLES in DockviewWorkspace.tsx. Remove
+                registration from App.tsx and export from panels/index.ts.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "79-3"
+              title: "Add tool launcher row to DebugPanel"
+              description: |
+                Add a Tools section below Token Stats in DebugPanel with buttons
+                for each observatory tool. First button: Hotspots (opens
+                HotspotsDialog). Placeholder buttons for future tools.
+              points: 1
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "79-4"
+              title: "Hotspot: skip orchestrator repos by type"
+              description: |
+                Add --skip-type option to hotspots CLI (cli.py). Add skip_types
+                parameter to analyze_all_repos() in analyze.py. Filter repos by
+                type field from repos.yaml before analysis. Cyclist API passes
+                --skip-type orchestrator by default. Dialog exposes "Include
+                orchestrator" checkbox.
+              points: 2
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+            - id: "79-5"
+              title: "Hotspot: expand artifact exclusions + client filters"
+              description: |
+                Expand DEFAULT_EXCLUDES in analyze.py to filter dotfiles, images,
+                fonts, generated files (.d.ts, .snap), CI config (.github/*).
+                Add client-side filter toggles in HotspotsDialog: "Code only"
+                (positive filter for source extensions), "Include config" toggle.
+              points: 2
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+        - id: epic-80
+          title: "Code Markers Tool (TODOs, FIXMEs, Deprecations)"
+          description: |
+            New diagnostic tool scanning for TODO, FIXME, HACK, XXX comment
+            markers and @deprecated annotations. Cross-references with git blame
+            for age and author. Flags stale markers (>90 days). Python backend
+            in pennyfarthing_scripts/codemarkers/.
+          points: 5
+          priority: P1
+          marker: cyclist
+          repos: pennyfarthing
+          status: planning
+          stories:
+            - id: "80-1"
+              title: "Python codemarkers module: grep + git blame"
+              description: |
+                New module: pennyfarthing_scripts/codemarkers/
+                Files: __init__.py, analyze.py, models.py, cli.py
+                Core: grep for TODO/FIXME/HACK/XXX markers across source files,
+                git blame each line for age/author. Models: CodeMarker dataclass
+                with path, line, text, marker_type, author, age_days, is_stale.
+                CLI: click group with analyze command, --format json/table.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "80-2"
+              title: "@deprecated detection and caller cross-reference"
+              description: |
+                Extend codemarkers analyze.py to detect @deprecated JSDoc tags
+                in TypeScript files. For each deprecated symbol, count active
+                callers/importers (via grep for import references). Model:
+                DeprecationUsage with symbol, file, caller_count, callers list.
+              points: 2
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+            - id: "80-3"
+              title: "Code markers API + React hook + dialog"
+              description: |
+                Express API: GET /api/code-markers?repo=pennyfarthing
+                Thin wrapper calling Python codemarkers module.
+                React hook: useCodeMarkers.ts (fetch + state).
+                Dialog: CodeMarkersDialog.tsx with tabs (TODOs | FIXMEs |
+                Deprecated), sortable table, staleness filter, summary stats.
+                Add button to DebugPanel launcher row.
+              points: 1
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+        - id: epic-81
+          title: "Dead Code Detection"
+          description: |
+            Two-layer diagnostic tool finding unused/orphaned code.
+            Layer 1: Git-based stale file detection (files with zero commits
+            in time window). Layer 2: Unused export detection for TypeScript
+            via ts-prune. Python backend in pennyfarthing_scripts/deadcode/.
+            Diagnostic only — does NOT auto-delete.
+          points: 5
+          priority: P1
+          marker: cyclist
+          repos: pennyfarthing
+          status: planning
+          stories:
+            - id: "81-1"
+              title: "Python deadcode module: stale file detection"
+              description: |
+                New module: pennyfarthing_scripts/deadcode/
+                Files: __init__.py, analyze.py, models.py, cli.py
+                Layer 1: git ls-files vs git log --name-only --since=N days.
+                Difference = never-touched files in window. Filter to source
+                file extensions. Model: StaleFile with path, last_modified,
+                days_stale, confidence.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "81-2"
+              title: "Unused export detection via ts-prune"
+              description: |
+                Layer 2: Run ts-prune (or tsc analysis) to find exported symbols
+                with no importers. Parse output into UnusedExport model with
+                symbol, file, line, export_type. Integrate into deadcode CLI
+                as separate subcommand or combined output.
+              points: 2
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+            - id: "81-3"
+              title: "Dead code API + React hook + dialog"
+              description: |
+                Express API: GET /api/dead-code?days=180&repo=pennyfarthing
+                React hook: useDeadCode.ts. Dialog: DeadCodeDialog.tsx with tabs
+                (Stale Files | Unused Exports), sortable tables, confidence
+                badges. Add button to DebugPanel launcher row.
+              points: 1
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+        - id: epic-82
+          title: "Agent Load Analyzer"
+          description: |
+            Tool to evaluate agent context budget by running getPrimeContextJson()
+            for all agents at FULL tier. Shows per-component token breakdown.
+            Enables viewing and pruning sidecars that have grown too large.
+          points: 5
+          priority: P1
+          marker: cyclist
+          repos: pennyfarthing
+          status: planning
+          stories:
+            - id: "82-1"
+              title: "Agent load API endpoint"
+              description: |
+                New Express API: GET /api/agent-load
+                Runs getPrimeContextJson() for all 10 agents at FULL tier.
+                Returns array of {agent, totalTokens, components, tokenCounts}.
+                Cache result for 60 seconds (prime is expensive).
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "82-2"
+              title: "Sidecar pruning API"
+              description: |
+                New Express API: POST /api/agent-load/prune-sidecar
+                Body: {agent, sidecar}. Resets sidecar file to its header
+                template (preserves # Title and > description, clears content
+                below --- separator). Returns {success, tokensFreed}.
+              points: 1
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+            - id: "82-3"
+              title: "Agent load React hook + dialog"
+              description: |
+                React hook: useAgentLoad.ts. Dialog: AgentLoadDialog.tsx
+                Ranked table: agent name, total FULL-tier tokens. Expand
+                agent to see component breakdown. Sidecar section: list files
+                with token counts, View button (expandable preview), Clear
+                button (confirmation + prune API call). Add to DebugPanel.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+        - id: epic-83
+          title: "Complexity + Dependencies Tools"
+          description: |
+            Two lightweight diagnostic tools. Complexity: static analysis via
+            Python wrapping eslint --format json or escomplex for cyclomatic
+            complexity, function length, nesting depth. Dependencies: Python
+            wrapping npm outdated --json and npm audit --json for staleness
+            and security. Both in pennyfarthing_scripts/.
+          points: 6
+          priority: P2
+          marker: cyclist
+          repos: pennyfarthing
+          status: planning
+          stories:
+            - id: "83-1"
+              title: "Python complexity module"
+              description: |
+                New module: pennyfarthing_scripts/complexity/
+                Wraps eslint --format json with complexity rule or uses
+                escomplex via subprocess. Metrics per file: longest function,
+                avg cyclomatic complexity, max nesting depth, total lines.
+                CLI with --format json/table.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "83-2"
+              title: "Python dependencies module"
+              description: |
+                New module: pennyfarthing_scripts/dependencies/
+                Wraps npm outdated --json and npm audit --json. Models:
+                OutdatedPackage (name, current, wanted, latest, type),
+                SecurityAdvisory (severity, count). CLI with --format json/table.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "83-3"
+              title: "Complexity + Dependencies APIs + hooks + dialogs"
+              description: |
+                Express APIs: GET /api/complexity, GET /api/dependencies
+                React hooks: useComplexity.ts, useDependencies.ts
+                Dialogs: ComplexityDialog.tsx (sortable table, threshold
+                highlighting), DependenciesDialog.tsx (outdated table +
+                security section). Add buttons to DebugPanel launcher row.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+        - id: epic-84
+          title: "Composite Health Score"
+          description: |
+            Single 0-100 codebase health score displayed as a gauge in the
+            Debug panel header. Weighted composite from all tool dimensions:
+            churn (15%), TODO density (15%), complexity (15%), test gaps (15%),
+            dead code (10%), deprecation debt (10%), dependency freshness (10%),
+            agent context efficiency (10%). Calculates from cached tool results.
+          points: 5
+          priority: P2
+          marker: cyclist
+          repos: pennyfarthing
+          status: planning
+          stories:
+            - id: "84-1"
+              title: "Health score Python module"
+              description: |
+                New module: pennyfarthing_scripts/healthscore/
+                Aggregates lightweight versions of each tool's output.
+                Weighted scoring algorithm with configurable weights.
+                CLI: healthscore analyze --format json. Caches component
+                scores, reuses cached results within 5 minute window.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "84-2"
+              title: "Health score API + gauge component"
+              description: |
+                Express API: GET /api/health-score (calls Python module).
+                React hook: useHealthScore.ts. Radial gauge component in
+                DebugPanel header showing score 0-100 with green/yellow/red
+                coloring. Tap to see dimension breakdown.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "84-3"
+              title: "Per-dimension drill-through from health gauge"
+              description: |
+                Clicking a dimension in the health score breakdown opens
+                the corresponding tool dialog (e.g. clicking "TODO density"
+                opens CodeMarkersDialog). Wire gauge breakdown items to
+                dialog openers.
+              points: 1
+              priority: P1
+              status: planning
+              repos: pennyfarthing
     - name: "Quality & Scale"
       description: |
         Scale adaptation capabilities for larger initiatives and brownfield codebases.
