@@ -245,10 +245,11 @@ epics:
           plan: move, symlink, or deprecate.
         points: 2
         priority: P0
-        status: backlog
+        status: done
         repos: pennyfarthing
         workflow: trivial
         jira: MSSCI-14365
+        completed: "2026-02-06"
       - id: MSSCI-14366
         title: Move settings.local.json generation into .pennyfarthing
         description: |
