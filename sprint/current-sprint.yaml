@@ -259,10 +259,11 @@ epics:
           installs on update.
         points: 3
         priority: P0
-        status: in_progress
+        status: done
         repos: pennyfarthing
         workflow: tdd
         jira: MSSCI-14366
+        completed: "2026-02-06"
       - id: MSSCI-14367
         title: Move persona-config.yaml into .pennyfarthing
         description: |
