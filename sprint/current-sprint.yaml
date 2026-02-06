@@ -212,8 +212,9 @@ epics:
           accept mode.
         points: 2
         priority: P2
-        status: backlog
+        status: done
         repos: pennyfarthing
+        completed: "2026-02-06"
   - id: epic-85
     title: 'Epic: Clean Install Consolidation'
     description: |
