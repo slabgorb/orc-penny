@@ -790,37 +790,3 @@ future:
           status: backlog
           repos: pennyfarthing
       epics: []
-    - name: "Cyclist Permission System"
-      description: |
-        Wire the existing permission components into a working end-to-end
-        approval flow. When Claude Code needs permission for any tool action,
-        Cyclist shows an approval modal, the user decides (once/session/always),
-        and work continues. Remove legacy IPC path, consolidate on WheelHub
-        WebSocket architecture.
-
-        PRD: artifacts/prd.md
-        Architecture: artifacts/architecture.md
-        Epic Context: sprint/context/context-epic-78.md
-        Prior work: Epic 33 (MSSCI-11705) - 4/5 stories complete
-      status: research_complete
-      blocked_by:
-      total_points: 23
-      epics: []
-    - name: "Cyclist React Migration"
-      description: |
-        Transform Cyclist from vanilla JS to React + shadcn/ui + Tailwind CSS,
-        implementing flexible workspace layout while maintaining the sacred
-        center message view.
-
-        Status: COMPLETE (Sprint 12-13)
-        - Core migration done: MessageView, panels, docking, accessibility (Epics 69-73)
-        - Vanilla JS utilities converted to React hooks (Epic 75)
-        - All 65 points delivered
-
-        UX Spec: docs/planning/ux-design-specification.md
-        Epics Doc: docs/planning/cyclist-react-migration-epics.md
-      status: complete
-      blocked_by:
-      total_points: 65
-      completed_points: 65
-      epics: []
