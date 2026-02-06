@@ -393,6 +393,7 @@ stories:
       completed subagent groups are removed from the view.
     points: 2
     priority: P0
-    status: in_progress
+    status: done
     repos: pennyfarthing
     workflow: trivial
+    completed: "2026-02-06"
