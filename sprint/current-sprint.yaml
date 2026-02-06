@@ -375,12 +375,11 @@ epics:
           Code compatibility. Clean up afterward.
         points: 3
         priority: P0
-        status: in_progress
+        status: done
         repos: pennyfarthing
         workflow: tdd
         jira: MSSCI-14374
-        started: 2026-02-06
-        assigned_to: keithavery
+        completed: "2026-02-06"
     type: epic
     jira: MSSCI-14364
 stories:
