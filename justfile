@@ -98,6 +98,112 @@ sync:
     cat {{pennyfarthing}}/VERSION
 
 # =============================================================================
+# Setup & Health
+# =============================================================================
+
+# Bootstrap workspace from scratch (fresh clone)
+setup:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    echo "=== Pennyfarthing Orchestrator Setup ==="
+    echo ""
+
+    # Step 1: Clone pennyfarthing repo if missing
+    if [ ! -d "{{pennyfarthing}}" ]; then
+        echo "Step 1/4: Cloning pennyfarthing framework..."
+        git clone git@github.com:1898andCo/pennyfarthing.git "{{pennyfarthing}}"
+    else
+        echo "Step 1/4: pennyfarthing/ already exists, skipping clone"
+    fi
+
+    # Step 2: Install framework dependencies
+    echo "Step 2/4: Installing framework dependencies..."
+    cd "{{pennyfarthing}}" && pnpm install
+
+    # Step 3: Build framework
+    echo "Step 3/4: Building framework..."
+    cd "{{pennyfarthing}}" && pnpm build
+
+    # Step 4: Install orchestrator deps (triggers postinstall -> pennyfarthing update)
+    echo "Step 4/4: Installing orchestrator and linking..."
+    cd "{{root}}" && npm install
+
+    echo ""
+    echo "=== Setup complete ==="
+    echo "Run 'just doctor' to verify."
+
+# Check workspace health
+doctor:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    echo "=== Workspace Health Check ==="
+    errors=0
+
+    # Check pennyfarthing/ exists
+    if [ -d "{{pennyfarthing}}" ]; then
+        echo "  [OK] pennyfarthing/ exists"
+    else
+        echo "  [FAIL] pennyfarthing/ missing (run: just setup)"
+        errors=$((errors + 1))
+    fi
+
+    # Check node_modules
+    if [ -d "{{root}}/node_modules" ]; then
+        echo "  [OK] node_modules/ exists"
+    else
+        echo "  [FAIL] node_modules/ missing (run: npm install)"
+        errors=$((errors + 1))
+    fi
+
+    # Check .pennyfarthing symlinks resolve
+    for link in agents guides scripts workflows personas; do
+        target="{{root}}/.pennyfarthing/$link"
+        if [ -L "$target" ] && [ -e "$target" ]; then
+            echo "  [OK] .pennyfarthing/$link symlink resolves"
+        elif [ -L "$target" ]; then
+            echo "  [FAIL] .pennyfarthing/$link broken symlink"
+            errors=$((errors + 1))
+        else
+            echo "  [WARN] .pennyfarthing/$link does not exist"
+        fi
+    done
+
+    # Check sprint loader health
+    export PYTHONPATH="{{pennyfarthing}}:${PYTHONPATH:-}"
+    if python3 -c "
+import sys
+sys.path.insert(0, '{{pennyfarthing}}')
+from pennyfarthing_scripts.sprint.loader import load_sprint
+data = load_sprint(project_root=None)
+if data and 'epics' in data:
+    epics = data['epics']
+    if epics and isinstance(epics[0], str):
+        print('  [FAIL] Sprint loader returns unmerged string refs')
+        sys.exit(1)
+    elif epics and isinstance(epics[0], dict):
+        print('  [OK] Sprint loader returns full epic dicts (' + str(len(epics)) + ' epics)')
+    else:
+        print('  [OK] Sprint has no epics (empty)')
+else:
+    print('  [WARN] No sprint data found')
+" 2>/dev/null; then
+        :
+    else
+        echo "  [FAIL] Sprint loader health check failed"
+        errors=$((errors + 1))
+    fi
+
+    echo ""
+    if [ $errors -eq 0 ]; then
+        echo "All checks passed."
+    else
+        echo "$errors check(s) failed."
+        exit 1
+    fi
+
+# =============================================================================
 # Orchestrator-specific tasks
 # =============================================================================
 

@@ -59,7 +59,7 @@ git add sprint/ && git commit -m "chore(sprint): update status"
 | `.pennyfarthing/` | Runtime framework (symlinks to node_modules) — agents, guides, personas, scripts, workflows |
 | `.pennyfarthing/sidecars/` | Agent learning files (local, writable, NOT symlinked) |
 | `pennyfarthing/` | Inlined framework source repo |
-| `sprint/` | Sprint tracking — `current-sprint.yaml`, `future.yaml`, `completed.yaml`, `context/` |
+| `sprint/` | Sprint tracking — `current-sprint.yaml` (index), `epic-*.yaml` (per-epic shards), `future.yaml`, `completed.yaml`, `context/` |
 | `.session/` | Active work sessions |
 | `docs/` | Documentation — `adr/` (Architecture Decision Records), `planning/` |
 | `justfile` | Task runner recipes (`just help` for list) |
