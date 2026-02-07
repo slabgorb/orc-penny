@@ -1,17 +1,3 @@
-id: epic-81
-title: "Dead Code Detection"
-jira: MSSCI-14457
-description: |
-  Two-layer diagnostic tool finding unused/orphaned code.
-  Layer 1: Git-based stale file detection (files with zero commits
-  in time window). Layer 2: Unused export detection for TypeScript
-  via ts-prune. Python backend in pennyfarthing_scripts/deadcode/.
-  Diagnostic only — does NOT auto-delete.
-priority: P1
-status: backlog
-repos: pennyfarthing
-points: 5
-marker: cyclist
 stories:
   - id: "81-1"
     title: "Python deadcode module: stale file detection"
@@ -51,3 +37,17 @@ stories:
     status: planning
     repos: pennyfarthing
     jira: MSSCI-14460
+id: epic-81
+title: "Dead Code Detection"
+jira: MSSCI-14457
+description: |
+  Two-layer diagnostic tool finding unused/orphaned code.
+  Layer 1: Git-based stale file detection (files with zero commits
+  in time window). Layer 2: Unused export detection for TypeScript
+  via ts-prune. Python backend in pennyfarthing_scripts/deadcode/.
+  Diagnostic only — does NOT auto-delete.
+priority: P1
+status: backlog
+repos: pennyfarthing
+points: 5
+marker: cyclist

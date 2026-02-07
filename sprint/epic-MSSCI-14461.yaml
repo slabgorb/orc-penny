@@ -1,15 +1,3 @@
-id: epic-82
-title: "Agent Load Analyzer"
-jira: MSSCI-14461
-description: |
-  Tool to evaluate agent context budget by running getPrimeContextJson()
-  for all agents at FULL tier. Shows per-component token breakdown.
-  Enables viewing and pruning sidecars that have grown too large.
-priority: P1
-status: backlog
-repos: pennyfarthing
-points: 5
-marker: cyclist
 stories:
   - id: "82-1"
     title: "Agent load API endpoint"
@@ -48,3 +36,15 @@ stories:
     status: planning
     repos: pennyfarthing
     jira: MSSCI-14464
+id: epic-82
+title: "Agent Load Analyzer"
+jira: MSSCI-14461
+description: |
+  Tool to evaluate agent context budget by running getPrimeContextJson()
+  for all agents at FULL tier. Shows per-component token breakdown.
+  Enables viewing and pruning sidecars that have grown too large.
+priority: P1
+status: backlog
+repos: pennyfarthing
+points: 5
+marker: cyclist

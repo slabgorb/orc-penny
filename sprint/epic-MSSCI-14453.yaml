@@ -1,16 +1,3 @@
-id: epic-80
-title: "Code Markers Tool (TODOs, FIXMEs, Deprecations)"
-jira: MSSCI-14453
-description: |
-  New diagnostic tool scanning for TODO, FIXME, HACK, XXX comment
-  markers and @deprecated annotations. Cross-references with git blame
-  for age and author. Flags stale markers (>90 days). Python backend
-  in pennyfarthing_scripts/codemarkers/.
-priority: P1
-status: backlog
-repos: pennyfarthing
-points: 5
-marker: cyclist
 stories:
   - id: "80-1"
     title: "Python codemarkers module: grep + git blame"
@@ -52,3 +39,16 @@ stories:
     status: planning
     repos: pennyfarthing
     jira: MSSCI-14456
+id: epic-80
+title: "Code Markers Tool (TODOs, FIXMEs, Deprecations)"
+jira: MSSCI-14453
+description: |
+  New diagnostic tool scanning for TODO, FIXME, HACK, XXX comment
+  markers and @deprecated annotations. Cross-references with git blame
+  for age and author. Flags stale markers (>90 days). Python backend
+  in pennyfarthing_scripts/codemarkers/.
+priority: P1
+status: backlog
+repos: pennyfarthing
+points: 5
+marker: cyclist

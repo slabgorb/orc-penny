@@ -1,17 +1,3 @@
-id: epic-84
-title: "Composite Health Score"
-jira: MSSCI-14469
-description: |
-  Single 0-100 codebase health score displayed as a gauge in the
-  Debug panel header. Weighted composite from all tool dimensions:
-  churn (15%), TODO density (15%), complexity (15%), test gaps (15%),
-  dead code (10%), deprecation debt (10%), dependency freshness (10%),
-  agent context efficiency (10%). Calculates from cached tool results.
-priority: P2
-status: backlog
-repos: pennyfarthing
-points: 5
-marker: cyclist
 stories:
   - id: "84-1"
     title: "Health score Python module"
@@ -50,3 +36,17 @@ stories:
     status: planning
     repos: pennyfarthing
     jira: MSSCI-14472
+id: epic-84
+title: "Composite Health Score"
+jira: MSSCI-14469
+description: |
+  Single 0-100 codebase health score displayed as a gauge in the
+  Debug panel header. Weighted composite from all tool dimensions:
+  churn (15%), TODO density (15%), complexity (15%), test gaps (15%),
+  dead code (10%), deprecation debt (10%), dependency freshness (10%),
+  agent context efficiency (10%). Calculates from cached tool results.
+priority: P2
+status: backlog
+repos: pennyfarthing
+points: 5
+marker: cyclist
