@@ -827,6 +827,220 @@ future:
               priority: P3
               status: planning
               repos: pennyfarthing
+    - name: "Agent Quality & Awareness"
+      description: |
+        Reduce agent friction by improving spatial awareness, inter-agent
+        communication protocols, and observability. Sourced from Claude Code
+        Insights analysis (2026-02-06): 25 'wrong approach' incidents traced
+        to missing repo topology, silent test-fix overrides, and ambiguous
+        intent handling.
+
+        Origin: Party Mode brainstorm on Insights report
+      status: planning
+      blocked_by:
+      total_points: 18
+      epics:
+        - id: epic-87
+          title: "Repo Topology & Agent Spatial Awareness"
+          description: |
+            Extend repos.yaml with ownership boundaries, never-edit zones,
+            symlink mappings, UI layer identification, and rendering context.
+            This becomes the spatial awareness manifest every agent loads at
+            startup, preventing wrong-file/wrong-repo/wrong-layer errors.
+
+            The #1 friction category (25 incidents) in the Insights report is
+            agents targeting the wrong file or repo. A machine-readable topology
+            eliminates guesswork: agents know which repo owns which concerns,
+            where UI components live vs CLI, and what paths are off-limits.
+
+            Extends existing repos.yaml rather than creating a new file.
+          points: 5
+          priority: P1
+          marker: infrastructure
+          repos: pennyfarthing
+          status: planning
+          stories:
+            - id: "87-1"
+              title: "Extend repos.yaml schema with ownership and boundaries"
+              description: |
+                Add to each repo entry:
+                - owns: [glob patterns of directories this repo is responsible for]
+                - never_edit: [node_modules/*, .pennyfarthing/* (symlinks), build output]
+                - symlinks: mapping of symlink paths to their source
+                - ui_layer: react|cli|none (identifies rendering context)
+                - components_path: where UI components live (for Cyclist)
+                Validate schema with yq on commit.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "87-2"
+              title: "Wire topology into agent prime context"
+              description: |
+                Update getPrimeContextJson() to include resolved repos.yaml
+                topology as part of agent startup context. Agents receive
+                repo ownership map, never-edit zones, and UI layer info
+                before their first action.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "87-3"
+              title: "Add topology validation to pre-edit guide"
+              description: |
+                Update the dev agent guide to include a pre-edit check:
+                "Before editing, verify target path is not in a never_edit
+                zone and belongs to the correct repo per repos.yaml topology."
+                Add worked examples of common mistakes (symlink, node_modules).
+              points: 1
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+        - id: epic-88
+          title: "Dev-TEA Conferral on Test Failures"
+          description: |
+            When Dev encounters failing tests during implementation, they
+            should confer with TEA rather than silently fixing tests. TEA
+            wrote those tests with intent — overriding them bypasses the
+            TDD contract. Add a structured conferral protocol to the TDD
+            workflow definition.
+          points: 3
+          priority: P1
+          marker: infrastructure
+          repos: pennyfarthing
+          status: planning
+          stories:
+            - id: "88-1"
+              title: "Add test-failure conferral protocol to TDD workflow"
+              description: |
+                Update tdd.yaml workflow definition to include a conferral
+                step when Dev encounters test failures:
+                1. Dev identifies which tests fail and why
+                2. Dev sends structured consultation to TEA with failing
+                   test name, expected vs actual, and proposed resolution
+                3. TEA decides: fix the test (wrong assumption) or fix
+                   the implementation (correct test, wrong code)
+                4. Resolution is recorded in session state
+                Uses existing tandem/consultation infrastructure if available,
+                otherwise structures as workflow gate.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "88-2"
+              title: "Dev agent guide: never silently modify TEA's tests"
+              description: |
+                Update dev agent guide/sidecar with explicit rule:
+                "If a test written by TEA fails during your implementation,
+                do NOT modify the test without consulting TEA. The test
+                represents an acceptance criterion — changing it unilaterally
+                bypasses the TDD contract."
+              points: 1
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+        - id: epic-89
+          title: "Sprint Panel Metrics"
+          description: |
+            Add observability metrics to the existing Sprint panel in Cyclist.
+            Surface sprint velocity, completion rates, and agent friction
+            indicators directly in the UI where sprint management happens.
+          points: 5
+          priority: P2
+          marker: cyclist
+          repos: pennyfarthing
+          status: planning
+          stories:
+            - id: "89-1"
+              title: "Sprint metrics API endpoint"
+              description: |
+                New Express API: GET /api/sprint-metrics
+                Calculates from sprint YAML history:
+                - Velocity: points completed per sprint (last 5 sprints)
+                - Completion rate: stories done / stories planned
+                - Cycle time: avg days per story point
+                Returns JSON with per-sprint and rolling averages.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "89-2"
+              title: "Sprint metrics section in EnhancedSprintPanel"
+              description: |
+                Add collapsible metrics section to existing sprint panel.
+                Shows velocity sparkline, completion percentage, and cycle
+                time. Uses useSprintMetrics.ts hook. Compact display that
+                doesn't crowd existing story list.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "89-3"
+              title: "Historical sprint comparison view"
+              description: |
+                Expand metrics section with sprint-over-sprint comparison.
+                Bar chart or table showing velocity trend across sprints.
+                Reads from completed.yaml and archive/ for historical data.
+              points: 1
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+        - id: epic-90
+          title: "Confidence Circuit Breaker"
+          description: |
+            Explore a pattern where agents pause and ask for clarification
+            when intent is ambiguous, rather than guessing and acting.
+            Spike to define the pattern, identify high-value trigger points,
+            and prototype in one agent persona.
+
+            The Insights report shows misinterpreted intent as a key friction
+            source — "continue" taken as "start next story", bug reports
+            mislocated to wrong UI layer, etc. A lightweight confidence
+            gate at decision points could reduce these errors.
+          points: 5
+          priority: P2
+          marker: infrastructure
+          repos: pennyfarthing
+          status: planning
+          stories:
+            - id: "90-1"
+              title: "Spike: define confidence circuit breaker pattern"
+              description: |
+                Research and document the pattern:
+                - What triggers a confidence check? (ambiguous verbs like
+                  "continue", "fix", "update" without clear target)
+                - What does the agent do? (ask a clarifying question with
+                  options, not open-ended)
+                - How to avoid being annoying? (only trigger when >1 valid
+                  interpretation exists, never for routine operations)
+                Output: ADR or design doc with pattern definition and examples.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "90-2"
+              title: "Prototype: SM agent confidence gate"
+              description: |
+                Implement confidence circuit breaker in the SM agent as
+                a pilot. SM is highest-friction for ambiguous commands
+                ("continue", "next", "start"). Add decision logic to SM
+                guide that pauses on ambiguous instructions.
+              points: 2
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+            - id: "90-3"
+              title: "Evaluate and document results"
+              description: |
+                After 1 sprint with the SM confidence gate active, evaluate:
+                - How often did it trigger?
+                - Did it reduce wrong-approach incidents?
+                - Was it annoying? (user overrode or dismissed)
+                Document findings, decide on rollout to other agents.
+              points: 1
+              priority: P1
+              status: planning
+              repos: pennyfarthing
     - name: "Quality & Scale"
       description: |
         Scale adaptation capabilities for larger initiatives and brownfield codebases.
