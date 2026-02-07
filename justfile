@@ -173,22 +173,22 @@ doctor:
     # Check sprint loader health
     export PYTHONPATH="{{pennyfarthing}}:${PYTHONPATH:-}"
     if python3 -c "
-import sys
-sys.path.insert(0, '{{pennyfarthing}}')
-from pennyfarthing_scripts.sprint.loader import load_sprint
-data = load_sprint(project_root=None)
-if data and 'epics' in data:
-    epics = data['epics']
-    if epics and isinstance(epics[0], str):
-        print('  [FAIL] Sprint loader returns unmerged string refs')
-        sys.exit(1)
-    elif epics and isinstance(epics[0], dict):
-        print('  [OK] Sprint loader returns full epic dicts (' + str(len(epics)) + ' epics)')
+    import sys
+    sys.path.insert(0, '{{pennyfarthing}}')
+    from pennyfarthing_scripts.sprint.loader import load_sprint
+    data = load_sprint(project_root=None)
+    if data and 'epics' in data:
+        epics = data['epics']
+        if epics and isinstance(epics[0], str):
+            print('  [FAIL] Sprint loader returns unmerged string refs')
+            sys.exit(1)
+        elif epics and isinstance(epics[0], dict):
+            print('  [OK] Sprint loader returns full epic dicts (' + str(len(epics)) + ' epics)')
+        else:
+            print('  [OK] Sprint has no epics (empty)')
     else:
-        print('  [OK] Sprint has no epics (empty)')
-else:
-    print('  [WARN] No sprint data found')
-" 2>/dev/null; then
+        print('  [WARN] No sprint data found')
+    " 2>/dev/null; then
         :
     else
         echo "  [FAIL] Sprint loader health check failed"
