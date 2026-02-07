@@ -70,6 +70,45 @@ For projects with sub-packages (e.g., siemulator with siemulator-ui):
 }
 ```
 
+## Hook Wrappers for Python Scripts
+
+### Established Pattern: find-root.sh + PYTHONPATH + python3 -m
+When a Claude Code hook needs to call Python from `pennyfarthing_scripts/`, follow the pattern in `schema-validation.sh`:
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+source "$SCRIPT_DIR/../lib/find-root.sh"
+
+# Set PYTHONPATH for pennyfarthing_scripts
+PENNYFARTHING_SCRIPTS=""
+if [[ -d "$PROJECT_ROOT/pennyfarthing" ]]; then
+    # Dogfooding: framework inlined in orchestrator
+    PENNYFARTHING_SCRIPTS="$PROJECT_ROOT/pennyfarthing"
+elif [[ -d "$PROJECT_ROOT/node_modules/@pennyfarthing/core" ]]; then
+    # Normal install
+    PENNYFARTHING_SCRIPTS="$PROJECT_ROOT/node_modules/@pennyfarthing/core"
+fi
+
+if [[ -n "$PENNYFARTHING_SCRIPTS" ]]; then
+    export PYTHONPATH="$PENNYFARTHING_SCRIPTS:${PYTHONPATH:-}"
+fi
+
+python3 -m pennyfarthing_scripts.module_name
+```
+
+**Key points:**
+- Shell wrappers live in `pennyfarthing-dist/scripts/hooks/` (distributed via `.pennyfarthing/scripts/` symlink)
+- Python implementations live in `pennyfarthing_scripts/` (the Python package)
+- `find-root.sh` resolves PROJECT_ROOT from any call site (symlink, direct, etc.)
+- PYTHONPATH fallback handles both dogfooding (inlined repo) and normal installs (node_modules)
+- Use `python3 -m pennyfarthing_scripts.<module>` not direct file paths
+- Template references hooks via `"$CLAUDE_PROJECT_DIR"/.pennyfarthing/scripts/hooks/<name>.sh`
+
+**Anti-pattern:** Don't create hooks that use `pwd -P` + relative `../../..` traversal — it breaks across install layouts.
+
 ---
 
 *Add infrastructure patterns discovered during DevOps work below*
