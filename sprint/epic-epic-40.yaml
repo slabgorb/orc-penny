@@ -1,0 +1,36 @@
+id: epic-40
+title: Scale Adaptation and Brownfield Support
+description: |
+  Adopt BMAD's scale-adaptive approach and add brownfield codebase discovery.
+  Add upward scaling for larger initiatives (Level 0-4) and brownfield
+  analysis for existing codebases.
+priority: P2
+status: backlog
+repos: pennyfarthing
+points: 17
+marker: infrastructure
+stories:
+  - id: 40-1
+    title: Define scale levels
+    points: 2
+    status: backlog
+  - id: 40-2
+    title: Quick-spec workflow
+    points: 3
+    status: backlog
+  - id: 40-3
+    title: Enterprise workflow hooks
+    points: 3
+    status: backlog
+  - id: 40-4
+    title: Brownfield discovery command
+    points: 5
+    status: backlog
+  - id: 40-5
+    title: Brownfield convention adoption
+    points: 2
+    status: backlog
+  - id: 40-6
+    title: PRD import support
+    points: 2
+    status: backlog

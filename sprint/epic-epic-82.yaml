@@ -1,0 +1,46 @@
+id: epic-82
+title: "Agent Load Analyzer"
+description: |
+  Tool to evaluate agent context budget by running getPrimeContextJson()
+  for all agents at FULL tier. Shows per-component token breakdown.
+  Enables viewing and pruning sidecars that have grown too large.
+priority: P1
+status: planning
+repos: pennyfarthing
+points: 5
+marker: cyclist
+stories:
+  - id: "82-1"
+    title: "Agent load API endpoint"
+    description: |
+      New Express API: GET /api/agent-load
+      Runs getPrimeContextJson() for all 10 agents at FULL tier.
+      Returns array of {agent, totalTokens, components, tokenCounts}.
+      Cache result for 60 seconds (prime is expensive).
+    points: 2
+    priority: P0
+    status: planning
+    repos: pennyfarthing
+  - id: "82-2"
+    title: "Sidecar pruning API"
+    description: |
+      New Express API: POST /api/agent-load/prune-sidecar
+      Body: {agent, sidecar}. Resets sidecar file to its header
+      template (preserves # Title and > description, clears content
+      below --- separator). Returns {success, tokensFreed}.
+    points: 1
+    priority: P1
+    status: planning
+    repos: pennyfarthing
+  - id: "82-3"
+    title: "Agent load React hook + dialog"
+    description: |
+      React hook: useAgentLoad.ts. Dialog: AgentLoadDialog.tsx
+      Ranked table: agent name, total FULL-tier tokens. Expand
+      agent to see component breakdown. Sidecar section: list files
+      with token counts, View button (expandable preview), Clear
+      button (confirmation + prune API call). Add to DebugPanel.
+    points: 2
+    priority: P0
+    status: planning
+    repos: pennyfarthing

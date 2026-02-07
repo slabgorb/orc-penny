@@ -1,0 +1,43 @@
+id: epic-88
+title: "Dev-TEA Conferral on Test Failures"
+description: |
+  When Dev encounters failing tests during implementation, they
+  should confer with TEA rather than silently fixing tests. TEA
+  wrote those tests with intent — overriding them bypasses the
+  TDD contract. Add a structured conferral protocol to the TDD
+  workflow definition.
+priority: P1
+status: planning
+repos: pennyfarthing
+points: 3
+marker: infrastructure
+stories:
+  - id: "88-1"
+    title: "Add test-failure conferral protocol to TDD workflow"
+    description: |
+      Update tdd.yaml workflow definition to include a conferral
+      step when Dev encounters test failures:
+      1. Dev identifies which tests fail and why
+      2. Dev sends structured consultation to TEA with failing
+         test name, expected vs actual, and proposed resolution
+      3. TEA decides: fix the test (wrong assumption) or fix
+         the implementation (correct test, wrong code)
+      4. Resolution is recorded in session state
+      Uses existing tandem/consultation infrastructure if available,
+      otherwise structures as workflow gate.
+    points: 2
+    priority: P0
+    status: planning
+    repos: pennyfarthing
+  - id: "88-2"
+    title: "Dev agent guide: never silently modify TEA's tests"
+    description: |
+      Update dev agent guide/sidecar with explicit rule:
+      "If a test written by TEA fails during your implementation,
+      do NOT modify the test without consulting TEA. The test
+      represents an acceptance criterion — changing it unilaterally
+      bypasses the TDD contract."
+    points: 1
+    priority: P0
+    status: planning
+    repos: pennyfarthing

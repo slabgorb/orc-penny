@@ -1,0 +1,46 @@
+id: epic-89
+title: "Sprint Panel Metrics"
+description: |
+  Add observability metrics to the existing Sprint panel in Cyclist.
+  Surface sprint velocity, completion rates, and agent friction
+  indicators directly in the UI where sprint management happens.
+priority: P2
+status: planning
+repos: pennyfarthing
+points: 5
+marker: cyclist
+stories:
+  - id: "89-1"
+    title: "Sprint metrics API endpoint"
+    description: |
+      New Express API: GET /api/sprint-metrics
+      Calculates from sprint YAML history:
+      - Velocity: points completed per sprint (last 5 sprints)
+      - Completion rate: stories done / stories planned
+      - Cycle time: avg days per story point
+      Returns JSON with per-sprint and rolling averages.
+    points: 2
+    priority: P0
+    status: planning
+    repos: pennyfarthing
+  - id: "89-2"
+    title: "Sprint metrics section in EnhancedSprintPanel"
+    description: |
+      Add collapsible metrics section to existing sprint panel.
+      Shows velocity sparkline, completion percentage, and cycle
+      time. Uses useSprintMetrics.ts hook. Compact display that
+      doesn't crowd existing story list.
+    points: 2
+    priority: P0
+    status: planning
+    repos: pennyfarthing
+  - id: "89-3"
+    title: "Historical sprint comparison view"
+    description: |
+      Expand metrics section with sprint-over-sprint comparison.
+      Bar chart or table showing velocity trend across sprints.
+      Reads from completed.yaml and archive/ for historical data.
+    points: 1
+    priority: P1
+    status: planning
+    repos: pennyfarthing

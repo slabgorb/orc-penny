@@ -1,0 +1,68 @@
+id: epic-79
+title: "Dialog Infrastructure + Hotspot Refactor"
+description: |
+  Create shared ToolDialog component, migrate HotspotsPanel into a
+  dialog launched from Debug panel, remove Hotspots as a standalone
+  dockview panel. Add tool launcher button row to DebugPanel.
+  Fix hotspot analysis to skip orchestrator repos and filter non-code
+  artifacts (dotfiles, images, config, generated files).
+priority: P1
+status: planning
+repos: pennyfarthing
+points: 8
+marker: cyclist
+stories:
+  - id: "79-1"
+    title: "Create ToolDialog shared component"
+    description: |
+      New component: components/dialogs/ToolDialog.tsx
+      Wraps shadcn Dialog with max-w-5xl sizing, standard header/footer,
+      and close button. All observatory tools will use this wrapper.
+    points: 1
+    priority: P0
+    status: planning
+    repos: pennyfarthing
+  - id: "79-2"
+    title: "Migrate HotspotsPanel into HotspotsDialog"
+    description: |
+      Move HotspotsPanel content into components/dialogs/HotspotsDialog.tsx
+      using ToolDialog wrapper. Remove HotspotsPanel from PANEL_INVENTORY,
+      RIGHT_SIDEBAR_PANELS, PANEL_TITLES in DockviewWorkspace.tsx. Remove
+      registration from App.tsx and export from panels/index.ts.
+    points: 2
+    priority: P0
+    status: planning
+    repos: pennyfarthing
+  - id: "79-3"
+    title: "Add tool launcher row to DebugPanel"
+    description: |
+      Add a Tools section below Token Stats in DebugPanel with buttons
+      for each observatory tool. First button: Hotspots (opens
+      HotspotsDialog). Placeholder buttons for future tools.
+    points: 1
+    priority: P0
+    status: planning
+    repos: pennyfarthing
+  - id: "79-4"
+    title: "Hotspot: skip orchestrator repos by type"
+    description: |
+      Add --skip-type option to hotspots CLI (cli.py). Add skip_types
+      parameter to analyze_all_repos() in analyze.py. Filter repos by
+      type field from repos.yaml before analysis. Cyclist API passes
+      --skip-type orchestrator by default. Dialog exposes "Include
+      orchestrator" checkbox.
+    points: 2
+    priority: P1
+    status: planning
+    repos: pennyfarthing
+  - id: "79-5"
+    title: "Hotspot: expand artifact exclusions + client filters"
+    description: |
+      Expand DEFAULT_EXCLUDES in analyze.py to filter dotfiles, images,
+      fonts, generated files (.d.ts, .snap), CI config (.github/*).
+      Add client-side filter toggles in HotspotsDialog: "Code only"
+      (positive filter for source extensions), "Include config" toggle.
+    points: 2
+    priority: P1
+    status: planning
+    repos: pennyfarthing
