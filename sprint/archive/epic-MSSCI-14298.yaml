@@ -1,17 +1,3 @@
-id: MSSCI-14298
-type: epic
-title: 'Epic: Stepped Workflow Infrastructure'
-description: |
-  Fix stepped workflow support in Cyclist and the framework. Stepped
-  workflows (epics-and-stories, prd, research, etc.) use a subdirectory
-  pattern with workflow.yaml + steps/ that is not handled by existing
-  code paths. Three issues identified:
-  1. Session state never updates (step advancement not wired up)
-  2. WorkflowPanel can't find subdirectory workflow definitions
-  3. No way to see available/applicable workflows in the panel
-priority: P1
-status: in_progress
-repos: pennyfarthing
 stories:
   - id: MSSCI-14299
     title: Wire up stepped workflow session state advancement
@@ -94,3 +80,18 @@ stories:
     type: bug
     jira: MSSCI-14480
     completed: '2026-02-07'
+id: MSSCI-14298
+type: epic
+title: 'Epic: Stepped Workflow Infrastructure'
+description: |
+  Fix stepped workflow support in Cyclist and the framework. Stepped
+  workflows (epics-and-stories, prd, research, etc.) use a subdirectory
+  pattern with workflow.yaml + steps/ that is not handled by existing
+  code paths. Three issues identified:
+  1. Session state never updates (step advancement not wired up)
+  2. WorkflowPanel can't find subdirectory workflow definitions
+  3. No way to see available/applicable workflows in the panel
+priority: P1
+status: done
+repos: pennyfarthing
+completed: '2026-02-07'

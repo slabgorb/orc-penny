@@ -1,17 +1,3 @@
-id: epic-78
-type: epic
-title: 'Epic: Cyclist Permission System'
-description: |
-  Wire existing approval gate, hook script, WheelHub router,
-  ApprovalModal, and grant storage into a single working permission
-  flow. Remove the legacy IPC path. Enable one-time, session, and
-  permanent permission grants through Cyclist UI.
-priority: P0
-status: in_progress
-repos: pennyfarthing
-jira: MSSCI-14317
-points: 24
-marker: cyclist
 stories:
   - id: MSSCI-14318
     jira: MSSCI-14318
@@ -163,3 +149,18 @@ stories:
       - Existing Reflector marker QuickActions continue to work unchanged
       - ToolCallBlock still renders normally for all other tool types
     completed: '2026-02-06'
+id: epic-78
+type: epic
+title: 'Epic: Cyclist Permission System'
+description: |
+  Wire existing approval gate, hook script, WheelHub router,
+  ApprovalModal, and grant storage into a single working permission
+  flow. Remove the legacy IPC path. Enable one-time, session, and
+  permanent permission grants through Cyclist UI.
+priority: P0
+status: done
+repos: pennyfarthing
+jira: MSSCI-14317
+points: 24
+marker: cyclist
+completed: '2026-02-07'
