@@ -322,11 +322,12 @@ epics:
           if empty after migration.
         points: 3
         priority: P1
-        status: in_progress
+        status: done
         repos: pennyfarthing
         workflow: tdd
         jira: MSSCI-14368
         created: "2026-02-07"
+        completed: "2026-02-07"
       - id: MSSCI-14369
         title: Consolidate sidecars directory
         description: |
@@ -335,10 +336,11 @@ epics:
           stale references throughout the codebase.
         points: 2
         priority: P2
-        status: backlog
+        status: done
         repos: pennyfarthing
         workflow: trivial
         jira: MSSCI-14369
+        completed: "2026-02-07"
       - id: MSSCI-14370
         title: Update init command for bootstrapping install
         description: |
