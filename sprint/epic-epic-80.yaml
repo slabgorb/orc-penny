@@ -1,0 +1,50 @@
+id: epic-80
+title: "Code Markers Tool (TODOs, FIXMEs, Deprecations)"
+description: |
+  New diagnostic tool scanning for TODO, FIXME, HACK, XXX comment
+  markers and @deprecated annotations. Cross-references with git blame
+  for age and author. Flags stale markers (>90 days). Python backend
+  in pennyfarthing_scripts/codemarkers/.
+priority: P1
+status: planning
+repos: pennyfarthing
+points: 5
+marker: cyclist
+stories:
+  - id: "80-1"
+    title: "Python codemarkers module: grep + git blame"
+    description: |
+      New module: pennyfarthing_scripts/codemarkers/
+      Files: __init__.py, analyze.py, models.py, cli.py
+      Core: grep for TODO/FIXME/HACK/XXX markers across source files,
+      git blame each line for age/author. Models: CodeMarker dataclass
+      with path, line, text, marker_type, author, age_days, is_stale.
+      CLI: click group with analyze command, --format json/table.
+    points: 2
+    priority: P0
+    status: planning
+    repos: pennyfarthing
+  - id: "80-2"
+    title: "@deprecated detection and caller cross-reference"
+    description: |
+      Extend codemarkers analyze.py to detect @deprecated JSDoc tags
+      in TypeScript files. For each deprecated symbol, count active
+      callers/importers (via grep for import references). Model:
+      DeprecationUsage with symbol, file, caller_count, callers list.
+    points: 2
+    priority: P1
+    status: planning
+    repos: pennyfarthing
+  - id: "80-3"
+    title: "Code markers API + React hook + dialog"
+    description: |
+      Express API: GET /api/code-markers?repo=pennyfarthing
+      Thin wrapper calling Python codemarkers module.
+      React hook: useCodeMarkers.ts (fetch + state).
+      Dialog: CodeMarkersDialog.tsx with tabs (TODOs | FIXMEs |
+      Deprecated), sortable table, staleness filter, summary stats.
+      Add button to DebugPanel launcher row.
+    points: 1
+    priority: P0
+    status: planning
+    repos: pennyfarthing

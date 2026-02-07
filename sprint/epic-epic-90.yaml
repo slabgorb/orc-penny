@@ -1,0 +1,56 @@
+id: epic-90
+title: "Confidence Circuit Breaker"
+description: |
+  Explore a pattern where agents pause and ask for clarification
+  when intent is ambiguous, rather than guessing and acting.
+  Spike to define the pattern, identify high-value trigger points,
+  and prototype in one agent persona.
+
+  The Insights report shows misinterpreted intent as a key friction
+  source — "continue" taken as "start next story", bug reports
+  mislocated to wrong UI layer, etc. A lightweight confidence
+  gate at decision points could reduce these errors.
+priority: P2
+status: planning
+repos: pennyfarthing
+points: 5
+marker: infrastructure
+stories:
+  - id: "90-1"
+    title: "Spike: define confidence circuit breaker pattern"
+    description: |
+      Research and document the pattern:
+      - What triggers a confidence check? (ambiguous verbs like
+        "continue", "fix", "update" without clear target)
+      - What does the agent do? (ask a clarifying question with
+        options, not open-ended)
+      - How to avoid being annoying? (only trigger when >1 valid
+        interpretation exists, never for routine operations)
+      Output: ADR or design doc with pattern definition and examples.
+    points: 2
+    priority: P0
+    status: planning
+    repos: pennyfarthing
+  - id: "90-2"
+    title: "Prototype: SM agent confidence gate"
+    description: |
+      Implement confidence circuit breaker in the SM agent as
+      a pilot. SM is highest-friction for ambiguous commands
+      ("continue", "next", "start"). Add decision logic to SM
+      guide that pauses on ambiguous instructions.
+    points: 2
+    priority: P1
+    status: planning
+    repos: pennyfarthing
+  - id: "90-3"
+    title: "Evaluate and document results"
+    description: |
+      After 1 sprint with the SM confidence gate active, evaluate:
+      - How often did it trigger?
+      - Did it reduce wrong-approach incidents?
+      - Was it annoying? (user overrode or dismissed)
+      Document findings, decide on rollout to other agents.
+    points: 1
+    priority: P1
+    status: planning
+    repos: pennyfarthing
