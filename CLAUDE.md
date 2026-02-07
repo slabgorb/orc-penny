@@ -27,8 +27,7 @@ Sprint management stays here. Framework development happens in `pennyfarthing/`.
 2. **Use `.js` extensions** in all relative TypeScript imports
 3. **Return result objects** `{success, data?, error?}` instead of throwing
 4. **Use Haiku for subagents** — never Opus for mechanical tasks
-5. **Commit `dist/`** alongside `src/` changes
-6. **Scripts use `.pennyfarthing/` paths** — never `pennyfarthing-dist/` in runtime scripts
+5. **Scripts use `.pennyfarthing/` paths** — never `pennyfarthing-dist/` in runtime scripts
 </critical>
 
 <code-editing>
