@@ -173,3 +173,14 @@ completed:
     title: "Migrate existing YAML files to canonical format"
     points: 2
     completed: 2026-02-05
+  - id: MSSCI-14325
+    epic: epic-78
+    title: "Connect /permissions skill to grant store"
+    points: 2
+    completed: 2026-02-06
+  - id: MSSCI-14325
+    epic: epic-78
+    title: "Connect /permissions skill to grant store"
+    points: 2
+    completed: 2026-02-06
+    pr: 696

@@ -130,12 +130,12 @@ phases:
 
 ### Invocation Pattern
 
-Leader spawns partner as a Haiku subagent:
+Leader spawns partner as a Sonnet subagent:
 
 ```yaml
 Task tool:
   subagent_type: "general-purpose"
-  model: "haiku"
+  model: "sonnet"
   prompt: |
     You are {partner_agent} providing consultation to {leader_agent}.
 
@@ -151,7 +151,7 @@ Task tool:
     Respond with the Consultation Response format only.
 ```
 
-**Partner uses Haiku model** per ADR-0007 (mechanical task, focused response).
+**Partner uses Sonnet model** for quality consultation responses requiring reasoning.
 
 ## Dialogue File Format
 
@@ -269,7 +269,7 @@ workflow:
 - **Preserved context** - Leader maintains working state during consultation
 - **Reduced rework** - Architectural issues caught during implementation, not review
 - **Explicit knowledge transfer** - Dialogue file documents decision rationale
-- **Low overhead** - Haiku partner keeps token cost reasonable
+- **Quality responses** - Sonnet partner provides strong reasoning
 - **Workflow control** - Pairing defined in workflow, not ad-hoc
 
 ### Negative
@@ -284,7 +284,7 @@ workflow:
 | Risk | Mitigation |
 |------|------------|
 | Over-consultation | Default to `request: true` trigger (explicit invocation) |
-| Token bloat | Partner uses Haiku; consultation responses capped at 200 words |
+| Token bloat | Partner uses Sonnet; consultation responses capped at 200 words |
 | Dialogue noise | Summary section distills key decisions |
 | Partner staleness | Leader includes current context in each request |
 
@@ -362,7 +362,7 @@ Agents share a vector store for context.
 
 1. Check if tandem partner is configured for current phase
 2. Format consultation request using protocol template
-3. Spawn partner as Haiku subagent with request
+3. Spawn partner as Sonnet subagent with request
 4. Parse response, append to dialogue file
 5. Continue work with recommendation
 

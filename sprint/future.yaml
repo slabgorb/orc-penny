@@ -397,6 +397,650 @@ future:
               priority: P1
               status: planning
               repos: pennyfarthing
+    - name: "Codebase Observatory"
+      description: |
+        Transform the Debug panel into an integrated Codebase Observatory —
+        a suite of diagnostic tools that surface code health, detect quality
+        issues, and help agents understand the codebase they work in.
+
+        The panel becomes a lightweight launcher with a composite health gauge.
+        Each tool opens a full-featured dialog for display and interactive tuning.
+        All backend analysis is Python-first (pennyfarthing_scripts/).
+
+        Design doc: docs/planning/codebase-observatory.md
+        Origin: Architect + Party Mode brainstorm (2026-02-06)
+      status: planning
+      blocked_by:
+      total_points: 34
+      epics:
+        - id: epic-79
+          title: "Dialog Infrastructure + Hotspot Refactor"
+          description: |
+            Create shared ToolDialog component, migrate HotspotsPanel into a
+            dialog launched from Debug panel, remove Hotspots as a standalone
+            dockview panel. Add tool launcher button row to DebugPanel.
+            Fix hotspot analysis to skip orchestrator repos and filter non-code
+            artifacts (dotfiles, images, config, generated files).
+          points: 8
+          priority: P1
+          marker: cyclist
+          repos: pennyfarthing
+          status: planning
+          stories:
+            - id: "79-1"
+              title: "Create ToolDialog shared component"
+              description: |
+                New component: components/dialogs/ToolDialog.tsx
+                Wraps shadcn Dialog with max-w-5xl sizing, standard header/footer,
+                and close button. All observatory tools will use this wrapper.
+              points: 1
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "79-2"
+              title: "Migrate HotspotsPanel into HotspotsDialog"
+              description: |
+                Move HotspotsPanel content into components/dialogs/HotspotsDialog.tsx
+                using ToolDialog wrapper. Remove HotspotsPanel from PANEL_INVENTORY,
+                RIGHT_SIDEBAR_PANELS, PANEL_TITLES in DockviewWorkspace.tsx. Remove
+                registration from App.tsx and export from panels/index.ts.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "79-3"
+              title: "Add tool launcher row to DebugPanel"
+              description: |
+                Add a Tools section below Token Stats in DebugPanel with buttons
+                for each observatory tool. First button: Hotspots (opens
+                HotspotsDialog). Placeholder buttons for future tools.
+              points: 1
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "79-4"
+              title: "Hotspot: skip orchestrator repos by type"
+              description: |
+                Add --skip-type option to hotspots CLI (cli.py). Add skip_types
+                parameter to analyze_all_repos() in analyze.py. Filter repos by
+                type field from repos.yaml before analysis. Cyclist API passes
+                --skip-type orchestrator by default. Dialog exposes "Include
+                orchestrator" checkbox.
+              points: 2
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+            - id: "79-5"
+              title: "Hotspot: expand artifact exclusions + client filters"
+              description: |
+                Expand DEFAULT_EXCLUDES in analyze.py to filter dotfiles, images,
+                fonts, generated files (.d.ts, .snap), CI config (.github/*).
+                Add client-side filter toggles in HotspotsDialog: "Code only"
+                (positive filter for source extensions), "Include config" toggle.
+              points: 2
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+        - id: epic-80
+          title: "Code Markers Tool (TODOs, FIXMEs, Deprecations)"
+          description: |
+            New diagnostic tool scanning for TODO, FIXME, HACK, XXX comment
+            markers and @deprecated annotations. Cross-references with git blame
+            for age and author. Flags stale markers (>90 days). Python backend
+            in pennyfarthing_scripts/codemarkers/.
+          points: 5
+          priority: P1
+          marker: cyclist
+          repos: pennyfarthing
+          status: planning
+          stories:
+            - id: "80-1"
+              title: "Python codemarkers module: grep + git blame"
+              description: |
+                New module: pennyfarthing_scripts/codemarkers/
+                Files: __init__.py, analyze.py, models.py, cli.py
+                Core: grep for TODO/FIXME/HACK/XXX markers across source files,
+                git blame each line for age/author. Models: CodeMarker dataclass
+                with path, line, text, marker_type, author, age_days, is_stale.
+                CLI: click group with analyze command, --format json/table.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "80-2"
+              title: "@deprecated detection and caller cross-reference"
+              description: |
+                Extend codemarkers analyze.py to detect @deprecated JSDoc tags
+                in TypeScript files. For each deprecated symbol, count active
+                callers/importers (via grep for import references). Model:
+                DeprecationUsage with symbol, file, caller_count, callers list.
+              points: 2
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+            - id: "80-3"
+              title: "Code markers API + React hook + dialog"
+              description: |
+                Express API: GET /api/code-markers?repo=pennyfarthing
+                Thin wrapper calling Python codemarkers module.
+                React hook: useCodeMarkers.ts (fetch + state).
+                Dialog: CodeMarkersDialog.tsx with tabs (TODOs | FIXMEs |
+                Deprecated), sortable table, staleness filter, summary stats.
+                Add button to DebugPanel launcher row.
+              points: 1
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+        - id: epic-81
+          title: "Dead Code Detection"
+          description: |
+            Two-layer diagnostic tool finding unused/orphaned code.
+            Layer 1: Git-based stale file detection (files with zero commits
+            in time window). Layer 2: Unused export detection for TypeScript
+            via ts-prune. Python backend in pennyfarthing_scripts/deadcode/.
+            Diagnostic only — does NOT auto-delete.
+          points: 5
+          priority: P1
+          marker: cyclist
+          repos: pennyfarthing
+          status: planning
+          stories:
+            - id: "81-1"
+              title: "Python deadcode module: stale file detection"
+              description: |
+                New module: pennyfarthing_scripts/deadcode/
+                Files: __init__.py, analyze.py, models.py, cli.py
+                Layer 1: git ls-files vs git log --name-only --since=N days.
+                Difference = never-touched files in window. Filter to source
+                file extensions. Model: StaleFile with path, last_modified,
+                days_stale, confidence.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "81-2"
+              title: "Unused export detection via ts-prune"
+              description: |
+                Layer 2: Run ts-prune (or tsc analysis) to find exported symbols
+                with no importers. Parse output into UnusedExport model with
+                symbol, file, line, export_type. Integrate into deadcode CLI
+                as separate subcommand or combined output.
+              points: 2
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+            - id: "81-3"
+              title: "Dead code API + React hook + dialog"
+              description: |
+                Express API: GET /api/dead-code?days=180&repo=pennyfarthing
+                React hook: useDeadCode.ts. Dialog: DeadCodeDialog.tsx with tabs
+                (Stale Files | Unused Exports), sortable tables, confidence
+                badges. Add button to DebugPanel launcher row.
+              points: 1
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+        - id: epic-82
+          title: "Agent Load Analyzer"
+          description: |
+            Tool to evaluate agent context budget by running getPrimeContextJson()
+            for all agents at FULL tier. Shows per-component token breakdown.
+            Enables viewing and pruning sidecars that have grown too large.
+          points: 5
+          priority: P1
+          marker: cyclist
+          repos: pennyfarthing
+          status: planning
+          stories:
+            - id: "82-1"
+              title: "Agent load API endpoint"
+              description: |
+                New Express API: GET /api/agent-load
+                Runs getPrimeContextJson() for all 10 agents at FULL tier.
+                Returns array of {agent, totalTokens, components, tokenCounts}.
+                Cache result for 60 seconds (prime is expensive).
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "82-2"
+              title: "Sidecar pruning API"
+              description: |
+                New Express API: POST /api/agent-load/prune-sidecar
+                Body: {agent, sidecar}. Resets sidecar file to its header
+                template (preserves # Title and > description, clears content
+                below --- separator). Returns {success, tokensFreed}.
+              points: 1
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+            - id: "82-3"
+              title: "Agent load React hook + dialog"
+              description: |
+                React hook: useAgentLoad.ts. Dialog: AgentLoadDialog.tsx
+                Ranked table: agent name, total FULL-tier tokens. Expand
+                agent to see component breakdown. Sidecar section: list files
+                with token counts, View button (expandable preview), Clear
+                button (confirmation + prune API call). Add to DebugPanel.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+        - id: epic-83
+          title: "Complexity + Dependencies Tools"
+          description: |
+            Two lightweight diagnostic tools. Complexity: static analysis via
+            Python wrapping eslint --format json or escomplex for cyclomatic
+            complexity, function length, nesting depth. Dependencies: Python
+            wrapping npm outdated --json and npm audit --json for staleness
+            and security. Both in pennyfarthing_scripts/.
+          points: 6
+          priority: P2
+          marker: cyclist
+          repos: pennyfarthing
+          status: planning
+          stories:
+            - id: "83-1"
+              title: "Python complexity module"
+              description: |
+                New module: pennyfarthing_scripts/complexity/
+                Wraps eslint --format json with complexity rule or uses
+                escomplex via subprocess. Metrics per file: longest function,
+                avg cyclomatic complexity, max nesting depth, total lines.
+                CLI with --format json/table.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "83-2"
+              title: "Python dependencies module"
+              description: |
+                New module: pennyfarthing_scripts/dependencies/
+                Wraps npm outdated --json and npm audit --json. Models:
+                OutdatedPackage (name, current, wanted, latest, type),
+                SecurityAdvisory (severity, count). CLI with --format json/table.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "83-3"
+              title: "Complexity + Dependencies APIs + hooks + dialogs"
+              description: |
+                Express APIs: GET /api/complexity, GET /api/dependencies
+                React hooks: useComplexity.ts, useDependencies.ts
+                Dialogs: ComplexityDialog.tsx (sortable table, threshold
+                highlighting), DependenciesDialog.tsx (outdated table +
+                security section). Add buttons to DebugPanel launcher row.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+        - id: epic-84
+          title: "Composite Health Score"
+          description: |
+            Single 0-100 codebase health score displayed as a gauge in the
+            Debug panel header. Weighted composite from all tool dimensions:
+            churn (15%), TODO density (15%), complexity (15%), test gaps (15%),
+            dead code (10%), deprecation debt (10%), dependency freshness (10%),
+            agent context efficiency (10%). Calculates from cached tool results.
+          points: 5
+          priority: P2
+          marker: cyclist
+          repos: pennyfarthing
+          status: planning
+          stories:
+            - id: "84-1"
+              title: "Health score Python module"
+              description: |
+                New module: pennyfarthing_scripts/healthscore/
+                Aggregates lightweight versions of each tool's output.
+                Weighted scoring algorithm with configurable weights.
+                CLI: healthscore analyze --format json. Caches component
+                scores, reuses cached results within 5 minute window.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "84-2"
+              title: "Health score API + gauge component"
+              description: |
+                Express API: GET /api/health-score (calls Python module).
+                React hook: useHealthScore.ts. Radial gauge component in
+                DebugPanel header showing score 0-100 with green/yellow/red
+                coloring. Tap to see dimension breakdown.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "84-3"
+              title: "Per-dimension drill-through from health gauge"
+              description: |
+                Clicking a dimension in the health score breakdown opens
+                the corresponding tool dialog (e.g. clicking "TODO density"
+                opens CodeMarkersDialog). Wire gauge breakdown items to
+                dialog openers.
+              points: 1
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+    - name: "Agent Collaboration"
+      description: |
+        Graduated agent collaboration system: Tandem consultation (Phase 1)
+        for mid-phase specialist Q&A, then native Claude Code Agent Teams
+        (Phase 2) for true parallel execution. Tandem works in -p mode;
+        native teams require interactive sessions.
+
+        Prior art: ADR-0012 (Tandem Agent Pairing), PRD (artifacts/prd-tandem.md)
+        Context: sprint/context/context-epic-86.md
+      status: planning
+      blocked_by:
+      total_points: 36
+      epics:
+        - id: epic-86
+          title: "Agent Collaboration — Tandem to Teams"
+          description: |
+            Phase 1 (15 pts): Tandem consultation protocol — workflow YAML
+            tandem: blocks, structured request/response with Sonnet partner,
+            dialogue file persistence, agent tandem awareness, templates.
+
+            Phase 2 (13 pts): Native Agent Teams integration — feature detection,
+            persona injection via spawn prompts, execution_mode: team in workflow
+            YAML, gate-to-task-dependency adapter.
+
+            Phase 3 (8 pts): Cyclist integration — TandemPanel for dialogue
+            visualization, TeamPanel for native team status/messaging.
+          points: 36
+          priority: P1
+          marker: infrastructure
+          repos: pennyfarthing
+          status: planning
+          stories:
+            - id: "86-1"
+              title: "Workflow schema: tandem: block"
+              points: 3
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "86-2"
+              title: "Consultation protocol implementation"
+              points: 3
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "86-3"
+              title: "Dialogue file management"
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "86-4"
+              title: "Agent tandem awareness"
+              points: 3
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "86-5"
+              title: "Tandem workflow templates"
+              points: 2
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+            - id: "86-6"
+              title: "Tandem metrics and token tracking"
+              points: 2
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+            - id: "86-7"
+              title: "Feature detection: native teams capability"
+              points: 2
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+            - id: "86-8"
+              title: "Persona injection via spawn prompts"
+              points: 3
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+            - id: "86-9"
+              title: "Workflow schema: execution_mode: team"
+              points: 3
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+            - id: "86-10"
+              title: "Gate-to-task-dependency adapter"
+              points: 5
+              priority: P2
+              status: planning
+              repos: pennyfarthing
+            - id: "86-11"
+              title: "Cyclist: Tandem dialogue panel"
+              points: 3
+              priority: P2
+              status: planning
+              repos: pennyfarthing
+            - id: "86-12"
+              title: "Cyclist: Native team panel"
+              points: 5
+              priority: P3
+              status: planning
+              repos: pennyfarthing
+    - name: "Agent Quality & Awareness"
+      description: |
+        Reduce agent friction by improving spatial awareness, inter-agent
+        communication protocols, and observability. Sourced from Claude Code
+        Insights analysis (2026-02-06): 25 'wrong approach' incidents traced
+        to missing repo topology, silent test-fix overrides, and ambiguous
+        intent handling.
+
+        Origin: Party Mode brainstorm on Insights report
+      status: planning
+      blocked_by:
+      total_points: 18
+      epics:
+        - id: epic-87
+          title: "Repo Topology & Agent Spatial Awareness"
+          description: |
+            Extend repos.yaml with ownership boundaries, never-edit zones,
+            symlink mappings, UI layer identification, and rendering context.
+            This becomes the spatial awareness manifest every agent loads at
+            startup, preventing wrong-file/wrong-repo/wrong-layer errors.
+
+            The #1 friction category (25 incidents) in the Insights report is
+            agents targeting the wrong file or repo. A machine-readable topology
+            eliminates guesswork: agents know which repo owns which concerns,
+            where UI components live vs CLI, and what paths are off-limits.
+
+            Extends existing repos.yaml rather than creating a new file.
+          points: 5
+          priority: P1
+          marker: infrastructure
+          repos: pennyfarthing
+          status: planning
+          stories:
+            - id: "87-1"
+              title: "Extend repos.yaml schema with ownership and boundaries"
+              description: |
+                Add to each repo entry:
+                - owns: [glob patterns of directories this repo is responsible for]
+                - never_edit: [node_modules/*, .pennyfarthing/* (symlinks), build output]
+                - symlinks: mapping of symlink paths to their source
+                - ui_layer: react|cli|none (identifies rendering context)
+                - components_path: where UI components live (for Cyclist)
+                Validate schema with yq on commit.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "87-2"
+              title: "Wire topology into agent prime context"
+              description: |
+                Update getPrimeContextJson() to include resolved repos.yaml
+                topology as part of agent startup context. Agents receive
+                repo ownership map, never-edit zones, and UI layer info
+                before their first action.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "87-3"
+              title: "Add topology validation to pre-edit guide"
+              description: |
+                Update the dev agent guide to include a pre-edit check:
+                "Before editing, verify target path is not in a never_edit
+                zone and belongs to the correct repo per repos.yaml topology."
+                Add worked examples of common mistakes (symlink, node_modules).
+              points: 1
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+        - id: epic-88
+          title: "Dev-TEA Conferral on Test Failures"
+          description: |
+            When Dev encounters failing tests during implementation, they
+            should confer with TEA rather than silently fixing tests. TEA
+            wrote those tests with intent — overriding them bypasses the
+            TDD contract. Add a structured conferral protocol to the TDD
+            workflow definition.
+          points: 3
+          priority: P1
+          marker: infrastructure
+          repos: pennyfarthing
+          status: planning
+          stories:
+            - id: "88-1"
+              title: "Add test-failure conferral protocol to TDD workflow"
+              description: |
+                Update tdd.yaml workflow definition to include a conferral
+                step when Dev encounters test failures:
+                1. Dev identifies which tests fail and why
+                2. Dev sends structured consultation to TEA with failing
+                   test name, expected vs actual, and proposed resolution
+                3. TEA decides: fix the test (wrong assumption) or fix
+                   the implementation (correct test, wrong code)
+                4. Resolution is recorded in session state
+                Uses existing tandem/consultation infrastructure if available,
+                otherwise structures as workflow gate.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "88-2"
+              title: "Dev agent guide: never silently modify TEA's tests"
+              description: |
+                Update dev agent guide/sidecar with explicit rule:
+                "If a test written by TEA fails during your implementation,
+                do NOT modify the test without consulting TEA. The test
+                represents an acceptance criterion — changing it unilaterally
+                bypasses the TDD contract."
+              points: 1
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+        - id: epic-89
+          title: "Sprint Panel Metrics"
+          description: |
+            Add observability metrics to the existing Sprint panel in Cyclist.
+            Surface sprint velocity, completion rates, and agent friction
+            indicators directly in the UI where sprint management happens.
+          points: 5
+          priority: P2
+          marker: cyclist
+          repos: pennyfarthing
+          status: planning
+          stories:
+            - id: "89-1"
+              title: "Sprint metrics API endpoint"
+              description: |
+                New Express API: GET /api/sprint-metrics
+                Calculates from sprint YAML history:
+                - Velocity: points completed per sprint (last 5 sprints)
+                - Completion rate: stories done / stories planned
+                - Cycle time: avg days per story point
+                Returns JSON with per-sprint and rolling averages.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "89-2"
+              title: "Sprint metrics section in EnhancedSprintPanel"
+              description: |
+                Add collapsible metrics section to existing sprint panel.
+                Shows velocity sparkline, completion percentage, and cycle
+                time. Uses useSprintMetrics.ts hook. Compact display that
+                doesn't crowd existing story list.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "89-3"
+              title: "Historical sprint comparison view"
+              description: |
+                Expand metrics section with sprint-over-sprint comparison.
+                Bar chart or table showing velocity trend across sprints.
+                Reads from completed.yaml and archive/ for historical data.
+              points: 1
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+        - id: epic-90
+          title: "Confidence Circuit Breaker"
+          description: |
+            Explore a pattern where agents pause and ask for clarification
+            when intent is ambiguous, rather than guessing and acting.
+            Spike to define the pattern, identify high-value trigger points,
+            and prototype in one agent persona.
+
+            The Insights report shows misinterpreted intent as a key friction
+            source — "continue" taken as "start next story", bug reports
+            mislocated to wrong UI layer, etc. A lightweight confidence
+            gate at decision points could reduce these errors.
+          points: 5
+          priority: P2
+          marker: infrastructure
+          repos: pennyfarthing
+          status: planning
+          stories:
+            - id: "90-1"
+              title: "Spike: define confidence circuit breaker pattern"
+              description: |
+                Research and document the pattern:
+                - What triggers a confidence check? (ambiguous verbs like
+                  "continue", "fix", "update" without clear target)
+                - What does the agent do? (ask a clarifying question with
+                  options, not open-ended)
+                - How to avoid being annoying? (only trigger when >1 valid
+                  interpretation exists, never for routine operations)
+                Output: ADR or design doc with pattern definition and examples.
+              points: 2
+              priority: P0
+              status: planning
+              repos: pennyfarthing
+            - id: "90-2"
+              title: "Prototype: SM agent confidence gate"
+              description: |
+                Implement confidence circuit breaker in the SM agent as
+                a pilot. SM is highest-friction for ambiguous commands
+                ("continue", "next", "start"). Add decision logic to SM
+                guide that pauses on ambiguous instructions.
+              points: 2
+              priority: P1
+              status: planning
+              repos: pennyfarthing
+            - id: "90-3"
+              title: "Evaluate and document results"
+              description: |
+                After 1 sprint with the SM confidence gate active, evaluate:
+                - How often did it trigger?
+                - Did it reduce wrong-approach incidents?
+                - Was it annoying? (user overrode or dismissed)
+                Document findings, decide on rollout to other agents.
+              points: 1
+              priority: P1
+              status: planning
+              repos: pennyfarthing
     - name: "Quality & Scale"
       description: |
         Scale adaptation capabilities for larger initiatives and brownfield codebases.
@@ -464,37 +1108,40 @@ future:
           status: backlog
           repos: pennyfarthing
       epics: []
-    - name: "Cyclist Permission System"
+    - name: "Unsorted Backlog"
       description: |
-        Wire the existing permission components into a working end-to-end
-        approval flow. When Claude Code needs permission for any tool action,
-        Cyclist shows an approval modal, the user decides (once/session/always),
-        and work continues. Remove legacy IPC path, consolidate on WheelHub
-        WebSocket architecture.
-
-        PRD: artifacts/prd.md
-        Architecture: artifacts/architecture.md
-        Epic Context: sprint/context/context-epic-78.md
-        Prior work: Epic 33 (MSSCI-11705) - 4/5 stories complete
-      status: research_complete
+        Catchall for Pennyfarthing-labeled tickets that have no epic home
+        and no work started. Triage into proper epics or cancel as needed.
+      status: backlog
       blocked_by:
-      total_points: 23
-      epics: []
-    - name: "Cyclist React Migration"
-      description: |
-        Transform Cyclist from vanilla JS to React + shadcn/ui + Tailwind CSS,
-        implementing flexible workspace layout while maintaining the sacred
-        center message view.
-
-        Status: COMPLETE (Sprint 12-13)
-        - Core migration done: MessageView, panels, docking, accessibility (Epics 69-73)
-        - Vanilla JS utilities converted to React hooks (Epic 75)
-        - All 65 points delivered
-
-        UX Spec: docs/planning/ux-design-specification.md
-        Epics Doc: docs/planning/cyclist-react-migration-epics.md
-      status: complete
-      blocked_by:
-      total_points: 65
-      completed_points: 65
+      total_points: 7
+      standalone_stories:
+        - id: MSSCI-14302
+          title: Sprint panel promote/archive epic buttons are stubs
+          description: |
+            EnhancedSprintPanel has promote and archive buttons that throw
+            "not yet implemented" alerts. Wire to actual sprint API endpoints.
+          points: 2
+          priority: P2
+          status: backlog
+          repos: pennyfarthing
+        - id: MSSCI-12728
+          title: Configurable project directory isolation for Pennyfarthing
+          description: |
+            Allow contributors and forks to configure project directory paths
+            instead of hardcoding. Enables multi-project setups.
+          points: 3
+          priority: P3
+          status: backlog
+          repos: pennyfarthing
+        - id: MSSCI-14110
+          title: Pennyfarthing health scripts - drift-detection.sh bash array bug
+          description: |
+            drift-detection.sh crashes due to bash array syntax issue.
+            health-check.sh was fixed by other work but drift-detection
+            still has a real bug.
+          points: 2
+          priority: P2
+          status: backlog
+          repos: pennyfarthing
       epics: []
