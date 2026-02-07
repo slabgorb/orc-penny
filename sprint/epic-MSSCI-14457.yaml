@@ -26,6 +26,7 @@ stories:
     priority: P0
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14458
   - id: "81-2"
     title: "Unused export detection via ts-prune"
     description: |
@@ -37,6 +38,7 @@ stories:
     priority: P1
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14459
   - id: "81-3"
     title: "Dead code API + React hook + dialog"
     description: |
@@ -48,3 +50,4 @@ stories:
     priority: P0
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14460

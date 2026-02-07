@@ -1,5 +1,6 @@
 id: epic-86
 title: "Agent Collaboration — Tandem to Teams"
+jira: MSSCI-14509
 description: |
   Phase 1 (15 pts): Tandem consultation protocol — workflow YAML
   tandem: blocks, structured request/response with Sonnet partner,
@@ -23,69 +24,81 @@ stories:
     priority: P0
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14496
   - id: "86-2"
     title: "Consultation protocol implementation"
     points: 3
     priority: P0
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14497
   - id: "86-3"
     title: "Dialogue file management"
     points: 2
     priority: P0
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14498
   - id: "86-4"
     title: "Agent tandem awareness"
     points: 3
     priority: P0
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14499
   - id: "86-5"
     title: "Tandem workflow templates"
     points: 2
     priority: P1
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14500
   - id: "86-6"
     title: "Tandem metrics and token tracking"
     points: 2
     priority: P1
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14501
   - id: "86-7"
     title: "Feature detection: native teams capability"
     points: 2
     priority: P1
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14502
   - id: "86-8"
     title: "Persona injection via spawn prompts"
     points: 3
     priority: P1
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14503
   - id: "86-9"
     title: "Workflow schema: execution_mode: team"
     points: 3
     priority: P1
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14504
   - id: "86-10"
     title: "Gate-to-task-dependency adapter"
     points: 5
     priority: P2
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14505
   - id: "86-11"
     title: "Cyclist: Tandem dialogue panel"
     points: 3
     priority: P2
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14506
   - id: "86-12"
     title: "Cyclist: Native team panel"
     points: 5
     priority: P3
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14507

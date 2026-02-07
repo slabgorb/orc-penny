@@ -1,8 +1,6 @@
 future:
   initiatives:
     - benchmark-reliability
-    - codebase-observatory
-    - agent-collaboration
     - agent-quality-awareness
     - quality-scale
     - technical-debt

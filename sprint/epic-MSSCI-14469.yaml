@@ -25,6 +25,7 @@ stories:
     priority: P0
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14470
   - id: "84-2"
     title: "Health score API + gauge component"
     description: |
@@ -36,6 +37,7 @@ stories:
     priority: P0
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14471
   - id: "84-3"
     title: "Per-dimension drill-through from health gauge"
     description: |
@@ -47,3 +49,4 @@ stories:
     priority: P1
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14472

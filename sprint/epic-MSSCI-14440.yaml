@@ -23,6 +23,7 @@ stories:
     priority: P0
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14441
   - id: "79-2"
     title: "Migrate HotspotsPanel into HotspotsDialog"
     description: |
@@ -34,6 +35,7 @@ stories:
     priority: P0
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14442
   - id: "79-3"
     title: "Add tool launcher row to DebugPanel"
     description: |
@@ -44,6 +46,7 @@ stories:
     priority: P0
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14443
   - id: "79-4"
     title: "Hotspot: skip orchestrator repos by type"
     description: |
@@ -56,6 +59,7 @@ stories:
     priority: P1
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14444
   - id: "79-5"
     title: "Hotspot: expand artifact exclusions + client filters"
     description: |
@@ -67,3 +71,4 @@ stories:
     priority: P1
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14445
