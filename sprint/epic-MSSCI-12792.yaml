@@ -1,5 +1,6 @@
 id: epic-41
 title: "Precision/Recall Detection Scoring"
+jira: MSSCI-12792
 description: |
   Separate detection scoring into precision and recall components.
   Current formula conflates finding issues with avoiding false positives.

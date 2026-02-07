@@ -1,0 +1,22 @@
+name: "Codebase Observatory"
+description: |
+  Transform the Debug panel into an integrated Codebase Observatory —
+  a suite of diagnostic tools that surface code health, detect quality
+  issues, and help agents understand the codebase they work in.
+
+  The panel becomes a lightweight launcher with a composite health gauge.
+  Each tool opens a full-featured dialog for display and interactive tuning.
+  All backend analysis is Python-first (pennyfarthing_scripts/).
+
+  Design doc: docs/planning/codebase-observatory.md
+  Origin: Architect + Party Mode brainstorm (2026-02-06)
+status: planning
+blocked_by:
+total_points: 34
+epics:
+  - MSSCI-14440
+  - MSSCI-14453
+  - MSSCI-14457
+  - MSSCI-14461
+  - MSSCI-14465
+  - MSSCI-14469

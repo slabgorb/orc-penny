@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Migrate monolithic sprint YAML files to sharded per-epic format.
+Migrate monolithic sprint YAML files to sharded per-epic/initiative format.
 
-Splits current-sprint.yaml and future.yaml so each epic lives in its own
-file (epic-{ID}.yaml) alongside the index. The index files become lean
-references to epic IDs.
+Splits current-sprint.yaml so each epic lives in its own file (epic-{ID}.yaml).
+Splits future.yaml so each initiative lives in its own file (initiative-{slug}.yaml).
+The index files become lean references to IDs/slugs.
 
 Usage:
     python sprint/migrate-to-shards.py              # Execute migration
@@ -44,6 +44,11 @@ STORY_KEY_ORDER = [
 SPRINT_KEY_ORDER = [
     "name", "jira_sprint_id", "jira_sprint_name", "goal",
     "start_date", "end_date", "status",
+]
+
+INITIATIVE_KEY_ORDER = [
+    "name", "description", "status", "blocked_by", "total_points",
+    "research_references", "epics", "standalone_stories",
 ]
 
 TOP_KEY_ORDER = ["sprint", "epics", "stories"]
@@ -146,7 +151,7 @@ JIRA_PATTERN = re.compile(r"^MSSCI-\d{5}$")
 def _get_epic_ref(epic: dict) -> str:
     """Get the canonical reference ID for an epic (used in index lists).
 
-    Always prefer Jira key. Fall back to short ID.
+    Always prefer Jira key. Fall back to full ID as-is.
     """
     jira = epic.get("jira")
     epic_id = str(epic.get("id", ""))
@@ -158,10 +163,64 @@ def _get_epic_ref(epic: dict) -> str:
     return epic_id
 
 
-def _get_epic_filename(epic: dict) -> str:
-    """Derive filename for an epic shard file."""
-    ref = _get_epic_ref(epic)
-    return f"epic-{ref}.yaml"
+def _get_epic_filename(epic_or_ref) -> str:
+    """Derive filename for an epic shard file.
+
+    Accepts either an epic dict or a string ref. Strips 'epic-' prefix
+    before adding it back to avoid epic-epic-41.yaml doubling.
+    """
+    if isinstance(epic_or_ref, str):
+        ref = epic_or_ref
+    else:
+        ref = _get_epic_ref(epic_or_ref)
+    # Strip 'epic-' prefix to avoid epic-epic-41.yaml
+    bare = ref.removeprefix("epic-")
+    return f"epic-{bare}.yaml"
+
+
+# ---------- Initiative slug / filename logic ----------
+
+def _slugify(name: str) -> str:
+    """Convert initiative name to a filesystem-safe slug."""
+    slug = name.lower().strip()
+    slug = re.sub(r"[^a-z0-9]+", "-", slug)
+    slug = slug.strip("-")
+    return slug
+
+
+def _get_initiative_slug(init: dict) -> str:
+    """Get slug for an initiative (used in index lists and filenames)."""
+    return _slugify(init.get("name", "unknown"))
+
+
+def _get_initiative_filename(init: dict) -> str:
+    """Derive filename for an initiative shard file."""
+    return f"initiative-{_get_initiative_slug(init)}.yaml"
+
+
+def _canonicalize_initiative(init: Any) -> Any:
+    """Apply canonical ordering to an initiative and its standalone stories."""
+    if not isinstance(init, CommentedMap):
+        cm = CommentedMap()
+        for k, v in init.items():
+            cm[k] = v
+        init = cm
+
+    sorted_init = _sort_mapping(init, INITIATIVE_KEY_ORDER)
+
+    if "standalone_stories" in sorted_init and isinstance(
+        sorted_init["standalone_stories"], (list, CommentedSeq)
+    ):
+        new_stories = CommentedSeq()
+        for story in sorted_init["standalone_stories"]:
+            if isinstance(story, (dict, CommentedMap)):
+                story_cm = story if isinstance(story, CommentedMap) else CommentedMap(story)
+                new_stories.append(_sort_mapping(story_cm, STORY_KEY_ORDER))
+            else:
+                new_stories.append(story)
+        sorted_init["standalone_stories"] = new_stories
+
+    return _ensure_block_scalars(sorted_init)
 
 
 # ---------- Sharding ----------
@@ -243,65 +302,94 @@ def shard_current_sprint(sprint_dir: Path, data: Any, dry_run: bool) -> list[str
 
 
 def shard_future(sprint_dir: Path, data: Any, dry_run: bool) -> list[str]:
-    """Shard future.yaml. Returns list of created filenames."""
+    """Shard future.yaml into per-initiative files. Returns list of created filenames.
+
+    Each initiative becomes its own file (initiative-{slug}.yaml) containing
+    the initiative metadata, epic refs, and standalone stories. The future.yaml
+    index becomes a lean list of initiative slugs — mirroring how
+    current-sprint.yaml is a lean list of epic refs.
+    """
     future = data.get("future", {})
     initiatives = future.get("initiatives", [])
     if not initiatives:
         print("  No initiatives found in future.yaml")
         return []
 
-    # Check if already sharded
-    for init in initiatives:
-        epics = init.get("epics", [])
-        if epics and isinstance(epics[0], str):
-            print("  future.yaml is already sharded")
-            return []
-        break  # Only check first initiative
+    # Check if already sharded (initiatives is list of strings)
+    if initiatives and isinstance(initiatives[0], str):
+        print("  future.yaml is already sharded")
+        return []
 
     created = []
+    init_slugs = CommentedSeq()
 
-    for init in initiatives:
+    for i, init in enumerate(initiatives):
         init_name = init.get("name", "Unknown")
-        epics = init.get("epics", [])
+        slug = _get_initiative_slug(init)
 
-        if not epics:
+        if not slug:
+            print(f"  ERROR: Initiative at index {i} has no name, skipping")
             continue
 
-        epic_refs = CommentedSeq()
+        # Also shard any inline epic objects within this initiative
+        epics = init.get("epics", [])
+        if epics and isinstance(epics[0], (dict, CommentedMap)):
+            epic_refs = CommentedSeq()
+            for j, epic in enumerate(epics):
+                epic_id = epic.get("id")
+                if not epic_id:
+                    print(f"  ERROR: Epic at index {j} in '{init_name}' has no id, skipping")
+                    continue
 
-        for i, epic in enumerate(epics):
-            epic_id = epic.get("id")
-            if not epic_id:
-                print(f"  ERROR: Epic at index {i} in '{init_name}' has no id, skipping")
-                continue
+                filename = _get_epic_filename(epic)
+                filepath = sprint_dir / filename
+                ref = _get_epic_ref(epic)
+                epic_refs.append(ref)
 
-            filename = _get_epic_filename(epic)
-            filepath = sprint_dir / filename
-            ref = _get_epic_ref(epic)
-            epic_refs.append(ref)
+                if dry_run:
+                    stories = epic.get("stories", [])
+                    story_count = len(stories) if stories else 0
+                    print(f"  [dry-run] Would write {filename} ({story_count} stories)")
+                else:
+                    canonicalized = _canonicalize_epic(epic)
+                    content = _dump_yaml(canonicalized)
+                    _atomic_write(filepath, content)
+                    stories = epic.get("stories", [])
+                    story_count = len(stories) if stories else 0
+                    print(f"  + {filename} ({story_count} stories)")
+                    created.append(filename)
 
-            if dry_run:
-                stories = epic.get("stories", [])
-                story_count = len(stories) if stories else 0
-                print(f"  [dry-run] Would write {filename} ({story_count} stories)")
-            else:
-                canonicalized = _canonicalize_epic(epic)
-                content = _dump_yaml(canonicalized)
-                _atomic_write(filepath, content)
-                stories = epic.get("stories", [])
-                story_count = len(stories) if stories else 0
-                print(f"  + {filename} ({story_count} stories)")
-                created.append(filename)
+            init["epics"] = epic_refs
 
-        # Replace epic objects with refs in initiative
-        init["epics"] = epic_refs
+        # Write initiative shard file
+        init_filename = _get_initiative_filename(init)
+        init_filepath = sprint_dir / init_filename
+        init_slugs.append(slug)
+
+        standalone = init.get("standalone_stories", [])
+        standalone_count = len(standalone) if standalone else 0
+        epic_count = len(init.get("epics", []))
+
+        if dry_run:
+            print(f"  [dry-run] Would write {init_filename} ({epic_count} epics, {standalone_count} standalone)")
+        else:
+            canonicalized = _canonicalize_initiative(init)
+            content = _dump_yaml(canonicalized)
+            _atomic_write(init_filepath, content)
+            print(f"  + {init_filename} ({epic_count} epics, {standalone_count} standalone)")
+            created.append(init_filename)
+
+    # Build lean index
+    index = CommentedMap()
+    index["future"] = CommentedMap()
+    index["future"]["initiatives"] = init_slugs
 
     if dry_run:
-        print(f"  [dry-run] Would update future.yaml (index)")
+        print(f"  [dry-run] Would update future.yaml (index with {len(init_slugs)} initiative refs)")
     else:
-        content = _dump_yaml(_ensure_block_scalars(data))
+        content = _dump_yaml(index)
         _atomic_write(sprint_dir / "future.yaml", content)
-        print(f"  * future.yaml (index)")
+        print(f"  * future.yaml (index with {len(init_slugs)} initiative refs)")
 
     return created
 
@@ -323,7 +411,7 @@ def reassemble(sprint_dir: Path, dry_run: bool) -> None:
             full_epics = CommentedSeq()
 
             for ref in epics:
-                epic_file = sprint_dir / f"epic-{ref}.yaml"
+                epic_file = sprint_dir / _get_epic_filename(ref)
                 if not epic_file.exists():
                     print(f"  ERROR: Missing epic file: {epic_file}")
                     sys.exit(1)
@@ -352,33 +440,38 @@ def reassemble(sprint_dir: Path, dry_run: bool) -> None:
     if future_path.exists():
         data = _read_yaml(future_path)
         initiatives = data.get("future", {}).get("initiatives", [])
-        any_sharded = False
 
-        for init in initiatives:
-            epics = init.get("epics", [])
-            if epics and isinstance(epics[0], str):
-                any_sharded = True
-                break
-
-        if any_sharded:
+        # Check if sharded (initiatives is list of strings/slugs)
+        if initiatives and isinstance(initiatives[0], str):
             print("\nReassembling future.yaml...")
-            for init in initiatives:
-                epics = init.get("epics", [])
-                if not epics or not isinstance(epics[0], str):
-                    continue
+            full_initiatives = CommentedSeq()
 
-                full_epics = CommentedSeq()
-                for ref in epics:
-                    epic_file = sprint_dir / f"epic-{ref}.yaml"
-                    if not epic_file.exists():
-                        print(f"  ERROR: Missing epic file: {epic_file}")
-                        sys.exit(1)
+            for slug in initiatives:
+                init_file = sprint_dir / f"initiative-{slug}.yaml"
+                if not init_file.exists():
+                    print(f"  ERROR: Missing initiative file: {init_file}")
+                    sys.exit(1)
 
-                    epic_data = _read_yaml(epic_file)
-                    full_epics.append(_canonicalize_epic(epic_data))
-                    print(f"  < {epic_file.name}")
+                init_data = _read_yaml(init_file)
 
-                init["epics"] = full_epics
+                # Also reassemble epic refs within the initiative
+                epics = init_data.get("epics", [])
+                if epics and isinstance(epics[0], str):
+                    full_epics = CommentedSeq()
+                    for ref in epics:
+                        epic_file = sprint_dir / _get_epic_filename(ref)
+                        if not epic_file.exists():
+                            print(f"  ERROR: Missing epic file: {epic_file}")
+                            sys.exit(1)
+                        epic_data = _read_yaml(epic_file)
+                        full_epics.append(_canonicalize_epic(epic_data))
+                        print(f"  < {epic_file.name}")
+                    init_data["epics"] = full_epics
+
+                full_initiatives.append(_canonicalize_initiative(init_data))
+                print(f"  < {init_file.name}")
+
+            data["future"]["initiatives"] = full_initiatives
 
             if dry_run:
                 print(f"  [dry-run] Would write reassembled future.yaml")
@@ -390,14 +483,16 @@ def reassemble(sprint_dir: Path, dry_run: bool) -> None:
         else:
             print("  future.yaml is not sharded, skipping")
 
-    # Clean up epic files after reassembly
+    # Clean up shard files after reassembly
     if not dry_run:
         epic_files = sorted(sprint_dir.glob("epic-*.yaml"))
-        if epic_files:
-            print(f"\nRemoving {len(epic_files)} epic shard files...")
-            for ef in epic_files:
-                ef.unlink()
-                print(f"  - {ef.name}")
+        init_files = sorted(sprint_dir.glob("initiative-*.yaml"))
+        shard_files = epic_files + init_files
+        if shard_files:
+            print(f"\nRemoving {len(shard_files)} shard files...")
+            for sf in shard_files:
+                sf.unlink()
+                print(f"  - {sf.name}")
 
 
 # ---------- Validation ----------
@@ -419,7 +514,7 @@ def validate_migration(sprint_dir: Path) -> bool:
             errors.append("current-sprint.yaml epics are not sharded (still objects)")
         else:
             for ref in epics:
-                epic_file = sprint_dir / f"epic-{ref}.yaml"
+                epic_file = sprint_dir / _get_epic_filename(ref)
                 if not epic_file.exists():
                     errors.append(f"Missing epic file for ref '{ref}': {epic_file}")
                 else:
@@ -433,21 +528,31 @@ def validate_migration(sprint_dir: Path) -> bool:
         data = _read_yaml(future_path)
         initiatives = data.get("future", {}).get("initiatives", [])
 
-        for init in initiatives:
-            init_name = init.get("name", "Unknown")
-            epics = init.get("epics", [])
+        if not initiatives:
+            errors.append("future.yaml has no initiatives")
+        elif not isinstance(initiatives[0], str):
+            errors.append("future.yaml initiatives are not sharded (still objects)")
+        else:
+            for slug in initiatives:
+                init_file = sprint_dir / f"initiative-{slug}.yaml"
+                if not init_file.exists():
+                    errors.append(f"Missing initiative file for slug '{slug}'")
+                else:
+                    try:
+                        init_data = _read_yaml(init_file)
+                    except Exception as e:
+                        errors.append(f"Invalid YAML in initiative-{slug}.yaml: {e}")
+                        continue
 
-            if not epics:
-                continue
-
-            if not isinstance(epics[0], str):
-                errors.append(f"Initiative '{init_name}' epics are not sharded")
-                continue
-
-            for ref in epics:
-                epic_file = sprint_dir / f"epic-{ref}.yaml"
-                if not epic_file.exists():
-                    errors.append(f"Missing epic file for ref '{ref}' in '{init_name}'")
+                    # Validate epic refs within the initiative
+                    epics = init_data.get("epics", [])
+                    if epics and not isinstance(epics[0], str):
+                        errors.append(f"Initiative '{slug}' epics are not sharded")
+                    elif epics:
+                        for ref in epics:
+                            epic_file = sprint_dir / _get_epic_filename(ref)
+                            if not epic_file.exists():
+                                errors.append(f"Missing epic file for ref '{ref}' in initiative '{slug}'")
 
     if errors:
         print("\nValidation FAILED:")
@@ -455,9 +560,10 @@ def validate_migration(sprint_dir: Path) -> bool:
             print(f"  x {e}")
         return False
 
-    # Count epic files
+    # Count shard files
     epic_files = sorted(sprint_dir.glob("epic-*.yaml"))
-    print(f"\nValidation passed: {len(epic_files)} epic files present")
+    init_files = sorted(sprint_dir.glob("initiative-*.yaml"))
+    print(f"\nValidation passed: {len(epic_files)} epic files, {len(init_files)} initiative files")
     return True
 
 
@@ -506,10 +612,12 @@ def main():
         print(f"ERROR: {future_path} not found")
         sys.exit(1)
 
-    # Check for existing epic files
-    existing = sorted(sprint_dir.glob("epic-*.yaml"))
+    # Check for existing shard files
+    existing_epics = sorted(sprint_dir.glob("epic-*.yaml"))
+    existing_inits = sorted(sprint_dir.glob("initiative-*.yaml"))
+    existing = existing_epics + existing_inits
     if existing and not args.force:
-        print(f"\nFound {len(existing)} existing epic files:")
+        print(f"\nFound {len(existing)} existing shard files:")
         for ef in existing:
             print(f"  {ef.name}")
         print("\nUse --force to overwrite, or --reassemble to reverse first.")
@@ -568,10 +676,10 @@ def main():
     print(f"\n{'=' * 40}")
 
     if args.dry_run:
-        total_would = len(current_epics) + len(future_epics)
-        print(f"Dry run complete. Would create {total_would} epic files.")
+        total_would = len(current_epics) + len(future_epics) + init_count
+        print(f"Dry run complete. Would create {total_would} shard files ({len(future_epics)} epics, {init_count} initiatives).")
     else:
-        print(f"Created {total_created} epic files, {stories_before} stories preserved.")
+        print(f"Created {total_created} shard files, {stories_before} stories preserved.")
 
         # Post-migration validation
         ok = validate_migration(sprint_dir)

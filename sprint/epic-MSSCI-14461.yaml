@@ -1,5 +1,6 @@
 id: epic-82
 title: "Agent Load Analyzer"
+jira: MSSCI-14461
 description: |
   Tool to evaluate agent context budget by running getPrimeContextJson()
   for all agents at FULL tier. Shows per-component token breakdown.

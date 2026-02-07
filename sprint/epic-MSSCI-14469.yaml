@@ -1,5 +1,6 @@
 id: epic-84
 title: "Composite Health Score"
+jira: MSSCI-14469
 description: |
   Single 0-100 codebase health score displayed as a gauge in the
   Debug panel header. Weighted composite from all tool dimensions:

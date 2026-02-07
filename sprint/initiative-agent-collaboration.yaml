@@ -1,0 +1,14 @@
+name: "Agent Collaboration"
+description: |
+  Graduated agent collaboration system: Tandem consultation (Phase 1)
+  for mid-phase specialist Q&A, then native Claude Code Agent Teams
+  (Phase 2) for true parallel execution. Tandem works in -p mode;
+  native teams require interactive sessions.
+
+  Prior art: ADR-0012 (Tandem Agent Pairing), PRD (artifacts/prd-tandem.md)
+  Context: sprint/context/context-epic-86.md
+status: planning
+blocked_by:
+total_points: 36
+epics:
+  - epic-86

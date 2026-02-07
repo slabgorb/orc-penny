@@ -1,5 +1,6 @@
 id: epic-79
 title: "Dialog Infrastructure + Hotspot Refactor"
+jira: MSSCI-14440
 description: |
   Create shared ToolDialog component, migrate HotspotsPanel into a
   dialog launched from Debug panel, remove Hotspots as a standalone

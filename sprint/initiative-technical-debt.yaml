@@ -1,0 +1,19 @@
+name: "Technical Debt"
+description: |
+  Infrastructure cleanup and separation of concerns for maintainability.
+status: backlog
+blocked_by:
+total_points: 7
+epics: []
+standalone_stories:
+  - id: 39-6
+    title: Release gate integration
+    description: |
+      Explicit ship criteria before release: CI green, no P0 bugs,
+      version bumped, changelog updated. Prevents "oops we shipped
+      without X" failures. Lightweight checklist, not ceremony.
+      Salvaged from cancelled epic-39.
+    points: 2
+    priority: P3
+    status: backlog
+    repos: pennyfarthing

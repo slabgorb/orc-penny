@@ -1,5 +1,6 @@
 id: epic-40
 title: Scale Adaptation and Brownfield Support
+jira: MSSCI-12414
 description: |
   Adopt BMAD's scale-adaptive approach and add brownfield codebase discovery.
   Add upward scaling for larger initiatives (Level 0-4) and brownfield

@@ -1,0 +1,37 @@
+name: "Unsorted Backlog"
+description: |
+  Catchall for Pennyfarthing-labeled tickets that have no epic home
+  and no work started. Triage into proper epics or cancel as needed.
+status: backlog
+blocked_by:
+total_points: 7
+epics: []
+standalone_stories:
+  - id: MSSCI-14302
+    title: Sprint panel promote/archive epic buttons are stubs
+    description: |
+      EnhancedSprintPanel has promote and archive buttons that throw
+      "not yet implemented" alerts. Wire to actual sprint API endpoints.
+    points: 2
+    priority: P2
+    status: backlog
+    repos: pennyfarthing
+  - id: MSSCI-12728
+    title: Configurable project directory isolation for Pennyfarthing
+    description: |
+      Allow contributors and forks to configure project directory paths
+      instead of hardcoding. Enables multi-project setups.
+    points: 3
+    priority: P3
+    status: backlog
+    repos: pennyfarthing
+  - id: MSSCI-14110
+    title: Pennyfarthing health scripts - drift-detection.sh bash array bug
+    description: |
+      drift-detection.sh crashes due to bash array syntax issue.
+      health-check.sh was fixed by other work but drift-detection
+      still has a real bug.
+    points: 2
+    priority: P2
+    status: backlog
+    repos: pennyfarthing

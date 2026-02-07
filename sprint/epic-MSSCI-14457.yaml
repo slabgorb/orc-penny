@@ -1,5 +1,6 @@
 id: epic-81
 title: "Dead Code Detection"
+jira: MSSCI-14457
 description: |
   Two-layer diagnostic tool finding unused/orphaned code.
   Layer 1: Git-based stale file detection (files with zero commits

@@ -47,5 +47,8 @@ pennyfarthing/
 # Playwright MCP artifacts
 .playwright-mcp/
 
+# Migration backups
+sprint/.migration-backup-*/
+
 # Plan files
 .plan

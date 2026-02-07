@@ -1,5 +1,6 @@
 id: epic-83
 title: "Complexity + Dependencies Tools"
+jira: MSSCI-14465
 description: |
   Two lightweight diagnostic tools. Complexity: static analysis via
   Python wrapping eslint --format json or escomplex for cyclomatic
