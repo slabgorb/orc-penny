@@ -10,7 +10,7 @@ description: |
 
   Design doc: docs/planning/codebase-observatory.md
   Origin: Architect + Party Mode brainstorm (2026-02-06)
-status: planning
+status: ready
 blocked_by:
 total_points: 34
 epics:

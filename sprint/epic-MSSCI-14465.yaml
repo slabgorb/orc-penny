@@ -8,7 +8,7 @@ description: |
   wrapping npm outdated --json and npm audit --json for staleness
   and security. Both in pennyfarthing_scripts/.
 priority: P2
-status: planning
+status: backlog
 repos: pennyfarthing
 points: 6
 marker: cyclist

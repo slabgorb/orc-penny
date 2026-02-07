@@ -8,7 +8,7 @@ description: |
   Fix hotspot analysis to skip orchestrator repos and filter non-code
   artifacts (dotfiles, images, config, generated files).
 priority: P1
-status: planning
+status: backlog
 repos: pennyfarthing
 points: 8
 marker: cyclist

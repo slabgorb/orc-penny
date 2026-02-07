@@ -7,7 +7,7 @@ description: |
   for age and author. Flags stale markers (>90 days). Python backend
   in pennyfarthing_scripts/codemarkers/.
 priority: P1
-status: planning
+status: backlog
 repos: pennyfarthing
 points: 5
 marker: cyclist

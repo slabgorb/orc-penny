@@ -8,7 +8,7 @@ description: |
   via ts-prune. Python backend in pennyfarthing_scripts/deadcode/.
   Diagnostic only — does NOT auto-delete.
 priority: P1
-status: planning
+status: backlog
 repos: pennyfarthing
 points: 5
 marker: cyclist

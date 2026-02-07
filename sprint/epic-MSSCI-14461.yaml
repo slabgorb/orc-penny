@@ -6,7 +6,7 @@ description: |
   for all agents at FULL tier. Shows per-component token breakdown.
   Enables viewing and pruning sidecars that have grown too large.
 priority: P1
-status: planning
+status: backlog
 repos: pennyfarthing
 points: 5
 marker: cyclist

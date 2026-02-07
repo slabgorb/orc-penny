@@ -8,7 +8,7 @@ description: |
   dead code (10%), deprecation debt (10%), dependency freshness (10%),
   agent context efficiency (10%). Calculates from cached tool results.
 priority: P2
-status: planning
+status: backlog
 repos: pennyfarthing
 points: 5
 marker: cyclist
