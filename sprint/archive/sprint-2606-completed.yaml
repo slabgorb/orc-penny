@@ -4,9 +4,13 @@
 
 sprint:
   name: "TO Sprint 2606"
-  jira_sprint_id: 277
+  jira_sprint_id: 309
   jira_sprint_name: "TO Sprint 2606"
-  goal: TBD - awaiting sprint planning
+  goal: Tool use visualization and vanilla JS to React hooks migration
+  start_date: 2026-02-02
+  end_date: 2026-02-15
+  status: active
+  number: 2606
 
 completed:
   # Completed stories will be appended here by archive-story.sh
@@ -184,3 +188,18 @@ completed:
     points: 2
     completed: 2026-02-06
     pr: 696
+  - id: MSSCI-14299
+    epic: MSSCI-14298
+    title: "Wire up stepped workflow session state advancement"
+    points: 5
+    completed: 2026-02-07
+  - id: MSSCI-14300
+    epic: MSSCI-14298
+    title: "Add subdirectory workflow lookup to getWorkflowPhases"
+    points: 3
+    completed: 2026-02-07
+  - id: MSSCI-14301
+    epic: MSSCI-14298
+    title: "Show available applicable workflows in WorkflowPanel"
+    points: 3
+    completed: 2026-02-07
