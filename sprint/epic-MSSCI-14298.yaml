@@ -85,3 +85,12 @@ stories:
       - User can identify which workflows are startable from the panel
       - List updates when project context changes
     completed: '2026-02-05'
+  - id: MSSCI-14298-14302
+    title: '[BUG] GitPanel shows dirty state after clean git operations'
+    points: 2
+    priority: P1
+    status: done
+    workflow: trivial
+    type: bug
+    jira: MSSCI-14480
+    completed: '2026-02-07'
