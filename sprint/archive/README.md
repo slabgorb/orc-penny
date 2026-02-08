@@ -1,6 +1,6 @@
 # Sprint Archive
 
-Historical records from Pennyfarthing development sprints (Dec 2025 - Jan 2026).
+Historical records from Pennyfarthing development sprints (Dec 2025 - Feb 2026).
 
 ## Contents
 
@@ -28,9 +28,25 @@ archive/
 └── README.md
 ```
 
-## What Was Pruned (2026-01-17)
+## Pruning History
 
-The following were deleted to reduce archive bloat (recoverable from git history):
+### 2026-02-08 (second pass)
+
+Re-bloat from 200KB to 2.3MB. Deleted 240+ files that accumulated since first pruning:
+
+| Deleted | Count | Rationale |
+|---------|-------|-----------|
+| `*-session*.md` | 227 | Session logs re-accumulated |
+| `context-epic-*.md` | 4 | Epic context files |
+| `sessions/` subfolder | 8 | Duplicate session storage |
+| `epic-MSSCI-*.yaml` | 3 | Verbose epic archives |
+| `sprint-*.yaml` (verbose) | 4 | Sprint 11/12/2604/2606 verbose files |
+| `story-*.md` | 1 | Individual story file |
+| `context/archived/` | 194 | Old story summaries and research notes |
+
+**Reduction:** 2.3MB → ~250KB
+
+### 2026-01-17 (first pass)
 
 | Deleted | Count | Rationale |
 |---------|-------|-----------|
@@ -40,7 +56,7 @@ The following were deleted to reduce archive bloat (recoverable from git history
 | `epic-*.md` | 3 | Epic-level context |
 | `sprint-N.yaml` | 8 | Verbose sprint files (replaced by consolidated) |
 
-**Reduction:** ~5MB → ~200KB (96% reduction)
+**Reduction:** ~5MB → ~200KB
 
 ## Quick Reference
 
@@ -76,7 +92,7 @@ cat sidecar-archive/dev-sidecar/*.md
 
 - **Keep:** Consolidated YAML, retros, sidecar-archive, history summary
 - **Pruned:** Individual story/context/session files (in git history)
-- **Current size:** ~200KB
+- **Current size:** ~250KB
 
 ## Recovery
 
