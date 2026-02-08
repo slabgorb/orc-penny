@@ -9,9 +9,10 @@ stories:
       PR #721 on feat/validate-file-refs branch.
     points: 3
     priority: P0
-    status: in_progress
+    status: done
     started: '2026-02-07'
     repos: pennyfarthing
+    completed: "2026-02-08"
   - id: "91-2"
     jira: MSSCI-14512
     title: "Layer 1 validator in pre-commit hook and GHA"
