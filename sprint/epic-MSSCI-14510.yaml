@@ -1,21 +1,3 @@
-id: epic-91
-title: "Cross-File Reference & Schema Validation Pipeline"
-description: |
-  Layered CI validation pipeline for pennyfarthing-dist source files.
-  469+ files with 1,685+ cross-references that silently break when files
-  are renamed, moved, or deleted. Ports proven pipeline from BMAD-METHOD
-  (PRs #1494, #1529, #1573) adapted for Pennyfarthing structure.
-
-  Layer 0: Formatting & linting (ESLint, Ruff, markdownlint, yamllint)
-  Layer 1: File reference validation (cross-file refs, path resolution)
-  Layer 2: Schema validation (YAML fields, required props, enums)
-  Layer 3: Graph validation (step transitions, reachability)
-priority: P1
-status: in_progress
-repos: pennyfarthing
-jira: MSSCI-14510
-points: 60
-marker: core
 stories:
   - id: "91-1"
     jira: MSSCI-14511
@@ -261,3 +243,21 @@ stories:
     priority: P1
     status: planning
     repos: pennyfarthing
+id: epic-91
+title: "Cross-File Reference & Schema Validation Pipeline"
+description: |
+  Layered CI validation pipeline for pennyfarthing-dist source files.
+  469+ files with 1,685+ cross-references that silently break when files
+  are renamed, moved, or deleted. Ports proven pipeline from BMAD-METHOD
+  (PRs #1494, #1529, #1573) adapted for Pennyfarthing structure.
+
+  Layer 0: Formatting & linting (ESLint, Ruff, markdownlint, yamllint)
+  Layer 1: File reference validation (cross-file refs, path resolution)
+  Layer 2: Schema validation (YAML fields, required props, enums)
+  Layer 3: Graph validation (step transitions, reachability)
+priority: P1
+status: in_progress
+repos: pennyfarthing
+jira: MSSCI-14510
+points: 60
+marker: core
