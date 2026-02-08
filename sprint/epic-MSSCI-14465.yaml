@@ -22,9 +22,10 @@ stories:
       SecurityAdvisory (severity, count). CLI with --format json/table.
     points: 2
     priority: P0
-    status: in_progress
+    status: done
     repos: pennyfarthing
     jira: MSSCI-14467
+    completed: "2026-02-08"
   - id: "83-3"
     title: "Complexity + Dependencies APIs + hooks + dialogs"
     description: |

@@ -24,10 +24,11 @@ stories:
       as separate subcommand or combined output.
     points: 2
     priority: P1
-    status: in_progress
+    status: done
     repos: pennyfarthing
     jira: MSSCI-14459
     started: '2026-02-08'
+    completed: "2026-02-08"
   - id: 81-3
     title: Dead code API + React hook + dialog
     description: |
@@ -37,10 +38,11 @@ stories:
       badges. Add button to DebugPanel launcher row.
     points: 1
     priority: P0
-    status: in_progress
+    status: done
     repos: pennyfarthing
     jira: MSSCI-14460
     started: '2026-02-08'
+    completed: "2026-02-08"
 id: epic-81
 title: Dead Code Detection
 jira: MSSCI-14457
