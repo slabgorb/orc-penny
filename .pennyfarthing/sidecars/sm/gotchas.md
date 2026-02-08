@@ -1,40 +1,37 @@
 # SM Agent Gotchas
 
-> Top 10 pitfalls - keep this file under 50 lines
+<gotcha name="no-code" severity="critical">
+SM never writes implementation code. Read-only for context. Create session → handoff.
+</gotcha>
 
-## Critical (will break workflow)
-
-### 1. SM Never Writes Implementation Code
-Read implementation files ONLY for context summaries. Create session → handoff to TEA/Dev.
-
-### 2. Write Without Read
+<gotcha name="read-before-write" severity="critical">
 Always `Read` existing files before `Write` or `Edit`.
+</gotcha>
 
-### 3. Assessment Before Handoff
-Edit session file with assessment BEFORE spawning handoff subagent.
+<gotcha name="assessment-before-handoff" severity="critical">
+Edit session with assessment BEFORE spawning handoff subagent.
+</gotcha>
 
-### 4. Jira Field Name
+<gotcha name="jira-field">
 Use `jira:` not `jira_key:` in sprint YAML.
+</gotcha>
 
-### 5. Never Guess Jira IDs
-Look up in sprint YAML, query Jira, or ask user. Never fabricate `MSSCI-XXXXX` keys.
+<gotcha name="no-guess-jira">
+Never fabricate MSSCI-XXXXX keys. Look up in YAML or query Jira.
+</gotcha>
 
-## Important (causes friction)
+<gotcha name="symlinks">
+New commands: create in `pennyfarthing-dist/commands/` AND symlink in `.claude/commands/`.
+</gotcha>
 
-### 6. Trivial vs Standard Routing
-1-2 pts → Dev directly. 3+ pts → TEA first.
-
-### 7. Symlinks for New Commands
-Create both `pennyfarthing-dist/commands/X.md` AND symlink in `.claude/commands/`.
-
-### 8. Handoff Marker Required
+<gotcha name="handoff-marker">
 Emit `<!-- CYCLIST:HANDOFF:/agent -->` for Cyclist UI button.
+</gotcha>
 
-### 9. American Spelling for Jira
-Use "Canceled" not "Cancelled" for transitions.
+<gotcha name="american-spelling">
+Use "Canceled" not "Cancelled" for Jira transitions.
+</gotcha>
 
-### 10. Verify Subagent Data
+<gotcha name="verify-subagent">
 Cross-check story counts against `sprint/current-sprint.yaml`.
-
----
-*Full history: See git log for this file*
+</gotcha>

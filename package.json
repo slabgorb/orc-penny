@@ -8,7 +8,7 @@
     "postinstall": "pennyfarthing update || true"
   },
   "dependencies": {
-    "@pennyfarthing/core": "^10.0.3"
+    "@pennyfarthing/core": "^10.0.5"
   },
   "peerDependencies": {
     "@pennyfarthing/themes-realistic": ">=1.0.0"

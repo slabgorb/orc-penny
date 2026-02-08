@@ -1,51 +1,29 @@
 # PM Agent Gotchas
 
-> Common mistakes to avoid in strategic planning
+<gotcha name="scope-creep">
+Write explicit "out of scope" section in ACs. Stories grow without it.
+</gotcha>
 
-## Story Definition
+<gotcha name="vague-acs">
+Every story needs testable, checkable acceptance criteria. Vague = disagreements.
+</gotcha>
 
-### Scope Creep
-**Problem:** Stories grow beyond original scope during implementation
-**Solution:** Write explicit "out of scope" section in acceptance criteria
+<gotcha name="over-sizing">
+Break stories until each is 1-3 points maximum. 5+ = decompose.
+</gotcha>
 
-### Missing Acceptance Criteria
-**Problem:** Vague stories lead to implementation disagreements
-**Solution:** Every story needs testable, checkable acceptance criteria
+<gotcha name="context-pollution">
+PM reads epic/story docs only, not implementation details. Re-read sprint files at session start.
+</gotcha>
 
-### Over-Sizing
-**Problem:** Stories estimated at 5+ points
-**Solution:** Break down until each story is 1-3 points maximum
+<gotcha name="missing-tech-context">
+Include file hints, component names, existing patterns when handing off to SM.
+</gotcha>
 
-## Context Pollution
+<gotcha name="ambiguous-priority">
+Stack-rank stories explicitly (P0, P1, P2). Multiple "high priority" = no priority.
+</gotcha>
 
-### Loading Too Much
-**Problem:** Loading all repo code for strategic decisions
-**Solution:** PM reads epic/story docs only, not implementation details
-
-### Stale Context
-**Problem:** Using outdated sprint status or backlog
-**Solution:** Always re-read sprint files at session start
-
-## Handoff Issues
-
-### Missing Technical Context
-**Problem:** SM receives story without sufficient detail
-**Solution:** Include file hints, component names, existing patterns
-
-### Ambiguous Priorities
-**Problem:** Multiple stories marked high priority
-**Solution:** Stack-rank stories explicitly (P1, P2, P3)
-
-## Research Traps
-
-### Analysis Paralysis
-**Problem:** Spending too long researching before deciding
-**Solution:** Set time-box for research, then decide with available info
-
-### External Reference Creep
-**Problem:** Sidecar filled with external docs instead of project patterns
-**Solution:** Keep sidecar focused on project-specific learnings
-
----
-
-*Add gotchas discovered during strategic work below*
+<gotcha name="analysis-paralysis">
+Time-box research, then decide with available info.
+</gotcha>

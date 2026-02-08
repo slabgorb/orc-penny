@@ -1,78 +1,37 @@
 # Dev Agent Patterns
 
-> Pennyfarthing-specific implementation patterns
+<pattern name="paths">
+Always use `$CLAUDE_PROJECT_DIR` as base. Multi-repo: `source $CLAUDE_PROJECT_DIR/scripts/repo-utils.sh`.
+</pattern>
 
-## Absolute Paths
-
-Always use `$CLAUDE_PROJECT_DIR` as base for all file operations:
-```bash
-# Single-repo
-cd $CLAUDE_PROJECT_DIR && just test
-
-# Multi-repo: use repo-utils.sh
-source $CLAUDE_PROJECT_DIR/scripts/repo-utils.sh
-cd $CLAUDE_PROJECT_DIR/$(get_repo_path "myrepo") && just test
+<pattern name="assessment">
 ```
-
-## Dev Assessment Format
-
-```markdown
 ## Dev Assessment
 **Implementation Complete:** Yes
-**Files Changed:**
-- `path/to/file.go` - {description}
-
-**Tests:** {N}/{N} passing (GREEN)
-**PR:** #{number} - {title}
-**Branch:** {branch-name} (pushed)
-
+**Files Changed:** `path` - description
+**Tests:** N/N passing (GREEN)
+**PR:** #N — title
 **Handoff:** To Reviewer for code review
 ```
+</pattern>
 
-## Pennyfarthing Self-Development
+<pattern name="self-dev">
+`.claude/` dirs are symlinks to `pennyfarthing-dist/`. Edit source, changes are immediate.
+</pattern>
 
-When developing Pennyfarthing itself, `.claude/` directories are symlinks to `pennyfarthing-dist/`. Edit files in source, they're immediately available.
+<pattern name="notifications">
+Message view IS the notification system. Errors to `console.error`, no toast UI.
+</pattern>
 
-## Cyclist Notification Pattern
-
-The message view IS the notification system. Errors go to console, not toast UI.
-
-```javascript
-// Good: Log to console
-console.error(`[Component] Failed: ${path}`, err);
-
-// Bad: Don't add toast UI
-showToast('Error');  // Unnecessary layer
-```
-
-## YAML Config Read-Modify-Write
-
-When updating a single field in YAML, preserve other settings:
-
+<pattern name="yaml-rw">
+Read-modify-write YAML. Never overwrite entire file to set one field.
 ```typescript
-// Read existing
-let existing = {};
-if (fs.existsSync(path)) {
-  const parsed = parseYaml(fs.readFileSync(path, 'utf-8'));
-  if (parsed && typeof parsed === 'object') existing = parsed;
-}
-// Modify and write back
+let existing = fs.existsSync(path) ? parseYaml(fs.readFileSync(path, 'utf-8')) : {};
 existing.field = newValue;
 fs.writeFileSync(path, stringifyYaml(existing));
 ```
+</pattern>
 
-**Anti-pattern:** `fs.writeFileSync(path, \`field: "${value}"\n\`)` destroys other settings.
-
-## Per-Project Electron Storage
-
-Libraries like `electron-window-state` default to user-level storage. Use `path` option for per-project:
-
-```typescript
-windowStateKeeper({
-  path: join(projectDir, '.pennyfarthing'),  // Per-project
-});
-```
-
----
-
-*Add implementation patterns discovered during development below*
+<pattern name="electron-storage">
+Use `path` option for per-project storage: `windowStateKeeper({ path: join(projectDir, '.pennyfarthing') })`.
+</pattern>

@@ -1,29 +1,17 @@
 # SM Agent Decisions
 
-> Pennyfarthing-specific story management decisions
+<decision id="DEC-SM-001">
+**Trivial stories (1-2 pts) skip TEA, go directly to Dev.** Quick fixes shouldn't wait for test design ceremony.
+</decision>
 
-## Decision Log
+<decision id="DEC-SM-002">
+**Session file is authoritative for workflow state.** Single source of truth that survives agent restarts.
+</decision>
 
-### DEC-SM-001: Scale-Adaptive Routing
-**Decision:** Trivial stories (1-2 pts) skip TEA, go directly to Dev.
-**Rationale:** Quick fixes shouldn't wait for test design ceremony.
+<decision id="DEC-SM-005" date="2026-01">
+**Sprint naming: `TO Sprint YYWW`** with `jira_sprint_id` and `jira_sprint_name`. Timeboxed by team calendar.
+</decision>
 
-### DEC-SM-002: Session File as Source of Truth
-**Decision:** Session file is authoritative for workflow state.
-**Rationale:** Single source of truth that survives agent restarts.
-
-### DEC-SM-005: Team Sprint Alignment
-**Date:** January 2026
-**Decision:** Adopt team sprint naming convention `TO Sprint YYWW` with Jira sprint ID
-**Format:** `name: "TO Sprint YYWW"` + `jira_sprint_id: NNN` + `jira_sprint_name: "TO Sprint YYWW"`
-**Rationale:** Sprints are timeboxed by team calendar, not by points completed
-**Updated:** January 2026 - renamed `jira_id` to `jira_sprint_id` and added `jira_sprint_name` for clarity
-
-### DEC-SM-007: Archive Completed Stories
-**Date:** January 2026
-**Decision:** Move completed stories to `sprint/archive/sprint-{YYWW}-completed.yaml`
-**Rationale:** Keeps working file lean and focused on remaining work
-
----
-
-*Add decisions made during story coordination below*
+<decision id="DEC-SM-007" date="2026-01">
+**Archive completed stories to `sprint/archive/sprint-{YYWW}-completed.yaml`.** Keeps working file lean.
+</decision>

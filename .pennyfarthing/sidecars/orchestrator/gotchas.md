@@ -1,30 +1,21 @@
 # Orchestrator Gotchas
 
-> Critical pitfalls in Pennyfarthing development
+<gotcha name="no-project-dir-in-bash" severity="critical">
+`$CLAUDE_PROJECT_DIR` only set for hooks/statusLine. In Bash tool, use `.claude` climber pattern.
+</gotcha>
 
-## $CLAUDE_PROJECT_DIR Not Available in Bash
+<gotcha name="nested-repos">
+`git rev-parse --show-toplevel` returns wrong root in nested repos. Use climber or `$CLAUDE_PROJECT_DIR`.
+</gotcha>
 
-**Context:** Only set for hooks and statusLine, NOT Bash tool invocations.
-**Solution:** Use .claude climber pattern.
+<gotcha name="skill-code-blocks">
+Code blocks in skills are documentation, not executed. Write explicit tool-use instructions.
+</gotcha>
 
-## git rev-parse Fails in Nested Repos
+<gotcha name="stop-hook">
+Stop hook may not run on all exit paths. Move cleanup to SessionStart hook.
+</gotcha>
 
-**Solution:** Use .claude climber or $CLAUDE_PROJECT_DIR (in hooks).
-
-## Code Blocks in Skills Not Executed
-
-**Solution:** Write explicit "Use Bash tool to run:" instructions.
-
-## Hook Timing
-
-- **Stop hook:** May not run reliably on all exit paths
-- **Solution:** Move cleanup to SessionStart hook
-
-## Config Merge Logic
-
-**Problem:** Init skips files that exist, missing critical hooks.
-**Solution:** Merge required fields, preserve user customizations.
-
----
-
-*Add orchestration gotchas discovered during process work below*
+<gotcha name="config-merge">
+Init skips files that exist, missing critical hooks. Merge required fields, preserve user customizations.
+</gotcha>

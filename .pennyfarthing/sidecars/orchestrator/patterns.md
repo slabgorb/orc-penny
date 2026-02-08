@@ -1,92 +1,28 @@
-# Orchestrator Process Patterns
+# Orchestrator Patterns
 
-> Critical patterns for Pennyfarthing development
+<pattern name="automatic-vs-instructional">
+Critical behaviors → scripts (automatic). Optional behaviors → markdown (instructional). Scripts survive handoffs; markdown doesn't.
+</pattern>
 
-## Automatic vs Instructional Behavior
+<pattern name="script-output">
+Output in XML tags for agents to parse: `echo "<persona agent=\"${name}\" theme=\"${theme}\">"`.
+</pattern>
 
-**Problem:** Agent behavior depends on following multi-step markdown instructions, which often fails.
+<pattern name="claude-climber">
+`$CLAUDE_PROJECT_DIR` unavailable in Bash tool. Use inline climber:
+`d="$PWD"; while [[ ! -d "$d/.claude" ]] && [[ "$d" != "/" ]]; do d="$(dirname "$d")"; done`
+</pattern>
 
-**Solution:** Make critical behaviors automatic via scripts, not instructional via markdown.
+<pattern name="skill-tool-use">
+Code blocks in skill files are docs, not executed. Write explicit "Use Bash tool to run:" instructions.
+</pattern>
 
-- **Automatic (scripts):** Critical behaviors, multi-step, must work during handoffs
-- **Instructional (markdown):** Optional behaviors, requires agent judgment
+<pattern name="drift-detection">
+Signals: reviewer approving without comments, SM skipping handoffs, dev not testing.
+Script: `.pennyfarthing/scripts/health/drift-detection.sh [--verbose]`
+Healthy rates: reviewer rubber-stamp <5%, dev no-test <5%, SM no-target <15%, TEA no-files <10%.
+</pattern>
 
----
-
-## Script Output as Agent Context
-
-Output results in XML-like tags for agents to parse:
-```bash
-echo "<persona agent=\"${agent_name}\" theme=\"${theme}\">"
-```
-
----
-
-## The .claude Climber
-
-**Problem:** `$CLAUDE_PROJECT_DIR` is NOT available in Bash tool invocations.
-
-**Solution:** Inline directory climbing:
-```bash
-d="$PWD"; while [[ ! -d "$d/.claude" ]] && [[ "$d" != "/" ]]; do d="$(dirname "$d")"; done; "$d/scripts/run.sh" SCRIPT ARGS
-```
-
-| Context | `$CLAUDE_PROJECT_DIR` |
-|---------|----------------------|
-| Hooks, statusLine | ✅ Available |
-| Bash tool | ❌ Use climber |
-
----
-
-## Skills Must Instruct Tool Use
-
-Code blocks in skill files are documentation, not executed. Use:
-```markdown
-**FIRST:** Use Bash tool to run: `command here`
-```
-
----
-
-## Agent Behavior Drift Detection
-
-**Signals of drift:**
-- Reviewer approving without substantive comments
-- SM skipping handoff protocols
-- Dev not running tests before declaring GREEN
-
-**Fix:** Make behavior explicit in agent files, not assumed.
-
----
-
-## Shared Mutable State
-
-**Lesson:** Any shared mutable state between concurrent processes is a bug waiting to happen. Each session should use its own files.
-
----
-
-## Automated Drift Detection
-
-**Added:** 2026-01-23
-
-Script to analyze archived sessions for behavioral drift:
-
-```bash
-.pennyfarthing/scripts/health/drift-detection.sh [--verbose]
-```
-
-**Drift signals:**
-| Agent | Signal | Healthy Rate |
-|-------|--------|--------------|
-| Reviewer | Approval without substantive feedback | <5% |
-| Dev | GREEN without test evidence | <5% |
-| SM | Handoff without target agent | <15% |
-| TEA | Handoff without test file references | <10% |
-
-**Response to high drift:**
-1. Make behavior explicit in agent files
-2. Add gates/checklists
-3. Consider scripting critical behaviors
-
----
-
-*Add process patterns discovered during orchestration below*
+<pattern name="shared-state">
+Any shared mutable state between concurrent processes is a bug. Each session uses its own files.
+</pattern>
