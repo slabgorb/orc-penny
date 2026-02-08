@@ -1,6 +1,6 @@
 stories:
-  - id: "80-1"
-    title: "Python codemarkers module: grep + git blame"
+  - id: 80-1
+    title: 'Python codemarkers module: grep + git blame'
     description: |
       New module: pennyfarthing_scripts/codemarkers/
       Files: __init__.py, analyze.py, models.py, cli.py
@@ -14,9 +14,9 @@ stories:
     repos: pennyfarthing
     jira: MSSCI-14454
     started: '2026-02-08'
-    completed: "2026-02-08"
-  - id: "80-2"
-    title: "@deprecated detection and caller cross-reference"
+    completed: '2026-02-08'
+  - id: 80-2
+    title: '@deprecated detection and caller cross-reference'
     description: |
       Extend codemarkers analyze.py to detect @deprecated JSDoc tags
       in TypeScript files. For each deprecated symbol, count active
@@ -27,8 +27,8 @@ stories:
     status: planning
     repos: pennyfarthing
     jira: MSSCI-14455
-  - id: "80-3"
-    title: "Code markers API + React hook + dialog"
+  - id: 80-3
+    title: Code markers API + React hook + dialog
     description: |
       Express API: GET /api/code-markers?repo=pennyfarthing
       Thin wrapper calling Python codemarkers module.
@@ -43,7 +43,7 @@ stories:
     jira: MSSCI-14456
     completed: '2026-02-08'
 id: epic-80
-title: "Code Markers Tool (TODOs, FIXMEs, Deprecations)"
+title: Code Markers Tool (TODOs, FIXMEs, Deprecations)
 jira: MSSCI-14453
 description: |
   New diagnostic tool scanning for TODO, FIXME, HACK, XXX comment

@@ -1,6 +1,6 @@
 stories:
-  - id: "83-1"
-    title: "Python complexity module"
+  - id: 83-1
+    title: Python complexity module
     description: |
       New module: pennyfarthing_scripts/complexity/
       Wraps eslint --format json with complexity rule or uses
@@ -13,8 +13,8 @@ stories:
     repos: pennyfarthing
     jira: MSSCI-14466
     completed: '2026-02-08'
-  - id: "83-2"
-    title: "Python dependencies module"
+  - id: 83-2
+    title: Python dependencies module
     description: |
       New module: pennyfarthing_scripts/dependencies/
       Wraps npm outdated --json and npm audit --json. Models:
@@ -25,9 +25,9 @@ stories:
     status: done
     repos: pennyfarthing
     jira: MSSCI-14467
-    completed: "2026-02-08"
-  - id: "83-3"
-    title: "Complexity + Dependencies APIs + hooks + dialogs"
+    completed: '2026-02-08'
+  - id: 83-3
+    title: Complexity + Dependencies APIs + hooks + dialogs
     description: |
       Express APIs: GET /api/complexity, GET /api/dependencies
       React hooks: useComplexity.ts, useDependencies.ts
@@ -36,11 +36,13 @@ stories:
       security section). Add buttons to DebugPanel launcher row.
     points: 2
     priority: P0
-    status: planning
+    status: in_progress
     repos: pennyfarthing
     jira: MSSCI-14468
+    assigned_to: keith
+    started: '2026-02-08'
 id: epic-83
-title: "Complexity + Dependencies Tools"
+title: Complexity + Dependencies Tools
 jira: MSSCI-14465
 description: |
   Two lightweight diagnostic tools. Complexity: static analysis via

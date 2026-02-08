@@ -1,7 +1,7 @@
 stories:
-  - id: "91-1"
+  - id: 91-1
     jira: MSSCI-14511
-    title: "Productize Layer 1 file reference validator"
+    title: Productize Layer 1 file reference validator
     description: |
       Commit scripts/validate-refs.js with 17 check types, npm scripts,
       29-unit test suite. Scans pennyfarthing-dist/ YAML, markdown, shell,
@@ -12,10 +12,10 @@ stories:
     status: done
     started: '2026-02-07'
     repos: pennyfarthing
-    completed: "2026-02-08"
-  - id: "91-2"
+    completed: '2026-02-08'
+  - id: 91-2
     jira: MSSCI-14512
-    title: "Layer 1 validator in pre-commit hook and GHA"
+    title: Layer 1 validator in pre-commit hook and GHA
     description: |
       Add validate-refs.js --strict to the pre-commit hook when
       pennyfarthing-dist/ files are staged. Also wire into GitHub
@@ -26,9 +26,9 @@ stories:
     priority: P1
     status: planning
     repos: pennyfarthing
-  - id: "91-3"
+  - id: 91-3
     jira: MSSCI-14513
-    title: "Research: Layer 0 linter selection and adoption plan"
+    title: 'Research: Layer 0 linter selection and adoption plan'
     description: |
       Evaluate ESLint enforcement across all packages, Ruff for 107
       Python files, markdownlint for 300 .md files, yamllint for 55
@@ -37,9 +37,9 @@ stories:
     priority: P2
     status: planning
     repos: pennyfarthing
-  - id: "91-4"
+  - id: 91-4
     jira: MSSCI-14514
-    title: "Research: Layer 1 validator adaptation from BMAD"
+    title: 'Research: Layer 1 validator adaptation from BMAD'
     description: |
       Document adaptation decisions from BMAD-METHOD validate-file-refs.js
       to Pennyfarthing validate-refs.js. Differences in structure, check
@@ -48,9 +48,9 @@ stories:
     priority: P2
     status: planning
     repos: pennyfarthing
-  - id: "91-5"
+  - id: 91-5
     jira: MSSCI-14515
-    title: "Research: Layer 2 schema validation approach and gap analysis"
+    title: 'Research: Layer 2 schema validation approach and gap analysis'
     description: |
       Evaluate schema validation approach for Pennyfarthing YAML files.
       24 workflow definitions across 3 variants (phased, stepped,
@@ -61,9 +61,9 @@ stories:
     priority: P2
     status: planning
     repos: pennyfarthing
-  - id: "91-6"
+  - id: 91-6
     jira: MSSCI-14516
-    title: "Research: Layer 3 graph validation feasibility study"
+    title: 'Research: Layer 3 graph validation feasibility study'
     description: |
       Assess feasibility of graph-level validation for workflow step
       transitions, reachability analysis, dangling references, gate
@@ -72,8 +72,8 @@ stories:
     priority: P3
     status: planning
     repos: pennyfarthing
-  - id: "91-7"
-    title: "Enforce ESLint across all packages"
+  - id: 91-7
+    title: Enforce ESLint across all packages
     description: |
       Remove continue-on-error from CI lint job. Add lint scripts to
       @pennyfarthing/shared and @pennyfarthing/cyclist. Fix existing
@@ -82,8 +82,8 @@ stories:
     priority: P1
     status: planning
     repos: pennyfarthing
-  - id: "91-8"
-    title: "Add Ruff to CI for Python scripts"
+  - id: 91-8
+    title: Add Ruff to CI for Python scripts
     description: |
       Wire existing pyproject.toml Ruff config into CI. 107 Python
       files in pennyfarthing_scripts/.
@@ -91,8 +91,8 @@ stories:
     priority: P1
     status: planning
     repos: pennyfarthing
-  - id: "91-9"
-    title: "Add markdownlint to CI"
+  - id: 91-9
+    title: Add markdownlint to CI
     description: |
       Wire existing .markdownlint.yaml config into CI. Scope to
       pennyfarthing-dist/**/*.md (300 files).
@@ -100,8 +100,8 @@ stories:
     priority: P2
     status: planning
     repos: pennyfarthing
-  - id: "91-10"
-    title: "Add yamllint for workflow and config files"
+  - id: 91-10
+    title: Add yamllint for workflow and config files
     description: |
       Create .yamllint.yaml config. Scope to pennyfarthing-dist/**/*.yaml
       (55 files).
@@ -109,8 +109,8 @@ stories:
     priority: P2
     status: planning
     repos: pennyfarthing
-  - id: "91-11"
-    title: "Workflow YAML schema validation"
+  - id: 91-11
+    title: Workflow YAML schema validation
     description: |
       Adapt from BMAD PR #1529 for Pennyfarthing workflow structure.
       24 workflow definitions, 3 variants (phased, stepped, procedural).
@@ -118,8 +118,8 @@ stories:
     priority: P2
     status: planning
     repos: pennyfarthing
-  - id: "91-12"
-    title: "Agent definition structural validation"
+  - id: 91-12
+    title: Agent definition structural validation
     description: |
       Validate required sections, helper model values, subagent refs.
       19 agent files.
@@ -127,8 +127,8 @@ stories:
     priority: P2
     status: planning
     repos: pennyfarthing
-  - id: "91-13"
-    title: "Skill registry and command schema validation"
+  - id: 91-13
+    title: Skill registry and command schema validation
     description: |
       Enforce existing skill-registry.schema.json. Add command file
       structural validation. 49 commands, 22 skills.
@@ -136,8 +136,8 @@ stories:
     priority: P3
     status: planning
     repos: pennyfarthing
-  - id: "91-14"
-    title: "Workflow graph validation"
+  - id: 91-14
+    title: Workflow graph validation
     description: |
       Step transitions, reachability, dangling references. Gate markers,
       collaboration menus.
@@ -145,8 +145,8 @@ stories:
     priority: P3
     status: planning
     repos: pennyfarthing
-  - id: "91-15"
-    title: "Cross-entity reference validation"
+  - id: 91-15
+    title: Cross-entity reference validation
     description: |
       Semantic cross-refs between agents, workflows, commands, skills.
       Bidirectional reference consistency.
@@ -154,9 +154,9 @@ stories:
     priority: P3
     status: planning
     repos: pennyfarthing
-  - id: "91-16"
+  - id: 91-16
     jira: MSSCI-14517
-    title: "run-ci.md references wrong path for run-ci.sh"
+    title: run-ci.md references wrong path for run-ci.sh
     description: |
       commands/run-ci.md line 114 references .pennyfarthing/scripts/run-ci.sh
       but the script lives in a misc/ subdirectory.
@@ -165,9 +165,9 @@ stories:
     status: done
     repos: pennyfarthing
     completed: '2026-02-07'
-  - id: "91-17"
+  - id: 91-17
     jira: MSSCI-14518
-    title: "setup.md references /theme instead of /set-theme"
+    title: setup.md references /theme instead of /set-theme
     description: |
       commands/setup.md line 61 references /theme command but it was
       renamed to /set-theme.
@@ -176,9 +176,9 @@ stories:
     status: done
     repos: pennyfarthing
     completed: '2026-02-07'
-  - id: "91-18"
+  - id: 91-18
     jira: MSSCI-14519
-    title: "workflow skill.md broken link to BIKELANE.md"
+    title: workflow skill.md broken link to BIKELANE.md
     description: |
       skills/workflow/skill.md line 343 links to ../../docs/BIKELANE.md
       which resolves inside pennyfarthing-dist/, not repo root.
@@ -187,9 +187,9 @@ stories:
     status: done
     repos: pennyfarthing
     completed: '2026-02-07'
-  - id: "91-19"
+  - id: 91-19
     jira: MSSCI-14520
-    title: "workflow skill.md broken link to ADR 0005 (renumbered)"
+    title: workflow skill.md broken link to ADR 0005 (renumbered)
     description: |
       skills/workflow/skill.md line 344 links to ADR 0005 but it was
       renumbered to 0013.
@@ -198,9 +198,9 @@ stories:
     status: done
     repos: pennyfarthing
     completed: '2026-02-07'
-  - id: "91-20"
+  - id: 91-20
     jira: MSSCI-14521
-    title: "workflow skill.md wrong path depth for architecture.yaml"
+    title: workflow skill.md wrong path depth for architecture.yaml
     description: |
       skills/workflow/skill.md line 345 uses ../workflows/architecture.yaml
       but needs ../../workflows/architecture.yaml.
@@ -209,9 +209,9 @@ stories:
     status: done
     repos: pennyfarthing
     completed: '2026-02-07'
-  - id: "91-21"
+  - id: 91-21
     jira: MSSCI-14522
-    title: "step-05 references unimplemented import-epic-to-future.sh"
+    title: step-05 references unimplemented import-epic-to-future.sh
     description: |
       epics-and-stories workflow step-05-import-to-future.md line 15
       references import-epic-to-future.sh which was never implemented.
@@ -220,9 +220,9 @@ stories:
     status: done
     repos: pennyfarthing
     completed: '2026-02-07'
-  - id: "91-22"
+  - id: 91-22
     jira: MSSCI-14552
-    title: "Broken ADR link in skills/workflow/skill.md"
+    title: Broken ADR link in skills/workflow/skill.md
     description: |
       skills/workflow/skill.md line 344 links to
       ../../docs/adr/0013-bmad-workflow-import.md which resolves outside
@@ -232,9 +232,9 @@ stories:
     priority: P1
     status: planning
     repos: pennyfarthing
-  - id: "91-23"
+  - id: 91-23
     jira: MSSCI-14553
-    title: "Stale guide ref in tdd-flow-pattern.md"
+    title: Stale guide ref in tdd-flow-pattern.md
     description: |
       guides/patterns/tdd-flow-pattern.md line 397 references
       guides/tactical-agent-behavior.md but guide was renamed to
@@ -245,7 +245,7 @@ stories:
     status: planning
     repos: pennyfarthing
 id: epic-91
-title: "Cross-File Reference & Schema Validation Pipeline"
+title: Cross-File Reference & Schema Validation Pipeline
 description: |
   Layered CI validation pipeline for pennyfarthing-dist source files.
   469+ files with 1,685+ cross-references that silently break when files

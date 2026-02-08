@@ -1,6 +1,6 @@
 stories:
-  - id: "84-1"
-    title: "Health score Python module"
+  - id: 84-1
+    title: Health score Python module
     description: |
       New module: pennyfarthing_scripts/healthscore/
       Aggregates lightweight versions of each tool's output.
@@ -14,8 +14,8 @@ stories:
     jira: MSSCI-14470
     started: '2026-02-08'
     completed: '2026-02-08'
-  - id: "84-2"
-    title: "Health score API + gauge component"
+  - id: 84-2
+    title: Health score API + gauge component
     description: |
       Express API: GET /api/health-score (calls Python module).
       React hook: useHealthScore.ts. Radial gauge component in
@@ -26,8 +26,8 @@ stories:
     status: planning
     repos: pennyfarthing
     jira: MSSCI-14471
-  - id: "84-3"
-    title: "Per-dimension drill-through from health gauge"
+  - id: 84-3
+    title: Per-dimension drill-through from health gauge
     description: |
       Clicking a dimension in the health score breakdown opens
       the corresponding tool dialog (e.g. clicking "TODO density"
@@ -39,7 +39,7 @@ stories:
     repos: pennyfarthing
     jira: MSSCI-14472
 id: epic-84
-title: "Composite Health Score"
+title: Composite Health Score
 jira: MSSCI-14469
 description: |
   Single 0-100 codebase health score displayed as a gauge in the

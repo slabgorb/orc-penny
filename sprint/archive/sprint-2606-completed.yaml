@@ -70,3 +70,20 @@ completed:
     points: 2
     completed: 2026-02-08
     pr: 755
+
+  # epic-81: Dead Code Detection - COMPLETE
+  - id: 81-1
+    epic: MSSCI-14457
+    title: "Python deadcode module: stale file detection"
+    points: 2
+    completed: 2026-02-08
+  - id: 81-2
+    epic: MSSCI-14457
+    title: "Unused export detection via ts-prune"
+    points: 2
+    completed: 2026-02-08
+  - id: 81-3
+    epic: MSSCI-14457
+    title: "Dead code API + React hook + dialog"
+    points: 1
+    completed: 2026-02-08
