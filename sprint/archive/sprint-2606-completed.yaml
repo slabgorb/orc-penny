@@ -1,0 +1,50 @@
+sprint:
+  name: "TO Sprint 2606"
+  jira_sprint_id: 309
+  jira_sprint_name: "TO Sprint 2606"
+  goal: Tool use visualization and vanilla JS to React hooks migration
+  start_date: 2026-02-02
+  end_date: 2026-02-15
+  status: active
+  number: 2606
+completed:
+  - id: 79-1
+    epic: MSSCI-14440
+    title: "Create ToolDialog shared component"
+    points: 1
+    completed: 2026-02-07
+  - id: 79-2
+    epic: MSSCI-14440
+    title: "Migrate HotspotsPanel into HotspotsDialog"
+    points: 2
+    completed: 2026-02-07
+  - id: 79-3
+    epic: MSSCI-14440
+    title: "Add tool launcher row to DebugPanel"
+    points: 1
+    completed: 2026-02-07
+  - id: 79-4
+    epic: MSSCI-14440
+    title: "Hotspot: skip orchestrator repos by type"
+    points: 2
+    completed: 2026-02-08
+  - id: 79-5
+    epic: MSSCI-14440
+    title: "Hotspot: expand artifact exclusions + client filters"
+    points: 2
+    completed: 2026-02-08
+  - id: 82-1
+    epic: MSSCI-14461
+    title: "Agent load API endpoint"
+    points: 2
+    completed: 2026-02-07
+  - id: 82-2
+    epic: MSSCI-14461
+    title: "Sidecar pruning API"
+    points: 1
+    completed: 2026-02-08
+  - id: 82-3
+    epic: MSSCI-14461
+    title: "Agent load React hook + dialog"
+    points: 2
+    completed: 2026-02-08
