@@ -22,7 +22,7 @@ stories:
       SecurityAdvisory (severity, count). CLI with --format json/table.
     points: 2
     priority: P0
-    status: planning
+    status: in_progress
     repos: pennyfarthing
     jira: MSSCI-14467
   - id: "83-3"
