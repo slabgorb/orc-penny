@@ -8,9 +8,10 @@ stories:
       Cache result for 60 seconds (prime is expensive).
     points: 2
     priority: P0
-    status: planning
+    status: done
     repos: pennyfarthing
     jira: MSSCI-14462
+    completed: "2026-02-07"
   - id: "82-2"
     title: "Sidecar pruning API"
     description: |
@@ -20,9 +21,10 @@ stories:
       below --- separator). Returns {success, tokensFreed}.
     points: 1
     priority: P1
-    status: planning
+    status: done
     repos: pennyfarthing
     jira: MSSCI-14463
+    completed: "2026-02-08"
   - id: "82-3"
     title: "Agent load React hook + dialog"
     description: |
@@ -33,9 +35,10 @@ stories:
       button (confirmation + prune API call). Add to DebugPanel.
     points: 2
     priority: P0
-    status: in_progress
+    status: done
     repos: pennyfarthing
     jira: MSSCI-14464
+    completed: "2026-02-08"
 id: epic-82
 title: "Agent Load Analyzer"
 jira: MSSCI-14461

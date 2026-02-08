@@ -10,10 +10,11 @@ stories:
       CLI: click group with analyze command, --format json/table.
     points: 2
     priority: P0
-    status: in_progress
+    status: done
     repos: pennyfarthing
     jira: MSSCI-14454
     started: '2026-02-08'
+    completed: "2026-02-08"
   - id: "80-2"
     title: "@deprecated detection and caller cross-reference"
     description: |
