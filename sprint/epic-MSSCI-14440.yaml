@@ -63,9 +63,11 @@ stories:
       (positive filter for source extensions), "Include config" toggle.
     points: 2
     priority: P1
-    status: planning
+    status: done
     repos: pennyfarthing
     jira: MSSCI-14445
+    started: '2026-02-08'
+    completed: '2026-02-08'
 id: epic-79
 title: "Dialog Infrastructure + Hotspot Refactor"
 jira: MSSCI-14440
