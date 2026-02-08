@@ -49,9 +49,10 @@ stories:
       orchestrator" checkbox.
     points: 2
     priority: P1
-    status: planning
+    status: in_progress
     repos: pennyfarthing
     jira: MSSCI-14444
+    started: "2026-02-08"
   - id: "79-5"
     title: "Hotspot: expand artifact exclusions + client filters"
     description: |
