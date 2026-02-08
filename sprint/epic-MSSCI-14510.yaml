@@ -32,11 +32,13 @@ stories:
     repos: pennyfarthing
   - id: "91-2"
     jira: MSSCI-14512
-    title: "GHA workflow for Layer 1 with PR comments"
+    title: "Layer 1 validator in pre-commit hook and GHA"
     description: |
-      GitHub Actions workflow running validate-refs.js on PRs.
-      ::warning annotations, GITHUB_STEP_SUMMARY table, PR comment
-      posting. Permissions: pull-requests: write, contents: read.
+      Add validate-refs.js --strict to the pre-commit hook when
+      pennyfarthing-dist/ files are staged. Also wire into GitHub
+      Actions for PR-level enforcement with ::warning annotations,
+      GITHUB_STEP_SUMMARY table, and PR comment posting.
+      Permissions: pull-requests: write, contents: read.
     points: 5
     priority: P1
     status: planning
