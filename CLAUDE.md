@@ -14,7 +14,7 @@ Sprint management stays here. Framework development happens in `pennyfarthing/`.
 <critical>
 ## Rules
 
-1. **Never edit `.pennyfarthing/` symlinked directories** — they point to node_modules
+1. **Never edit `.pennyfarthing/` symlinked directories** — they point to node_modules - edit them in the child repo `pennyfarthing/pennyfarthing-dist`
 2. **Never edit sprint YAML directly** — use scripts
 3. **Sidecars are local** — `.pennyfarthing/sidecars/` is writable, captures agent learnings
 4. **Publishing framework** — after changes in `pennyfarthing/`, build and publish to npm
