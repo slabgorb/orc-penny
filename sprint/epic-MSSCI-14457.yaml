@@ -24,9 +24,10 @@ stories:
       as separate subcommand or combined output.
     points: 2
     priority: P1
-    status: planning
+    status: in_progress
     repos: pennyfarthing
     jira: MSSCI-14459
+    started: '2026-02-08'
   - id: 81-3
     title: Dead code API + React hook + dialog
     description: |

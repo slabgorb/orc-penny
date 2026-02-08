@@ -8,10 +8,8 @@ sprint:
   status: active
   number: 2606
 epics:
-  - MSSCI-14440
   - MSSCI-14453
   - MSSCI-14457
-  - MSSCI-14461
   - MSSCI-14465
   - MSSCI-14469
   - MSSCI-14510
