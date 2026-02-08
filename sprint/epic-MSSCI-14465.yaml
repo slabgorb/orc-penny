@@ -9,9 +9,10 @@ stories:
       CLI with --format json/table.
     points: 2
     priority: P0
-    status: planning
+    status: done
     repos: pennyfarthing
     jira: MSSCI-14466
+    completed: '2026-02-08'
   - id: "83-2"
     title: "Python dependencies module"
     description: |
