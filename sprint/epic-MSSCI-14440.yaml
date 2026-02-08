@@ -34,9 +34,10 @@ stories:
       HotspotsDialog). Placeholder buttons for future tools.
     points: 1
     priority: P0
-    status: planning
+    status: in_progress
     repos: pennyfarthing
     jira: MSSCI-14443
+    started: '2026-02-07'
   - id: "79-4"
     title: "Hotspot: skip orchestrator repos by type"
     description: |
