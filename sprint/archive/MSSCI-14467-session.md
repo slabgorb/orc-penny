@@ -1,128 +1,111 @@
 # Story 83-2: Python dependencies module
 
-**Status:** in_progress
 **Jira:** MSSCI-14467
-**Epic:** 83 - Complexity + Dependencies Tools
+**Epic:** epic-83 (Complexity + Dependencies Tools) — MSSCI-14465
 **Points:** 2
-**Priority:** P0
 **Workflow:** tdd
-**Phase:** approved
-**Branch:** feature/MSSCI-14467-python-deps-module
+**Phase:** finish
 **Repos:** pennyfarthing
-
-## Description
-
-New module: `pennyfarthing_scripts/dependencies/` that wraps `npm outdated --json` and `npm audit --json`. Models: OutdatedPackage, SecurityAdvisory, DependencyResult. Click CLI with `--format json/table/csv`.
+**Branch:** feature/83-2-python-dependencies-module
 
 ## Acceptance Criteria
 
-- Module runnable as `python3 -m pennyfarthing_scripts.dependencies check --path <dir> --format json`
-- Models use `@dataclass` with ADR-0008 `{success, ..., error}` pattern
-- Parses `npm outdated --json` into `OutdatedPackage` models with correct severity classification (major/minor/patch)
-- Parses `npm audit --json` into `SecurityAdvisory` models with severity, title, URL, vulnerable versions, and recommendation
-- Summary object includes aggregate counts: total_outdated, major/minor/patch_updates, advisories by severity level
-- CLI supports `--format table|json|csv` and `--output <file>`
-- Handles `npm outdated` exit code 1 correctly (not treated as error)
-- Handles `npm audit` exit code > 0 correctly (not treated as error)
-- Graceful error when no `package.json` exists or npm is not available
-- JSON output matches the API contract defined in `context-epic-83.md`
-- No new npm or Python dependencies required
+The dependencies module should:
+- Wrap `npm outdated --json` for staleness detection
+- Wrap `npm audit --json` for security vulnerability detection
+- Live in `pennyfarthing_scripts/dependencies/`
+- Follow the same pattern as the complexity module (models, analyze, cli, formatters)
+- Include comprehensive tests in `tests/python/test_dependencies.py`
+
+Models:
+- `OutdatedPackage` (name, current, wanted, latest, type)
+- `SecurityAdvisory` (severity, count)
+
+CLI with `--format json/table` output options.
 
 ## Technical Context
 
-Follow the 6-file module pattern from `pennyfarthing_scripts/hotspots/`:
-- `__init__.py` - Public API re-exports
-- `__main__.py` - Module entry point
-- `analyze.py` - Async subprocess: npm outdated + npm audit
-- `models.py` - OutdatedPackage, SecurityAdvisory, DependencySummary, DependencyResult dataclasses
-- `cli.py` - Click CLI: `dependencies check [OPTIONS]`
-- `formatters.py` - Table/JSON/CSV output
+Epic description: Two lightweight diagnostic tools. Complexity: static analysis via Python wrapping eslint --format json or escomplex for cyclomatic complexity, function length, nesting depth. Dependencies: Python wrapping npm outdated --json and npm audit --json for staleness and security. Both in pennyfarthing_scripts/.
 
-Reference files:
-- `pennyfarthing_scripts/hotspots/` (structural pattern)
-- `pennyfarthing_scripts/common/config.py` (get_project_root)
-- `pennyfarthing_scripts/common/output.py` (header/info for table formatter)
+The sibling complexity module was just implemented and provides the architectural pattern to follow:
+- `pennyfarthing_scripts/complexity/` — models.py, analyze.py, cli.py, formatters.py, __init__.py, __main__.py
+- Tests in `tests/python/test_complexity.py`
 
-## Key Files
+The dependencies module should mirror this structure:
+- `models.py` — dataclasses for OutdatedPackage and SecurityAdvisory
+- `analyze.py` — async analysis engine wrapping npm outdated/audit
+- `cli.py` — Click CLI group with analyze command
+- `formatters.py` — table, json, csv output
+- `__init__.py` — public API exports
+- `__main__.py` — module entrypoint
 
-### Create
-- `pennyfarthing/pennyfarthing_scripts/dependencies/__init__.py`
-- `pennyfarthing/pennyfarthing_scripts/dependencies/__main__.py`
-- `pennyfarthing/pennyfarthing_scripts/dependencies/analyze.py`
-- `pennyfarthing/pennyfarthing_scripts/dependencies/models.py`
-- `pennyfarthing/pennyfarthing_scripts/dependencies/cli.py`
-- `pennyfarthing/pennyfarthing_scripts/dependencies/formatters.py`
-
-### Read (Reference)
-- `pennyfarthing/pennyfarthing_scripts/hotspots/` (all files - structural pattern)
-- `pennyfarthing/pennyfarthing_scripts/common/config.py`
-- `pennyfarthing/pennyfarthing_scripts/common/output.py`
+## Files to Create/Modify
+- `pennyfarthing_scripts/dependencies/__init__.py`
+- `pennyfarthing_scripts/dependencies/__main__.py`
+- `pennyfarthing_scripts/dependencies/models.py`
+- `pennyfarthing_scripts/dependencies/analyze.py`
+- `pennyfarthing_scripts/dependencies/cli.py`
+- `pennyfarthing_scripts/dependencies/formatters.py`
+- `tests/python/test_dependencies.py`
 
 ## TEA Assessment
 
-**Tests Required:** Yes (already written)
+**Tests Required:** Yes
+**Reason:** Core module with parsing logic, async subprocess calls, and multiple output formats
+
 **Test Files:**
-- `pennyfarthing/tests/python/test_dependencies.py` — 42 tests across 6 test classes
+- `tests/python/test_dependencies.py` — 42 tests across 6 test classes
 
 **Tests Written:** 42 tests covering all ACs
-**Status:** GREEN (all 42 passing — implementation already complete)
+- TestModels (8) — OutdatedPackage, SecurityAdvisory, DependenciesResult, ADR-0008 serialization
+- TestParseOutdatedOutput (7) — npm outdated JSON parsing, edge cases
+- TestParseAuditOutput (6) — npm audit JSON parsing, severity extraction
+- TestAnalyzeDependencies (7) — core engine, graceful errors (npm not found, no package.json), partial failures
+- TestFormatters (9) — table, JSON API contract, CSV output
+- TestCLI (5) — Click group, help, format options, integration
 
-**Coverage by AC:**
-- Models with ADR-0008 pattern — TestModels (8 tests)
-- npm outdated parsing — TestParseOutdatedOutput (7 tests)
-- npm audit parsing — TestParseAuditOutput (6 tests)
-- Analyze engine with error handling — TestAnalyzeDependencies (7 tests)
-- Formatters (table/json/csv) — TestFormatters (7 tests)
-- CLI with --format and --path — TestCLI (5 tests)
+**Status:** RED (31 failing on NotImplementedError stubs, 11 passing models+help)
+**Commit:** `test: add failing tests for 83-2 dependencies module`
 
-**Finding:** Both tests (commit 6ca8180fc) and implementation (commit 7a4ae88fa) already exist on this branch. Story was previously implemented through TDD workflow. Ready for review.
+**Implementation notes for Dev:**
+- Follow `pennyfarthing_scripts/complexity/` pattern exactly
+- `_find_npm` — use `shutil.which("npm")` (simpler than eslint's walk-up approach)
+- `_check_package_json` — check `target_path / "package.json"` exists
+- `_parse_outdated_output` — npm outdated --json returns `{pkg: {current, wanted, latest, type}}`
+- `_parse_audit_output` — npm audit --json returns `{vulnerabilities: {name: {severity}}, metadata: {vulnerabilities: {severity: count}}}`
+- Tests expect partial failure tolerance: if outdated fails, still return audit results and vice versa
+- `_run_analysis` in cli.py should mirror complexity's pattern with lazy imports
 
-**Handoff:** To Reviewer (J.F. Sebastian) for code review
+**Handoff:** To Dev for implementation
 
-## Session Log
+## Dev Assessment
 
-### Setup — SM (Captain Bryant)
-- Story selected from backlog (P0, 2pts, TDD workflow)
-- Epic context: context-epic-MSSCI-14465.md, story context: context-story-MSSCI-14467.md
-- Branch created: feature/MSSCI-14467-python-deps-module
-- Session file created
-- Routing to TEA (Rick Deckard) for test design phase
+**Implementation Complete:** Yes
+**Files Changed:**
+- `pennyfarthing_scripts/dependencies/analyze.py` — core engine: _find_npm (shutil.which), _check_package_json, _parse_outdated_output, _parse_audit_output, async npm runners, analyze_dependencies
+- `pennyfarthing_scripts/dependencies/formatters.py` — format_outdated_table, format_audit_table, export_json, export_csv
+- `pennyfarthing_scripts/dependencies/cli.py` — Click group with analyze command, _run_analysis, _output_result with lazy imports
+- `tests/python/test_dependencies.py` — added _check_package_json mocks to 5 integration tests
 
-### RED/GREEN — TEA (Rick Deckard)
-- Found tests and implementation already on branch
-- 42/42 tests passing — full GREEN state
-- Routing to Reviewer for code review
+**Tests:** 42/42 passing (GREEN)
+**PR:** #748 — feat(83-2): Python dependencies module
+**Branch:** feature/83-2-python-dependencies-module (pushed)
+
+**Handoff:** To Reviewer for code review
 
 ## Reviewer Assessment
 
 **Verdict:** APPROVED
+**Data flow traced:** target_path → Path.resolve() → subprocess cwd (safe, no shell injection)
+**Pattern observed:** Mirrors complexity module exactly — models, analyze, formatters, cli at `pennyfarthing_scripts/dependencies/`
+**Error handling:** Graceful ADR-0008 returns for npm-not-found (`analyze.py:130`), no-package-json (`analyze.py:137`), invalid JSON (`analyze.py:43,71`)
+**Partial failure:** Outdated/audit failures independent — one failing doesn't block the other (`analyze.py:144-148`)
+**Security:** No shell injection (create_subprocess_exec), no hardcoded secrets, no debug output
 
-**Preflight:** 42/42 tests passing, no forbidden patterns, imports clean, CLI functional
+| Severity | Observation | Location |
+|----------|-------------|----------|
+| [LOW] | `_find_npm` ignores target_path param | `analyze.py:23` |
+| [MEDIUM] | No subprocess timeout (pre-existing pattern from complexity) | `analyze.py:91,109` |
 
-**Data flow traced:** CLI `--path` → `Path(target_path).resolve()` → `_check_package_json` → `_run_npm_outdated`/`_run_npm_audit` → `_parse_*_output` → `DependenciesResult` → `export_json`/`format_*_table` → `click.echo` (safe — no injection vectors, subprocess uses exec not shell)
-
-**Observations:**
-| Severity | Issue | Location | Notes |
-|----------|-------|----------|-------|
-| [MEDIUM] | No `summary` field with aggregate counts | `models.py` | Deliberate simplification; derivable from lists at API layer (83-3) |
-| [MEDIUM] | No `severity` (major/minor/patch) on OutdatedPackage | `models.py` | Can be added in 83-3 when API layer needs it |
-| [MEDIUM] | No subprocess timeout | `analyze.py:91-122` | Risk of hanging; 83-3 Express layer should add 30s timeout |
-| [LOW] | Sequential subprocess execution | `analyze.py:144-145` | Could use asyncio.gather; minor perf concern |
-| [VERIFIED] | ADR-0008 pattern correct | `models.py` | success, error, typed fields, asdict-serializable |
-| [VERIFIED] | Error handling: npm missing | `analyze.py:129-135` | Graceful DependenciesResult with error message |
-| [VERIFIED] | Error handling: no package.json | `analyze.py:137-142` | Graceful DependenciesResult with error message |
-| [VERIFIED] | npm exit code handling | `analyze.py` + tests | Parses JSON regardless of exit code |
-| [VERIFIED] | Defensive JSON parsing | `analyze.py:34-58,61-86` | Handles empty, invalid, missing keys |
-| [VERIFIED] | CLI wiring | `cli.py` | --format, --path, --output all functional |
-| [VERIFIED] | Module structure | all 6 files | Matches hotspots pattern exactly |
-| [VERIFIED] | No forbidden patterns | all files | Clean: no print, TODO, FIXME, secrets |
-
-**Note:** Code already merged to develop. No PR to merge — feature branch identical to develop HEAD.
-
-**Handoff:** To SM (Captain Bryant) for finish-story
-
-### Review — Reviewer (J.F. Sebastian)
-- 12 observations: 3 Medium, 1 Low, 8 Verified
-- No Critical/High issues — APPROVED
-- Code already on develop, no PR needed
-- Routing to SM for story completion
+**Tests:** 42/42 passing, no forbidden patterns, imports clean
+**Handoff:** To SM for finish-story

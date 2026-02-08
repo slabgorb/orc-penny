@@ -3,7 +3,7 @@ description: |
   Infrastructure cleanup and separation of concerns for maintainability.
 status: backlog
 blocked_by:
-total_points: 7
+total_points: 8
 epics: []
 standalone_stories:
   - id: 39-6
@@ -17,3 +17,16 @@ standalone_stories:
     priority: P3
     status: backlog
     repos: pennyfarthing
+  - id: td-1
+    title: Standardize epic context naming to numeric IDs
+    description: |
+      Migrate remaining context-epic-MSSCI-*.md files to context-epic-{N}.md
+      format. Update scripts that generate context files (start-epic, sm-setup)
+      to use numeric epic IDs consistently. Audit hybrid ID usage across sprint
+      YAML, context files, and session artifacts. The SprintPanel and sm-setup
+      validator use regex /epic-(\d+)/i which silently fails on Jira-key names.
+    points: 1
+    priority: P2
+    status: backlog
+    repos: both
+    workflow: trivial
