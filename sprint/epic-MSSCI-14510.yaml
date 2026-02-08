@@ -13,6 +13,7 @@ stories:
     started: '2026-02-07'
     repos: pennyfarthing
     completed: '2026-02-08'
+    assigned_to: michael.pursifull@1898andco.io
   - id: 91-2
     jira: MSSCI-14512
     title: Layer 1 validator in pre-commit hook and GHA
@@ -26,6 +27,7 @@ stories:
     priority: P1
     status: planning
     repos: pennyfarthing
+    assigned_to: michael.pursifull@1898andco.io
   - id: 91-3
     jira: MSSCI-14513
     title: 'Research: Layer 0 linter selection and adoption plan'
@@ -37,6 +39,7 @@ stories:
     priority: P2
     status: planning
     repos: pennyfarthing
+    assigned_to: michael.pursifull@1898andco.io
   - id: 91-4
     jira: MSSCI-14514
     title: 'Research: Layer 1 validator adaptation from BMAD'
@@ -48,6 +51,7 @@ stories:
     priority: P2
     status: planning
     repos: pennyfarthing
+    assigned_to: michael.pursifull@1898andco.io
   - id: 91-5
     jira: MSSCI-14515
     title: 'Research: Layer 2 schema validation approach and gap analysis'
@@ -61,6 +65,7 @@ stories:
     priority: P2
     status: planning
     repos: pennyfarthing
+    assigned_to: michael.pursifull@1898andco.io
   - id: 91-6
     jira: MSSCI-14516
     title: 'Research: Layer 3 graph validation feasibility study'
@@ -72,6 +77,7 @@ stories:
     priority: P3
     status: planning
     repos: pennyfarthing
+    assigned_to: michael.pursifull@1898andco.io
   - id: 91-7
     title: Enforce ESLint across all packages
     description: |
@@ -165,6 +171,7 @@ stories:
     status: done
     repos: pennyfarthing
     completed: '2026-02-07'
+    assigned_to: michael.pursifull@1898andco.io
   - id: 91-17
     jira: MSSCI-14518
     title: setup.md references /theme instead of /set-theme
@@ -176,6 +183,7 @@ stories:
     status: done
     repos: pennyfarthing
     completed: '2026-02-07'
+    assigned_to: michael.pursifull@1898andco.io
   - id: 91-18
     jira: MSSCI-14519
     title: workflow skill.md broken link to BIKELANE.md
@@ -187,6 +195,7 @@ stories:
     status: done
     repos: pennyfarthing
     completed: '2026-02-07'
+    assigned_to: michael.pursifull@1898andco.io
   - id: 91-19
     jira: MSSCI-14520
     title: workflow skill.md broken link to ADR 0005 (renumbered)
@@ -198,6 +207,7 @@ stories:
     status: done
     repos: pennyfarthing
     completed: '2026-02-07'
+    assigned_to: michael.pursifull@1898andco.io
   - id: 91-20
     jira: MSSCI-14521
     title: workflow skill.md wrong path depth for architecture.yaml
@@ -209,6 +219,7 @@ stories:
     status: done
     repos: pennyfarthing
     completed: '2026-02-07'
+    assigned_to: michael.pursifull@1898andco.io
   - id: 91-21
     jira: MSSCI-14522
     title: step-05 references unimplemented import-epic-to-future.sh
@@ -220,6 +231,7 @@ stories:
     status: done
     repos: pennyfarthing
     completed: '2026-02-07'
+    assigned_to: michael.pursifull@1898andco.io
   - id: 91-22
     jira: MSSCI-14552
     title: Broken ADR link in skills/workflow/skill.md

@@ -42,6 +42,7 @@ stories:
     repos: pennyfarthing
     jira: MSSCI-14456
     completed: '2026-02-08'
+    assigned_to: keith.avery@1898andco.io
 id: epic-80
 title: Code Markers Tool (TODOs, FIXMEs, Deprecations)
 jira: MSSCI-14453

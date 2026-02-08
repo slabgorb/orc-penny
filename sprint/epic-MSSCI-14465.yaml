@@ -13,6 +13,7 @@ stories:
     repos: pennyfarthing
     jira: MSSCI-14466
     completed: '2026-02-08'
+    assigned_to: keith.avery@1898andco.io
   - id: 83-2
     title: Python dependencies module
     description: |
@@ -26,6 +27,7 @@ stories:
     repos: pennyfarthing
     jira: MSSCI-14467
     completed: '2026-02-08'
+    assigned_to: keith.avery@1898andco.io
   - id: 83-3
     title: Complexity + Dependencies APIs + hooks + dialogs
     description: |
@@ -39,7 +41,7 @@ stories:
     status: in_progress
     repos: pennyfarthing
     jira: MSSCI-14468
-    assigned_to: keith
+    assigned_to: keith.avery@1898andco.io
     started: '2026-02-08'
 id: epic-83
 title: Complexity + Dependencies Tools
