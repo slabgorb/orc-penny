@@ -13,9 +13,5 @@ Code blocks in skills are documentation, not executed. Write explicit tool-use i
 </gotcha>
 
 <gotcha name="stop-hook">
-Stop hook may not run on all exit paths. Move cleanup to SessionStart hook.
-</gotcha>
-
-<gotcha name="config-merge">
-Init skips files that exist, missing critical hooks. Merge required fields, preserve user customizations.
+Stop hook may not run on all exit paths. Prefer SessionStart hook for critical setup/cleanup.
 </gotcha>
