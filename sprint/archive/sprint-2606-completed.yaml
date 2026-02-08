@@ -1,13 +1,20 @@
+# Sprint TO Sprint 2606 - Completed Stories
+# Jira Sprint ID: 309
+# Archived: 2026-02-08
+
 sprint:
   name: "TO Sprint 2606"
-  jira_sprint_id: 309
-  jira_sprint_name: "TO Sprint 2606"
-  goal: Tool use visualization and vanilla JS to React hooks migration
+  number: 2606
   start_date: 2026-02-02
   end_date: 2026-02-15
   status: active
-  number: 2606
+  jira_sprint_id: 309
+  jira_sprint_name: "TO Sprint 2606"
+  goal: Tool use visualization and vanilla JS to React hooks migration
+
 completed:
+
+  # epic-79: Dialog Infrastructure + Hotspot Refactor - COMPLETE
   - id: 79-1
     epic: MSSCI-14440
     title: "Create ToolDialog shared component"
@@ -33,6 +40,8 @@ completed:
     title: "Hotspot: expand artifact exclusions + client filters"
     points: 2
     completed: 2026-02-08
+
+  # epic-82: Agent Load Analyzer - COMPLETE
   - id: 82-1
     epic: MSSCI-14461
     title: "Agent load API endpoint"
@@ -46,5 +55,12 @@ completed:
   - id: 82-3
     epic: MSSCI-14461
     title: "Agent load React hook + dialog"
+    points: 2
+    completed: 2026-02-08
+
+  # epic-81: Dead Code Detection
+  - id: 81-1
+    epic: MSSCI-14457
+    title: "Python deadcode module: stale file detection"
     points: 2
     completed: 2026-02-08

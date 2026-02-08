@@ -1,6 +1,6 @@
 stories:
-  - id: "81-1"
-    title: "Python deadcode module: stale file detection"
+  - id: 81-1
+    title: 'Python deadcode module: stale file detection'
     description: |
       New module: pennyfarthing_scripts/deadcode/
       Files: __init__.py, analyze.py, models.py, cli.py
@@ -10,11 +10,13 @@ stories:
       days_stale, confidence.
     points: 2
     priority: P0
-    status: planning
+    status: done
     repos: pennyfarthing
     jira: MSSCI-14458
-  - id: "81-2"
-    title: "Unused export detection via ts-prune"
+    started: '2026-02-08'
+    completed: '2026-02-08'
+  - id: 81-2
+    title: Unused export detection via ts-prune
     description: |
       Layer 2: Run ts-prune (or tsc analysis) to find exported symbols
       with no importers. Parse output into UnusedExport model with
@@ -25,8 +27,8 @@ stories:
     status: planning
     repos: pennyfarthing
     jira: MSSCI-14459
-  - id: "81-3"
-    title: "Dead code API + React hook + dialog"
+  - id: 81-3
+    title: Dead code API + React hook + dialog
     description: |
       Express API: GET /api/dead-code?days=180&repo=pennyfarthing
       React hook: useDeadCode.ts. Dialog: DeadCodeDialog.tsx with tabs
@@ -38,7 +40,7 @@ stories:
     repos: pennyfarthing
     jira: MSSCI-14460
 id: epic-81
-title: "Dead Code Detection"
+title: Dead Code Detection
 jira: MSSCI-14457
 description: |
   Two-layer diagnostic tool finding unused/orphaned code.
