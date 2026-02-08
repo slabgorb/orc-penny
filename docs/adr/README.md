@@ -53,6 +53,7 @@ What becomes easier or more difficult because of this change?
 | [0016](./0016-bell-mode-message-injection.md) | Bell Mode (Message Queue Injection) | Accepted | 2026-01-28 |
 | [0017](./0017-relay-mode-automatic-handoff.md) | Relay Mode (Automatic Agent Handoff) | Accepted | 2026-01-28 |
 | [0018](./0018-sprint-yaml-script-access.md) | Sprint YAML Script Access Pattern | Accepted | 2026-01-28 |
+| [0019](./0019-vscode-extension-deprecation.md) | VS Code Extension Deprecation | Accepted | 2026-02-02 |
 
 ## Creating a New ADR
 

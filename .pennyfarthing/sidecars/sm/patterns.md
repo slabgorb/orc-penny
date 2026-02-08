@@ -21,7 +21,6 @@ On activation, load critical skills:
 
 | Task | Subagent |
 |------|----------|
-| Status checks | `workflow-status-check` |
 | Backlog research | `sm-setup MODE=research` |
 | Story setup | `sm-setup MODE=setup` |
 | Finish preflight | `sm-finish PHASE=preflight` |

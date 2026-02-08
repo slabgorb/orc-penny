@@ -33,9 +33,11 @@ mode: brownfield
 
 ## 1. Executive Summary
 
+> **Note (2026-02-08):** This document captures the pre-React baseline. Cyclist has since migrated to React 19, Tailwind v4, shadcn/ui, and dockview-react. The architecture described in Section 2 reflects the vanilla JS state before migration. Retained as historical reference for the design intent that drove the migration.
+
 This document establishes the baseline UX design for **Cyclist**, the visual terminal for Claude Code agent orchestration. Cyclist is an Electron-based desktop application that provides a graphical interface for managing AI agent workflows, viewing conversation history, and controlling permissions.
 
-**Purpose:** Document current state before improvements.
+**Purpose:** Document pre-migration state (vanilla JS baseline).
 
 ---
 

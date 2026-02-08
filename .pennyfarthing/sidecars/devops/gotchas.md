@@ -52,7 +52,7 @@ if ! git diff-index --quiet HEAD -- 2>/dev/null || \
 ## Subagent Type Compatibility (RESOLVED)
 
 ### Problem: "The official subagent types aren't available in this context"
-**Symptom:** Agents fail when spawning subagents like `workflow-status-check`
+**Symptom:** Agents fail when spawning custom subagents
 
 **Root Cause:** Claude Code's Task tool `subagent_type` only accepts built-in values (`Bash`, `general-purpose`, `Explore`, `Plan`). Pennyfarthing's custom subagent types aren't recognized.
 
@@ -62,8 +62,8 @@ Task tool:
   subagent_type: "general-purpose"
   model: "haiku"
   prompt: |
-    You are the workflow-status-check subagent.
-    Read .pennyfarthing/agents/workflow-status-check.md for instructions.
+    You are the sm-setup subagent.
+    Read .pennyfarthing/agents/sm-setup.md for instructions.
     EXECUTE all steps. Do NOT summarize.
 ```
 
