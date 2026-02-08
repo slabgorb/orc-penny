@@ -105,7 +105,7 @@ Use `/workflow list` to see available workflows, `/workflow` to check current st
 
 **Sprint:** `/sprint status`, `/sprint backlog`, `/sprint work`
 
-**Subagents** (via Task tool with `subagent_type`): `workflow-status-check`, `sm-setup`, `sm-finish`, `sm-handoff`, `testing-runner`, `handoff`, `reviewer-preflight`
+**Subagents** (via Task tool with `subagent_type`): `sm-setup`, `sm-finish`, `sm-handoff`, `testing-runner`, `handoff`, `reviewer-preflight`
 
 **Handoff protocol:** Agent completes work → spawns subagent → subagent updates session → next agent reads state and continues.
 </info>
