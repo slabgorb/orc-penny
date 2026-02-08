@@ -12,6 +12,7 @@ epics:
   - MSSCI-14465
   - MSSCI-14469
   - MSSCI-14510
+  - MSSCI-14580
 stories:
   - id: MSSCI-14394
     jira: MSSCI-14394
@@ -28,3 +29,18 @@ stories:
     repos: pennyfarthing
     workflow: trivial
     completed: '2026-02-06'
+  - id: MSSCI-14581
+    jira: MSSCI-14581
+    title: 'post-merge hook fails: find-root.sh not found at .git/lib/'
+    description: |
+      Stale copied hooks in .git/hooks/ missing find-root.sh fallback.
+      PR #756 adds framework repo detection to pennyfarthing doctor.
+    points: 2
+    priority: P1
+    status: review
+    repos: pennyfarthing
+    workflow: trivial
+    pr: 756
+    goals:
+      - "[MEDIUM] Fix chmodSync on symlinks (doctor.ts:1558) — no-op on macOS, skip chmod for symlinks or resolve target path"
+      - "[LOW] Remove hardcoded relative symlink path — handle worktrees and GIT_DIR overrides where .git may be a file"

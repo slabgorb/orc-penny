@@ -9,9 +9,10 @@ description: |
   Origin: Party Mode brainstorm on Insights report
 status: planning
 blocked_by:
-total_points: 18
+total_points: 33
 epics:
   - epic-87
   - epic-88
   - epic-89
   - epic-90
+  - epic-92
