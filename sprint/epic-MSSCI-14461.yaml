@@ -33,7 +33,7 @@ stories:
       button (confirmation + prune API call). Add to DebugPanel.
     points: 2
     priority: P0
-    status: planning
+    status: in_progress
     repos: pennyfarthing
     jira: MSSCI-14464
 id: epic-82
