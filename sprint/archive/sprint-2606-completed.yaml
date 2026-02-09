@@ -17,3 +17,9 @@ completed_stories:
     title: "Complexity + Dependencies APIs + hooks + dialogs"
     points: 2
     completed: 2026-02-09
+  - id: 93-1
+    epic: 
+    title: "Create @pennyfarthing/benchmark package shell with TS modules"
+    points: 3
+    completed: 2026-02-09
+    pr: 771

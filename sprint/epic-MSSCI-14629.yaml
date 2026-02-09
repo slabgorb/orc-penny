@@ -14,12 +14,13 @@ stories:
       Out of scope: removing from core (done in 93-5).
     points: 3
     priority: P0
-    status: in_progress
+    status: done
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
     jira: MSSCI-14630
     started: '2026-02-09'
+    completed: '2026-02-09'
   - id: 93-2
     title: Move benchmark commands, skills, and scripts to new package
     description: |
