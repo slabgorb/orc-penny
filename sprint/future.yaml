@@ -1,6 +1,6 @@
 future:
   initiatives:
-    - benchmark-reliability
+    - benchmarking
     - agent-quality-awareness
     - quality-scale
     - technical-debt
