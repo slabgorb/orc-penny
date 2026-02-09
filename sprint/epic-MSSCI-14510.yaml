@@ -242,8 +242,9 @@ stories:
       validate-refs.js with 4 new checks.
     points: 1
     priority: P1
-    status: planning
+    status: done
     repos: pennyfarthing
+    completed: '2026-02-09'
   - id: 91-23
     jira: MSSCI-14553
     title: Stale guide ref in tdd-flow-pattern.md
@@ -254,8 +255,9 @@ stories:
       validate-refs.js with 4 new checks.
     points: 1
     priority: P1
-    status: planning
+    status: done
     repos: pennyfarthing
+    completed: '2026-02-09'
 id: epic-91
 title: Cross-File Reference & Schema Validation Pipeline
 description: |
