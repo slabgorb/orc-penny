@@ -68,11 +68,13 @@ stories:
       - Explicit registration via pennyfarthing.config.yaml plugins list
     points: 3
     priority: P0
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
     jira: MSSCI-14632
+    started: '2026-02-09'
+    completed: '2026-02-09'
   - id: 93-4
     title: Move benchmark docs, results, and showcase components
     description: |
@@ -113,11 +115,13 @@ stories:
       display "Unranked" in UI.
     points: 2
     priority: P1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
     jira: MSSCI-14634
+    started: '2026-02-09'
+    completed: '2026-02-09'
   - id: 93-6
     title: Update Cyclist to use benchmark plugin instead of inline API
     description: |
