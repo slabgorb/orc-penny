@@ -9,7 +9,6 @@ sprint:
   number: 2606
 epics:
   - MSSCI-14465
-  - MSSCI-14469
   - MSSCI-14510
   - MSSCI-14580
   - epic-93

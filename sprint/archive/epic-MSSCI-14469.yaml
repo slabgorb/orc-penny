@@ -36,9 +36,11 @@ stories:
       dialog openers.
     points: 1
     priority: P1
-    status: planning
+    status: done
     repos: pennyfarthing
     jira: MSSCI-14472
+    started: '2026-02-09'
+    completed: '2026-02-09'
 id: epic-84
 title: Composite Health Score
 jira: MSSCI-14469
@@ -49,7 +51,8 @@ description: |
   dead code (10%), deprecation debt (10%), dependency freshness (10%),
   agent context efficiency (10%). Calculates from cached tool results.
 priority: P2
-status: backlog
+status: done
 repos: pennyfarthing
 points: 5
 marker: cyclist
+completed: '2026-02-09'

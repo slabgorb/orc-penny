@@ -10,4 +10,5 @@ sprint:
 
 completed_epics:
   - MSSCI-14453
+  - MSSCI-14469
 completed_stories: []
