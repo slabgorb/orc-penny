@@ -23,9 +23,10 @@ stories:
       coloring. Tap to see dimension breakdown.
     points: 2
     priority: P0
-    status: planning
+    status: done
     repos: pennyfarthing
     jira: MSSCI-14471
+    completed: '2026-02-08'
   - id: 84-3
     title: Per-dimension drill-through from health gauge
     description: |
