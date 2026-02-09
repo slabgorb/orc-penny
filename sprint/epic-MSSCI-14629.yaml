@@ -41,11 +41,12 @@ stories:
       Out of scope: plugin discovery (93-3), core cleanup (93-5).
     points: 3
     priority: P0
-    status: backlog
+    status: in_progress
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
     jira: MSSCI-14631
+    started: '2026-02-09'
   - id: 93-3
     title: Plugin discovery for commands and skills from installed packages
     description: |
