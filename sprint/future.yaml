@@ -1,7 +1,7 @@
 future:
   initiatives:
-    - benchmarking
-    - agent-quality-awareness
-    - quality-scale
-    - technical-debt
-    - unsorted-backlog
+  - benchmarking
+  - agent-quality-awareness
+  - quality-scale
+  - technical-debt
+  - unsorted-backlog

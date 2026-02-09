@@ -1,0 +1,40 @@
+stories:
+  - id: 97-1
+    title: CLI statusline tandem indicator
+    description: |
+      CLI statusline shows [Primary Agent] + Backseat Agent when tandem
+      phase is active. Drops suffix when phase ends or backseat crashes.
+      No statusline protocol changes required. No indicator when no
+      tandem configuration exists.
+    points: 2
+    type: feature
+    priority: P0
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    acceptance_criteria: []
+  - id: 97-2
+    title: Ship tdd-tandem workflow
+    description: |
+      Ready-to-use tdd-tandem workflow definition. Standard TDD phase
+      sequence with tandem: { partner: architect, scope: file-watch }
+      on green phase. Non-tandem phases run identically to standard tdd.
+      Appears in workflow list with description.
+    points: 2
+    type: feature
+    priority: P1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    acceptance_criteria: []
+id: epic-97
+title: 'Epic: CLI Tandem & Shipping Workflow'
+description: |
+  CLI users see tandem status in their statusline, and the framework
+  ships tdd-tandem — a ready-to-use workflow demonstrating tandem in
+  action with Architect backseating during implementation phases.
+priority: P2
+status: backlog
+repos: pennyfarthing
+points: 4
+marker: feature

@@ -1,0 +1,42 @@
+stories:
+  - id: 94-1
+    title: Extend usePersona hook with streaming state
+    description: |
+      Expose isStreaming flag from usePersona hook reflecting whether the
+      agent is actively generating, so components can react to thinking state.
+      WebSocket delivers persona state updates; defaults to false when inactive.
+    points: 2
+    type: feature
+    priority: P0
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    acceptance_criteria: []
+  - id: 94-2
+    title: Apply thinking throbber to PersonaHeader portrait
+    description: |
+      Apply existing .avatar-thinking CSS class to PersonaHeader primary
+      portrait when isStreaming is true. Uses avatar-throb animation (1.2s
+      ease-in-out, scale 1.08, accent box-shadow glow). Supports compact
+      mode (40px) and prefers-reduced-motion (static opacity fallback).
+    points: 2
+    type: feature
+    priority: P0
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    acceptance_criteria: []
+id: epic-94
+title: 'Epic: Primary Portrait Thinking Indicator (Baseline Fix)'
+description: |
+  Users see a thinking throbber on the main agent portrait in Cyclist,
+  resolving a current UX gap where it's unclear when the agent is working.
+  Standalone improvement for all users regardless of tandem.
+
+  Extends usePersona hook with isStreaming flag and applies existing
+  avatar-throb animation to PersonaHeader primary portrait.
+priority: P1
+status: backlog
+repos: pennyfarthing
+points: 4
+marker: feature
