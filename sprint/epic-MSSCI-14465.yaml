@@ -13,7 +13,6 @@ stories:
     repos: pennyfarthing
     jira: MSSCI-14466
     completed: '2026-02-08'
-    assigned_to: keith.avery@1898andco.io
   - id: 83-2
     title: Python dependencies module
     description: |
