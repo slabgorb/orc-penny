@@ -11,4 +11,9 @@ sprint:
 completed_epics:
   - MSSCI-14453
   - MSSCI-14469
-completed_stories: []
+completed_stories:
+  - id: 83-3
+    epic: epic-83
+    title: "Complexity + Dependencies APIs + hooks + dialogs"
+    points: 2
+    completed: 2026-02-09

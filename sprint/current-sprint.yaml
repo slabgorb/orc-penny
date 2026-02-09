@@ -8,15 +8,19 @@ sprint:
   status: active
   number: 2606
 epics:
-  - MSSCI-14465
   - MSSCI-14510
   - MSSCI-14580
-  - epic-93
+  - MSSCI-14629
 stories:
   - id: MSSCI-14394
     jira: MSSCI-14394
     title: '[BUG] Subagent spans never clear on task completion'
-    description: "transformMessage() in MessagePanel.tsx drops tool_result blocks\nfrom user-type SDK messages. The existing cleanup code at lines\n279-287 never fires because the tool_result never becomes a\nMessageData. Fix: extract tool_result from user messages so\ncompleted subagent groups are removed from the view.\n"
+    description: |
+      transformMessage() in MessagePanel.tsx drops tool_result blocks
+      from user-type SDK messages. The existing cleanup code at lines
+      279-287 never fires because the tool_result never becomes a
+      MessageData. Fix: extract tool_result from user messages so
+      completed subagent groups are removed from the view.
     points: 2
     priority: P0
     status: done
@@ -26,7 +30,9 @@ stories:
   - id: MSSCI-14581
     jira: MSSCI-14581
     title: 'post-merge hook fails: find-root.sh not found at .git/lib/'
-    description: "Stale copied hooks in .git/hooks/ missing find-root.sh fallback.\nPR #756 adds framework repo detection to pennyfarthing doctor.\n"
+    description: |
+      Stale copied hooks in .git/hooks/ missing find-root.sh fallback.
+      PR #756 adds framework repo detection to pennyfarthing doctor.
     points: 2
     priority: P1
     status: review

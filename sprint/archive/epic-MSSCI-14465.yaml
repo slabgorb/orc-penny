@@ -37,11 +37,11 @@ stories:
       security section). Add buttons to DebugPanel launcher row.
     points: 2
     priority: P0
-    status: in_progress
+    status: done
     repos: pennyfarthing
     jira: MSSCI-14468
-    assigned_to: keith.avery@1898andco.io
     started: '2026-02-08'
+    completed: '2026-02-08'
 id: epic-83
 title: Complexity + Dependencies Tools
 jira: MSSCI-14465
@@ -52,7 +52,8 @@ description: |
   wrapping npm outdated --json and npm audit --json for staleness
   and security. Both in pennyfarthing_scripts/.
 priority: P2
-status: backlog
+status: done
 repos: pennyfarthing
 points: 6
 marker: cyclist
+completed: '2026-02-09'
