@@ -87,11 +87,13 @@ stories:
       Out of scope: historical results are dev-only data, not published.
     points: 2
     priority: P1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
     jira: MSSCI-14633
+    started: '2026-02-09'
+    completed: '2026-02-09'
   - id: 93-5
     title: 'Clean up @pennyfarthing/core: remove benchmark exports and API'
     description: |
