@@ -24,9 +24,10 @@ stories:
       DeprecationUsage with symbol, file, caller_count, callers list.
     points: 2
     priority: P1
-    status: planning
+    status: done
     repos: pennyfarthing
     jira: MSSCI-14455
+    completed: '2026-02-09'
   - id: 80-3
     title: Code markers API + React hook + dialog
     description: |
@@ -52,7 +53,8 @@ description: |
   for age and author. Flags stale markers (>90 days). Python backend
   in pennyfarthing_scripts/codemarkers/.
 priority: P1
-status: backlog
+status: done
 repos: pennyfarthing
 points: 5
 marker: cyclist
+completed: '2026-02-09'
