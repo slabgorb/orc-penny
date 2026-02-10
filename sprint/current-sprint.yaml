@@ -10,7 +10,6 @@ sprint:
 epics:
   - MSSCI-14510
   - MSSCI-14580
-  - MSSCI-14629
   - epic-94
   - epic-95
   - epic-96

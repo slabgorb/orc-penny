@@ -11,6 +11,7 @@ sprint:
 completed_epics:
   - MSSCI-14453
   - MSSCI-14469
+  - MSSCI-14629
 completed_stories:
   - id: 83-3
     epic: epic-83
@@ -18,7 +19,7 @@ completed_stories:
     points: 2
     completed: 2026-02-09
   - id: 93-1
-    epic: 
+    epic:
     title: "Create @pennyfarthing/benchmark package shell with TS modules"
     points: 3
     completed: 2026-02-09
