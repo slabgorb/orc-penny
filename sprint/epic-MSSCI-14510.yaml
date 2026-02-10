@@ -90,6 +90,7 @@ stories:
     repos: pennyfarthing
     jira: MSSCI-14705
     completed: '2026-02-10'
+    assigned_to: keith.avery@1898andco.io
   - id: 91-8
     title: Add Ruff to CI for Python scripts
     description: |
