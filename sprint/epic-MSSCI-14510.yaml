@@ -319,9 +319,9 @@ stories:
       - _merge_epic_shards() emits warning for each unresolvable ref instead of silent skip
       - Jira create epic checks for existing epic with same title before creating
       - Existing validator tests pass; new tests cover all five validation rules
-    started: '2026-02-10'
+    jira: MSSCI-14734
     assigned_to: keith.avery@1898andco.io
-    jira: MSSCI-14733
+    started: '2026-02-10'
     completed: '2026-02-10'
 id: epic-91
 title: Cross-File Reference & Schema Validation Pipeline
