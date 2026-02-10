@@ -10,10 +10,12 @@ stories:
     points: 2
     type: feature
     priority: P0
-    status: backlog
+    status: in_progress
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-10'
   - id: 97-2
     jira: MSSCI-14680
     title: Ship tdd-tandem workflow
