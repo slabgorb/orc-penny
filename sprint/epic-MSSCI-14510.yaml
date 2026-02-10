@@ -291,11 +291,12 @@ stories:
       goal, start_date, end_date, status, number.
     points: 1
     priority: P1
-    status: in_progress
+    status: done
     repos: pennyfarthing
     workflow: trivial
     assigned_to: keith.avery@1898andco.io
     started: '2026-02-10'
+    completed: '2026-02-10'
   - id: 91-24
     title: Sprint shard write-time validation and reference integrity
     description: |
