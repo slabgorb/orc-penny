@@ -269,6 +269,19 @@ stories:
     status: done
     repos: pennyfarthing
     completed: '2026-02-09'
+  - id: 91-25
+    jira: MSSCI-14719
+    title: Preserve assigned_to field through story lifecycle
+    description: |
+      Bug fix: story_finish and story_update were deleting assigned_to
+      when marking stories done, causing Sprint Panel to not show who
+      completed the work. Also adds auto-assignment on in_progress.
+    points: 2
+    priority: P1
+    status: done
+    repos: pennyfarthing
+    completed: '2026-02-10'
+    assigned_to: keith.avery@1898andco.io
   - id: 91-24
     title: Sprint shard write-time validation and reference integrity
     description: |
