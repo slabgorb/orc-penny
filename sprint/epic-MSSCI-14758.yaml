@@ -26,6 +26,13 @@ stories:
     workflow: trivial
     type: bug
     jira: MSSCI-14763
+  - id: 100-4
+    title: Remove persona name from quick agent picker
+    points: 1
+    priority: P1
+    status: backlog
+    workflow: trivial
+    type: chore
 id: '100'
 type: epic
 title: UI Tweak Bucket
