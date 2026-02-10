@@ -33,6 +33,35 @@ stories:
     status: backlog
     workflow: trivial
     type: chore
+  - id: 100-5
+    title: 'Sprint panel: show closed epics for current sprint'
+    points: 2
+    priority: P1
+    status: backlog
+    workflow: trivial
+    jira: MSSCI-14780
+  - id: 100-6
+    title: 'Sprint panel: sprint metrics from completed/current/future'
+    points: 3
+    priority: P1
+    status: backlog
+    workflow: tdd
+    jira: MSSCI-14781
+  - id: 100-7
+    title: 'Sprint panel: play button to start stories inline'
+    points: 3
+    priority: P1
+    status: backlog
+    workflow: tdd
+    jira: MSSCI-14782
+  - id: 100-8
+    title: 'Sprint panel: fix next-up to honor assigned_to field'
+    points: 2
+    priority: P1
+    status: backlog
+    workflow: trivial
+    type: bug
+    jira: MSSCI-14783
 id: '100'
 type: epic
 title: UI Tweak Bucket

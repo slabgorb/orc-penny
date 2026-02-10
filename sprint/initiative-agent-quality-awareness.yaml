@@ -1,18 +1,20 @@
-name: "Agent Quality & Awareness"
-description: |
-  Reduce agent friction by improving spatial awareness, inter-agent
+name: Agent Quality & Awareness
+description: 'Reduce agent friction by improving spatial awareness, inter-agent
+
   communication protocols, and observability. Sourced from Claude Code
-  Insights analysis (2026-02-06): 25 'wrong approach' incidents traced
+
+  Insights analysis (2026-02-06): 25 ''wrong approach'' incidents traced
+
   to missing repo topology, silent test-fix overrides, and ambiguous
+
   intent handling.
 
+
   Origin: Party Mode brainstorm on Insights report
+
+  '
 status: planning
-blocked_by:
+blocked_by: null
 total_points: 33
 epics:
-  - epic-87
-  - epic-88
-  - epic-89
-  - MSSCI-14662
-  - epic-92
+- epic-92

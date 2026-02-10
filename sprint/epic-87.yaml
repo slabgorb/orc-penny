@@ -1,22 +1,3 @@
-id: epic-87
-title: "Repo Topology & Agent Spatial Awareness"
-description: |
-  Extend repos.yaml with ownership boundaries, never-edit zones,
-  symlink mappings, UI layer identification, and rendering context.
-  This becomes the spatial awareness manifest every agent loads at
-  startup, preventing wrong-file/wrong-repo/wrong-layer errors.
-
-  The #1 friction category (25 incidents) in the Insights report is
-  agents targeting the wrong file or repo. A machine-readable topology
-  eliminates guesswork: agents know which repo owns which concerns,
-  where UI components live vs CLI, and what paths are off-limits.
-
-  Extends existing repos.yaml rather than creating a new file.
-priority: P1
-status: planning
-repos: pennyfarthing
-points: 5
-marker: infrastructure
 stories:
   - id: "87-1"
     title: "Extend repos.yaml schema with ownership and boundaries"
@@ -54,3 +35,22 @@ stories:
     priority: P1
     status: planning
     repos: pennyfarthing
+id: epic-87
+title: "Repo Topology & Agent Spatial Awareness"
+description: |
+  Extend repos.yaml with ownership boundaries, never-edit zones,
+  symlink mappings, UI layer identification, and rendering context.
+  This becomes the spatial awareness manifest every agent loads at
+  startup, preventing wrong-file/wrong-repo/wrong-layer errors.
+
+  The #1 friction category (25 incidents) in the Insights report is
+  agents targeting the wrong file or repo. A machine-readable topology
+  eliminates guesswork: agents know which repo owns which concerns,
+  where UI components live vs CLI, and what paths are off-limits.
+
+  Extends existing repos.yaml rather than creating a new file.
+priority: P1
+status: planning
+repos: pennyfarthing
+points: 5
+marker: infrastructure

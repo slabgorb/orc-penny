@@ -3,7 +3,7 @@ description: |
   Infrastructure cleanup and separation of concerns for maintainability.
 status: backlog
 blocked_by:
-total_points: 8
+total_points: 13
 epics: []
 standalone_stories:
   - id: 39-6
@@ -30,3 +30,20 @@ standalone_stories:
     status: backlog
     repos: both
     workflow: trivial
+  - id: td-2
+    title: Complete documentation overhaul — update all CLAUDE-*.md domain docs
+    description: |
+      Audit and update every CLAUDE-*.md domain doc to reflect the current
+      codebase. Covers CLAUDE.md (orchestrator), CLAUDE-CYCLIST.md, and any
+      other domain docs. Reconcile stale references, add missing components,
+      remove obsolete sections, and ensure file/directory tables match reality.
+      Use the agent-docs workflow (SM → Orchestrator → Tech Writer → SM).
+    points: 5
+    priority: P2
+    status: backlog
+    repos: both
+    workflow: agent-docs
+    type: chore
+    tags:
+      - agent-file
+      - documentation

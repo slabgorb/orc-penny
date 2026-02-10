@@ -1,21 +1,3 @@
-id: epic-90
-jira: MSSCI-14662
-title: "Confidence Circuit Breaker"
-description: |
-  Explore a pattern where agents pause and ask for clarification
-  when intent is ambiguous, rather than guessing and acting.
-  Spike to define the pattern, identify high-value trigger points,
-  and prototype in one agent persona.
-
-  The Insights report shows misinterpreted intent as a key friction
-  source — "continue" taken as "start next story", bug reports
-  mislocated to wrong UI layer, etc. A lightweight confidence
-  gate at decision points could reduce these errors.
-priority: P2
-status: planning
-repos: pennyfarthing
-points: 5
-marker: infrastructure
 stories:
   - id: "90-1"
     jira: MSSCI-14663
@@ -58,3 +40,21 @@ stories:
     priority: P1
     status: planning
     repos: pennyfarthing
+id: epic-90
+jira: MSSCI-14662
+title: "Confidence Circuit Breaker"
+description: |
+  Explore a pattern where agents pause and ask for clarification
+  when intent is ambiguous, rather than guessing and acting.
+  Spike to define the pattern, identify high-value trigger points,
+  and prototype in one agent persona.
+
+  The Insights report shows misinterpreted intent as a key friction
+  source — "continue" taken as "start next story", bug reports
+  mislocated to wrong UI layer, etc. A lightweight confidence
+  gate at decision points could reduce these errors.
+priority: P2
+status: planning
+repos: pennyfarthing
+points: 5
+marker: infrastructure
