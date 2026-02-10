@@ -1,5 +1,6 @@
 stories:
   - id: 95-1
+    jira: MSSCI-14666
     title: Tandem YAML schema and BikeLane validation
     description: |
       Parse tandem: block from workflow phase definitions (partner + scope).
@@ -14,6 +15,7 @@ stories:
     workflow: tdd
     acceptance_criteria: []
   - id: 95-2
+    jira: MSSCI-14667
     title: Backseat agent spawn and lifecycle
     description: |
       BikeLane spawns backseat agent as long-lived background subagent
@@ -28,6 +30,7 @@ stories:
     workflow: tdd
     acceptance_criteria: []
   - id: 95-3
+    jira: MSSCI-14668
     title: Observation file format and writer
     description: |
       Backseat writes observations to append-only markdown file at
@@ -42,6 +45,7 @@ stories:
     workflow: tdd
     acceptance_criteria: []
   - id: 95-4
+    jira: MSSCI-14669
     title: File-watch observation scope
     description: |
       Backseat with file-watch scope detects file changes (create, modify,
@@ -56,6 +60,7 @@ stories:
     workflow: tdd
     acceptance_criteria: []
   - id: 95-5
+    jira: MSSCI-14670
     title: Tool-watch observation scope
     description: |
       Backseat with tool-watch scope receives tool call information (name,
@@ -69,6 +74,7 @@ stories:
     workflow: tdd
     acceptance_criteria: []
   - id: 95-6
+    jira: MSSCI-14671
     title: Context-watch observation scope
     description: |
       Backseat with context-watch scope receives periodic conversation
@@ -83,6 +89,7 @@ stories:
     workflow: tdd
     acceptance_criteria: []
   - id: 95-7
+    jira: MSSCI-14672
     title: Bell mode observation injection
     description: |
       PostToolUse hook checks tandem observation file mtime for new content.
@@ -98,6 +105,7 @@ stories:
     workflow: tdd
     acceptance_criteria: []
 id: epic-95
+jira: MSSCI-14665
 title: 'Epic: Workflow Configuration & Observation Protocol'
 description: |
   Workflow authors can add tandem: blocks to their workflow YAML, and

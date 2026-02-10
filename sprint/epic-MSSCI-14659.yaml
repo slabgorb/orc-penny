@@ -1,5 +1,6 @@
 stories:
   - id: 94-1
+    jira: MSSCI-14660
     title: Extend usePersona hook with streaming state
     description: |
       Expose isStreaming flag from usePersona hook reflecting whether the
@@ -13,6 +14,7 @@ stories:
     workflow: trivial
     acceptance_criteria: []
   - id: 94-2
+    jira: MSSCI-14661
     title: Apply thinking throbber to PersonaHeader portrait
     description: |
       Apply existing .avatar-thinking CSS class to PersonaHeader primary
@@ -27,6 +29,7 @@ stories:
     workflow: trivial
     acceptance_criteria: []
 id: epic-94
+jira: MSSCI-14659
 title: 'Epic: Primary Portrait Thinking Indicator (Baseline Fix)'
 description: |
   Users see a thinking throbber on the main agent portrait in Cyclist,

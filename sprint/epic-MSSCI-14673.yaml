@@ -1,5 +1,6 @@
 stories:
   - id: 96-1
+    jira: MSSCI-14674
     title: TandemPortrait component
     description: |
       React component rendering backseat portrait below primary in
@@ -15,6 +16,7 @@ stories:
     workflow: tdd
     acceptance_criteria: []
   - id: 96-2
+    jira: MSSCI-14675
     title: Backseat thinking animation
     description: |
       New tandem-throb CSS keyframe (1.8s ease-in-out, scale 1.04,
@@ -29,6 +31,7 @@ stories:
     workflow: trivial
     acceptance_criteria: []
   - id: 96-3
+    jira: MSSCI-14676
     title: Observation pulse on primary portrait
     description: |
       New observation-pulse CSS keyframe (600ms ease-out, 12px/4px
@@ -43,6 +46,7 @@ stories:
     workflow: trivial
     acceptance_criteria: []
   - id: 96-4
+    jira: MSSCI-14677
     title: Tandem UI accessibility and responsive behavior
     description: |
       prefers-reduced-motion: all animations degrade to opacity/border
@@ -58,6 +62,7 @@ stories:
     workflow: trivial
     acceptance_criteria: []
 id: epic-96
+jira: MSSCI-14673
 title: 'Epic: Cyclist Tandem UI'
 description: |
   Users watching agents in Cyclist see the backseat portrait below the

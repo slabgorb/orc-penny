@@ -1,5 +1,6 @@
 stories:
   - id: 97-1
+    jira: MSSCI-14679
     title: CLI statusline tandem indicator
     description: |
       CLI statusline shows [Primary Agent] + Backseat Agent when tandem
@@ -14,6 +15,7 @@ stories:
     workflow: trivial
     acceptance_criteria: []
   - id: 97-2
+    jira: MSSCI-14680
     title: Ship tdd-tandem workflow
     description: |
       Ready-to-use tdd-tandem workflow definition. Standard TDD phase
@@ -28,6 +30,7 @@ stories:
     workflow: trivial
     acceptance_criteria: []
 id: epic-97
+jira: MSSCI-14678
 title: 'Epic: CLI Tandem & Shipping Workflow'
 description: |
   CLI users see tandem status in their statusline, and the framework

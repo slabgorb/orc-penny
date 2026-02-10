@@ -11,6 +11,7 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: trivial
+    jira: MSSCI-14698
   - id: 98-2
     title: Versioned migration runner infrastructure
     description: |
@@ -24,6 +25,7 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    jira: MSSCI-14699
   - id: 98-3
     title: Refactor update.ts inline migrations to migration files
     description: |
@@ -37,6 +39,7 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: trivial
+    jira: MSSCI-14700
   - id: 98-4
     title: Prefix built-in skills and commands with pf-
     description: |
@@ -50,6 +53,7 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    jira: MSSCI-14701
   - id: 98-5
     title: Sprint shard migration as versioned migration
     description: |
@@ -62,6 +66,7 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: trivial
+    jira: MSSCI-14702
   - id: 98-6
     title: Protective symlink pre-flight checks
     description: |
@@ -74,6 +79,7 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: trivial
+    jira: MSSCI-14703
   - id: 98-7
     title: Update agent definitions and docs for pf- skill references
     description: |
@@ -86,6 +92,7 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: trivial
+    jira: MSSCI-14704
 id: epic-98
 type: epic
 title: Safe Install, Upgrade, and Namespace Isolation
@@ -97,3 +104,4 @@ priority: P1
 status: backlog
 repos: pennyfarthing
 adr: '0021'
+jira: MSSCI-14697
