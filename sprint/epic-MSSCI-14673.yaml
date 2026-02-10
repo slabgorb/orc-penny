@@ -11,10 +11,11 @@ stories:
     points: 3
     type: feature
     priority: P0
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
+    completed: '2026-02-10'
   - id: 96-2
     jira: MSSCI-14675
     title: Backseat thinking animation
