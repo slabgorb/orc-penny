@@ -10,10 +10,10 @@ sprint:
 epics:
   - MSSCI-14510
   - MSSCI-14580
-  - MSSCI-14659
   - MSSCI-14665
   - MSSCI-14678
   - MSSCI-14697
+  - epic-99
 stories:
   - id: MSSCI-14394
     jira: MSSCI-14394

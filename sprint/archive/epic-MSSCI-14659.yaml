@@ -27,10 +27,13 @@ stories:
     points: 2
     type: feature
     priority: P0
-    status: backlog
+    status: done
     repos: pennyfarthing
-    workflow: trivial
+    workflow: tdd
     acceptance_criteria: []
+    started: '2026-02-10'
+    assigned_to: keith.avery@1898andco.io
+    completed: '2026-02-10'
 id: epic-94
 jira: MSSCI-14659
 title: 'Epic: Primary Portrait Thinking Indicator (Baseline Fix)'
@@ -42,7 +45,8 @@ description: |
   Extends usePersona hook with isStreaming flag and applies existing
   avatar-throb animation to PersonaHeader primary portrait.
 priority: P1
-status: backlog
+status: done
 repos: pennyfarthing
 points: 4
 marker: feature
+completed: '2026-02-10'

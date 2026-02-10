@@ -13,6 +13,7 @@ completed_epics:
   - MSSCI-14469
   - MSSCI-14629
   - MSSCI-14673
+  - MSSCI-14659
 completed_stories:
   - id: 83-3
     epic: epic-83
