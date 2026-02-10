@@ -282,6 +282,20 @@ stories:
     repos: pennyfarthing
     completed: '2026-02-10'
     assigned_to: keith.avery@1898andco.io
+  - id: 91-26
+    jira: MSSCI-14720
+    title: Enhance pf sprint info to return full sprint header
+    description: |
+      Existing pf sprint info only returns remaining/inProgress/endDate.
+      Add full sprint header fields: name, jira_sprint_id, jira_sprint_name,
+      goal, start_date, end_date, status, number.
+    points: 1
+    priority: P1
+    status: in_progress
+    repos: pennyfarthing
+    workflow: trivial
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-10'
   - id: 91-24
     title: Sprint shard write-time validation and reference integrity
     description: |
