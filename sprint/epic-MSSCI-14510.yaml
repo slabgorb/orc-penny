@@ -135,9 +135,11 @@ stories:
       24 workflow definitions, 3 variants (phased, stepped, procedural).
     points: 5
     priority: P2
-    status: planning
+    status: done
     repos: pennyfarthing
     jira: MSSCI-14709
+    assigned_to: keith.avery@1898andco.io
+    completed: '2026-02-10'
   - id: 91-12
     title: Agent definition structural validation
     description: |
