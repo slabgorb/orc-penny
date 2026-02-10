@@ -27,10 +27,13 @@ stories:
     points: 3
     type: feature
     priority: P0
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-10'
+    completed: '2026-02-10'
   - id: 95-3
     jira: MSSCI-14668
     title: Observation file format and writer
