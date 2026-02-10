@@ -291,7 +291,7 @@ BMAD workflows can be migrated to Pennyfarthing stepped format:
 
 ### 4. Full XML Instruction Engine
 
-**Not planned:** BMAD's XML format (`dev-story`) is powerful but complex. Pennyfarthing's TDD workflow already handles implementation well. Focus on planning workflows where stepped execution adds most value.
+**Not planned:** BMAD's XML format is powerful but complex. Pennyfarthing's TDD workflow already handles implementation well. Focus on planning workflows where stepped execution adds most value.
 
 ## Implementation Plan
 

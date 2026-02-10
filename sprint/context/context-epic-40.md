@@ -14,7 +14,7 @@ Adopt BMAD's scale-adaptive approach and extend brownfield codebase discovery. T
 ## Goals
 
 1. **Scale Levels (0-4)** - Define project scale levels from quick tasks to enterprise initiatives
-2. **Quick-Spec Workflow** - Lightweight specification for small changes (already exists, needs enhancement)
+2. **PRD Workflow for Small Changes** - Lightweight PRD mode for small changes (Level 1)
 3. **Enterprise Hooks** - Add extension points for large-scale enterprise workflows
 4. **Brownfield Discovery** - Enhance existing `brownfield scan` command (already implemented)
 5. **Convention Adoption** - Auto-detect and adopt project conventions from brownfield analysis
@@ -37,7 +37,7 @@ BMAD uses project scale levels to adapt workflow complexity:
 ### Current State
 
 Pennyfarthing has foundational components:
-- **Quick-spec workflow** exists at `pennyfarthing-dist/workflows/quick-spec/`
+- **PRD workflow** with tri-modal support at `pennyfarthing-dist/workflows/prd/`
 - **Brownfield discovery** implemented in `pennyfarthing_scripts/brownfield/`
 - **PRD workflow** with tri-modal support at `pennyfarthing-dist/workflows/prd/`
 
@@ -81,27 +81,6 @@ export interface ScaleDetectionResult {
 - [ ] Workflow schema supports `scale` trigger
 
 ---
-
-### Story 40-2: Quick-Spec Workflow Enhancement (3 points)
-
-**Goal:** Enhance quick-spec workflow to support scale-adaptive behavior.
-
-**Files to Modify:**
-- `pennyfarthing-dist/workflows/quick-spec/workflow.yaml` - Add scale triggers
-- `pennyfarthing-dist/workflows/quick-spec/steps/` - Enhance steps for scale awareness
-
-**Files to Create:**
-- `pennyfarthing-dist/workflows/quick-spec/steps/step-00-scale-check.md` - Initial scale detection
-
-**Technical Notes:**
-- Quick-spec should auto-activate for Level 0-1 tasks
-- Should gracefully escalate to full PRD workflow if complexity detected
-- Add step for rapid scope assessment
-
-**Acceptance Criteria:**
-- [ ] Quick-spec triggers for `scale: [0, 1]`
-- [ ] Scale escalation detection in step-01
-- [ ] Workflow completes in < 5 steps for Level 0
 
 ---
 
@@ -266,7 +245,6 @@ async def import_prd(
 | Path | Changes |
 |------|---------|
 | `pennyfarthing-dist/guides/workflow-schema.md` | Scale triggers, hooks |
-| `pennyfarthing-dist/workflows/quick-spec/workflow.yaml` | Scale level triggers |
 | `pennyfarthing_scripts/brownfield/discover.py` | Convention detection |
 | `pennyfarthing_scripts/brownfield/cli.py` | New subcommands |
 | `pennyfarthing-dist/workflows/prd/workflow.yaml` | Import mode |
@@ -308,7 +286,7 @@ async def import_prd(
 - PRD import → workflow continuation
 
 ### E2E Tests
-- Full quick-spec workflow for Level 0 task
+- Full PRD workflow for Level 1 task
 - Full enterprise workflow for Level 4 initiative
 - Brownfield scan → adopt → project setup
 
@@ -317,5 +295,4 @@ async def import_prd(
 - BMAD Scale-Adaptive Approach: `~/Projects/BMAD-METHOD/docs/scale-adaptation.md`
 - Existing brownfield: `pennyfarthing_scripts/brownfield/`
 - PRD workflow: `pennyfarthing-dist/workflows/prd/`
-- Quick-spec workflow: `pennyfarthing-dist/workflows/quick-spec/`
 - Workflow schema: `pennyfarthing-dist/guides/workflow-schema.md`
