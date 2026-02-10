@@ -14,6 +14,7 @@ completed_epics:
   - MSSCI-14629
   - MSSCI-14673
   - MSSCI-14659
+  - MSSCI-14678
 completed_stories:
   - id: 83-3
     epic: epic-83
@@ -27,7 +28,7 @@ completed_stories:
     completed: 2026-02-09
     pr: 771
   - id: 91-9
-    epic: 
+    epic:
     title: "Add markdownlint to CI"
     points: 2
     completed: 2026-02-10

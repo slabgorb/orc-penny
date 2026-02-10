@@ -28,10 +28,13 @@ stories:
     points: 2
     type: feature
     priority: P1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
+    assigned_to: Keith Avery
+    started: '2026-02-10'
+    completed: '2026-02-10'
 id: epic-97
 jira: MSSCI-14678
 title: 'Epic: CLI Tandem & Shipping Workflow'
@@ -40,7 +43,8 @@ description: |
   ships tdd-tandem — a ready-to-use workflow demonstrating tandem in
   action with Architect backseating during implementation phases.
 priority: P2
-status: backlog
+status: done
 repos: pennyfarthing
 points: 4
 marker: feature
+completed: '2026-02-10'
