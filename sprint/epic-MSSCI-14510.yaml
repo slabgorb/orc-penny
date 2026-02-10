@@ -88,6 +88,7 @@ stories:
     priority: P1
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14705
   - id: 91-8
     title: Add Ruff to CI for Python scripts
     description: |
@@ -97,6 +98,7 @@ stories:
     priority: P1
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14706
   - id: 91-9
     title: Add markdownlint to CI
     description: |
@@ -106,6 +108,7 @@ stories:
     priority: P2
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14707
   - id: 91-10
     title: Add yamllint for workflow and config files
     description: |
@@ -115,6 +118,7 @@ stories:
     priority: P2
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14708
   - id: 91-11
     title: Workflow YAML schema validation
     description: |
@@ -124,6 +128,7 @@ stories:
     priority: P2
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14709
   - id: 91-12
     title: Agent definition structural validation
     description: |
@@ -133,6 +138,7 @@ stories:
     priority: P2
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14710
   - id: 91-13
     title: Skill registry and command schema validation
     description: |
@@ -142,6 +148,7 @@ stories:
     priority: P3
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14711
   - id: 91-14
     title: Workflow graph validation
     description: |
@@ -151,6 +158,7 @@ stories:
     priority: P3
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14712
   - id: 91-15
     title: Cross-entity reference validation
     description: |
@@ -160,6 +168,7 @@ stories:
     priority: P3
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14713
   - id: 91-16
     jira: MSSCI-14517
     title: run-ci.md references wrong path for run-ci.sh
