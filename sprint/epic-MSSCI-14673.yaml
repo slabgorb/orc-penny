@@ -27,10 +27,12 @@ stories:
     points: 2
     type: feature
     priority: P0
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
+    started: '2026-02-10'
+    completed: '2026-02-10'
   - id: 96-3
     jira: MSSCI-14676
     title: Observation pulse on primary portrait
