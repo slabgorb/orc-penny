@@ -98,9 +98,11 @@ stories:
       files in pennyfarthing_scripts/.
     points: 1
     priority: P1
-    status: planning
+    status: done
     repos: pennyfarthing
     jira: MSSCI-14706
+    assigned_to: keith.avery@1898andco.io
+    completed: '2026-02-10'
   - id: 91-9
     title: Add markdownlint to CI
     description: |
