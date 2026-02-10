@@ -9,10 +9,12 @@ stories:
     points: 2
     type: feature
     priority: P0
-    status: backlog
+    status: in_progress
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-10'
   - id: 94-2
     jira: MSSCI-14661
     title: Apply thinking throbber to PersonaHeader portrait
