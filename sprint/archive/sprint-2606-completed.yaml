@@ -26,3 +26,9 @@ completed_stories:
     points: 3
     completed: 2026-02-09
     pr: 771
+  - id: 91-9
+    epic: 
+    title: "Add markdownlint to CI"
+    points: 2
+    completed: 2026-02-10
+    pr: 796

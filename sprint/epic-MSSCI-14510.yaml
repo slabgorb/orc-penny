@@ -110,9 +110,12 @@ stories:
       pennyfarthing-dist/**/*.md (300 files).
     points: 2
     priority: P2
-    status: planning
+    status: done
     repos: pennyfarthing
     jira: MSSCI-14707
+    started: '2026-02-10'
+    assigned_to: keith.avery@1898andco.io
+    completed: '2026-02-10'
   - id: 91-10
     title: Add yamllint for workflow and config files
     description: |
