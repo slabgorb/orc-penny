@@ -160,9 +160,11 @@ stories:
       structural validation. 49 commands, 22 skills.
     points: 3
     priority: P3
-    status: planning
+    status: done
     repos: pennyfarthing
     jira: MSSCI-14711
+    assigned_to: keith.avery@1898andco.io
+    completed: '2026-02-10'
   - id: 91-14
     title: Workflow graph validation
     description: |
