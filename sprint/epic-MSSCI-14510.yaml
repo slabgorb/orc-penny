@@ -267,6 +267,26 @@ stories:
     status: done
     repos: pennyfarthing
     completed: '2026-02-09'
+  - id: 91-24
+    title: Sprint shard write-time validation and reference integrity
+    description: |
+      Add validate_epic_shard() to validator.py and wire it into all four
+      epic write paths (epic_add, epic_promote, jira_create_epic, import_epic).
+      Harden _get_epic_ref() in yaml_io.py to normalize references and reject
+      double-prefix IDs. Add warnings to loader.py for unresolvable shard refs.
+      Add Jira idempotency check before epic creation. See ADR-0022.
+    points: 5
+    priority: P0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria:
+      - validate_epic_shard() rejects epics missing id, title, status, or stories
+      - _get_epic_ref() strips epic- prefix from IDs to prevent double-prefix filenames
+      - epic_add, epic_promote, jira_create_epic, and import_epic all call validator before write
+      - _merge_epic_shards() emits warning for each unresolvable ref instead of silent skip
+      - Jira create epic checks for existing epic with same title before creating
+      - Existing validator tests pass; new tests cover all five validation rules
 id: epic-91
 title: Cross-File Reference & Schema Validation Pipeline
 description: |
