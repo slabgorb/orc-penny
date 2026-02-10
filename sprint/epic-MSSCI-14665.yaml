@@ -96,10 +96,12 @@ stories:
     points: 3
     type: feature
     priority: P1
-    status: backlog
+    status: in_progress
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-10'
   - id: 95-7
     jira: MSSCI-14672
     title: Bell mode observation injection
