@@ -93,6 +93,25 @@ stories:
     repos: pennyfarthing
     workflow: trivial
     jira: MSSCI-14704
+  - id: 98-8
+    title: Fix Cyclist false-positive detection in CLI mode
+    description: |
+      is_cyclist_running() in hooks.py checks for .cyclist-port file existence,
+      which gives false positives when the file is stale (Cyclist shut down
+      without cleanup). Cannot use HTTP health check — fires on every
+      PreToolUse hook invocation and must be zero-latency. Need an alternative
+      detection mechanism: e.g., PID file validation, lock file with flock, or
+      a lightweight IPC check. Scope: hooks.py is_cyclist_running(), Cyclist
+      startup/shutdown port file lifecycle.
+    points: 3
+    priority: P0
+    status: done
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+    jira: MSSCI-14722
+    assigned_to: keith.avery@1898andco.io
+    completed: '2026-02-10'
 id: epic-98
 type: epic
 title: Safe Install, Upgrade, and Namespace Isolation
