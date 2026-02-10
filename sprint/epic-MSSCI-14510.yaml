@@ -140,9 +140,12 @@ stories:
       19 agent files.
     points: 5
     priority: P2
-    status: planning
+    status: done
     repos: pennyfarthing
     jira: MSSCI-14710
+    assigned_to: K. Avery
+    started: '2026-02-10'
+    completed: '2026-02-10'
   - id: 91-13
     title: Skill registry and command schema validation
     description: |

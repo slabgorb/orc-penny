@@ -13,7 +13,7 @@ epics:
   - MSSCI-14665
   - MSSCI-14678
   - MSSCI-14697
-  - epic-99
+  - '99'
 stories:
   - id: MSSCI-14394
     jira: MSSCI-14394
