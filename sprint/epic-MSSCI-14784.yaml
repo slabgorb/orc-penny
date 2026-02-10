@@ -13,6 +13,7 @@ stories:
     priority: P0
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14785
   - id: "87-2"
     title: "Wire topology into agent prime context"
     description: |
@@ -24,6 +25,7 @@ stories:
     priority: P0
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14786
   - id: "87-3"
     title: "Add topology validation to pre-edit guide"
     description: |
@@ -35,6 +37,7 @@ stories:
     priority: P1
     status: planning
     repos: pennyfarthing
+    jira: MSSCI-14787
 id: 87
 title: "Repo Topology & Agent Spatial Awareness"
 description: |
@@ -54,3 +57,4 @@ status: planning
 repos: pennyfarthing
 points: 5
 marker: infrastructure
+jira: MSSCI-14784
