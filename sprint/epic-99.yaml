@@ -1,0 +1,15 @@
+stories:
+  - id: 99-1
+    title: Fix pf sprint story finish when Jira key missing from shard YAML
+    points: 2
+    priority: P1
+    status: backlog
+    workflow: trivial
+    type: bug
+id: epic-99
+type: epic
+title: Sprint CLI Bug Fixes
+description: Fix bugs in pf sprint CLI commands discovered during sprint work
+priority: P1
+status: backlog
+repos: pennyfarthing
