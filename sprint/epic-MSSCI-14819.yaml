@@ -146,10 +146,12 @@ stories:
       Ref: ADR-0024, Rules 5/8, CE-4, Launcher CLI spec
     points: 3
     priority: P0
-    status: backlog
+    status: done
     workflow: tdd-tandem
     repos: pennyfarthing
     jira: MSSCI-14824
+    assigned_to: keith.avery@1898andco.io
+    completed: '2026-02-11'
   - id: 101-6
     title: BikeRack integration test and operational verification
     description: |
