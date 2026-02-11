@@ -19,7 +19,7 @@ documentCounts:
   brainstormingCount: 0
   projectDocsCount: 0
 classification:
-  projectType: Desktop App (Electron) / Developer Tooling
+  projectType: Web App / Developer Tooling
   domain: Developer Experience (DX) / Agent Infrastructure
   complexity: Medium
   projectContext: brownfield
@@ -69,20 +69,19 @@ classification:
 
 1. **BikeRack launcher command** — starts WheelHub in background, launches Claude CLI with OTEL config in foreground
 2. **WheelHub standalone mode** — runs without Claude session management (no MessagePanel, no session spawning)
-3. **Web mode only** — panels served via WheelHub HTTP, opened in browser; user arranges via browser tabs, tiling, or OS window management. No dockview/Electron layout for MVP.
+3. **Browser-based dockview layout** — panels served via WheelHub HTTP, opened in browser with dockview-react layout. No Electron dependency.
 4. **New PortraitPanel** — agent identity display with tandem mode support
 
 ### Growth Features (Post-MVP)
 
-1. Multi-session support — multiple CLI terminals feeding one dashboard
+1. Multi-session per folder — multiple CLI terminals in the same folder feeding one dashboard
 2. BikeRack-specific settings panel — configure dashboard layout, panel preferences
-3. Session picker — switch between active CLI sessions
+3. Cross-folder session picker — view/switch between BikeRack sessions from different project folders
 
 ### Vision (Future)
 
-1. BikeRack as a standalone installable (without full Cyclist/Electron)
-2. Browser-only mode — pure web dashboard, no Electron dependency
-3. Team dashboard — multiple developers' sessions on one screen
+1. BikeRack as a standalone installable (without full Cyclist)
+2. Team dashboard — multiple developers' sessions on one screen
 
 ### Out of Scope
 
@@ -91,10 +90,10 @@ classification:
 - **Bell mode** — message queue injection is a Cyclist feature; dormant via `IS_BIKERACK`
 - **Permissions/ApprovalModal** — CLI handles its own permission prompts natively
 - **Reflector markers** — drive QuickActions in Cyclist's message view, not relevant to BikeRack
-- **Dockview/Electron layout** — web mode only for MVP; users arrange panels via browser/OS
+- **Electron** — BikeRack is browser-based with dockview; no Electron dependency
 - **Hook registration** — BikeRack does not register Cyclist-specific hooks; only configures OTEL
 - **Panel bug fixes** — BikeRack ships existing panels as-is; panel data issues are separate work
-- **Multi-session support** — single session for MVP (Growth feature)
+- **Multi-session per folder** — one session per folder for MVP
 - **HotspotsPanel** — deprecated, not included
 
 ## User Journeys
@@ -119,7 +118,7 @@ Keith closes his browser tab mid-session. Claude keeps running in the terminal �
 
 ### Journey 4: New User On-Ramp
 
-A colleague sees Keith's dashboard. "What's that?" Keith explains BikeRack. The colleague installs Pennyfarthing, runs `bikerack`, and gets the same experience without learning Cyclist's full Electron app. The panels teach them what Pennyfarthing tracks by simply being visible.
+A colleague sees Keith's dashboard. "What's that?" Keith explains BikeRack. The colleague installs Pennyfarthing, runs `bikerack`, and gets the same experience without learning Cyclist's full app. The panels teach them what Pennyfarthing tracks by simply being visible.
 
 **Capabilities revealed:** Low barrier to entry, self-explanatory panel layout, no Cyclist prerequisite knowledge needed.
 
@@ -136,7 +135,7 @@ A colleague sees Keith's dashboard. "What's that?" Keith explains BikeRack. The 
 
 ### Architecture Overview
 
-BikeRack is a new mode within Cyclist that decouples the WheelHub dashboard server from Claude session management. It reuses all existing infrastructure — WheelHub HTTP/WebSocket server, OTEL receiver, file watchers, panel React components — and serves them via web mode to the user's browser.
+BikeRack is a new mode within Cyclist that decouples the WheelHub dashboard server from Claude session management. It reuses all existing infrastructure — WheelHub HTTP/WebSocket server, OTEL receiver, file watchers, panel React components, dockview-react layout — and serves them via browser (no Electron). Each folder gets its own BikeRack session (one WheelHub instance per project directory).
 
 The central mode switch is the `IS_BIKERACK` environment variable. When set, WheelHub skips ClaudeService process management and Cyclist-specific features (bell mode, permissions, reflector) auto-skip via their existing guards.
 
@@ -152,7 +151,7 @@ A `just` recipe or Python CLI command (e.g., `just bikerack` or `pf bikerack`) t
 ### Key Technical Constraints
 
 - WheelHub must start without its Claude session spawning logic — it receives OTEL data but doesn't manage the Claude process lifecycle
-- Panels served as individual web pages/routes, no Electron renderer needed
+- Panels served via browser with dockview-react layout, no Electron renderer needed
 - Existing WebSocket channels (`/ws/sprint`, `/ws/git`, `/ws/diffs`, etc.) work unchanged
 - File watchers (sprint YAML, session files, git) work unchanged since they watch the filesystem, not the Claude process
 
@@ -162,7 +161,7 @@ A `just` recipe or Python CLI command (e.g., `just bikerack` or `pf bikerack`) t
 - New PortraitPanel extracts portrait rendering from MessageView into a standalone panel component
 - WheelHub needs a "bikerack" startup mode gated by `IS_BIKERACK` env var — skips ClaudeService process management
 - `IS_BIKERACK` env var is the single mode switch: WheelHub checks it on startup, Cyclist-specific features (bell mode, permissions, reflector) auto-skip based on it
-- Web serving of panel pages needs a simple index/routing layer
+- Browser-served dockview layout reuses existing panel components with a BikeRack-specific panel roster (no MessagePanel, no SettingsPanel)
 - Cyclist-specific hook features already have "skip if not Cyclist" guards — no new isolation work needed, `IS_BIKERACK` ensures they stay dormant
 
 ## Functional Requirements
@@ -186,8 +185,8 @@ A `just` recipe or Python CLI command (e.g., `just bikerack` or `pf bikerack`) t
 
 ### Web Panel Serving
 
-- **FR-12:** WheelHub serves panel pages via HTTP in BikeRack mode, accessible in any browser
-- **FR-13:** Each first-class panel is accessible as a standalone web page
+- **FR-12:** WheelHub serves the BikeRack dashboard via HTTP in BikeRack mode, accessible in any browser
+- **FR-13:** Panels are rendered in a dockview-react layout in the browser, reusing existing panel components
 - **FR-14:** Panels connect to WheelHub via WebSocket and receive initial state on connection
 - **FR-15:** Panels reconnect automatically after browser tab close/reopen with current state recovery
 
