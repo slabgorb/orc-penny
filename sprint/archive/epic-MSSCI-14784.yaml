@@ -42,10 +42,12 @@ stories:
       Add worked examples of common mistakes (symlink, node_modules).
     points: 1
     priority: P1
-    status: planning
+    status: done
     repos: pennyfarthing
     jira: MSSCI-14787
     workflow: tdd-tandem
+    assigned_to: keith.avery@1898andco.io
+    completed: '2026-02-11'
 id: "87"
 title: "Repo Topology & Agent Spatial Awareness"
 description: |
@@ -61,8 +63,9 @@ description: |
 
   Extends existing repos.yaml rather than creating a new file.
 priority: P1
-status: planning
+status: done
 repos: pennyfarthing
 points: 5
 marker: infrastructure
 jira: MSSCI-14784
+completed: '2026-02-11'
