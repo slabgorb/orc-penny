@@ -1,5 +1,12 @@
 # Repository Configuration for pennyfarthing-orchestrator
 # This is a framework-development orchestrator with the pennyfarthing repo inlined
+#
+# Topology fields (Story 87-1) give agents spatial awareness:
+#   owns:            Glob patterns for directories this repo is responsible for
+#   never_edit:      Off-limits paths (symlinks, build output, dependencies)
+#   symlinks:        Mapping of symlink paths → actual source locations
+#   ui_layer:        Rendering context (react | cli | none)
+#   components_path: Where UI components live (optional, for repos with ui_layer)
 
 repos:
   orchestrator:
@@ -8,6 +15,33 @@ repos:
     description: Sprint management and framework development coordination
     language: javascript
     build_command: npm install
+    owns:
+      - sprint/**
+      - docs/**
+      - .session/**
+      - justfile
+    never_edit:
+      - node_modules/**
+      - .pennyfarthing/agents/**
+      - .pennyfarthing/commands/**
+      - .pennyfarthing/guides/**
+      - .pennyfarthing/personas/**
+      - .pennyfarthing/scripts/**
+      - .pennyfarthing/skills/**
+      - .pennyfarthing/workflows/**
+      - .pennyfarthing/templates/**
+      - .pennyfarthing/output-styles/**
+    symlinks:
+      .pennyfarthing/agents: pennyfarthing/pennyfarthing-dist/agents
+      .pennyfarthing/commands: pennyfarthing/pennyfarthing-dist/commands
+      .pennyfarthing/guides: pennyfarthing/pennyfarthing-dist/guides
+      .pennyfarthing/personas: pennyfarthing/pennyfarthing-dist/personas
+      .pennyfarthing/scripts: pennyfarthing/pennyfarthing-dist/scripts
+      .pennyfarthing/skills: pennyfarthing/pennyfarthing-dist/skills
+      .pennyfarthing/workflows: pennyfarthing/pennyfarthing-dist/workflows
+      .pennyfarthing/templates: pennyfarthing/pennyfarthing-dist/templates
+      .pennyfarthing/output-styles: pennyfarthing/pennyfarthing-dist/output-styles
+    ui_layer: none
 
   pennyfarthing:
     path: pennyfarthing
@@ -21,6 +55,19 @@ repos:
       This is the pennyfarthing framework repo, cloned inline for development.
       Changes here should be committed to the pennyfarthing repo, not the orchestrator.
       After building, the pennyfarthing-dist/ output is published to npm as @pennyfarthing/core.
+    owns:
+      - pennyfarthing-dist/**
+      - packages/**
+      - pennyfarthing_scripts/**
+      - tests/**
+      - scripts/**
+    never_edit:
+      - node_modules/**
+      - packages/*/dist/**
+      - "*.tsbuildinfo"
+    symlinks: {}
+    ui_layer: react
+    components_path: packages/cyclist/src/components
 
 # Architecture notes:
 # - Unlike other orchestrators (conductor, siemulator) which have api/ui subrepos,
