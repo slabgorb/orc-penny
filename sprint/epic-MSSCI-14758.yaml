@@ -22,10 +22,12 @@ stories:
     title: Style ACPanel with Tufte treatment
     points: 2
     priority: P1
-    status: backlog
-    workflow: trivial
+    status: done
+    workflow: bdd-tandem
     type: bug
     jira: MSSCI-14763
+    assigned_to: keith.avery@1898andco.io
+    completed: '2026-02-11'
   - id: 100-4
     title: Remove persona name from quick agent picker
     points: 1

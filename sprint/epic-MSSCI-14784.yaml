@@ -14,6 +14,7 @@ stories:
     status: planning
     repos: pennyfarthing
     jira: MSSCI-14785
+    workflow: tdd-tandem
   - id: "87-2"
     title: "Wire topology into agent prime context"
     description: |
@@ -26,6 +27,7 @@ stories:
     status: planning
     repos: pennyfarthing
     jira: MSSCI-14786
+    workflow: tdd-tandem
   - id: "87-3"
     title: "Add topology validation to pre-edit guide"
     description: |
@@ -38,6 +40,7 @@ stories:
     status: planning
     repos: pennyfarthing
     jira: MSSCI-14787
+    workflow: tdd-tandem
 id: "87"
 title: "Repo Topology & Agent Spatial Awareness"
 description: |

@@ -135,7 +135,8 @@ description: |
   three observation scopes (file-watch, tool-watch, context-watch),
   and bell mode injection.
 priority: P1
-status: backlog
+status: done
 repos: pennyfarthing
 points: 20
 marker: feature
+completed: '2026-02-11'
