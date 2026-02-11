@@ -11,12 +11,13 @@ stories:
       Validate schema with yq on commit.
     points: 2
     priority: P0
-    status: in_progress
+    status: done
     repos: pennyfarthing
     jira: MSSCI-14785
     workflow: tdd-tandem
     assigned_to: keith.avery@1898andco.io
     started: '2026-02-11'
+    completed: '2026-02-11'
   - id: "87-2"
     title: "Wire topology into agent prime context"
     description: |
