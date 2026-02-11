@@ -85,11 +85,12 @@ stories:
          instead of filtering active epics
     points: 3
     priority: P1
-    status: in_progress
+    status: done
     workflow: tdd
     repos: pennyfarthing
     assigned_to: keithavery
     started: '2026-02-11'
+    completed: '2026-02-11'
 id: '100'
 type: epic
 title: UI Tweak Bucket
