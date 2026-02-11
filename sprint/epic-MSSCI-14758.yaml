@@ -32,9 +32,12 @@ stories:
     title: Remove persona name from quick agent picker
     points: 1
     priority: P1
-    status: backlog
+    status: done
     workflow: trivial
     type: chore
+    jira: MSSCI-14797
+    assigned_to: keith.avery@1898andco.io
+    completed: "2026-02-11"
   - id: 100-5
     title: 'Sprint panel: show closed epics for current sprint'
     points: 2
