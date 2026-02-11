@@ -120,10 +120,12 @@ stories:
       Ref: ADR-0024, Rules 2/3, CE-1/CE-5, Contract 4
     points: 2
     priority: P1
-    status: backlog
+    status: done
     workflow: tdd-tandem
     repos: pennyfarthing
     jira: MSSCI-14823
+    assigned_to: keith.avery@1898andco.io
+    completed: '2026-02-11'
   - id: 101-5
     title: BikeRack launcher CLI (pf bikerack start/stop/status)
     description: |
@@ -177,15 +179,18 @@ stories:
       Ref: ADR-0024, Operational Readiness checklist
     points: 2
     priority: P1
-    status: backlog
+    status: done
     workflow: tdd-tandem
     repos: pennyfarthing
     jira: MSSCI-14825
+    assigned_to: keith.avery@1898andco.io
+    completed: '2026-02-11'
 id: '101'
 type: epic
 title: BikeRack Mode — Decoupled WheelHub Dashboard
 description: Decoupled WheelHub dashboard for CLI-first developers. Panels served individually via browser tabs, OTEL telemetry from standalone Claude CLI. See ADR-0024 and sprint/planning/bikerack-prd.md.
 priority: P1
-status: in_progress
+status: done
 repos: pennyfarthing
 jira: MSSCI-14819
+completed: '2026-02-11'
