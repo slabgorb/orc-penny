@@ -1,28 +1,23 @@
 stories:
   - id: "90-1"
     jira: MSSCI-14663
-    title: "Spike: define confidence circuit breaker pattern"
-    description: |
-      Research and document the pattern:
-      - What triggers a confidence check? (ambiguous verbs like
-        "continue", "fix", "update" without clear target)
-      - What does the agent do? (ask a clarifying question with
-        options, not open-ended)
-      - How to avoid being annoying? (only trigger when >1 valid
-        interpretation exists, never for routine operations)
-      Output: ADR or design doc with pattern definition and examples.
+    title: "Spike: define confidence circuit breaker pattern (DONE — Gate PRD)"
+    description: |-
+      Resolved by the BikeLane Gate Extraction PRD (sprint/planning/gate-prd.md). The gate file schema defines how agents run structured checks at decision points. The confidence circuit breaker is an application of this pattern — a gate that checks instruction ambiguity before acting.
     points: 2
     priority: P0
-    status: planning
+    status: done
     repos: pennyfarthing
+    completed: '2026-02-11'
   - id: "90-2"
     jira: MSSCI-14664
-    title: "Prototype: SM agent confidence gate"
-    description: |
-      Implement confidence circuit breaker in the SM agent as
-      a pilot. SM is highest-friction for ambiguous commands
-      ("continue", "next", "start"). Add decision logic to SM
-      guide that pauses on ambiguous instructions.
+    title: "Implement SM confidence gate file"
+    description: |-
+      Create a confidence gate file (gates/confidence-sm.md) using the Gate PRD schema. The gate checks whether an instruction to the SM agent is ambiguous (e.g. "continue", "next", "start" without clear target). If ambiguous, <fail> returns clarifying options. If unambiguous, <pass> lets the agent proceed.
+
+      This is the first gate file authored under the Gate Extraction system — validates the schema, runner, and model inheritance in a real workflow context.
+
+      Depends on: Gate subagent runner (FR-2), gate file schema (FR-1).
     points: 2
     priority: P1
     status: planning
@@ -42,17 +37,13 @@ stories:
     repos: pennyfarthing
 id: epic-90
 jira: MSSCI-14662
-title: "Confidence Circuit Breaker"
-description: |
-  Explore a pattern where agents pause and ask for clarification
-  when intent is ambiguous, rather than guessing and acting.
-  Spike to define the pattern, identify high-value trigger points,
-  and prototype in one agent persona.
+title: "Confidence Circuit Breaker (via Gate)"
+description: |-
+  Implement confidence gates using the BikeLane Gate Extraction system (gate-prd.md). Agents pause and ask for clarification when intent is ambiguous, using gate files rather than ad-hoc decision logic.
 
-  The Insights report shows misinterpreted intent as a key friction
-  source — "continue" taken as "start next story", bug reports
-  mislocated to wrong UI layer, etc. A lightweight confidence
-  gate at decision points could reduce these errors.
+  The Gate PRD defines the file schema (<gate>, <purpose>, <pass>, <fail>), subagent runner, model inheritance, and nesting. This epic applies that system to the confidence circuit breaker pattern — gate files that check whether an instruction is ambiguous before an agent acts on it.
+
+  Spike outcome: the Gate PRD is the pattern. No separate ADR needed.
 priority: P2
 status: planning
 repos: pennyfarthing
