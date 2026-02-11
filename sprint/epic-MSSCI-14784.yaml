@@ -38,7 +38,7 @@ stories:
     status: planning
     repos: pennyfarthing
     jira: MSSCI-14787
-id: 87
+id: "87"
 title: "Repo Topology & Agent Spatial Awareness"
 description: |
   Extend repos.yaml with ownership boundaries, never-edit zones,
