@@ -85,9 +85,10 @@ stories:
       Ref: ADR-0024, Pattern 3 (index page)
     points: 1
     priority: P1
-    status: backlog
+    status: done
     workflow: tdd-tandem
     repos: pennyfarthing
+    completed: "2026-02-11"
   - id: 101-4
     title: PortraitPanel with tandem support
     description: |

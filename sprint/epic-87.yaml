@@ -11,8 +11,9 @@ stories:
       Validate schema with yq on commit.
     points: 2
     priority: P0
-    status: planning
+    status: done
     repos: pennyfarthing
+    completed: "2026-02-11"
   - id: "87-2"
     title: "Wire topology into agent prime context"
     description: |
