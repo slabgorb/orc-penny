@@ -14,7 +14,7 @@ Sprint management stays here. Framework development happens in `pennyfarthing/`.
 <critical>
 ## Rules
 
-1. **Never edit `.pennyfarthing/` symlinked directories** — they point to node_modules - edit them in the child repo `pennyfarthing/pennyfarthing-dist`
+1. **Never edit `.pennyfarthing/` symlinked directories** — they point to `pennyfarthing/pennyfarthing-dist/` - edit them in the child repo
 2. **Never edit sprint YAML directly** — use scripts
 3. **Sidecars are local** — `.pennyfarthing/sidecars/` is writable, captures agent learnings
 4. **Publishing framework** — after changes in `pennyfarthing/`, build and publish to npm
@@ -55,12 +55,12 @@ git add sprint/ && git commit -m "chore(sprint): update status"
 
 | Directory | Purpose |
 |-----------|---------|
-| `.pennyfarthing/` | Runtime framework (symlinks to node_modules) — agents, guides, personas, scripts, workflows |
+| `.pennyfarthing/` | Runtime framework (symlinks to `pennyfarthing/pennyfarthing-dist/`) — agents, guides, personas, scripts, workflows |
 | `.pennyfarthing/sidecars/` | Agent learning files (local, writable, NOT symlinked) |
 | `pennyfarthing/` | Inlined framework source repo |
-| `sprint/` | Sprint tracking — `current-sprint.yaml` (index), `epic-*.yaml` (per-epic shards), `future.yaml`, `completed.yaml`, `context/` |
+| `sprint/` | Sprint tracking — `current-sprint.yaml` (index), `epic-*.yaml` (per-epic shards), `planning/`, `context/` |
 | `.session/` | Active work sessions |
-| `docs/` | Documentation — `adr/` (Architecture Decision Records), `planning/` |
+| `docs/` | Documentation — `adr/` (Architecture Decision Records) |
 | `justfile` | Task runner recipes (`just help` for list) |
 </info>
 
@@ -121,6 +121,7 @@ Use `/workflow list` to see available workflows, `/workflow` to check current st
 | `packages/core/` | Main package (`@pennyfarthing/core`) — CLI: init, update, doctor, uninstall |
 | `packages/cyclist/` | Visual terminal (Electron, React 19, Tailwind v4, shadcn/ui, dockview panels) |
 | `packages/shared/` | Shared utilities (portrait resolution, YAML helpers, marker detection) |
+| `packages/benchmark/` | Performance benchmarking and persona evaluation |
 | `packages/themes-*/` | Theme packages (comedy, literary, mythology-fantasy, prestige-tv, realistic, scifi, superheroes) |
 | `pennyfarthing_scripts/` | Distributed Python package (hooks, jira, sprint, story, prime) |
 | `tests/` | Framework tests |
@@ -144,7 +145,7 @@ Electron app: React 19, Tailwind v4, shadcn/ui, dockview-react panels.
 
 **Key components:** `DockviewWorkspace.tsx` (layout), `MessageView.tsx` (conversation), `ToolCallBlock.tsx` / `ToolStack.tsx` (tool visualization), `QuickActions.tsx` (Reflector marker detection)
 
-**Panels:** MessagePanel (sacred center), ChangedPanel, DiffsPanel, SprintPanel, ProgressPanel, BikeLanePanel, AcceptanceCriteriaPanel, SettingsPanel, DebugPanel, GitPanel, BackgroundPanel, TodoPanel, AuditLogPanel, TTYPanel, WorkflowPanel
+**Panels:** MessagePanel (sacred center), ChangedPanel, DiffsPanel, SprintPanel, BikeLanePanel, ACPanel, AcceptanceCriteriaPanel, SettingsPanel, DebugPanel, GitPanel, BackgroundPanel, TodoPanel, AuditLogPanel, TTYPanel, WorkflowPanel, HotspotsPanel
 </info>
 
 <context>
