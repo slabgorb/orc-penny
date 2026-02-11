@@ -52,9 +52,11 @@ stories:
     title: 'Sprint panel: sprint metrics from completed/current/future'
     points: 3
     priority: P1
-    status: backlog
+    status: in_progress
     workflow: tdd
     jira: MSSCI-14781
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-11'
   - id: 100-7
     title: 'Sprint panel: play button to start stories inline'
     points: 3
