@@ -70,6 +70,24 @@ stories:
     workflow: trivial
     type: bug
     jira: MSSCI-14783
+  - id: 100-9
+    title: 'Sprint panel: wire archived epics into completed section'
+    description: |
+      The completed epics section in SprintPanel currently filters active
+      epics by done status. It needs to load actually archived epics from
+      sprint/sprint-{N}-completed.yaml and sprint/archive/epic-*.yaml.
+
+      1. Backfill id/title metadata into archived epic YAML shards
+      2. Update sprint-data.ts to read sprint-{N}-completed.yaml, resolve
+         epic refs from sprint/archive/, serve as completedEpics field
+      3. Add completedEpics to SprintData type and useSprint hook
+      4. Wire SprintPanel completed section to use server-provided data
+         instead of filtering active epics
+    points: 3
+    priority: P1
+    status: backlog
+    workflow: tdd
+    repos: pennyfarthing
 id: '100'
 type: epic
 title: UI Tweak Bucket
