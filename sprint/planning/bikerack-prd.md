@@ -74,15 +74,35 @@ classification:
 
 ### Growth Features (Post-MVP)
 
-1. Multi-session support — multiple CLI terminals feeding one dashboard
-2. BikeRack-specific settings panel — configure dashboard layout, panel preferences
-3. Session picker — switch between active CLI sessions
+1. **CLI-driven panel focus** — `/brc show {panel}` surfaces a specific panel from the keyboard without leaving the terminal (~5 pts, Idea A)
+2. **Telemetry capture & replay** — BikeRack always writes telemetry to disk; replay feeds it back through the same pipeline for post-session review, debugging, async code review, and onboarding (~12 pts, Idea D)
+3. **BikeRack-specific settings panel** — configure dashboard layout, panel preferences
+4. **PortraitPanel party mode** — extend solo/tandem display to 3+ agent swarm sessions when swarm workflows land (Idea I)
 
 ### Vision (Future)
 
+> **Terminology:** The ecosystem has distinct roles that benefit from distinct names. See [Glossary](#glossary) for definitions.
+
+**Standalone & CLI integration:**
 1. BikeRack as a standalone installable (without full Cyclist/Electron)
 2. Browser-only mode — pure web dashboard, no Electron dependency
-3. Team dashboard — multiple developers' sessions on one screen
+3. Status line connection indicators — colored circles showing BikeShop connection health (Idea K)
+
+**Multi-session (requires BikeShop):**
+4. BikeShop as multi-session router — multiple BikeRacks feed one BikeShop, visible in the ShowRoom (~25 pts, Ideas B+E)
+5. ShowRoom dashboard — always-on BikeShop overview with session tiles, sortable metrics, display density modes (Ideas E+H)
+6. Session picker — switch between active CLI sessions via ShowRoom or CLI
+
+**Resilience & capture:**
+7. BikeShop auto-failover — preferred/alternate BikeShop with failover timer, local caching, holddown timer (Idea F)
+8. Context compaction as crash events — visual crash indicators in timeline/race views (Idea J)
+
+**Collaboration & beyond (separate initiatives):**
+9. Cross-BikeShop casting — relay telemetry between BikeShops for team visibility (Idea C)
+10. Leaderboards and races — aggregated cross-session rankings and competitions (Idea G)
+11. RaceCoach — workflow feedback via behavioral linting and telemetry analysis (Idea L — deserves own PRD)
+12. TeamGear — shared file drive for skills, workflows, knowledge between sessions (Idea M — deserves own PRD)
+13. Tandem — multi-operator collaboration layering output/input sharing on top of TeamGear (Idea N — research territory)
 
 ### Out of Scope
 
@@ -224,3 +244,94 @@ A `just` recipe or Python CLI command (e.g., `just bikerack` or `pf bikerack`) t
 - `IS_BIKERACK` env var cleanly disables all Cyclist-specific features without side effects
 - OTEL data format from Claude CLI is consumed identically to Cyclist-managed sessions
 - Existing Cyclist tests (panel components, WebSocket channels) pass unchanged
+
+---
+
+## Glossary {#glossary}
+
+| Term | Definition |
+|------|-----------|
+| **BikeRack** | The launcher and transmitter. Starts a Claude Code session, handles its lifecycle, and transmits telemetry to a BikeShop. One BikeRack per Claude Code session. |
+| **BikeShop** | The coordinating service / venue. Receives data from one or more BikeRacks. Creates and manages BikeShows. Has its own ShowRoom. Can also relay to other BikeShops. |
+| **ShowRoom** | The BikeShop's native dashboard. Shows status, a visual router of connected sessions, and optionally a session launcher. The "front page" of a BikeShop. |
+| **BikeShow** | A live dashboard view of a specific session, created by a BikeShop from a BikeRack's data. If no BikeShow is created (no live spectators), data is still captured to disk. |
+| **BikeShopPass** | Authorization to send data. SSH keypair where the public key is registered with the BikeShop as a "Customer" and the private key is held by the BikeRack. |
+| **BikeShopKey** | Authorization for administrative actions. SSH keypair granting ShopOwner access to create BikeShows, manage routing, and (with caution) remote control. |
+
+> **MVP note:** Only BikeRack is relevant for MVP. BikeShop, ShowRoom, BikeShow, and authorization concepts apply to Vision-phase work.
+
+## Design Principles
+
+### Remote Control Caution
+
+The primary use case for remote control is **first-party mobile access:** the owner/operator of a session checking on their own long-running work from a phone — authorizing permission prompts, starting workflows, reviewing status.
+
+**Sharing what you see is different from controlling what someone else does.** The BikeShop/ShowRoom model is strong for display and observation. Second-party control of another person's AI session raises unresolved questions about agency, consent, and workflow integrity. Vision items that reference remote control should be evaluated with this principle in mind.
+
+Actual collaboration should look like: display sharing (view-only), shared materials (TeamGear), and selective output sharing — not one person controlling another person's AI session.
+
+---
+
+## Appendix: Idea Triage
+
+> **Source:** Extended brainstorming appendix contributed by M. Pursifull (2026-02-11). Ideas A through N with detailed user stories. Full source preserved in `bikerack-prd-ideas.md`.
+
+### Triage Summary
+
+| Idea | Title | Verdict | Timing | Est. Size |
+|------|-------|---------|--------|-----------|
+| **A** | CLI-Driven Panel Focus | **Growth feature** | Post-MVP | ~5 pts |
+| **B** | BikeShop Multi-Session Router | **Follow-up epic** | Vision | ~25 pts |
+| **C** | Cross-BikeShop Casting | **Out of scope** | 2+ quarters | Large |
+| **D** | Telemetry Capture & Replay | **Growth feature** | Post-MVP, early | ~12 pts |
+| **E** | ShowRoom Dashboard | **Follow-up** (bundle w/ B) | Vision | Bundled |
+| **F** | BikeShop Auto-Failover | **Out of scope** | Preserve as ADR | Large |
+| **G** | Leaderboards & Races | **Out of scope** | Post-ShowRoom | Medium |
+| **H** | Display Density Modes | **Follow-up** (bundle w/ E) | ShowRoom stories | Bundled |
+| **I** | Rider Display & Party Mode | **Partially in MVP** | Party mode later | Small |
+| **J** | Context Compaction as Crashes | **Follow-up story** | When timeline exists | ~2 pts |
+| **K** | Status Line Indicators | **Follow-up epic** | Post-BikeShop | ~5 pts |
+| **L** | RaceCoach | **Separate PRD** | Own initiative | Large |
+| **M** | TeamGear | **Separate PRD** | Own initiative | Large |
+| **N** | Multi-Operator Tandem | **Out of scope** | Research / 2027 | Research |
+
+### Triage Details
+
+**Integrate into Growth (post-MVP):**
+
+- **Idea A — CLI Panel Focus:** Low effort, high value for CLI-first users. `/brc show {panel}` sends a WebSocket message to foreground a panel in the browser. Needs MVP web serving to land first.
+- **Idea D — Capture & Replay:** "BikeShow with no spectators still writes to disk" — elegant capture model. Replay feeds a file back through the same pipeline. Strong use cases: post-session review, debugging, onboarding, async code review.
+- **Idea I (partial) — Party Mode:** Solo/tandem already covered by FR-19–21. Party mode (3+ agents) deferred until swarm workflows exist.
+
+**Follow-up epics (Vision phase):**
+
+- **Ideas B+E+H — BikeShop + ShowRoom + Density:** The natural second act. Multi-session routing, session tiles with metrics, auto-density based on session count. One large epic (~25 pts). Requires MVP to prove out first.
+- **Idea J — Crash Events:** Small visualization story (~2 pts) for when a timeline or progress view exists. Context compaction rendered as crash icons.
+- **Idea K — Status Line Indicators:** CLI-side companion to the browser dashboard. Colored circles showing connection health. Requires BikeShop to exist.
+
+**Separate PRDs recommended:**
+
+- **Idea L — RaceCoach:** Workflow feedback and efficiency tips via behavioral linting and AI analysis. Genuinely interesting product concept but orthogonal to BikeRack — it's a coaching layer, not a dashboard feature.
+- **Idea M — TeamGear:** Shared file/skill/knowledge system between sessions. Completely independent of BikeRack — doesn't require a dashboard. Needs its own PRD covering sync mechanism, conflict resolution, and access model.
+
+**Out of scope (preserved for reference):**
+
+- **Idea C — Cross-BikeShop Casting:** Federation between BikeShops. Networking, auth, relay protocols, SSH transport. Requires Idea B to be fully landed. Scope creep magnet.
+- **Idea F — Auto-Failover:** Well-designed (failover timer, holddown timer, preference-swap) but 3+ dependency layers deep. Preserve the design thinking in an ADR; don't build this year.
+- **Idea G — Leaderboards & Races:** Gamification of developer sessions. Good demo/marketing feature for when ShowRoom exists. Requires B+E+historical data.
+- **Idea N — Multi-Operator Tandem:** The author flagged this as dubious. Minimum viable version requires TeamGear (Idea M). Agent-to-agent bridging is research territory. 2027 conversation.
+
+### Suggested Sequencing
+
+```
+MVP (this epic)
+  └→ Growth: CLI Panel Focus (A) + Capture & Replay (D) + Party Mode (I)
+       └→ Vision: BikeShop + ShowRoom (B+E+H) + Status Line (K)
+            └→ Vision: Crash Events (J) + Leaderboards (G)
+                 └→ Future: Casting (C) + Failover (F)
+
+Separate tracks (independent of BikeRack):
+  - RaceCoach (L) — own PRD
+  - TeamGear (M) — own PRD
+  - Tandem (N) — research, blocked on M
+```
