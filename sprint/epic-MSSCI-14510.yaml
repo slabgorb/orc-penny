@@ -335,6 +335,13 @@ stories:
     assigned_to: keith.avery@1898andco.io
     started: '2026-02-10'
     completed: '2026-02-10'
+  - id: 91-27
+    title: Normalize stepped workflow output paths and de-collision document names
+    points: 3
+    priority: P2
+    status: backlog
+    workflow: tdd
+    type: refactor
 id: epic-91
 title: Cross-File Reference & Schema Validation Pipeline
 description: |
