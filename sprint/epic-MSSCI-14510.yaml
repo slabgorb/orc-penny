@@ -339,10 +339,13 @@ stories:
     title: Normalize stepped workflow output paths and de-collision document names
     points: 3
     priority: P2
-    status: backlog
+    status: done
     workflow: tdd
     type: refactor
     jira: MSSCI-14812
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-11'
+    completed: '2026-02-11'
 id: epic-91
 title: Cross-File Reference & Schema Validation Pipeline
 description: |
