@@ -86,8 +86,10 @@ Use `/workflow list` to see available workflows, `/workflow` to check current st
 | Workflow | Flow |
 |----------|------|
 | `tdd` | SM → TEA → Dev → Reviewer → SM |
+| `tdd-tandem` | SM → TEA+Architect → Dev+TEA → Reviewer+PM → SM |
 | `trivial` | SM → Dev → Reviewer → SM |
 | `bdd` | SM → UX → TEA → Dev → Reviewer → SM |
+| `bdd-tandem` | SM → UX+Architect → TEA → Dev+UX → Reviewer+PM → SM |
 | `agent-docs` | SM → Orchestrator → Tech Writer → SM |
 
 | Command | Agent |
