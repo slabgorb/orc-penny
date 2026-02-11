@@ -28,9 +28,10 @@ stories:
       Ref: ADR-0024, Rules 1/4/6/9, CE-3
     points: 2
     priority: P0
-    status: backlog
+    status: done
     workflow: tdd-tandem
     repos: pennyfarthing
+    completed: "2026-02-11"
   - id: 101-2
     title: StandalonePanel wrapper and ?panel=X client routing
     description: |
