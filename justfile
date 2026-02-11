@@ -76,6 +76,33 @@ portraits-preview theme:
 portraits-all:
     just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" portraits-all
 
+# Launch BikeRack mode (WheelHub on port 2898)
+# Run modes: here, dir=/path, stop, status
+bikerack *args:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    # Transform 'here' to use invocation directory when delegating
+    args="{{args}}"
+    if [[ "$args" == *"here"* ]]; then
+        args="${args/here/dir={{invocation}}}"
+    fi
+
+    # Default to orchestrator root if no dir= given (unless it's stop/status)
+    first="${args%% *}"
+    if [[ "$first" != "stop" ]] && [[ "$first" != "status" ]]; then
+        if [[ "$args" != *"dir="* ]]; then
+            args="${args:+$args }dir={{root}}"
+        fi
+    fi
+
+    # For stop/status, pass --project-dir so it finds the right pid/port files
+    if [[ "$first" == "stop" ]] || [[ "$first" == "status" ]]; then
+        args="$args --project-dir {{root}}"
+    fi
+
+    just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" bikerack $args
+
 # =============================================================================
 # Development - orchestrator sync with pennyfarthing
 # =============================================================================
