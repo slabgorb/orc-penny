@@ -10,9 +10,12 @@ stories:
     title: Fix story finish archive missing required sprint fields
     points: 1
     priority: P1
-    status: backlog
+    status: done
     workflow: trivial
     type: bug
+    started: '2026-02-11'
+    assigned_to: keith.avery@1898andco.io
+    completed: '2026-02-11'
 id: epic-99
 type: epic
 title: Sprint CLI Bug Fixes
