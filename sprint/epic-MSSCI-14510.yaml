@@ -342,6 +342,7 @@ stories:
     status: backlog
     workflow: tdd
     type: refactor
+    jira: MSSCI-14812
 id: epic-91
 title: Cross-File Reference & Schema Validation Pipeline
 description: |
