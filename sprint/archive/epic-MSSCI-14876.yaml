@@ -14,9 +14,11 @@ stories:
     title: Replace settings panel for BikeRack
     points: 3
     priority: P1
-    status: backlog
+    status: done
     workflow: tdd
     jira: MSSCI-14878
+    completed: '2026-02-12'
+    assigned_to: keith.avery@1898andco.io
   - id: 102-3
     title: Remove TTY panel from BikeRack
     points: 1
@@ -29,18 +31,22 @@ stories:
     title: Investigate and fix OTEL panels not responding in BikeRack
     points: 2
     priority: P1
-    status: backlog
+    status: done
     workflow: trivial
     type: bug
     jira: MSSCI-14880
+    completed: '2026-02-12'
+    assigned_to: keith.avery@1898andco.io
   - id: 102-5
     title: Fix broken Git panel in BikeRack
     points: 2
     priority: P1
-    status: backlog
+    status: done
     workflow: trivial
     type: bug
     jira: MSSCI-14881
+    completed: '2026-02-12'
+    assigned_to: keith.avery@1898andco.io
   - id: 102-6
     title: Fix broken Portrait panel in BikeRack
     points: 2
@@ -65,6 +71,7 @@ type: epic
 title: BikeRack Follow-up — Dockview Migration and Panel Fixes
 description: Follow-up to Epic 101. Migrate BikeRack from index/StandalonePanel approach to proper Dockview layout, fix broken panels (OTEL, Git, Portrait), replace settings panel, remove TTY panel.
 priority: P1
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-14876
+completed: '2026-02-12'
