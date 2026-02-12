@@ -142,9 +142,11 @@ Use `/workflow list` to see available workflows, `/workflow` to check current st
 
 Electron app: React 19, Tailwind v4, shadcn/ui, dockview-react panels.
 
-**Codenames:** WheelHub (server — `packages/cyclist/src/server.ts`), TirePump (context clearing), JobFair (benchmarking)
+**Codenames:** WheelHub (server — `packages/cyclist/src/server.ts`), TirePump (context clearing), JobFair (benchmarking), BikeRack (standalone panel viewer)
 
 **Key components:** `DockviewWorkspace.tsx` (layout), `MessageView.tsx` (conversation), `ToolCallBlock.tsx` / `ToolStack.tsx` (tool visualization), `QuickActions.tsx` (Reflector marker detection)
+
+**BikeRack:** Standalone panel viewer mode — Dockview layout with `?panel=X` routing, `--project-dir` for decoupled launch. Key files: `bikerack.ts` (entry), `BikeRackWorkspace.tsx` (layout), `StandalonePanel.tsx` (routing)
 
 **Panels:** MessagePanel (sacred center), ChangedPanel, DiffsPanel, SprintPanel, BikeLanePanel, ACPanel, AcceptanceCriteriaPanel, SettingsPanel, DebugPanel, GitPanel, BackgroundPanel, TodoPanel, AuditLogPanel, TTYPanel, WorkflowPanel, HotspotsPanel
 </info>
