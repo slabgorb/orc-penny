@@ -41,10 +41,11 @@ stories:
       invocation.
     points: 3
     priority: P0
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: trivial
     jira: MSSCI-14700
+    completed: '2026-02-12'
   - id: 98-4
     title: Prefix built-in skills and commands with pf-
     description: |
