@@ -104,6 +104,7 @@ Use `/workflow list` to see available workflows, `/workflow` to check current st
 | `/ux-designer` | UX design |
 | `/devops` | Infrastructure and deployment |
 | `/orchestrator` | Multi-agent coordination |
+| `/ba` | Business Analyst (requirements discovery) |
 
 **Sprint:** `/sprint status`, `/sprint backlog`, `/sprint work`
 

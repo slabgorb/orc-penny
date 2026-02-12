@@ -87,7 +87,7 @@ export function findNodeModulesPath(projectRoot: string): string | null {
 ```typescript
 export const CORE_AGENTS = [
   'dev', 'tea', 'sm', 'reviewer', 'architect',
-  'pm', 'tech-writer', 'ux-designer', 'devops', 'orchestrator'
+  'pm', 'tech-writer', 'ux-designer', 'devops', 'orchestrator', 'ba'
 ] as const;
 
 export const CORE_SYMLINKS = [
