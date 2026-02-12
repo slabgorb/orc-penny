@@ -3,10 +3,12 @@ stories:
     title: Fix pf sprint story finish when Jira key missing from shard YAML
     points: 2
     priority: P1
-    status: backlog
+    status: done
     workflow: trivial
     type: bug
     jira: MSSCI-14939
+    assigned_to: keith.avery@1898andco.io
+    completed: '2026-02-12'
   - id: 99-2
     title: Fix story finish archive missing required sprint fields
     points: 1
@@ -23,6 +25,7 @@ type: epic
 title: Sprint CLI Bug Fixes
 description: Fix bugs in pf sprint CLI commands discovered during sprint work
 priority: P1
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-14938
+completed: '2026-02-12'
