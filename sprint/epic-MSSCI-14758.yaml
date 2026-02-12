@@ -69,10 +69,12 @@ stories:
     title: 'Sprint panel: fix next-up to honor assigned_to field'
     points: 2
     priority: P1
-    status: backlog
+    status: done
     workflow: trivial
     type: bug
     jira: MSSCI-14783
+    assigned_to: keith.avery@1898andco.io
+    completed: '2026-02-12'
   - id: 100-9
     title: 'Sprint panel: wire archived epics into completed section'
     description: |
