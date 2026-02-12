@@ -15,9 +15,272 @@ completed_epics:
   - MSSCI-14876
   - MSSCI-14938
 completed_stories:
+  # Epic 87 — Repo Topology & Agent Spatial Awareness (5 pts)
+  - id: 87-1
+    epic: MSSCI-14784
+    title: "Extend repos.yaml schema with ownership and boundaries"
+    points: 2
+    completed: 2026-02-11
+  - id: 87-2
+    epic: MSSCI-14784
+    title: "Wire topology into agent prime context"
+    points: 2
+    completed: 2026-02-11
+  - id: 87-3
+    epic: MSSCI-14784
+    title: "Add topology validation to pre-edit guide"
+    points: 1
+    completed: 2026-02-11
+  # Epic 99 — Sprint CLI Bug Fixes (3 pts)
+  - id: 99-1
+    epic: MSSCI-14938
+    title: "Fix pf sprint story finish when Jira key missing from shard YAML"
+    points: 2
+    completed: 2026-02-12
+  - id: 99-2
+    epic: MSSCI-14938
+    title: "Fix story finish archive missing required sprint fields"
+    points: 1
+    completed: 2026-02-11
+  # Epic 100 — UI Tweak Bucket (18 pts done, 3 canceled)
+  - id: 100-1
+    epic: MSSCI-14758
+    title: "Fix PersonaHeader CSS layout and throbber clipping"
+    points: 2
+    completed: 2026-02-10
+  - id: 100-2
+    epic: MSSCI-14758
+    title: "Quick agent picker in control bar"
+    points: 3
+    completed: 2026-02-10
+  - id: 100-3
+    epic: MSSCI-14758
+    title: "Style ACPanel with Tufte treatment"
+    points: 2
+    completed: 2026-02-11
+  - id: 100-4
+    epic: MSSCI-14758
+    title: "Remove persona name from quick agent picker"
+    points: 1
+    completed: 2026-02-11
+  - id: 100-5
+    epic: MSSCI-14758
+    title: "Sprint panel: show closed epics for current sprint"
+    points: 2
+    completed: 2026-02-11
+  - id: 100-6
+    epic: MSSCI-14758
+    title: "Sprint panel: sprint metrics from completed/current/future"
+    points: 3
+    completed: 2026-02-11
+  - id: 100-8
+    epic: MSSCI-14758
+    title: "Sprint panel: fix next-up to honor assigned_to field"
+    points: 2
+    completed: 2026-02-12
+  - id: 100-9
+    epic: MSSCI-14758
+    title: "Sprint panel: wire archived epics into completed section"
+    points: 3
+    completed: 2026-02-11
+  # Epic 101 — BikeRack Mode (13 pts)
+  - id: 101-1
+    epic: MSSCI-14819
+    title: "isBikeRackMode() gate and bikerack.ts entry point"
+    points: 2
+    completed: 2026-02-11
+  - id: 101-2
+    epic: MSSCI-14819
+    title: "StandalonePanel wrapper and ?panel=X client routing"
+    points: 3
+    completed: 2026-02-11
+  - id: 101-3
+    epic: MSSCI-14819
+    title: "BikeRackIndex panel listing page"
+    points: 1
+    completed: 2026-02-11
+  - id: 101-4
+    epic: MSSCI-14819
+    title: "PortraitPanel with tandem support"
+    points: 2
+    completed: 2026-02-11
+  - id: 101-5
+    epic: MSSCI-14819
+    title: "BikeRack launcher CLI (pf bikerack start/stop/status)"
+    points: 3
+    completed: 2026-02-11
+  - id: 101-6
+    epic: MSSCI-14819
+    title: "BikeRack integration test and operational verification"
+    points: 2
+    completed: 2026-02-11
+  # Epic 102 — BikeRack Follow-up (18 pts)
+  - id: 102-1
+    epic: MSSCI-14876
+    title: "Migrate BikeRack from index page to Dockview layout"
+    points: 5
+    completed: 2026-02-12
   - id: 102-2
     epic: MSSCI-14876
     title: "Replace settings panel for BikeRack"
     points: 3
     completed: 2026-02-12
     pr: 830
+  - id: 102-3
+    epic: MSSCI-14876
+    title: "Remove TTY panel from BikeRack"
+    points: 1
+    completed: 2026-02-12
+  - id: 102-4
+    epic: MSSCI-14876
+    title: "Investigate and fix OTEL panels not responding in BikeRack"
+    points: 2
+    completed: 2026-02-12
+  - id: 102-5
+    epic: MSSCI-14876
+    title: "Fix broken Git panel in BikeRack"
+    points: 2
+    completed: 2026-02-12
+  - id: 102-6
+    epic: MSSCI-14876
+    title: "Fix broken Portrait panel in BikeRack"
+    points: 2
+    completed: 2026-02-12
+  - id: 102-7
+    epic: MSSCI-14876
+    title: "BikeRack interactive UX sweep: fix font colors, margins, close button spacing"
+    points: 3
+    completed: 2026-02-12
+  # Epic 91 — Cross-File Reference & Schema Validation (43 pts done)
+  - id: 91-1
+    epic: MSSCI-14510
+    title: "Productize Layer 1 file reference validator"
+    points: 3
+    completed: 2026-02-08
+  - id: 91-7
+    epic: MSSCI-14510
+    title: "Enforce ESLint across all packages"
+    points: 3
+    completed: 2026-02-10
+  - id: 91-8
+    epic: MSSCI-14510
+    title: "Add Ruff to CI for Python scripts"
+    points: 1
+    completed: 2026-02-10
+  - id: 91-9
+    epic: MSSCI-14510
+    title: "Add markdownlint to CI"
+    points: 2
+    completed: 2026-02-10
+  - id: 91-10
+    epic: MSSCI-14510
+    title: "Add yamllint for workflow and config files"
+    points: 2
+    completed: 2026-02-10
+  - id: 91-11
+    epic: MSSCI-14510
+    title: "Workflow YAML schema validation"
+    points: 5
+    completed: 2026-02-10
+  - id: 91-12
+    epic: MSSCI-14510
+    title: "Agent definition structural validation"
+    points: 5
+    completed: 2026-02-10
+  - id: 91-13
+    epic: MSSCI-14510
+    title: "Skill registry and command schema validation"
+    points: 3
+    completed: 2026-02-10
+  - id: 91-16
+    epic: MSSCI-14510
+    title: "run-ci.md references wrong path for run-ci.sh"
+    points: 1
+    completed: 2026-02-07
+  - id: 91-17
+    epic: MSSCI-14510
+    title: "setup.md references /theme instead of /set-theme"
+    points: 1
+    completed: 2026-02-07
+  - id: 91-18
+    epic: MSSCI-14510
+    title: "workflow skill.md broken link to BIKELANE.md"
+    points: 1
+    completed: 2026-02-07
+  - id: 91-19
+    epic: MSSCI-14510
+    title: "workflow skill.md broken link to ADR 0005 (renumbered)"
+    points: 1
+    completed: 2026-02-07
+  - id: 91-20
+    epic: MSSCI-14510
+    title: "workflow skill.md wrong path depth for architecture.yaml"
+    points: 1
+    completed: 2026-02-07
+  - id: 91-21
+    epic: MSSCI-14510
+    title: "step-05 references unimplemented import-epic-to-future.sh"
+    points: 1
+    completed: 2026-02-07
+  - id: 91-22
+    epic: MSSCI-14510
+    title: "Broken ADR link in skills/workflow/skill.md"
+    points: 1
+    completed: 2026-02-09
+  - id: 91-23
+    epic: MSSCI-14510
+    title: "Stale guide ref in tdd-flow-pattern.md"
+    points: 1
+    completed: 2026-02-09
+  - id: 91-24
+    epic: MSSCI-14510
+    title: "Sprint shard write-time validation and reference integrity"
+    points: 5
+    completed: 2026-02-10
+  - id: 91-25
+    epic: MSSCI-14510
+    title: "Preserve assigned_to field through story lifecycle"
+    points: 2
+    completed: 2026-02-10
+  - id: 91-26
+    epic: MSSCI-14510
+    title: "Enhance pf sprint info to return full sprint header"
+    points: 1
+    completed: 2026-02-10
+  - id: 91-27
+    epic: MSSCI-14510
+    title: "Normalize stepped workflow output paths and de-collision document names"
+    points: 3
+    completed: 2026-02-11
+  # Epic 98 — Safe Install, Upgrade, and Namespace Isolation (13 pts done)
+  - id: 98-1
+    epic: MSSCI-14697
+    title: "Version sentinel file and auto-update detection"
+    points: 2
+    completed: 2026-02-12
+  - id: 98-2
+    epic: MSSCI-14697
+    title: "Versioned migration runner infrastructure"
+    points: 5
+    completed: 2026-02-12
+  - id: 98-3
+    epic: MSSCI-14697
+    title: "Refactor update.ts inline migrations to migration files"
+    points: 3
+    completed: 2026-02-12
+  - id: 98-8
+    epic: MSSCI-14697
+    title: "Fix Cyclist false-positive detection in CLI mode"
+    points: 3
+    completed: 2026-02-10
+  # Top-level stories (2 pts done)
+  - id: MSSCI-14394
+    title: "[BUG] Subagent spans never clear on task completion"
+    points: 2
+    completed: 2026-02-06
+  # Initiative: Technical Debt (2 pts done)
+  - id: td-3
+    title: "BikeRack panel state persistence"
+    points: 2
+    completed: 2026-02-12
+    pr: 840
