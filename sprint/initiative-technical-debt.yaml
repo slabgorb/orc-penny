@@ -3,7 +3,7 @@ description: |
   Infrastructure cleanup and separation of concerns for maintainability.
 status: backlog
 blocked_by:
-total_points: 13
+total_points: 15
 epics: []
 standalone_stories:
   - id: 39-6
@@ -47,3 +47,11 @@ standalone_stories:
     tags:
       - agent-file
       - documentation
+  - id: td-3
+    title: BikeRack panel state persistence
+    points: 2
+    priority: P2
+    status: done
+    repos: pennyfarthing
+    workflow: trivial
+    type: chore
