@@ -103,6 +103,23 @@ strategic_agents:
       - .claude/project/docs/shared-context.md
       - .session/*-session.md
 
+  ba:
+    description: "Business Analyst - requirements discovery & stakeholder analysis"
+    scope: full
+    permissions:
+      - Read
+      - Grep
+      - Glob
+      - Edit(sprint/**)
+      - Edit(.session/**)
+      - Write(.session/**)
+      - Skill(pm)
+      - Skill(architect)
+    context_files:
+      - sprint/current-sprint.yaml
+      - .claude/project/docs/shared-context.md
+      - .session/*-session.md
+
 # =============================================================================
 # TACTICAL AGENTS - Story-scoped, focused on current work
 # =============================================================================
