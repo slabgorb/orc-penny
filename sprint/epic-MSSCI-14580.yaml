@@ -102,3 +102,6 @@ status: backlog
 repos: pennyfarthing
 jira: MSSCI-14580
 marker: infrastructure
+deferred_to: "TO Sprint 2608"
+deferred_sprint_id: 310
+deferred_reason: "Rewriting after tandem mode and gates are implemented"
