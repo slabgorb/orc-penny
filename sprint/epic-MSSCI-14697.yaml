@@ -8,10 +8,13 @@ stories:
       than parsing manifest.json — single cat vs JSON parse.
     points: 2
     priority: P0
-    status: backlog
+    status: done
     repos: pennyfarthing
-    workflow: trivial
+    workflow: tdd
     jira: MSSCI-14698
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-12'
+    completed: '2026-02-12'
   - id: 98-2
     title: Versioned migration runner infrastructure
     description: |
