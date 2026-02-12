@@ -14,17 +14,14 @@ stories:
     title: Replace settings panel for BikeRack
     points: 3
     priority: P1
-    status: done
+    status: backlog
     workflow: tdd
     jira: MSSCI-14878
-    assigned_to: keith.avery@1898andco.io
-    started: '2026-02-12'
-    completed: '2026-02-12'
   - id: 102-3
     title: Remove TTY panel from BikeRack
     points: 1
     priority: P2
-    status: backlog
+    status: done
     workflow: trivial
     type: chore
     jira: MSSCI-14879
@@ -32,20 +29,18 @@ stories:
     title: Investigate and fix OTEL panels not responding in BikeRack
     points: 2
     priority: P1
-    status: done
+    status: backlog
     workflow: trivial
     type: bug
     jira: MSSCI-14880
-    completed: '2026-02-12'
   - id: 102-5
     title: Fix broken Git panel in BikeRack
     points: 2
     priority: P1
-    status: done
+    status: backlog
     workflow: trivial
     type: bug
     jira: MSSCI-14881
-    completed: '2026-02-12'
   - id: 102-6
     title: Fix broken Portrait panel in BikeRack
     points: 2
@@ -61,7 +56,7 @@ stories:
     title: 'BikeRack interactive UX sweep: fix font colors, margins, close button spacing'
     points: 3
     priority: P1
-    status: backlog
+    status: done
     workflow: trivial
     type: bug
     jira: MSSCI-14887

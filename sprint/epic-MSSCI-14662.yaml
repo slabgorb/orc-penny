@@ -6,9 +6,8 @@ stories:
       Resolved by the BikeLane Gate Extraction PRD (sprint/planning/gate-prd.md). The gate file schema defines how agents run structured checks at decision points. The confidence circuit breaker is an application of this pattern — a gate that checks instruction ambiguity before acting.
     points: 2
     priority: P0
-    status: done
+    status: backlog
     repos: pennyfarthing
-    completed: '2026-02-11'
   - id: "90-2"
     jira: MSSCI-14664
     title: "Implement SM confidence gate file"

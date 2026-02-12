@@ -37,7 +37,7 @@ stories:
       YAML files. Document existing configs, gaps, and adoption plan.
     points: 2
     priority: P2
-    status: planning
+    status: in_progress
     repos: pennyfarthing
     assigned_to: michael.pursifull@1898andco.io
   - id: 91-4
@@ -49,7 +49,7 @@ stories:
       types, false positive handling, runtime variable exclusions.
     points: 2
     priority: P2
-    status: planning
+    status: in_progress
     repos: pennyfarthing
     assigned_to: michael.pursifull@1898andco.io
   - id: 91-5
