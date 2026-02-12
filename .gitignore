@@ -45,6 +45,9 @@ pennyfarthing/
 .pennyfarthing/*.json
 .cyclist-*
 
+# Debug screenshots
+bikerack-*.png
+
 # Playwright MCP artifacts
 .playwright-mcp/
 

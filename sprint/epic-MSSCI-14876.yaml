@@ -32,26 +32,39 @@ stories:
     title: Investigate and fix OTEL panels not responding in BikeRack
     points: 2
     priority: P1
-    status: backlog
+    status: done
     workflow: trivial
     type: bug
     jira: MSSCI-14880
+    completed: '2026-02-12'
   - id: 102-5
     title: Fix broken Git panel in BikeRack
     points: 2
     priority: P1
-    status: backlog
+    status: done
     workflow: trivial
     type: bug
     jira: MSSCI-14881
+    completed: '2026-02-12'
   - id: 102-6
     title: Fix broken Portrait panel in BikeRack
     points: 2
     priority: P1
-    status: backlog
+    status: done
     workflow: trivial
     type: bug
     jira: MSSCI-14882
+    started: '2026-02-12'
+    assigned_to: keith.avery@1898andco.io
+    completed: '2026-02-12'
+  - id: 102-7
+    title: 'BikeRack interactive UX sweep: fix font colors, margins, close button spacing'
+    points: 3
+    priority: P1
+    status: backlog
+    workflow: trivial
+    type: bug
+    jira: MSSCI-14887
 id: '102'
 type: epic
 title: BikeRack Follow-up — Dockview Migration and Panel Fixes

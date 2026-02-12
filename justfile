@@ -77,7 +77,7 @@ portraits-all:
     just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" portraits-all
 
 # Launch BikeRack mode (WheelHub on port 2898)
-# Run modes: here, dir=/path, stop, status
+# Run modes: here, dir=/path, stop, status, debug
 bikerack *args:
     #!/usr/bin/env bash
     set -euo pipefail
