@@ -6,6 +6,7 @@ stories:
     status: backlog
     workflow: trivial
     type: bug
+    jira: MSSCI-14939
   - id: 99-2
     title: Fix story finish archive missing required sprint fields
     points: 1
@@ -16,6 +17,7 @@ stories:
     started: '2026-02-11'
     assigned_to: keith.avery@1898andco.io
     completed: '2026-02-11'
+    jira: MSSCI-14940
 id: '99'
 type: epic
 title: Sprint CLI Bug Fixes
@@ -23,3 +25,4 @@ description: Fix bugs in pf sprint CLI commands discovered during sprint work
 priority: P1
 status: backlog
 repos: pennyfarthing
+jira: MSSCI-14938
