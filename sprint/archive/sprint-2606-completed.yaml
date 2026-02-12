@@ -11,4 +11,10 @@ sprint:
 completed_epics:
   - MSSCI-14784
   - MSSCI-14819
-completed_stories: []
+completed_stories:
+  - id: 102-2
+    epic: MSSCI-14876
+    title: "Replace settings panel for BikeRack"
+    points: 3
+    completed: 2026-02-12
+    pr: 830

@@ -14,9 +14,12 @@ stories:
     title: Replace settings panel for BikeRack
     points: 3
     priority: P1
-    status: backlog
+    status: done
     workflow: tdd
     jira: MSSCI-14878
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-12'
+    completed: '2026-02-12'
   - id: 102-3
     title: Remove TTY panel from BikeRack
     points: 1
