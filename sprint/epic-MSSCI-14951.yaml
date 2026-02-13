@@ -57,7 +57,7 @@ stories:
     points: 1
     priority: P0
     status: backlog
-    workflow: trivial
+    workflow: tdd
     jira: MSSCI-14959
   - id: '103-5'
     title: Base panel abstraction (channel subscription + Rich rendering)
@@ -116,7 +116,7 @@ stories:
     points: 2
     priority: P1
     status: backlog
-    workflow: trivial
+    workflow: tdd
     jira: MSSCI-14963
   - id: '103-9'
     title: Panel header chrome (current panel indicator, Nerd Font icons)
@@ -128,7 +128,7 @@ stories:
     points: 1
     priority: P1
     status: backlog
-    workflow: trivial
+    workflow: tdd
     jira: MSSCI-14964
   - id: '103-10'
     title: GitPanel (multi-repo status)
@@ -158,7 +158,7 @@ stories:
     status: backlog
     blocked_by:
       - '103-5'
-    workflow: trivial
+    workflow: tdd
     jira: MSSCI-14966
   - id: '103-12'
     title: ACPanel (acceptance criteria checklist)
@@ -172,7 +172,7 @@ stories:
     status: backlog
     blocked_by:
       - '103-5'
-    workflow: trivial
+    workflow: tdd
     jira: MSSCI-14967
   - id: '103-13'
     title: TodoPanel (task checklist)
@@ -186,7 +186,7 @@ stories:
     status: backlog
     blocked_by:
       - '103-5'
-    workflow: trivial
+    workflow: tdd
     jira: MSSCI-14968
   - id: '103-14'
     title: ChangedPanel (file list with status)
@@ -200,7 +200,7 @@ stories:
     status: backlog
     blocked_by:
       - '103-5'
-    workflow: trivial
+    workflow: tdd
     jira: MSSCI-14969
   - id: '103-15'
     title: AuditLogPanel (scrolling event log)
@@ -215,7 +215,7 @@ stories:
     status: backlog
     blocked_by:
       - '103-5'
-    workflow: trivial
+    workflow: tdd
     jira: MSSCI-14970
   - id: '103-16'
     title: BackgroundPanel (task status)
@@ -229,7 +229,7 @@ stories:
     status: backlog
     blocked_by:
       - '103-5'
-    workflow: trivial
+    workflow: tdd
     jira: MSSCI-14971
   - id: '103-17'
     title: DebugPanel (log viewer)
@@ -243,7 +243,7 @@ stories:
     status: backlog
     blocked_by:
       - '103-5'
-    workflow: trivial
+    workflow: tdd
     jira: MSSCI-14972
   - id: '103-18'
     title: DiffsPanel — Rich diff rendering with syntax highlighting
