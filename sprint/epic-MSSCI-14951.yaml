@@ -27,9 +27,11 @@ stories:
       NFRs: NFR6, NFR7, NFR8, NFR9, NFR11, NFR14
     points: 3
     priority: P0
-    status: backlog
+    status: done
     workflow: tdd
     jira: MSSCI-14957
+    assigned_to: keith.avery@1898andco.io
+    completed: '2026-02-13'
   - id: '103-3'
     title: '`pf bikerack` launcher command'
     description: |
