@@ -29,8 +29,9 @@ stories:
     title: "Deprecate and remove TTY panel and BikeRack panel entirely"
     points: 3
     priority: P2
-    status: backlog
+    status: done
     workflow: trivial
+    completed: '2026-02-13'
     type: chore
   - id: 102-4
     title: Investigate and fix OTEL panels not responding in BikeRack

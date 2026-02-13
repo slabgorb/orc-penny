@@ -11,8 +11,9 @@ stories:
     title: Fix pf sprint story finish when Jira key missing from shard YAML
     points: 2
     priority: P1
-    status: backlog
+    status: done
     workflow: trivial
+    completed: '2026-02-13'
     type: bug
   - id: 99-2
     title: Fix story finish archive missing required sprint fields
