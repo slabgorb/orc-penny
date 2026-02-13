@@ -12,6 +12,7 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    jira: MSSCI-14975
   - id: 104-2
     title: WheelHub config file watch + panel focus broadcast
     description: |
@@ -24,6 +25,7 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    jira: MSSCI-14976
   - id: 104-3
     title: BikeShow client layout stash/restore on panel focus
     description: |
@@ -38,6 +40,7 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    jira: MSSCI-14977
 id: '104'
 type: epic
 title: /bc CLI Panel Focus
