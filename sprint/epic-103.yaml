@@ -25,7 +25,6 @@ stories:
     priority: P0
     status: backlog
     workflow: tdd
-
   - id: '103-2'
     title: WheelHub WebSocket client with auto-reconnect
     description: |
@@ -40,7 +39,6 @@ stories:
     priority: P0
     status: backlog
     workflow: tdd
-
   - id: '103-3'
     title: '`pf bikerack` launcher command'
     description: |
@@ -55,7 +53,6 @@ stories:
     priority: P0
     status: backlog
     workflow: tdd
-
   - id: '103-4'
     title: Connection status indicator in TUI header
     description: |
@@ -67,9 +64,10 @@ stories:
       NFRs: NFR6, NFR8
     points: 1
     priority: P0
-    status: backlog
+    status: done
     workflow: trivial
-
+    assigned_to: keith.avery@1898andco.io
+    jira: MSSCI-14959
   - id: '103-5'
     title: Base panel abstraction (channel subscription + Rich rendering)
     description: |
@@ -84,7 +82,6 @@ stories:
     priority: P0
     status: backlog
     workflow: tdd
-
   - id: '103-6'
     title: SprintPanel implementation
     description: |
@@ -98,7 +95,6 @@ stories:
     priority: P0
     status: backlog
     workflow: tdd
-
   - id: '103-7'
     title: '`/bc` slash command skill registration'
     description: |
@@ -113,7 +109,6 @@ stories:
     priority: P0
     status: backlog
     workflow: tdd
-
   - id: '103-8'
     title: Panel persistence (extend ERB mechanism)
     description: |
@@ -128,7 +123,6 @@ stories:
     priority: P1
     status: backlog
     workflow: trivial
-
   - id: '103-9'
     title: Panel header chrome (current panel indicator, Nerd Font icons)
     description: |
@@ -140,7 +134,6 @@ stories:
     priority: P1
     status: backlog
     workflow: trivial
-
   - id: '103-10'
     title: GitPanel (multi-repo status)
     description: |
@@ -154,7 +147,6 @@ stories:
     status: backlog
     blocked_by: ['103-5']
     workflow: tdd
-
   - id: '103-11'
     title: WorkflowPanel (phase diagram, agent flow)
     description: |
@@ -168,7 +160,6 @@ stories:
     status: backlog
     blocked_by: ['103-5']
     workflow: trivial
-
   - id: '103-12'
     title: ACPanel (acceptance criteria checklist)
     description: |
@@ -181,7 +172,6 @@ stories:
     status: backlog
     blocked_by: ['103-5']
     workflow: trivial
-
   - id: '103-13'
     title: TodoPanel (task checklist)
     description: |
@@ -194,7 +184,6 @@ stories:
     status: backlog
     blocked_by: ['103-5']
     workflow: trivial
-
   - id: '103-14'
     title: ChangedPanel (file list with status)
     description: |
@@ -207,7 +196,6 @@ stories:
     status: backlog
     blocked_by: ['103-5']
     workflow: trivial
-
   - id: '103-15'
     title: AuditLogPanel (scrolling event log)
     description: |
@@ -221,7 +209,6 @@ stories:
     status: backlog
     blocked_by: ['103-5']
     workflow: trivial
-
   - id: '103-16'
     title: BackgroundPanel (task status)
     description: |
@@ -234,7 +221,6 @@ stories:
     status: backlog
     blocked_by: ['103-5']
     workflow: trivial
-
   - id: '103-17'
     title: DebugPanel (log viewer)
     description: |
@@ -247,7 +233,6 @@ stories:
     status: backlog
     blocked_by: ['103-5']
     workflow: trivial
-
   - id: '103-18'
     title: DiffsPanel — Rich diff rendering with syntax highlighting
     description: |
@@ -261,7 +246,6 @@ stories:
     status: backlog
     blocked_by: ['103-5']
     workflow: tdd
-
   - id: '103-19'
     title: Large diff handling (truncation/pagination)
     description: |
