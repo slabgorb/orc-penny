@@ -83,6 +83,13 @@ stories:
     status: planning
     repos: pennyfarthing
     jira: MSSCI-14507
+  - id: 86-13
+    title: Tandem backseat not activating from CLI invocation
+    points: 2
+    priority: P1
+    status: backlog
+    workflow: tdd
+    type: bug
 id: epic-86
 title: "Agent Collaboration — Tandem to Teams"
 jira: MSSCI-14509

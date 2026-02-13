@@ -98,7 +98,7 @@ description: |
   PR lifecycle management via pr_mode config, and agent definition updates.
   Touches workflow YAMLs, BikeLane engine, agent definitions, and config system.
 priority: P1
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-14580
 marker: infrastructure

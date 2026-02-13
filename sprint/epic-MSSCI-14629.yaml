@@ -144,7 +144,7 @@ description: |
   See ADR-0020 (docs/adr/0020-benchmark-package-extraction.md) for full
   architectural rationale and file inventory.
 priority: P2
-status: backlog
+status: done
 repos: pennyfarthing
 marker: infrastructure
 adr: '0020'
