@@ -43,10 +43,12 @@ stories:
       focus after a reset triggers a save.
     points: 3
     priority: P1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
     jira: MSSCI-14977
+    assigned_to: keith.avery@1898andco.io
+    completed: '2026-02-13'
   - id: 104-4
     title: Save and clear named layouts via /bc
     points: 3
