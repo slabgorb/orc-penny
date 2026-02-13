@@ -9,10 +9,13 @@ stories:
       `pf bc <arg>`.
     points: 2
     priority: P1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
     jira: MSSCI-14975
+    assigned_to: slabgorb
+    started: '2026-02-13'
+    completed: '2026-02-13'
   - id: 104-2
     title: WheelHub config file watch + panel focus broadcast
     description: |
