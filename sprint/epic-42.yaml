@@ -1,21 +1,3 @@
-id: epic-42
-title: "Anchored Rubric Criteria"
-description: |
-  Replace vague rubric criteria ("clear_explanations") with behavioral
-  anchors that define what each score level means concretely.
-
-  Framework alignment: Level 3 improvement - operationalization with
-  explicit behavioral anchors. Per Wallach et al., "A benchmark score
-  tells us nothing without understanding the construct it purports to
-  measure." Anchors make the construct explicit at each score level.
-
-  Research basis: 2025 research shows few-shot doesn't fix judge
-  self-inconsistency; explicit anchors reduce variance.
-priority: P1
-status: planning
-repos: pennyfarthing
-points: 6
-marker: "benchmark"
 stories:
   - id: "42-1"
     title: "Create rubric-anchors.md with behavioral scales"
@@ -48,3 +30,21 @@ stories:
     priority: P1
     status: planning
     repos: pennyfarthing
+id: epic-42
+title: "Anchored Rubric Criteria"
+description: |
+  Replace vague rubric criteria ("clear_explanations") with behavioral
+  anchors that define what each score level means concretely.
+
+  Framework alignment: Level 3 improvement - operationalization with
+  explicit behavioral anchors. Per Wallach et al., "A benchmark score
+  tells us nothing without understanding the construct it purports to
+  measure." Anchors make the construct explicit at each score level.
+
+  Research basis: 2025 research shows few-shot doesn't fix judge
+  self-inconsistency; explicit anchors reduce variance.
+priority: P1
+status: planning
+repos: pennyfarthing
+points: 6
+marker: "benchmark"

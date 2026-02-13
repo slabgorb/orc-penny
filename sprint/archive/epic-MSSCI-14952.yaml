@@ -12,10 +12,8 @@ stories:
     status: done
     repos: pennyfarthing
     workflow: tdd
-    jira: MSSCI-14975
-    assigned_to: slabgorb
-    started: '2026-02-13'
     completed: '2026-02-13'
+    assigned_to: keith.avery@1898andco.io
   - id: 104-2
     title: WheelHub config file watch + panel focus broadcast
     description: |
@@ -28,10 +26,8 @@ stories:
     status: done
     repos: pennyfarthing
     workflow: tdd
-    jira: MSSCI-14976
-    assigned_to: keith.avery@1898andco.io
-    started: '2026-02-13'
     completed: '2026-02-13'
+    assigned_to: keith.avery@1898andco.io
   - id: 104-3
     title: BikeShow client layout stash/restore on panel focus
     description: |
@@ -47,17 +43,8 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     jira: MSSCI-14977
-    assigned_to: keith.avery@1898andco.io
     completed: '2026-02-13'
-  - id: 104-4
-    title: Save and clear named layouts via /bc
-    points: 3
-    priority: P1
-    status: done
-    workflow: tdd
-    jira: MSSCI-14987
     assigned_to: keith.avery@1898andco.io
-    completed: '2026-02-13'
 id: '104'
 type: epic
 title: /bc CLI Panel Focus

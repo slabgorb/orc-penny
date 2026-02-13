@@ -1,22 +1,3 @@
-id: epic-43
-title: "False Positive Traps (Red Herrings)"
-description: |
-  Add intentional non-issues to scenarios to systematically measure
-  precision. Agents that flag red herrings as issues lose points;
-  agents that correctly identify them as non-issues get bonus.
-
-  Framework alignment: Level 3 improvement - tests construct validity.
-  Per Wallach et al., valid measurement requires evidence that scores
-  DON'T correlate with unrelated constructs. Red herrings test whether
-  high detection scores reflect true understanding vs. pattern matching.
-
-  Research basis: ARC-AGI distinguishes novel reasoning from
-  pattern matching; red herrings test true understanding.
-priority: P1
-status: planning
-repos: pennyfarthing
-points: 7
-marker: "benchmark"
 stories:
   - id: "43-1"
     title: "Add red_herrings schema to scenarios"
@@ -55,3 +36,22 @@ stories:
     priority: P1
     status: planning
     repos: pennyfarthing
+id: epic-43
+title: "False Positive Traps (Red Herrings)"
+description: |
+  Add intentional non-issues to scenarios to systematically measure
+  precision. Agents that flag red herrings as issues lose points;
+  agents that correctly identify them as non-issues get bonus.
+
+  Framework alignment: Level 3 improvement - tests construct validity.
+  Per Wallach et al., valid measurement requires evidence that scores
+  DON'T correlate with unrelated constructs. Red herrings test whether
+  high detection scores reflect true understanding vs. pattern matching.
+
+  Research basis: ARC-AGI distinguishes novel reasoning from
+  pattern matching; red herrings test true understanding.
+priority: P1
+status: planning
+repos: pennyfarthing
+points: 7
+marker: "benchmark"

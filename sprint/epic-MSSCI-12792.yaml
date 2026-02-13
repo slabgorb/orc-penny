@@ -1,21 +1,3 @@
-id: epic-41
-title: "Precision/Recall Detection Scoring"
-jira: MSSCI-12792
-description: |
-  Separate detection scoring into precision and recall components.
-  Current formula conflates finding issues with avoiding false positives.
-  New approach makes trade-offs explicit and measurable.
-
-  Framework alignment: Level 4 improvement - separate scores for
-  distinct constructs (finding issues vs. avoiding false alarms).
-  Addresses the anti-pattern of conflating operationalization with construct.
-
-  Research basis: HELM benchmark methodology (Stanford CRFM)
-priority: P1
-status: planning
-repos: pennyfarthing
-points: 8
-marker: "benchmark"
 stories:
   - id: "41-1"
     title: "Update judge SKILL.md with precision/recall formula"
@@ -62,3 +44,21 @@ stories:
     priority: P1
     status: planning
     repos: pennyfarthing
+id: epic-41
+title: "Precision/Recall Detection Scoring"
+jira: MSSCI-12792
+description: |
+  Separate detection scoring into precision and recall components.
+  Current formula conflates finding issues with avoiding false positives.
+  New approach makes trade-offs explicit and measurable.
+
+  Framework alignment: Level 4 improvement - separate scores for
+  distinct constructs (finding issues vs. avoiding false alarms).
+  Addresses the anti-pattern of conflating operationalization with construct.
+
+  Research basis: HELM benchmark methodology (Stanford CRFM)
+priority: P1
+status: planning
+repos: pennyfarthing
+points: 8
+marker: "benchmark"

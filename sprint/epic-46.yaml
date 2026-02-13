@@ -1,23 +1,3 @@
-id: epic-46
-title: "Difficulty Profile Enhancement"
-description: |
-  Replace single difficulty label with multi-dimensional profile
-  including percentile bands from empirical data. Enables better
-  scenario selection and more meaningful score interpretation.
-
-  Framework alignment: Level 2 improvement - multi-dimensional
-  construct decomposition. Per Wallach et al., background concepts
-  must be systematized into measurable sub-constructs. "Difficulty"
-  is too vague; decomposing into detection_challenge, reasoning_complexity,
-  and domain_knowledge makes the construct explicit and measurable.
-
-  Research basis: ARC-AGI separates difficulty dimensions;
-  percentile bands from MLPerf methodology.
-priority: P2
-status: planning
-repos: pennyfarthing
-points: 5
-marker: "benchmark"
 stories:
   - id: "46-1"
     title: "Add difficulty_profile schema to scenarios"
@@ -61,3 +41,23 @@ stories:
     priority: P1
     status: planning
     repos: pennyfarthing
+id: epic-46
+title: "Difficulty Profile Enhancement"
+description: |
+  Replace single difficulty label with multi-dimensional profile
+  including percentile bands from empirical data. Enables better
+  scenario selection and more meaningful score interpretation.
+
+  Framework alignment: Level 2 improvement - multi-dimensional
+  construct decomposition. Per Wallach et al., background concepts
+  must be systematized into measurable sub-constructs. "Difficulty"
+  is too vague; decomposing into detection_challenge, reasoning_complexity,
+  and domain_knowledge makes the construct explicit and measurable.
+
+  Research basis: ARC-AGI separates difficulty dimensions;
+  percentile bands from MLPerf methodology.
+priority: P2
+status: planning
+repos: pennyfarthing
+points: 5
+marker: "benchmark"

@@ -1,15 +1,3 @@
-id: epic-40
-title: Scale Adaptation and Brownfield Support
-jira: MSSCI-12414
-description: |
-  Adopt BMAD's scale-adaptive approach and add brownfield codebase discovery.
-  Add upward scaling for larger initiatives (Level 0-4) and brownfield
-  analysis for existing codebases.
-priority: P2
-status: backlog
-repos: pennyfarthing
-points: 17
-marker: infrastructure
 stories:
   - id: 40-1
     title: Define scale levels
@@ -35,3 +23,15 @@ stories:
     title: PRD import support
     points: 2
     status: backlog
+id: epic-40
+title: Scale Adaptation and Brownfield Support
+jira: MSSCI-12414
+description: |
+  Adopt BMAD's scale-adaptive approach and add brownfield codebase discovery.
+  Add upward scaling for larger initiatives (Level 0-4) and brownfield
+  analysis for existing codebases.
+priority: P2
+status: backlog
+repos: pennyfarthing
+points: 17
+marker: infrastructure
