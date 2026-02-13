@@ -1,11 +1,3 @@
-id: '105'
-type: epic
-title: Script-First Handoff
-description: 'Replace handoff subagent with bash scripts (handoff-cli.sh) for phase routing and atomic session updates. Agents drive exit directly. Manual gates cost zero tokens. Per ADR-0025.'
-priority: P1
-status: backlog
-repos: pennyfarthing
-initiative: gate-extraction
 stories:
   - id: 105-1
     title: Create handoff-cli.sh with resolve-gate and complete-phase
@@ -47,3 +39,11 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: trivial
+id: '105'
+type: epic
+title: Script-First Handoff
+description: 'Replace handoff subagent with bash scripts (handoff-cli.sh) for phase routing and atomic session updates. Agents drive exit directly. Manual gates cost zero tokens. Per ADR-0025.'
+priority: P1
+status: backlog
+repos: pennyfarthing
+initiative: gate-extraction

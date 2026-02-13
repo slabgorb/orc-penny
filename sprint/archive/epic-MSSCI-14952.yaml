@@ -53,13 +53,17 @@ stories:
     title: Save and clear named layouts via /bc
     points: 3
     priority: P1
-    status: backlog
+    status: done
     workflow: tdd
+    jira: MSSCI-14987
+    assigned_to: keith.avery@1898andco.io
+    completed: '2026-02-13'
 id: '104'
 type: epic
 title: /bc CLI Panel Focus
 description: 'Implement /bc command for CLI-driven panel focus in BikeShow. User types /bc {panel} to write panel config via pf bc command; BikeShow reacts by showing only that panel. /bc reset returns to saved layout (no stash stack — successive /bc calls preserve original saved state). Panels: sprint, git, settings, diffs, debug, audit, todo, ac. Growth feature from BikeRack PRD Idea A.'
 priority: P1
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-14952
+completed: '2026-02-13'

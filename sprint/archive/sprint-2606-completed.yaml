@@ -14,8 +14,8 @@ completed_epics:
   - MSSCI-14758
   - MSSCI-14876
   - MSSCI-14938
+  - MSSCI-14952
 completed_stories:
-  # Epic 87 — Repo Topology & Agent Spatial Awareness (5 pts)
   - id: 87-1
     epic: MSSCI-14784
     title: "Extend repos.yaml schema with ownership and boundaries"
