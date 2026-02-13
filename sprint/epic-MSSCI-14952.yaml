@@ -25,10 +25,13 @@ stories:
       for reset).
     points: 2
     priority: P1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
     jira: MSSCI-14976
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-13'
+    completed: '2026-02-13'
   - id: 104-3
     title: BikeShow client layout stash/restore on panel focus
     description: |
@@ -44,6 +47,12 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     jira: MSSCI-14977
+  - id: 104-4
+    title: Save and clear named layouts via /bc
+    points: 3
+    priority: P1
+    status: backlog
+    workflow: tdd
 id: '104'
 type: epic
 title: /bc CLI Panel Focus
