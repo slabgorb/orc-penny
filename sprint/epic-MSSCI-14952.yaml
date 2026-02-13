@@ -1,3 +1,11 @@
+id: '104'
+type: epic
+title: /bc CLI Panel Focus
+description: 'Implement /bc command for CLI-driven panel focus in BikeShow. User types /bc {panel} to write panel config via pf bc command; BikeShow reacts by showing only that panel. /bc reset returns to saved layout (no stash stack — successive /bc calls preserve original saved state). Panels: sprint, git, settings, diffs, debug, audit, todo, ac. Growth feature from BikeRack PRD Idea A.'
+priority: P1
+status: done
+repos: pennyfarthing
+jira: MSSCI-14952
 stories:
   - id: 104-1
     title: pf bc CLI command + /bc user skill
@@ -27,6 +35,7 @@ stories:
     workflow: tdd
     completed: "2026-02-12"
   - id: 104-3
+    jira: MSSCI-14977
     title: BikeShow client layout stash/restore on panel focus
     description: |
       BikeShow client handles `panel:focus` WebSocket events. On focus
@@ -40,13 +49,4 @@ stories:
     status: done
     repos: pennyfarthing
     workflow: tdd
-    jira: MSSCI-14977
     completed: "2026-02-13"
-id: '104'
-type: epic
-title: /bc CLI Panel Focus
-description: 'Implement /bc command for CLI-driven panel focus in BikeShow. User types /bc {panel} to write panel config via pf bc command; BikeShow reacts by showing only that panel. /bc reset returns to saved layout (no stash stack — successive /bc calls preserve original saved state). Panels: sprint, git, settings, diffs, debug, audit, todo, ac. Growth feature from BikeRack PRD Idea A.'
-priority: P1
-status: done
-repos: pennyfarthing
-jira: MSSCI-14952

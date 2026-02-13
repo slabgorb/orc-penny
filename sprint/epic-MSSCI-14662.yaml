@@ -1,3 +1,17 @@
+id: epic-90
+title: "Confidence Circuit Breaker (via Gate)"
+description: |-
+  Implement confidence gates using the BikeLane Gate Extraction system (gate-prd.md). Agents pause and ask for clarification when intent is ambiguous, using gate files rather than ad-hoc decision logic.
+
+  The Gate PRD defines the file schema (<gate>, <purpose>, <pass>, <fail>), subagent runner, model inheritance, and nesting. This epic applies that system to the confidence circuit breaker pattern — gate files that check whether an instruction is ambiguous before an agent acts on it.
+
+  Spike outcome: the Gate PRD is the pattern. No separate ADR needed.
+priority: P2
+status: planning
+repos: pennyfarthing
+jira: MSSCI-14662
+points: 5
+marker: infrastructure
 stories:
   - id: "90-1"
     jira: MSSCI-14663
@@ -34,17 +48,3 @@ stories:
     priority: P1
     status: planning
     repos: pennyfarthing
-id: epic-90
-jira: MSSCI-14662
-title: "Confidence Circuit Breaker (via Gate)"
-description: |-
-  Implement confidence gates using the BikeLane Gate Extraction system (gate-prd.md). Agents pause and ask for clarification when intent is ambiguous, using gate files rather than ad-hoc decision logic.
-
-  The Gate PRD defines the file schema (<gate>, <purpose>, <pass>, <fail>), subagent runner, model inheritance, and nesting. This epic applies that system to the confidence circuit breaker pattern — gate files that check whether an instruction is ambiguous before an agent acts on it.
-
-  Spike outcome: the Gate PRD is the pattern. No separate ADR needed.
-priority: P2
-status: planning
-repos: pennyfarthing
-points: 5
-marker: infrastructure

@@ -1,3 +1,11 @@
+id: '108'
+type: epic
+title: Full Migration & Cleanup
+description: 'Migrate remaining gates (tests-fail, approval) to files. Update all workflow YAMLs. Remove handoff.md, sm-handoff.md subagents and inline gate.type fallback. Single code path for phase transitions.'
+priority: P3
+status: backlog
+repos: pennyfarthing
+jira: MSSCI-15012
 stories:
   - id: 108-1
     title: Migrate tests-fail and approval gates to files
@@ -24,11 +32,4 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: trivial
-id: '108'
-type: epic
-title: Full Migration & Cleanup
-description: 'Migrate remaining gates (tests-fail, approval) to files. Update all workflow YAMLs. Remove handoff.md, sm-handoff.md subagents and inline gate.type fallback. Single code path for phase transitions.'
-priority: P3
-status: backlog
-repos: pennyfarthing
 initiative: gate-extraction

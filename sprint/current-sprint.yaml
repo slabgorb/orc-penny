@@ -11,19 +11,19 @@ epics:
   - MSSCI-14510
   - MSSCI-14697
   - MSSCI-14951
-  - '102'
-  - '105'
-  - '106'
-  - '107'
-  - '108'
-  - '109'
-  - '100'
-  - '101'
+  - MSSCI-14876
+  - MSSCI-14999
+  - MSSCI-15003
+  - MSSCI-15008
+  - MSSCI-15012
+  - MSSCI-15015
+  - MSSCI-14758
+  - MSSCI-14819
   - MSSCI-14952
   - MSSCI-14509
-  - '87'
+  - MSSCI-14784
   - MSSCI-14629
-  - '99'
+  - MSSCI-14938
   - MSSCI-14580
   - MSSCI-14662
 stories:

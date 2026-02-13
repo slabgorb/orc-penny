@@ -1,3 +1,14 @@
+id: epic-92
+title: 2pTDD Workflow and Review/PR Lifecycle
+description: |
+  New 2party-TDD workflow with story refinement, review rejection loops,
+  PR lifecycle management via pr_mode config, and agent definition updates.
+  Touches workflow YAMLs, BikeLane engine, agent definitions, and config system.
+priority: P1
+status: done
+repos: pennyfarthing
+jira: MSSCI-14580
+marker: infrastructure
 stories:
   - id: "92-1"
     jira: MSSCI-14580
@@ -29,8 +40,8 @@ stories:
     points: 3
     priority: P0
     status: backlog
-    type: refactor
     repos: pennyfarthing
+    type: refactor
   - id: "92-3"
     jira: MSSCI-14583
     title: "Implement pr_mode user preference in pennyfarthing config"
@@ -56,8 +67,8 @@ stories:
     points: 2
     priority: P0
     status: backlog
-    type: refactor
     repos: pennyfarthing
+    type: refactor
   - id: "92-5"
     jira: MSSCI-14585
     title: "BikeLane engine: support next directive, workflow_phase override, review fields"
@@ -91,17 +102,6 @@ stories:
     priority: P0
     status: backlog
     repos: pennyfarthing
-id: epic-92
-title: 2pTDD Workflow and Review/PR Lifecycle
-description: |
-  New 2party-TDD workflow with story refinement, review rejection loops,
-  PR lifecycle management via pr_mode config, and agent definition updates.
-  Touches workflow YAMLs, BikeLane engine, agent definitions, and config system.
-priority: P1
-status: done
-repos: pennyfarthing
-jira: MSSCI-14580
-marker: infrastructure
 deferred_to: "TO Sprint 2608"
 deferred_sprint_id: 310
 deferred_reason: "Rewriting after tandem mode and gates are implemented"

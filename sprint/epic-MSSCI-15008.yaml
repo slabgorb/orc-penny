@@ -1,3 +1,11 @@
+id: '107'
+type: epic
+title: Gate Validation & Authoring
+description: 'Gate schema validation at parse time, acyclic cycle detection, depth limit enforcement (max 3), and authoring guide with validation command. Catches errors before any subagent spawns.'
+priority: P2
+status: backlog
+repos: pennyfarthing
+jira: MSSCI-15008
 stories:
   - id: 107-1
     title: Gate schema validation at parse time
@@ -36,11 +44,4 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: agent-docs
-id: '107'
-type: epic
-title: Gate Validation & Authoring
-description: 'Gate schema validation at parse time, acyclic cycle detection, depth limit enforcement (max 3), and authoring guide with validation command. Catches errors before any subagent spawns.'
-priority: P2
-status: backlog
-repos: pennyfarthing
 initiative: gate-extraction

@@ -1,3 +1,11 @@
+id: '106'
+type: epic
+title: Gate Files & First Migration
+description: 'Create gate file schema and first gate file (tests-pass.md). Gate subagent runner spawns haiku Task, returns GATE_RESULT. Workflow YAML supports gate.file references. TDD workflow uses file-based gate for green phase.'
+priority: P1
+status: backlog
+repos: pennyfarthing
+jira: MSSCI-15003
 stories:
   - id: 106-1
     title: Create tests-pass gate file with schema
@@ -50,11 +58,4 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: trivial
-id: '106'
-type: epic
-title: Gate Files & First Migration
-description: 'Create gate file schema and first gate file (tests-pass.md). Gate subagent runner spawns haiku Task, returns GATE_RESULT. Workflow YAML supports gate.file references. TDD workflow uses file-based gate for green phase.'
-priority: P1
-status: backlog
-repos: pennyfarthing
 initiative: gate-extraction
