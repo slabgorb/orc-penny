@@ -91,8 +91,9 @@ stories:
       NFRs: NFR1
     points: 3
     priority: P0
-    status: backlog
+    status: done
     workflow: tdd
+    completed: '2026-02-13'
   - id: '103-6'
     jira: MSSCI-14961
     title: SprintPanel implementation
