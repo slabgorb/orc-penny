@@ -10,9 +10,11 @@ stories:
       FRs: FR1
     points: 2
     priority: P0
-    status: backlog
+    status: done
     workflow: tdd
     jira: MSSCI-14956
+    assigned_to: keith.avery@1898andco.io
+    completed: '2026-02-13'
   - id: '103-2'
     title: WheelHub WebSocket client with auto-reconnect
     description: |
