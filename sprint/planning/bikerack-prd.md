@@ -74,7 +74,7 @@ classification:
 
 ### Growth Features (Post-MVP)
 
-1. **CLI-driven panel focus** — `/brc show {panel}` surfaces a specific panel from the keyboard without leaving the terminal (~5 pts, Idea A)
+1. **CLI-driven panel focus** — `/bc {panel}` writes panel config via `pf bc` command; BikeShow reacts by showing only that panel. `/bc reset` returns to saved layout. No stash stack — reset always restores the last saved state. (~5 pts, Idea A)
 2. **Telemetry capture & replay** — BikeRack always writes telemetry to disk; replay feeds it back through the same pipeline for post-session review, debugging, async code review, and onboarding (~12 pts, Idea D)
 3. **BikeRack-specific settings panel** — configure dashboard layout, panel preferences
 4. **PortraitPanel party mode** — extend solo/tandem display to 3+ agent swarm sessions when swarm workflows land (Idea I)
@@ -299,7 +299,7 @@ Actual collaboration should look like: display sharing (view-only), shared mater
 
 **Integrate into Growth (post-MVP):**
 
-- **Idea A — CLI Panel Focus:** Low effort, high value for CLI-first users. `/brc show {panel}` sends a WebSocket message to foreground a panel in the browser. Needs MVP web serving to land first.
+- **Idea A — CLI Panel Focus:** Low effort, high value for CLI-first users. `/bc {panel}` runs a `pf bc` command that writes to a config file; BikeShow watches the file and reacts. `/bc reset` restores the saved layout (no stash stack). Panels: sprint, git, settings, diffs, debug, audit, todo, ac. Needs MVP web serving to land first.
 - **Idea D — Capture & Replay:** "BikeShow with no spectators still writes to disk" — elegant capture model. Replay feeds a file back through the same pipeline. Strong use cases: post-session review, debugging, onboarding, async code review.
 - **Idea I (partial) — Party Mode:** Solo/tandem already covered by FR-19–21. Party mode (3+ agents) deferred until swarm workflows exist.
 
