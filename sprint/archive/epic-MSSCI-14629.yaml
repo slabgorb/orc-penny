@@ -1,5 +1,24 @@
+id: epic-93
+title: 'Epic: Extract Benchmarking System into @pennyfarthing/benchmark'
+description: |
+  Extract the JobFair benchmarking system from @pennyfarthing/core into a
+  standalone optional npm package (@pennyfarthing/benchmark). Benchmarking is
+  a meta-operation that most users don't need — it evaluates persona
+  effectiveness but isn't required for core agent workflows.
+
+  Key finding: zero reverse dependencies. Core never imports from benchmarking.
+  Cyclist already uses dynamic imports that gracefully degrade.
+
+  See ADR-0020 (docs/adr/0020-benchmark-package-extraction.md) for full
+  architectural rationale and file inventory.
+priority: P2
+status: done
+repos: pennyfarthing
+jira: MSSCI-14629
+marker: infrastructure
 stories:
   - id: 93-1
+    jira: MSSCI-14630
     title: Create @pennyfarthing/benchmark package shell with TS modules
     description: |
       Create packages/benchmark/ with package.json, tsconfig, and move the
@@ -14,14 +33,12 @@ stories:
       Out of scope: removing from core (done in 93-5).
     points: 3
     priority: P0
-    status: done
+    status: backlog
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
-    jira: MSSCI-14630
-    started: '2026-02-09'
-    completed: '2026-02-09'
   - id: 93-2
+    jira: MSSCI-14631
     title: Move benchmark commands, skills, and scripts to new package
     description: |
       Move into packages/benchmark/:
@@ -41,14 +58,12 @@ stories:
       Out of scope: plugin discovery (93-3), core cleanup (93-5).
     points: 3
     priority: P0
-    status: done
+    status: backlog
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
-    jira: MSSCI-14631
-    started: '2026-02-09'
-    completed: '2026-02-09'
   - id: 93-3
+    jira: MSSCI-14632
     title: Plugin discovery for commands and skills from installed packages
     description: |
       Implement mechanism for @pennyfarthing/core to discover and register
@@ -68,14 +83,12 @@ stories:
       - Explicit registration via pennyfarthing.config.yaml plugins list
     points: 3
     priority: P0
-    status: done
+    status: backlog
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
-    jira: MSSCI-14632
-    started: '2026-02-09'
-    completed: '2026-02-09'
   - id: 93-4
+    jira: MSSCI-14633
     title: Move benchmark docs, results, and showcase components
     description: |
       Move to packages/benchmark/:
@@ -90,14 +103,12 @@ stories:
       Out of scope: historical results are dev-only data, not published.
     points: 2
     priority: P1
-    status: done
+    status: backlog
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
-    jira: MSSCI-14633
-    started: '2026-02-09'
-    completed: '2026-02-09'
   - id: 93-5
+    jira: MSSCI-14634
     title: 'Clean up @pennyfarthing/core: remove benchmark exports and API'
     description: |
       Remove from @pennyfarthing/core:
@@ -115,14 +126,12 @@ stories:
       display "Unranked" in UI.
     points: 2
     priority: P1
-    status: done
+    status: backlog
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
-    jira: MSSCI-14634
-    started: '2026-02-09'
-    completed: '2026-02-09'
   - id: 93-6
+    jira: MSSCI-14635
     title: Update Cyclist to use benchmark plugin instead of inline API
     description: |
       Replace the existing dynamic import in packages/cyclist/src/server.ts
@@ -135,30 +144,9 @@ stories:
       Verify: Cyclist starts cleanly with and without benchmark package.
     points: 2
     priority: P1
-    status: done
+    status: backlog
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
-    jira: MSSCI-14635
-    started: '2026-02-09'
-    completed: '2026-02-10'
-id: epic-93
-title: 'Epic: Extract Benchmarking System into @pennyfarthing/benchmark'
-description: |
-  Extract the JobFair benchmarking system from @pennyfarthing/core into a
-  standalone optional npm package (@pennyfarthing/benchmark). Benchmarking is
-  a meta-operation that most users don't need — it evaluates persona
-  effectiveness but isn't required for core agent workflows.
-
-  Key finding: zero reverse dependencies. Core never imports from benchmarking.
-  Cyclist already uses dynamic imports that gracefully degrade.
-
-  See ADR-0020 (docs/adr/0020-benchmark-package-extraction.md) for full
-  architectural rationale and file inventory.
-priority: P2
-status: done
-repos: pennyfarthing
-marker: infrastructure
 adr: '0020'
-jira: MSSCI-14629
-completed: '2026-02-10'
+completed: '2026-02-13'
