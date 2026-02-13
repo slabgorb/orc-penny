@@ -25,6 +25,7 @@ stories:
     priority: P0
     status: planning
     repos: pennyfarthing
+    workflow: tdd
   - id: "86-2"
     jira: MSSCI-14497
     title: "Consultation protocol implementation"
@@ -32,6 +33,7 @@ stories:
     priority: P0
     status: planning
     repos: pennyfarthing
+    workflow: tdd
   - id: "86-3"
     jira: MSSCI-14498
     title: "Dialogue file management"
@@ -39,6 +41,7 @@ stories:
     priority: P0
     status: planning
     repos: pennyfarthing
+    workflow: tdd
   - id: "86-4"
     jira: MSSCI-14499
     title: "Agent tandem awareness"
@@ -46,6 +49,7 @@ stories:
     priority: P0
     status: planning
     repos: pennyfarthing
+    workflow: tdd
   - id: "86-5"
     jira: MSSCI-14500
     title: "Tandem workflow templates"
@@ -53,6 +57,7 @@ stories:
     priority: P1
     status: planning
     repos: pennyfarthing
+    workflow: tdd
   - id: "86-6"
     jira: MSSCI-14501
     title: "Tandem metrics and token tracking"
@@ -60,6 +65,7 @@ stories:
     priority: P1
     status: planning
     repos: pennyfarthing
+    workflow: tdd
   - id: "86-7"
     jira: MSSCI-14502
     title: "Feature detection: native teams capability"
@@ -67,6 +73,7 @@ stories:
     priority: P1
     status: planning
     repos: pennyfarthing
+    workflow: tdd
   - id: "86-8"
     jira: MSSCI-14503
     title: "Persona injection via spawn prompts"
@@ -74,6 +81,7 @@ stories:
     priority: P1
     status: planning
     repos: pennyfarthing
+    workflow: tdd
   - id: "86-9"
     jira: MSSCI-14504
     title: "Workflow schema: execution_mode: team"
@@ -81,6 +89,7 @@ stories:
     priority: P1
     status: planning
     repos: pennyfarthing
+    workflow: tdd
   - id: "86-10"
     jira: MSSCI-14505
     title: "Gate-to-task-dependency adapter"
@@ -88,6 +97,7 @@ stories:
     priority: P2
     status: planning
     repos: pennyfarthing
+    workflow: tdd
   - id: "86-11"
     jira: MSSCI-14506
     title: "Cyclist: Tandem dialogue panel"
@@ -95,6 +105,7 @@ stories:
     priority: P2
     status: planning
     repos: pennyfarthing
+    workflow: tdd
   - id: "86-12"
     jira: MSSCI-14507
     title: "Cyclist: Native team panel"
@@ -102,6 +113,7 @@ stories:
     priority: P3
     status: planning
     repos: pennyfarthing
+    workflow: tdd
   - id: 86-13
     title: Tandem backseat not activating from CLI invocation
     points: 2
