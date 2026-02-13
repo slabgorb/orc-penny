@@ -1,0 +1,34 @@
+id: '108'
+type: epic
+title: Full Migration & Cleanup
+description: 'Migrate remaining gates (tests-fail, approval) to files. Update all workflow YAMLs. Remove handoff.md, sm-handoff.md subagents and inline gate.type fallback. Single code path for phase transitions.'
+priority: P3
+status: backlog
+repos: pennyfarthing
+initiative: gate-extraction
+stories:
+  - id: 108-1
+    title: Migrate tests-fail and approval gates to files
+    description: |
+      Create pennyfarthing-dist/gates/tests-fail.md (checks tests RED,
+      AC coverage, assessment exists) and gates/approval.md (checks
+      reviewer verdict APPROVED/REJECTED). Match current inline behavior
+      exactly. Update all workflow YAMLs (tdd, trivial, 2party-tdd, bdd)
+      to use gate: {file: ...} for all phases.
+    points: 2
+    priority: P3
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+  - id: 108-2
+    title: Remove handoff subagents and inline fallback
+    description: |
+      Delete handoff.md and sm-handoff.md from pennyfarthing-dist/agents/.
+      Remove inline gate.type fallback from handoff-cli.sh — resolve-gate
+      only resolves via gate.file. Update or remove checkGate() in Cyclist
+      handoff.ts. Verify no agent file references either subagent.
+    points: 2
+    priority: P3
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial

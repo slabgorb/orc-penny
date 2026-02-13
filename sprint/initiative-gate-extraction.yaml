@@ -1,0 +1,14 @@
+name: Gate Extraction
+description: |
+  Extract BikeLane gates from inline agent code into declarative gate files.
+  Replace handoff subagents with bash scripts (handoff-cli.sh) for atomic
+  session updates and zero-token manual gates. Based on ADR-0025.
+  Input documents: sprint/planning/gate-prd.md, docs/adr/0025-script-first-gate-extraction.md
+status: backlog
+blocked_by:
+total_points: 23
+epics:
+  - epic-105
+  - epic-106
+  - epic-107
+  - epic-108
