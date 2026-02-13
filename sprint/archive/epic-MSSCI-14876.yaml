@@ -1,71 +1,3 @@
-stories:
-  - id: 102-1
-    title: Migrate BikeRack from index page to Dockview layout
-    points: 5
-    priority: P1
-    status: done
-    workflow: tdd
-    type: refactor
-    started: '2026-02-12'
-    assigned_to: keith.avery@1898andco.io
-    jira: MSSCI-14877
-    completed: '2026-02-12'
-  - id: 102-2
-    title: Replace settings panel for BikeRack
-    points: 3
-    priority: P1
-    status: done
-    workflow: tdd
-    jira: MSSCI-14878
-    completed: '2026-02-12'
-    assigned_to: keith.avery@1898andco.io
-  - id: 102-3
-    title: Remove TTY panel from BikeRack
-    points: 1
-    priority: P2
-    status: done
-    workflow: trivial
-    type: chore
-    jira: MSSCI-14879
-  - id: 102-4
-    title: Investigate and fix OTEL panels not responding in BikeRack
-    points: 2
-    priority: P1
-    status: done
-    workflow: trivial
-    type: bug
-    jira: MSSCI-14880
-    completed: '2026-02-12'
-    assigned_to: keith.avery@1898andco.io
-  - id: 102-5
-    title: Fix broken Git panel in BikeRack
-    points: 2
-    priority: P1
-    status: done
-    workflow: trivial
-    type: bug
-    jira: MSSCI-14881
-    completed: '2026-02-12'
-    assigned_to: keith.avery@1898andco.io
-  - id: 102-6
-    title: Fix broken Portrait panel in BikeRack
-    points: 2
-    priority: P1
-    status: done
-    workflow: trivial
-    type: bug
-    jira: MSSCI-14882
-    started: '2026-02-12'
-    assigned_to: keith.avery@1898andco.io
-    completed: '2026-02-12'
-  - id: 102-7
-    title: 'BikeRack interactive UX sweep: fix font colors, margins, close button spacing'
-    points: 3
-    priority: P1
-    status: done
-    workflow: trivial
-    type: bug
-    jira: MSSCI-14887
 id: '102'
 type: epic
 title: BikeRack Follow-up — Dockview Migration and Panel Fixes
@@ -74,4 +6,54 @@ priority: P1
 status: done
 repos: pennyfarthing
 jira: MSSCI-14876
-completed: '2026-02-12'
+stories:
+  - id: 102-1
+    title: Migrate BikeRack from index page to Dockview layout
+    points: 5
+    priority: P1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-12'
+    workflow: tdd
+    completed: '2026-02-12'
+    type: refactor
+  - id: 102-2
+    title: Replace settings panel for BikeRack
+    points: 3
+    priority: P1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    workflow: tdd
+    completed: '2026-02-12'
+  - id: 102-3
+    title: "Deprecate and remove TTY panel and BikeRack panel entirely"
+    points: 3
+    priority: P2
+    status: done
+    workflow: trivial
+    completed: '2026-02-13'
+    type: chore
+  - id: 102-4
+    title: Investigate and fix OTEL panels not responding in BikeRack
+    points: 2
+    priority: P1
+    status: done
+    workflow: trivial
+    type: bug
+  - id: 102-5
+    title: Fix broken Git panel in BikeRack
+    points: 2
+    priority: P1
+    status: done
+    workflow: trivial
+    type: bug
+  - id: 102-6
+    title: "BikeRack: anchor portrait panel above Dockview tab bar"
+    points: 2
+    priority: P1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    workflow: tdd
+    completed: '2026-02-12'
+    type: feature
+completed: '2026-02-13'
