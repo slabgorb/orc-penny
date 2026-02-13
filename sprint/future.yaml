@@ -1,6 +1,5 @@
 future:
   initiatives:
-  - gate-extraction
   - benchmarking
   - agent-quality-awareness
   - quality-scale
