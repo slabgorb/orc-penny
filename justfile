@@ -103,6 +103,23 @@ bikerack *args:
 
     just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" bikerack $args
 
+# Launch BikeRack TUI (connects to running WheelHub)
+tui *args:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    args="{{args}}"
+    if [[ "$args" == *"here"* ]]; then
+        args="${args/here/dir={{invocation}}}"
+    fi
+
+    # Default to orchestrator root for port file discovery
+    if [[ "$args" != *"dir="* ]]; then
+        args="${args:+$args }dir={{root}}"
+    fi
+
+    just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" tui $args
+
 # =============================================================================
 # Development - orchestrator sync with pennyfarthing
 # =============================================================================

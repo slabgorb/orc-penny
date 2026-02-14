@@ -1,0 +1,47 @@
+id: '107'
+type: epic
+title: Gate Validation & Authoring
+description: 'Gate schema validation at parse time, acyclic cycle detection, depth limit enforcement (max 3), and authoring guide with validation command. Catches errors before any subagent spawns.'
+priority: P2
+status: backlog
+repos: pennyfarthing
+jira: MSSCI-15008
+stories:
+  - id: 107-1
+    title: Gate schema validation at parse time
+    description: |
+      Validate gate files for required elements before any subagent spawns.
+      Check: every <gate> has name attribute, <purpose>, <pass>, <fail>.
+      Nested gates validated recursively. Clear error messages with gate
+      name and missing element. Valid files pass through to execution.
+    points: 2
+    priority: P2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 107-2
+    title: Acyclic validation and depth limit enforcement
+    description: |
+      At parse time: build directed graph of gate references, detect
+      cycles via DFS, reject with "Cycle detected: A -> B -> A". Enforce
+      max nesting depth 3 at parse time (static check). Error: "Gate
+      depth limit exceeded: {name} at depth 4 (max 3)". Depth 3 passes,
+      no nesting passes immediately.
+    points: 2
+    priority: P2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 107-3
+    title: Gate authoring guide and validation command
+    description: |
+      Create pennyfarthing-dist/guides/gate-schema.md with complete schema,
+      working example, and authoring best practices. Add validation command
+      that checks schema, acyclic, depth, mandatory pass/fail — reporting
+      ALL errors at once. Valid gates get confirmation with structure summary.
+    points: 2
+    priority: P2
+    status: backlog
+    repos: pennyfarthing
+    workflow: agent-docs
+initiative: gate-extraction

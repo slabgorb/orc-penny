@@ -1,3 +1,11 @@
+id: '101'
+type: epic
+title: BikeRack Mode — Decoupled WheelHub Dashboard
+description: Decoupled WheelHub dashboard for CLI-first developers. Panels served individually via browser tabs, OTEL telemetry from standalone Claude CLI. See ADR-0024 and sprint/planning/bikerack-prd.md.
+priority: P1
+status: done
+repos: pennyfarthing
+jira: MSSCI-14819
 stories:
   - id: 101-1
     title: isBikeRackMode() gate and bikerack.ts entry point
@@ -29,11 +37,9 @@ stories:
     points: 2
     priority: P0
     status: done
-    workflow: tdd-tandem
     repos: pennyfarthing
-    jira: MSSCI-14820
-    assigned_to: keith.avery@1898andco.io
-    completed: '2026-02-11'
+    workflow: tdd-tandem
+    completed: "2026-02-11"
   - id: 101-2
     title: StandalonePanel wrapper and ?panel=X client routing
     description: |
@@ -63,11 +69,9 @@ stories:
     points: 3
     priority: P0
     status: done
-    workflow: tdd-tandem
     repos: pennyfarthing
-    jira: MSSCI-14821
-    assigned_to: keith.avery@1898andco.io
-    completed: '2026-02-11'
+    workflow: tdd-tandem
+    completed: "2026-02-11"
   - id: 101-3
     title: BikeRackIndex panel listing page
     description: |
@@ -90,11 +94,9 @@ stories:
     points: 1
     priority: P1
     status: done
-    workflow: tdd-tandem
     repos: pennyfarthing
-    jira: MSSCI-14822
-    assigned_to: keith.avery@1898andco.io
-    completed: '2026-02-11'
+    workflow: tdd-tandem
+    completed: "2026-02-11"
   - id: 101-4
     title: PortraitPanel with tandem support
     description: |
@@ -121,11 +123,9 @@ stories:
     points: 2
     priority: P1
     status: done
-    workflow: tdd-tandem
     repos: pennyfarthing
-    jira: MSSCI-14823
-    assigned_to: keith.avery@1898andco.io
-    completed: '2026-02-11'
+    workflow: tdd-tandem
+    completed: "2026-02-11"
   - id: 101-5
     title: BikeRack launcher CLI (pf bikerack start/stop/status)
     description: |
@@ -153,11 +153,9 @@ stories:
     points: 3
     priority: P0
     status: done
-    workflow: tdd-tandem
     repos: pennyfarthing
-    jira: MSSCI-14824
-    assigned_to: keith.avery@1898andco.io
-    completed: '2026-02-11'
+    workflow: tdd-tandem
+    completed: '2026-02-13'
   - id: 101-6
     title: BikeRack integration test and operational verification
     description: |
@@ -180,17 +178,7 @@ stories:
     points: 2
     priority: P1
     status: done
-    workflow: tdd-tandem
     repos: pennyfarthing
-    jira: MSSCI-14825
-    assigned_to: keith.avery@1898andco.io
-    completed: '2026-02-11'
-id: '101'
-type: epic
-title: BikeRack Mode — Decoupled WheelHub Dashboard
-description: Decoupled WheelHub dashboard for CLI-first developers. Panels served individually via browser tabs, OTEL telemetry from standalone Claude CLI. See ADR-0024 and sprint/planning/bikerack-prd.md.
-priority: P1
-status: done
-repos: pennyfarthing
-jira: MSSCI-14819
-completed: '2026-02-11'
+    workflow: tdd-tandem
+    completed: "2026-02-11"
+completed: '2026-02-13'

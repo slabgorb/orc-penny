@@ -1,0 +1,143 @@
+id: epic-98
+type: epic
+title: Safe Install, Upgrade, and Namespace Isolation
+description: |
+  Redesign the install/upgrade path to prevent data loss, automate post-update
+  setup, add versioned migrations, namespace skills/commands with pf- prefix,
+  and integrate sprint shard migration. See ADR-0021.
+priority: P1
+status: done
+repos: pennyfarthing
+jira: MSSCI-14697
+stories:
+  - id: 98-1
+    jira: MSSCI-14698
+    title: Version sentinel file and auto-update detection
+    description: |
+      Add .pennyfarthing/.installed-version sentinel file written by init.ts
+      and update.ts. In prime.sh (or pf agent start), compare sentinel against
+      package version. If mismatch, run pennyfarthing update --auto. Simpler
+      than parsing manifest.json — single cat vs JSON parse.
+    points: 2
+    priority: P0
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-12'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-12'
+  - id: 98-2
+    jira: MSSCI-14699
+    title: Versioned migration runner infrastructure
+    description: |
+      Create pennyfarthing-dist/migrations/ directory with numbered migration
+      files. Each exports {id, description, up(), down?(), check()}. Add
+      migrationsRun field to manifest. Migration runner scans for pending,
+      runs in order, updates manifest. Replaces scattered inline code in
+      update.ts.
+    points: 5
+    priority: P0
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-12'
+  - id: 98-3
+    jira: MSSCI-14700
+    title: Refactor update.ts inline migrations to migration files
+    description: |
+      Extract existing inline migrations from update.ts (migrateManifest,
+      removeLegacyClaudeDirectories, migrateTemplateFiles, migrateSidecars,
+      migrateSettingsFile) into numbered migration files using the runner
+      from 98-2. Remove inline code from update.ts, replace with runner
+      invocation.
+    points: 3
+    priority: P0
+    status: done
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-02-12'
+  - id: 98-4
+    jira: MSSCI-14701
+    title: Prefix built-in skills and commands with pf-
+    description: |
+      Rename all built-in skill directories from {name}/ to pf-{name}/ and
+      command files from {name}.md to pf-{name}.md. Update skill-registry.yaml.
+      Create compatibility symlinks (old -> new) for one version cycle. Add as
+      versioned migration. Update createCommandsDirectory and
+      createSkillsDirectory in symlinks.ts.
+    points: 5
+    priority: P1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-14'
+  - id: 98-5
+    jira: MSSCI-14702
+    title: Sprint shard migration as versioned migration
+    description: |
+      Add migration that checks sprint/current-sprint.yaml format. If epics[0]
+      is dict (monolithic), run shard extraction: split inline epics to
+      epic-{ref}.yaml files, replace with string references. Leverages existing
+      logic from sprint/migrate-to-shards.py. Include --dry-run support.
+    points: 3
+    priority: P1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-14'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-02-14'
+  - id: 98-6
+    jira: MSSCI-14703
+    title: Protective symlink pre-flight checks
+    description: |
+      In removeSymlinkOrDirectory(), before removal verify path is symlink or
+      empty directory. If non-empty non-symlink directory, warn and skip. Add
+      doctor check for stray files in managed directories. Create
+      .pennyfarthing/README.md documenting managed vs writable zones.
+    points: 2
+    priority: P1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-14'
+  - id: 98-7
+    jira: MSSCI-14704
+    title: Update agent definitions and docs for pf- skill references
+    description: |
+      Update all agent .md files referencing /testing, /sprint, /workflow etc.
+      to use /pf-testing, /pf-sprint, /pf-workflow. Update skill
+      cross-references in skill-registry.yaml (related_skills, redirect
+      fields). Update README and guide docs that reference skill names.
+    points: 2
+    priority: P2
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-14'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-02-14'
+  - id: 98-8
+    jira: MSSCI-14722
+    title: Fix Cyclist false-positive detection in CLI mode
+    description: |
+      is_cyclist_running() in hooks.py checks for .cyclist-port file existence,
+      which gives false positives when the file is stale (Cyclist shut down
+      without cleanup). Cannot use HTTP health check — fires on every
+      PreToolUse hook invocation and must be zero-latency. Need an alternative
+      detection mechanism: e.g., PID file validation, lock file with flock, or
+      a lightweight IPC check. Scope: hooks.py is_cyclist_running(), Cyclist
+      startup/shutdown port file lifecycle.
+    points: 3
+    priority: P0
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-10'
+    type: bug
+adr: '0021'
+completed: '2026-02-14'

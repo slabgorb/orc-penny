@@ -1,3 +1,21 @@
+id: epic-91
+title: Cross-File Reference & Schema Validation Pipeline
+description: |
+  Layered CI validation pipeline for pennyfarthing-dist source files.
+  469+ files with 1,685+ cross-references that silently break when files
+  are renamed, moved, or deleted. Ports proven pipeline from BMAD-METHOD
+  (PRs #1494, #1529, #1573) adapted for Pennyfarthing structure.
+
+  Layer 0: Formatting & linting (ESLint, Ruff, markdownlint, yamllint)
+  Layer 1: File reference validation (cross-file refs, path resolution)
+  Layer 2: Schema validation (YAML fields, required props, enums)
+  Layer 3: Graph validation (step transitions, reachability)
+priority: P1
+status: in_progress
+repos: pennyfarthing
+jira: MSSCI-14510
+points: 60
+marker: core
 stories:
   - id: 91-1
     jira: MSSCI-14511
@@ -10,24 +28,29 @@ stories:
     points: 3
     priority: P0
     status: done
+    assigned_to: michael.pursifull@1898andco.io
     started: '2026-02-07'
     repos: pennyfarthing
     completed: '2026-02-08'
-    assigned_to: michael.pursifull@1898andco.io
   - id: 91-2
     jira: MSSCI-14512
-    title: Layer 1 validator in pre-commit hook and GHA
+    title: 'CI polish: ::warning annotations, summary table, and PR comments'
     description: |
-      Add validate-refs.js --strict to the pre-commit hook when
-      pennyfarthing-dist/ files are staged. Also wire into GitHub
-      Actions for PR-level enforcement with ::warning annotations,
-      GITHUB_STEP_SUMMARY table, and PR comment posting.
-      Permissions: pull-requests: write, contents: read.
-    points: 5
-    priority: P1
+      Core pre-commit hook and CI job delivered by PR #859 (MSSCI-15038).
+      Remaining scope is CI output polish:
+
+      - Add ::warning annotations to CI output for individual failures
+      - Generate GITHUB_STEP_SUMMARY table with pass/fail per check type
+      - Post PR comment with validation results summary
+      - Add pull-requests: write permission to CI workflow
+
+      Original scope (5pts) split: 3pts delivered in MSSCI-15038,
+      2pts remaining here for CI reporting enhancements.
+    points: 2
+    priority: P2
     status: planning
-    repos: pennyfarthing
     assigned_to: michael.pursifull@1898andco.io
+    repos: pennyfarthing
   - id: 91-3
     jira: MSSCI-14513
     title: 'Research: Layer 0 linter selection and adoption plan'
@@ -37,9 +60,9 @@ stories:
       YAML files. Document existing configs, gaps, and adoption plan.
     points: 2
     priority: P2
-    status: in_progress
-    repos: pennyfarthing
+    status: planning
     assigned_to: michael.pursifull@1898andco.io
+    repos: pennyfarthing
   - id: 91-4
     jira: MSSCI-14514
     title: 'Research: Layer 1 validator adaptation from BMAD'
@@ -49,9 +72,9 @@ stories:
       types, false positive handling, runtime variable exclusions.
     points: 2
     priority: P2
-    status: in_progress
-    repos: pennyfarthing
+    status: planning
     assigned_to: michael.pursifull@1898andco.io
+    repos: pennyfarthing
   - id: 91-5
     jira: MSSCI-14515
     title: 'Research: Layer 2 schema validation approach and gap analysis'
@@ -64,8 +87,8 @@ stories:
     points: 3
     priority: P2
     status: planning
-    repos: pennyfarthing
     assigned_to: michael.pursifull@1898andco.io
+    repos: pennyfarthing
   - id: 91-6
     jira: MSSCI-14516
     title: 'Research: Layer 3 graph validation feasibility study'
@@ -76,9 +99,10 @@ stories:
     points: 3
     priority: P3
     status: planning
-    repos: pennyfarthing
     assigned_to: michael.pursifull@1898andco.io
+    repos: pennyfarthing
   - id: 91-7
+    jira: MSSCI-14705
     title: Enforce ESLint across all packages
     description: |
       Remove continue-on-error from CI lint job. Add lint scripts to
@@ -87,11 +111,11 @@ stories:
     points: 3
     priority: P1
     status: done
-    repos: pennyfarthing
-    jira: MSSCI-14705
-    completed: '2026-02-10'
     assigned_to: keith.avery@1898andco.io
+    repos: pennyfarthing
+    completed: '2026-02-10'
   - id: 91-8
+    jira: MSSCI-14706
     title: Add Ruff to CI for Python scripts
     description: |
       Wire existing pyproject.toml Ruff config into CI. 107 Python
@@ -99,11 +123,11 @@ stories:
     points: 1
     priority: P1
     status: done
-    repos: pennyfarthing
-    jira: MSSCI-14706
     assigned_to: keith.avery@1898andco.io
+    repos: pennyfarthing
     completed: '2026-02-10'
   - id: 91-9
+    jira: MSSCI-14707
     title: Add markdownlint to CI
     description: |
       Wire existing .markdownlint.yaml config into CI. Scope to
@@ -111,12 +135,12 @@ stories:
     points: 2
     priority: P2
     status: done
-    repos: pennyfarthing
-    jira: MSSCI-14707
-    started: '2026-02-10'
     assigned_to: keith.avery@1898andco.io
+    started: '2026-02-10'
+    repos: pennyfarthing
     completed: '2026-02-10'
   - id: 91-10
+    jira: MSSCI-14708
     title: Add yamllint for workflow and config files
     description: |
       Create .yamllint.yaml config. Scope to pennyfarthing-dist/**/*.yaml
@@ -124,11 +148,11 @@ stories:
     points: 2
     priority: P2
     status: done
-    repos: pennyfarthing
-    jira: MSSCI-14708
     assigned_to: keith.avery@1898andco.io
+    repos: pennyfarthing
     completed: '2026-02-10'
   - id: 91-11
+    jira: MSSCI-14709
     title: Workflow YAML schema validation
     description: |
       Adapt from BMAD PR #1529 for Pennyfarthing workflow structure.
@@ -136,11 +160,11 @@ stories:
     points: 5
     priority: P2
     status: done
-    repos: pennyfarthing
-    jira: MSSCI-14709
     assigned_to: keith.avery@1898andco.io
+    repos: pennyfarthing
     completed: '2026-02-10'
   - id: 91-12
+    jira: MSSCI-14710
     title: Agent definition structural validation
     description: |
       Validate required sections, helper model values, subagent refs.
@@ -148,12 +172,12 @@ stories:
     points: 5
     priority: P2
     status: done
-    repos: pennyfarthing
-    jira: MSSCI-14710
     assigned_to: K. Avery
     started: '2026-02-10'
+    repos: pennyfarthing
     completed: '2026-02-10'
   - id: 91-13
+    jira: MSSCI-14711
     title: Skill registry and command schema validation
     description: |
       Enforce existing skill-registry.schema.json. Add command file
@@ -161,9 +185,8 @@ stories:
     points: 3
     priority: P3
     status: done
-    repos: pennyfarthing
-    jira: MSSCI-14711
     assigned_to: keith.avery@1898andco.io
+    repos: pennyfarthing
     completed: '2026-02-10'
   - id: 91-14
     title: Workflow graph validation
@@ -174,7 +197,6 @@ stories:
     priority: P3
     status: planning
     repos: pennyfarthing
-    jira: MSSCI-14712
   - id: 91-15
     title: Cross-entity reference validation
     description: |
@@ -184,7 +206,6 @@ stories:
     priority: P3
     status: planning
     repos: pennyfarthing
-    jira: MSSCI-14713
   - id: 91-16
     jira: MSSCI-14517
     title: run-ci.md references wrong path for run-ci.sh
@@ -194,9 +215,9 @@ stories:
     points: 1
     priority: P0
     status: done
+    assigned_to: michael.pursifull@1898andco.io
     repos: pennyfarthing
     completed: '2026-02-07'
-    assigned_to: michael.pursifull@1898andco.io
   - id: 91-17
     jira: MSSCI-14518
     title: setup.md references /theme instead of /set-theme
@@ -206,9 +227,9 @@ stories:
     points: 1
     priority: P0
     status: done
+    assigned_to: michael.pursifull@1898andco.io
     repos: pennyfarthing
     completed: '2026-02-07'
-    assigned_to: michael.pursifull@1898andco.io
   - id: 91-18
     jira: MSSCI-14519
     title: workflow skill.md broken link to BIKELANE.md
@@ -218,9 +239,9 @@ stories:
     points: 1
     priority: P0
     status: done
+    assigned_to: michael.pursifull@1898andco.io
     repos: pennyfarthing
     completed: '2026-02-07'
-    assigned_to: michael.pursifull@1898andco.io
   - id: 91-19
     jira: MSSCI-14520
     title: workflow skill.md broken link to ADR 0005 (renumbered)
@@ -230,9 +251,9 @@ stories:
     points: 1
     priority: P0
     status: done
+    assigned_to: michael.pursifull@1898andco.io
     repos: pennyfarthing
     completed: '2026-02-07'
-    assigned_to: michael.pursifull@1898andco.io
   - id: 91-20
     jira: MSSCI-14521
     title: workflow skill.md wrong path depth for architecture.yaml
@@ -242,9 +263,9 @@ stories:
     points: 1
     priority: P0
     status: done
+    assigned_to: michael.pursifull@1898andco.io
     repos: pennyfarthing
     completed: '2026-02-07'
-    assigned_to: michael.pursifull@1898andco.io
   - id: 91-21
     jira: MSSCI-14522
     title: step-05 references unimplemented import-epic-to-future.sh
@@ -254,9 +275,9 @@ stories:
     points: 1
     priority: P0
     status: done
+    assigned_to: michael.pursifull@1898andco.io
     repos: pennyfarthing
     completed: '2026-02-07'
-    assigned_to: michael.pursifull@1898andco.io
   - id: 91-22
     jira: MSSCI-14552
     title: Broken ADR link in skills/workflow/skill.md
@@ -293,9 +314,9 @@ stories:
     points: 2
     priority: P1
     status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     completed: '2026-02-10'
-    assigned_to: keith.avery@1898andco.io
   - id: 91-26
     jira: MSSCI-14720
     title: Enhance pf sprint info to return full sprint header
@@ -306,12 +327,13 @@ stories:
     points: 1
     priority: P1
     status: done
-    repos: pennyfarthing
-    workflow: trivial
     assigned_to: keith.avery@1898andco.io
     started: '2026-02-10'
+    repos: pennyfarthing
+    workflow: trivial
     completed: '2026-02-10'
   - id: 91-24
+    jira: MSSCI-14734
     title: Sprint shard write-time validation and reference integrity
     description: |
       Add validate_epic_shard() to validator.py and wire it into all four
@@ -322,6 +344,8 @@ stories:
     points: 5
     priority: P0
     status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-10'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
@@ -331,36 +355,30 @@ stories:
       - _merge_epic_shards() emits warning for each unresolvable ref instead of silent skip
       - Jira create epic checks for existing epic with same title before creating
       - Existing validator tests pass; new tests cover all five validation rules
-    jira: MSSCI-14734
-    assigned_to: keith.avery@1898andco.io
-    started: '2026-02-10'
     completed: '2026-02-10'
   - id: 91-27
+    jira: MSSCI-14812
     title: Normalize stepped workflow output paths and de-collision document names
     points: 3
     priority: P2
     status: done
-    workflow: tdd
-    type: refactor
-    jira: MSSCI-14812
     assigned_to: keith.avery@1898andco.io
     started: '2026-02-11'
+    workflow: tdd
     completed: '2026-02-11'
-id: epic-91
-title: Cross-File Reference & Schema Validation Pipeline
-description: |
-  Layered CI validation pipeline for pennyfarthing-dist source files.
-  469+ files with 1,685+ cross-references that silently break when files
-  are renamed, moved, or deleted. Ports proven pipeline from BMAD-METHOD
-  (PRs #1494, #1529, #1573) adapted for Pennyfarthing structure.
-
-  Layer 0: Formatting & linting (ESLint, Ruff, markdownlint, yamllint)
-  Layer 1: File reference validation (cross-file refs, path resolution)
-  Layer 2: Schema validation (YAML fields, required props, enums)
-  Layer 3: Graph validation (step transitions, reachability)
-priority: P1
-status: in_progress
-repos: pennyfarthing
-jira: MSSCI-14510
-points: 60
-marker: core
+    type: refactor
+  - id: 91-28
+    jira: MSSCI-15050
+    title: 'validate-refs: differentiate native vs plugin reference sources'
+    points: 2
+    priority: p2
+    status: backlog
+    workflow: tdd
+  - id: 91-29
+    title: 'Bug: archive_epic does not populate completed_stories in sprint completed file'
+    points: 2
+    priority: p1
+    status: done
+    workflow: trivial
+    completed: '2026-02-14'
+    type: bug

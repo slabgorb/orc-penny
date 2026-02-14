@@ -10,4 +10,6 @@ status: backlog
 blocked_by:
 total_points: 17
 epics:
+  # Note: Planned epic — shard file does not exist yet.
+  # Shard will be created when work begins.
   - MSSCI-12414

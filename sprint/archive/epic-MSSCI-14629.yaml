@@ -14,13 +14,11 @@ stories:
       Out of scope: removing from core (done in 93-5).
     points: 3
     priority: P0
-    status: done
+    status: backlog
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
     jira: MSSCI-14630
-    started: '2026-02-09'
-    completed: '2026-02-09'
   - id: 93-2
     title: Move benchmark commands, skills, and scripts to new package
     description: |
@@ -41,40 +39,40 @@ stories:
       Out of scope: plugin discovery (93-3), core cleanup (93-5).
     points: 3
     priority: P0
-    status: done
+    status: backlog
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
     jira: MSSCI-14631
-    started: '2026-02-09'
-    completed: '2026-02-09'
   - id: 93-3
-    title: Plugin discovery for commands and skills from installed packages
+    title: Extend plugin discovery from validate-refs to core runtime loading
     description: |
-      Implement mechanism for @pennyfarthing/core to discover and register
-      commands and skills from optional installed packages.
+      The package.json "pennyfarthing" field convention is already established
+      by PR #859 (MSSCI-15038) — validate-refs.js uses pennyfarthing.skills
+      to discover skill directories from plugin packages.
+
+      This story extends that convention to core runtime loading:
 
       When @pennyfarthing/benchmark is installed:
       - Its 4 commands appear in the command namespace
       - Its 3 skills load when referenced
       - Cyclist benchmark API router registers automatically
 
-      Design should be generic (not benchmark-specific) so future package
-      extractions can use the same mechanism.
+      Implementation: extend the existing pennyfarthing field in package.json
+      to include commands, skills, and api_routers paths. Wire discovery into
+      @pennyfarthing/core's command loader, skill resolver, and Cyclist's
+      feature init.
 
-      Approach options:
-      - package.json "pennyfarthing" field with paths to commands/skills
-      - Convention-based discovery in node_modules/@pennyfarthing/*/
-      - Explicit registration via pennyfarthing.config.yaml plugins list
+      Design decision made: package.json "pennyfarthing" field (not
+      convention-based or config-based). Precedent set in validate-refs.js
+      getSkillNames().
     points: 3
     priority: P0
-    status: done
+    status: backlog
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
     jira: MSSCI-14632
-    started: '2026-02-09'
-    completed: '2026-02-09'
   - id: 93-4
     title: Move benchmark docs, results, and showcase components
     description: |
@@ -90,13 +88,11 @@ stories:
       Out of scope: historical results are dev-only data, not published.
     points: 2
     priority: P1
-    status: done
+    status: backlog
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
     jira: MSSCI-14633
-    started: '2026-02-09'
-    completed: '2026-02-09'
   - id: 93-5
     title: 'Clean up @pennyfarthing/core: remove benchmark exports and API'
     description: |
@@ -115,13 +111,11 @@ stories:
       display "Unranked" in UI.
     points: 2
     priority: P1
-    status: done
+    status: backlog
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
     jira: MSSCI-14634
-    started: '2026-02-09'
-    completed: '2026-02-09'
   - id: 93-6
     title: Update Cyclist to use benchmark plugin instead of inline API
     description: |
@@ -135,13 +129,11 @@ stories:
       Verify: Cyclist starts cleanly with and without benchmark package.
     points: 2
     priority: P1
-    status: done
+    status: backlog
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
     jira: MSSCI-14635
-    started: '2026-02-09'
-    completed: '2026-02-10'
 id: epic-93
 title: 'Epic: Extract Benchmarking System into @pennyfarthing/benchmark'
 description: |
@@ -158,7 +150,7 @@ description: |
 priority: P2
 status: done
 repos: pennyfarthing
+jira: MSSCI-14629
 marker: infrastructure
 adr: '0020'
-jira: MSSCI-14629
-completed: '2026-02-10'
+completed: '2026-02-13'

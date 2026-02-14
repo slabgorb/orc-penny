@@ -1,0 +1,108 @@
+id: epic-92
+title: 2pTDD Workflow and Review/PR Lifecycle
+description: |
+  New 2party-TDD workflow with story refinement, review rejection loops,
+  PR lifecycle management via pr_mode config, and agent definition updates.
+  Touches workflow YAMLs, BikeLane engine, agent definitions, and config system.
+priority: P1
+status: done
+repos: pennyfarthing
+jira: MSSCI-14580
+marker: infrastructure
+stories:
+  - id: "92-1"
+    jira: MSSCI-14580
+    title: "2party-tdd.yaml workflow definition (v2.0.0)"
+    description: |
+      **Prototype exists — code to share and updates to make. Not
+      formally in progress but actively iterated on.**
+
+      Workflow YAML at pennyfarthing-dist/workflows/2party-tdd.yaml.
+      Already at v2.0.0 with refinement phases, review rejection loops,
+      PR policy, and instructions blocks. Needs final validation that
+      BikeLane can parse it when engine support lands.
+    points: 2
+    priority: P0
+    status: backlog
+    repos: pennyfarthing
+  - id: "92-2"
+    jira: MSSCI-14582
+    title: "Apply review rejection loop and PR policy to tdd.yaml"
+    description: |
+      Port the review rejection loop and PR lifecycle changes from
+      2party-tdd.yaml (v2.0.0) to the standard tdd.yaml workflow:
+      - Add review-fix-tea phase (testable issues → TEA writes failing tests)
+      - Add review-fix-dev phase (lint-only → Dev fixes directly)
+      - Move PR creation from green/review to finish phase
+      - Add next: review loop-back on review-fix-dev
+      - Remove PR merge from review phase
+      - Add instructions blocks matching 2party-tdd patterns
+    points: 3
+    priority: P0
+    status: backlog
+    repos: pennyfarthing
+    type: refactor
+  - id: "92-3"
+    jira: MSSCI-14583
+    title: "Implement pr_mode user preference in pennyfarthing config"
+    description: |
+      New config key in .pennyfarthing/config.yaml or user-level config.
+      Values: draft (default), ready, none (push branch only, no PR).
+      gh-pr-manage skill and agents calling gh pr create must read this.
+      Default should be draft for safety.
+    points: 3
+    priority: P0
+    status: backlog
+    repos: pennyfarthing
+  - id: "92-4"
+    jira: MSSCI-14584
+    title: "Update agent definitions: reviewer, dev, sm for new PR/review lifecycle"
+    description: |
+      reviewer: Remove PR merge from exit sequence. Add write findings
+      to story requirement. Review rejection routing (testable → TEA,
+      lint-only → Dev).
+      dev: Remove PR creation from green phase. Just push branch.
+      sm (finish phase): Becomes responsible for PR creation with
+      draft preference from pr_mode config.
+    points: 2
+    priority: P0
+    status: backlog
+    repos: pennyfarthing
+    type: refactor
+  - id: "92-5"
+    jira: MSSCI-14585
+    title: "BikeLane engine: support next directive, workflow_phase override, review fields"
+    description: |
+      BikeLane engine gaps blocking review rejection loops at runtime:
+      1. next: directive — support non-linear phase progression (loop-back)
+      2. workflow_phase override — agent sets phase to review-fix-tea/dev
+      3. Sprint YAML schema — add review_findings, review_verdict fields
+    points: 5
+    priority: P1
+    status: backlog
+    repos: pennyfarthing
+  - id: "92-6"
+    jira: MSSCI-14588
+    title: "BikeLane gate type: quality_pass — run all project quality checks"
+    description: |
+      New gate type that runs all configured quality checks, not just tests.
+      Eliminates lint/format review rejections — the most expensive loop.
+
+      Phase 1 (this story): Explicit quality_gates config key in
+      .pennyfarthing/config.yaml listing commands to run. Gate runner
+      iterates list, spawns each, reports pass/fail. All must pass.
+
+      Phase 2 (future): Auto-discover checks from package.json scripts,
+      CI workflows, Makefile/justfile, pyproject.toml, Cargo.toml.
+
+      Origin: Dev passed 40 functional tests, Reviewer rejected for
+      prettier/eslint failures. Those checks exist in CI but no gate
+      enforced running them locally.
+    points: 3
+    priority: P0
+    status: backlog
+    repos: pennyfarthing
+deferred_to: "TO Sprint 2608"
+deferred_sprint_id: 310
+deferred_reason: "Rewriting after tandem mode and gates are implemented"
+completed: '2026-02-13'
