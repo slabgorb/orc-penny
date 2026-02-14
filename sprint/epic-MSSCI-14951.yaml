@@ -314,3 +314,9 @@ stories:
     status: done
     workflow: tdd
     completed: "2026-02-14"
+  - id: 103-21
+    title: Add git fetch cooldown to prevent frequent network calls during active sessions
+    points: 1
+    priority: p2
+    status: backlog
+    workflow: trivial
