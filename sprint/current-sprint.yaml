@@ -34,6 +34,36 @@ stories:
     repos: pennyfarthing
     workflow: trivial
     completed: '2026-02-06'
+  - id: MSSCI-15038
+    jira: MSSCI-15038
+    title: Add party-mode roleplay variant and validate-refs CI/pre-commit
+    description: |
+      Three deliverables in one PR (#859):
+
+      1. Party-mode roleplay variant — new sustained multi-round agent
+         discussion workflow (party-mode-roleplay, 3 BikeLane steps:
+         agent-loading, discussion, exit). Routes party-mode command to
+         quick/roleplay/bare dispatch via party_mode_default config.
+         Adapted from BMAD 3-step party-mode with PF agent loading and
+         theme persona resolution.
+
+      2. validate-refs plugin awareness — getSkillNames() discovers skills
+         from plugin packages via package.json pennyfarthing.skills field.
+         Fixes 9 false-positive warnings for benchmark skills.
+
+      3. CI + pre-commit enforcement — new validate-refs CI job (--strict,
+         fails build on broken references) and pre-commit Check 3
+         (warn-only when pennyfarthing-dist/ files staged).
+
+      Partially delivers 91-2 (CI/hook wiring) and establishes the
+      package.json pennyfarthing field convention planned in 93-3.
+    points: 3
+    priority: P1
+    status: in_progress
+    repos: pennyfarthing
+    workflow: trivial
+    pr: 859
+    branch: feat/MSSCI-15038-party-mode-roleplay
   - id: MSSCI-14581
     jira: MSSCI-14581
     title: 'post-merge hook fails: find-root.sh not found at .git/lib/'
