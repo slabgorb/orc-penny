@@ -63,3 +63,66 @@ stories:
     repos: pennyfarthing
     workflow: trivial
     type: refactor
+  - id: 98-15
+    jira: MSSCI-15073
+    title: Remove TTY panel and node-pty dependency
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    workflow: tdd
+    completed: '2026-02-14'
+    type: refactor
+  - id: 98-16
+    jira: MSSCI-15074
+    title: Absorb @pennyfarthing/shared and @pennyfarthing/benchmark into core
+    points: 3
+    priority: p1
+    status: backlog
+    workflow: tdd
+    type: refactor
+  - id: 98-17
+    jira: MSSCI-15075
+    title: Move Cyclist web server and API layer into core
+    points: 8
+    priority: p1
+    status: backlog
+    workflow: tdd
+    type: refactor
+  - id: 98-18
+    jira: MSSCI-15076
+    title: Move React UI build and static assets into core
+    points: 5
+    priority: p1
+    status: backlog
+    workflow: tdd
+    type: refactor
+  - id: 98-19
+    jira: MSSCI-15077
+    title: Add pennyfarthing web and pennyfarthing bikerack CLI commands with lazy loading
+    points: 3
+    priority: p1
+    status: backlog
+    workflow: tdd
+  - id: 98-20
+    jira: MSSCI-15078
+    title: Extract Electron shell to packages/electron with BikeShow entry point
+    points: 5
+    priority: p2
+    status: backlog
+    workflow: tdd
+    type: refactor
+  - id: 98-21
+    jira: MSSCI-15079
+    title: Standalone Electron distribution via GitHub releases
+    points: 3
+    priority: p2
+    status: backlog
+    workflow: tdd
+  - id: 98-22
+    jira: MSSCI-15080
+    title: v11 migration automation — detect and remove old multi-package installs
+    points: 3
+    priority: p1
+    status: backlog
+    workflow: tdd
