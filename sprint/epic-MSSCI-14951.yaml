@@ -198,6 +198,7 @@ stories:
     completed: '2026-02-14'
     blocked_by:
       - '103-5'
+    completed: "2026-02-14"
   - id: '103-12'
     jira: MSSCI-14967
     title: ACPanel (acceptance criteria checklist)
@@ -324,5 +325,7 @@ stories:
     title: Add git fetch cooldown to prevent frequent network calls during active sessions
     points: 1
     priority: p2
-    status: backlog
+    status: in_progress
     workflow: trivial
+    started: '2026-02-14'
+    assigned_to: keith.avery@1898andco.io
