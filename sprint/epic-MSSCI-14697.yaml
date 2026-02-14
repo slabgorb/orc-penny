@@ -101,10 +101,11 @@ stories:
     title: Move React UI build and static assets into core
     points: 5
     priority: p1
-    status: in_progress
+    status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-02-14'
     workflow: tdd
+    completed: '2026-02-14'
     type: refactor
   - id: 98-19
     jira: MSSCI-15077
