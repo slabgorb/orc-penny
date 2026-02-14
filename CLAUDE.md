@@ -119,13 +119,15 @@ Use `/workflow list` to see available workflows, `/workflow` to check current st
 | Directory | Purpose |
 |-----------|---------|
 | `pennyfarthing-dist/` | Published package (source of truth) — agents, commands, guides, skills, personas, workflows, scripts |
-| `packages/core/` | Main package (`@pennyfarthing/core`) — CLI: init, update, doctor, uninstall |
-| `packages/cyclist/` | Visual terminal (Electron, React 19, Tailwind v4, shadcn/ui, dockview panels) |
-| `packages/shared/` | Shared utilities (portrait resolution, YAML helpers, marker detection) |
+| `packages/core/` | Main package (`@pennyfarthing/core`) — CLI, server (WheelHub), API routes, shared utilities (theme-loader, portrait-resolver, markers) |
+| `packages/cyclist/` | Visual terminal (Electron, React 19, Tailwind v4, shadcn/ui, dockview panels) — thin wrapper over core server |
+| `packages/shared/` | **Deprecated** — absorbed into `packages/core/src/shared/` (story 98-16). Kept for backward compat |
 | `packages/benchmark/` | Performance benchmarking and persona evaluation |
 | `packages/themes-*/` | Theme packages (comedy, literary, mythology-fantasy, prestige-tv, realistic, scifi, superheroes) |
 | `pennyfarthing_scripts/` | Distributed Python package (hooks, jira, sprint, story, prime) |
 | `tests/` | Framework tests |
+
+**Migration (98-16/17/18):** Shared utilities and WheelHub server moved into core. Cyclist is now a thin wrapper adding WebSocket + OTLP. Import shared utils from `packages/core/src/shared/`.
 
 **Key files:**
 
@@ -142,7 +144,7 @@ Use `/workflow list` to see available workflows, `/workflow` to check current st
 
 Electron app: React 19, Tailwind v4, shadcn/ui, dockview-react panels.
 
-**Codenames:** WheelHub (server — `packages/cyclist/src/server.ts`), TirePump (context clearing), JobFair (benchmarking), BikeRack (standalone panel viewer)
+**Codenames:** WheelHub (server — `packages/core/src/server/`), TirePump (context clearing), JobFair (benchmarking), BikeRack (standalone panel viewer)
 
 **Key components:** `DockviewWorkspace.tsx` (layout), `MessageView.tsx` (conversation), `ToolCallBlock.tsx` / `ToolStack.tsx` (tool visualization), `QuickActions.tsx` (Reflector marker detection)
 
