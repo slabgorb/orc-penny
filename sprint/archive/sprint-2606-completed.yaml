@@ -9,16 +9,44 @@ sprint:
   status: active
 
 completed_epics:
-  - MSSCI-14784
-  - MSSCI-14819
-  - MSSCI-14758
-  - MSSCI-14876
-  - MSSCI-14938
-  - MSSCI-14952
-  - MSSCI-14629
-  - MSSCI-14580
-  - MSSCI-14697
+  # Early sprint completions (from root completed file)
+  - MSSCI-14453   # epic-80 — Code Markers Tool
+  - MSSCI-14465   # epic-83 — Complexity + Dependencies Tools
+  - MSSCI-14469   # epic-84 — Composite Health Score
+  - MSSCI-14659   # epic-94 — Primary Portrait Thinking
+  - MSSCI-14665   # epic-95 — Workflow Config & Observation
+  - MSSCI-14673   # epic-96 — Cyclist Tandem UI
+  - MSSCI-14678   # epic-97 — CLI Tandem & Shipping
+  # Mid/late sprint completions (from archive completed file)
+  - MSSCI-14580   # epic-92 — 2pTDD Workflow
+  - MSSCI-14629   # epic-93 — Benchmarking Package
+  - MSSCI-14697   # epic-98 — Safe Install
+  - MSSCI-14758   # epic-100 — UI Tweak Bucket
+  - MSSCI-14784   # epic-87 — Repo Topology
+  - MSSCI-14819   # epic-101 — BikeRack Mode
+  - MSSCI-14876   # epic-102 — BikeRack Follow-up
+  - MSSCI-14938   # epic-99 — Sprint CLI Bug Fixes
+  - MSSCI-14952   # epic-104 — /bc CLI Panel Focus
+  # Pre-Jira epics — all stories cancelled, no work started
+  - epic-88       # Dev-TEA Conferral on Test Failures (no Jira key)
+  - epic-89       # Sprint Panel Metrics (no Jira key)
 completed_stories:
+  # Epic 83 — Complexity + Dependencies Tools (6 pts)
+  - id: 83-1
+    epic: MSSCI-14465
+    title: "Python complexity module"
+    points: 2
+    completed: 2026-02-08
+  - id: 83-2
+    epic: MSSCI-14465
+    title: "Python dependencies module"
+    points: 2
+    completed: 2026-02-08
+  - id: 83-3
+    epic: MSSCI-14465
+    title: "Complexity + Dependencies APIs + hooks + dialogs"
+    points: 2
+    completed: 2026-02-09
   - id: 87-1
     epic: MSSCI-14784
     title: "Extend repos.yaml schema with ownership and boundaries"
@@ -276,6 +304,13 @@ completed_stories:
     title: "Fix Cyclist false-positive detection in CLI mode"
     points: 3
     completed: 2026-02-10
+  # Epic 93 — Benchmarking Package (3 pts from root completed file)
+  - id: 93-1
+    epic: MSSCI-14629
+    title: "Create @pennyfarthing/benchmark package shell with TS modules"
+    points: 3
+    completed: 2026-02-09
+    pr: 771
   # Top-level stories (2 pts done)
   - id: MSSCI-14394
     title: "[BUG] Subagent spans never clear on task completion"

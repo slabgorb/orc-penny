@@ -52,11 +52,38 @@ completed_sprints:
       - { id: MSSCI-11795, title: "Agent File Modernization" }
       - { id: MSSCI-11796, title: "Jira-Pennyfarthing Sync Improvements" }
 
+  # Sprint 2606 (Feb 2-15, 2026)
+  # BikeRack, schema validation, safe install, sprint tooling
+  # Full details: archive/sprint-2606-completed.yaml
+  sprint_2606:
+    points: 126   # from individually listed stories; shard files have full detail
+    stories: 56
+    jira_sprint: 309  # TO Sprint 2606
+    epics:
+      - { id: MSSCI-14453, title: "Code Markers Tool" }
+      - { id: MSSCI-14465, title: "Complexity + Dependencies Tools" }
+      - { id: MSSCI-14469, title: "Composite Health Score" }
+      - { id: MSSCI-14580, title: "2pTDD Workflow" }
+      - { id: MSSCI-14629, title: "Benchmarking Package" }
+      - { id: MSSCI-14659, title: "Primary Portrait Thinking" }
+      - { id: MSSCI-14665, title: "Workflow Config & Observation" }
+      - { id: MSSCI-14673, title: "Cyclist Tandem UI" }
+      - { id: MSSCI-14678, title: "CLI Tandem & Shipping" }
+      - { id: MSSCI-14697, title: "Safe Install" }
+      - { id: MSSCI-14758, title: "UI Tweak Bucket" }
+      - { id: MSSCI-14784, title: "Repo Topology" }
+      - { id: MSSCI-14819, title: "BikeRack Mode" }
+      - { id: MSSCI-14876, title: "BikeRack Follow-up" }
+      - { id: MSSCI-14938, title: "Sprint CLI Bug Fixes" }
+      - { id: MSSCI-14952, title: "/bc CLI Panel Focus" }
+      - { id: epic-88, title: "Dev-TEA Conferral on Test Failures (cancelled, no Jira key)" }
+      - { id: epic-89, title: "Sprint Panel Metrics (cancelled, no Jira key)" }
+
 totals:
-  points: 526
-  stories: 382
-  sprints: 11
-  date_range: 2025-12-22 to 2026-01-19
+  points: 652
+  stories: 438
+  sprints: 12
+  date_range: 2025-12-22 to 2026-02-15
 
 # Epics without Jira presence (historical)
 unlinked_epics:
@@ -79,3 +106,5 @@ archives:
     content: Pre-Jira era detailed records (139 pts)
   - file: archive/sprints-6-10.yaml
     content: Jira era detailed records (244 pts)
+  - file: archive/sprint-2606-completed.yaml
+    content: Sprint 2606 detailed records — 18 completed epics, 56+ stories
