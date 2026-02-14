@@ -81,9 +81,10 @@ stories:
     points: 3
     priority: p1
     status: done
+    assigned_to: keith.avery@1898andco.io
     workflow: tdd
+    completed: '2026-02-14'
     type: refactor
-    completed: "2026-02-14"
   - id: 98-17
     jira: MSSCI-15075
     title: Move Cyclist web server and API layer into core
@@ -105,8 +106,9 @@ stories:
     title: Add pennyfarthing web and pennyfarthing bikerack CLI commands with lazy loading
     points: 3
     priority: p1
-    status: backlog
+    status: canceled
     workflow: tdd
+    notes: Canceled per user request 2026-02-14
   - id: 98-20
     jira: MSSCI-15078
     title: Extract Electron shell to packages/electron with BikeShow entry point
