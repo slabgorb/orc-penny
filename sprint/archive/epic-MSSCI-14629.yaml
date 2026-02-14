@@ -148,8 +148,9 @@ description: |
   See ADR-0020 (docs/adr/0020-benchmark-package-extraction.md) for full
   architectural rationale and file inventory.
 priority: P2
-status: backlog
+status: done
 repos: pennyfarthing
+jira: MSSCI-14629
 marker: infrastructure
 adr: '0020'
-jira: MSSCI-14629
+completed: '2026-02-13'
