@@ -90,7 +90,7 @@ stories:
     title: Move Cyclist web server and API layer into core
     points: 8
     priority: p1
-    status: in_progress
+    status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-02-14'
     workflow: tdd
