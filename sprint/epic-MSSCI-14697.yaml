@@ -59,9 +59,11 @@ stories:
     title: Remove dead copy-mode code paths
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-02-14'
     repos: pennyfarthing
     workflow: trivial
+    completed: "2026-02-14"
     type: refactor
   - id: 98-15
     jira: MSSCI-15073
