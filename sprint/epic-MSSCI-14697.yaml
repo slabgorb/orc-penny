@@ -83,11 +83,12 @@ stories:
       logic from sprint/migrate-to-shards.py. Include --dry-run support.
     points: 3
     priority: P1
-    status: in_progress
+    status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-02-14'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-02-14'
   - id: 98-6
     jira: MSSCI-14703
     title: Protective symlink pre-flight checks
