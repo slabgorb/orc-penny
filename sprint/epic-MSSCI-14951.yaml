@@ -170,8 +170,9 @@ stories:
       FRs: FR13
     points: 2
     priority: P0
-    status: backlog
+    status: done
     workflow: tdd
+    completed: '2026-02-14'
     blocked_by:
       - '103-5'
   - id: '103-11'
