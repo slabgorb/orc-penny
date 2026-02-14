@@ -90,8 +90,11 @@ stories:
     title: Move Cyclist web server and API layer into core
     points: 8
     priority: p1
-    status: backlog
+    status: in_progress
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-14'
     workflow: tdd
+    completed: '2026-02-14'
     type: refactor
   - id: 98-18
     jira: MSSCI-15076
