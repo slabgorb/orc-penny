@@ -1,0 +1,29 @@
+name: Progress Panel
+description: |
+  A unified Cyclist panel combining story context, workflow phase, AC completion,
+  todo status, git changes, and context window usage into a single at-a-glance view.
+  Frontend-only — uses 5 existing WebSocket hooks, zero backend changes.
+status: backlog
+blocked_by:
+total_points: 0
+epics:
+  - epic-105
+stories:
+  - id: "105-1"
+    title: Panel scaffold with story header
+    type: feature
+    status: backlog
+    workflow: tdd
+    repos: pennyfarthing
+  - id: "105-2"
+    title: Workflow phase and progress sections
+    type: feature
+    status: backlog
+    workflow: tdd
+    repos: pennyfarthing
+  - id: "105-3"
+    title: Git status and context meter
+    type: feature
+    status: backlog
+    workflow: tdd
+    repos: pennyfarthing

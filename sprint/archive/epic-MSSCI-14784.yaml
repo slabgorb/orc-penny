@@ -43,8 +43,10 @@ stories:
       before their first action.
     points: 2
     priority: P0
-    status: planning
+    status: done
     repos: pennyfarthing
+    completed: "2026-02-11"
+    jira: MSSCI-15070
   - id: "87-3"
     title: "Add topology validation to pre-edit guide"
     description: |
@@ -54,6 +56,8 @@ stories:
       Add worked examples of common mistakes (symlink, node_modules).
     points: 1
     priority: P1
-    status: planning
+    status: done
     repos: pennyfarthing
+    completed: "2026-02-11"
+    jira: MSSCI-15071
 completed: '2026-02-13'

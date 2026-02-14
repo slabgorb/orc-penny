@@ -9,25 +9,27 @@ sprint:
   status: active
 
 completed_epics:
-  - MSSCI-14453
-  - MSSCI-14465
-  - MSSCI-14469
-  - MSSCI-14659
-  - MSSCI-14665
-  - MSSCI-14673
-  - MSSCI-14678
-  - MSSCI-14580
-  - MSSCI-14629
-  - MSSCI-14697
-  - MSSCI-14758
-  - MSSCI-14784
-  - MSSCI-14819
-  - MSSCI-14876
-  - MSSCI-14938
-  - MSSCI-14952
-  - epic-88
-  - epic-89
-  - td
+  # Early sprint completions (from root completed file)
+  - MSSCI-14453   # epic-80 — Code Markers Tool
+  - MSSCI-14465   # epic-83 — Complexity + Dependencies Tools
+  - MSSCI-14469   # epic-84 — Composite Health Score
+  - MSSCI-14659   # epic-94 — Primary Portrait Thinking
+  - MSSCI-14665   # epic-95 — Workflow Config & Observation
+  - MSSCI-14673   # epic-96 — Cyclist Tandem UI
+  - MSSCI-14678   # epic-97 — CLI Tandem & Shipping
+  # Mid/late sprint completions (from archive completed file)
+  - MSSCI-14580   # epic-92 — 2pTDD Workflow
+  - MSSCI-14629   # epic-93 — Benchmarking Package
+  - MSSCI-14697   # epic-98 — Safe Install
+  - MSSCI-14758   # epic-100 — UI Tweak Bucket
+  - MSSCI-14784   # epic-87 — Repo Topology
+  - MSSCI-14819   # epic-101 — BikeRack Mode
+  - MSSCI-14876   # epic-102 — BikeRack Follow-up
+  - MSSCI-14938   # epic-99 — Sprint CLI Bug Fixes
+  - MSSCI-14952   # epic-104 — /bc CLI Panel Focus
+  - epic-88       # Themes Expansion
+  - epic-89       # Themes Expansion II
+  - td            # Technical Debt
 completed_stories:
   - id: 83-1
     epic: MSSCI-14465
@@ -328,6 +330,31 @@ completed_stories:
     points: 3
     completed: 2026-02-09
     pr: 771
+  - id: 93-2
+    epic: MSSCI-14629
+    title: "Move benchmark commands, skills, and scripts to new package"
+    points: 3
+    completed: 2026-02-13
+  - id: 93-3
+    epic: MSSCI-14629
+    title: "Extend plugin discovery from validate-refs to core runtime loading"
+    points: 3
+    completed: 2026-02-13
+  - id: 93-4
+    epic: MSSCI-14629
+    title: "Move benchmark docs, results, and showcase components"
+    points: 2
+    completed: 2026-02-13
+  - id: 93-5
+    epic: MSSCI-14629
+    title: "Clean up @pennyfarthing/core: remove benchmark exports and API"
+    points: 2
+    completed: 2026-02-13
+  - id: 93-6
+    epic: MSSCI-14629
+    title: "Update Cyclist to use benchmark plugin instead of inline API"
+    points: 2
+    completed: 2026-02-13
   # Top-level stories (2 pts done)
   - id: MSSCI-14394
     title: "[BUG] Subagent spans never clear on task completion"

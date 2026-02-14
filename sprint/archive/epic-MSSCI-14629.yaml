@@ -14,11 +14,12 @@ stories:
       Out of scope: removing from core (done in 93-5).
     points: 3
     priority: P0
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
     jira: MSSCI-14630
+    completed: '2026-02-13'
   - id: 93-2
     title: Move benchmark commands, skills, and scripts to new package
     description: |
@@ -39,11 +40,12 @@ stories:
       Out of scope: plugin discovery (93-3), core cleanup (93-5).
     points: 3
     priority: P0
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
     jira: MSSCI-14631
+    completed: '2026-02-13'
   - id: 93-3
     title: Extend plugin discovery from validate-refs to core runtime loading
     description: |
@@ -68,11 +70,12 @@ stories:
       getSkillNames().
     points: 3
     priority: P0
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
     jira: MSSCI-14632
+    completed: '2026-02-13'
   - id: 93-4
     title: Move benchmark docs, results, and showcase components
     description: |
@@ -88,11 +91,12 @@ stories:
       Out of scope: historical results are dev-only data, not published.
     points: 2
     priority: P1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
     jira: MSSCI-14633
+    completed: '2026-02-13'
   - id: 93-5
     title: 'Clean up @pennyfarthing/core: remove benchmark exports and API'
     description: |
@@ -111,11 +115,12 @@ stories:
       display "Unranked" in UI.
     points: 2
     priority: P1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
     jira: MSSCI-14634
+    completed: '2026-02-13'
   - id: 93-6
     title: Update Cyclist to use benchmark plugin instead of inline API
     description: |
@@ -129,11 +134,12 @@ stories:
       Verify: Cyclist starts cleanly with and without benchmark package.
     points: 2
     priority: P1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
     jira: MSSCI-14635
+    completed: '2026-02-13'
 id: epic-93
 title: 'Epic: Extract Benchmarking System into @pennyfarthing/benchmark'
 description: |

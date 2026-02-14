@@ -157,8 +157,11 @@ stories:
       FRs: FR9
     points: 1
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-14'
     workflow: tdd
+    completed: '2026-02-14'
   - id: '103-10'
     jira: MSSCI-14965
     title: GitPanel (multi-repo status)
@@ -177,14 +180,18 @@ stories:
       - '103-5'
   - id: '103-11'
     jira: MSSCI-14966
-    title: WorkflowPanel (phase diagram, agent flow)
+    title: ProgressPanel (at-a-glance story dashboard)
     description: |
-      Subscribes to /ws/workflow channel. Renders current workflow phase
-      diagram — agent progression with current position highlighted.
-      ASCII/Unicode flow diagram with Nerd Font icons for agents.
+      Unified progress panel combining story context, workflow phase,
+      AC completion, todo status, git changes, and context window usage
+      into a single at-a-glance view. Subscribes to /ws/story, /ws/todos,
+      /ws/git, /ws/sprint, /ws/context channels. Replaces the need for
+      separate WorkflowPanel, ACPanel, and TodoPanel.
 
-      FRs: FR16
-    points: 2
+      See: sprint/planning/create-epics-and-stories.md (epic-105)
+      PRD: sprint/planning/progress-panel-prd.md
+      UX: sprint/planning/progress-panel-ux-design.md
+    points: 5
     priority: P1
     status: backlog
     workflow: tdd
@@ -194,30 +201,24 @@ stories:
     jira: MSSCI-14967
     title: ACPanel (acceptance criteria checklist)
     description: |
-      Subscribes to /ws/ac channel. Renders acceptance criteria as
-      Rich checklist with pass/fail/pending indicators.
-
-      FRs: FR12
+      Superseded by ProgressPanel (103-11) which consolidates AC, Todo,
+      and Workflow into a single panel.
     points: 1
     priority: P1
-    status: backlog
+    status: canceled
     workflow: tdd
-    blocked_by:
-      - '103-5'
+    notes: Superseded by ProgressPanel (103-11)
   - id: '103-13'
     jira: MSSCI-14968
     title: TodoPanel (task checklist)
     description: |
-      Subscribes to /ws/todos channel. Renders todo items as Rich
-      checklist with status indicators.
-
-      FRs: FR18
+      Superseded by ProgressPanel (103-11) which consolidates AC, Todo,
+      and Workflow into a single panel.
     points: 1
     priority: P1
-    status: backlog
+    status: canceled
     workflow: tdd
-    blocked_by:
-      - '103-5'
+    notes: Superseded by ProgressPanel (103-11)
   - id: '103-14'
     jira: MSSCI-14969
     title: ChangedPanel (file list with status)
@@ -243,8 +244,10 @@ stories:
       FRs: FR19
     points: 1
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     workflow: tdd
+    completed: "2026-02-14"
     blocked_by:
       - '103-5'
   - id: '103-16'
@@ -257,8 +260,10 @@ stories:
       FRs: FR17
     points: 1
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     workflow: tdd
+    completed: '2026-02-14'
     blocked_by:
       - '103-5'
   - id: '103-17'
@@ -286,8 +291,11 @@ stories:
       FRs: FR14
     points: 3
     priority: P0
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-14'
     workflow: tdd
+    completed: '2026-02-14'
     blocked_by:
       - '103-5'
   - id: '103-19'
@@ -311,3 +319,9 @@ stories:
     status: done
     workflow: tdd
     completed: "2026-02-14"
+  - id: 103-21
+    title: Add git fetch cooldown to prevent frequent network calls during active sessions
+    points: 1
+    priority: p2
+    status: backlog
+    workflow: trivial
