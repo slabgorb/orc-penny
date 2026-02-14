@@ -9,29 +9,26 @@ sprint:
   status: active
 
 completed_epics:
-  # Early sprint completions (from root completed file)
-  - MSSCI-14453   # epic-80 — Code Markers Tool
-  - MSSCI-14465   # epic-83 — Complexity + Dependencies Tools
-  - MSSCI-14469   # epic-84 — Composite Health Score
-  - MSSCI-14659   # epic-94 — Primary Portrait Thinking
-  - MSSCI-14665   # epic-95 — Workflow Config & Observation
-  - MSSCI-14673   # epic-96 — Cyclist Tandem UI
-  - MSSCI-14678   # epic-97 — CLI Tandem & Shipping
-  # Mid/late sprint completions (from archive completed file)
-  - MSSCI-14580   # epic-92 — 2pTDD Workflow
-  - MSSCI-14629   # epic-93 — Benchmarking Package
-  - MSSCI-14697   # epic-98 — Safe Install
-  - MSSCI-14758   # epic-100 — UI Tweak Bucket
-  - MSSCI-14784   # epic-87 — Repo Topology
-  - MSSCI-14819   # epic-101 — BikeRack Mode
-  - MSSCI-14876   # epic-102 — BikeRack Follow-up
-  - MSSCI-14938   # epic-99 — Sprint CLI Bug Fixes
-  - MSSCI-14952   # epic-104 — /bc CLI Panel Focus
-  # Pre-Jira epics — all stories cancelled, no work started
-  - epic-88       # Dev-TEA Conferral on Test Failures (no Jira key)
-  - epic-89       # Sprint Panel Metrics (no Jira key)
+  - MSSCI-14453
+  - MSSCI-14465
+  - MSSCI-14469
+  - MSSCI-14659
+  - MSSCI-14665
+  - MSSCI-14673
+  - MSSCI-14678
+  - MSSCI-14580
+  - MSSCI-14629
+  - MSSCI-14697
+  - MSSCI-14758
+  - MSSCI-14784
+  - MSSCI-14819
+  - MSSCI-14876
+  - MSSCI-14938
+  - MSSCI-14952
+  - epic-88
+  - epic-89
+  - td
 completed_stories:
-  # Epic 83 — Complexity + Dependencies Tools (6 pts)
   - id: 83-1
     epic: MSSCI-14465
     title: "Python complexity module"
@@ -283,7 +280,7 @@ completed_stories:
     title: "Normalize stepped workflow output paths and de-collision document names"
     points: 3
     completed: 2026-02-11
-  # Epic 98 — Safe Install, Upgrade, and Namespace Isolation (13 pts done)
+  # Epic 98 — Safe Install, Upgrade, and Namespace Isolation (25 pts done)
   - id: 98-1
     epic: MSSCI-14697
     title: "Version sentinel file and auto-update detection"
@@ -299,6 +296,26 @@ completed_stories:
     title: "Refactor update.ts inline migrations to migration files"
     points: 3
     completed: 2026-02-12
+  - id: 98-4
+    epic: MSSCI-14697
+    title: "Prefix built-in skills and commands with pf-"
+    points: 5
+    completed: 2026-02-14
+  - id: 98-5
+    epic: MSSCI-14697
+    title: "Sprint shard migration as versioned migration"
+    points: 3
+    completed: 2026-02-14
+  - id: 98-6
+    epic: MSSCI-14697
+    title: "Protective symlink pre-flight checks"
+    points: 2
+    completed: 2026-02-14
+  - id: 98-7
+    epic: MSSCI-14697
+    title: "Update agent definitions and docs for pf- skill references"
+    points: 2
+    completed: 2026-02-14
   - id: 98-8
     epic: MSSCI-14697
     title: "Fix Cyclist false-positive detection in CLI mode"
@@ -322,3 +339,8 @@ completed_stories:
     points: 2
     completed: 2026-02-12
     pr: 840
+  - id: td-4
+    epic: td
+    title: Shard completed archive like active sprint (index + per-epic refs)
+    points: 3
+    completed: '2026-02-14'

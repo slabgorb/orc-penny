@@ -5,7 +5,7 @@ description: |
   robustness, maintainability, and architecture without directly
   delivering end-user features.
 priority: P2
-status: in_progress
+status: done
 repos: orchestrator
 points: 0
 stories:
@@ -36,7 +36,9 @@ stories:
       - pennyfarthing_scripts/sprint/story_finish.py (calls archive_epic)
     points: 3
     priority: P2
-    status: in_progress
+    status: done
     repos: orchestrator
     workflow: tdd
+    completed: '2026-02-14'
     type: refactor
+completed: '2026-02-14'
