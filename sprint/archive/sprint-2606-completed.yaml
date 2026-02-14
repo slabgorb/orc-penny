@@ -308,6 +308,31 @@ completed_stories:
     points: 3
     completed: 2026-02-09
     pr: 771
+  - id: 93-2
+    epic: MSSCI-14629
+    title: "Move benchmark commands, skills, and scripts to new package"
+    points: 3
+    completed: 2026-02-13
+  - id: 93-3
+    epic: MSSCI-14629
+    title: "Extend plugin discovery from validate-refs to core runtime loading"
+    points: 3
+    completed: 2026-02-13
+  - id: 93-4
+    epic: MSSCI-14629
+    title: "Move benchmark docs, results, and showcase components"
+    points: 2
+    completed: 2026-02-13
+  - id: 93-5
+    epic: MSSCI-14629
+    title: "Clean up @pennyfarthing/core: remove benchmark exports and API"
+    points: 2
+    completed: 2026-02-13
+  - id: 93-6
+    epic: MSSCI-14629
+    title: "Update Cyclist to use benchmark plugin instead of inline API"
+    points: 2
+    completed: 2026-02-13
   # Top-level stories (2 pts done)
   - id: MSSCI-14394
     title: "[BUG] Subagent spans never clear on task completion"
