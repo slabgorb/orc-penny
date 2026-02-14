@@ -134,3 +134,9 @@ stories:
     priority: p1
     status: backlog
     workflow: tdd
+  - id: 98-23
+    title: Implement real OTLP integrations for core server stubs
+    points: 5
+    priority: p2
+    status: backlog
+    workflow: tdd
