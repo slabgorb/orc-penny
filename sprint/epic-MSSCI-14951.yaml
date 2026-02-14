@@ -157,8 +157,11 @@ stories:
       FRs: FR9
     points: 1
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-14'
     workflow: tdd
+    completed: '2026-02-14'
   - id: '103-10'
     jira: MSSCI-14965
     title: GitPanel (multi-repo status)
