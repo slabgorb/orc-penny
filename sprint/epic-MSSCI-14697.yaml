@@ -99,9 +99,11 @@ stories:
       .pennyfarthing/README.md documenting managed vs writable zones.
     points: 2
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
-    workflow: trivial
+    workflow: tdd
+    completed: '2026-02-14'
   - id: 98-7
     jira: MSSCI-14704
     title: Update agent definitions and docs for pf- skill references
