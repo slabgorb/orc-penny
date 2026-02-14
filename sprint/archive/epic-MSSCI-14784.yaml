@@ -46,6 +46,7 @@ stories:
     status: done
     repos: pennyfarthing
     completed: "2026-02-11"
+    jira: MSSCI-15070
   - id: "87-3"
     title: "Add topology validation to pre-edit guide"
     description: |
@@ -58,4 +59,5 @@ stories:
     status: done
     repos: pennyfarthing
     completed: "2026-02-11"
+    jira: MSSCI-15071
 completed: '2026-02-13'
