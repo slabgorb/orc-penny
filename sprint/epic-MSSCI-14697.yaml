@@ -80,9 +80,10 @@ stories:
     title: Absorb @pennyfarthing/shared and @pennyfarthing/benchmark into core
     points: 3
     priority: p1
-    status: backlog
+    status: done
     workflow: tdd
     type: refactor
+    completed: "2026-02-14"
   - id: 98-17
     jira: MSSCI-15075
     title: Move Cyclist web server and API layer into core
