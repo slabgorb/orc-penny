@@ -28,8 +28,8 @@ completed_epics:
   - MSSCI-14938   # epic-99 — Sprint CLI Bug Fixes
   - MSSCI-14952   # epic-104 — /bc CLI Panel Focus
   # Pre-Jira epics — all stories cancelled, no work started
-  - epic-88       # Dev-TEA Conferral on Test Failures (no Jira key)
-  - epic-89       # Sprint Panel Metrics (no Jira key)
+  - 88             # Dev-TEA Conferral on Test Failures (no Jira key, pre-Jira)
+  - 89             # Sprint Panel Metrics (no Jira key, pre-Jira)
 completed_stories:
   # Epic 83 — Complexity + Dependencies Tools (6 pts)
   - id: 83-1
