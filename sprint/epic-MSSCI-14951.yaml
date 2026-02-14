@@ -304,3 +304,10 @@ stories:
     priority: P1
     status: backlog
     workflow: tdd
+  - id: 103-20
+    title: TUI launcher entry point (just tui)
+    points: 2
+    priority: p1
+    status: done
+    workflow: tdd
+    completed: "2026-02-14"
