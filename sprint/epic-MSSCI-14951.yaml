@@ -142,8 +142,11 @@ stories:
       NFRs: NFR12
     points: 2
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-14'
     workflow: tdd
+    completed: "2026-02-14"
   - id: '103-9'
     jira: MSSCI-14964
     title: Panel header chrome (current panel indicator, Nerd Font icons)
