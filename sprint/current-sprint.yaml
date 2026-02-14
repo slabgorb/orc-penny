@@ -38,7 +38,7 @@ stories:
     jira: MSSCI-15038
     title: Add party-mode roleplay variant and validate-refs CI/pre-commit
     description: |
-      Three deliverables in one PR (#859):
+      Five deliverables in one PR (#859):
 
       1. Party-mode roleplay variant — new sustained multi-round agent
          discussion workflow (party-mode-roleplay, 3 BikeLane steps:
@@ -54,6 +54,18 @@ stories:
       3. CI + pre-commit enforcement — new validate-refs CI job (--strict,
          fails build on broken references) and pre-commit Check 3
          (warn-only when pennyfarthing-dist/ files staged).
+
+      4. Plugin skill discovery tests — getSkillNames exported for testing,
+         4-test suite covering core skills, plugin discovery, and
+         non-directory exclusion. Verbose logging for malformed
+         package.json in plugin scan.
+
+      5. Per-check reference counters — all 16 check functions return
+         { issues, refs } with counts of references examined. Summary
+         prints breakdown by check class sorted by volume (e.g.
+         "Theme agent keys: 297, Workflow agents: 70"). GHA step summary
+         includes the same table. Provides context for issue counts
+         (3 issues out of 538 refs = 99.4% valid).
 
       Partially delivers 91-2 (CI/hook wiring) and establishes the
       package.json pennyfarthing field convention planned in 93-3.
