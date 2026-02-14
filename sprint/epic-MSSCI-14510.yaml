@@ -34,15 +34,20 @@ stories:
     completed: '2026-02-08'
   - id: 91-2
     jira: MSSCI-14512
-    title: Layer 1 validator in pre-commit hook and GHA
+    title: 'CI polish: ::warning annotations, summary table, and PR comments'
     description: |
-      Add validate-refs.js --strict to the pre-commit hook when
-      pennyfarthing-dist/ files are staged. Also wire into GitHub
-      Actions for PR-level enforcement with ::warning annotations,
-      GITHUB_STEP_SUMMARY table, and PR comment posting.
-      Permissions: pull-requests: write, contents: read.
-    points: 5
-    priority: P1
+      Core pre-commit hook and CI job delivered by PR #859 (MSSCI-15038).
+      Remaining scope is CI output polish:
+
+      - Add ::warning annotations to CI output for individual failures
+      - Generate GITHUB_STEP_SUMMARY table with pass/fail per check type
+      - Post PR comment with validation results summary
+      - Add pull-requests: write permission to CI workflow
+
+      Original scope (5pts) split: 3pts delivered in MSSCI-15038,
+      2pts remaining here for CI reporting enhancements.
+    points: 2
+    priority: P2
     status: planning
     assigned_to: michael.pursifull@1898andco.io
     repos: pennyfarthing
@@ -55,7 +60,7 @@ stories:
       YAML files. Document existing configs, gaps, and adoption plan.
     points: 2
     priority: P2
-    status: backlog
+    status: planning
     assigned_to: michael.pursifull@1898andco.io
     repos: pennyfarthing
   - id: 91-4
@@ -67,7 +72,7 @@ stories:
       types, false positive handling, runtime variable exclusions.
     points: 2
     priority: P2
-    status: backlog
+    status: planning
     assigned_to: michael.pursifull@1898andco.io
     repos: pennyfarthing
   - id: 91-5
@@ -184,7 +189,6 @@ stories:
     repos: pennyfarthing
     completed: '2026-02-10'
   - id: 91-14
-    jira: MSSCI-14712
     title: Workflow graph validation
     description: |
       Step transitions, reachability, dangling references. Gate markers,
@@ -194,7 +198,6 @@ stories:
     status: planning
     repos: pennyfarthing
   - id: 91-15
-    jira: MSSCI-14713
     title: Cross-entity reference validation
     description: |
       Semantic cross-refs between agents, workflows, commands, skills.
@@ -364,3 +367,10 @@ stories:
     workflow: tdd
     completed: '2026-02-11'
     type: refactor
+  - id: 91-28
+    jira: MSSCI-15050
+    title: 'validate-refs: differentiate native vs plugin reference sources'
+    points: 2
+    priority: p2
+    status: backlog
+    workflow: tdd
