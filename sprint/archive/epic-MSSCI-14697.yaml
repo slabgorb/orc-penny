@@ -6,7 +6,7 @@ description: |
   setup, add versioned migrations, namespace skills/commands with pf- prefix,
   and integrate sprint shard migration. See ADR-0021.
 priority: P1
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-14697
 stories:
@@ -114,9 +114,12 @@ stories:
       fields). Update README and guide docs that reference skill names.
     points: 2
     priority: P2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-14'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-02-14'
   - id: 98-8
     jira: MSSCI-14722
     title: Fix Cyclist false-positive detection in CLI mode
@@ -137,3 +140,4 @@ stories:
     completed: '2026-02-10'
     type: bug
 adr: '0021'
+completed: '2026-02-14'
