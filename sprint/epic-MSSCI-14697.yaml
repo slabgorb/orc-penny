@@ -83,7 +83,9 @@ stories:
       logic from sprint/migrate-to-shards.py. Include --dry-run support.
     points: 3
     priority: P1
-    status: backlog
+    status: in_progress
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-14'
     repos: pennyfarthing
     workflow: trivial
   - id: 98-6
