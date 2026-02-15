@@ -3,7 +3,7 @@ type: epic
 title: Script-First Handoff
 description: 'Replace handoff subagent with bash scripts (handoff-cli.sh) for phase routing and atomic session updates. Agents drive exit directly. Manual gates cost zero tokens. Per ADR-0025.'
 priority: P1
-status: in_progress
+status: done
 repos: pennyfarthing
 jira: MSSCI-14999
 stories:
@@ -60,7 +60,10 @@ stories:
     title: Replace handoff-marker.sh with gate-aware Python CLI
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     workflow: trivial
+    completed: '2026-02-15'
     type: refactor
 initiative: gate-extraction
+completed: '2026-02-15'

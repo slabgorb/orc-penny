@@ -27,6 +27,7 @@ completed_epics:
   - MSSCI-14952
   - MSSCI-15015
   - MSSCI-14951
+  - MSSCI-14999
 completed_stories:
   - id: 83-1
     epic: MSSCI-14465
@@ -458,3 +459,23 @@ completed_stories:
     title: Add git fetch cooldown to prevent frequent network calls during active sessions
     points: 1
     completed: "2026-02-14"
+  - id: 105-1
+    epic: MSSCI-14999
+    title: Create handoff-cli.sh with resolve-gate and complete-phase
+    points: 3
+    completed: '2026-02-15'
+  - id: 105-2
+    epic: MSSCI-14999
+    title: Update agent exit protocol across all agent files
+    points: 2
+    completed: '2026-02-15'
+  - id: 105-3
+    epic: MSSCI-14999
+    title: End-to-end handoff smoke test
+    points: 1
+    completed: '2026-02-15'
+  - id: 105-4
+    epic: MSSCI-14999
+    title: Replace handoff-marker.sh with gate-aware Python CLI
+    points: 2
+    completed: '2026-02-15'
