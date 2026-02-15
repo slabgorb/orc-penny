@@ -61,7 +61,10 @@ stories:
       pennyfarthing init/update following existing symlink pattern.
     points: 1
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-15'
     repos: pennyfarthing
-    workflow: trivial
+    workflow: tdd
+    completed: '2026-02-15'
 initiative: gate-extraction
