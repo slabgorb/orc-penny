@@ -17,9 +17,11 @@ stories:
       name and missing element. Valid files pass through to execution.
     points: 2
     priority: P2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-15'
   - id: 107-2
     jira: MSSCI-15010
     title: Acyclic validation and depth limit enforcement
