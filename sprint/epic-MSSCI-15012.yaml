@@ -8,6 +8,7 @@ repos: pennyfarthing
 jira: MSSCI-15012
 stories:
   - id: 108-1
+    jira: MSSCI-15013
     title: Migrate tests-fail and approval gates to files
     description: |
       Create pennyfarthing-dist/gates/tests-fail.md (checks tests RED,
@@ -21,6 +22,7 @@ stories:
     repos: pennyfarthing
     workflow: trivial
   - id: 108-2
+    jira: MSSCI-15014
     title: Remove handoff subagents and inline fallback
     description: |
       Delete handoff.md and sm-handoff.md from pennyfarthing-dist/agents/.

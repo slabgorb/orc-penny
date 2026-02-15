@@ -315,8 +315,10 @@ stories:
       NFRs: NFR5
     points: 2
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     workflow: tdd
+    completed: '2026-02-15'
   - id: 103-20
     title: TUI launcher entry point (just tui)
     points: 2
