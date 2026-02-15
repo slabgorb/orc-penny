@@ -44,6 +44,8 @@ The BMAD product lifecycle is a one-way street with one front door: it starts at
 | [BMAD Multi-Dev Lessons Learned](../ccmp/_bmad-output/bmad-multi-dev-lessons-learned.md) | Team-scale BMAD usage: solo tool finding, gate discovery, quality trajectory |
 | [OCSF Spike Findings](../poller-orchestrator/sprint/planning/spike-findings-ocsf.md) | Validated spike lifecycle model; lessons on charter-first exploration |
 | [Axiathon Divergence Analysis](../poller-orchestrator/sprint/planning/axiathon-ocsf-divergence-alignment-analysis.md) | Cross-project analysis of BMAD-generated architecture failures |
+| [Context Window Measurement Procedure](context-window-measurement-procedure.md) | Repeatable methodology for measuring context consumption at session start |
+| [Context Window Measurement Results](context-window-measurement-results.md) | Empirical data from 5 projects (3 BMAD, 2 Pennyfarthing) — grounds section 8 charts |
 
 ---
 
@@ -426,7 +428,7 @@ BMAD stores everything in flat files: one `epics.md` for all epics and stories, 
 
 BMAD knows this. The PRD and architecture documents get too large for a single context window, and BMAD offers a chunking strategy — but it's manual, undifferentiated ("split the PRD into sections"), and only addresses those two artifacts. The sprint file, the epic backlog, the story details, the acceptance criteria — those continue to grow as monolithic flat files with no sharding, no selective loading, and no mechanism for loading only what's relevant to the current task. The xMP project already had to constrain story points to 2–3 maximum "for AI context efficiency" — the context window was already the binding constraint on story sizing [@pursifull_2026c].
 
-The problem is structural, not incidental. Project context grows somewhere between quadratically and exponentially with scale:
+The problem is structural, not incidental, and it's measurable today. We ran a standardized context window measurement (see `context-window-measurement-procedure.md`) across five real projects — three using BMAD and two using Pennyfarthing — loading PM persona + PRD + architecture + all epics + all stories in a clean session. The results (see `context-window-measurement-results.md`) confirm the scaling argument. Project context grows somewhere between quadratically and exponentially with scale:
 
 | Growth Driver | Rate | Example |
 |---------------|------|---------|
@@ -455,15 +457,36 @@ config:
       labelFontSize: 12
 ---
 xychart-beta
-    title "BMAD: Context overhead vs. project scale (solo developer)"
-    x-axis "Epics" [5, 10, 15, 20, 25, 30, 35, 40]
-    y-axis "Tokens (K)" 0 --> 220
-    bar [25, 45, 68, 95, 125, 160, 190, 210]
-    line [100, 100, 100, 100, 100, 100, 100, 100]
-    line [200, 200, 200, 200, 200, 200, 200, 200]
+    title "Measured: Context at session start (1 developer, zero implementation)"
+    x-axis [peu-B, ccmp-B, bcom-P, poll-P, axia-B]
+    y-axis "Tokens (K)" 0 --> 200
+    bar [36, 73, 88, 92, 162]
+    line [100, 100, 100, 100, 100]
+    line [167, 167, 167, 167, 167]
 ```
 
-> **Reading the chart:** Bars = total project context loaded at session start (BMAD's flat-file approach). Lower line (100K) = effective performance ceiling (~50% of 200K window; @an_etal_2024). Upper line (200K) = hard context window limit. BMAD crosses the performance ceiling at ~20 epics and the hard limit at ~40 epics. Everything between the two lines is technically loadable but already degraded.
+> **Measured data.** Five real projects, each with one developer. Procedure: clean session, load PM, read PRD + architecture + all epics + all stories, measure `/context` (see `context-window-measurement-procedure.md`). B = BMAD, P = Pennyfarthing. **peu** (14 epics, 11 stories, mature): 36K. **ccmp** (7 epics, 51 stories, early delivery): 73K. **bmad-community** (7 epics, 49 stories, active dev): 88K. **poller** (1 epic, 20 stories, research spike): 92K. **axiathon** (25 epics, 268 stories, pre-launch): 162K. Lower line (100K) = performance ceiling (~50% of window; @an_etal_2024). Upper line (167K) = effective capacity (200K - 33K autocompact buffer). axiathon is at 97% of effective capacity before a single line of code.
+
+```mermaid
+---
+config:
+  xyChart:
+    width: 700
+    height: 400
+    xAxis:
+      labelFontSize: 12
+    yAxis:
+      labelFontSize: 12
+---
+xychart-beta
+    title "Effective utilization: % of usable capacity consumed before work"
+    x-axis [peu-B, ccmp-B, bcom-P, poll-P, axia-B]
+    y-axis "% of 167K effective" 0 --> 100
+    bar [22, 44, 53, 55, 97]
+    line [60, 60, 60, 60, 60]
+```
+
+> **Same data, different lens.** Effective capacity is 167K (200K window minus 33K reserved autocompact buffer). The 60% line marks the performance ceiling (100K ÷ 167K). Three of five projects are at or near this line. axiathon at 97% means the PM agent literally cannot plan — it has 5K tokens remaining for the entire conversation. Note that Pennyfarthing projects show *higher* context in this test because the test loads everything; in routine use, Pennyfarthing loads selectively via Prime tiers and sprint sharding. The test measures total project footprint, not per-session cost.
 
 With a team, the picture accelerates. Each contributor doesn't just add their own work — they add cross-references, coordination context, and the overhead of tracking who is doing what. Sprint planning context alone grows with the number of parallel tracks:
 
@@ -479,15 +502,15 @@ config:
       labelFontSize: 12
 ---
 xychart-beta
-    title "BMAD: Context overhead by team size (20-epic project)"
+    title "Projected: Context overhead by team size (25-epic BMAD project)"
     x-axis "Contributors" [1, 2, 3, 4, 5]
-    y-axis "Tokens (K)" 0 --> 220
-    bar [95, 120, 150, 185, 210]
+    y-axis "Tokens (K)" 0 --> 200
+    bar [162, 180, 195, 200, 200]
     line [100, 100, 100, 100, 100]
-    line [200, 200, 200, 200, 200]
+    line [167, 167, 167, 167, 167]
 ```
 
-> At 20 epics with one developer, the context is already at the performance ceiling. Add a second contributor and the cross-referencing overhead pushes well past it. By three contributors, a modest project has consumed 75% of the raw window — and is operating in degraded territory for every turn of every session.
+> **Projected, anchored to measured data.** The 1-developer bar (162K) is the measured axiathon value. Additional contributors are projected: each adds cross-referencing overhead, coordination context, and tracking of who is doing what. At 25 epics with one developer, the project already exceeds effective capacity. A second contributor would push past the hard limit — the session cannot start. This chart is conservative: multi-developer BMAD measurements have not yet been taken.
 
 Think of it in web performance terms: **time to first contentful paint** measures how long a user waits before seeing anything useful. The equivalent here is **context to first useful turn** — how much of the context window is consumed by project overhead before the agent can do any actual work. In BMAD, that ratio gets worse with every epic added, every research document written, every story completed. There is no mechanism to load selectively, no way to retrieve only what's relevant, and no strategy for keeping the ratio stable as the project grows.
 
@@ -505,15 +528,15 @@ config:
       labelFontSize: 12
 ---
 xychart-beta
-    title "BMAD: Context growth over time (15-epic project, solo developer)"
-    x-axis "Sprint" [1, 2, 3, 4, 5, 6, 7, 8]
-    y-axis "Tokens (K)" 0 --> 220
-    bar [40, 55, 72, 90, 110, 135, 165, 195]
-    line [100, 100, 100, 100, 100, 100, 100, 100]
-    line [200, 200, 200, 200, 200, 200, 200, 200]
+    title "Projected: Context growth over time (7-epic BMAD project, solo developer)"
+    x-axis "Sprint" [0, 1, 2, 3, 4, 5, 6, 7, 8]
+    y-axis "Tokens (K)" 0 --> 200
+    bar [73, 82, 92, 103, 115, 128, 142, 158, 175]
+    line [100, 100, 100, 100, 100, 100, 100, 100, 100]
+    line [167, 167, 167, 167, 167, 167, 167, 167, 167]
 ```
 
-> Even a 15-epic project with one developer crosses the performance ceiling by sprint 5 and approaches the hard limit by sprint 8. Each sprint adds completed story context, new research, accumulated decisions, and session history. The flat-file approach loads all of it, every time.
+> **Projected, anchored to measured data.** Sprint 0 (73K) is the measured ccmp value: 7 epics, 51 stories, ~1/8 of the way to delivery. Each sprint adds ~10-15K of completed story context, accumulated decisions, and session history. The flat-file approach loads all of it, every time. By sprint 3, the project crosses the performance ceiling. By sprint 8, it exceeds effective capacity. This is a 7-epic project — not the 25-epic axiathon, which is already past effective capacity at sprint 0.
 
 #### The two dimensions
 
@@ -537,7 +560,7 @@ Pennyfarthing addresses the structural dimension:
 | **Sidecar pruning** | Line limits (40–50 lines) with health-check enforcement | Bounded growth, forced consolidation |
 | **Shard validation** | Write-time integrity checks prevent broken references [@pursifull_2026t] | Prevents silent loading failures |
 
-These mechanisms keep the context-to-work ratio manageable for projects up to about 20–30 epics with one or two contributors. But they're all *structural* solutions — manual sharding decisions, hand-tuned tier thresholds, explicit load paths. None of them address the retrieval problem: given 200 context files, 50 completed stories, and 30 research documents, which 5 are relevant to the story I'm about to implement?
+These mechanisms keep the context-to-work ratio manageable for projects up to about 20–30 epics with one or two contributors. The measured data confirms this: Pennyfarthing projects (poller at 92K, bmad-community at 88K) consume comparable context to BMAD projects of similar scope when doing a full load — the sharding benefit appears in *routine use*, where agents load selectively, not in total project footprint. But they're all *structural* solutions — manual sharding decisions, hand-tuned tier thresholds, explicit load paths. None of them address the retrieval problem: given 200 context files, 50 completed stories, and 30 research documents, which 5 are relevant to the story I'm about to implement?
 
 #### What's needed next
 
@@ -741,17 +764,24 @@ A spike is not an ad-hoc exploration. It's a structured mini-lifecycle with spec
 
 ```mermaid
 graph TD
-    subgraph "Spike Lifecycle"
-        DEFINE["Define<br/><small>Hypothesis, question,<br/>success criteria,<br/>timebox</small>"]
+    subgraph ORCH["Orchestrator Repo (project docs)"]
+        DEFINE["Define<br/><small>Charter, hypothesis,<br/>success criteria,<br/>timebox</small>"]
         SECONDARY["Secondary Research<br/><small>Literature, docs,<br/>prior art, opinions,<br/>existing solutions</small>"]
-        PRIMARY["Primary Research<br/><small>Prototypes, benchmarks,<br/>A/B experiments,<br/>proof of concept</small>"]
         ANALYZE["Analyze<br/><small>Quantitative comparison,<br/>trade-off matrix,<br/>recommendation</small>"]
         PRESENT["Present<br/><small>Findings to ARB/peers,<br/>review recommendations,<br/>accept/reject/modify</small>"]
         FOLD["Fold Back<br/><small>Update parent PRD,<br/>architecture, or<br/>epic with learnings</small>"]
     end
 
+    subgraph SPIKE_REPO["Spike Research Repo (dedicated, per-spike)"]
+        PRIMARY["Primary Research<br/><small>Prototypes, benchmarks,<br/>A/B experiments,<br/>proof of concept</small>"]
+        TESTS["Tests &<br/>Fixtures"]
+        RAW["Raw Results<br/>& Data"]
+    end
+
     DEFINE --> SECONDARY
     SECONDARY --> PRIMARY
+    PRIMARY --> TESTS
+    PRIMARY --> RAW
     PRIMARY -->|"path A"| ANALYZE
     PRIMARY -->|"path B"| ANALYZE
     PRIMARY -->|"path C"| ANALYZE
@@ -763,18 +793,36 @@ graph TD
     style DEFINE fill:#e65100,stroke:#ac1900,color:#fff
     style SECONDARY fill:#1565c0,stroke:#003c8f,color:#fff
     style PRIMARY fill:#2e7d32,stroke:#005005,color:#fff
+    style TESTS fill:#2e7d32,stroke:#005005,color:#fff
+    style RAW fill:#2e7d32,stroke:#005005,color:#fff
     style ANALYZE fill:#6a1b9a,stroke:#38006b,color:#fff
     style PRESENT fill:#546e7a,stroke:#29434e,color:#fff
     style FOLD fill:#00695c,stroke:#003d33,color:#fff
+    style ORCH fill:#f5f5f5,stroke:#333,color:#333
+    style SPIKE_REPO fill:#e8f5e9,stroke:#2e7d32,color:#333
 ```
 
 This model has already been validated. The OCSF normalization spike [@pursifull_2026d; @pursifull_2026e] followed this lifecycle retroactively, producing a charter, structured findings, a review record, and a fold-back document. The spike produced ~370KB of documentation; a charter written upfront would have kept output tighter by constraining scope to hypothesis-driven exploration. Key lesson: "Keep spike outputs as findings, not feature-lifecycle artifacts — the spike feeds the feature lifecycle, it doesn't replace it" [@pursifull_2026d].
+
+**Lesson from context window measurement:** The OCSF spike stored all artifacts — code, tests, raw results, and documentation — in the poller-orchestrator repo. When measuring context at session start, poller consumed 92K tokens (55% of effective capacity) with only 1 epic and 20 stories, higher than ccmp (73K) with 7 epics and 51 stories. The inflated footprint comes from research artifacts living alongside project docs. Research code, test fixtures, and raw results pollute the orchestrator's context budget and CI pipeline. Spike repos solve this.
+
+#### Spike repo separation
+
+Spikes produce two categories of output that belong in different places:
+
+| Category | Belongs in | Examples | Rationale |
+|----------|-----------|----------|-----------|
+| **Project docs** | Orchestrator repo | Charter, findings document, fold-back amendment, ADR | Part of the project's decision record; loaded by PM/Architect agents |
+| **Research artifacts** | Dedicated spike repo | Prototype code, test suites, benchmarks, raw data, experiment logs | Has its own CI; doesn't pollute project context budget; can be archived independently |
+
+Each spike gets a dedicated git repo (e.g., `spike-context-retrieval`, `spike-ocsf-normalization`). The orchestrator's sprint planning references the spike repo but doesn't contain it. This keeps the orchestrator's context budget clean — the PM agent loading project state never sees prototype code or benchmark data unless it explicitly reaches into the spike repo.
 
 **Spike properties in an AI-agent context:**
 - **Bootstrappable from parent project** — AI agent reads parent PRD/architecture, creates spike context automatically
 - **Parallel path exploration** — AI agents can execute multiple prototype paths concurrently (A/B/C)
 - **Structured deliverables** — Not just "we tried stuff." A spike produces: hypothesis tested, methods used, data collected, quantitative comparison, recommendation with rationale
 - **Fold-back mechanism** — Standard format that updates parent project artifacts (PRD amendment, ADR, architecture delta)
+- **Repo-separated** — Project docs (charter, findings, fold-back) in the orchestrator; prototype code, tests, and raw results in a dedicated spike repo. Keeps the orchestrator's context budget clean and gives research artifacts their own CI
 - **Re-runnable with variations** — Change the hypothesis or constraints, re-run with fresh agents. The spike template is parameterized, not one-off.
 - **Peer-reviewed before accepted** — Findings go to an ARB-equivalent review (could be the Reviewer agent + Architect agent in tandem) before recommendations are folded back
 
