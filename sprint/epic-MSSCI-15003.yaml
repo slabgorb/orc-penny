@@ -34,9 +34,11 @@ stories:
       regex/grep, not full YAML parser. Gate files are read-only at runtime.
     points: 3
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-15'
   - id: 106-3
     jira: MSSCI-15006
     title: Workflow YAML gate.file integration
