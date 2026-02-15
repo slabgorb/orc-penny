@@ -3,7 +3,7 @@ type: epic
 title: Gate Validation & Authoring
 description: 'Gate schema validation at parse time, acyclic cycle detection, depth limit enforcement (max 3), and authoring guide with validation command. Catches errors before any subagent spawns.'
 priority: P2
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-15008
 stories:
@@ -48,7 +48,10 @@ stories:
       ALL errors at once. Valid gates get confirmation with structure summary.
     points: 2
     priority: P2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     workflow: agent-docs
+    completed: '2026-02-15'
 initiative: gate-extraction
+completed: '2026-02-15'
