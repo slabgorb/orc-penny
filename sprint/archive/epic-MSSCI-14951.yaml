@@ -206,9 +206,10 @@ stories:
       and Workflow into a single panel.
     points: 1
     priority: P1
-    status: canceled
+    status: done
     workflow: tdd
     notes: Superseded by ProgressPanel (103-11)
+    delivered_in: '103-11'
   - id: '103-13'
     jira: MSSCI-14968
     title: TodoPanel (task checklist)
@@ -217,9 +218,10 @@ stories:
       and Workflow into a single panel.
     points: 1
     priority: P1
-    status: canceled
+    status: done
     workflow: tdd
     notes: Superseded by ProgressPanel (103-11)
+    delivered_in: '103-11'
   - id: '103-14'
     jira: MSSCI-14969
     title: ChangedPanel (file list with status)
