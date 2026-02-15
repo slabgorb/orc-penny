@@ -46,33 +46,121 @@ ADR-0012 proposed **Tandem** — mid-phase consultation via subagents. Claude Co
 | Constraint | Impact |
 |-----------|--------|
 | Pennyfarthing primarily runs in `-p` mode | Tandem works, native teams don't |
-| Native teams are experimental | API may change, feature-flag gated |
-| Native teams require interactive session | Not available through Cyclist's current `-p` invocations |
+| Native teams are experimental | API may change, feature-flag gated (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS`) |
+| Native teams require interactive session | Not available in `-p` mode; Cyclist (Electron) could launch interactively |
 | One team per session, no nesting | Can't compose teams of teams |
-| No session resumption for teammates | Teams are ephemeral |
+| No session resumption for teammates | Teams are ephemeral — no `/resume` for in-process teammates |
+| Lead is fixed for team lifetime | Phase agent is lead for that phase's team; can't promote teammates |
+| Teammates inherit lead permissions | Can't set per-teammate modes at spawn; change individually after |
+
+### Agent Model Analysis (2026-02-15)
+
+Our agent concept and native teams' agent concept are fundamentally different execution models. Phase 2 must bridge them cleanly.
+
+**Our model — sequential prompt re-priming:**
+```
+Session 1: /sm  → Prime loads SM .md → work → marker → EXIT
+Session 2: /tea → Prime loads TEA .md → work → marker → EXIT
+Session 3: /dev → Prime loads Dev .md → work → marker → EXIT
+```
+Each "agent" is the same Claude Code instance re-primed with a different `.md` file.
+Communication via session file writes. One agent alive at a time.
+
+**Native teams model — concurrent independent sessions:**
+```
+Lead (SM): TeamCreate → spawns teammates → coordinates via SendMessage
+  ├── TEA session: independent context, claims tasks, messages others
+  ├── Dev session: independent context, claims tasks, messages others
+  └── Reviewer session: independent context, claims tasks, messages others
+```
+Each teammate is a separate Claude Code process with its own context window.
+Communication via SendMessage + shared TaskList.
+
+**Compatibility matrix:**
+
+| Concept | Our Model | Native Teams | Compatible? |
+|---------|-----------|-------------|-------------|
+| Agent identity | `.md` template loaded by Prime | Spawn prompt + auto-loaded CLAUDE.md | Yes — spawn prompt runs `pf agent start` |
+| Communication | Session file + handoff markers | `SendMessage` DMs + broadcasts | **No** — markers are UI routing, not messaging |
+| Coordination | Sequential `pf handoff` CLI | Shared `TaskList` with claim/complete | **No** — handoff assumes one agent at a time |
+| State | `.session/` single-writer | Each teammate writes independently | **Conflict** — concurrent writes corrupt |
+| Phase transitions | `pf handoff complete-phase` | Task deps with `addBlockedBy` | **Different paradigm** — ours assumes serial |
+| Gates | Gate subagent spawned by exiting agent | `TaskCompleted` hook prevents completion | **Complementary** — hooks replace gate subagents |
+| Lifecycle | Activate → work → exit → die | Spawn → work → idle → wake → shutdown | **Compatible** — teammates are phase-scoped, cleaned up before handoff |
+| Lead role | Phase agent owns the work | Lead spawns + coordinates teammates | **Compatible** — phase agent IS the lead for that phase |
+| Reflector markers | Every turn ends with `<!-- CYCLIST:... -->` | No markers — uses SendMessage | **Compatible** — markers for inter-phase handoff, SendMessage for intra-phase |
+
+**Resolution — phase-scoped teams:**
+
+The workflow stays sequential. Native teams enhance a **phase**, not replace the workflow. The current phase agent is the team lead and spawns teammates for parallel work within that phase.
+
+```
+execution_mode: sequential (default — today's model, unchanged)
+  └── SM → TEA → Dev → Reviewer → SM
+  └── Each agent activates, works solo, hands off via marker
+
+execution_mode: team (native teams, per-phase)
+  └── SM → TEA → Dev (team lead) → Reviewer → SM
+                    │
+                    ├── TeamCreate at phase start
+                    ├── Spawn Architect as teammate
+                    ├── Dev implements, Architect reviews in parallel
+                    ├── SendMessage for real-time collaboration
+                    ├── TeamDelete at phase end
+                    └── Normal handoff to Reviewer
+```
+
+**Example: Dev + Architect in green phase:**
+```
+Dev activates (Prime, normal) → detects team config in workflow YAML
+  → TeamCreate("green-phase")
+  → Task(team_name="green-phase", name="architect",
+         prompt="Run `pf agent start architect`. Story: MSSCI-14400.
+                 Review Dev's implementation approach. Focus on patterns
+                 and coupling. Send findings via SendMessage.")
+  → Dev works on implementation
+  → Architect reviews files, sends messages: "Consider extracting..."
+  → Dev receives messages, adjusts approach
+  → Dev finishes → shuts down Architect → TeamDelete
+  → Normal exit protocol: pf handoff → marker → EXIT
+```
+
+Key insights:
+- Teammates auto-load CLAUDE.md + MCP servers + skills from the working directory — they already get `.pennyfarthing/` context. Spawn prompts only need activation command + story assignment.
+- The team is **phase-scoped** — created at phase start, destroyed at phase end. No lifecycle change to the workflow.
+- Handoff between phases is unchanged — markers, session file, `pf handoff` CLI all work as-is.
+- Within the phase, communication uses `SendMessage` (not markers, not session file).
+- `TaskCompleted` hook can enforce gate checks before the lead marks phase done.
+- Tandem consultation (subagent, sync) and native teams (teammate, async) coexist — tandem for quick questions, teams for sustained parallel work.
 
 ## Technical Architecture
 
 ### Layered Model
 
 ```
-┌──────────────────────────────────────────────┐
-│ Pennyfarthing Layer                          │
-│ (Personas, Workflows, Sprint, Gates, Sidecars│
-├───────────────┬──────────────────────────────┤
-│ Tandem Layer  │ Native Teams Layer           │
-│ (Phase 1)     │ (Phase 2)                    │
-│               │                              │
-│ Consultation  │ TeamCreate, SendMessage,     │
-│ protocol,     │ TaskList, delegate mode,     │
-│ dialogue      │ plan approval                │
-│ files,        │                              │
-│ subagent      │ Feature flag:                │
-│ spawning      │ AGENT_TEAMS=1                │
-├───────────────┼──────────────────────────────┤
-│ Claude Code Task tool  │ Claude Code Teams API│
-│ (subagent_type)        │ (experimental)       │
-└────────────────────────┴─────────────────────┘
+┌────────────────────────────────────────────────────────┐
+│ Pennyfarthing Layer                                    │
+│ (Personas, Workflows, Sprint, Gates, Sidecars, Prime)  │
+├───────────────┬────────────────────────────────────────┤
+│ Tandem Layer  │ Native Teams Layer                     │
+│ (Phase 1)     │ (Phase 2)                              │
+│               │                                        │
+│ Consultation  │ TeamCreate      — create team           │
+│ protocol,     │ SendMessage     — DMs, broadcast,      │
+│ dialogue      │                   shutdown, plan approval│
+│ files,        │ TaskCreate/List — shared work tracking  │
+│ subagent      │ TeammateIdle    — hook: gate on idle    │
+│ spawning      │ TaskCompleted   — hook: gate on done    │
+│               │ Delegate mode   — SM lead, no code      │
+│               │ Plan approval   — TEA plans, lead OKs   │
+│               │                                        │
+│               │ Feature flag:                          │
+│               │ CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 │
+├───────────────┼────────────────────────────────────────┤
+│ Claude Code   │ Claude Code Teams API                  │
+│ Task tool     │ (experimental, interactive only)       │
+│ (subagents)   │                                        │
+└───────────────┴────────────────────────────────────────┘
 ```
 
 ### Workflow YAML Extensions
@@ -95,24 +183,47 @@ phases:
 **Native Teams (Phase 2):**
 ```yaml
 workflow:
-  name: tdd-parallel
-  execution_mode: team         # NEW: enables native teams
-  team:
-    display: in-process
-    model: sonnet
-    delegate_lead: true
+  name: tdd-team
+  description: TDD with native team collaboration on complex phases
 
   phases:
-    - name: explore
-      execution: parallel      # NEW: parallel phase
-      teammates:
-        - agent: tea
-          task: "Write failing tests"
-        - agent: architect
-          task: "Review approach"
-      gate:
-        type: all_complete
+    - name: setup
+      agent: sm
+      output: [session_file, branches]
+
+    - name: red
+      agent: tea
+      input: [session_file]
+      output: [failing_tests]
+      # No team — TEA works solo (simple phase)
+
+    - name: green
+      agent: dev
+      input: [failing_tests]
+      output: [implementation, passing_tests]
+      team:                        # NEW: phase-scoped team
+        teammates:
+          - agent: architect
+            task: "Review implementation approach and patterns"
+          - agent: tea
+            task: "Verify tests stay green, flag regressions"
+        model: sonnet
+        display: in-process
+
+    - name: review
+      agent: reviewer
+      input: [implementation, passing_tests]
+      output: [approval]
+      team:                        # Reviewer can have teammates too
+        teammates:
+          - agent: architect
+            task: "Validate architectural patterns"
+
+    - name: finish
+      agent: sm
 ```
+Phase agent is always the team lead. Teammates are spawned at phase start,
+cleaned up at phase end. Handoff between phases is unchanged.
 
 ### Dialogue File (Tandem persistence)
 
@@ -138,9 +249,17 @@ Async. Queue the work, ack immediately. Webhook sources timeout at 30s.
 
 Implements ADR-0012. Works in `-p` mode. No new dependencies.
 
-## Phase 2: Native Teams (Stories 86-7 through 86-10)
+## Phase 2: Native Teams (Stories 86-7 through 86-10, 86-14, 86-15)
 
-Layers native Agent Teams on top. Interactive mode only. Feature-flagged.
+Phase-scoped native Agent Teams. The current phase agent is the team lead, spawning
+teammates for parallel collaboration within that phase. Teams are created at phase
+start and destroyed before handoff. Interactive mode only. Feature-flagged.
+
+**Gate transparency:** Gates are defined in workflow YAML identically for both modes.
+In sequential mode, gates execute via `pf handoff resolve-gate` (agent-driven).
+In team mode, gates execute via `TaskCompleted` and `TeammateIdle` hooks (event-driven).
+The hook reads the same gate definition from workflow YAML — gate authors don't need
+to know which executor runs their gate.
 
 ## Phase 3: Cyclist Integration (Stories 86-11 through 86-12)
 
@@ -157,15 +276,17 @@ Cyclist visualizes both Tandem dialogues and native team activity.
 | 86-5 | Tandem workflow templates | 2 | P1 | 1 | 86-1, 86-4 |
 | 86-6 | Tandem metrics and token tracking | 2 | P1 | 1 | 86-3 |
 | 86-7 | Feature detection: native teams capability | 2 | P1 | 2 | None |
-| 86-8 | Persona injection via spawn prompts | 3 | P1 | 2 | 86-7 |
-| 86-9 | Workflow schema: `execution_mode: team` | 3 | P1 | 2 | 86-1, 86-7 |
-| 86-10 | Gate-to-task-dependency adapter | 5 | P2 | 2 | 86-9 |
+| 86-8 | Teammate activation via spawn prompts | 2 | P1 | 2 | 86-7 |
+| 86-9 | Workflow schema: `team:` block on phases | 3 | P1 | 2 | 86-1, 86-7 |
+| 86-10 | Phase-scoped team lifecycle + gate hooks | 5 | P1 | 2 | 86-8, 86-9 |
 | 86-11 | Cyclist: Tandem dialogue panel | 3 | P2 | 3 | 86-3 |
-| 86-12 | Cyclist: Native team panel | 5 | P3 | 3 | 86-10 |
+| 86-12 | Cyclist: Native team panel | 5 | P2 | 3 | 86-10 |
+| 86-14 | Agent behavior: team-mode protocol | 2 | P1 | 2 | 86-8 |
+| 86-15 | Team-enabled workflow templates | 2 | P1 | 2 | 86-9, 86-14 |
 
-**Total: 36 points (12 stories)**
+**Total: 39 points (14 stories)**
 **Phase 1: 15 points (6 stories) — delivers value without native teams**
-**Phase 2: 13 points (4 stories) — adds parallelism for interactive users**
+**Phase 2: 16 points (6 stories) — phase-scoped teams for interactive users**
 **Phase 3: 8 points (2 stories) — Cyclist visualization**
 
 ## Story Details
@@ -293,10 +414,11 @@ Cyclist visualizes both Tandem dialogues and native team activity.
 
 **Acceptance Criteria:**
 - [ ] Check `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` env var
-- [ ] Probe for TeamCreate/SendMessage tool availability
+- [ ] Detect interactive vs `-p` mode (teams require interactive)
+- [ ] Detect `teammateMode` setting (`in-process` vs `tmux`)
 - [ ] Expose detection function in `@pennyfarthing/core`
 - [ ] `pennyfarthing doctor` reports teams capability status
-- [ ] Graceful degradation: `execution_mode: team` workflows fall back to sequential + tandem
+- [ ] Graceful degradation: phases with `team:` block fall back to solo + tandem consultation
 
 **Key files:**
 - `packages/core/src/cli/utils/capabilities.ts` (new)
@@ -305,36 +427,36 @@ Cyclist visualizes both Tandem dialogues and native team activity.
 
 ---
 
-### 86-8: Persona injection via spawn prompts (3 pts)
+### 86-8: Teammate activation via spawn prompts (2 pts) ← reduced from 3
 
-**What:** When spawning a native teammate, inject the full Pennyfarthing persona (agent definition + theme character + sidecar context) into the spawn prompt.
+**What:** When spawning a native teammate, use a lightweight spawn prompt that triggers normal Prime activation. Teammates auto-load CLAUDE.md, MCP servers, and skills from the working directory — no need to rebuild context in the prompt.
 
 **Acceptance Criteria:**
-- [ ] Build spawn prompt that includes: agent .md content, persona, sidecar patterns/gotchas
-- [ ] Teammates activate with full persona context
-- [ ] Theme from `.pennyfarthing/config.local.yaml` respected
-- [ ] Spawn prompt stays under 4K tokens (context budget)
+- [ ] Spawn prompt runs `pf agent start {agent}` for full Prime activation
+- [ ] Spawn prompt includes: story ID, task assignment, phase context
+- [ ] Teammates activate with persona, sidecars, and session context via Prime (not prompt injection)
+- [ ] Spawn prompt stays under 500 tokens (activation command + task)
 - [ ] Works with all 10 core agents
-- [ ] Tandem partner context (from Phase 1) also included when relevant
+- [ ] Teammate correctly reads session file and workflow state
 
 **Key files:**
-- `pennyfarthing-dist/scripts/core/build-spawn-prompt.sh` (new)
-- `.pennyfarthing/config.local.yaml` (read for theme)
-- `.pennyfarthing/sidecars/` (read for context)
+- `pennyfarthing-dist/scripts/core/build-spawn-prompt.sh` (new — thin wrapper)
+- `pennyfarthing-dist/agents/agent-behavior.md` (add `<team-mode>` section)
 
 ---
 
-### 86-9: Workflow schema — `execution_mode: team` (3 pts)
+### 86-9: Workflow schema — `team:` block on phases (3 pts)
 
-**What:** Extend BikeLane workflow YAML to support native team execution with parallel phases.
+**What:** Extend BikeLane phase schema to support a `team:` block that declares teammates for that phase. The phase agent is always the lead; teammates are phase-scoped.
 
 **Acceptance Criteria:**
-- [ ] New fields: `execution_mode`, `team` (display, model, delegate_lead), `execution` per phase
-- [ ] `execution: parallel` phases spawn multiple teammates simultaneously
-- [ ] `execution: teammate` phases run on a single spawned teammate
-- [ ] `execution: lead` phases run on the lead session
-- [ ] Falls back to sequential + tandem when teams unavailable
-- [ ] Backward compatible with all existing workflows
+- [ ] `team:` block parsed from workflow YAML phases (sibling to `tandem:`)
+- [ ] Properties: `teammates` (list of agent + task), `model`, `display`
+- [ ] Each teammate entry has: `agent` (required), `task` (description string)
+- [ ] Schema validation: teammate agents must be valid agent names
+- [ ] Falls back to solo execution when native teams unavailable (feature detection from 86-7)
+- [ ] Backward compatible: phases without `team:` unchanged
+- [ ] `workflow-status-check` subagent reports team configuration per phase
 
 **Key files:**
 - `pennyfarthing-dist/workflows/*.yaml` (schema extension)
@@ -342,24 +464,63 @@ Cyclist visualizes both Tandem dialogues and native team activity.
 
 ---
 
-### 86-10: Gate-to-task-dependency adapter (5 pts)
+### 86-10: Phase-scoped team lifecycle + gate hooks (5 pts)
 
-**What:** Map Pennyfarthing's workflow gates to native team task dependencies. Also adapts handoff to use SendMessage when in team mode.
+**What:** Implement the phase-scoped team lifecycle: lead agent creates team at phase start, manages teammates during the phase, enforces gates via native hooks, and cleans up before handoff.
 
 **Acceptance Criteria:**
-- [ ] Each workflow phase creates a native Task with appropriate blockers
-- [ ] `tests_fail` gate: TEA's task blocks Dev's task
-- [ ] `tests_pass` gate: Dev's task blocks Reviewer's task
-- [ ] `approval` gate: Reviewer's task blocks SM finish task
-- [ ] Failed gates leave tasks in `in_progress`
-- [ ] `handoff.md` detects team mode, uses SendMessage instead of CYCLIST markers
-- [ ] Session file still updated for audit trail and Cyclist compatibility
+- [ ] Lead agent creates team on phase entry when workflow has `execution: team`
+- [ ] Lead spawns teammates per workflow YAML `teammates:` config
+- [ ] `TaskCompleted` hook enforces gate checks before lead marks phase done
+- [ ] `TeammateIdle` hook validates teammate work meets criteria (e.g., tests pass)
+- [ ] Lead shuts down all teammates before starting exit protocol
+- [ ] `TeamDelete` runs before `pf handoff` — team is fully cleaned up before marker
+- [ ] Session file updated with teammate activity summary for audit
 - [ ] Sidecar file locking for concurrent teammate writes
+- [ ] Graceful degradation: if teammate crashes, lead continues solo with warning
 
 **Key files:**
-- `pennyfarthing-dist/scripts/core/gate-adapter.sh` (new)
-- `pennyfarthing-dist/agents/handoff.md` (team mode support)
-- `pennyfarthing-dist/scripts/core/sidecar-sync.sh` (new)
+- `pennyfarthing-dist/scripts/core/team-lifecycle.sh` (new — create/cleanup)
+- `pennyfarthing-dist/hooks/teammate-idle.sh` (new — gate enforcement)
+- `pennyfarthing-dist/hooks/task-completed.sh` (new — gate enforcement)
+- `pennyfarthing-dist/agents/agent-behavior.md` (add `<team-mode>` exit protocol)
+- `pennyfarthing-dist/scripts/core/sidecar-sync.sh` (new — file locking)
+
+---
+
+### 86-14: Agent behavior — team-mode protocol (2 pts) — NEW
+
+**What:** Add `<team-mode>` section to `agent-behavior.md` and individual agent `.md` files defining how agents behave when they are a team lead or a teammate.
+
+**Acceptance Criteria:**
+- [ ] `agent-behavior.md` has `<team-mode>` section covering: team creation, teammate spawning, SendMessage communication, cleanup before handoff
+- [ ] Lead agents know: create team on phase entry, spawn teammates per YAML, shut down teammates before exit protocol
+- [ ] Teammate agents know: they're a teammate (not lead), communicate via SendMessage, go idle when done, respond to shutdown requests
+- [ ] Exit protocol has team-mode branch: cleanup team THEN run normal handoff
+- [ ] Reflector markers still used for inter-phase handoff (unchanged)
+- [ ] SendMessage used for intra-phase teammate communication (new)
+
+**Key files:**
+- `pennyfarthing-dist/agents/agent-behavior.md` (add `<team-mode>` section)
+- `pennyfarthing-dist/agents/dev.md` (lead behavior for green phase)
+- `pennyfarthing-dist/agents/reviewer.md` (lead behavior for review phase)
+
+---
+
+### 86-15: Team-enabled workflow templates (2 pts) — NEW
+
+**What:** Ship workflow YAML templates with `team:` blocks configured for high-value pairings.
+
+**Acceptance Criteria:**
+- [ ] `tdd-team.yaml` — Dev + Architect on green, Reviewer + Architect on review
+- [ ] `bdd-team.yaml` — UX + Architect on design, Dev + TEA on green
+- [ ] Each template documented with when-to-use vs tandem variants
+- [ ] `/workflow list` shows team-enabled workflows with indicator
+- [ ] Templates include graceful fallback comment for when teams unavailable
+
+**Key files:**
+- `pennyfarthing-dist/workflows/tdd-team.yaml` (new)
+- `pennyfarthing-dist/workflows/bdd-team.yaml` (new)
 
 ---
 
@@ -405,19 +566,21 @@ Cyclist visualizes both Tandem dialogues and native team activity.
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
-| Native teams API changes | Phase 2 adapter breaks | Feature detection (86-7) isolates dependency; Phase 1 unaffected |
-| Token cost explosion | 3-5x for parallel workflows | Tandem (Phase 1) keeps costs low; teams are opt-in |
+| Native teams API changes | Phase 2 lifecycle/hooks break | Feature detection (86-7) isolates dependency; phases fall back to solo + tandem |
+| Token cost explosion | Each teammate is a full context window | Teams are opt-in per-phase; tandem (Phase 1) covers most cases cheaply |
 | Tandem advice quality | Bad recommendations cause rework | Confidence signals, dialogue audit trail, outcome tracking |
-| File conflicts in team mode | Two teammates edit same file | Workflow design assigns file ownership per agent |
+| File conflicts in team mode | Two teammates edit same file | Workflow YAML declares file ownership; `TeammateIdle` hook can enforce |
 | Sidecar corruption | Concurrent writes lose data | File locking in 86-10 |
-| `-p` mode incompatibility | Native teams don't work for most users | Phase 1 (Tandem) delivers full value without teams |
+| `-p` mode incompatibility | Native teams don't work in `-p` | Phase 1 (Tandem) delivers full value; Cyclist could launch interactively |
+| Teammate crash mid-phase | Lead loses collaborator | Graceful degradation: lead continues solo with warning (86-10) |
+| Team cleanup before handoff | Orphaned sessions if exit fails | 86-10 enforces TeamDelete before `pf handoff`; cleanup is pre-exit gate |
 
 ## ADR Updates Required
 
 | ADR | Update |
 |-----|--------|
 | ADR-0012 | Status: Proposed → Accepted |
-| ADR-0013 (new) | Native Agent Teams integration strategy, feature detection, fallback behavior |
+| ADR-0013 (new) | Phase-scoped native teams: agent model bridging, hook-based gates, dual-mode execution, fallback behavior |
 
 ## References
 
