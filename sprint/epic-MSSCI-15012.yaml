@@ -18,9 +18,11 @@ stories:
       to use gate: {file: ...} for all phases.
     points: 2
     priority: P3
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-02-15'
   - id: 108-2
     jira: MSSCI-15014
     title: Remove handoff subagents and inline fallback
