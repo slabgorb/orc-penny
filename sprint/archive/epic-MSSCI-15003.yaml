@@ -3,11 +3,12 @@ type: epic
 title: Gate Files & First Migration
 description: 'Create gate file schema and first gate file (tests-pass.md). Gate subagent runner spawns haiku Task, returns GATE_RESULT. Workflow YAML supports gate.file references. TDD workflow uses file-based gate for green phase.'
 priority: P1
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-15003
 stories:
   - id: 106-1
+    jira: MSSCI-15004
     title: Create tests-pass gate file with schema
     description: |
       Create pennyfarthing-dist/gates/tests-pass.md as the first gate file.
@@ -17,10 +18,13 @@ stories:
       files/lines, uncommitted files, with recovery guidance.
     points: 1
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-02-15'
   - id: 106-2
+    jira: MSSCI-15005
     title: Gate subagent runner with GATE_RESULT contract
     description: |
       Gate runner spawns a gate file as a haiku Task subagent and returns
@@ -30,10 +34,13 @@ stories:
       regex/grep, not full YAML parser. Gate files are read-only at runtime.
     points: 3
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-15'
   - id: 106-3
+    jira: MSSCI-15006
     title: Workflow YAML gate.file integration
     description: |
       Add gate.file field to workflow YAML schema. resolve-gate checks
@@ -42,10 +49,13 @@ stories:
       coexist during migration period.
     points: 2
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-15'
   - id: 106-4
+    jira: MSSCI-15007
     title: Gate file discovery and resolution
     description: |
       Gate file resolution order: .pennyfarthing/gates/{name}.md
@@ -55,7 +65,11 @@ stories:
       pennyfarthing init/update following existing symlink pattern.
     points: 1
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-15'
     repos: pennyfarthing
-    workflow: trivial
+    workflow: tdd
+    completed: '2026-02-15'
 initiative: gate-extraction
+completed: '2026-02-15'

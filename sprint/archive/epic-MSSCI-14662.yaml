@@ -7,7 +7,7 @@ description: |-
 
   Spike outcome: the Gate PRD is the pattern. No separate ADR needed.
 priority: P2
-status: planning
+status: done
 repos: pennyfarthing
 jira: MSSCI-14662
 points: 5
@@ -34,8 +34,10 @@ stories:
       Depends on: Gate subagent runner (FR-2), gate file schema (FR-1).
     points: 2
     priority: P1
-    status: planning
+    status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
+    completed: '2026-02-15'
   - id: "90-3"
     jira: MSSCI-14696
     title: "Evaluate and document results"
@@ -47,5 +49,8 @@ stories:
       Document findings, decide on rollout to other agents.
     points: 1
     priority: P1
-    status: planning
+    status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
+    completed: '2026-02-15'
+completed: '2026-02-15'

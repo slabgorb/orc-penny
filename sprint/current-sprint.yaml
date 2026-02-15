@@ -9,14 +9,8 @@ sprint:
   number: 2606
 epics:
   - MSSCI-14510
-  - MSSCI-14951
-  - MSSCI-14999
-  - MSSCI-15003
-  - MSSCI-15008
   - MSSCI-15012
-  - MSSCI-15015
   - MSSCI-14509
-  - MSSCI-14662
   - MSSCI-14697
 stories:
   - id: MSSCI-14394

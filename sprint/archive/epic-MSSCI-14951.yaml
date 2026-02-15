@@ -8,7 +8,7 @@ description: |
 
   PRD: sprint/planning/prd.md
 priority: P1
-status: in_progress
+status: done
 repos: pennyfarthing
 jira: MSSCI-14951
 stories:
@@ -193,8 +193,9 @@ stories:
       UX: sprint/planning/progress-panel-ux-design.md
     points: 5
     priority: P1
-    status: backlog
+    status: done
     workflow: tdd
+    completed: '2026-02-14'
     blocked_by:
       - '103-5'
   - id: '103-12'
@@ -205,9 +206,10 @@ stories:
       and Workflow into a single panel.
     points: 1
     priority: P1
-    status: canceled
+    status: done
     workflow: tdd
     notes: Superseded by ProgressPanel (103-11)
+    delivered_in: '103-11'
   - id: '103-13'
     jira: MSSCI-14968
     title: TodoPanel (task checklist)
@@ -216,9 +218,10 @@ stories:
       and Workflow into a single panel.
     points: 1
     priority: P1
-    status: canceled
+    status: done
     workflow: tdd
     notes: Superseded by ProgressPanel (103-11)
+    delivered_in: '103-11'
   - id: '103-14'
     jira: MSSCI-14969
     title: ChangedPanel (file list with status)
@@ -229,8 +232,10 @@ stories:
       FRs: FR15
     points: 1
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     workflow: tdd
+    completed: '2026-02-14'
     blocked_by:
       - '103-5'
   - id: '103-15'
@@ -276,8 +281,10 @@ stories:
       FRs: FR20
     points: 1
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     workflow: tdd
+    completed: '2026-02-15'
     blocked_by:
       - '103-5'
   - id: '103-18'
@@ -310,8 +317,10 @@ stories:
       NFRs: NFR5
     points: 2
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     workflow: tdd
+    completed: '2026-02-15'
   - id: 103-20
     title: TUI launcher entry point (just tui)
     points: 2
@@ -323,5 +332,9 @@ stories:
     title: Add git fetch cooldown to prevent frequent network calls during active sessions
     points: 1
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-14'
     workflow: trivial
+    completed: "2026-02-14"
+completed: '2026-02-15'
