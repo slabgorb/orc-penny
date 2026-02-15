@@ -37,9 +37,17 @@ pennyfarthing-orchestrator/
 
 ## Git Branch Strategy
 
-- **All work:** Feature branches
-- **Branch from:** `develop` (or `main` if no develop branch)
+### Orchestrator repos (trunk-based — ADR-0026)
+- **Trunk:** `main` (single long-lived branch)
+- **All work:** Feature branches off `main`
+- **PRs target:** `main`
+- **No `develop` branch** — its absence is the enforcement mechanism
+- **Naming:** `feat/[story]-[description]` or `fix/[issue]-[description]`
+
+### Framework/application repos (gitflow)
+- **Branch from:** `develop`
 - **PRs target:** `develop`
+- **Releases:** `develop` → `main` with version tags
 - **Naming:** `feat/[story]-[description]` or `fix/[issue]-[description]`
 
 ## TDD Workflow

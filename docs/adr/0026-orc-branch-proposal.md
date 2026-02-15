@@ -1,7 +1,7 @@
 # Proposal: Trunk-Based Development for Orchestrator Pattern Repositories
 
-**Status:** Proposed
-**Date:** 2026-02-14
+**Status:** Accepted
+**Date:** 2026-02-15
 **Author:** Michael Pursifull
 **Scope:** All `*-orc*` / `*-orchestrator` repositories
 
@@ -322,8 +322,8 @@ different needs. This proposal applies only to the orchestrator layer.
 
 ### ADR-0026: Trunk-Based Development for Orchestrator Repos
 
-**Status:** Proposed
-**Date:** 2026-02-14
+**Status:** Accepted
+**Date:** 2026-02-15
 **Deciders:** Michael Pursifull
 
 #### Context

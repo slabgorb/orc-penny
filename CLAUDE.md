@@ -37,6 +37,11 @@ Never edit files inside `node_modules/` or symlink targets. Trace symlinks back 
 <git-operations>
 Commit format: `<type>(<scope>): <subject>`
 
+This repo uses **trunk-based development** (ADR-0026). Single long-lived branch: `main`.
+Feature branches and PRs target `main` directly. There is no `develop` branch.
+
+The `pennyfarthing/` child repo uses gitflow — PRs target `develop` there.
+
 When user says "pull all repos" or "pull everything", include ALL repos in the workspace (including `pennyfarthing/` and any other related repos).
 
 Framework commits go to the `pennyfarthing/` repo:
