@@ -23,17 +23,20 @@ stories:
     title: "Workflow schema: tandem: block"
     points: 3
     priority: P0
-    status: planning
+    status: done
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-15'
   - id: "86-2"
     jira: MSSCI-14497
     title: "Consultation protocol implementation"
     points: 3
     priority: P0
-    status: planning
+    status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-15'
   - id: "86-3"
     jira: MSSCI-14498
     title: "Dialogue file management"
