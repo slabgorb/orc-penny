@@ -29,6 +29,7 @@ completed_epics:
   - MSSCI-14951
   - MSSCI-14999
   - MSSCI-15003
+  - MSSCI-14662
 completed_stories:
   - id: 83-1
     epic: MSSCI-14465
@@ -498,5 +499,20 @@ completed_stories:
   - id: 106-4
     epic: MSSCI-15003
     title: Gate file discovery and resolution
+    points: 1
+    completed: '2026-02-15'
+  - id: "90-1"
+    epic: MSSCI-14662
+    title: "Spike: define confidence circuit breaker pattern (DONE — Gate PRD)"
+    points: 2
+    completed: '2026-02-13'
+  - id: "90-2"
+    epic: MSSCI-14662
+    title: "Implement SM confidence gate file"
+    points: 2
+    completed: '2026-02-15'
+  - id: "90-3"
+    epic: MSSCI-14662
+    title: "Evaluate and document results"
     points: 1
     completed: '2026-02-15'

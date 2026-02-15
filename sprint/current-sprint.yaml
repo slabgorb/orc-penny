@@ -12,7 +12,6 @@ epics:
   - MSSCI-15008
   - MSSCI-15012
   - MSSCI-14509
-  - MSSCI-14662
   - MSSCI-14697
 stories:
   - id: MSSCI-14394
