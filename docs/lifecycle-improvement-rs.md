@@ -420,6 +420,8 @@ This document is about the **lifecycle problem** specifically — not a catalog 
 
 ### A. The Complete Lifecycle Loop
 
+> **Warning — this diagram is illustrative, not literal.** The loop shown below is based on BMAD's stage-gate model extended with a LEARN phase. It is not what Pennyfarthing will actually implement. We are not building a DEPLOY → LEARN cycle for one-shot passion-project SaaS applications. "Deploy" in our context means *integrate with the team's efforts* — merge, validate against the broader system, confirm coherence with parallel work. The real process is fractal (section C below): product-level, feature-level, and spike-level lifecycles are miniature reflections of the same pattern, each operating at different depth and speed. A feature lifecycle doesn't deploy and monitor — it integrates and validates against the parent architecture. The diagram below is presented in this simplified form so the reader has a common frame of reference for *what we're changing* before we get into *how it actually works*. It needs correction, and we ask for your indulgence while we use it as a starting point.
+
 ```mermaid
 graph TD
     subgraph "DISCOVER"
@@ -446,35 +448,35 @@ graph TD
 
     subgraph "SHIP"
         REL["Release"]
-        DEPLOY["Deploy"]
-        VALIDATE["Integration<br/>Validation"]
+        DEPLOY["⚠ Deploy *"]
+        VALIDATE["Self-Review<br/>& Improve"]
+        MONITOR["Report &<br/>Recommend Drift<br/>or Monitor"]
     end
 
     subgraph "LEARN"
-        MONITOR["Monitor &<br/>Observe"]
-        FEEDBACK["Collect<br/>Feedback"]
+        FEEDBACK["Ingest &<br/>Integrate"]
         ASSESS["Assess Drift<br/>& Impact"]
-        PROPAGATE["Propagate<br/>Changes"]
+        PROPAGATE["Ripple Changes<br/>if Adopted"]
     end
 
     PB --> R --> PRD
     PRD --> UX --> ARCH --> ES
     ES --> SP --> IR
     IR --> IMPL --> REVIEW
-    REVIEW --> REL --> DEPLOY --> VALIDATE
-    VALIDATE --> MONITOR --> FEEDBACK --> ASSESS --> PROPAGATE
+    REVIEW --> REL --> DEPLOY --> VALIDATE --> MONITOR
+    MONITOR --> FEEDBACK --> ASSESS --> PROPAGATE
 
     PROPAGATE -->|"update specs"| PRD
     PROPAGATE -->|"update design"| ARCH
     PROPAGATE -->|"new stories"| ES
-    ASSESS -->|"spike needed"| R
+    ASSESS -->|"spike needed?"| R
 
     style MONITOR fill:#2e7d32,stroke:#005005,color:#fff
     style FEEDBACK fill:#2e7d32,stroke:#005005,color:#fff
-    style ASSESS fill:#2e7d32,stroke:#005005,color:#fff
-    style PROPAGATE fill:#2e7d32,stroke:#005005,color:#fff
     style DEPLOY fill:#2e7d32,stroke:#005005,color:#fff
     style VALIDATE fill:#2e7d32,stroke:#005005,color:#fff
+
+    click DEPLOY "#a-the-complete-lifecycle-loop" "See warning: Deploy means integrate with the team's efforts"
 ```
 
 The lifecycle becomes a **loop**, not a pipeline. The LEARN phase feeds findings back to the appropriate upstream phase. An AI agent can trace the impact of a change from updated requirements through architecture, affected epics, and downstream stories — and flag what's stale.
@@ -522,43 +524,56 @@ Each input type routes to the appropriate lifecycle scope. The triage step is it
 
 ### C. Fractal Lifecycle (Scale-Invariant)
 
-The same lifecycle pattern repeats at different scales. Each level inherits the structure and validators from the parent but operates at reduced scope and speed.
+The same lifecycle pattern repeats at different scales. Each level inherits the structure and validators from the parent but operates at reduced scope and speed. Three scales illustrate the pattern:
+
+| Scale | Scope | Inherits from | Produces |
+|-------|-------|---------------|----------|
+| **Product** | New product or major initiative | Nothing — establishes the baseline | PRD, Architecture, Epics |
+| **Feature** | Feature within an existing product | Product PRD + Architecture | Requirements delta, Architecture delta, Stories |
+| **Bug** | Defect in shipped work | Feature/Product context + failing behavior | Root cause, Fix, Regression test |
+
+#### Product Scale
+
+The full lifecycle. Establishes the baseline artifacts that all smaller scales inherit.
 
 ```mermaid
-graph TD
-    subgraph "Product Scale"
-        P_B["Product Brief"]
-        P_R["Product Research"]
-        P_PRD["Product PRD"]
-        P_ARCH["Product Architecture"]
-        P_EPIC["Product Epics"]
-    end
-
-    subgraph "Feature Scale (inherits product context)"
-        F_B["Feature Brief<br/><small>variant of Product Brief</small>"]
-        F_R["Feature Research<br/><small>scoped to feature</small>"]
-        F_PRD["Feature Requirements<br/><small>variant of PRD</small>"]
-        F_ARCH["Feature Architecture<br/><small>delta from product arch</small>"]
-        F_STORY["Feature Stories"]
-    end
-
-    subgraph "Spike Scale (inherits feature context)"
-        S_Q["Spike Question<br/><small>hypothesis to test</small>"]
-        S_R["Spike Research<br/><small>literature + experiments</small>"]
-        S_PROTO["Spike Prototype<br/><small>throwaway validation</small>"]
-        S_FIND["Spike Findings<br/><small>fold back to parent</small>"]
-    end
-
-    P_B --> P_R --> P_PRD --> P_ARCH --> P_EPIC
-    P_EPIC -->|"spawn feature"| F_B
-    F_B --> F_R --> F_PRD --> F_ARCH --> F_STORY
-    F_R -->|"unknown? spawn spike"| S_Q
-    S_Q --> S_R --> S_PROTO --> S_FIND
-    S_FIND -->|"fold back"| F_R
-    S_FIND -->|"update parent"| P_ARCH
+graph LR
+    PB["Product<br/>Brief"] --> PR["Research"] --> PRD["PRD"] --> ARCH["Architecture"] --> ES["Epics &<br/>Stories"] --> BUILD["Build<br/>(TDD/BDD)"] --> SHIP["Ship"] --> LEARN["Learn &<br/>Ripple"]
+    LEARN -->|"update"| PRD
 ```
 
-**Key principle:** A feature lifecycle is not a copy of the product lifecycle — it's a **variant** that inherits the product context (existing PRD, existing architecture) and produces deltas. When the feature's architecture diverges from the product's, the change propagation mechanism updates the parent.
+#### Feature Scale
+
+A miniature reflection of the product lifecycle. The product brief and PRD already exist — the feature inherits that context and produces deltas.
+
+```mermaid
+graph LR
+    FB["Feature<br/>Brief"] --> FR["Scoped<br/>Research"] --> FREQ["Feature<br/>Requirements"] --> FARCH["Architecture<br/>Delta"] --> FS["Stories"] --> BUILD["Build<br/>(TDD/BDD)"] --> SHIP["Integrate"] --> LEARN["Report Drift<br/>& Ripple"]
+    LEARN -->|"update parent"| FREQ
+
+    style FB fill:#1565c0,stroke:#003c8f,color:#fff
+    style FR fill:#1565c0,stroke:#003c8f,color:#fff
+    style FREQ fill:#1565c0,stroke:#003c8f,color:#fff
+    style FARCH fill:#1565c0,stroke:#003c8f,color:#fff
+    style FS fill:#1565c0,stroke:#003c8f,color:#fff
+```
+
+#### Bug Scale
+
+The lightest lifecycle. No brief, no architecture phase — the product context and failing behavior are the inputs. The output is a root cause, a fix, and a regression test. If the fix reveals architectural drift, it ripples upward.
+
+```mermaid
+graph LR
+    TRIAGE["Triage &<br/>Reproduce"] --> RCA["Root Cause<br/>Analysis"] --> FIX["Fix &<br/>Regression Test"] --> REVIEW["Review"] --> SHIP["Integrate"] --> DRIFT{"Drift?"}
+    DRIFT -->|"yes"| RIPPLE["Ripple to<br/>parent specs"]
+    DRIFT -->|"no"| DONE["Done"]
+
+    style TRIAGE fill:#546e7a,stroke:#29434e,color:#fff
+    style RCA fill:#546e7a,stroke:#29434e,color:#fff
+    style FIX fill:#546e7a,stroke:#29434e,color:#fff
+```
+
+**Key principle:** A feature lifecycle is not a copy of the product lifecycle — it's a **variant** that inherits the product context (existing PRD, existing architecture) and produces deltas. A bug lifecycle is even lighter — it inherits everything and only produces a fix plus a drift signal. When any scale's output diverges from the parent's specs, the ripple mechanism updates upstream. The lifecycle is the same pattern at every scale; only the depth and ceremony change.
 
 ### D. Research Spike as First-Class Lifecycle
 
