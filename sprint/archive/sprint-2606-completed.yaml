@@ -31,6 +31,7 @@ completed_epics:
   - MSSCI-15003
   - MSSCI-14662
   - MSSCI-15008
+  - MSSCI-15012
 completed_stories:
   - id: 83-1
     epic: MSSCI-14465
@@ -530,5 +531,15 @@ completed_stories:
   - id: 107-3
     epic: MSSCI-15008
     title: Gate authoring guide and validation command
+    points: 2
+    completed: '2026-02-15'
+  - id: 108-1
+    epic: MSSCI-15012
+    title: Migrate tests-fail and approval gates to files
+    points: 2
+    completed: '2026-02-15'
+  - id: 108-2
+    epic: MSSCI-15012
+    title: Remove handoff subagents and inline fallback
     points: 2
     completed: '2026-02-15'
