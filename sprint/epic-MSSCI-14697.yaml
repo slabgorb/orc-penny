@@ -134,8 +134,11 @@ stories:
     title: v11 migration automation — detect and remove old multi-package installs
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-15'
     workflow: tdd
+    completed: '2026-02-15'
   - id: 98-23
     title: Implement real OTLP integrations for core server stubs
     points: 5
