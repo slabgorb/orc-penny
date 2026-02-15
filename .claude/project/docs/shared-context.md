@@ -37,6 +37,8 @@ pennyfarthing-orchestrator/
 
 ## Git Branch Strategy
 
+Per-repo branching is defined in `.pennyfarthing/repos.yaml` (`branch_strategy` and `default_branch` fields).
+
 ### Orchestrator repos (trunk-based — ADR-0026)
 - **Trunk:** `main` (single long-lived branch)
 - **All work:** Feature branches off `main`

@@ -37,6 +37,8 @@ Never edit files inside `node_modules/` or symlink targets. Trace symlinks back 
 <git-operations>
 Commit format: `<type>(<scope>): <subject>`
 
+Per-repo branching is defined in `.pennyfarthing/repos.yaml` (`branch_strategy` and `default_branch` fields).
+
 This repo uses **trunk-based development** (ADR-0026). Single long-lived branch: `main`.
 Feature branches and PRs target `main` directly. There is no `develop` branch.
 
