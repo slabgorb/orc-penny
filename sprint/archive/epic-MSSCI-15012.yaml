@@ -3,7 +3,7 @@ type: epic
 title: Full Migration & Cleanup
 description: 'Migrate remaining gates (tests-fail, approval) to files. Update all workflow YAMLs. Remove handoff.md, sm-handoff.md subagents and inline gate.type fallback. Single code path for phase transitions.'
 priority: P3
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-15012
 stories:
@@ -33,7 +33,11 @@ stories:
       handoff.ts. Verify no agent file references either subagent.
     points: 2
     priority: P3
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-15'
     repos: pennyfarthing
-    workflow: trivial
+    workflow: tdd
+    completed: '2026-02-15'
 initiative: gate-extraction
+completed: '2026-02-15'
