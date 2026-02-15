@@ -465,7 +465,7 @@ xychart-beta
     line [167, 167, 167, 167, 167]
 ```
 
-> **Measured data.** Five real projects, each with one developer. Procedure: clean session, load PM, read PRD + architecture + all epics + all stories, measure `/context` (see `context-window-measurement-procedure.md`). B = BMAD, P = Pennyfarthing. **peu** (14 epics, 11 stories, mature): 36K. **ccmp** (7 epics, 51 stories, early delivery): 73K. **bmad-community** (7 epics, 49 stories, active dev): 88K. **poller** (1 epic, 20 stories, research spike): 92K. **axiathon** (25 epics, 268 stories, pre-launch): 162K. Lower line (100K) = performance ceiling (~50% of window; @an_etal_2024). Upper line (167K) = effective capacity (200K - 33K autocompact buffer). axiathon is at 97% of effective capacity before a single line of code.
+> **Measured data** from five real projects (3 BMAD, 2 Pennyfarthing), each with one developer, zero implementation work. B = BMAD, P = Pennyfarthing. Lower line (100K) = performance ceiling [@an_etal_2024]. Upper line (167K) = effective capacity. axiathon (25 epics, 268 stories) is at 97% of effective capacity before a single line of code. Per-project breakdown and methodology in `context-window-measurement-results.md`.
 
 ```mermaid
 ---
@@ -486,7 +486,7 @@ xychart-beta
     line [60, 60, 60, 60, 60]
 ```
 
-> **Same data, different lens.** Effective capacity is 167K (200K window minus 33K reserved autocompact buffer). The 60% line marks the performance ceiling (100K ÷ 167K). Three of five projects are at or near this line. axiathon at 97% means the PM agent literally cannot plan — it has 5K tokens remaining for the entire conversation. Note that Pennyfarthing projects show *higher* context in this test because the test loads everything; in routine use, Pennyfarthing loads selectively via Prime tiers and sprint sharding. The test measures total project footprint, not per-session cost.
+> **Same data as % of usable capacity** (200K window minus 33K reserved buffer = 167K effective). The 60% line marks the performance ceiling. Three of five projects are at or near it. axiathon at 97% means the PM agent has 5K tokens for the entire conversation. Pennyfarthing projects show higher context here because the test loads everything; in routine use they load selectively. See `context-window-measurement-results.md` for the full framework comparison.
 
 With a team, the picture accelerates. Each contributor doesn't just add their own work — they add cross-references, coordination context, and the overhead of tracking who is doing what. Sprint planning context alone grows with the number of parallel tracks:
 
@@ -560,7 +560,7 @@ Pennyfarthing addresses the structural dimension:
 | **Sidecar pruning** | Line limits (40–50 lines) with health-check enforcement | Bounded growth, forced consolidation |
 | **Shard validation** | Write-time integrity checks prevent broken references [@pursifull_2026t] | Prevents silent loading failures |
 
-These mechanisms keep the context-to-work ratio manageable for projects up to about 20–30 epics with one or two contributors. The measured data confirms this: Pennyfarthing projects (poller at 92K, bmad-community at 88K) consume comparable context to BMAD projects of similar scope when doing a full load — the sharding benefit appears in *routine use*, where agents load selectively, not in total project footprint. But they're all *structural* solutions — manual sharding decisions, hand-tuned tier thresholds, explicit load paths. None of them address the retrieval problem: given 200 context files, 50 completed stories, and 30 research documents, which 5 are relevant to the story I'm about to implement?
+These mechanisms keep the context-to-work ratio manageable for projects up to about 20–30 epics with one or two contributors. Measured data confirms that Pennyfarthing's sharding benefit appears in routine use (selective loading), not in total project footprint — see the apples-to-apples comparison in `context-window-measurement-results.md`. But they're all *structural* solutions — manual sharding decisions, hand-tuned tier thresholds, explicit load paths. None of them address the retrieval problem: given 200 context files, 50 completed stories, and 30 research documents, which 5 are relevant to the story I'm about to implement?
 
 #### What's needed next
 
