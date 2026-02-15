@@ -26,6 +26,7 @@ completed_epics:
   - MSSCI-14938
   - MSSCI-14952
   - MSSCI-15015
+  - MSSCI-14951
 completed_stories:
   - id: 83-1
     epic: MSSCI-14465
@@ -352,3 +353,108 @@ completed_stories:
     title: Copy-to-clipboard icon for MSSCI keys in SprintPanel
     points: 1
     completed: '2026-02-14'
+  - id: '103-1'
+    epic: MSSCI-14951
+    title: Textual app scaffold with basic layout
+    points: 2
+    completed: '2026-02-13'
+  - id: '103-2'
+    epic: MSSCI-14951
+    title: WheelHub WebSocket client with auto-reconnect
+    points: 3
+    completed: '2026-02-13'
+  - id: '103-3'
+    epic: MSSCI-14951
+    title: '`pf bikerack` launcher command'
+    points: 2
+    completed: '2026-02-13'
+  - id: '103-4'
+    epic: MSSCI-14951
+    title: Connection status indicator in TUI header
+    points: 1
+    completed: '2026-02-13'
+  - id: '103-5'
+    epic: MSSCI-14951
+    title: Base panel abstraction (channel subscription + Rich rendering)
+    points: 3
+    completed: '2026-02-13'
+  - id: '103-6'
+    epic: MSSCI-14951
+    title: SprintPanel implementation
+    points: 2
+    completed: '2026-02-14'
+  - id: '103-7'
+    epic: MSSCI-14951
+    title: '`/bc` slash command skill registration'
+    points: 2
+    completed: '2026-02-13'
+  - id: '103-8'
+    epic: MSSCI-14951
+    title: Panel persistence (extend ERB mechanism)
+    points: 2
+    completed: "2026-02-14"
+  - id: '103-9'
+    epic: MSSCI-14951
+    title: Panel header chrome (current panel indicator, Nerd Font icons)
+    points: 1
+    completed: '2026-02-14'
+  - id: '103-10'
+    epic: MSSCI-14951
+    title: GitPanel (multi-repo status)
+    points: 2
+    completed: '2026-02-14'
+  - id: '103-11'
+    epic: MSSCI-14951
+    title: ProgressPanel (at-a-glance story dashboard)
+    points: 5
+    completed: '2026-02-14'
+  - id: '103-12'
+    epic: MSSCI-14951
+    title: ACPanel (acceptance criteria checklist)
+    points: 1
+    completed: '2026-02-15'
+  - id: '103-13'
+    epic: MSSCI-14951
+    title: TodoPanel (task checklist)
+    points: 1
+    completed: '2026-02-15'
+  - id: '103-14'
+    epic: MSSCI-14951
+    title: ChangedPanel (file list with status)
+    points: 1
+    completed: '2026-02-14'
+  - id: '103-15'
+    epic: MSSCI-14951
+    title: AuditLogPanel (scrolling event log)
+    points: 1
+    completed: "2026-02-14"
+  - id: '103-16'
+    epic: MSSCI-14951
+    title: BackgroundPanel (task status)
+    points: 1
+    completed: '2026-02-14'
+  - id: '103-17'
+    epic: MSSCI-14951
+    title: DebugPanel (log viewer)
+    points: 1
+    completed: '2026-02-15'
+  - id: '103-18'
+    epic: MSSCI-14951
+    title: DiffsPanel — Rich diff rendering with syntax highlighting
+    points: 3
+    completed: '2026-02-14'
+  - id: '103-19'
+    epic: MSSCI-14951
+    title: Large diff handling (truncation/pagination)
+    points: 2
+    completed: '2026-02-15'
+  - id: 103-20
+    epic: MSSCI-14951
+    title: TUI launcher entry point (just tui)
+    points: 2
+    completed: "2026-02-14"
+  - id: 103-21
+    epic: MSSCI-14951
+    title: Add git fetch cooldown to prevent frequent network calls during active sessions
+    points: 1
+    completed: "2026-02-14"

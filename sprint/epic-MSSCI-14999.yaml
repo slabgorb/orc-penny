@@ -50,10 +50,13 @@ stories:
       trivial workflow skips gate (status:skip) with no LLM spawn.
     points: 1
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-02-15'
   - id: 105-4
+    jira: MSSCI-15100
     title: Replace handoff-marker.sh with gate-aware Python CLI
     points: 2
     priority: p1
