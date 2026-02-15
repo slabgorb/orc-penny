@@ -1,3 +1,8 @@
+---
+bibliography: ../references.bib
+csl: chicago-author-date.csl
+---
+
 # Product Brief: Composable Lifecycle Engine
 
 **Author:** Michael Pursifull (BA discovery by Avasarala)
@@ -11,7 +16,7 @@
 
 The BMAD product lifecycle is a one-way street with one front door: it starts at "product brief," ends at "story shipped," has no feedback loops, no way to handle external change, no mechanism for exploration, and no way to run the same process at different scales.
 
-> **Note:** There are additional structural problems — the human-as-integration-bus handoff model, the single flat workflow type, the absence of quality gates — some of which are explored in companion documents. The need for a Composable Lifecycle Engine follows directly from the sentence above: every clause is a gap that must be closed.
+> **Note:** There are additional structural problems — the human-as-integration-bus handoff model, the single flat workflow type, the absence of quality gates, and a flat-file context architecture that collapses under its own weight as projects grow — some of which are explored in companion documents. The need for a Composable Lifecycle Engine follows directly from the sentence above: every clause is a gap that must be closed.
 
 ---
 
@@ -19,7 +24,7 @@ The BMAD product lifecycle is a one-way street with one front door: it starts at
 
 | Section | |
 |---------|---|
-| **What's Actually Broken (1–7)** | Seven structural problems with BMAD's lifecycle model |
+| **What's Actually Broken (1–8)** | Eight structural problems with BMAD's lifecycle model |
 | **The Vision (A–E)** | Five design goals for what replaces it *(early draft)* |
 | **Why This Matters / Proposal / Metrics** | Spec-driven AI argument, phased build plan, success criteria |
 | **Risks, Precedent, Next Steps** | Open questions, industry grounding, immediate actions |
@@ -36,6 +41,9 @@ The BMAD product lifecycle is a one-way street with one front door: it starts at
 | [Tier Communication Protocol](lifecycle-tier-comm-protocol.md) | Channel taxonomy for inter-tier communication (Finding, Intent, Alert, etc.) |
 | [Tier Definitions](lifecycle-tier-definitions.md) | Formal tier definitions with VSM S1–S5 mapping |
 | [Research Synthesis](lifecycle-research-synthesis.md) | Unified synthesis across five research tracks (171 sources) |
+| [BMAD Multi-Dev Lessons Learned](../ccmp/_bmad-output/bmad-multi-dev-lessons-learned.md) | Team-scale BMAD usage: solo tool finding, gate discovery, quality trajectory |
+| [OCSF Spike Findings](../poller-orchestrator/sprint/planning/spike-findings-ocsf.md) | Validated spike lifecycle model; lessons on charter-first exploration |
+| [Axiathon Divergence Analysis](../poller-orchestrator/sprint/planning/axiathon-ocsf-divergence-alignment-analysis.md) | Cross-project analysis of BMAD-generated architecture failures |
 
 ---
 
@@ -79,11 +87,11 @@ After release, BMAD provides no structured process for:
 - **Learning capture** — What did we learn that should update the PRD or Architecture?
 - **Change propagation** — When a spec changes, what downstream artifacts are now stale?
 
-The BMAD lifecycle is a pipeline, not a loop. In practice, teams handle post-ship work through ad-hoc heroics.
+The BMAD lifecycle is a pipeline, not a loop. In practice, teams handle post-ship work through ad-hoc heroics. The lifecycle composition research synthesis [@pursifull_2026h] validated this gap against five research tracks (~171 sources); the absence of feedback loops violates Beer's recursive viability theorem and the cybernetic principle of requisite variety.
 
 ### 2. BMAD was built for one scale — and it's a narrow one
 
-BMAD's lifecycle works when the project is a **pet program**: a todo app, a simple SaaS MVP, a greenfield 1.0 built end-to-end by one person using well-known, common technologies with well-understood interfaces. In that context — purely software, one developer, one pass from brief to release, no external system dependencies — the process mostly works. BMAD does have a brownfield mode, but it's not mature or repeatable enough to rely on.
+BMAD's lifecycle works when the project is a **pet program**: a todo app, a simple SaaS MVP, a greenfield 1.0 built end-to-end by one person using well-known, common technologies with well-understood interfaces. In that context — purely software, one developer, one pass from brief to release, no external system dependencies — the process mostly works. "BMAD may be optimized for greenfield. The validation opportunity is testing brownfield entry points" [@pursifull_2026p]. BMAD does have a brownfield mode, but it's not mature or repeatable enough to rely on.
 
 The moment you step outside that envelope, the process breaks down.
 
@@ -176,9 +184,13 @@ Once you decompose into epics and stories, execution fans out into parallel trac
 - **Parallel track coordination** — When Epic 2's stories slip, what happens to Epic 3's dependent stories?
 - **Convergence points** — When do the parallel tracks need to come back together, and what validates that they're coherent?
 
+This isn't hypothetical. In the xMP infrastructure project (CCMP), Architecture Decision 8 — the 5-NIC VM model — was finalized *after* Story 2.1 was already complete with a 3-NIC interface mapping. Nobody caught the mismatch for five days, until a cross-track gap analysis surfaced it. Three downstream stories (2.2, 2.5, 3.4) had stale references that would have caused incorrect firewall macros, wrong network assignments, and wrong failover configuration on production VMs [@pursifull_2026a, Theme 1]. The parallel track model worked — but without a synchronization mechanism, the tracks silently diverged.
+
 #### 3b. The human is the integration bus
 
-In BMAD, each stage runs in a **fresh conversation** to avoid context pollution. This is a deliberate design choice — but it means the human performs every handoff. The user starts the PRD workflow, completes it, then manually starts the architecture workflow in a new session, carries over the relevant context, and so on.
+BMAD is architecturally a solo-practitioner tool augmented by AI agent personas, not a team coordination platform [@pursifull_2026a, Finding #1]. The "team" vocabulary throughout BMAD — Alice the Product Owner, Bob the Scrum Master — refers to AI agents role-playing team members in a single conversation, not mechanisms for human coordination.
+
+Each stage runs in a **fresh conversation** to avoid context pollution. This is a deliberate design choice — but it means the human performs every handoff. The user starts the PRD workflow, completes it, then manually starts the architecture workflow in a new session, carries over the relevant context, and so on.
 
 ```mermaid
 graph LR
@@ -248,6 +260,8 @@ BMAD's stepped workflows are equivalent to Pennyfarthing's stepped type — and 
 
 Beyond workflow types, Pennyfarthing is introducing **declarative gates**: quality checkpoints defined as markdown files with structured pass/fail criteria, attached to workflow transitions. Gates can be evaluated by lightweight subagents (Haiku by default), support nesting and composition, and replace the current pattern where gate logic is buried inside agent handoff code (see [Gate Extraction Epics](../sprint/planning/gate-epics.md)). Gates are to workflow transitions what acceptance criteria are to stories — explicit, declarative, and testable.
 
+The empirical case for gates is unambiguous. In the xMP project, a 17-finding audit documenting specific process gaps was completed on 2026-01-29. Story 2.2 was implemented the next day — less than 24 hours later — and shipped with seven of the same failures the audit had just identified [@pursifull_2026a, Theme 8]. The audit existed. The remediation plans were written. None of it was in the developer's execution path. Documenting process gaps does not prevent them from recurring; only enforcement embedded in the workflow does [@pursifull_2026a, Finding #5]. A formal checklist evaluated by an AI agent caught and fixed all seven failures on its first use, and process quality across the project improved from 43% to 100% compliance as formal checkpoints were adopted [@pursifull_2026a, Finding #7].
+
 ### 4. Beyond 1.0, BMAD has no answers
 
 BMAD's lifecycle assumes you're building something new, from scratch, once. The moment the 1.0 ships, the process has nothing to say about what comes next. Real projects don't end at deployment — they evolve, break, get feedback, and face external pressure. BMAD is completely naive about all of it:
@@ -258,6 +272,8 @@ BMAD's lifecycle assumes you're building something new, from scratch, once. The 
 - **Technical debt** — No process. Debt accumulates during implementation and needs cost/benefit analysis and scheduling alongside feature work. BMAD doesn't acknowledge it exists.
 - **User feedback** — No process. Users report that something is confusing or doesn't work the way they expected. That feedback needs triage, validation, and routing to the right lifecycle phase.
 - **Product direction changes** — BMAD has "course correction," but it's a single undifferentiated mechanism. A product owner pivoting strategy is a fundamentally different event than a developer discovering an API doesn't work. Both need to influence the process; neither fits through the same door.
+
+The xMP project's PRD validation exposed this directly: BMAD's document format lacks explicit sections to distinguish between operational reality (brownfield you must work with), technical debt (expedient choices to be replaced), delivery scope, platform vision, and future backlog [@pursifull_2026b]. All five categories exist in every post-1.0 project; BMAD's artifacts have no place to put them.
 
 ```mermaid
 graph TD
@@ -334,6 +350,8 @@ The drift doesn't have to be accepted — but it has to be *known*. Every implem
 
 This is the **Finding channel** described in the [Tier Communication Protocol](lifecycle-tier-comm-protocol.md) — an upward async channel from implementation to spec authority. Without it, specs rot on contact with implementation and nobody notices until the next initiative tries to build on assumptions that are no longer true.
 
+In AI-agent systems, drift is uniquely dangerous. In traditional software, a broken reference causes a compile error, a runtime exception, or a 404 — the system stops. In AI-driven systems, a broken reference causes the agent to *improvise*. The output looks plausible, nobody is blocked, and the error propagates silently [@pursifull_2026a, Finding #9]. A forensic analysis of 422 closed BMAD-METHOD issues found 236 bugs; the two categories with zero automated prevention — broken file references and path handling — accounted for 25% of all bugs. A cross-file reference validator replayed across 26 release tags tracked 289 broken references that had accumulated over four months, almost all fixed manually without systematic detection [@pursifull_2026a, Theme 10]. AI projects that coordinate through content references need automated integrity validation the same way traditional software needs compilers and linkers.
+
 ### 6. Changes ripple — and nothing tracks the blast radius
 
 When a Delivery Finding *is* accepted and the architecture or PRD changes, the impact doesn't stop at the spec. It ripples outward through every epic and story in the project. Different stories are in different states, and each state requires a different response:
@@ -381,6 +399,17 @@ Three blast zones, three different responses — ordered from past to future:
 
 In BMAD, none of this tracking exists. A spec change happens and the team relies on someone's memory of which stories are affected. The ripple is invisible until a story fails in review or — worse — in production.
 
+Not all ripples require the same response. The xMP project's PRD validation identified a **propagation taxonomy** for how changes should flow to AI agents [@pursifull_2026b, Finding #4]:
+
+| Classification | Instruction to agents | Example |
+|---|---|---|
+| **Extend** | Copy this pattern to new code | Task naming conventions, interface patterns |
+| **Integrate** | Work with this, don't replicate it | Monolithic configuration structures |
+| **Deprecate** | Don't add new dependencies on this | Legacy access patterns being replaced |
+| **Target** | New code should follow this going forward | Replacement architecture |
+
+Without this classification, agents treat every existing pattern as something to extend — propagating the old approach into new stories even after the architecture has changed.
+
 ### 7. BMAD's process isn't composable
 
 In BMAD, you can't:
@@ -391,9 +420,139 @@ In BMAD, you can't:
 
 Each BMAD workflow is standalone. Improvements to the PRD workflow don't automatically benefit a hypothetical "Feature Requirements" workflow because no inheritance mechanism exists.
 
+### 8. Project context doesn't fit — and BMAD has no answer for it
+
+BMAD stores everything in flat files: one `epics.md` for all epics and stories, one `project-context.md` for all project rules, one `sprint-status.yaml` for the entire sprint, one PRD, one architecture document. At session start, the Fresh Chat Protocol loads *all* of this into a single conversation. For a todo app, this works. For anything beyond a dozen epics, the files don't fit.
+
+BMAD knows this. The PRD and architecture documents get too large for a single context window, and BMAD offers a chunking strategy — but it's manual, undifferentiated ("split the PRD into sections"), and only addresses those two artifacts. The sprint file, the epic backlog, the story details, the acceptance criteria — those continue to grow as monolithic flat files with no sharding, no selective loading, and no mechanism for loading only what's relevant to the current task. The xMP project already had to constrain story points to 2–3 maximum "for AI context efficiency" — the context window was already the binding constraint on story sizing [@pursifull_2026c].
+
+The problem is structural, not incidental. Project context grows somewhere between quadratically and exponentially with scale:
+
+| Growth Driver | Rate | Example |
+|---------------|------|---------|
+| Stories per epic | Linear | 10 epics × 8 stories = 80 story specs |
+| Cross-epic dependencies | Quadratic | Each epic can depend on any other — *n(n-1)/2* potential edges |
+| Research artifacts | Accelerating | Each research track produces documents that individually exceed context limits |
+| Contributor context multiplication | Multiplicative | Each team member needs the same base context, loaded independently every session |
+
+We're already experiencing this. The research documents informing *this* product brief — single documents written to examine or extend the PRD — are individually too large to load alongside the PRD they reference. The five research tracks produced over 170 sources across documents that range from 15K to 40K tokens each. An agent that needs to cross-reference the PRD, the architecture, and a research synthesis to properly frame a story is already over budget before writing a single line of implementation. The OCSF normalization spike (poller-orchestrator) produced ~370KB of documentation from a single research phase; a hypothesis-driven charter would have kept output tighter, but the artifacts exist and must be accessible to downstream agents [@pursifull_2026d].
+
+#### The context ceiling is lower than the context window
+
+The problem is worse than it appears. Research demonstrates that LLM performance degrades well before the context window is full. The effective context length of most models is less than half their training length [@an_etal_2024]. Even when a model can perfectly retrieve all evidence — reciting tokens with 100% exact match — accuracy still degrades substantially as input length increases: Llama-3.1-8B lost 24.2% accuracy on MMLU at 30K tokens despite perfect retrieval, and degradation was measurable within 7K tokens [@hsieh_etal_2024]. The Chroma research group documented this as "context rot" — a predictable, model-independent decline in output quality as input tokens increase, even when the additional tokens are directly relevant [@chroma_research_2024].
+
+The practical threshold: **above ~50% of the context window, your agent is already impaired.** For a 200K-token model, that means the effective working budget is ~100K tokens — not 200K. The "remaining capacity" calculation isn't context window minus overhead; it's *effective context ceiling* minus overhead.
+
+```mermaid
+---
+config:
+  xyChart:
+    width: 700
+    height: 400
+    xAxis:
+      labelFontSize: 12
+    yAxis:
+      labelFontSize: 12
+---
+xychart-beta
+    title "BMAD: Context overhead vs. project scale (solo developer)"
+    x-axis "Epics" [5, 10, 15, 20, 25, 30, 35, 40]
+    y-axis "Tokens (K)" 0 --> 220
+    bar [25, 45, 68, 95, 125, 160, 190, 210]
+    line [100, 100, 100, 100, 100, 100, 100, 100]
+    line [200, 200, 200, 200, 200, 200, 200, 200]
+```
+
+> **Reading the chart:** Bars = total project context loaded at session start (BMAD's flat-file approach). Lower line (100K) = effective performance ceiling (~50% of 200K window; @an_etal_2024). Upper line (200K) = hard context window limit. BMAD crosses the performance ceiling at ~20 epics and the hard limit at ~40 epics. Everything between the two lines is technically loadable but already degraded.
+
+With a team, the picture accelerates. Each contributor doesn't just add their own work — they add cross-references, coordination context, and the overhead of tracking who is doing what. Sprint planning context alone grows with the number of parallel tracks:
+
+```mermaid
+---
+config:
+  xyChart:
+    width: 700
+    height: 400
+    xAxis:
+      labelFontSize: 12
+    yAxis:
+      labelFontSize: 12
+---
+xychart-beta
+    title "BMAD: Context overhead by team size (20-epic project)"
+    x-axis "Contributors" [1, 2, 3, 4, 5]
+    y-axis "Tokens (K)" 0 --> 220
+    bar [95, 120, 150, 185, 210]
+    line [100, 100, 100, 100, 100]
+    line [200, 200, 200, 200, 200]
+```
+
+> At 20 epics with one developer, the context is already at the performance ceiling. Add a second contributor and the cross-referencing overhead pushes well past it. By three contributors, a modest project has consumed 75% of the raw window — and is operating in degraded territory for every turn of every session.
+
+Think of it in web performance terms: **time to first contentful paint** measures how long a user waits before seeing anything useful. The equivalent here is **context to first useful turn** — how much of the context window is consumed by project overhead before the agent can do any actual work. In BMAD, that ratio gets worse with every epic added, every research document written, every story completed. There is no mechanism to load selectively, no way to retrieve only what's relevant, and no strategy for keeping the ratio stable as the project grows.
+
+And the growth is not just additive. Over time, as research accumulates, stories complete, and decisions pile up, the total project knowledge base grows even if no new epics are added:
+
+```mermaid
+---
+config:
+  xyChart:
+    width: 700
+    height: 400
+    xAxis:
+      labelFontSize: 12
+    yAxis:
+      labelFontSize: 12
+---
+xychart-beta
+    title "BMAD: Context growth over time (15-epic project, solo developer)"
+    x-axis "Sprint" [1, 2, 3, 4, 5, 6, 7, 8]
+    y-axis "Tokens (K)" 0 --> 220
+    bar [40, 55, 72, 90, 110, 135, 165, 195]
+    line [100, 100, 100, 100, 100, 100, 100, 100]
+    line [200, 200, 200, 200, 200, 200, 200, 200]
+```
+
+> Even a 15-epic project with one developer crosses the performance ceiling by sprint 5 and approaches the hard limit by sprint 8. Each sprint adds completed story context, new research, accumulated decisions, and session history. The flat-file approach loads all of it, every time.
+
+#### The two dimensions
+
+The problem has two dimensions:
+
+1. **Structural** — Flat files grow without bound. There's no sharding (break big files into loadable pieces), no indexing (know what's in a file without loading it), no selective retrieval (load only the stories that matter for this task).
+
+2. **Retrieval** — Even if you shard the files, you need a way to find the *right* shards. As the project grows, the number of potentially relevant artifacts grows faster than any human or agent can enumerate. This is where RAG (retrieval-augmented generation), knowledge graphs, and reranking become necessary — not as nice-to-haves, but as structural requirements for operating at scale.
+
+#### What Pennyfarthing does today
+
+Pennyfarthing addresses the structural dimension:
+
+| Mechanism | What it does | Context saved |
+|-----------|-------------|---------------|
+| **Sprint sharding** | Index file with epic references; each epic in its own YAML file, loaded on demand | ~5000 → ~100 tokens at startup |
+| **Tiered context (Prime)** | Four loading tiers — FULL on first turn, MINIMAL by turn 3+ [@pursifull_2026s] | ~4000 → ~200 tokens after turn 3 |
+| **Session extraction** | Load header + last assessment only, not full history (ADR-0009) | ~2000 → ~500 tokens per session |
+| **Sprint summary injection** | Two-line progress string instead of full sprint data | ~5000 → ~50 tokens |
+| **Epic context files** | Per-epic deep-dive context, loaded only when working on that epic | ~0 tokens until explicitly needed |
+| **Sidecar pruning** | Line limits (40–50 lines) with health-check enforcement | Bounded growth, forced consolidation |
+| **Shard validation** | Write-time integrity checks prevent broken references [@pursifull_2026t] | Prevents silent loading failures |
+
+These mechanisms keep the context-to-work ratio manageable for projects up to about 20–30 epics with one or two contributors. But they're all *structural* solutions — manual sharding decisions, hand-tuned tier thresholds, explicit load paths. None of them address the retrieval problem: given 200 context files, 50 completed stories, and 30 research documents, which 5 are relevant to the story I'm about to implement?
+
+#### What's needed next
+
+That's the next frontier. A project at production scale — or a team of any size working on a product with real depth — needs:
+
+- **Indexed retrieval** — semantic search over project artifacts, so an agent starting a story can pull the 3 most relevant research documents, the 2 most relevant completed stories, and the specific architecture section that applies
+- **Relationship-aware context** — a knowledge graph connecting stories to epics to architecture decisions to research findings, so the agent can traverse dependencies rather than loading everything to find connections
+- **Relevance ranking** — reranking retrieved context by relevance to the current task, so the limited context window is filled with the highest-value information first
+- **Context budget monitoring** — instrumentation that tracks how much of the effective window (not just the raw window) is consumed by overhead vs. available for work, per agent, per turn
+
+Without these, every additional epic and every additional team member accelerates the point at which the context budget becomes the binding constraint — not the agent's capability, not the quality of the specs, but the sheer volume of project knowledge that can't be efficiently accessed.
+
 ### A note on scope
 
-BMAD has problems beyond the seven listed here. Some — like the single flat workflow type (3c), the absence of automated handoffs (3b), and the lack of programmatic validation — Pennyfarthing has already solved. Others, like the organizational model assumptions and the gap between planning artifacts and execution reality, are still being explored (see [BMAD vs Pennyfarthing](bmad-vs-pennyfarthing.md) and [Gap Analysis](bmad-pennyfarthing-gap-analysis.md)).
+BMAD has problems beyond the eight listed here. Some — like the single flat workflow type (3c), the absence of automated handoffs (3b), and the lack of programmatic validation — Pennyfarthing has already solved. Others, like the organizational model assumptions and the gap between planning artifacts and execution reality, are still being explored (see [BMAD vs Pennyfarthing](bmad-vs-pennyfarthing.md); [Gap Analysis](bmad-pennyfarthing-gap-analysis.md)). A cross-project analysis of BMAD-generated architecture artifacts found five categories of failure where the planning outputs diverged from industry consensus, requiring human-led research to validate and correct [@pursifull_2026f].
 
 This document is about the **lifecycle problem** specifically — not a catalog of everything wrong with spec-driven development as practiced by BMAD. BMAD was the incubator. It introduced the core ideas — agent personas, stepped workflows, structured planning artifacts — and we continue to lift innovations from it. But Brian Madison's orientation as a PMP-style process thinker constrains what BMAD can become. The framework optimizes for upfront planning discipline at the expense of execution feedback, runtime adaptation, and operational composability. Those are the gaps this proposal addresses.
 
@@ -410,8 +569,9 @@ This document is about the **lifecycle problem** specifically — not a catalog 
 | **C. Fractal Lifecycle (Scale-Invariant)** | Same pattern at product, feature, and spike scale |
 | **D. Research Spike as First-Class Lifecycle** | Structured exploration with fold-back |
 | **E. Composable Process Architecture** | Variants, overlays, and chains |
+| **F. Context-Aware Project Intelligence** | Indexed retrieval, knowledge graphs, context budget management |
 | **Why This Matters for Spec-Driven AI** | Operational scaling with AI agents |
-| **What We're Proposing to Build** | Four phased implementation tracks |
+| **What We're Proposing to Build** | Five phased implementation tracks |
 | **Success Metrics** | Measurable targets per capability |
 | **What We're NOT Doing** | Scope boundaries |
 | **Risks and Open Questions** | Mitigations and open decisions |
@@ -608,6 +768,8 @@ graph TD
     style FOLD fill:#00695c,stroke:#003d33,color:#fff
 ```
 
+This model has already been validated. The OCSF normalization spike [@pursifull_2026d; @pursifull_2026e] followed this lifecycle retroactively, producing a charter, structured findings, a review record, and a fold-back document. The spike produced ~370KB of documentation; a charter written upfront would have kept output tighter by constraining scope to hypothesis-driven exploration. Key lesson: "Keep spike outputs as findings, not feature-lifecycle artifacts — the spike feeds the feature lifecycle, it doesn't replace it" [@pursifull_2026d].
+
 **Spike properties in an AI-agent context:**
 - **Bootstrappable from parent project** — AI agent reads parent PRD/architecture, creates spike context automatically
 - **Parallel path exploration** — AI agents can execute multiple prototype paths concurrently (A/B/C)
@@ -657,6 +819,52 @@ graph TD
 | **Variant** | Inherits a base workflow, overrides scope/speed/depth. Improvements to base are inherited. | Feature Brief inherits Product Brief, reduces depth |
 | **Overlay** | Attaches additional steps/checks to any workflow. Non-destructive. | Compliance overlay adds regulatory checks to Architecture |
 | **Chain** | Sequences workflows. Output of one becomes input of next. | Spike → Feature Lifecycle → Implementation |
+
+### F. Context-Aware Project Intelligence
+
+Section 8 documents the problem: flat-file context collapses under its own weight as projects grow, and the effective performance ceiling is ~50% of the raw context window [@an_etal_2024]. Pennyfarthing's structural sharding (Prime, sprint shards, session extraction) buys time but doesn't solve retrieval. The vision is a layered context intelligence system:
+
+```mermaid
+graph TD
+    subgraph "Layer 1: Structural (exists today)"
+        SHARD["Sprint Sharding<br/><small>Epic-level YAML files,<br/>index references</small>"]
+        PRIME["Tiered Context (Prime)<br/><small>FULL → REFRESH → HANDOFF → MINIMAL<br/>based on turn depth</small>"]
+        SESSION["Session Extraction<br/><small>Header + last assessment,<br/>not full history</small>"]
+    end
+
+    subgraph "Layer 2: Indexed Retrieval (next)"
+        EMBED["Artifact Embeddings<br/><small>Embed stories, research,<br/>ADRs, architecture sections</small>"]
+        SEARCH["Semantic Search<br/><small>Agent queries for relevant<br/>context at story start</small>"]
+        RERANK["Relevance Reranking<br/><small>Score retrieved artifacts<br/>against current task</small>"]
+    end
+
+    subgraph "Layer 3: Relationship-Aware (future)"
+        GRAPH["Project Knowledge Graph<br/><small>Story → Epic → ADR →<br/>Architecture → Research</small>"]
+        TRAVERSE["Dependency Traversal<br/><small>Walk graph to find<br/>affected artifacts</small>"]
+        BUDGET["Context Budget Monitor<br/><small>Track effective utilization<br/>per agent per turn</small>"]
+    end
+
+    SHARD --> EMBED
+    PRIME --> SEARCH
+    SESSION --> SEARCH
+    EMBED --> SEARCH --> RERANK
+    RERANK --> GRAPH
+    GRAPH --> TRAVERSE --> BUDGET
+
+    style SHARD fill:#2e7d32,stroke:#005005,color:#fff
+    style PRIME fill:#2e7d32,stroke:#005005,color:#fff
+    style SESSION fill:#2e7d32,stroke:#005005,color:#fff
+    style EMBED fill:#1565c0,stroke:#003c8f,color:#fff
+    style SEARCH fill:#1565c0,stroke:#003c8f,color:#fff
+    style RERANK fill:#1565c0,stroke:#003c8f,color:#fff
+    style GRAPH fill:#7b1fa2,stroke:#4a0072,color:#fff
+    style TRAVERSE fill:#7b1fa2,stroke:#4a0072,color:#fff
+    style BUDGET fill:#7b1fa2,stroke:#4a0072,color:#fff
+```
+
+**Layer 1 (structural — exists)** keeps the context-to-work ratio manageable for small projects. **Layer 2 (indexed retrieval)** lets agents find the right context without loading everything — the difference between "load all 200 artifacts" and "retrieve the 5 that matter." **Layer 3 (relationship-aware)** enables the ripple analysis from section 6 and the drift detection from section 5 to operate over the full project graph, not just the artifacts that happen to be loaded.
+
+The goal metric is **context to first useful turn**: the percentage of the effective context window consumed by project overhead before the agent begins productive work. Today with Pennyfarthing's structural sharding, this is ~15–25% for small projects. The target is to hold it below 20% regardless of project scale — which requires retrieval, not just sharding.
 
 ---
 
@@ -715,6 +923,16 @@ The fractal lifecycle isn't organizational scaling (SAFe's "teams of teams"). It
 | **Chain composition** | Engine enhancement | Sequence workflows, output→input piping |
 | **Scope parameterization** | Engine enhancement | Same workflow at product/feature/component/spike scale |
 
+### Phase 5: Context Intelligence
+
+| Capability | Type | Purpose |
+|---|---|---|
+| **Artifact embedding pipeline** | Infrastructure | Embed stories, research, ADRs, architecture sections into vector store on write |
+| **Semantic context retrieval** | Engine enhancement | Agent queries for relevant context at story start; retrieve top-*k* artifacts by relevance |
+| **Project knowledge graph** | Infrastructure | Story → Epic → ADR → Architecture → Research relationship graph; enables dependency traversal |
+| **Context budget monitor** | Instrumentation | Track effective context utilization per agent per turn; alert when overhead exceeds threshold |
+| **Relevance reranking** | Engine enhancement | Score retrieved artifacts against current task; fill context window with highest-value information first |
+
 ---
 
 ## Success Metrics
@@ -727,6 +945,9 @@ The fractal lifecycle isn't organizational scaling (SAFe's "teams of teams"). It
 | Spec-to-implementation drift detection | Manual/ad-hoc | Automated per-release |
 | Spike fold-back to parent project | Informal | Structured with standard deliverables |
 | Requirement change impact tracing | None | Automated downstream artifact flagging |
+| Process quality (gate compliance) | 43% without gates [@pursifull_2026a] | 100% with declarative gate enforcement |
+| Context to first useful turn | ~30% overhead (15 epics, sharded) | <20% regardless of project scale |
+| Effective context utilization | No monitoring | Instrumented per-agent, per-turn tracking |
 
 ---
 
@@ -746,7 +967,7 @@ The fractal lifecycle isn't organizational scaling (SAFe's "teams of teams"). It
 |---|---|
 | Over-engineering: composability adds complexity to BikeLane engine | Start with variants (YAML inheritance) before overlays (runtime attachment) |
 | Scope creep: "complete lifecycle" could mean anything | Phase the work. Close the loop first (Phase 1), then add inputs, then fractal, then composability |
-| AI agent context limits: fractal context (product + feature + spike) may exceed windows | BikeLane already manages context budgets per agent; fractal scoping needs the same discipline |
+| AI agent context limits: fractal context (product + feature + spike) may exceed windows | BikeLane already manages context budgets per agent; fractal scoping needs the same discipline. Structural sharding (section 8) buys time; indexed retrieval is the long-term answer |
 | Change propagation could be noisy | Drift assessment should classify changes as intentional (accepted drift) vs accidental (needs correction) |
 
 | Open Question | Who Decides |
@@ -772,6 +993,9 @@ This proposal draws on established frameworks:
 | Continuous feedback loops | DevOps feedback taxonomy | Multiple feedback types feeding back to appropriate lifecycle phase |
 | WSJF prioritization | SAFe | Triage and prioritize inputs from multiple channels |
 | Process inheritance | Object-oriented design patterns | Workflow variants inherit from base, override as needed |
+| Context rot / degradation | [@chroma_research_2024; @hsieh_etal_2024] | Context budget management; effective ceiling at ~50% of window |
+| RAG for project knowledge | [@lewis_etal_2020; @guu_etal_2020] | Indexed retrieval over project artifacts for selective context loading |
+| Knowledge graphs for traceability | Neo4j / property graph patterns | Relationship-aware context; dependency traversal for ripple analysis |
 
 ---
 
@@ -781,4 +1005,13 @@ This proposal draws on established frameworks:
 2. **Discovery on spike lifecycle** — BA deep-dive on what "good spike deliverables" look like for our AI-driven context
 3. **Prototype workflow inheritance in BikeLane** — Can we make a YAML variant that extends a base workflow?
 4. **Map the "LEARN" phase agents** — Which existing agents (BA, Architect, SM) own which feedback loop steps?
-5. **Write the full PRD** — After brief is accepted, use the `prd` stepped workflow to formalize requirements
+5. **Context budget instrumentation** — Instrument Prime to measure effective context utilization per agent, per turn. Establish baseline for context-to-first-useful-turn metric
+6. **Spike: retrieval architecture** — Evaluate embedding + vector store options (local vs. hosted) for project artifact retrieval. Timebox to 1 sprint. Produce findings for fold-back (following the spike lifecycle model validated in @pursifull_2026d)
+7. **Write the full PRD** — After brief is accepted, use the `prd` stepped workflow to formalize requirements
+
+---
+
+## References
+
+::: {#refs}
+:::
