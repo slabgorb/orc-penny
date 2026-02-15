@@ -33,9 +33,11 @@ stories:
       no nesting passes immediately.
     points: 2
     priority: P2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-15'
   - id: 107-3
     jira: MSSCI-15011
     title: Gate authoring guide and validation command
