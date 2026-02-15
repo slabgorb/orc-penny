@@ -2,7 +2,7 @@
 
 **Initiative:** Evolving BikeLane's product lifecycle into a composable, tiered, recursive engine
 **Started:** 2026-02-14
-**Status:** Research complete. Design inputs in progress.
+**Status:** Protocol v0.1 drafted. Ready for team review or RFC authoring.
 **Agent:** BA (Avasarala) — requirements discovery phase
 **RFC Ticket:** MSSCI-15086
 
@@ -21,10 +21,10 @@
 | 7 | `lifecycle-research-track5.md` | Track 5 research: product decomposition, process simulations (38 sources) | Done |
 | 8 | `lifecycle-research-synthesis.md` | Unified synthesis: hypothesis validation, 9 convergent principles, gap-to-mechanism mapping | Done |
 | 9 | `lifecycle-tier-work-products.md` | Tier work product definitions: what each tier produces and consumes | **Draft complete** |
-| 10 | `lifecycle-tier-definitions.md` | Formal tier definitions: agents, cadences, decisions, boundaries | **Not started** |
-| 11 | `lifecycle-vsm-mapping.md` | VSM S1-S5 mapped to BikeLane components at each tier | **Not started** |
-| 12 | `lifecycle-channel-taxonomy.md` | Channel types, message schema, trigger rules | **Not started** |
-| 13 | `lifecycle-tier-comm-protocol.md` | The tier communication protocol design | **Not started** |
+| 10 | `lifecycle-tier-definitions.md` | Formal tier definitions + VSM S1-S5 mapping (Inputs B+C combined) | **Draft complete** |
+| 11 | *(merged into #10)* | VSM mapping merged into tier definitions | N/A |
+| 12 | *(merged into #13)* | Channel taxonomy is Part I of the protocol | N/A |
+| 13 | `lifecycle-tier-comm-protocol.md` | Full protocol: channels, messages, triggers, flows, implementation mapping | **Draft complete** |
 | 14 | ADR-0027 (or next) | Architecture decision record for the composable lifecycle | **Not started** |
 | 15 | RFC (MSSCI-15086) | Full RFC for team review | **Not started** |
 
@@ -65,11 +65,8 @@ The tier communication protocol requires six inputs developed in sequence. The c
 | # | Input | Depends On | Status | Document |
 |---|-------|------------|--------|----------|
 | **A** | **Tier Work Products** | Research (done) | **Draft complete** | `lifecycle-tier-work-products.md` |
-| B | Tier Definitions | A | Not started | `lifecycle-tier-definitions.md` |
-| C | VSM-to-BikeLane Map | A, B | Not started | `lifecycle-vsm-mapping.md` |
-| D | Channel Type Taxonomy | A, B, C | Not started | `lifecycle-channel-taxonomy.md` |
-| E | Message Schema | D | Not started | (part of channel taxonomy) |
-| F | Trigger & Cadence Rules | D | Not started | (part of channel taxonomy) |
+| B+C | Tier Definitions + VSM Map | A | **Draft complete** | `lifecycle-tier-definitions.md` |
+| D+E+F | Channel Taxonomy + Schema + Triggers | A, B+C | **Draft complete** | `lifecycle-tier-comm-protocol.md` (Parts I-III) |
 
 **Input A (Tier Work Products)** is the foundation. It answers:
 - What specification artifacts does each tier produce?
