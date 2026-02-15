@@ -374,3 +374,11 @@ stories:
     priority: p2
     status: backlog
     workflow: tdd
+  - id: 91-29
+    title: 'Bug: archive_epic does not populate completed_stories in sprint completed file'
+    points: 2
+    priority: p1
+    status: done
+    workflow: trivial
+    completed: '2026-02-14'
+    type: bug

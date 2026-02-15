@@ -9,29 +9,35 @@ sprint:
   status: active
 
 completed_epics:
-  - MSSCI-14453
-  - MSSCI-14465
-  - MSSCI-14469
-  - MSSCI-14659
-  - MSSCI-14665
-  - MSSCI-14673
-  - MSSCI-14678
-  - MSSCI-14580
-  - MSSCI-14629
-  - MSSCI-14697
-  - MSSCI-14758
-  - MSSCI-14784
-  - MSSCI-14819
-  - MSSCI-14876
-  - MSSCI-14938
-  - MSSCI-14952
-  - MSSCI-15015
-  - MSSCI-14951
-  - MSSCI-14999
-  - MSSCI-15003
-  - MSSCI-14662
-  - MSSCI-15008
-  - MSSCI-15012
+  # Early sprint completions (from root completed file)
+  - MSSCI-14453   # epic-80 — Code Markers Tool
+  - MSSCI-14465   # epic-83 — Complexity + Dependencies Tools
+  - MSSCI-14469   # epic-84 — Composite Health Score
+  - MSSCI-14659   # epic-94 — Primary Portrait Thinking
+  - MSSCI-14665   # epic-95 — Workflow Config & Observation
+  - MSSCI-14673   # epic-96 — Cyclist Tandem UI
+  - MSSCI-14678   # epic-97 — CLI Tandem & Shipping
+  # Mid/late sprint completions (from archive completed file)
+  - MSSCI-14580   # epic-92 — 2pTDD Workflow
+  - MSSCI-14629   # epic-93 — Benchmarking Package
+  - MSSCI-14697   # epic-98 — Safe Install
+  - MSSCI-14758   # epic-100 — UI Tweak Bucket
+  - MSSCI-14784   # epic-87 — Repo Topology
+  - MSSCI-14819   # epic-101 — BikeRack Mode
+  - MSSCI-14876   # epic-102 — BikeRack Follow-up
+  - MSSCI-14938   # epic-99 — Sprint CLI Bug Fixes
+  - MSSCI-14952   # epic-104 — /bc CLI Panel Focus
+  - epic-88       # Themes Expansion
+  - epic-89       # Themes Expansion II
+  - td            # Technical Debt
+  # Late sprint completions (from develop)
+  - MSSCI-15015   # epic-109 — Sprint Panel Enhancements
+  - MSSCI-14951   # epic-103 — /bc CLI Panel Focus
+  - MSSCI-14999   # epic-105 — Handoff CLI
+  - MSSCI-15003   # epic-106 — Gate Subagent Runner
+  - MSSCI-14662   # epic-90 — Confidence Circuit Breaker
+  - MSSCI-15008   # epic-107 — Gate Schema Validation
+  - MSSCI-15012   # epic-108 — Gate File Migration
 completed_stories:
   - id: 83-1
     epic: MSSCI-14465
@@ -284,7 +290,7 @@ completed_stories:
     title: "Normalize stepped workflow output paths and de-collision document names"
     points: 3
     completed: 2026-02-11
-  # Epic 98 — Safe Install, Upgrade, and Namespace Isolation (13 pts done)
+  # Epic 98 — Safe Install, Upgrade, and Namespace Isolation (25 pts done)
   - id: 98-1
     epic: MSSCI-14697
     title: "Version sentinel file and auto-update detection"
@@ -300,6 +306,26 @@ completed_stories:
     title: "Refactor update.ts inline migrations to migration files"
     points: 3
     completed: 2026-02-12
+  - id: 98-4
+    epic: MSSCI-14697
+    title: "Prefix built-in skills and commands with pf-"
+    points: 5
+    completed: 2026-02-14
+  - id: 98-5
+    epic: MSSCI-14697
+    title: "Sprint shard migration as versioned migration"
+    points: 3
+    completed: 2026-02-14
+  - id: 98-6
+    epic: MSSCI-14697
+    title: "Protective symlink pre-flight checks"
+    points: 2
+    completed: 2026-02-14
+  - id: 98-7
+    epic: MSSCI-14697
+    title: "Update agent definitions and docs for pf- skill references"
+    points: 2
+    completed: 2026-02-14
   - id: 98-8
     epic: MSSCI-14697
     title: "Fix Cyclist false-positive detection in CLI mode"
@@ -348,6 +374,11 @@ completed_stories:
     points: 2
     completed: 2026-02-12
     pr: 840
+  - id: td-4
+    epic: td
+    title: Shard completed archive like active sprint (index + per-epic refs)
+    points: 3
+    completed: '2026-02-14'
   - id: 109-1
     epic: MSSCI-15015
     title: Story click populates AC and Workflow panels
@@ -397,7 +428,7 @@ completed_stories:
     epic: MSSCI-14951
     title: Panel persistence (extend ERB mechanism)
     points: 2
-    completed: "2026-02-14"
+    completed: '2026-02-14'
   - id: '103-9'
     epic: MSSCI-14951
     title: Panel header chrome (current panel indicator, Nerd Font icons)
@@ -432,7 +463,7 @@ completed_stories:
     epic: MSSCI-14951
     title: AuditLogPanel (scrolling event log)
     points: 1
-    completed: "2026-02-14"
+    completed: '2026-02-14'
   - id: '103-16'
     epic: MSSCI-14951
     title: BackgroundPanel (task status)
@@ -457,12 +488,12 @@ completed_stories:
     epic: MSSCI-14951
     title: TUI launcher entry point (just tui)
     points: 2
-    completed: "2026-02-14"
+    completed: '2026-02-14'
   - id: 103-21
     epic: MSSCI-14951
     title: Add git fetch cooldown to prevent frequent network calls during active sessions
     points: 1
-    completed: "2026-02-14"
+    completed: '2026-02-14'
   - id: 105-1
     epic: MSSCI-14999
     title: Create handoff-cli.sh with resolve-gate and complete-phase
@@ -503,19 +534,19 @@ completed_stories:
     title: Gate file discovery and resolution
     points: 1
     completed: '2026-02-15'
-  - id: "90-1"
+  - id: '90-1'
     epic: MSSCI-14662
-    title: "Spike: define confidence circuit breaker pattern (DONE — Gate PRD)"
+    title: 'Spike: define confidence circuit breaker pattern (DONE — Gate PRD)'
     points: 2
     completed: '2026-02-13'
-  - id: "90-2"
+  - id: '90-2'
     epic: MSSCI-14662
-    title: "Implement SM confidence gate file"
+    title: Implement SM confidence gate file
     points: 2
     completed: '2026-02-15'
-  - id: "90-3"
+  - id: '90-3'
     epic: MSSCI-14662
-    title: "Evaluate and document results"
+    title: Evaluate and document results
     points: 1
     completed: '2026-02-15'
   - id: 107-1

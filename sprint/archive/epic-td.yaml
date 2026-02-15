@@ -1,0 +1,44 @@
+id: td
+title: Technical Debt & Maintenance
+description: |
+  Internal refactoring and improvement tasks that enhance system
+  robustness, maintainability, and architecture without directly
+  delivering end-user features.
+priority: P2
+status: done
+repos: orchestrator
+points: 0
+stories:
+  - id: td-4
+    title: Shard completed archive like active sprint (index + per-epic refs)
+    description: |
+      The completed archive (sprint/archive/sprint-2606-completed.yaml) is a flat
+      monolith that duplicates story data and causes merge conflicts. It should
+      follow the same index+shard pattern as the active sprint:
+
+      - current-sprint.yaml indexes epic refs
+      - epic-*.yaml shards hold stories
+
+      The finish scripts in pennyfarthing_scripts/sprint/ need to be updated to
+      write completed stories into shards rather than appending to a flat file.
+
+      Refactor:
+      1. Create archive-sprint-{N}-completed.yaml as an index
+      2. Move each completed epic's stories into sprint/archive/epic-{ref}.yaml
+      3. Update archive_epic.py to write story lists to shards
+      4. Ensure archive completeness and test merge conflict resolution
+
+      Key files:
+      - sprint/archive/sprint-2606-completed.yaml (current monolith to refactor)
+      - sprint/current-sprint.yaml (index pattern to follow)
+      - sprint/epic-*.yaml (shard pattern to follow)
+      - pennyfarthing_scripts/sprint/archive_epic.py (write path)
+      - pennyfarthing_scripts/sprint/story_finish.py (calls archive_epic)
+    points: 3
+    priority: P2
+    status: done
+    repos: orchestrator
+    workflow: tdd
+    completed: '2026-02-14'
+    type: refactor
+completed: '2026-02-14'
