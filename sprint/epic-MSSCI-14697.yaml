@@ -50,9 +50,10 @@ stories:
     title: Cleanup migration for backward-compat symlinks
     points: 2
     priority: p2
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-02-15'
     type: chore
   - id: 98-14
     jira: MSSCI-15069
