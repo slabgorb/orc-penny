@@ -3,7 +3,7 @@ type: epic
 title: BikeRack Panel Interactivity
 description: Interactive panel features for BikeRack. Sprint/AC/Workflow panels respond to clicks and provide contextual data. Copy helpers for MSSCI keys.
 priority: P1
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-15015
 stories:
@@ -11,7 +11,9 @@ stories:
     title: Story click populates AC and Workflow panels
     points: 3
     priority: P0
-    status: backlog
+    status: canceled
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-14'
     workflow: tdd
   - id: 109-2
     title: Copy-to-clipboard icon for MSSCI keys in SprintPanel
@@ -20,3 +22,4 @@ stories:
     status: done
     workflow: tdd
     completed: '2026-02-14'
+completed: '2026-02-15'
