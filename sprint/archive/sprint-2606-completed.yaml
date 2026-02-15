@@ -28,6 +28,7 @@ completed_epics:
   - MSSCI-15015
   - MSSCI-14951
   - MSSCI-14999
+  - MSSCI-15003
 completed_stories:
   - id: 83-1
     epic: MSSCI-14465
@@ -478,4 +479,24 @@ completed_stories:
     epic: MSSCI-14999
     title: Replace handoff-marker.sh with gate-aware Python CLI
     points: 2
+    completed: '2026-02-15'
+  - id: 106-1
+    epic: MSSCI-15003
+    title: Create tests-pass gate file with schema
+    points: 1
+    completed: '2026-02-15'
+  - id: 106-2
+    epic: MSSCI-15003
+    title: Gate subagent runner with GATE_RESULT contract
+    points: 3
+    completed: '2026-02-15'
+  - id: 106-3
+    epic: MSSCI-15003
+    title: Workflow YAML gate.file integration
+    points: 2
+    completed: '2026-02-15'
+  - id: 106-4
+    epic: MSSCI-15003
+    title: Gate file discovery and resolution
+    points: 1
     completed: '2026-02-15'

@@ -3,7 +3,7 @@ type: epic
 title: Gate Files & First Migration
 description: 'Create gate file schema and first gate file (tests-pass.md). Gate subagent runner spawns haiku Task, returns GATE_RESULT. Workflow YAML supports gate.file references. TDD workflow uses file-based gate for green phase.'
 priority: P1
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-15003
 stories:
@@ -49,9 +49,11 @@ stories:
       coexist during migration period.
     points: 2
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-15'
   - id: 106-4
     jira: MSSCI-15007
     title: Gate file discovery and resolution
@@ -70,3 +72,4 @@ stories:
     workflow: tdd
     completed: '2026-02-15'
 initiative: gate-extraction
+completed: '2026-02-15'
