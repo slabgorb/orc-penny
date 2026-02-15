@@ -18,9 +18,11 @@ stories:
       files/lines, uncommitted files, with recovery guidance.
     points: 1
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-02-15'
   - id: 106-2
     jira: MSSCI-15005
     title: Gate subagent runner with GATE_RESULT contract
