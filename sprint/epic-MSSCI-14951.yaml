@@ -230,8 +230,10 @@ stories:
       FRs: FR15
     points: 1
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     workflow: tdd
+    completed: '2026-02-14'
     blocked_by:
       - '103-5'
   - id: '103-15'
