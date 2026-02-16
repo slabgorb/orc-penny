@@ -283,9 +283,10 @@ Cyclist visualizes both Tandem dialogues and native team activity.
 | 86-12 | Cyclist: Native team panel | 5 | P2 | 3 | 86-10 |
 | 86-14 | Agent behavior: team-mode protocol | 2 | P1 | 2 | 86-8 |
 | 86-15 | Team-enabled workflow templates | 2 | P1 | 2 | 86-9, 86-14 |
+| 86-16 | Port dialogue manager to Python | 2 | P0 | 1 | 86-3 |
 
-**Total: 39 points (14 stories)**
-**Phase 1: 15 points (6 stories) — delivers value without native teams**
+**Total: 41 points (15 stories)**
+**Phase 1: 17 points (7 stories) — delivers value without native teams**
 **Phase 2: 16 points (6 stories) — phase-scoped teams for interactive users**
 **Phase 3: 8 points (2 stories) — Cyclist visualization**
 
@@ -345,7 +346,7 @@ Cyclist visualizes both Tandem dialogues and native team activity.
 
 **Key files:**
 - `.session/{story-id}-dialogue.md` (new file type)
-- `pennyfarthing-dist/scripts/core/dialogue-manager.sh` (new)
+- `pennyfarthing_scripts/consultation/dialogue_manager.py` (ported from TS/bash in 86-16)
 
 ---
 
@@ -399,8 +400,36 @@ Cyclist visualizes both Tandem dialogues and native team activity.
 - [ ] Target: consultation overhead < 25% of baseline story token cost
 
 **Key files:**
-- `pennyfarthing-dist/scripts/core/dialogue-manager.sh` (metrics)
+- `pennyfarthing_scripts/consultation/dialogue_manager.py` (metrics — ported in 86-16)
 - `.session/{story-id}-dialogue.md` (summary section)
+
+---
+
+### 86-16: Port dialogue manager to Python (2 pts)
+
+**What:** Replace the TypeScript + bash dialogue manager (86-3) with a Python implementation in `pennyfarthing_scripts/consultation/`. The TS module in `packages/core/src/consultation/dialogue-manager.ts` and the 322-line bash wrapper `dialogue-manager.sh` duplicate logic across two languages. Python consolidates into one implementation consistent with the existing `pennyfarthing_scripts/` CLI tooling (sprint, jira, session, hooks).
+
+**Acceptance Criteria:**
+- [ ] `pennyfarthing_scripts/consultation/` package with `dialogue_manager.py` implementing: create, format, parse, summary, append, update_outcome, refresh_summary, archive
+- [ ] `pf consultation` Click CLI group with subcommands: `init`, `append`, `outcome`, `summarize`, `archive` (same interface as the shell wrapper)
+- [ ] All 6 ACs from 86-3 still pass — same file format, same behavior, same output
+- [ ] Tests ported to pytest in `pennyfarthing_scripts/tests/test_dialogue_manager.py`
+- [ ] `story_finish.py` archival step unchanged (already Python, uses `shutil.copy2`)
+- [ ] Remove `packages/core/src/consultation/dialogue-manager.ts` and test file
+- [ ] Remove `pennyfarthing-dist/scripts/core/dialogue-manager.sh`
+- [ ] Agent definitions that reference `dialogue-manager.sh` updated to use `pf consultation` commands
+
+**Key files:**
+- `pennyfarthing_scripts/consultation/__init__.py` (new)
+- `pennyfarthing_scripts/consultation/cli.py` (new — Click commands)
+- `pennyfarthing_scripts/consultation/dialogue_manager.py` (new — core logic)
+- `pennyfarthing_scripts/tests/test_dialogue_manager.py` (new — pytest)
+- `pennyfarthing_scripts/cli.py` (register `consultation` group)
+- `packages/core/src/consultation/dialogue-manager.ts` (delete)
+- `packages/core/src/consultation/dialogue-manager.test.ts` (delete)
+- `pennyfarthing-dist/scripts/core/dialogue-manager.sh` (delete)
+
+**Dependencies:** 86-3 (done)
 
 ---
 
