@@ -543,3 +543,108 @@ completed_stories:
     title: Remove handoff subagents and inline fallback
     points: 2
     completed: '2026-02-15'
+  - id: 40-1
+    epic: MSSCI-12414
+    title: Define scale levels
+    points: 2
+    completed: '2026-02-16'
+  - id: 40-2
+    epic: MSSCI-12414
+    title: Quick-spec workflow
+    points: 3
+    completed: '2026-02-16'
+  - id: 40-3
+    epic: MSSCI-12414
+    title: Enterprise workflow hooks
+    points: 3
+    completed: '2026-02-16'
+  - id: 40-4
+    epic: MSSCI-12414
+    title: Brownfield discovery command
+    points: 5
+    completed: '2026-02-16'
+  - id: 40-5
+    epic: MSSCI-12414
+    title: Brownfield convention adoption
+    points: 2
+    completed: '2026-02-16'
+  - id: 40-6
+    epic: MSSCI-12414
+    title: PRD import support
+    points: 2
+    completed: '2026-02-16'
+  - id: 98-9
+    epic: MSSCI-14697
+    title: Fix uninstall data loss — replace rmSync with cleanManagedEntries for commands and skills
+    points: 2
+    completed: '2026-02-14'
+  - id: 98-10
+    epic: MSSCI-14697
+    title: Fix settings symlink crash on existing real file
+    points: 2
+    completed: '2026-02-14'
+  - id: 98-11
+    epic: MSSCI-14697
+    title: Settings.local.json shared merge model for multi-framework coexistence
+    points: 5
+    completed: '2026-02-14'
+  - id: 98-12
+    epic: MSSCI-14697
+    title: Git hook chaining with .d/ dispatcher pattern
+    points: 3
+    completed: '2026-02-14'
+  - id: 98-13
+    epic: MSSCI-14697
+    title: Cleanup migration for backward-compat symlinks
+    points: 2
+    completed: '2026-02-15'
+  - id: 98-14
+    epic: MSSCI-14697
+    title: Remove dead copy-mode code paths
+    points: 2
+    completed: "2026-02-14"
+  - id: 98-15
+    epic: MSSCI-14697
+    title: Remove TTY panel and node-pty dependency
+    points: 2
+    completed: '2026-02-14'
+  - id: 98-16
+    epic: MSSCI-14697
+    title: Absorb @pennyfarthing/shared and @pennyfarthing/benchmark into core
+    points: 3
+    completed: '2026-02-14'
+  - id: 98-17
+    epic: MSSCI-14697
+    title: Move Cyclist web server and API layer into core
+    points: 8
+    completed: '2026-02-14'
+  - id: 98-18
+    epic: MSSCI-14697
+    title: Move React UI build and static assets into core
+    points: 5
+    completed: '2026-02-14'
+  - id: 98-19
+    epic: MSSCI-14697
+    title: Add pennyfarthing web and pennyfarthing bikerack CLI commands with lazy loading
+    points: 3
+    completed: '2026-02-16'
+  - id: 98-20
+    epic: MSSCI-14697
+    title: Extract Electron shell to packages/electron with BikeShow entry point
+    points: 5
+    completed: '2026-02-16'
+  - id: 98-21
+    epic: MSSCI-14697
+    title: Standalone Electron distribution via GitHub releases
+    points: 3
+    completed: '2026-02-16'
+  - id: 98-22
+    epic: MSSCI-14697
+    title: v11 migration automation — detect and remove old multi-package installs
+    points: 3
+    completed: '2026-02-15'
+  - id: 98-23
+    epic: MSSCI-14697
+    title: Implement real OTLP integrations for core server stubs
+    points: 5
+    completed: '2026-02-16'
