@@ -1,3 +1,2 @@
-# Tech Writer Agent Decisions
+# tech-writer decisions
 
-*No decisions recorded yet.*

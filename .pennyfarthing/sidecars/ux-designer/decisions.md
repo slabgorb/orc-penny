@@ -1,3 +1,2 @@
-# UX Designer Agent Decisions
+# ux-designer decisions
 
-*No decisions recorded yet.*

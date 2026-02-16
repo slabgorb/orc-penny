@@ -1,3 +1,2 @@
-# UX Designer Agent Gotchas
+# ux-designer gotchas
 
-*No gotchas recorded yet.*

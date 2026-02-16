@@ -1,3 +1,2 @@
-# DevOps Agent Decisions
+# devops decisions
 
-*No decisions recorded yet.*

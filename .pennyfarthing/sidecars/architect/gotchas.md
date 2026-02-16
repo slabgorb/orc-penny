@@ -1,3 +1,2 @@
-# Architect Agent Gotchas
+# architect gotchas
 
-*No gotchas recorded yet.*
