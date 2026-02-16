@@ -40,8 +40,6 @@ research_references:
   url: https://arxiv.org/abs/2502.00561
   key_insight: Four-level measurement framework; construct validity; inter-rater reliability
 epics:
-  # Note: These are planned epics — shard files do not exist yet.
-  # Shards will be created when work begins on each epic.
   - MSSCI-12792
   - epic-42
   - epic-43
