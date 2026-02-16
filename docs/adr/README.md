@@ -56,6 +56,11 @@ What becomes easier or more difficult because of this change?
 | [0019](./0019-vscode-extension-deprecation.md) | VS Code Extension Deprecation | Accepted | 2026-02-02 |
 | [0020](./0020-benchmark-package-extraction.md) | Benchmark Package Extraction | Proposed | 2026-02-07 |
 | [0021](./0021-safe-install-upgrade-path.md) | Safe Install, Upgrade, and Namespace Isolation | Proposed | 2026-02-09 |
+| [0022](./0022-sprint-shard-validation.md) | Sprint Shard Validation and Reference Integrity | Accepted | 2026-02-10 |
+| [0023](./0023-cyclist-env-var-detection.md) | Cyclist Detection via Environment Variable | Accepted | 2026-02-10 |
+| [0024](./0024-bikerack-mode.md) | BikeRack Mode — Decoupled WheelHub Dashboard | Accepted | 2026-02-11 |
+| [0025](./0025-script-first-gate-extraction.md) | Script-First Gate Extraction | Accepted | 2026-02-12 |
+| [0026](./0026-single-package-consolidation.md) | Single Package Consolidation | Accepted | 2026-02-13 |
 
 ## Creating a New ADR
 

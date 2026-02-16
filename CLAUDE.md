@@ -157,7 +157,7 @@ Electron app: React 19, Tailwind v4, shadcn/ui, dockview-react panels.
 
 **BikeRack:** Standalone panel viewer mode — Dockview layout with `?panel=X` routing, `--project-dir` for decoupled launch. Key files: `bikerack.ts` (entry), `BikeRackWorkspace.tsx` (layout), `StandalonePanel.tsx` (routing)
 
-**Panels:** MessagePanel (sacred center), ChangedPanel, DiffsPanel, SprintPanel, BikeLanePanel, ACPanel, AcceptanceCriteriaPanel, SettingsPanel, DebugPanel, GitPanel, BackgroundPanel, TodoPanel, AuditLogPanel, TTYPanel, WorkflowPanel, HotspotsPanel
+**Panels:** MessagePanel (sacred center), ProgressPanel, ChangedPanel, DiffsPanel, SprintPanel, BikeLanePanel, ACPanel, AcceptanceCriteriaPanel, SettingsPanel, DebugPanel, GitPanel, BackgroundPanel, TodoPanel, AuditLogPanel, WorkflowPanel, HotspotsPanel
 </info>
 
 <context>
@@ -167,11 +167,18 @@ For detailed behavior, key files, configuration, and APIs for each Cyclist compo
 
 | Component | What it is | Guide |
 |-----------|-----------|-------|
+| **BikeLane** | Workflow engine — phased, stepped, and procedural workflow orchestration | `pennyfarthing/pennyfarthing-dist/guides/bikelane.md` |
+| **BikeRack** | Standalone panel viewer for CLI-first development — WheelHub without Cyclist UI | `pennyfarthing/pennyfarthing-dist/guides/bikerack.md` |
+| **Gates** | Conditional checks blocking phase transitions until quality thresholds are met | `pennyfarthing/pennyfarthing-dist/guides/gates.md` |
+| **Handoff CLI** | Phase gate resolution, session transitions, and marker generation | `pennyfarthing/pennyfarthing-dist/guides/handoff-cli.md` |
+| **Hooks** | Claude Code hook system — session start, pre/post tool use, git hooks | `pennyfarthing/pennyfarthing-dist/guides/hooks.md` |
 | **Bell Mode** | Message queue injection via PostToolUse hook — queue messages while Claude works | `pennyfarthing/pennyfarthing-dist/guides/bell-mode.md` |
 | **Relay Mode** | Automatic agent handoff execution — skips user confirmation on HANDOFF markers | `pennyfarthing/pennyfarthing-dist/guides/relay-mode.md` |
 | **TirePump** | Context clearing system — resets Claude session, reloads agent with fresh context | `pennyfarthing/pennyfarthing-dist/guides/tirepump.md` |
 | **Prime** | Agent activation system — bootstraps agents with tiered context (identity, workflow, session) | `pennyfarthing/pennyfarthing-dist/guides/prime.md` |
 | **Reflector** | Agent-to-UI protocol — `<!-- CYCLIST:TYPE:value -->` markers drive QuickActions buttons | `pennyfarthing/pennyfarthing-dist/guides/reflector.md` |
-| **Benchmarks (JobFair)** | Persona evaluation — OCEAN trait correlation with agent task performance | `pennyfarthing/pennyfarthing-dist/guides/benchmarks.md` |
-| **BikeLane** | Workflow engine — phased, stepped, and procedural workflow orchestration | `pennyfarthing/pennyfarthing-dist/guides/bikelane.md` |
+| **Tandem Protocol** | Background observer pairing and consultation protocol for agent collaboration | `pennyfarthing/pennyfarthing-dist/guides/tandem-protocol.md` |
+| **Output Styles** | Configurable response modes (terse, verbose, teaching) | `pennyfarthing/pennyfarthing-dist/guides/output-styles.md` |
+| **Brownfield Tools** | Codebase analysis — hotspots, complexity, dead code, dependencies, health score | `pennyfarthing/pennyfarthing-dist/guides/brownfield-tools.md` |
+| **Benchmarks (JobFair)** | Persona evaluation — OCEAN trait correlation with agent task performance | `pennyfarthing/packages/benchmark/docs/benchmarks-guide.md` |
 </context>

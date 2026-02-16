@@ -5,9 +5,11 @@ description: |
   tandem: blocks, structured request/response with Sonnet partner,
   dialogue file persistence, agent tandem awareness, templates.
 
-  Phase 2 (13 pts): Native Agent Teams integration — feature detection,
-  persona injection via spawn prompts, execution_mode: team in workflow
-  YAML, gate-to-task-dependency adapter.
+  Phase 2 (16 pts): Phase-scoped native Agent Teams — feature detection,
+  lightweight teammate activation via spawn prompts, team: block on
+  workflow phases, phase-scoped lifecycle with TeammateIdle/TaskCompleted
+  hook-based gates, team-mode agent behavior protocol, team workflow
+  templates.
 
   Phase 3 (8 pts): Cyclist integration — TandemPanel for dialogue
   visualization, TeamPanel for native team status/messaging.
@@ -15,7 +17,7 @@ priority: P1
 status: planning
 repos: pennyfarthing
 jira: MSSCI-14509
-points: 36
+points: 39
 marker: infrastructure
 stories:
   - id: "86-1"
@@ -23,17 +25,20 @@ stories:
     title: "Workflow schema: tandem: block"
     points: 3
     priority: P0
-    status: planning
+    status: done
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-15'
   - id: "86-2"
     jira: MSSCI-14497
     title: "Consultation protocol implementation"
     points: 3
     priority: P0
-    status: planning
+    status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-15'
   - id: "86-3"
     jira: MSSCI-14498
     title: "Dialogue file management"
@@ -76,15 +81,15 @@ stories:
     workflow: tdd
   - id: "86-8"
     jira: MSSCI-14503
-    title: "Persona injection via spawn prompts"
-    points: 3
+    title: "Teammate activation via spawn prompts"
+    points: 2
     priority: P1
     status: planning
     repos: pennyfarthing
     workflow: tdd
   - id: "86-9"
     jira: MSSCI-14504
-    title: "Workflow schema: execution_mode: team"
+    title: "Workflow schema: team: block on phases"
     points: 3
     priority: P1
     status: planning
@@ -92,9 +97,9 @@ stories:
     workflow: tdd
   - id: "86-10"
     jira: MSSCI-14505
-    title: "Gate-to-task-dependency adapter"
+    title: "Phase-scoped team lifecycle + gate hooks"
     points: 5
-    priority: P2
+    priority: P1
     status: planning
     repos: pennyfarthing
     workflow: tdd
@@ -121,3 +126,19 @@ stories:
     status: backlog
     workflow: tdd
     type: bug
+  - id: "86-14"
+    jira: MSSCI-15109
+    title: "Agent behavior: team-mode protocol"
+    points: 2
+    priority: P1
+    status: planning
+    repos: pennyfarthing
+    workflow: tdd
+  - id: "86-15"
+    jira: MSSCI-15110
+    title: "Team-enabled workflow templates"
+    points: 2
+    priority: P1
+    status: planning
+    repos: pennyfarthing
+    workflow: tdd
