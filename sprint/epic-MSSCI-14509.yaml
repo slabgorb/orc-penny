@@ -158,8 +158,10 @@ stories:
     title: Port dialogue manager from TypeScript/bash to Python
     points: 2
     priority: P0
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     workflow: tdd
+    completed: '2026-02-16'
   - id: 86-17
     jira: MSSCI-15128
     title: 'Tandem mode portrait: ImageMagick theme variations + swap indicator'
