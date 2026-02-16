@@ -55,9 +55,11 @@ stories:
     title: "Agent tandem awareness"
     points: 3
     priority: P0
-    status: planning
+    status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-16'
   - id: "86-5"
     jira: MSSCI-14500
     title: "Tandem workflow templates"
