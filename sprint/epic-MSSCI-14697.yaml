@@ -121,8 +121,9 @@ stories:
     title: Extract Electron shell to packages/electron with BikeShow entry point
     points: 5
     priority: p2
-    status: backlog
+    status: done
     workflow: tdd
+    completed: '2026-02-16'
     type: refactor
   - id: 98-21
     jira: MSSCI-15079
@@ -142,6 +143,7 @@ stories:
     workflow: tdd
     completed: '2026-02-15'
   - id: 98-23
+    jira: MSSCI-15132
     title: Implement real OTLP integrations for core server stubs
     points: 5
     priority: p2

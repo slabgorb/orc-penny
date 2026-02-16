@@ -60,8 +60,9 @@ stories:
       YAML files. Document existing configs, gaps, and adoption plan.
     points: 2
     priority: P2
-    status: planning
+    status: in_progress
     assigned_to: michael.pursifull@1898andco.io
+    started: '2026-02-16'
     repos: pennyfarthing
   - id: 91-4
     jira: MSSCI-14514
@@ -72,8 +73,9 @@ stories:
       types, false positive handling, runtime variable exclusions.
     points: 2
     priority: P2
-    status: planning
+    status: in_progress
     assigned_to: michael.pursifull@1898andco.io
+    started: '2026-02-16'
     repos: pennyfarthing
   - id: 91-5
     jira: MSSCI-14515
@@ -189,6 +191,7 @@ stories:
     repos: pennyfarthing
     completed: '2026-02-10'
   - id: 91-14
+    jira: MSSCI-15129
     title: Workflow graph validation
     description: |
       Step transitions, reachability, dangling references. Gate markers,
@@ -198,6 +201,7 @@ stories:
     status: planning
     repos: pennyfarthing
   - id: 91-15
+    jira: MSSCI-15130
     title: Cross-entity reference validation
     description: |
       Semantic cross-refs between agents, workflows, commands, skills.
@@ -372,9 +376,11 @@ stories:
     title: 'validate-refs: differentiate native vs plugin reference sources'
     points: 2
     priority: p2
-    status: backlog
+    status: done
     workflow: tdd
+    completed: '2026-02-16'
   - id: 91-29
+    jira: MSSCI-15131
     title: 'Bug: archive_epic does not populate completed_stories in sprint completed file'
     points: 2
     priority: p1
