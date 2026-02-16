@@ -3,7 +3,7 @@ description: |
   Infrastructure cleanup and separation of concerns for maintainability.
 status: backlog
 blocked_by:
-total_points: 15
+total_points: 18
 epics: []
 standalone_stories:
   - id: 39-6
@@ -55,3 +55,11 @@ standalone_stories:
     repos: pennyfarthing
     workflow: trivial
     type: chore
+  - id: td-4
+    title: Shard completed archive like active sprint (index + per-epic refs)
+    points: 3
+    priority: p1
+    status: backlog
+    repos: orchestrator
+    workflow: trivial
+    type: refactor
