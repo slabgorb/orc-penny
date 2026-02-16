@@ -1,3 +1,8 @@
+---
+bibliography: ../references.bib
+csl: chicago-author-date.csl
+---
+
 # Tier Communication Protocol
 
 **Initiative:** Lifecycle Composition
@@ -23,7 +28,7 @@
 
 ### Channel Types
 
-Seven channel types, derived from Beer's VSM communication channels, McChrystal's shared consciousness model, and the gap analysis of the current Pennyfarthing handoff system.
+Seven channel types, derived from [@beer_1979] VSM communication channels, [@mcchrystal_etal_2015] shared consciousness model, and the gap analysis of the current Pennyfarthing handoff system.
 
 | # | Channel | Beer Equivalent | Direction | Mode | Purpose |
 |---|---------|----------------|-----------|------|---------|
@@ -227,7 +232,7 @@ scr:
 
 **Latency:** Acknowledgment within hours. Response plan within 1 business day.
 
-**Beer's algedonic rule:** An alert that is not acknowledged within its expected latency automatically escalates to the next tier up. A delivery alert ignored by the domain escalates to the product tier. This prevents the "scream into the void" failure mode.
+**[@beer_1985] algedonic rule:** An alert that is not acknowledged within its expected latency automatically escalates to the next tier up. A delivery alert ignored by the domain escalates to the product tier. This prevents the "scream into the void" failure mode.
 
 ---
 
@@ -440,14 +445,5 @@ How this protocol maps to actual tools the team will use:
 
 ## References
 
-Beer, Stafford. 1979. *The Heart of Enterprise*. London: Wiley.
-
-Beer, Stafford. 1985. *Diagnosing the System for Organizations*. Chichester: Wiley.
-
-Calder, Muffy, Mario Kolberg, Evan H. Magill, and Stephan Reiff-Marganiec. 2003. "Feature Interaction: A Critical Review and Considered Forecast." *Computer Networks* 41 (1): 115-141.
-
-McChrystal, Stanley, et al. 2015. *Team of Teams: New Rules of Engagement for a Complex World*. New York: Portfolio/Penguin.
-
-Pact Foundation. 2024. "Introduction to Pact." https://docs.pact.io/.
-
-Reinertsen, Donald G. 2009. *The Principles of Product Development Flow*. Redondo Beach, CA: Celeritas Publishing.
+::: {#refs}
+:::
