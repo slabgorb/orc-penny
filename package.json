@@ -8,14 +8,13 @@
     "postinstall": "pennyfarthing update || true"
   },
   "dependencies": {
-    "@pennyfarthing/core": "^10.4.0"
-  },
-  "peerDependencies": {
-    "@pennyfarthing/themes-realistic": ">=1.0.0"
-  },
-  "peerDependenciesMeta": {
-    "@pennyfarthing/themes-realistic": {
-      "optional": true
-    }
+    "@pennyfarthing/core": "^11.1.0",
+    "@pennyfarthing/themes-comedy": "^11.0.0",
+    "@pennyfarthing/themes-literary": "^11.0.0",
+    "@pennyfarthing/themes-mythology-fantasy": "^11.0.0",
+    "@pennyfarthing/themes-prestige-tv": "^11.0.0",
+    "@pennyfarthing/themes-scifi": "^11.0.0",
+    "@pennyfarthing/themes-realistic": "^11.0.0",
+    "@pennyfarthing/themes-superheroes": "^11.0.0"
   }
 }
