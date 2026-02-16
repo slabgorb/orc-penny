@@ -96,9 +96,11 @@ stories:
     title: "Teammate activation via spawn prompts"
     points: 2
     priority: P1
-    status: planning
+    status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-16'
   - id: "86-9"
     jira: MSSCI-14504
     title: "Workflow schema: team: block on phases"
