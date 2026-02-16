@@ -106,9 +106,11 @@ stories:
     title: "Workflow schema: team: block on phases"
     points: 3
     priority: P1
-    status: planning
+    status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     workflow: tdd
+    completed: "2026-02-16"
   - id: "86-10"
     jira: MSSCI-14505
     title: "Phase-scoped team lifecycle + gate hooks"
