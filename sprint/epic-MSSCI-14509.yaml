@@ -44,9 +44,12 @@ stories:
     title: "Dialogue file management"
     points: 2
     priority: P0
-    status: planning
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-16'
     repos: pennyfarthing
     workflow: tdd
+    completed: "2026-02-16"
   - id: "86-4"
     jira: MSSCI-14499
     title: "Agent tandem awareness"
