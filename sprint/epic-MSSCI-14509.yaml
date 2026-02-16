@@ -86,9 +86,11 @@ stories:
     title: "Feature detection: native teams capability"
     points: 2
     priority: P1
-    status: planning
+    status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-16'
   - id: "86-8"
     jira: MSSCI-14503
     title: "Teammate activation via spawn prompts"
