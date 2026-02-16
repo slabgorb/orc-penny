@@ -5,7 +5,7 @@ description: |
   Add upward scaling for larger initiatives (Level 0-4) and brownfield
   analysis for existing codebases.
 priority: P2
-status: canceled
+status: done
 repos: pennyfarthing
 jira: MSSCI-12414
 points: 17
@@ -59,3 +59,4 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
+completed: '2026-02-16'
