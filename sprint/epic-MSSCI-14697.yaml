@@ -147,5 +147,7 @@ stories:
     title: Implement real OTLP integrations for core server stubs
     points: 5
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     workflow: tdd
+    completed: '2026-02-16'
