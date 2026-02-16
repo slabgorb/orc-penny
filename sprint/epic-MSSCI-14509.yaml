@@ -160,6 +160,7 @@ stories:
     title: 'Tandem mode portrait: ImageMagick theme variations + swap indicator'
     points: 3
     priority: p2
-    status: backlog
+    status: done
     assigned_to: keith.avery@1898andco.io
     workflow: tdd
+    completed: '2026-02-16'
