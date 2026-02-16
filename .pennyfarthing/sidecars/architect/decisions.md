@@ -1,3 +1,2 @@
-# Architect Agent Decisions
+# architect decisions
 
-ADRs live in `docs/adr/`. Transient notes below; move to `docs/adr/` when finalized.

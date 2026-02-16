@@ -1,3 +1,2 @@
-# Tech Writer Agent Patterns
+# tech-writer patterns
 
-*No patterns recorded yet.*

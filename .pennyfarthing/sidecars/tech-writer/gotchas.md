@@ -1,3 +1,2 @@
-# Tech Writer Agent Gotchas
+# tech-writer gotchas
 
-*No gotchas recorded yet.*
