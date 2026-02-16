@@ -43,7 +43,7 @@ pennyfarthing/
 *-pid
 *-port
 .pennyfarthing/*.json
-.cyclist-*
+.wheelhub-*
 
 # Debug screenshots
 bikerack-*.png
