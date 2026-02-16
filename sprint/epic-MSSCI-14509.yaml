@@ -161,4 +161,5 @@ stories:
     points: 3
     priority: p2
     status: backlog
+    assigned_to: keith.avery@1898andco.io
     workflow: tdd
