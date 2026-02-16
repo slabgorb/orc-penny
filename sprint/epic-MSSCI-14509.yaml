@@ -75,9 +75,12 @@ stories:
     title: "Tandem metrics and token tracking"
     points: 2
     priority: P1
-    status: planning
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-16'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-16'
   - id: "86-7"
     jira: MSSCI-14502
     title: "Feature detection: native teams capability"
