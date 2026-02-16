@@ -5,7 +5,7 @@ description: |
   Add upward scaling for larger initiatives (Level 0-4) and brownfield
   analysis for existing codebases.
 priority: P2
-status: backlog
+status: canceled
 repos: pennyfarthing
 jira: MSSCI-12414
 points: 17
@@ -15,7 +15,7 @@ stories:
     title: Define scale levels
     points: 2
     priority: P2
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
@@ -23,7 +23,7 @@ stories:
     title: Quick-spec workflow
     points: 3
     priority: P2
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
@@ -31,7 +31,7 @@ stories:
     title: Enterprise workflow hooks
     points: 3
     priority: P2
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
@@ -39,7 +39,7 @@ stories:
     title: Brownfield discovery command
     points: 5
     priority: P2
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
@@ -47,7 +47,7 @@ stories:
     title: Brownfield convention adoption
     points: 2
     priority: P2
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
@@ -55,7 +55,7 @@ stories:
     title: PRD import support
     points: 2
     priority: P2
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
