@@ -1,3 +1,8 @@
+---
+bibliography: ../references.bib
+csl: chicago-author-date.csl
+---
+
 # Input B + C: Tier Definitions and VSM Mapping
 
 **Initiative:** Lifecycle Composition — Tier Communication Protocol
@@ -131,7 +136,7 @@ S5 at each tier mediates this tension.
 
 ## The Recursive Property
 
-The VSM mapping confirms Beer's recursion: each tier IS a viable system containing the same five functions. A domain is not just "a piece of the product" — it's a viable system with its own operations (stories), coordination (branch strategy), control (domain lead review), audit (spot checks), intelligence (technology scanning), and identity (domain architecture).
+The VSM mapping confirms [@beer_1979]'s recursion: each tier IS a viable system containing the same five functions. A domain is not just "a piece of the product" — it's a viable system with its own operations (stories), coordination (branch strategy), control (domain lead review), audit (spot checks), intelligence (technology scanning), and identity (domain architecture).
 
 This means:
 - You don't need to design different governance for each tier. You design the governance pattern once and parameterize it for scope.
@@ -142,7 +147,7 @@ This means:
 
 ## Algedonic Signals: Emergency Escalation
 
-Beer's algedonic signals bypass normal channels. They go directly from any level to S5 when something is critically wrong.
+[@beer_1979; @beer_1985]'s algedonic signals bypass normal channels. They go directly from any level to S5 when something is critically wrong.
 
 | Signal | From | To | Example |
 |--------|------|----|---------|
@@ -167,10 +172,5 @@ Beer's algedonic signals bypass normal channels. They go directly from any level
 
 ## References
 
-Beer, Stafford. 1979. *The Heart of Enterprise*. London: Wiley.
-
-Beer, Stafford. 1985. *Diagnosing the System for Organizations*. Chichester: Wiley.
-
-Conant, Roger C., and W. Ross Ashby. 1970. "Every Good Regulator of a System Must Be a Model of That System." *International Journal of Systems Science* 1 (2): 89-97.
-
-Evans, Eric. 2003. *Domain-Driven Design: Tackling Complexity in the Heart of Software*. Boston: Addison-Wesley.
+::: {#refs}
+:::
