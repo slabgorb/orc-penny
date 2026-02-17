@@ -136,9 +136,11 @@ stories:
     title: "Cyclist: Native team panel"
     points: 5
     priority: P3
-    status: planning
+    status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-17'
   - id: 86-13
     jira: MSSCI-15126
     title: Tandem backseat not activating from CLI invocation

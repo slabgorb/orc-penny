@@ -36,6 +36,7 @@ completed_epics:
   - MSSCI-15008
   - MSSCI-15012
   - MSSCI-12414
+  - MSSCI-15237
 completed_stories:
   - id: 83-1
     epic: MSSCI-14465
@@ -677,3 +678,33 @@ completed_stories:
     title: Implement real OTLP integrations for core server stubs
     points: 5
     completed: '2026-02-16'
+  - id: 92-1
+    epic: MSSCI-15237
+    title: Create quality-pass gate file
+    points: 1
+    completed: '2026-02-17'
+  - id: 92-2
+    epic: MSSCI-15237
+    title: Add pr_mode config preference
+    points: 2
+    completed: '2026-02-17'
+  - id: 92-3
+    epic: MSSCI-15237
+    title: Update agent definitions for PR lifecycle
+    points: 2
+    completed: '2026-02-17'
+  - id: 92-4
+    epic: MSSCI-15237
+    title: 'Add next: directive support in resolve_gate.py'
+    points: 1
+    completed: '2026-02-17'
+  - id: 92-5
+    epic: MSSCI-15237
+    title: Add review fields to sprint story schema
+    points: 1
+    completed: '2026-02-17'
+  - id: 92-6
+    epic: MSSCI-15237
+    title: Validate 2party-tdd.yaml and add verify phase to tdd.yaml
+    points: 2
+    completed: '2026-02-17'
