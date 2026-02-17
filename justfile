@@ -84,7 +84,7 @@ wheelhub *args:
 
     project_dir="{{root}}"
     pid_file="$project_dir/.wheelhub-pid"
-    port_file="$project_dir/.wheelhub-port"
+    port_file="$project_dir/.bikerack-port"
     logfile="$project_dir/.session/wheelhub.log"
 
     subcmd="{{args}}"
@@ -152,7 +152,7 @@ tui:
     set -euo pipefail
 
     pid_file="{{root}}/.wheelhub-pid"
-    port_file="{{root}}/.wheelhub-port"
+    port_file="{{root}}/.bikerack-port"
 
     # Start WheelHub if not running
     if ! ([[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null); then
@@ -179,7 +179,7 @@ gui:
     set -euo pipefail
 
     pid_file="{{root}}/.wheelhub-pid"
-    port_file="{{root}}/.wheelhub-port"
+    port_file="{{root}}/.bikerack-port"
 
     # Start WheelHub if not running
     if ! ([[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null); then
