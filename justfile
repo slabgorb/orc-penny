@@ -76,49 +76,119 @@ portraits-preview theme:
 portraits-all:
     just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" portraits-all
 
-# Launch BikeRack mode (WheelHub on port 2898)
-# Run modes: here, dir=/path, stop, status, debug
-bikerack *args:
+# Start WheelHub server (API + WebSocket on port 2898)
+# Usage: just wheelhub [start|stop|status]
+wheelhub *args:
     #!/usr/bin/env bash
     set -euo pipefail
 
-    # Transform 'here' to use invocation directory when delegating
-    args="{{args}}"
-    if [[ "$args" == *"here"* ]]; then
-        args="${args/here/dir={{invocation}}}"
-    fi
+    project_dir="{{root}}"
+    pid_file="$project_dir/.wheelhub-pid"
+    port_file="$project_dir/.wheelhub-port"
+    logfile="$project_dir/.session/wheelhub.log"
 
-    # Default to orchestrator root if no dir= given (unless it's stop/status)
-    first="${args%% *}"
-    if [[ "$first" != "stop" ]] && [[ "$first" != "status" ]]; then
-        if [[ "$args" != *"dir="* ]]; then
-            args="${args:+$args }dir={{root}}"
-        fi
-    fi
+    case "${1:-start}" in
+        stop)
+            if [[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null; then
+                kill "$(cat "$pid_file")"
+                rm -f "$pid_file" "$port_file"
+                echo "WheelHub stopped"
+            else
+                rm -f "$pid_file" "$port_file"
+                echo "WheelHub not running"
+            fi
+            ;;
+        status)
+            if [[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null; then
+                port=$(cat "$port_file" 2>/dev/null || echo "?")
+                echo "WheelHub running (PID: $(cat "$pid_file"), port: $port)"
+                echo "  http://127.0.0.1:$port"
+            else
+                echo "WheelHub not running"
+            fi
+            ;;
+        start)
+            # Idempotent — already running? Just report.
+            if [[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null; then
+                port=$(cat "$port_file" 2>/dev/null || echo "?")
+                echo "WheelHub already running (port: $port)"
+                exit 0
+            fi
 
-    # For stop/status, pass --project-dir so it finds the right pid/port files
-    if [[ "$first" == "stop" ]] || [[ "$first" == "status" ]]; then
-        args="$args --project-dir {{root}}"
-    fi
+            rm -f "$pid_file" "$port_file"
 
-    just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" bikerack $args
+            bikerack_js="{{pennyfarthing}}/packages/cyclist/dist/bikerack.js"
+            if [[ ! -f "$bikerack_js" ]]; then
+                echo "Build required..."
+                cd "{{pennyfarthing}}" && pnpm run build
+            fi
 
-# Launch BikeRack TUI (connects to running WheelHub)
-tui *args:
+            mkdir -p "$(dirname "$logfile")"
+            IS_BIKERACK=1 CYCLIST_PROJECT_DIR="$project_dir" \
+                node "$bikerack_js" >> "$logfile" 2>&1 &
+            echo $! > "$pid_file"
+
+            # Wait for port file (up to 10s)
+            for i in $(seq 1 20); do
+                if [[ -f "$port_file" ]]; then
+                    port=$(cat "$port_file")
+                    echo "WheelHub running at http://127.0.0.1:$port"
+                    exit 0
+                fi
+                sleep 0.5
+            done
+            echo "Warning: WheelHub didn't start within 10s. Check $logfile"
+            ;;
+        *)
+            echo "Usage: just wheelhub [start|stop|status]"
+            exit 1
+            ;;
+    esac
+
+# Launch TUI (starts WheelHub if needed)
+tui:
     #!/usr/bin/env bash
     set -euo pipefail
 
-    args="{{args}}"
-    if [[ "$args" == *"here"* ]]; then
-        args="${args/here/dir={{invocation}}}"
+    pid_file="{{root}}/.wheelhub-pid"
+    port_file="{{root}}/.wheelhub-port"
+
+    # Start WheelHub if not running
+    if ! ([[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null); then
+        just --justfile "{{root}}/justfile" wheelhub start
     fi
 
-    # Default to orchestrator root for port file discovery
-    if [[ "$args" != *"dir="* ]]; then
-        args="${args:+$args }dir={{root}}"
+    port=$(cat "$port_file" 2>/dev/null)
+    if [[ -z "$port" ]]; then
+        echo "Error: WheelHub port not found"
+        exit 1
     fi
 
-    just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" tui $args
+    PYTHONPATH="{{pennyfarthing}}:${PYTHONPATH:-}" \
+        python3 -m pennyfarthing_scripts.bikerack.tui --port "$port" --project-dir "{{root}}"
+
+# Launch GUI in Chrome (starts WheelHub if needed)
+gui:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    pid_file="{{root}}/.wheelhub-pid"
+    port_file="{{root}}/.wheelhub-port"
+
+    # Start WheelHub if not running
+    if ! ([[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null); then
+        just --justfile "{{root}}/justfile" wheelhub start
+    fi
+
+    port=$(cat "$port_file" 2>/dev/null)
+    if [[ -z "$port" ]]; then
+        echo "Error: WheelHub port not found"
+        exit 1
+    fi
+
+    url="http://127.0.0.1:$port"
+    echo "Opening $url"
+    open -a "Google Chrome" "$url"
 
 # =============================================================================
 # Development - orchestrator sync with pennyfarthing
