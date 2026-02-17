@@ -131,8 +131,10 @@ stories:
     title: Context meter footer bar
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     workflow: tdd
+    completed: '2026-02-17'
   - id: 110-6
     jira: MSSCI-15193
     title: Project directory indicator in TUI header
