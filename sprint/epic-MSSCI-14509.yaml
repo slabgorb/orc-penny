@@ -126,9 +126,11 @@ stories:
     title: "Cyclist: Tandem dialogue panel"
     points: 3
     priority: P2
-    status: planning
+    status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-17'
   - id: "86-12"
     jira: MSSCI-14507
     title: "Cyclist: Native team panel"
