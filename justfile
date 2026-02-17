@@ -87,7 +87,8 @@ wheelhub *args:
     port_file="$project_dir/.wheelhub-port"
     logfile="$project_dir/.session/wheelhub.log"
 
-    case "${1:-start}" in
+    subcmd="{{args}}"
+    case "${subcmd:-start}" in
         stop)
             if [[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null; then
                 kill "$(cat "$pid_file")"
