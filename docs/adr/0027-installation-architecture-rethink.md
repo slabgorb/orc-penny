@@ -37,7 +37,7 @@ The current Pennyfarthing installation experience is painful. Users must navigat
 ## Decision Drivers
 
 - Installation must be fast, reliable, and require minimal user knowledge
-- Python must be optional for basic agent operation
+- Init phase must be Node-only (fast); Python CLI installed during Setup phase
 - Claude Code's frontmatter hooks (2.1+) allow hooks scoped to component lifecycle
 - Existing user configurations must never be destroyed
 - `uv tool install` has matured for Python CLI distribution
@@ -57,11 +57,15 @@ Split installation into two phases: Init does minimal plumbing (8 ops), then a S
 
 **Fit: 5/5.** Addresses init overload and the setup gap.
 
-### Option 3: Node-First with Optional Python (SELECTED)
+### Option 3: Node-Only Init with Deferred Python Install (SELECTED)
 
-Port critical-path hooks (session-start, context-warning, statusline) to Node. Python becomes optional for advanced features (sprint, Jira, workflow).
+Init phase uses only Node (fast, no Python dependency). Python CLI (`pf`) is installed during the interactive Setup phase as a required step. This separates the fast bootstrap from the heavier runtime dependency installation.
 
-**Fit: 4/5.** Addresses two-runtime trap. Partial port is pragmatic.
+**Fit: 4/5.** Addresses init speed. Python remains required for runtime.
+
+### Rejected: Node-First with Optional Python
+
+Making Python optional was considered but rejected. Pennyfarthing's runtime fundamentally depends on the `pf` CLI for hooks, sprint management, workflow orchestration, and agent activation. Making Python "optional" would mean maintaining two code paths (with/without Python) and a wrapper script for graceful degradation — complexity without real benefit, since Pennyfarthing doesn't work without it.
 
 ### Option 4: Polite Config Guest Pattern (SELECTED)
 
@@ -104,13 +108,13 @@ Setup Workflow interactively walks user through:
 - CLAUDE.md generation
 - Theme selection → `config.local.yaml`
 - Git hook installation (asks permission)
-- Python CLI installation (asks permission)
+- Python CLI installation (required — `uv tool install pennyfarthing-scripts`)
 
 Setup Workflow writes `setup_completed: true` to manifest on completion.
 
 **Phase 3: Runtime (self-contained components)**
 
-Each agent `.md` declares its own hooks in frontmatter:
+Each agent `.md` declares its own hooks in frontmatter, calling `pf` directly:
 ```yaml
 ---
 name: pf-dev
@@ -119,11 +123,11 @@ hooks:
     - matcher: "Edit|Write"
       hooks:
         - type: command
-          command: "\"$CLAUDE_PROJECT_DIR\"/.pennyfarthing/scripts/hooks/pf-wrapper.sh hooks pre-edit-check"
+          command: "pf hooks pre-edit-check"
   PostToolUse:
     - hooks:
         - type: command
-          command: "\"$CLAUDE_PROJECT_DIR\"/.pennyfarthing/scripts/hooks/pf-wrapper.sh hooks bell-mode"
+          command: "pf hooks bell-mode"
 ---
 ```
 
@@ -136,8 +140,8 @@ Sidecars created lazily on first agent activation, not at init.
 | setup-detector.js | SessionStart (startup) | Auto-trigger /pf-setup if needed |
 | session-start.js | SessionStart | PROJECT_ROOT, SESSION_ID, WheelHub |
 | setup-env.sh | SessionStart | User's environment setup |
-| pf-wrapper session-stop | Stop | Session checkpoint |
-| pf-wrapper statusline | statusLine | Status bar display |
+| pf hooks session-stop | Stop | Session checkpoint |
+| pf hooks statusline | statusLine | Status bar display |
 
 ### config.local.yaml (Single Config)
 
@@ -155,19 +159,6 @@ display:
   colorPreset: tokyo-night
 ```
 
-### pf-wrapper.sh (Python Safety Net)
-
-All frontmatter hooks that need Python go through `pf-wrapper.sh`:
-```bash
-#!/usr/bin/env bash
-if ! command -v pf &>/dev/null; then
-  exit 0  # Feature unavailable, don't break Claude
-fi
-exec pf "$@"
-```
-
-On first pass-through when `pf` is absent, writes a marker file. SessionStart detects the marker and injects a one-time message suggesting Python installation.
-
 ### Component Structure
 
 | Component | Responsibility | Phase |
@@ -180,8 +171,7 @@ On first pass-through when `pf` is absent, writes a marker file. SessionStart de
 | Agent Definitions | Self-contained with frontmatter hooks | Runtime |
 | Skill Definitions | Self-contained with frontmatter hooks | Runtime |
 | Sidecar Lazy Creator | Creates sidecars on first activation | Runtime |
-| pf-wrapper.sh | Python CLI safety net | Runtime |
-| Python CLI (optional) | Sprint, Jira, workflow, prime | Runtime |
+| Python CLI (required) | Hooks, sprint, Jira, workflow, prime | Runtime |
 | Doctor (reduced) | ~10 health checks (down from 30) | Maintenance |
 | Manifest | Version, migrations, setup_completed flag | All phases |
 
@@ -189,7 +179,7 @@ On first pass-through when `pf` is absent, writes a marker file. SessionStart de
 
 1. **Init ↔ Setup:** Init does filesystem plumbing (silent). Setup does user configuration (interactive). Bridge: manifest `setup_completed` flag.
 2. **settings.local.json ↔ Frontmatter:** Infrastructure hooks in settings. Component hooks in frontmatter. Rule: Active Scope Principle.
-3. **Node ↔ Python:** Node owns init/update/doctor/base hooks. Python owns sprint/Jira/workflow/prime. Bridge: pf-wrapper.sh.
+3. **Node ↔ Python:** Node owns init/update/doctor/setup-detector/session-start. Python owns all runtime hooks, sprint/Jira/workflow/prime. Python is required for runtime; installed during Setup phase.
 4. **Framework ↔ User:** Framework owns pf-* prefixed files. User owns everything else. Framework NEVER writes user files after init.
 5. **Dogfooding ↔ End-user:** Dogfooding uses symlinks. End-users use copies. Manifest `installationType` field.
 
@@ -198,7 +188,7 @@ On first pass-through when `pf` is absent, writes a marker file. SessionStart de
 ### Positive
 
 - **One install, one command.** `npm install && npx pennyfarthing init` → done. Setup auto-triggers.
-- **Python is optional.** Basic agent operation works with zero Python. Sprint/Jira/workflow are opt-in.
+- **Python install is deferred, not skipped.** Init is Node-only for speed. Python CLI installed during interactive Setup phase.
 - **Hooks are self-contained.** Each agent/skill carries its own hooks. No monolithic blob.
 - **Init is fast and safe.** 8 operations instead of 19. No git hooks, no Python install, no templates.
 - **Doctor shrinks.** ~10 checks instead of 30 because fewer things can break.
@@ -209,7 +199,6 @@ On first pass-through when `pf` is absent, writes a marker file. SessionStart de
 
 - **Frontmatter hooks are new territory.** Claude Code 2.1+ feature, untested at Pennyfarthing's scale. Requires spike.
 - **Major version bump required.** Migration from v11 (13 hooks) to v12 (5 hooks + frontmatter).
-- **pf-wrapper silent failure.** Users may not realize Python features are missing. Mitigated by one-time notification.
 - **Two-phase install may confuse.** "I ran init, why is it asking me to set up?" Mitigated by clear messaging.
 - **Session-start.js must be ported from Python.** One-time effort, but behavior must match exactly.
 
@@ -219,7 +208,6 @@ On first pass-through when `pf` is absent, writes a marker file. SessionStart de
 |------|--------|------------|------------|
 | Frontmatter hooks unreliable | High | Medium | Spike required. Fallback to reduced settings.local.json. |
 | Breaking existing installs | High | Medium | Migration preserves user hooks, only replaces pf- hooks. |
-| pf-wrapper masks missing features | Medium | High | One-time SessionStart notification when pf is absent. |
 | Setup Detector loops | Medium | Low | Session-scoped guard file prevents re-trigger. |
 | Config migration breaks personas | High | Medium | Audit all readers. Update atomically. Test every agent. |
 
@@ -230,7 +218,7 @@ On first pass-through when `pf` is absent, writes a marker file. SessionStart de
 1. **Active Scope Principle.** Component-specific hooks → frontmatter. Infrastructure hooks → settings.local.json.
 2. **Init never prompts, Setup always prompts.** Clear split of silent vs. interactive.
 3. **Config Manager is single source.** Kill preferences.yaml. Absorb into config.local.yaml.
-4. **Python is optional, never silent-fail.** Clear message if missing. pf-wrapper.sh is the only Python entry point.
+4. **Python is required, installed during Setup.** Init is Node-only for speed. Setup ensures `pf` CLI is installed. Doctor validates Python availability.
 5. **Manifest flags, not filesystem heuristics.** `setup_completed: true/false`. Don't check file existence.
 6. **pf- prefix is the namespace boundary.** Framework files prefixed. User files not. Update never touches unprefixed files.
 7. **Git hooks are opt-in.** Offered during Setup, not forced during Init.
@@ -239,7 +227,7 @@ On first pass-through when `pf` is absent, writes a marker file. SessionStart de
 ## Contract Enforcement Rules
 
 1. **CE-1:** Setup Detector reads manifest only, never filesystem heuristics.
-2. **CE-2:** pf-wrapper.sh is the ONLY way frontmatter hooks call Python.
+2. **CE-2:** Frontmatter hooks call `pf` directly. Python CLI is a required runtime dependency.
 3. **CE-3:** Init output is deterministic and idempotent.
 4. **CE-4:** Framework files require pf- prefix. Violating this destroys user content.
 5. **CE-5:** Config reads MUST have defaults. Missing key = default, not error.
@@ -255,7 +243,6 @@ On first pass-through when `pf` is absent, writes a marker file. SessionStart de
 ### Phase 1: Foundation (non-breaking)
 - Write setup-detector.js (Node)
 - Write session-start.js (Node)
-- Write pf-wrapper.sh
 - Create new config.local.yaml schema
 - Write migration 0006: preferences.yaml → config.local.yaml
 
@@ -279,8 +266,7 @@ On first pass-through when `pf` is absent, writes a marker file. SessionStart de
 - [ ] Upgrade preserves user custom commands/skills
 - [ ] Setup Detector triggers correctly on first session
 - [ ] Setup Detector does NOT trigger after setup complete
-- [ ] pf-wrapper works with Python installed
-- [ ] pf-wrapper gracefully handles missing Python
+- [ ] Python CLI installed and functional after Setup
 - [ ] Frontmatter hooks fire correctly for agents
 - [ ] Frontmatter hooks fire correctly for skills
 - [ ] Dogfooding mode still works

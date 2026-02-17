@@ -1,0 +1,161 @@
+name: Install Architecture Rethink
+description: |
+  Redesign Pennyfarthing's installation from a 19-operation, two-runtime gauntlet
+  into a three-phase progressive system: minimal Node-only init, auto-triggered
+  interactive setup, and self-contained agents with frontmatter hooks.
+  Implements ADR-0027. Supersedes install-overhaul-epics.
+status: backlog
+blocked_by:
+total_points: 55
+epics:
+  - epic-111
+  - epic-112
+  - epic-113
+  - epic-114
+  - epic-115
+  - epic-116
+stories:
+  # Epic 111: Spike — Validate Frontmatter Hooks (5 pts)
+  - id: "111-1"
+    title: Test frontmatter hooks with three Pennyfarthing agents
+    points: 2
+    type: spike
+    status: backlog
+    workflow: trivial
+    repos: pennyfarthing
+  - id: "111-2"
+    title: Test frontmatter hooks with skill directories
+    points: 2
+    type: spike
+    status: backlog
+    workflow: trivial
+    repos: pennyfarthing
+  - id: "111-3"
+    title: Document spike findings and update ADR-0027
+    points: 1
+    type: spike
+    status: backlog
+    workflow: trivial
+    repos: orchestrator
+
+  # Epic 112: Minimal Init — Fast, Silent, Node-Only Bootstrap (16 pts)
+  - id: "112-1"
+    title: Rewrite init command to 8 operations
+    points: 5
+    type: feature
+    status: backlog
+    workflow: tdd
+    repos: pennyfarthing
+  - id: "112-2"
+    title: Write session-start.js (Node port)
+    points: 3
+    type: feature
+    status: backlog
+    workflow: tdd
+    repos: pennyfarthing
+  - id: "112-3"
+    title: Write setup-detector.js (SessionStart hook)
+    points: 3
+    type: feature
+    status: backlog
+    workflow: tdd
+    repos: pennyfarthing
+  - id: "112-4"
+    title: Make init deterministic and idempotent
+    points: 2
+    type: feature
+    status: backlog
+    workflow: tdd
+    repos: pennyfarthing
+  - id: "112-5"
+    title: Implement installationType detection and uninstall command
+    points: 3
+    type: feature
+    status: backlog
+    workflow: tdd
+    repos: pennyfarthing
+
+  # Epic 113: Auto-Setup — Claude Guides Project Configuration (8 pts)
+  - id: "113-1"
+    title: Update /pf-setup workflow for deferred configuration
+    points: 5
+    type: feature
+    status: backlog
+    workflow: tdd
+    repos: pennyfarthing
+  - id: "113-2"
+    title: Setup Workflow handles partial completion and re-entry
+    points: 3
+    type: feature
+    status: backlog
+    workflow: tdd
+    repos: pennyfarthing
+
+  # Epic 114: Config Consolidation — Single Source of Truth (5 pts)
+  - id: "114-1"
+    title: Write migration 0006 — preferences.yaml to config.local.yaml
+    points: 3
+    type: feature
+    status: backlog
+    workflow: tdd
+    repos: pennyfarthing
+  - id: "114-2"
+    title: Update all config readers to use config.local.yaml
+    points: 2
+    type: feature
+    status: backlog
+    workflow: tdd
+    repos: pennyfarthing
+
+  # Epic 115: Frontmatter Hook Migration — Self-Contained Agents and Skills (8 pts)
+  - id: "115-1"
+    title: Add frontmatter hooks to all agent .md files
+    points: 3
+    type: feature
+    status: backlog
+    workflow: trivial
+    repos: pennyfarthing
+  - id: "115-2"
+    title: Add frontmatter hooks to relevant skill directories
+    points: 2
+    type: feature
+    status: backlog
+    workflow: trivial
+    repos: pennyfarthing
+  - id: "115-3"
+    title: Write migration 0007 — shrink settings.local.json
+    points: 3
+    type: feature
+    status: backlog
+    workflow: tdd
+    repos: pennyfarthing
+
+  # Epic 116: Upgrade Path — Safe Migration from v11 to v12 (13 pts)
+  - id: "116-1"
+    title: Implement update command with migration runner
+    points: 5
+    type: feature
+    status: backlog
+    workflow: tdd
+    repos: pennyfarthing
+  - id: "116-2"
+    title: Implement lazy sidecar creation
+    points: 2
+    type: feature
+    status: backlog
+    workflow: tdd
+    repos: pennyfarthing
+  - id: "116-3"
+    title: Reduce doctor to ~10 health checks
+    points: 3
+    type: feature
+    status: backlog
+    workflow: tdd
+    repos: pennyfarthing
+  - id: "116-4"
+    title: End-to-end test — fresh install and upgrade
+    points: 3
+    type: feature
+    status: backlog
+    workflow: tdd
+    repos: pennyfarthing
