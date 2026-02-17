@@ -196,6 +196,44 @@ gui:
     echo "Opening $url"
     open -a "Google Chrome" "$url"
 
+# Launch Claude with OTEL pre-configured for WheelHub/BikeRack
+claude:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    project_dir="{{root}}"
+    PORT=""
+
+    # Check .cyclist-port first, then .bikerack-port (same order as session_start.py)
+    for port_file in "$project_dir/.cyclist-port" "$project_dir/.bikerack-port"; do
+        if [[ -f "$port_file" ]]; then
+            candidate=$(cat "$port_file" 2>/dev/null)
+            if [[ "$candidate" =~ ^[0-9]+$ ]]; then
+                # Verify port is actually listening
+                if (echo >/dev/tcp/localhost/"$candidate") 2>/dev/null; then
+                    PORT="$candidate"
+                    break
+                else
+                    echo "[just claude] Stale port file $port_file (port $candidate not listening), skipping" >&2
+                fi
+            fi
+        fi
+    done
+
+    if [[ -n "$PORT" ]]; then
+        echo "[just claude] OTEL configured → http://localhost:$PORT" >&2
+        export CLAUDE_CODE_ENABLE_TELEMETRY="1"
+        export OTEL_EXPORTER_OTLP_PROTOCOL="http/json"
+        export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:$PORT"
+        export OTEL_LOGS_EXPORTER="otlp"
+        export OTEL_METRICS_EXPORTER="otlp"
+    else
+        echo "[just claude] No WheelHub/BikeRack running — launching without OTEL" >&2
+        echo "[just claude] Start one first: just wheelhub start" >&2
+    fi
+
+    exec claude
+
 # =============================================================================
 # Development - orchestrator sync with pennyfarthing
 # =============================================================================
