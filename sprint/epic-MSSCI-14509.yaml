@@ -144,8 +144,11 @@ stories:
     title: Tandem backseat not activating from CLI invocation
     points: 2
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-17'
     workflow: tdd
+    completed: '2026-02-17'
     type: bug
   - id: "86-14"
     jira: MSSCI-15109
