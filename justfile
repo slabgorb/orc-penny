@@ -165,8 +165,13 @@ tui:
         exit 1
     fi
 
-    PYTHONPATH="{{pennyfarthing}}:${PYTHONPATH:-}" \
-        python3 -m pennyfarthing_scripts.bikerack.tui --port "$port" --project-dir "{{root}}"
+    if ! command -v uv &>/dev/null; then
+        echo "Error: uv is required for the TUI. Install: https://docs.astral.sh/uv/"
+        exit 1
+    fi
+
+    uv run --project "{{pennyfarthing}}" --extra tui \
+        python -m pennyfarthing_scripts.bikerack.tui --port "$port" --project-dir "{{root}}"
 
 # Launch GUI in Chrome (starts WheelHub if needed)
 gui:
