@@ -61,9 +61,11 @@ stories:
       6. Enter on PR link opens browser via webbrowser.open()
     points: 5
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-17'
     goals:
       - Per-story cursor navigation within expanded epics (arrow keys)
       - Enter on story pushes StoryDetailScreen
