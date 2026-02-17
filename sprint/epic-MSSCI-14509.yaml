@@ -116,9 +116,11 @@ stories:
     title: "Phase-scoped team lifecycle + gate hooks"
     points: 5
     priority: P1
-    status: planning
+    status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     workflow: tdd
+    completed: "2026-02-17"
   - id: "86-11"
     jira: MSSCI-14506
     title: "Cyclist: Tandem dialogue panel"
