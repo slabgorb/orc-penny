@@ -89,9 +89,11 @@ stories:
       6. Fallback to text-only header if no portrait or unsupported terminal
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-17'
     goals:
       - textual-image added to [tui] optional dependencies
       - Portrait image renders alongside agent info in header
@@ -124,3 +126,32 @@ stories:
       - Tab switches focus between split panes
       - At least 3 named layout presets available
       - /bc split command creates custom splits
+  - id: 110-5
+    jira: MSSCI-15192
+    title: Context meter footer bar
+    points: 3
+    priority: p1
+    status: backlog
+    workflow: tdd
+  - id: 110-6
+    jira: MSSCI-15193
+    title: Project directory indicator in TUI header
+    points: 2
+    priority: p1
+    status: backlog
+    workflow: tdd
+  - id: 110-7
+    jira: MSSCI-15194
+    title: Fix velocity and sprint count points
+    points: 2
+    priority: p1
+    status: backlog
+    workflow: tdd
+    type: bug
+  - id: 110-8
+    jira: MSSCI-15195
+    title: Hook up audit log panel
+    points: 3
+    priority: p2
+    status: backlog
+    workflow: tdd

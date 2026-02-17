@@ -83,7 +83,7 @@ stories:
       6. Fallback to text-only header if no portrait or unsupported terminal
     points: 3
     priority: p1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
     goals:
@@ -92,6 +92,7 @@ stories:
       - Protocol auto-detection runs before App.run()
       - Graceful fallback to text-only on unsupported terminals
       - Portrait updates on agent/persona change via WebSocket
+    completed: "2026-02-17"
   - id: 110-4
     title: Split-pane layouts with workflow-aware presets
     description: |
