@@ -156,5 +156,7 @@ stories:
     title: Hook up audit log panel
     points: 3
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     workflow: tdd
+    completed: '2026-02-17'
