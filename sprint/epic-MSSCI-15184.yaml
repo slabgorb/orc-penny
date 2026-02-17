@@ -1,0 +1,124 @@
+id: '110'
+type: epic
+title: BikeRack TUI — Interactive Command Center
+description: |
+  Transform BikeRack TUI from passive monitor to interactive command center.
+  Cross-panel event bus, story drill-through, portrait image header, and
+  split-pane layouts. Eliminates context switches — the user never leaves the TUI.
+
+  Phase 1 (foundation): Cross-panel event bus + Changed→Diffs navigation
+  Phase 2 (drill-through): Story detail screen with dossier layout
+  Phase 3 (visuals): Portrait image header with textual-image
+  Phase 4 (layout): Split-pane layouts with workflow-aware presets
+priority: p1
+status: in_progress
+repos: pennyfarthing
+jira: MSSCI-15184
+stories:
+  - id: 110-1
+    jira: MSSCI-15185
+    title: Cross-panel event bus with Changed-to-Diffs navigation
+    description: |
+      Add a Textual Message-based event bus for cross-panel communication.
+      First use case: Enter on a file in ChangedPanel switches to DiffsPanel
+      filtered to that file.
+
+      1. Define PanelEvent message types (NavigateToFile, NavigateToStory)
+         in a new events.py module
+      2. Migrate ChangedPanel from Static text rendering to OptionList or
+         ListView with selectable file entries and arrow key navigation
+      3. Add Enter handler that posts NavigateToFile message
+      4. DiffsPanel handles NavigateToFile by matching file index + rerender
+      5. App-level handler switches active panel on navigation events
+      6. Context-sensitive footer keybindings per active panel
+    points: 5
+    priority: p0
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-16'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-17'
+    goals:
+      - PanelEvent base message class and NavigateToFile event defined in events.py
+      - ChangedPanel renders selectable file list with arrow key navigation
+      - Enter on a changed file switches to DiffsPanel showing that files diff
+      - Footer shows context-sensitive bindings per active panel
+      - Existing j/k/e/n/p bindings continue to work unchanged
+  - id: 110-2
+    jira: MSSCI-15186
+    title: Story drill-through with dossier detail screen
+    description: |
+      Add Enter-to-drill-through on sprint stories. Pushes a StoryDetailScreen
+      showing a mission-dossier layout with AC checklist, workflow phase dots,
+      git branch, PR link, and session notes.
+
+      1. Add per-story cursor to SprintPanel (arrow keys within expanded epic)
+      2. Create StoryDetailScreen extending Textual Screen with push/pop
+      3. Fetch story detail data (AC, session, workflow) via file read or API
+      4. Render dossier layout: header, AC progress, workflow phase, git info
+      5. Escape pops back to sprint overview
+      6. Enter on PR link opens browser via webbrowser.open()
+    points: 5
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    goals:
+      - Per-story cursor navigation within expanded epics (arrow keys)
+      - Enter on story pushes StoryDetailScreen
+      - Detail screen shows AC checklist with completion progress
+      - Detail screen shows workflow phase dots
+      - Detail screen shows git branch and PR link
+      - Escape returns to sprint overview
+  - id: 110-3
+    jira: MSSCI-15187
+    title: Portrait image header with textual-image
+    description: |
+      Add persona portrait image to AgentHeader using the textual-image
+      library. Portrait displays alongside agent name/role/quote in a
+      Horizontal layout. Graceful fallback for unsupported terminals.
+
+      1. Add textual-image to [tui] optional deps in pyproject.toml
+      2. Port portrait path resolution to Python (theme YAML -> slug -> file)
+      3. Protocol detection before App.run() (Kinchloe pattern)
+      4. Create PersonaImageHeader with Horizontal(Image, AgentInfo) layout
+      5. Fetch portrait path from /ws/persona data or resolve locally
+      6. Fallback to text-only header if no portrait or unsupported terminal
+    points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    goals:
+      - textual-image added to [tui] optional dependencies
+      - Portrait image renders alongside agent info in header
+      - Protocol auto-detection runs before App.run()
+      - Graceful fallback to text-only on unsupported terminals
+      - Portrait updates on agent/persona change via WebSocket
+  - id: 110-4
+    jira: MSSCI-15188
+    title: Split-pane layouts with workflow-aware presets
+    description: |
+      Replace single-panel-at-a-time layout with split-pane support.
+      Two panels visible side-by-side in a Horizontal container.
+      Named layout presets and workflow-aware auto-arrangement.
+
+      1. Refactor main layout from VerticalScroll(hidden panels) to
+         Horizontal(left_pane, right_pane) container structure
+      2. Add Shift+S keybinding to toggle split mode
+      3. In split mode, Tab switches focus between panes
+      4. Named presets: sprint+diffs, changed+diffs, progress+debug
+      5. /bc split <left> <right> command for custom splits
+      6. Workflow-aware auto-layout via /ws/focus channel extension
+    points: 5
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    goals:
+      - Two panels visible side-by-side in split mode
+      - Shift+S toggles between single and split layout
+      - Tab switches focus between split panes
+      - At least 3 named layout presets available
+      - /bc split command creates custom splits
