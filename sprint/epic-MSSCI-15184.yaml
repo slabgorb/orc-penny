@@ -147,8 +147,9 @@ stories:
     title: Fix velocity and sprint count points
     points: 2
     priority: p1
-    status: backlog
+    status: done
     workflow: tdd
+    completed: '2026-02-17'
     type: bug
   - id: 110-8
     jira: MSSCI-15195
