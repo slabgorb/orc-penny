@@ -117,15 +117,19 @@ stories:
       6. Workflow-aware auto-layout via /ws/focus channel extension
     points: 5
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-18'
     goals:
       - Two panels visible side-by-side in split mode
       - Shift+S toggles between single and split layout
       - Tab switches focus between split panes
       - At least 3 named layout presets available
       - /bc split command creates custom splits
+    review_findings: VALID_PANELS missing progress - pf bc split progress debug fails while preset exists in TUI
+    review_verdict: approved
   - id: 110-5
     jira: MSSCI-15192
     title: Context meter footer bar
