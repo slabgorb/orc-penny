@@ -144,8 +144,9 @@ stories:
     title: Project directory indicator in TUI header
     points: 2
     priority: p1
-    status: backlog
+    status: done
     workflow: tdd
+    completed: '2026-02-18'
   - id: 110-7
     jira: MSSCI-15194
     title: Fix velocity and sprint count points
@@ -178,13 +179,14 @@ stories:
       prevent pennyfarthing update from overwriting dogfooding symlinks.
     points: 3
     priority: p2
-    status: backlog
+    status: done
     workflow: tdd
     acceptance_criteria:
       - Python resolve_portrait_path() finds portraits in consumer installs
       - discover_all_theme_dirs() searches node_modules theme packages as fallback
       - pennyfarthing update preserves dogfooding symlinks when manifest says symlink
       - Test coverage for both consumer and dogfooding resolution paths
+    completed: '2026-02-18'
   - id: 110-10
     title: Audit log panel not showing data in TUI
     description: >-
@@ -194,8 +196,9 @@ stories:
       the data format doesn't match what the panel expects.
     points: 2
     priority: p1
-    status: backlog
+    status: done
     workflow: tdd
+    completed: '2026-02-18'
   - id: 110-11
     title: 'Fix git panel: cyclist settings module never initialized'
     points: 2
