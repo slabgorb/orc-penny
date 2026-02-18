@@ -192,3 +192,12 @@ stories:
     priority: p1
     status: backlog
     workflow: tdd
+  - id: 110-11
+    title: 'Fix git panel: cyclist settings module never initialized'
+    points: 2
+    priority: p1
+    status: done
+    workflow: trivial
+    completed: '2026-02-18'
+    type: bug
+    review_verdict: approved
