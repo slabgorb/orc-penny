@@ -76,6 +76,6 @@ repos:
 # Architecture notes:
 # - Unlike other orchestrators (conductor, siemulator) which have api/ui subrepos,
 #   this orchestrator manages the pennyfarthing framework itself
-# - .pennyfarthing/ contains symlinks to node_modules/@pennyfarthing/core/pennyfarthing-dist/
-# - pennyfarthing/ is the full framework source for development (gitignored optional clone)
+# - .pennyfarthing/ contains symlinks to pennyfarthing/pennyfarthing-dist/ (local source)
+# - pennyfarthing/ is the inlined framework source for development
 # - Sprint tracking in sprint/ applies to framework development work
