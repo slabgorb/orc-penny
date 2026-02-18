@@ -37,6 +37,7 @@ completed_epics:
   - MSSCI-15012
   - MSSCI-12414
   - MSSCI-15237
+  - MSSCI-14509
 completed_stories:
   - id: 83-1
     epic: MSSCI-14465
@@ -708,3 +709,88 @@ completed_stories:
     title: Validate 2party-tdd.yaml and add verify phase to tdd.yaml
     points: 2
     completed: '2026-02-17'
+  - id: "86-1"
+    epic: MSSCI-14509
+    title: "Workflow schema: tandem: block"
+    points: 3
+    completed: '2026-02-15'
+  - id: "86-2"
+    epic: MSSCI-14509
+    title: "Consultation protocol implementation"
+    points: 3
+    completed: '2026-02-15'
+  - id: "86-3"
+    epic: MSSCI-14509
+    title: "Dialogue file management"
+    points: 2
+    completed: "2026-02-16"
+  - id: "86-4"
+    epic: MSSCI-14509
+    title: "Agent tandem awareness"
+    points: 3
+    completed: '2026-02-16'
+  - id: "86-5"
+    epic: MSSCI-14509
+    title: "Tandem workflow templates"
+    points: 2
+    completed: '2026-02-16'
+  - id: "86-6"
+    epic: MSSCI-14509
+    title: "Tandem metrics and token tracking"
+    points: 2
+    completed: '2026-02-16'
+  - id: "86-7"
+    epic: MSSCI-14509
+    title: "Feature detection: native teams capability"
+    points: 2
+    completed: '2026-02-16'
+  - id: "86-8"
+    epic: MSSCI-14509
+    title: "Teammate activation via spawn prompts"
+    points: 2
+    completed: '2026-02-16'
+  - id: "86-9"
+    epic: MSSCI-14509
+    title: "Workflow schema: team: block on phases"
+    points: 3
+    completed: "2026-02-16"
+  - id: "86-10"
+    epic: MSSCI-14509
+    title: "Phase-scoped team lifecycle + gate hooks"
+    points: 5
+    completed: "2026-02-17"
+  - id: "86-11"
+    epic: MSSCI-14509
+    title: "Cyclist: Tandem dialogue panel"
+    points: 3
+    completed: '2026-02-17'
+  - id: "86-12"
+    epic: MSSCI-14509
+    title: "Cyclist: Native team panel"
+    points: 5
+    completed: '2026-02-17'
+  - id: 86-13
+    epic: MSSCI-14509
+    title: Tandem backseat not activating from CLI invocation
+    points: 2
+    completed: '2026-02-17'
+  - id: "86-14"
+    epic: MSSCI-14509
+    title: "Agent behavior: team-mode protocol"
+    points: 2
+    completed: "2026-02-18"
+  - id: "86-15"
+    epic: MSSCI-14509
+    title: "Team-enabled workflow templates"
+    points: 2
+    completed: '2026-02-18'
+  - id: 86-16
+    epic: MSSCI-14509
+    title: Port dialogue manager from TypeScript/bash to Python
+    points: 2
+    completed: '2026-02-16'
+  - id: 86-17
+    epic: MSSCI-14509
+    title: 'Tandem mode portrait: ImageMagick theme variations + swap indicator'
+    points: 3
+    completed: '2026-02-16'

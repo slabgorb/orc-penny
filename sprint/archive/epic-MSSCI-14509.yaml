@@ -14,7 +14,7 @@ description: |
   Phase 3 (8 pts): Cyclist integration — TandemPanel for dialogue
   visualization, TeamPanel for native team status/messaging.
 priority: P1
-status: planning
+status: done
 repos: pennyfarthing
 jira: MSSCI-14509
 points: 39
@@ -169,11 +169,13 @@ stories:
     title: "Team-enabled workflow templates"
     points: 2
     priority: P1
-    status: in_progress
+    status: done
     assigned_to: keith.avery@1898andco.io
+    started: '2026-02-18'
     repos: pennyfarthing
     workflow: tdd
-    started: '2026-02-18'
+    completed: '2026-02-18'
+    review_verdict: approved
   - id: 86-16
     jira: MSSCI-15127
     title: Port dialogue manager from TypeScript/bash to Python
@@ -192,3 +194,4 @@ stories:
     assigned_to: keith.avery@1898andco.io
     workflow: tdd
     completed: '2026-02-16'
+completed: '2026-02-18'

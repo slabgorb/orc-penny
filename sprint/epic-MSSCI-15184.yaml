@@ -162,10 +162,6 @@ stories:
     completed: '2026-02-17'
   - id: 110-9
     title: TUI portrait resolution for consumer installs
-    points: 3
-    priority: p2
-    status: backlog
-    workflow: tdd
     description: >-
       Portrait images in the BikeRack TUI header only work in dogfooding mode.
       In consumer installs, the npm package ships themes/ but not portraits/
@@ -176,6 +172,10 @@ stories:
       from __dirname and finds the monorepo paths. Fix: teach the Python
       resolver to search node_modules/@pennyfarthing/themes-*/portraits/ and
       prevent pennyfarthing update from overwriting dogfooding symlinks.
+    points: 3
+    priority: p2
+    status: backlog
+    workflow: tdd
     acceptance_criteria:
       - Python resolve_portrait_path() finds portraits in consumer installs
       - discover_all_theme_dirs() searches node_modules theme packages as fallback
@@ -183,12 +183,12 @@ stories:
       - Test coverage for both consumer and dogfooding resolution paths
   - id: 110-10
     title: Audit log panel not showing data in TUI
-    points: 2
-    priority: p1
-    status: backlog
-    workflow: tdd
     description: >-
       The audit log panel in the BikeRack TUI is hooked up (110-8) but not
       displaying data. Investigate whether the WheelHub WebSocket is not
       pushing audit events, the TUI panel is not subscribing correctly, or
       the data format doesn't match what the panel expects.
+    points: 2
+    priority: p1
+    status: backlog
+    workflow: tdd
