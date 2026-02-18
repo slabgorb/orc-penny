@@ -205,3 +205,14 @@ stories:
     completed: '2026-02-18'
     type: bug
     review_verdict: approved
+  - id: 110-12
+    jira: MSSCI-15300
+    title: Context meter in TUI needs more frequent redraws
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-18'
+    workflow: tdd
+    completed: '2026-02-18'
+    review_verdict: approved
