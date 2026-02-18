@@ -157,17 +157,23 @@ stories:
     title: "Agent behavior: team-mode protocol"
     points: 2
     priority: P1
-    status: planning
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-18'
     repos: pennyfarthing
     workflow: tdd
+    completed: "2026-02-18"
+    review_verdict: approved
   - id: "86-15"
     jira: MSSCI-15110
     title: "Team-enabled workflow templates"
     points: 2
     priority: P1
-    status: planning
+    status: in_progress
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     workflow: tdd
+    started: '2026-02-18'
   - id: 86-16
     jira: MSSCI-15127
     title: Port dialogue manager from TypeScript/bash to Python
