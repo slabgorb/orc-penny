@@ -85,3 +85,64 @@ stories:
     workflow: tdd
     completed: '2026-02-19'
     type: bug
+  - id: 117-8
+    title: Setup workflow should create config.local.yaml with theme
+    description: |
+      After /pf-setup completes and sets theme in persona-config.yaml, config.local.yaml
+      does not exist. Doctor reports 2 warnings ("No theme configured" for both persona-config
+      and config checks) even though persona-config.yaml has the theme set correctly.
+
+      Fix: /pf-setup should create config.local.yaml with at minimum `theme: <selected-theme>`
+      after writing persona-config.yaml. Alternatively, init could create it with a default.
+
+      Found during clean E2E install of orc-ax (2026-02-19).
+    points: 2
+    priority: p1
+    status: backlog
+    workflow: trivial
+    type: bug
+  - id: 117-9
+    title: Fix pennyfarthing cyclist CLI command — points to wrong entry file
+    description: |
+      `npx pennyfarthing cyclist` silently exits with code 0 and no output.
+
+      Root cause: packages/core/src/cli/commands/cyclist.ts line 174 spawns
+      `node dist/server.js` but server.js is a library module that exports
+      createTerminalServer() without calling it. Process exits immediately.
+
+      Correct entry points:
+      - Web/BikeRack mode: dist/bikerack.js (calls createTerminalServer() + .listen())
+      - Electron mode: electron dist/main.js (checks process.versions.electron)
+
+      Fix options:
+      1. Point cyclist.ts at bikerack.js for web mode
+      2. Have server.js detect non-Electron and auto-start
+
+      Found during clean E2E install of orc-ax (2026-02-19).
+    points: 2
+    priority: p1
+    status: backlog
+    workflow: trivial
+    type: bug
+  - id: 117-10
+    title: Doctor persona-config check false negative when config.local.yaml missing
+    description: |
+      Doctor reports "No theme configured" for the persona-config check even when
+      persona-config.yaml has `theme: firefly` set correctly. The check appears to
+      depend on config.local.yaml existing rather than reading persona-config.yaml
+      directly.
+
+      Repro: Run /pf-setup (sets theme in persona-config.yaml) then `npx pennyfarthing doctor`.
+      persona-config check shows warning despite the file having a valid theme.
+      Creating config.local.yaml with `theme: firefly` clears both warnings.
+
+      Fix: Doctor's persona-config check should read persona-config.yaml as the
+      source of truth for theme configuration. config.local.yaml is a runtime
+      file that may not exist yet post-install.
+
+      Found during clean E2E install of orc-ax (2026-02-19).
+    points: 2
+    priority: p2
+    status: backlog
+    workflow: tdd
+    type: bug
