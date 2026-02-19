@@ -69,9 +69,13 @@ stories:
     title: Fix getDistDir() wrong path resolution in npm-installed mode
     points: 2
     priority: p0
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-19'
     workflow: trivial
+    completed: '2026-02-19'
     type: bug
+    review_verdict: approved
   - id: 117-7
     jira: MSSCI-15320
     title: Fix doctor git hook staleness check for dispatcher pattern
