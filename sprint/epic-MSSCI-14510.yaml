@@ -198,8 +198,9 @@ stories:
       collaboration menus.
     points: 8
     priority: P3
-    status: planning
+    status: done
     repos: pennyfarthing
+    completed: '2026-02-19'
   - id: 91-15
     jira: MSSCI-15130
     title: Cross-entity reference validation
@@ -208,8 +209,12 @@ stories:
       Bidirectional reference consistency.
     points: 5
     priority: P3
-    status: planning
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-19'
     repos: pennyfarthing
+    completed: "2026-02-19"
+    review_verdict: approved
   - id: 91-16
     jira: MSSCI-14517
     title: run-ci.md references wrong path for run-ci.sh
