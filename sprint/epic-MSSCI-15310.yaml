@@ -46,3 +46,27 @@ stories:
     priority: p1
     status: backlog
     workflow: trivial
+  - id: 117-5
+    jira: MSSCI-15318
+    title: Ship index.html and add ws dependency in @pennyfarthing/core npm package
+    points: 2
+    priority: p0
+    status: backlog
+    workflow: trivial
+    type: bug
+  - id: 117-6
+    jira: MSSCI-15319
+    title: Fix getDistDir() wrong path resolution in npm-installed mode
+    points: 2
+    priority: p0
+    status: backlog
+    workflow: trivial
+    type: bug
+  - id: 117-7
+    jira: MSSCI-15320
+    title: Fix doctor git hook staleness check for dispatcher pattern
+    points: 3
+    priority: p1
+    status: backlog
+    workflow: tdd
+    type: bug
