@@ -81,6 +81,7 @@ stories:
     title: Fix doctor git hook staleness check for dispatcher pattern
     points: 3
     priority: p1
-    status: backlog
+    status: done
     workflow: tdd
+    completed: '2026-02-19'
     type: bug
