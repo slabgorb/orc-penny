@@ -10,7 +10,6 @@ sprint:
 epics:
   - MSSCI-14510
   - MSSCI-15310
-  - '117'
 stories:
   - id: MSSCI-15038
     jira: MSSCI-15038
