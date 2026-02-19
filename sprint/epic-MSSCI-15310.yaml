@@ -24,8 +24,12 @@ stories:
     description: 'settings.local.json hook generation writes bare pf commands which are not in PATH. The pf CLI is only available via uv run or the pf.sh wrapper. Generate hooks using the pf.sh wrapper path instead: $CLAUDE_PROJECT_DIR/.pennyfarthing/scripts/core/pf.sh hooks <subcommand>.'
     points: 2
     priority: p0
-    status: backlog
-    workflow: tdd
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-19'
+    workflow: tdd-tandem
+    completed: '2026-02-19'
+    review_verdict: approved
   - id: 117-3
     jira: MSSCI-15313
     title: Postinstall cleanup of stale pre-11.x artifacts
