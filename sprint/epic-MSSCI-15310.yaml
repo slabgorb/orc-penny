@@ -51,9 +51,12 @@ stories:
     title: Ship index.html and add ws dependency in @pennyfarthing/core npm package
     points: 2
     priority: p0
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     workflow: trivial
+    completed: '2026-02-19'
     type: bug
+    review_verdict: approved
   - id: 117-6
     jira: MSSCI-15319
     title: Fix getDistDir() wrong path resolution in npm-installed mode
