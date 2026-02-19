@@ -11,7 +11,7 @@ description: |
   Phase 3 (visuals): Portrait image header with textual-image
   Phase 4 (layout): Split-pane layouts with workflow-aware presets
 priority: p1
-status: in_progress
+status: done
 repos: pennyfarthing
 jira: MSSCI-15184
 stories:
@@ -219,3 +219,4 @@ stories:
     workflow: tdd
     completed: '2026-02-18'
     review_verdict: approved
+completed: '2026-02-19'

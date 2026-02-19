@@ -1,5 +1,4 @@
 sprint:
-  number: 2608
   name: TO Sprint 2608
   jira_sprint_id: 310
   jira_sprint_name: TO Sprint 2608
@@ -7,9 +6,9 @@ sprint:
   start_date: '2026-02-16'
   end_date: '2026-03-01'
   status: active
+  number: 2608
 epics:
   - MSSCI-14510
-  - MSSCI-15184
   - MSSCI-15310
 stories:
   - id: MSSCI-15038

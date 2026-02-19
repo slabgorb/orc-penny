@@ -10,8 +10,9 @@ stories:
     description: The npm package bundles pennyfarthing_scripts/ Python source but no pyproject.toml. All hooks delegate to uv run --project which requires pyproject.toml. Consumer projects must manually create one. Ship a template pyproject.toml in the npm package and auto-generate it during postinstall.
     points: 3
     priority: p0
-    status: backlog
+    status: done
     workflow: tdd
+    completed: "2026-02-19"
   - id: 117-2
     title: Generate hook commands with pf.sh wrapper path, not bare pf
     description: 'settings.local.json hook generation writes bare pf commands which are not in PATH. The pf CLI is only available via uv run or the pf.sh wrapper. Generate hooks using the pf.sh wrapper path instead: $CLAUDE_PROJECT_DIR/.pennyfarthing/scripts/core/pf.sh hooks <subcommand>.'

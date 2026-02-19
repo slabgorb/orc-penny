@@ -12,8 +12,12 @@ stories:
     description: The npm package bundles pennyfarthing_scripts/ Python source but no pyproject.toml. All hooks delegate to uv run --project which requires pyproject.toml. Consumer projects must manually create one. Ship a template pyproject.toml in the npm package and auto-generate it during postinstall.
     points: 3
     priority: p0
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-19'
     workflow: tdd
+    completed: '2026-02-19'
+    review_verdict: approved
   - id: 117-2
     jira: MSSCI-15312
     title: Generate hook commands with pf.sh wrapper path, not bare pf

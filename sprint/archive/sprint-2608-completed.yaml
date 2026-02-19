@@ -1,12 +1,73 @@
-# Sprint TO Sprint 2608 - Completed Stories
-# Jira Sprint ID: 310
-# Archived: 2026-02-19
-
 sprint:
   name: "TO Sprint 2608"
+  number: 2608
   jira_sprint_id: 310
   jira_sprint_name: "TO Sprint 2608"
   goal: Installation, agents and workflows
+  start_date: '2026-02-16'
+  end_date: '2026-03-01'
+  status: active
 
-completed:
-  # Completed stories will be appended here by pf sprint archive
+completed_epics:
+  - MSSCI-15184
+completed_stories:
+  - id: 110-1
+    epic: MSSCI-15184
+    title: Cross-panel event bus with Changed-to-Diffs navigation
+    points: 5
+    completed: '2026-02-17'
+  - id: 110-2
+    epic: MSSCI-15184
+    title: Story drill-through with dossier detail screen
+    points: 5
+    completed: '2026-02-17'
+  - id: 110-3
+    epic: MSSCI-15184
+    title: Portrait image header with textual-image
+    points: 3
+    completed: '2026-02-17'
+  - id: 110-4
+    epic: MSSCI-15184
+    title: Split-pane layouts with workflow-aware presets
+    points: 5
+    completed: '2026-02-18'
+  - id: 110-5
+    epic: MSSCI-15184
+    title: Context meter footer bar
+    points: 3
+    completed: '2026-02-17'
+  - id: 110-6
+    epic: MSSCI-15184
+    title: Project directory indicator in TUI header
+    points: 2
+    completed: '2026-02-19'
+  - id: 110-7
+    epic: MSSCI-15184
+    title: Fix velocity and sprint count points
+    points: 2
+    completed: '2026-02-17'
+  - id: 110-8
+    epic: MSSCI-15184
+    title: Hook up audit log panel
+    points: 3
+    completed: '2026-02-17'
+  - id: 110-9
+    epic: MSSCI-15184
+    title: TUI portrait resolution for consumer installs
+    points: 3
+    completed: '2026-02-18'
+  - id: 110-10
+    epic: MSSCI-15184
+    title: Audit log panel not showing data in TUI
+    points: 2
+    completed: '2026-02-19'
+  - id: 110-11
+    epic: MSSCI-15184
+    title: 'Fix git panel: cyclist settings module never initialized'
+    points: 2
+    completed: '2026-02-18'
+  - id: 110-12
+    epic: MSSCI-15184
+    title: Context meter in TUI needs more frequent redraws
+    points: 2
+    completed: '2026-02-18'
