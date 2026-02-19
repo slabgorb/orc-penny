@@ -146,7 +146,7 @@ stories:
     priority: p1
     status: done
     workflow: tdd
-    completed: '2026-02-18'
+    completed: '2026-02-19'
   - id: 110-7
     jira: MSSCI-15194
     title: Fix velocity and sprint count points
@@ -198,7 +198,7 @@ stories:
     priority: p1
     status: done
     workflow: tdd
-    completed: '2026-02-18'
+    completed: '2026-02-19'
   - id: 110-11
     title: 'Fix git panel: cyclist settings module never initialized'
     points: 2
