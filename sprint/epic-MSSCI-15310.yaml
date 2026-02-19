@@ -36,8 +36,12 @@ stories:
     description: 'Upgrading from v8.x-v10.x leaves stale artifacts: .claude/manifest.json, .claude/personas/, non-prefixed commands (41 extras) and skills (22 extras). The postinstall/update command should detect and remove these v8-era artifacts.'
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-19'
     workflow: tdd
+    completed: '2026-02-19'
+    review_verdict: approved
   - id: 117-4
     jira: MSSCI-15314
     title: Ensure project hook templates have execute permission
