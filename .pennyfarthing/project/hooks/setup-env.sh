@@ -7,9 +7,9 @@ if [ -n "$CLAUDE_ENV_FILE" ]; then
     {
         echo "export PROJECT_NAME=\"pennyfarthing-orchestrator\""
         echo "export PROJECT_LABEL=\"pennyfarthing-orchestrator\""
-        # pennyfarthing_scripts is in local dev repo (not published to npm yet)
+        # pf package is in pennyfarthing-dist/ inside the dev repo
         # This allows prime.py to find the module
-        echo "export PYTHONPATH=\"\${PROJECT_ROOT:-$PWD}/pennyfarthing:\${PYTHONPATH:-}\""
+        echo "export PYTHONPATH=\"\${PROJECT_ROOT:-$PWD}/pennyfarthing/pennyfarthing-dist:\${PYTHONPATH:-}\""
     } >> "$CLAUDE_ENV_FILE"
 fi
 

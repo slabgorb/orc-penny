@@ -48,7 +48,7 @@ pennyfarthing-orchestrator/          # Orchestrator (trunk-based, main)
 │   ├── packages/cyclist/            # Visual terminal (Electron + React)
 │   ├── packages/benchmark/          # Performance benchmarking
 │   ├── packages/themes-*/           # Theme packages
-│   ├── pennyfarthing_scripts/       # Distributed Python package
+│   ├── pennyfarthing-dist/pf/       # Distributed Python package
 │   └── tests/                       # Framework tests
 └── .claude/                         # Claude Code configuration
     └── project/docs/                # This file, agent context

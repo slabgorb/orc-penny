@@ -62,7 +62,7 @@ repos:
     owns:
       - pennyfarthing-dist/**
       - packages/**
-      - pennyfarthing_scripts/**
+      - pennyfarthing-dist/pf/**
       - tests/**
       - scripts/**
     never_edit:

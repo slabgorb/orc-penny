@@ -171,7 +171,7 @@ tui:
     fi
 
     uv run --project "{{pennyfarthing}}" --extra tui \
-        python -m pennyfarthing_scripts.bikerack.tui --port "$port" --project-dir "{{root}}"
+        python -m pf.bikerack.tui --port "$port" --project-dir "{{root}}"
 
 # Launch GUI in Chrome (starts WheelHub if needed)
 gui:
@@ -329,11 +329,11 @@ doctor:
     done
 
     # Check sprint loader health
-    export PYTHONPATH="{{pennyfarthing}}:${PYTHONPATH:-}"
+    export PYTHONPATH="{{pennyfarthing}}/pennyfarthing-dist:${PYTHONPATH:-}"
     if python3 -c "
     import sys
     sys.path.insert(0, '{{pennyfarthing}}')
-    from pennyfarthing_scripts.sprint.loader import load_sprint
+    from pf.sprint.loader import load_sprint
     data = load_sprint(project_root=None)
     if data and 'epics' in data:
         epics = data['epics']

@@ -132,7 +132,7 @@ Use `/workflow list` to see available workflows, `/workflow` to check current st
 | `packages/shared/` | **Deprecated** — absorbed into `packages/core/src/shared/` (story 98-16). Kept for backward compat |
 | `packages/benchmark/` | Performance benchmarking and persona evaluation |
 | `packages/themes-*/` | Theme packages (comedy, literary, mythology-fantasy, prestige-tv, realistic, scifi, superheroes) |
-| `pennyfarthing_scripts/` | Distributed Python package (hooks, jira, sprint, story, prime) |
+| `pennyfarthing-dist/pf/` | Distributed Python package (hooks, jira, sprint, story, prime) |
 | `tests/` | Framework tests |
 
 **Migration (98-16/17/18):** Shared utilities and WheelHub server moved into core. Cyclist is now a thin wrapper adding WebSocket + OTLP. Import shared utils from `packages/core/src/shared/`.
