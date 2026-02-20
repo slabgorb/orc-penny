@@ -143,6 +143,10 @@ stories:
       Found during clean E2E install of orc-ax (2026-02-19).
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-20'
     workflow: tdd
+    completed: '2026-02-20'
     type: bug
+    review_verdict: approved
