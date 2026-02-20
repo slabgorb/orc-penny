@@ -1,0 +1,35 @@
+id: '122'
+type: epic
+title: SettingsPanel Read-Only Conversion
+description: Remove interactive controls from the Cyclist SettingsPanel. Replace with a read-only display of all settings and CLI command reference showing users how to change settings via /pf-settings skill. Reduces UI complexity and makes the skill the single entry point for configuration changes.
+priority: p1
+status: backlog
+repos: pennyfarthing
+stories:
+  - id: 122-1
+    title: Convert SettingsPanel from interactive controls to read-only display
+    description: 'Remove all interactive controls from SettingsPanel.tsx (theme dropdown, ThemePalette color picker, FontPicker/FontSizePicker for UI and code fonts, Bell Mode and Relay Mode toggles). Replace with a structured read-only view that displays all current settings grouped by category: Theme & Display (theme, colorPreset, fonts), Workflow (bell_mode, relay_mode, permission_mode, git_monitor), and Notifications. Data comes from existing /api/settings endpoint. WebSocket listener stays for live updates when settings change via CLI. ACs: (1) No interactive controls remain in SettingsPanel, (2) All settings from config.local.yaml are displayed read-only, (3) Settings update live when changed via /pf-settings CLI, (4) Panel renders cleanly in both Cyclist and BikeRack.'
+    points: 3
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-20'
+    workflow: tdd
+    completed: '2026-02-20'
+    type: refactor
+    review_verdict: approved
+  - id: 122-2
+    title: Add CLI command reference and usage guide to SettingsPanel
+    description: 'Add a help/reference section to the SettingsPanel that shows users how to change settings using the /pf-settings skill. For each displayed setting, show the dot-path key (e.g. display.colorPreset, workflow.relay_mode) so users know exactly what to type. Include a quick-reference block with example commands: /pf-settings show, /pf-settings get theme, /pf-settings set workflow.bell_mode true. ACs: (1) Each setting displays its dot-path key, (2) Quick-reference section with /pf-settings examples is visible, (3) Help text is concise and scannable, not a wall of text.'
+    points: 2
+    priority: p1
+    status: backlog
+    workflow: trivial
+  - id: 122-3
+    title: Remove dead interactive components after SettingsPanel conversion
+    description: 'After 122-1 lands, audit and remove components that are no longer used: ThemePalette, FontPicker, FontSizePicker, and any Switch toggle wrappers if only consumed by SettingsPanel. Check for other consumers before deleting. Clean up unused imports in SettingsPanel.tsx. Do NOT remove the PATCH /api/settings endpoint — other tools may use it. ACs: (1) No orphaned component files remain, (2) No unused imports in SettingsPanel, (3) Build passes clean.'
+    points: 1
+    priority: p2
+    status: backlog
+    workflow: trivial
+    type: chore
