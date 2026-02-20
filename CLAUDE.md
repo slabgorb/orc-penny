@@ -158,7 +158,7 @@ Electron app: React 19, Tailwind v4, shadcn/ui, dockview-react panels.
 
 **BikeRack:** Standalone panel viewer mode — Dockview layout with `?panel=X` routing, `--project-dir` for decoupled launch. Key files: `bikerack.ts` (entry), `BikeRackWorkspace.tsx` (layout), `StandalonePanel.tsx` (routing)
 
-**Panels:** MessagePanel (sacred center), ProgressPanel, ChangedPanel, DiffsPanel, SprintPanel, BikeLanePanel, ACPanel, AcceptanceCriteriaPanel, SettingsPanel, DebugPanel, GitPanel, BackgroundPanel, TodoPanel, AuditLogPanel, WorkflowPanel, HotspotsPanel
+**Panels:** MessagePanel (sacred center), ProgressPanel, ChangedPanel, DiffsPanel, SprintPanel, BikeLanePanel, ACPanel, AcceptanceCriteriaPanel, SettingsPanel, DebugPanel, GitPanel, TodoPanel, AuditLogPanel, WorkflowPanel, HotspotsPanel
 </info>
 
 <context>
