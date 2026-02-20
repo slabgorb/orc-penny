@@ -36,6 +36,8 @@ Never edit files inside `node_modules/` or symlink targets. Trace symlinks back 
 </code-editing>
 
 <git-operations>
+NEVER skip GPG/SSH commit signing. Do not use `--no-gpg-sign`, `--no-sign`, or any flag that bypasses commit signature verification. If signing fails, stop and tell the user.
+
 Commit format: `<type>(<scope>): <subject>`
 
 Per-repo branching is defined in `.pennyfarthing/repos.yaml` (`branch_strategy` and `default_branch` fields).
