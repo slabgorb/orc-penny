@@ -1,0 +1,29 @@
+id: '120'
+type: epic
+title: BikeRack TUI Enhancements
+description: Improve the BikeRack Python TUI — richer detail views, markdown preview, context and session visibility
+priority: p2
+status: backlog
+repos: pennyfarthing
+stories:
+  - id: 120-1
+    title: 'Story detail screen: markdown preview with context and session'
+    description: Enhance the BikeRack TUI StoryDetailScreen to show a rich markdown preview panel with story information, epic/story context files (sprint/context/), and session notes (.session/). Currently the detail screen shows structured metadata but doesn't render the actual context or session markdown content. Add a scrollable markdown preview section that loads and renders context-epic-N.md, context-story-ID.md, and the session file when available.
+    points: 3
+    priority: p1
+    status: backlog
+    workflow: tdd
+  - id: 120-2
+    title: Combine audit log and token counts into a single panel
+    description: Merge the AuditLogPanel and token/context usage display into a unified panel in the BikeRack TUI. Currently audit log entries and token count metrics live in separate views. Combine them so the user sees a single panel with token usage summary at the top and the scrollable audit log below.
+    points: 2
+    priority: p2
+    status: backlog
+    workflow: trivial
+  - id: 120-3
+    title: Enrich progress screen with detailed sprint and story metrics
+    description: 'Overhaul the BikeRack TUI ProgressPanel to surface much richer information. Currently shows minimal sprint progress. Expand to include: sprint burndown (points done/remaining/in-progress), per-epic progress bars with story counts, current story details (workflow phase, acceptance criteria progress, time in phase), velocity metrics, days remaining in sprint, and recently completed stories. Pull data from sprint YAML, session files, and workflow state to give a comprehensive at-a-glance view of sprint health and current work status.'
+    points: 3
+    priority: p1
+    status: backlog
+    workflow: trivial
