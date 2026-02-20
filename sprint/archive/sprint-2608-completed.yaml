@@ -71,3 +71,8 @@ completed_stories:
     title: Context meter in TUI needs more frequent redraws
     points: 2
     completed: '2026-02-18'
+  - id: 118-1
+    epic: MSSCI-15184
+    title: Add future epics to the Sprint Panel in the TUI
+    points: 3
+    completed: '2026-02-20'

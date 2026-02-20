@@ -1,222 +1,25 @@
-id: '110'
+id: '118'
 type: epic
 title: BikeRack TUI — Interactive Command Center
-description: |
-  Transform BikeRack TUI from passive monitor to interactive command center.
-  Cross-panel event bus, story drill-through, portrait image header, and
-  split-pane layouts. Eliminates context switches — the user never leaves the TUI.
-
-  Phase 1 (foundation): Cross-panel event bus + Changed→Diffs navigation
-  Phase 2 (drill-through): Story detail screen with dossier layout
-  Phase 3 (visuals): Portrait image header with textual-image
-  Phase 4 (layout): Split-pane layouts with workflow-aware presets
-priority: p1
+priority: p2
 status: done
 repos: pennyfarthing
 jira: MSSCI-15184
 stories:
-  - id: 110-1
-    jira: MSSCI-15185
-    title: Cross-panel event bus with Changed-to-Diffs navigation
+  - id: 118-1
+    title: Add future epics to the Sprint Panel in the TUI
     description: |
-      Add a Textual Message-based event bus for cross-panel communication.
-      First use case: Enter on a file in ChangedPanel switches to DiffsPanel
-      filtered to that file.
-
-      1. Define PanelEvent message types (NavigateToFile, NavigateToStory)
-         in a new events.py module
-      2. Migrate ChangedPanel from Static text rendering to OptionList or
-         ListView with selectable file entries and arrow key navigation
-      3. Add Enter handler that posts NavigateToFile message
-      4. DiffsPanel handles NavigateToFile by matching file index + rerender
-      5. App-level handler switches active panel on navigation events
-      6. Context-sensitive footer keybindings per active panel
-    points: 5
-    priority: p0
-    status: done
-    assigned_to: keith.avery@1898andco.io
-    started: '2026-02-16'
-    repos: pennyfarthing
-    workflow: tdd
-    completed: '2026-02-17'
-    goals:
-      - PanelEvent base message class and NavigateToFile event defined in events.py
-      - ChangedPanel renders selectable file list with arrow key navigation
-      - Enter on a changed file switches to DiffsPanel showing that files diff
-      - Footer shows context-sensitive bindings per active panel
-      - Existing j/k/e/n/p bindings continue to work unchanged
-  - id: 110-2
-    jira: MSSCI-15186
-    title: Story drill-through with dossier detail screen
-    description: |
-      Add Enter-to-drill-through on sprint stories. Pushes a StoryDetailScreen
-      showing a mission-dossier layout with AC checklist, workflow phase dots,
-      git branch, PR link, and session notes.
-
-      1. Add per-story cursor to SprintPanel (arrow keys within expanded epic)
-      2. Create StoryDetailScreen extending Textual Screen with push/pop
-      3. Fetch story detail data (AC, session, workflow) via file read or API
-      4. Render dossier layout: header, AC progress, workflow phase, git info
-      5. Escape pops back to sprint overview
-      6. Enter on PR link opens browser via webbrowser.open()
-    points: 5
-    priority: p1
-    status: done
-    assigned_to: keith.avery@1898andco.io
-    repos: pennyfarthing
-    workflow: tdd
-    completed: '2026-02-17'
-    goals:
-      - Per-story cursor navigation within expanded epics (arrow keys)
-      - Enter on story pushes StoryDetailScreen
-      - Detail screen shows AC checklist with completion progress
-      - Detail screen shows workflow phase dots
-      - Detail screen shows git branch and PR link
-      - Escape returns to sprint overview
-  - id: 110-3
-    jira: MSSCI-15187
-    title: Portrait image header with textual-image
-    description: |
-      Add persona portrait image to AgentHeader using the textual-image
-      library. Portrait displays alongside agent name/role/quote in a
-      Horizontal layout. Graceful fallback for unsupported terminals.
-
-      1. Add textual-image to [tui] optional deps in pyproject.toml
-      2. Port portrait path resolution to Python (theme YAML -> slug -> file)
-      3. Protocol detection before App.run() (Kinchloe pattern)
-      4. Create PersonaImageHeader with Horizontal(Image, AgentInfo) layout
-      5. Fetch portrait path from /ws/persona data or resolve locally
-      6. Fallback to text-only header if no portrait or unsupported terminal
-    points: 3
-    priority: p1
-    status: done
-    assigned_to: keith.avery@1898andco.io
-    repos: pennyfarthing
-    workflow: tdd
-    completed: '2026-02-17'
-    goals:
-      - textual-image added to [tui] optional dependencies
-      - Portrait image renders alongside agent info in header
-      - Protocol auto-detection runs before App.run()
-      - Graceful fallback to text-only on unsupported terminals
-      - Portrait updates on agent/persona change via WebSocket
-  - id: 110-4
-    jira: MSSCI-15188
-    title: Split-pane layouts with workflow-aware presets
-    description: |
-      Replace single-panel-at-a-time layout with split-pane support.
-      Two panels visible side-by-side in a Horizontal container.
-      Named layout presets and workflow-aware auto-arrangement.
-
-      1. Refactor main layout from VerticalScroll(hidden panels) to
-         Horizontal(left_pane, right_pane) container structure
-      2. Add Shift+S keybinding to toggle split mode
-      3. In split mode, Tab switches focus between panes
-      4. Named presets: sprint+diffs, changed+diffs, progress+debug
-      5. /bc split <left> <right> command for custom splits
-      6. Workflow-aware auto-layout via /ws/focus channel extension
-    points: 5
-    priority: p2
-    status: done
-    assigned_to: keith.avery@1898andco.io
-    repos: pennyfarthing
-    workflow: tdd
-    completed: '2026-02-18'
-    goals:
-      - Two panels visible side-by-side in split mode
-      - Shift+S toggles between single and split layout
-      - Tab switches focus between split panes
-      - At least 3 named layout presets available
-      - /bc split command creates custom splits
-    review_findings: VALID_PANELS missing progress - pf bc split progress debug fails while preset exists in TUI
-    review_verdict: approved
-  - id: 110-5
-    jira: MSSCI-15192
-    title: Context meter footer bar
-    points: 3
-    priority: p1
-    status: done
-    assigned_to: keith.avery@1898andco.io
-    workflow: tdd
-    completed: '2026-02-17'
-  - id: 110-6
-    jira: MSSCI-15193
-    title: Project directory indicator in TUI header
-    points: 2
-    priority: p1
-    status: done
-    workflow: tdd
-    completed: '2026-02-19'
-  - id: 110-7
-    jira: MSSCI-15194
-    title: Fix velocity and sprint count points
-    points: 2
-    priority: p1
-    status: done
-    workflow: tdd
-    completed: '2026-02-17'
-    type: bug
-  - id: 110-8
-    jira: MSSCI-15195
-    title: Hook up audit log panel
+      The Sprint Panel in BikeRack/Cyclist currently only shows epics from the
+      active sprint. Add a section that displays future epics from future.yaml
+      so users can see upcoming work without leaving the TUI. Should show
+      initiative grouping, epic titles, point totals, and blocked status.
     points: 3
     priority: p2
     status: done
     assigned_to: keith.avery@1898andco.io
+    started: '2026-02-20'
     workflow: tdd
-    completed: '2026-02-17'
-  - id: 110-9
-    title: TUI portrait resolution for consumer installs
-    description: >-
-      Portrait images in the BikeRack TUI header only work in dogfooding mode.
-      In consumer installs, the npm package ships themes/ but not portraits/
-      (too large). The Python portrait_resolver.py returns None because
-      discover_all_theme_dirs() only finds .pennyfarthing/personas/themes/ and
-      looks for a sibling portraits/ which doesn't exist in the npm package.
-      The WheelHub Node.js server works because getPortraitsDir() walks up
-      from __dirname and finds the monorepo paths. Fix: teach the Python
-      resolver to search node_modules/@pennyfarthing/themes-*/portraits/ and
-      prevent pennyfarthing update from overwriting dogfooding symlinks.
-    points: 3
-    priority: p2
-    status: done
-    workflow: tdd
-    acceptance_criteria:
-      - Python resolve_portrait_path() finds portraits in consumer installs
-      - discover_all_theme_dirs() searches node_modules theme packages as fallback
-      - pennyfarthing update preserves dogfooding symlinks when manifest says symlink
-      - Test coverage for both consumer and dogfooding resolution paths
-    completed: '2026-02-18'
-  - id: 110-10
-    title: Audit log panel not showing data in TUI
-    description: >-
-      The audit log panel in the BikeRack TUI is hooked up (110-8) but not
-      displaying data. Investigate whether the WheelHub WebSocket is not
-      pushing audit events, the TUI panel is not subscribing correctly, or
-      the data format doesn't match what the panel expects.
-    points: 2
-    priority: p1
-    status: done
-    workflow: tdd
-    completed: '2026-02-19'
-  - id: 110-11
-    title: 'Fix git panel: cyclist settings module never initialized'
-    points: 2
-    priority: p1
-    status: done
-    workflow: trivial
-    completed: '2026-02-18'
-    type: bug
+    completed: '2026-02-20'
+    type: feature
     review_verdict: approved
-  - id: 110-12
-    jira: MSSCI-15300
-    title: Context meter in TUI needs more frequent redraws
-    points: 2
-    priority: p1
-    status: done
-    assigned_to: keith.avery@1898andco.io
-    started: '2026-02-18'
-    workflow: tdd
-    completed: '2026-02-18'
-    review_verdict: approved
-completed: '2026-02-19'
+completed: '2026-02-20'
