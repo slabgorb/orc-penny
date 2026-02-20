@@ -3,27 +3,23 @@ description: |
   A unified Cyclist panel combining story context, workflow phase, AC completion,
   todo status, git changes, and context window usage into a single at-a-glance view.
   Frontend-only — uses 5 existing WebSocket hooks, zero backend changes.
-status: backlog
+status: complete
 blocked_by:
-total_points: 0
+total_points: 5
 epics:
-  - epic-105
+  - epic-103
 stories:
-  - id: "105-1"
-    title: Panel scaffold with story header
+  - id: "103-11"
+    title: "ProgressPanel: at-a-glance story dashboard"
+    jira: MSSCI-14966
     type: feature
-    status: backlog
+    status: complete
+    points: 5
     workflow: tdd
     repos: pennyfarthing
-  - id: "105-2"
-    title: Workflow phase and progress sections
-    type: feature
-    status: backlog
-    workflow: tdd
-    repos: pennyfarthing
-  - id: "105-3"
-    title: Git status and context meter
-    type: feature
-    status: backlog
-    workflow: tdd
-    repos: pennyfarthing
+    pr: https://github.com/1898andCo/pennyfarthing/pull/895
+    notes: |
+      Delivered as a single story under Epic 103 (BikeRack TUI).
+      Original initiative had placeholder stories (105-1/2/3) that
+      collided with Epic 105 (Script-First Handoff). Consolidated
+      into one 5pt story that covered the full PRD scope.
