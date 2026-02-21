@@ -60,11 +60,10 @@ stories:
       YAML files. Document existing configs, gaps, and adoption plan.
     points: 2
     priority: p2
-    status: done
+    status: in_progress
     assigned_to: michael.pursifull@1898andco.io
     started: '2026-02-16'
     repos: pennyfarthing
-    completed: '2026-02-21'
   - id: 91-4
     jira: MSSCI-14514
     title: 'Research: Layer 1 validator adaptation from BMAD'
@@ -74,11 +73,10 @@ stories:
       types, false positive handling, runtime variable exclusions.
     points: 2
     priority: p2
-    status: done
+    status: in_progress
     assigned_to: michael.pursifull@1898andco.io
     started: '2026-02-16'
     repos: pennyfarthing
-    completed: '2026-02-21'
   - id: 91-5
     jira: MSSCI-14515
     title: 'Research: Layer 2 schema validation approach and gap analysis'
