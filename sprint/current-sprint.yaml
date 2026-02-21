@@ -19,7 +19,7 @@ stories:
     title: Add party-mode roleplay variant and validate-refs CI/pre-commit
     points: 3
     priority: p1
-    status: in_progress
+    status: done
     repos: pennyfarthing
     workflow: trivial
     pr: 859
