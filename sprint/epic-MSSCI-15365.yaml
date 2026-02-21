@@ -67,11 +67,13 @@ stories:
       changelog, build, pack steps without committing, tagging, or publishing.
     points: 3
     priority: p2
-    status: backlog
+    status: done
     assigned_to: keith.avery@1898andco.io
     workflow: tdd
+    completed: '2026-02-21'
     refs:
       - github: 1898andCo/pennyfarthing-orchestrator#87
+    review_verdict: approved
   - id: 123-5
     jira: MSSCI-15370
     title: Document pnpm publish requirement in release gotchas
