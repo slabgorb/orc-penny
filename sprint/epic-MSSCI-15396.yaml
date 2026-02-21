@@ -47,9 +47,12 @@ stories:
     priority: p1
     refs:
       - github: 1898andCo/pennyfarthing#1020
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     workflow: trivial
+    completed: '2026-02-21'
     type: bug
+    review_verdict: approved
   - id: 120-5
     jira: MSSCI-15401
     title: Fix npm path resolution assuming monorepo layout
