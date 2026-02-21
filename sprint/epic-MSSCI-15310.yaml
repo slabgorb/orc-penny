@@ -187,10 +187,10 @@ stories:
       package.json.
     points: 1
     priority: p2
+    refs:
+      - github: 1898andCo/pennyfarthing#1016
     status: done
     workflow: trivial
     completed: '2026-02-21'
-    refs:
-      - github: 1898andCo/pennyfarthing#1016
     type: bug
     review_verdict: approved

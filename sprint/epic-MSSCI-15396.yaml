@@ -45,10 +45,10 @@ stories:
       other working channels.
     points: 2
     priority: p1
-    status: backlog
-    workflow: trivial
     refs:
       - github: 1898andCo/pennyfarthing#1020
+    status: backlog
+    workflow: trivial
     type: bug
   - id: 120-5
     jira: MSSCI-15401
@@ -59,12 +59,12 @@ stories:
       layout. Need a unified get_dist_root() function.
     points: 5
     priority: p1
+    refs:
+      - github: 1898andCo/pennyfarthing#1024
     status: done
     assigned_to: keith.avery@1898andco.io
     workflow: tdd
     completed: '2026-02-21'
-    refs:
-      - github: 1898andCo/pennyfarthing#1024
     type: bug
     review_findings: 'AC2 not addressed: 0/12 call sites refactored. Tests for AC2 give false confidence.'
     review_verdict: approved
@@ -88,3 +88,15 @@ stories:
     refs:
       - github: 1898andCo/pennyfarthing#1028
     type: bug
+  - id: 120-7
+    jira: MSSCI-15409
+    title: Refactor remaining call sites to use get_dist_root()
+    description: '5 modules still hardcode root / pennyfarthing-dist / ... instead of using get_dist_root() from story 120-5. Mechanical refactor following the established pattern. Remaining: hooks_installer.py:51,131, cli.py:300, portrait_resolver.py:104-122, statusline.py:258-261, tandem_awareness.py:181. Pattern: import get_dist_root, replace hardcoded path with get_dist_root(root). Ref: 120-5 reviewer finding [MEDIUM].'
+    points: 2
+    priority: p2
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-21'
+    workflow: trivial
+    completed: '2026-02-21'
+    review_verdict: approved
