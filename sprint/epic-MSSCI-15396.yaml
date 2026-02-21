@@ -69,6 +69,7 @@ stories:
     review_findings: 'AC2 not addressed: 0/12 call sites refactored. Tests for AC2 give false confidence.'
     review_verdict: approved
   - id: 120-6
+    jira: MSSCI-15411
     title: Sprint panel ignores active sprint preference from sprint registry
     description: >-
       The TUI Sprint panel always loads sprint/current-sprint.yaml instead of
@@ -83,7 +84,7 @@ stories:
     refs:
       - github: 1898andCo/pennyfarthing#1028
     status: backlog
-    assigned_to: michael.pursifull@1898andco.io
+    assigned_to: keith.avery@1898andco.io
     started: ''
     workflow: tdd
     completed: ''
