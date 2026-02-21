@@ -44,8 +44,6 @@ stories:
       lock-free status approach or a fix to the cache busting logic.
     points: 2
     priority: p2
-    refs:
-      - github: 1898andCo/pennyfarthing-orchestrator#31
     status: backlog
     workflow: tdd
     refs:
