@@ -101,3 +101,14 @@ stories:
     workflow: trivial
     completed: '2026-02-21'
     review_verdict: approved
+  - id: 120-8
+    jira: MSSCI-15412
+    title: Story details and progress page enrichment with native Textual widgets
+    points: 3
+    priority: p2
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-21'
+    workflow: bdd
+    completed: '2026-02-21'
+    review_verdict: approved
