@@ -133,5 +133,9 @@ stories:
     title: Auto-reload Cyclist on code changes
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-21'
     workflow: tdd
+    completed: '2026-02-21'
+    review_verdict: approved
