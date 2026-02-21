@@ -86,6 +86,7 @@ stories:
     completed: '2026-02-19'
     type: bug
   - id: 117-8
+    jira: MSSCI-15383
     title: Setup workflow should create config.local.yaml with theme
     description: |
       After /pf-setup completes and sets theme in persona-config.yaml, config.local.yaml
@@ -98,10 +99,16 @@ stories:
       Found during clean E2E install of orc-ax (2026-02-19).
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-21'
     workflow: trivial
+    completed: '2026-02-21'
     type: bug
+    review_findings: step-07 'Do not overwrite' instruction prevents user theme selection from propagating to config.local.yaml when init already created it
+    review_verdict: approved
   - id: 117-9
+    jira: MSSCI-15384
     title: Fix pennyfarthing cyclist CLI command — points to wrong entry file
     description: |
       `npx pennyfarthing cyclist` silently exits with code 0 and no output.
@@ -121,10 +128,13 @@ stories:
       Found during clean E2E install of orc-ax (2026-02-19).
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     workflow: trivial
+    completed: '2026-02-21'
     type: bug
   - id: 117-10
+    jira: MSSCI-15385
     title: Doctor persona-config check false negative when config.local.yaml missing
     description: |
       Doctor reports "No theme configured" for the persona-config check even when
@@ -151,6 +161,7 @@ stories:
     type: bug
     review_verdict: approved
   - id: 117-11
+    jira: MSSCI-15386
     title: Fix npm install EHOSTUNREACH on theme packages
     description: >-
       npm install fails with EHOSTUNREACH while fetching theme packages
@@ -158,12 +169,13 @@ stories:
       to be a network or registry hosting issue for the theme sub-packages.
     points: 2
     priority: p1
-    status: backlog
-    workflow: trivial
     refs:
       - github: 1898andCo/pennyfarthing#1012
+    status: backlog
+    workflow: trivial
     type: bug
   - id: 117-12
+    jira: MSSCI-15387
     title: Fix version reporting inconsistency (2.0.0 vs 11.4.0)
     description: >-
       npx pennyfarthing --version reports 2.0.0 while doctor, update, and
@@ -171,8 +183,10 @@ stories:
       package.json.
     points: 1
     priority: p2
-    status: backlog
-    workflow: trivial
     refs:
       - github: 1898andCo/pennyfarthing#1016
+    status: done
+    workflow: trivial
+    completed: '2026-02-21'
     type: bug
+    review_verdict: approved

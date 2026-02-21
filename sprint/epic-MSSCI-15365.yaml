@@ -5,92 +5,101 @@ description: Harden the release pipeline after 11.3.x packaging failures. Pre-pu
 priority: p2
 status: backlog
 repos: pennyfarthing
+jira: MSSCI-15365
 stories:
   - id: 123-1
+    jira: MSSCI-15366
     title: Package contents assertion test and npm pack gate
     description: >-
-      Run npm pack --dry-run and assert tarball contents against a known-good
-      manifest before publishing. Catches missing files that slipped through
-      in 11.3.x releases.
+      Run npm pack --dry-run and assert tarball contents against a known-good manifest before publishing. Catches missing files that slipped through in 11.3.x releases.
     points: 3
     priority: p1
-    status: backlog
-    workflow: tdd
     refs:
       - github: 1898andCo/pennyfarthing-orchestrator#84
       - github: 1898andCo/pennyfarthing-orchestrator#88
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    workflow: tdd
+    completed: '2026-02-21'
     type: chore
+    review_verdict: approved
   - id: 123-2
+    jira: MSSCI-15367
     title: Automate changelog comparison link updates
     description: >-
-      Comparison links at the bottom of CHANGELOG.md drifted during 11.x.
-      Automate creation and validation of version comparison links during
-      releases.
+      Comparison links at the bottom of CHANGELOG.md drifted during 11.x. Automate creation and validation of version comparison links during releases.
     points: 2
     priority: p2
-    status: backlog
-    workflow: trivial
     refs:
       - github: 1898andCo/pennyfarthing-orchestrator#85
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    workflow: trivial
+    completed: '2026-02-21'
     type: chore
+    review_verdict: approved
   - id: 123-3
+    jira: MSSCI-15368
     title: Add pf release deprecate command
     description: >-
-      Automate npm deprecation, changelog updates, and git notes when a bad
-      version needs to be deprecated. v11.3.7 had to be manually deprecated
-      after the workspace:* leak.
+      Automate npm deprecation, changelog updates, and git notes when a bad version needs to be deprecated. v11.3.7 had to be manually deprecated after the workspace:* leak.
     points: 3
     priority: p2
-    status: backlog
-    workflow: tdd
     refs:
       - github: 1898andCo/pennyfarthing-orchestrator#86
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-21'
+    workflow: tdd
+    completed: '2026-02-21'
+    review_verdict: approved
   - id: 123-4
+    jira: MSSCI-15369
     title: Implement pf release dry-run command
     description: >-
-      Simulate the full release pipeline without publishing. Run version bump,
-      changelog, build, pack steps without committing, tagging, or publishing.
+      Simulate the full release pipeline without publishing. Run version bump, changelog, build, pack steps without committing, tagging, or publishing.
     points: 3
     priority: p2
-    status: backlog
-    workflow: tdd
     refs:
       - github: 1898andCo/pennyfarthing-orchestrator#87
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    workflow: tdd
+    completed: '2026-02-21'
+    review_verdict: approved
   - id: 123-5
+    jira: MSSCI-15370
     title: Document pnpm publish requirement in release gotchas
     description: >-
-      Document in CONTRIBUTING.md, release workflow, and justfile that pnpm
-      publish must always be used in the pnpm workspace. npm publish leaks
-      literal workspace:* refs.
+      Document in CONTRIBUTING.md, release workflow, and justfile that pnpm publish must always be used in the pnpm workspace. npm publish leaks literal workspace:* refs.
     points: 1
     priority: p1
-    status: backlog
-    workflow: trivial
     refs:
       - github: 1898andCo/pennyfarthing-orchestrator#89
-    type: chore
-  - id: 123-6
-    title: Consumer install smoke test in CI
-    description: >-
-      CI job that packs, installs in a clean temp directory, and runs
-      pennyfarthing doctor to validate. Every 11.x packaging bug would have
-      been caught by this.
-    points: 3
-    priority: p1
-    status: backlog
-    workflow: tdd
-    refs:
-      - github: 1898andCo/pennyfarthing-orchestrator#83
-    type: chore
-  - id: 123-7
-    title: Set up git-lfs for portrait images in cyclist package
-    description: >-
-      The cyclist package bundles ~54MB of portrait images that bloat git
-      history. Set up git-lfs to track image files and migrate existing images.
-    points: 2
-    priority: p3
     status: backlog
     workflow: trivial
+    type: chore
+  - id: 123-6
+    jira: MSSCI-15371
+    title: Consumer install smoke test in CI
+    description: >-
+      CI job that packs, installs in a clean temp directory, and runs pennyfarthing doctor to validate. Every 11.x packaging bug would have been caught by this.
+    points: 3
+    priority: p1
+    refs:
+      - github: 1898andCo/pennyfarthing-orchestrator#83
+    status: backlog
+    workflow: tdd
+    type: chore
+  - id: 123-7
+    jira: MSSCI-15372
+    title: Set up git-lfs for portrait images in cyclist package
+    description: >-
+      The cyclist package bundles ~54MB of portrait images that bloat git history. Set up git-lfs to track image files and migrate existing images.
+    points: 2
+    priority: p3
     refs:
       - github: 1898andCo/pennyfarthing-orchestrator#90
+    status: backlog
+    workflow: trivial
     type: chore
