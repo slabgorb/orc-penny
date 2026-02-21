@@ -120,4 +120,21 @@ stories:
       - Tab switches focus between split panes
       - At least 3 named layout presets available
       - /bc split command creates custom splits
+  - id: 110-5
+    title: Filter archived epics from active sprint view in TUI
+    points: 2
+    priority: p2
+    status: done
+    workflow: trivial
+    completed: '2026-02-21'
+    type: bug
+    review_verdict: approved
+  - id: 110-6
+    title: Add completed epics section to TUI sprint panel
+    points: 2
+    priority: p1
+    status: done
+    workflow: trivial
+    completed: '2026-02-21'
+    review_verdict: approved
 completed: '2026-02-21'
