@@ -34,12 +34,12 @@ stories:
       Reconnecting because ws_client.py uses a single shared connection state
       and the nonexistent background-tasks WS channel poisons it for all
       other working channels.
-    refs:
-      - github: 1898andCo/pennyfarthing#1020
     points: 2
     priority: p1
     status: backlog
     workflow: trivial
+    refs:
+      - github: 1898andCo/pennyfarthing#1020
     type: bug
   - id: 120-5
     title: Fix npm path resolution assuming monorepo layout
@@ -47,10 +47,10 @@ stories:
       Umbrella issue: 12+ features silently fail or crash in npm-installed
       projects because path resolution hardcodes the monorepo directory
       layout. Need a unified get_dist_root() function.
-    refs:
-      - github: 1898andCo/pennyfarthing#1024
     points: 5
     priority: p1
     status: backlog
     workflow: tdd
+    refs:
+      - github: 1898andCo/pennyfarthing#1024
     type: bug

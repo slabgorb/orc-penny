@@ -20,11 +20,15 @@ stories:
     review_verdict: approved
   - id: 122-2
     title: Add CLI command reference and usage guide to SettingsPanel
-    description: 'Add a help/reference section to the SettingsPanel that shows users how to change settings using the /pf-settings skill. For each displayed setting, show the dot-path key (e.g. display.colorPreset, workflow.relay_mode) so users know exactly what to type. Include a quick-reference block with example commands: /pf-settings show, /pf-settings get theme, /pf-settings set workflow.bell_mode true. ACs: (1) Each setting displays its dot-path key, (2) Quick-reference section with /pf-settings examples is visible, (3) Help text is concise and scannable, not a wall of text.'
-    points: 2
+    description: 'Fix SettingsPanel defects from 122-1 and add CLI command reference. Issues: (1) No styling — setting-row/label/value CSS classes have no style definitions, panel renders as unstyled text. (2) Undefined values — String() on undefined settings shows "undefined" for Bell Mode, Phase Change, Sound. (3) Missing values — Theme, Color Preset, and font settings render blank because API data shape does not match the interface. (4) Remove Notifications section — not a real feature, phase_change and sound are not implemented. (5) No CLI instructions — users cannot see how to change settings. ACs: (1) Settings panel has proper visual styling with labeled rows, (2) All setting values display correctly from the API (no undefined or blank), (3) Notifications section removed, (4) CLI command reference shows /pf-settings usage and dot-path keys for each setting, (5) Help text is concise and scannable.'
+    points: 3
     priority: p1
-    status: backlog
-    workflow: trivial
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-21'
+    workflow: tdd
+    completed: '2026-02-21'
+    review_verdict: approved
   - id: 122-3
     title: Remove dead interactive components after SettingsPanel conversion
     description: 'After 122-1 lands, audit and remove components that are no longer used: ThemePalette, FontPicker, FontSizePicker, and any Switch toggle wrappers if only consumed by SettingsPanel. Check for other consumers before deleting. Clean up unused imports in SettingsPanel.tsx. Do NOT remove the PATCH /api/settings endpoint — other tools may use it. ACs: (1) No orphaned component files remain, (2) No unused imports in SettingsPanel, (3) Build passes clean.'

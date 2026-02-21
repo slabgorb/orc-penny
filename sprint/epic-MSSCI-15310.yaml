@@ -156,12 +156,12 @@ stories:
       npm install fails with EHOSTUNREACH while fetching theme packages
       (@pennyfarthing/themes-*), preventing installation entirely. Appears
       to be a network or registry hosting issue for the theme sub-packages.
-    refs:
-      - github: 1898andCo/pennyfarthing#1012
     points: 2
     priority: p1
     status: backlog
     workflow: trivial
+    refs:
+      - github: 1898andCo/pennyfarthing#1012
     type: bug
   - id: 117-12
     title: Fix version reporting inconsistency (2.0.0 vs 11.4.0)
@@ -169,10 +169,10 @@ stories:
       npx pennyfarthing --version reports 2.0.0 while doctor, update, and
       manifest all report 11.4.0. The CLI reads version from the wrong
       package.json.
-    refs:
-      - github: 1898andCo/pennyfarthing#1016
     points: 1
     priority: p2
     status: backlog
     workflow: trivial
+    refs:
+      - github: 1898andCo/pennyfarthing#1016
     type: bug
