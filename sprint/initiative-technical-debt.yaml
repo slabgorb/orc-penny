@@ -65,6 +65,12 @@ standalone_stories:
     type: refactor
   - id: td-5
     title: Re-load agent after plan mode context clear
+    description: >-
+      Leaving plan mode with a context clear (or compact) causes the system
+      to forget the loaded agent. Need a hook to detect when no agent is
+      loaded and re-load the last active one.
+    refs:
+      - github: 1898andCo/pennyfarthing-orchestrator#38
     points: 2
     priority: p2
     status: backlog

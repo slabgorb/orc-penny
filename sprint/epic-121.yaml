@@ -33,6 +33,12 @@ stories:
     type: bug
   - id: 121-4
     title: Fix git sync cache busting for stale UI state
+    description: >-
+      The git status cache mechanism is not invalidating properly on writes,
+      leading to stale/incorrect git state in the UI. Needs either a
+      lock-free status approach or a fix to the cache busting logic.
+    refs:
+      - github: 1898andCo/pennyfarthing-orchestrator#31
     points: 2
     priority: p2
     status: backlog

@@ -8,6 +8,13 @@ repos: pennyfarthing
 stories:
   - id: 123-1
     title: Package contents assertion test and npm pack gate
+    description: >-
+      Run npm pack --dry-run and assert tarball contents against a known-good
+      manifest before publishing. Catches missing files that slipped through
+      in 11.3.x releases.
+    refs:
+      - github: 1898andCo/pennyfarthing-orchestrator#84
+      - github: 1898andCo/pennyfarthing-orchestrator#88
     points: 3
     priority: p1
     status: backlog
@@ -15,6 +22,12 @@ stories:
     type: chore
   - id: 123-2
     title: Automate changelog comparison link updates
+    description: >-
+      Comparison links at the bottom of CHANGELOG.md drifted during 11.x.
+      Automate creation and validation of version comparison links during
+      releases.
+    refs:
+      - github: 1898andCo/pennyfarthing-orchestrator#85
     points: 2
     priority: p2
     status: backlog
@@ -22,18 +35,35 @@ stories:
     type: chore
   - id: 123-3
     title: Add pf release deprecate command
+    description: >-
+      Automate npm deprecation, changelog updates, and git notes when a bad
+      version needs to be deprecated. v11.3.7 had to be manually deprecated
+      after the workspace:* leak.
+    refs:
+      - github: 1898andCo/pennyfarthing-orchestrator#86
     points: 3
     priority: p2
     status: backlog
     workflow: tdd
   - id: 123-4
     title: Implement pf release dry-run command
+    description: >-
+      Simulate the full release pipeline without publishing. Run version bump,
+      changelog, build, pack steps without committing, tagging, or publishing.
+    refs:
+      - github: 1898andCo/pennyfarthing-orchestrator#87
     points: 3
     priority: p2
     status: backlog
     workflow: tdd
   - id: 123-5
     title: Document pnpm publish requirement in release gotchas
+    description: >-
+      Document in CONTRIBUTING.md, release workflow, and justfile that pnpm
+      publish must always be used in the pnpm workspace. npm publish leaks
+      literal workspace:* refs.
+    refs:
+      - github: 1898andCo/pennyfarthing-orchestrator#89
     points: 1
     priority: p1
     status: backlog
@@ -41,6 +71,12 @@ stories:
     type: chore
   - id: 123-6
     title: Consumer install smoke test in CI
+    description: >-
+      CI job that packs, installs in a clean temp directory, and runs
+      pennyfarthing doctor to validate. Every 11.x packaging bug would have
+      been caught by this.
+    refs:
+      - github: 1898andCo/pennyfarthing-orchestrator#83
     points: 3
     priority: p1
     status: backlog
@@ -48,6 +84,11 @@ stories:
     type: chore
   - id: 123-7
     title: Set up git-lfs for portrait images in cyclist package
+    description: >-
+      The cyclist package bundles ~54MB of portrait images that bloat git
+      history. Set up git-lfs to track image files and migrate existing images.
+    refs:
+      - github: 1898andCo/pennyfarthing-orchestrator#90
     points: 2
     priority: p3
     status: backlog
