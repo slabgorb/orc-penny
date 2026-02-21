@@ -114,6 +114,7 @@ stories:
     completed: '2026-02-21'
     review_verdict: approved
   - id: 120-9
+    jira: MSSCI-15415
     title: Add statusbar CLI toggle setting
     points: 1
     priority: p1
@@ -121,12 +122,14 @@ stories:
     workflow: trivial
     type: chore
   - id: 120-10
+    jira: MSSCI-15416
     title: Add setting to move footer bar to header position
     points: 2
     priority: p1
     status: backlog
     workflow: trivial
   - id: 120-11
+    jira: MSSCI-15417
     title: Auto-reload Cyclist on code changes
     points: 2
     priority: p1
