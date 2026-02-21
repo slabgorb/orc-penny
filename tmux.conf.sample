@@ -1,17 +1,18 @@
 # Pennyfarthing Development - tmux config
 # Usage: ./tmux-dev (launcher script)
 #
-# Layout (2 columns):
-# ┌─────────────┬─────────────┐
-# │  claude (1) │  claude (2) │
-# ├─────────────┼─────────────┤
-# │   TUI (1)   │   TUI (2)   │
-# └─────────────┴─────────────┘
+# Layout (top/bottom):
+# ┌──────────────────────────────────────┐
+# │            claude code               │
+# ├──────────────────────────────────────┤
+# │              TUI                     │
+# └──────────────────────────────────────┘
 
 # --- Key passthrough ---
 # Enable extended keys (CSI u mode) so shift+enter, ctrl+enter, etc.
 # are properly distinguished from plain enter in Claude Code CLI
 set -g extended-keys on
+set -g extended-keys-format csi-u
 set -as terminal-features ",*:extkeys"
 
 # Don't let tmux eat modifier keys
@@ -28,6 +29,16 @@ set -as terminal-overrides ",*:Ms=\\E]52;c;%p2%s\\7"
 # input or character-by-character interpretation in Claude Code CLI
 set -as terminal-overrides ",*:Ss=\\E[%p1%d q:Se=\\E[2 q"
 
+# --- Image passthrough ---
+# Allow inline image protocols (Kitty, iTerm2, Sixel) to pass through tmux
+# so portraits and logos render in the terminal
+set -g allow-passthrough all
+
+# Propagate Kitty env vars into tmux sessions so image protocol
+# detection works (tmux overwrites TERM to tmux-256color)
+set -ga update-environment "KITTY_WINDOW_ID"
+set -ga update-environment "TERM_PROGRAM"
+
 # --- Terminal capabilities ---
 # Truecolor support
 set -g default-terminal "tmux-256color"
@@ -35,13 +46,14 @@ set -as terminal-overrides ",*:Tc"
 
 # Unicode/wide character rendering — tell tmux to trust the terminal's
 # width calculations rather than guessing, reduces box-drawing corruption
-set -g utf8-option on 2>/dev/null  # tmux < 3.4 compat (silently ignored if unavailable)
-set -as terminal-overrides ",*:Eneks=\\E[>4;1m:Dsenks=\\E[>4;0m"
+set -gq utf8-option on
 
-# --- Alternate screen / scrollback ---
+# --- Mouse ---
+# Full mouse support: click to select pane, scroll, drag borders to resize
+set -g mouse on
+
 # Allow mouse scroll to enter copy-mode in the normal buffer but pass
 # scroll events through when an app (like Claude Code) uses alternate screen
-set -g mouse on
 set -ga terminal-overrides ",*:smcup@:rmcup@"
 
 # --- Responsiveness ---

@@ -13,12 +13,6 @@ set -euo pipefail
 # Usage: ./tmux-dev [directory]
 #   directory defaults to current working directory
 #
-# Setup:
-#   cp tmux.conf.sample tmux.conf
-#   cp tmux-dev.sample tmux-dev
-#   chmod +x tmux-dev
-#   ./tmux-dev
-#
 # Uses a dedicated tmux socket (-L pf) so the project tmux.conf
 # is guaranteed to load, avoiding conflicts with ~/.tmux.conf.
 

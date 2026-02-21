@@ -61,4 +61,3 @@ sprint/.migration-backup-*/
 
 # Local tmux development layout
 tmux.conf
-tmux-dev
