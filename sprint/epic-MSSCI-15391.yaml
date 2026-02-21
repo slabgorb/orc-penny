@@ -48,4 +48,6 @@ stories:
       - github: 1898andCo/pennyfarthing-orchestrator#31
     status: backlog
     workflow: tdd
+    refs:
+      - github: 1898andCo/pennyfarthing-orchestrator#31
     type: bug

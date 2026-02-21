@@ -49,6 +49,8 @@ stories:
       - github: 1898andCo/pennyfarthing#1020
     status: backlog
     workflow: trivial
+    refs:
+      - github: 1898andCo/pennyfarthing#1020
     type: bug
   - id: 120-5
     jira: MSSCI-15401
@@ -63,6 +65,8 @@ stories:
       - github: 1898andCo/pennyfarthing#1024
     status: backlog
     workflow: tdd
+    refs:
+      - github: 1898andCo/pennyfarthing#1024
     type: bug
   - id: 120-6
     title: Sprint panel ignores active sprint preference from sprint registry
@@ -74,10 +78,14 @@ stories:
       Fix the SprintPanel to resolve the active sprint through the registry,
       display the correct sprint data, and show provenance (sprint name, type,
       source path) in the panel header.
-    refs:
-      - github: 1898andCo/pennyfarthing#1028
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: michael.pursifull@1898andco.io
+    started: '2026-02-21'
     workflow: tdd
+    completed: '2026-02-21'
+    refs:
+      - github: 1898andCo/pennyfarthing#1028
     type: bug
+    review_verdict: approved
