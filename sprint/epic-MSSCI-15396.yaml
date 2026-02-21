@@ -83,12 +83,13 @@ stories:
     priority: p1
     refs:
       - github: 1898andCo/pennyfarthing#1028
-    status: backlog
+    status: done
     assigned_to: keith.avery@1898andco.io
     started: ''
     workflow: tdd
-    completed: ''
+    completed: '2026-02-21'
     type: bug
+    review_verdict: approved
   - id: 120-7
     jira: MSSCI-15409
     title: Refactor remaining call sites to use get_dist_root()
