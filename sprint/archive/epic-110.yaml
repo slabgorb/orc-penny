@@ -120,3 +120,4 @@ stories:
       - Tab switches focus between split panes
       - At least 3 named layout presets available
       - /bc split command creates custom splits
+completed: '2026-02-21'

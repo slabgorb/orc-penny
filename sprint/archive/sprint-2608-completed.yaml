@@ -12,6 +12,7 @@ completed_epics:
   - MSSCI-15184
   - MSSCI-14697
   - MSSCI-15373
+  - '110'
 completed_stories:
   - id: 110-1
     epic: MSSCI-15184

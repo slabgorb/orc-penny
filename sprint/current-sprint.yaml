@@ -11,7 +11,6 @@ epics:
   - MSSCI-14510
   - MSSCI-15310
   - MSSCI-15396
-  - '110'
   - MSSCI-15391
   - MSSCI-15365
 stories:

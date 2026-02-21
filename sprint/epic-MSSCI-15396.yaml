@@ -13,8 +13,12 @@ stories:
     description: Enhance the BikeRack TUI StoryDetailScreen to show a rich markdown preview panel with story information, epic/story context files (sprint/context/), and session notes (.session/). Currently the detail screen shows structured metadata but doesn't render the actual context or session markdown content. Add a scrollable markdown preview section that loads and renders context-epic-N.md, context-story-ID.md, and the session file when available.
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-21'
     workflow: tdd
+    completed: '2026-02-21'
+    review_verdict: approved
   - id: 120-2
     jira: MSSCI-15398
     title: Combine audit log and token counts into a single panel
@@ -41,10 +45,10 @@ stories:
       other working channels.
     points: 2
     priority: p1
-    status: backlog
-    workflow: trivial
     refs:
       - github: 1898andCo/pennyfarthing#1020
+    status: backlog
+    workflow: trivial
     type: bug
   - id: 120-5
     jira: MSSCI-15401
@@ -55,8 +59,8 @@ stories:
       layout. Need a unified get_dist_root() function.
     points: 5
     priority: p1
-    status: backlog
-    workflow: tdd
     refs:
       - github: 1898andCo/pennyfarthing#1024
+    status: backlog
+    workflow: tdd
     type: bug
