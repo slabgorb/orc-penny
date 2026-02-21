@@ -32,9 +32,12 @@ stories:
     description: The footer bar in BikeRack TUI shows keybinding hints with incorrect bracket formatting. The bracket characters around key names are wrong or inconsistent, making the menu hard to read. Fix the keybinding label rendering in the footer widget to display accurate bracket notation matching the actual key shortcuts.
     points: 1
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     workflow: trivial
+    completed: '2026-02-21'
     type: bug
+    review_verdict: approved
   - id: 121-4
     jira: MSSCI-15395
     title: Fix git sync cache busting for stale UI state
