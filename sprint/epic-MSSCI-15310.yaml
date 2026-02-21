@@ -169,11 +169,15 @@ stories:
       to be a network or registry hosting issue for the theme sub-packages.
     points: 2
     priority: p1
-    status: backlog
-    workflow: trivial
     refs:
       - github: 1898andCo/pennyfarthing#1012
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-21'
+    workflow: trivial
+    completed: '2026-02-21'
     type: bug
+    review_verdict: approved
   - id: 117-12
     jira: MSSCI-15387
     title: Fix version reporting inconsistency (2.0.0 vs 11.4.0)
