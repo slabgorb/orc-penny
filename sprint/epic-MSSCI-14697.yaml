@@ -130,8 +130,10 @@ stories:
     title: Standalone Electron distribution via GitHub releases
     points: 3
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     workflow: tdd
+    completed: '2026-02-16'
   - id: 98-22
     jira: MSSCI-15080
     title: v11 migration automation — detect and remove old multi-package installs
