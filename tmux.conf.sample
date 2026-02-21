@@ -1,0 +1,60 @@
+# Pennyfarthing Development - tmux config
+# Usage: ./tmux-dev (launcher script)
+#
+# Layout (2 columns):
+# ┌─────────────┬─────────────┐
+# │  claude (1) │  claude (2) │
+# ├─────────────┼─────────────┤
+# │   TUI (1)   │   TUI (2)   │
+# └─────────────┴─────────────┘
+
+# --- Key passthrough ---
+# Enable extended keys (CSI u mode) so shift+enter, ctrl+enter, etc.
+# are properly distinguished from plain enter in Claude Code CLI
+set -g extended-keys on
+set -as terminal-features ",*:extkeys"
+
+# Don't let tmux eat modifier keys
+set -g xterm-keys on
+
+# --- Clipboard (OSC 52) ---
+# Claude Code uses OSC 52 for copy-to-clipboard. Without this, copy
+# operations silently fail because tmux strips the escape sequences.
+set -g set-clipboard on
+set -as terminal-overrides ",*:Ms=\\E]52;c;%p2%s\\7"
+
+# --- Bracketed paste ---
+# Prevent tmux from double-wrapping paste sequences, which causes garbled
+# input or character-by-character interpretation in Claude Code CLI
+set -as terminal-overrides ",*:Ss=\\E[%p1%d q:Se=\\E[2 q"
+
+# --- Terminal capabilities ---
+# Truecolor support
+set -g default-terminal "tmux-256color"
+set -as terminal-overrides ",*:Tc"
+
+# Unicode/wide character rendering — tell tmux to trust the terminal's
+# width calculations rather than guessing, reduces box-drawing corruption
+set -g utf8-option on 2>/dev/null  # tmux < 3.4 compat (silently ignored if unavailable)
+set -as terminal-overrides ",*:Eneks=\\E[>4;1m:Dsenks=\\E[>4;0m"
+
+# --- Alternate screen / scrollback ---
+# Allow mouse scroll to enter copy-mode in the normal buffer but pass
+# scroll events through when an app (like Claude Code) uses alternate screen
+set -g mouse on
+set -ga terminal-overrides ",*:smcup@:rmcup@"
+
+# --- Responsiveness ---
+# Low escape time so Esc-based sequences aren't laggy
+set -g escape-time 10
+
+# Pass focus events so apps can detect pane focus/blur
+set -g focus-events on
+
+# Generous scrollback for when you do enter copy-mode
+set -g history-limit 50000
+
+# --- Pane resize ---
+# Aggressively resize windows when switching between clients with different
+# terminal sizes (avoids the "small dots" problem in shared sessions)
+set -g aggressive-resize on

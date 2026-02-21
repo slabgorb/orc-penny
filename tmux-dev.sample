@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Pennyfarthing Development - tmux launcher
+#
+# Layout (2 columns):
+# ┌──────────────────┬──────────────────┐
+# │  claude (pf-1)   │  claude (pf-2)   │
+# ├──────────────────┼──────────────────┤
+# │   TUI (pf-1)     │   TUI (pf-2)     │
+# └──────────────────┴──────────────────┘
+#
+# Setup:
+#   cp tmux.conf.sample tmux.conf
+#   cp tmux-dev.sample tmux-dev
+#   chmod +x tmux-dev
+#   ./tmux-dev
+#
+# Customize PF1/PF2 paths below to match your project layout.
+# WheelHub starts automatically with the first TUI pane.
+# Both Claude instances get OTEL configured to stream to it.
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PF1="$(cd "$SCRIPT_DIR/../pf-1" && pwd)"
+PF2="$(cd "$SCRIPT_DIR" && pwd)"
+SESSION="pf"
+
+# Kill existing session if running
+tmux kill-session -t "$SESSION" 2>/dev/null || true
+
+# Pane layout after splits:
+#   0: top-left     (claude @ pf-1)
+#   1: bottom-left  (tui @ pf-1)
+#   2: top-right    (claude @ pf-2)
+#   3: bottom-right (tui @ pf-2)
+
+tmux -f "$SCRIPT_DIR/tmux.conf" new-session -d -s "$SESSION" -c "$PF1"
+
+# Pane 0 (top-left): Claude @ pf-1
+tmux send-keys -t "$SESSION" "just claude" Enter
+
+# Split down for TUI @ pf-1 (pane 1: bottom-left)
+tmux split-window -v -t "$SESSION" -c "$PF1"
+tmux send-keys -t "$SESSION" "just tui" Enter
+
+# Split right from pane 0 for Claude @ pf-2 (pane 2: top-right)
+tmux select-pane -t "$SESSION.0"
+tmux split-window -h -t "$SESSION" -c "$PF2"
+tmux send-keys -t "$SESSION" "just claude" Enter
+
+# Split down for TUI @ pf-2 (pane 3: bottom-right)
+tmux split-window -v -t "$SESSION" -c "$PF2"
+tmux send-keys -t "$SESSION" "just tui" Enter
+
+# Give Claude panes more vertical room (60/40 split)
+tmux select-pane -t "$SESSION.0"
+tmux resize-pane -t "$SESSION.0" -U 10
+tmux select-pane -t "$SESSION.2"
+tmux resize-pane -t "$SESSION.2" -U 10
+
+# Focus on first Claude pane
+tmux select-pane -t "$SESSION.0"
+
+# Attach
+tmux attach -t "$SESSION"

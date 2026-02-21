@@ -58,3 +58,7 @@ sprint/.migration-backup-*/
 .plan
 
 .env
+
+# Local tmux development layout
+tmux.conf
+tmux-dev
