@@ -27,3 +27,17 @@ stories:
     priority: p1
     status: backlog
     workflow: trivial
+  - id: 120-4
+    title: Fix TUI reconnecting flicker from unsupported WS channel
+    points: 2
+    priority: p1
+    status: backlog
+    workflow: trivial
+    type: bug
+  - id: 120-5
+    title: Fix npm path resolution assuming monorepo layout
+    points: 5
+    priority: p1
+    status: backlog
+    workflow: tdd
+    type: bug

@@ -3,7 +3,7 @@ description: |
   Infrastructure cleanup and separation of concerns for maintainability.
 status: backlog
 blocked_by:
-total_points: 18
+total_points: 20
 epics: []
 standalone_stories:
   - id: 39-6
@@ -63,3 +63,11 @@ standalone_stories:
     repos: orchestrator
     workflow: trivial
     type: refactor
+  - id: td-5
+    title: Re-load agent after plan mode context clear
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: bug

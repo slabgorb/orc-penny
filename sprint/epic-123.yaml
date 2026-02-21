@@ -1,0 +1,55 @@
+id: '123'
+type: epic
+title: Release Tooling Hardening
+description: Harden the release pipeline after 11.3.x packaging failures. Pre-publish gates, tarball assertion, changelog automation, deprecation tooling, and pnpm publish documentation.
+priority: p2
+status: backlog
+repos: pennyfarthing
+stories:
+  - id: 123-1
+    title: Package contents assertion test and npm pack gate
+    points: 3
+    priority: p1
+    status: backlog
+    workflow: tdd
+    type: chore
+  - id: 123-2
+    title: Automate changelog comparison link updates
+    points: 2
+    priority: p2
+    status: backlog
+    workflow: trivial
+    type: chore
+  - id: 123-3
+    title: Add pf release deprecate command
+    points: 3
+    priority: p2
+    status: backlog
+    workflow: tdd
+  - id: 123-4
+    title: Implement pf release dry-run command
+    points: 3
+    priority: p2
+    status: backlog
+    workflow: tdd
+  - id: 123-5
+    title: Document pnpm publish requirement in release gotchas
+    points: 1
+    priority: p1
+    status: backlog
+    workflow: trivial
+    type: chore
+  - id: 123-6
+    title: Consumer install smoke test in CI
+    points: 3
+    priority: p1
+    status: backlog
+    workflow: tdd
+    type: chore
+  - id: 123-7
+    title: Set up git-lfs for portrait images in cyclist package
+    points: 2
+    priority: p3
+    status: backlog
+    workflow: trivial
+    type: chore

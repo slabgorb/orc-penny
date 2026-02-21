@@ -150,3 +150,17 @@ stories:
     completed: '2026-02-20'
     type: bug
     review_verdict: approved
+  - id: 117-11
+    title: Fix npm install EHOSTUNREACH on theme packages
+    points: 2
+    priority: p1
+    status: backlog
+    workflow: trivial
+    type: bug
+  - id: 117-12
+    title: Fix version reporting inconsistency (2.0.0 vs 11.4.0)
+    points: 1
+    priority: p2
+    status: backlog
+    workflow: trivial
+    type: bug

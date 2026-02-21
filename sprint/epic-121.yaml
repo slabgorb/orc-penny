@@ -31,3 +31,10 @@ stories:
     status: backlog
     workflow: trivial
     type: bug
+  - id: 121-4
+    title: Fix git sync cache busting for stale UI state
+    points: 2
+    priority: p2
+    status: backlog
+    workflow: tdd
+    type: bug
