@@ -13,6 +13,7 @@ completed_epics:
   - MSSCI-14697
   - MSSCI-15373
   - '110'
+  - MSSCI-15310
 completed_stories:
   - id: 110-1
     epic: MSSCI-15184
@@ -167,5 +168,65 @@ completed_stories:
   - id: 122-3
     epic: MSSCI-15373
     title: Remove dead interactive components after SettingsPanel conversion
+    points: 1
+    completed: '2026-02-21'
+  - id: 117-1
+    epic: MSSCI-15310
+    title: Ship pyproject.toml in npm package for consumer Python hooks
+    points: 3
+    completed: '2026-02-19'
+  - id: 117-2
+    epic: MSSCI-15310
+    title: Generate hook commands with pf.sh wrapper path, not bare pf
+    points: 2
+    completed: '2026-02-19'
+  - id: 117-3
+    epic: MSSCI-15310
+    title: Postinstall cleanup of stale pre-11.x artifacts
+    points: 3
+    completed: '2026-02-19'
+  - id: 117-4
+    epic: MSSCI-15310
+    title: Ensure project hook templates have execute permission
+    points: 1
+    completed: '2026-02-19'
+  - id: 117-5
+    epic: MSSCI-15310
+    title: Ship index.html and add ws dependency in @pennyfarthing/core npm package
+    points: 2
+    completed: '2026-02-19'
+  - id: 117-6
+    epic: MSSCI-15310
+    title: Fix getDistDir() wrong path resolution in npm-installed mode
+    points: 2
+    completed: '2026-02-19'
+  - id: 117-7
+    epic: MSSCI-15310
+    title: Fix doctor git hook staleness check for dispatcher pattern
+    points: 3
+    completed: '2026-02-19'
+  - id: 117-8
+    epic: MSSCI-15310
+    title: Setup workflow should create config.local.yaml with theme
+    points: 2
+    completed: '2026-02-21'
+  - id: 117-9
+    epic: MSSCI-15310
+    title: Fix pennyfarthing cyclist CLI command — points to wrong entry file
+    points: 2
+    completed: '2026-02-21'
+  - id: 117-10
+    epic: MSSCI-15310
+    title: Doctor persona-config check false negative when config.local.yaml missing
+    points: 2
+    completed: '2026-02-20'
+  - id: 117-11
+    epic: MSSCI-15310
+    title: Fix npm install EHOSTUNREACH on theme packages
+    points: 2
+    completed: '2026-02-21'
+  - id: 117-12
+    epic: MSSCI-15310
+    title: Fix version reporting inconsistency (2.0.0 vs 11.4.0)
     points: 1
     completed: '2026-02-21'

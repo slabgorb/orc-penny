@@ -88,9 +88,13 @@ stories:
     priority: p1
     refs:
       - github: 1898andCo/pennyfarthing-orchestrator#83
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-21'
     workflow: tdd
+    completed: '2026-02-21'
     type: chore
+    review_verdict: approved
   - id: 123-7
     jira: MSSCI-15372
     title: Set up git-lfs for portrait images in cyclist package

@@ -2,7 +2,7 @@ id: '117'
 type: epic
 title: Consumer Install — Fix v11.x postinstall gaps
 priority: p0
-status: in_progress
+status: done
 repos: pennyfarthing
 jira: MSSCI-15310
 stories:
@@ -194,3 +194,4 @@ stories:
     completed: '2026-02-21'
     type: bug
     review_verdict: approved
+completed: '2026-02-21'

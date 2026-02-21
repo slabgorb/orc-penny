@@ -80,13 +80,13 @@ stories:
       source path) in the panel header.
     points: 5
     priority: p1
+    refs:
+      - github: 1898andCo/pennyfarthing#1028
     status: backlog
     assigned_to: michael.pursifull@1898andco.io
     started: ''
     workflow: tdd
     completed: ''
-    refs:
-      - github: 1898andCo/pennyfarthing#1028
     type: bug
   - id: 120-7
     jira: MSSCI-15409
