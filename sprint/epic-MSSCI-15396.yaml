@@ -64,3 +64,20 @@ stories:
     status: backlog
     workflow: tdd
     type: bug
+  - id: 120-6
+    title: Sprint panel ignores active sprint preference from sprint registry
+    description: >-
+      The TUI Sprint panel always loads sprint/current-sprint.yaml instead of
+      respecting the user's active sprint set via `pf sprint use <name>`. The
+      sprint registry (sprint/sprints.yaml) and config.local.yaml sprint.active
+      preference work correctly for CLI agents but the TUI does not read them.
+      Fix the SprintPanel to resolve the active sprint through the registry,
+      display the correct sprint data, and show provenance (sprint name, type,
+      source path) in the panel header.
+    refs:
+      - github: 1898andCo/pennyfarthing#1028
+    points: 3
+    priority: p1
+    status: backlog
+    workflow: tdd
+    type: bug
