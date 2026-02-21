@@ -173,6 +173,33 @@ tui:
     uv run --project "{{pennyfarthing}}" --extra tui \
         python -m pf.bikerack.tui --port "$port" --project-dir "{{root}}"
 
+# Launch TUI in dev mode (auto-reload on Python file changes)
+tui-dev:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    pid_file="{{root}}/.wheelhub-pid"
+    port_file="{{root}}/.bikerack-port"
+
+    # Start WheelHub if not running
+    if ! ([[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null); then
+        just --justfile "{{root}}/justfile" wheelhub start
+    fi
+
+    port=$(cat "$port_file" 2>/dev/null)
+    if [[ -z "$port" ]]; then
+        echo "Error: WheelHub port not found"
+        exit 1
+    fi
+
+    if ! command -v uv &>/dev/null; then
+        echo "Error: uv is required for the TUI. Install: https://docs.astral.sh/uv/"
+        exit 1
+    fi
+
+    uv run --project "{{pennyfarthing}}" --extra tui \
+        python -c "from pf.bikerack.tui import dev_main; from pathlib import Path; dev_main(port=$port, project_dir=Path('{{root}}'))"
+
 # Launch GUI in Chrome (starts WheelHub if needed)
 gui:
     #!/usr/bin/env bash
