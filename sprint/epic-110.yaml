@@ -11,7 +11,7 @@ description: |
   Phase 3 (visuals): Portrait image header with textual-image
   Phase 4 (layout): Split-pane layouts with workflow-aware presets
 priority: p1
-status: in_progress
+status: done
 repos: pennyfarthing
 stories:
   - id: 110-1
@@ -58,9 +58,10 @@ stories:
       6. Enter on PR link opens browser via webbrowser.open()
     points: 5
     priority: p1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-21'
     goals:
       - Per-story cursor navigation within expanded epics (arrow keys)
       - Enter on story pushes StoryDetailScreen
@@ -109,9 +110,10 @@ stories:
       6. Workflow-aware auto-layout via /ws/focus channel extension
     points: 5
     priority: p2
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-21'
     goals:
       - Two panels visible side-by-side in split mode
       - Shift+S toggles between single and split layout
