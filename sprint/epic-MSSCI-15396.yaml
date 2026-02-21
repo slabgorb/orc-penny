@@ -126,3 +126,9 @@ stories:
     priority: p1
     status: backlog
     workflow: trivial
+  - id: 120-11
+    title: Auto-reload Cyclist on code changes
+    points: 2
+    priority: p1
+    status: backlog
+    workflow: tdd
