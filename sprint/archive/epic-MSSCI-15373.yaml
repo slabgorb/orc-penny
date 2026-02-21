@@ -3,7 +3,7 @@ type: epic
 title: SettingsPanel Read-Only Conversion
 description: Remove interactive controls from the Cyclist SettingsPanel. Replace with a read-only display of all settings and CLI command reference showing users how to change settings via /pf-settings skill. Reduces UI complexity and makes the skill the single entry point for configuration changes.
 priority: p1
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-15373
 stories:
@@ -38,6 +38,11 @@ stories:
     description: 'After 122-1 lands, audit and remove components that are no longer used: ThemePalette, FontPicker, FontSizePicker, and any Switch toggle wrappers if only consumed by SettingsPanel. Check for other consumers before deleting. Clean up unused imports in SettingsPanel.tsx. Do NOT remove the PATCH /api/settings endpoint — other tools may use it. ACs: (1) No orphaned component files remain, (2) No unused imports in SettingsPanel, (3) Build passes clean.'
     points: 1
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-21'
     workflow: trivial
+    completed: '2026-02-21'
     type: chore
+    review_verdict: approved
+completed: '2026-02-21'

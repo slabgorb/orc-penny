@@ -10,6 +10,8 @@ sprint:
 
 completed_epics:
   - MSSCI-15184
+  - MSSCI-14697
+  - MSSCI-15373
 completed_stories:
   - id: 110-1
     epic: MSSCI-15184
@@ -76,3 +78,93 @@ completed_stories:
     title: Add future epics to the Sprint Panel in the TUI
     points: 3
     completed: '2026-02-20'
+  - id: 98-9
+    epic: MSSCI-14697
+    title: Fix uninstall data loss — replace rmSync with cleanManagedEntries for commands and skills
+    points: 2
+    completed: '2026-02-14'
+  - id: 98-10
+    epic: MSSCI-14697
+    title: Fix settings symlink crash on existing real file
+    points: 2
+    completed: '2026-02-14'
+  - id: 98-11
+    epic: MSSCI-14697
+    title: Settings.local.json shared merge model for multi-framework coexistence
+    points: 5
+    completed: '2026-02-14'
+  - id: 98-12
+    epic: MSSCI-14697
+    title: Git hook chaining with .d/ dispatcher pattern
+    points: 3
+    completed: '2026-02-14'
+  - id: 98-13
+    epic: MSSCI-14697
+    title: Cleanup migration for backward-compat symlinks
+    points: 2
+    completed: '2026-02-15'
+  - id: 98-14
+    epic: MSSCI-14697
+    title: Remove dead copy-mode code paths
+    points: 2
+    completed: "2026-02-14"
+  - id: 98-15
+    epic: MSSCI-14697
+    title: Remove TTY panel and node-pty dependency
+    points: 2
+    completed: '2026-02-14'
+  - id: 98-16
+    epic: MSSCI-14697
+    title: Absorb @pennyfarthing/shared and @pennyfarthing/benchmark into core
+    points: 3
+    completed: '2026-02-14'
+  - id: 98-17
+    epic: MSSCI-14697
+    title: Move Cyclist web server and API layer into core
+    points: 8
+    completed: '2026-02-14'
+  - id: 98-18
+    epic: MSSCI-14697
+    title: Move React UI build and static assets into core
+    points: 5
+    completed: '2026-02-14'
+  - id: 98-19
+    epic: MSSCI-14697
+    title: Add pennyfarthing web and pennyfarthing bikerack CLI commands with lazy loading
+    points: 3
+    completed: '2026-02-21'
+  - id: 98-20
+    epic: MSSCI-14697
+    title: Extract Electron shell to packages/electron with BikeShow entry point
+    points: 5
+    completed: '2026-02-16'
+  - id: 98-21
+    epic: MSSCI-14697
+    title: Standalone Electron distribution via GitHub releases
+    points: 3
+    completed: '2026-02-16'
+  - id: 98-22
+    epic: MSSCI-14697
+    title: v11 migration automation — detect and remove old multi-package installs
+    points: 3
+    completed: '2026-02-15'
+  - id: 98-23
+    epic: MSSCI-14697
+    title: Implement real OTLP integrations for core server stubs
+    points: 5
+    completed: '2026-02-16'
+  - id: 122-1
+    epic: MSSCI-15373
+    title: Convert SettingsPanel from interactive controls to read-only display
+    points: 3
+    completed: '2026-02-20'
+  - id: 122-2
+    epic: MSSCI-15373
+    title: Add CLI command reference and usage guide to SettingsPanel
+    points: 3
+    completed: '2026-02-21'
+  - id: 122-3
+    epic: MSSCI-15373
+    title: Remove dead interactive components after SettingsPanel conversion
+    points: 1
+    completed: '2026-02-21'
