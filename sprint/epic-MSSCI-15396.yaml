@@ -45,8 +45,6 @@ stories:
       other working channels.
     points: 2
     priority: p1
-    refs:
-      - github: 1898andCo/pennyfarthing#1020
     status: backlog
     workflow: trivial
     refs:
@@ -61,8 +59,6 @@ stories:
       layout. Need a unified get_dist_root() function.
     points: 5
     priority: p1
-    refs:
-      - github: 1898andCo/pennyfarthing#1024
     status: backlog
     workflow: tdd
     refs:
