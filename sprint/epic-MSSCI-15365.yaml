@@ -68,6 +68,7 @@ stories:
     points: 3
     priority: p2
     status: backlog
+    assigned_to: keith.avery@1898andco.io
     workflow: tdd
     refs:
       - github: 1898andCo/pennyfarthing-orchestrator#87
