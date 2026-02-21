@@ -13,7 +13,7 @@ standalone_stories:
       EnhancedSprintPanel has promote and archive buttons that throw
       "not yet implemented" alerts. Wire to actual sprint API endpoints.
     points: 2
-    priority: P2
+    priority: p2
     status: backlog
     repos: pennyfarthing
   - id: MSSCI-12728
@@ -22,7 +22,7 @@ standalone_stories:
       Allow contributors and forks to configure project directory paths
       instead of hardcoding. Enables multi-project setups.
     points: 3
-    priority: P3
+    priority: p3
     status: backlog
     repos: pennyfarthing
   - id: MSSCI-14110
@@ -32,7 +32,7 @@ standalone_stories:
       health-check.sh was fixed by other work but drift-detection
       still has a real bug.
     points: 2
-    priority: P2
+    priority: p2
     status: backlog
     repos: pennyfarthing
   - id: ub-1

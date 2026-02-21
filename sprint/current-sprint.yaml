@@ -12,12 +12,13 @@ epics:
   - MSSCI-15310
   - MSSCI-15396
   - MSSCI-15365
+  - MSSCI-15391
 stories:
   - id: MSSCI-15038
     jira: MSSCI-15038
     title: Add party-mode roleplay variant and validate-refs CI/pre-commit
     points: 3
-    priority: P1
+    priority: p1
     status: in_progress
     repos: pennyfarthing
     workflow: trivial

@@ -3,7 +3,7 @@ type: epic
 title: Release Tooling Hardening
 description: Harden the release pipeline after 11.3.x packaging failures. Pre-publish gates, tarball assertion, changelog automation, deprecation tooling, and pnpm publish documentation.
 priority: p2
-status: backlog
+status: in_progress
 repos: pennyfarthing
 jira: MSSCI-15365
 stories:

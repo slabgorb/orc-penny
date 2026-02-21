@@ -3,7 +3,7 @@ type: epic
 title: BikeRack TUI Enhancements
 description: Improve the BikeRack Python TUI — richer detail views, markdown preview, context and session visibility
 priority: p2
-status: backlog
+status: in_progress
 repos: pennyfarthing
 jira: MSSCI-15396
 stories:

@@ -1,4 +1,6 @@
-epic: BikeRack Standalone Package Extraction
+id: '124'
+type: epic
+title: BikeRack Standalone Package Extraction
 status: backlog
 points: 18
 repos: pennyfarthing
@@ -9,7 +11,7 @@ stories:
     type: feature
     status: backlog
     workflow: tdd
-    priority: P0
+    priority: p0
     repos: pennyfarthing
   - id: "124-2"
     title: "Move WebSocket and OTLP from Cyclist to BikeRack"
@@ -17,7 +19,7 @@ stories:
     type: feature
     status: backlog
     workflow: tdd
-    priority: P0
+    priority: p0
     repos: pennyfarthing
   - id: "124-3"
     title: "Introduce DataSource<T> and Refactor Panel Hooks"
@@ -25,7 +27,7 @@ stories:
     type: feature
     status: backlog
     workflow: tdd
-    priority: P0
+    priority: p0
     repos: pennyfarthing
   - id: "124-4"
     title: "Rewire Cyclist to Depend on BikeRack"
@@ -33,7 +35,7 @@ stories:
     type: feature
     status: backlog
     workflow: tdd
-    priority: P0
+    priority: p0
     repos: pennyfarthing
   - id: "124-5"
     title: "Move Display Components and Update Entry Points"
@@ -41,7 +43,7 @@ stories:
     type: feature
     status: backlog
     workflow: tdd
-    priority: P1
+    priority: p1
     repos: pennyfarthing
   - id: "124-6"
     title: "CI, Build, and Test Fixup"
@@ -49,5 +51,5 @@ stories:
     type: chore
     status: backlog
     workflow: trivial
-    priority: P1
+    priority: p1
     repos: pennyfarthing

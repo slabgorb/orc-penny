@@ -14,7 +14,7 @@ standalone_stories:
       without X" failures. Lightweight checklist, not ceremony.
       Salvaged from cancelled epic-39.
     points: 2
-    priority: P3
+    priority: p3
     status: backlog
     repos: pennyfarthing
   - id: td-1
@@ -26,7 +26,7 @@ standalone_stories:
       YAML, context files, and session artifacts. The SprintPanel and sm-setup
       validator use regex /epic-(\d+)/i which silently fails on Jira-key names.
     points: 1
-    priority: P2
+    priority: p2
     status: backlog
     repos: both
     workflow: trivial
@@ -39,7 +39,7 @@ standalone_stories:
       remove obsolete sections, and ensure file/directory tables match reality.
       Use the agent-docs workflow (SM → Orchestrator → Tech Writer → SM).
     points: 5
-    priority: P2
+    priority: p2
     status: backlog
     repos: both
     workflow: agent-docs
@@ -50,7 +50,7 @@ standalone_stories:
   - id: td-3
     title: BikeRack panel state persistence
     points: 2
-    priority: P2
+    priority: p2
     status: done
     repos: pennyfarthing
     workflow: trivial

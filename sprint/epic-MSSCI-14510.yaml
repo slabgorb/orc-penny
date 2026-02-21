@@ -10,7 +10,7 @@ description: |
   Layer 1: File reference validation (cross-file refs, path resolution)
   Layer 2: Schema validation (YAML fields, required props, enums)
   Layer 3: Graph validation (step transitions, reachability)
-priority: P1
+priority: p1
 status: in_progress
 repos: pennyfarthing
 jira: MSSCI-14510
@@ -26,7 +26,7 @@ stories:
       and Python files. Self-contained: node:fs, node:path, yaml package.
       PR #721 on feat/validate-file-refs branch.
     points: 3
-    priority: P0
+    priority: p0
     status: done
     assigned_to: michael.pursifull@1898andco.io
     started: '2026-02-07'
@@ -47,7 +47,7 @@ stories:
       Original scope (5pts) split: 3pts delivered in MSSCI-15038,
       2pts remaining here for CI reporting enhancements.
     points: 2
-    priority: P2
+    priority: p2
     status: planning
     assigned_to: michael.pursifull@1898andco.io
     repos: pennyfarthing
@@ -59,7 +59,7 @@ stories:
       Python files, markdownlint for 300 .md files, yamllint for 55
       YAML files. Document existing configs, gaps, and adoption plan.
     points: 2
-    priority: P2
+    priority: p2
     status: in_progress
     assigned_to: michael.pursifull@1898andco.io
     started: '2026-02-16'
@@ -72,7 +72,7 @@ stories:
       to Pennyfarthing validate-refs.js. Differences in structure, check
       types, false positive handling, runtime variable exclusions.
     points: 2
-    priority: P2
+    priority: p2
     status: in_progress
     assigned_to: michael.pursifull@1898andco.io
     started: '2026-02-16'
@@ -87,7 +87,7 @@ stories:
       Schema vs custom validation. Identify required fields, enums,
       structural constraints.
     points: 3
-    priority: P2
+    priority: p2
     status: planning
     assigned_to: michael.pursifull@1898andco.io
     repos: pennyfarthing
@@ -99,7 +99,7 @@ stories:
       transitions, reachability analysis, dangling references, gate
       markers, collaboration menus. Define scope and approach.
     points: 3
-    priority: P3
+    priority: p3
     status: planning
     assigned_to: michael.pursifull@1898andco.io
     repos: pennyfarthing
@@ -111,7 +111,7 @@ stories:
       @pennyfarthing/shared and @pennyfarthing/cyclist. Fix existing
       lint errors.
     points: 3
-    priority: P1
+    priority: p1
     status: done
     assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
@@ -123,7 +123,7 @@ stories:
       Wire existing pyproject.toml Ruff config into CI. 107 Python
       files in pennyfarthing_scripts/.
     points: 1
-    priority: P1
+    priority: p1
     status: done
     assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
@@ -135,7 +135,7 @@ stories:
       Wire existing .markdownlint.yaml config into CI. Scope to
       pennyfarthing-dist/**/*.md (300 files).
     points: 2
-    priority: P2
+    priority: p2
     status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-02-10'
@@ -148,7 +148,7 @@ stories:
       Create .yamllint.yaml config. Scope to pennyfarthing-dist/**/*.yaml
       (55 files).
     points: 2
-    priority: P2
+    priority: p2
     status: done
     assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
@@ -160,7 +160,7 @@ stories:
       Adapt from BMAD PR #1529 for Pennyfarthing workflow structure.
       24 workflow definitions, 3 variants (phased, stepped, procedural).
     points: 5
-    priority: P2
+    priority: p2
     status: done
     assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
@@ -172,9 +172,9 @@ stories:
       Validate required sections, helper model values, subagent refs.
       19 agent files.
     points: 5
-    priority: P2
+    priority: p2
     status: done
-    assigned_to: K. Avery
+    assigned_to: keith.avery@1898andco.io
     started: '2026-02-10'
     repos: pennyfarthing
     completed: '2026-02-10'
@@ -185,7 +185,7 @@ stories:
       Enforce existing skill-registry.schema.json. Add command file
       structural validation. 49 commands, 22 skills.
     points: 3
-    priority: P3
+    priority: p3
     status: done
     assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
@@ -197,7 +197,7 @@ stories:
       Step transitions, reachability, dangling references. Gate markers,
       collaboration menus.
     points: 8
-    priority: P3
+    priority: p3
     status: done
     repos: pennyfarthing
     completed: '2026-02-19'
@@ -208,7 +208,7 @@ stories:
       Semantic cross-refs between agents, workflows, commands, skills.
       Bidirectional reference consistency.
     points: 5
-    priority: P3
+    priority: p3
     status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-02-19'
@@ -222,7 +222,7 @@ stories:
       commands/run-ci.md line 114 references .pennyfarthing/scripts/run-ci.sh
       but the script lives in a misc/ subdirectory.
     points: 1
-    priority: P0
+    priority: p0
     status: done
     assigned_to: michael.pursifull@1898andco.io
     repos: pennyfarthing
@@ -234,7 +234,7 @@ stories:
       commands/setup.md line 61 references /theme command but it was
       renamed to /set-theme.
     points: 1
-    priority: P0
+    priority: p0
     status: done
     assigned_to: michael.pursifull@1898andco.io
     repos: pennyfarthing
@@ -246,7 +246,7 @@ stories:
       skills/workflow/skill.md line 343 links to ../../docs/BIKELANE.md
       which resolves inside pennyfarthing-dist/, not repo root.
     points: 1
-    priority: P0
+    priority: p0
     status: done
     assigned_to: michael.pursifull@1898andco.io
     repos: pennyfarthing
@@ -258,7 +258,7 @@ stories:
       skills/workflow/skill.md line 344 links to ADR 0005 but it was
       renumbered to 0013.
     points: 1
-    priority: P0
+    priority: p0
     status: done
     assigned_to: michael.pursifull@1898andco.io
     repos: pennyfarthing
@@ -270,7 +270,7 @@ stories:
       skills/workflow/skill.md line 345 uses ../workflows/architecture.yaml
       but needs ../../workflows/architecture.yaml.
     points: 1
-    priority: P0
+    priority: p0
     status: done
     assigned_to: michael.pursifull@1898andco.io
     repos: pennyfarthing
@@ -282,7 +282,7 @@ stories:
       epics-and-stories workflow step-05-import-to-future.md line 15
       references import-epic-to-future.sh which was never implemented.
     points: 1
-    priority: P0
+    priority: p0
     status: done
     assigned_to: michael.pursifull@1898andco.io
     repos: pennyfarthing
@@ -296,7 +296,7 @@ stories:
       pennyfarthing-dist/. Found by check 15 (guide refs) after extending
       validate-refs.js with 4 new checks.
     points: 1
-    priority: P1
+    priority: p1
     status: done
     repos: pennyfarthing
     completed: '2026-02-09'
@@ -309,7 +309,7 @@ stories:
       agent-template-tactical.md. Found by check 15 after extending
       validate-refs.js with 4 new checks.
     points: 1
-    priority: P1
+    priority: p1
     status: done
     repos: pennyfarthing
     completed: '2026-02-09'
@@ -321,7 +321,7 @@ stories:
       when marking stories done, causing Sprint Panel to not show who
       completed the work. Also adds auto-assignment on in_progress.
     points: 2
-    priority: P1
+    priority: p1
     status: done
     assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
@@ -334,7 +334,7 @@ stories:
       Add full sprint header fields: name, jira_sprint_id, jira_sprint_name,
       goal, start_date, end_date, status, number.
     points: 1
-    priority: P1
+    priority: p1
     status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-02-10'
@@ -351,7 +351,7 @@ stories:
       double-prefix IDs. Add warnings to loader.py for unresolvable shard refs.
       Add Jira idempotency check before epic creation. See ADR-0022.
     points: 5
-    priority: P0
+    priority: p0
     status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-02-10'
@@ -369,7 +369,7 @@ stories:
     jira: MSSCI-14812
     title: Normalize stepped workflow output paths and de-collision document names
     points: 3
-    priority: P2
+    priority: p2
     status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-02-11'
