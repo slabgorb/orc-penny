@@ -31,6 +31,29 @@ Resolution order: config preference → registry lookup → resolve path → loa
 
 ## Fix Scope
 
-1. **sprint-data.ts**: Read config, resolve through registry, load correct file, inject provenance metadata
-2. **SprintPanel.tsx**: Show provenance in header (sprint name, type, source path)
-3. **Tests**: Registry resolution, fallback, config change detection
+1. **sprint-data.ts**: Read config, resolve through registry, load correct file, inject provenance metadata — **DONE** (PR #1044 branch, merged to develop)
+2. **SprintPanel.tsx + useSprint.ts**: Show provenance in header (sprint name, type, source path) — **NEEDS REDO**
+3. **sprint_panel.py**: Show provenance in BikeRack TUI header — **NEEDS REDO**
+4. **Tests**: Registry resolution, fallback, config change detection — **DONE** (18 tests in 120-6-sprint-registry-resolution.test.ts)
+
+## Previous Attempt — PR #1044 (closed without merge)
+
+First implementation of AC2/AC3 display was incomplete. Issues found in post-mortem:
+
+| # | Issue | Severity |
+|---|-------|----------|
+| 1 | **Source path not displayed** — AC says "source path" but only name + type rendered | Medium |
+| 2 | **Python bare dict access** — `registry['type']` instead of `.get('type', '')`, KeyError on malformed payload | Low |
+| 3 | **No CSS/layout for provenance section** — bare `<section>` with no flex/gap styling | Low |
+| 4 | **No render tests** — data layer tested but display layer untested | Medium |
+| 5 | **Rich markup injection** — f-string in `Text.from_markup()` without escaping bracket chars | Low |
+| 6 | **Phantom fields** — `contextRoot`/`sessionRoot` piped through entire stack but never rendered | Design gap |
+
+### Requirements for next attempt
+
+- Render all three provenance fields: sprint name, type, and source path (contextRoot or resolved file)
+- Source path as tooltip or truncated display — full filesystem path is too long for header
+- Python: use `.get()` for registry fields, escape values before Rich markup
+- React: add CSS for `[data-section="sprint-source"]` (flex row, gap, alignment)
+- Write render tests: mount `EnhancedSprintPanel` with mock registry data, assert provenance section
+- Decide: either use `contextRoot`/`sessionRoot` in display or remove from the type

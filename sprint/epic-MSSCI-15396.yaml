@@ -80,11 +80,11 @@ stories:
       source path) in the panel header.
     points: 3
     priority: p1
-    status: done
+    status: backlog
     assigned_to: michael.pursifull@1898andco.io
-    started: '2026-02-21'
+    started: ''
     workflow: tdd
-    completed: '2026-02-21'
+    completed: ''
     refs:
       - github: 1898andCo/pennyfarthing#1028
     type: bug
