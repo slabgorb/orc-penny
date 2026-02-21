@@ -78,7 +78,7 @@ stories:
       Fix the SprintPanel to resolve the active sprint through the registry,
       display the correct sprint data, and show provenance (sprint name, type,
       source path) in the panel header.
-    points: 3
+    points: 5
     priority: p1
     status: backlog
     assigned_to: michael.pursifull@1898andco.io
