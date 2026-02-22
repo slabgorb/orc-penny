@@ -23,3 +23,12 @@ stories:
     workflow: trivial
     pr: 859
     branch: feat/MSSCI-15038-party-mode-roleplay
+standalone_stories:
+  - id: MSSCI-15501
+    jira: MSSCI-15501
+    title: Auto-pull LFS portraits on theme set
+    points: 2
+    status: done
+    repos: pennyfarthing
+    pr: 1070
+    branch: feat/MSSCI-15501-auto-pull-lfs-portraits
