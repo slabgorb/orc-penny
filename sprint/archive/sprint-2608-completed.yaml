@@ -15,6 +15,7 @@ completed_epics:
   - '110'
   - MSSCI-15310
   - MSSCI-15365
+  - MSSCI-15396
 completed_stories:
   - id: 110-1
     epic: MSSCI-15184
@@ -266,3 +267,73 @@ completed_stories:
     title: Set up git-lfs for portrait images in cyclist package
     points: 2
     completed: '2026-02-21'
+  - id: 120-1
+    epic: MSSCI-15396
+    title: 'Story detail screen: markdown preview with context and session'
+    points: 3
+    completed: '2026-02-21'
+  - id: 120-2
+    epic: MSSCI-15396
+    title: Combine audit log and token counts into a single panel
+    points: 2
+    completed: '2026-02-22'
+  - id: 120-3
+    epic: MSSCI-15396
+    title: Enrich progress screen with detailed sprint and story metrics
+    points: 3
+    completed: '2026-02-22'
+  - id: 120-4
+    epic: MSSCI-15396
+    title: Fix TUI reconnecting flicker from unsupported WS channel
+    points: 2
+    completed: '2026-02-21'
+  - id: 120-5
+    epic: MSSCI-15396
+    title: Fix npm path resolution assuming monorepo layout
+    points: 5
+    completed: '2026-02-21'
+  - id: 120-6
+    epic: MSSCI-15396
+    title: Sprint panel ignores active sprint preference from sprint registry
+    points: 5
+    completed: '2026-02-21'
+  - id: 120-7
+    epic: MSSCI-15396
+    title: Refactor remaining call sites to use get_dist_root()
+    points: 2
+    completed: '2026-02-21'
+  - id: 120-8
+    epic: MSSCI-15396
+    title: Story details and progress page enrichment with native Textual widgets
+    points: 3
+    completed: '2026-02-21'
+  - id: 120-9
+    epic: MSSCI-15396
+    title: Add statusbar CLI toggle setting
+    points: 1
+    completed: '2026-02-22'
+  - id: 120-10
+    epic: MSSCI-15396
+    title: Customizable bar layout ordering (menu/profile/content/status)
+    points: 3
+    completed: '2026-02-22'
+  - id: 120-11
+    epic: MSSCI-15396
+    title: Auto-reload Cyclist on code changes
+    points: 2
+    completed: '2026-02-21'
+  - id: 120-12
+    epic: MSSCI-15396
+    title: Enrich statusbar with additional context (current directory, story ID)
+    points: 1
+    completed: '2026-02-22'
+  - id: 120-13
+    epic: MSSCI-15396
+    title: 'Audit log enrichment: hook-based tool input forwarding and drill-through'
+    points: 5
+    completed: '2026-02-22'
+  - id: 120-14
+    epic: MSSCI-15396
+    title: OTEL enrichment and background task tracking in CLI mode
+    points: 5
+    completed: '2026-02-22'

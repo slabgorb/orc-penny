@@ -3,7 +3,7 @@ type: epic
 title: BikeRack TUI Enhancements
 description: Improve the BikeRack Python TUI — richer detail views, markdown preview, context and session visibility
 priority: p2
-status: in_progress
+status: done
 repos: pennyfarthing
 jira: MSSCI-15396
 stories:
@@ -223,3 +223,14 @@ stories:
     completed: '2026-02-22'
     review_findings: 'CRITICAL: /api/pending-tool-input endpoint missing from WheelHub — hook forwards to 404. HIGH: AC1-3 tests are hasattr-only, no behavioral verification.'
     review_verdict: approved
+  - id: 120-14
+    jira: MSSCI-15499
+    title: OTEL enrichment and background task tracking in CLI mode
+    points: 5
+    priority: p1
+    status: done
+    workflow: tdd
+    completed: '2026-02-22'
+    type: bug
+    review_verdict: approved
+completed: '2026-02-22'
