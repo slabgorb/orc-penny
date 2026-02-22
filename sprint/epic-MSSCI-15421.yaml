@@ -42,8 +42,11 @@ stories:
       - Focus switching (pf sprint use) works through SprintContext
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     workflow: tdd
+    completed: "2026-02-22"
+    review_verdict: approved
   - id: 125-3
     jira: MSSCI-15424
     title: Replace TypeScript sprint-data.ts resolution with SprintContext
