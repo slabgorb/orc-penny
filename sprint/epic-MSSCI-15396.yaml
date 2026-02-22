@@ -185,3 +185,48 @@ stories:
     workflow: trivial
     completed: '2026-02-22'
     review_verdict: approved
+  - id: 120-13
+    title: 'Audit log enrichment: hook-based tool input forwarding and drill-through'
+    description: |
+      ## Context
+
+      Story 110-8 built the Audit Log panel. This session added Tufte-inspired layout improvements (relative time, sparkline bars, no checkmark chartjunk, widened Tool column). Input enrichment works for Bash and Task via OTEL tool_parameters.
+
+      ## Problem
+
+      Read, Grep, Glob, Edit, Write, SendMessage inputs remain blank in BikeRack mode. Claude Code OTEL tool_result events do NOT include tool_parameters for these tools. Cyclist web UI solves this via message stream interception — BikeRack can't do this because Claude runs in a separate tmux pane.
+
+      ## Solution: Hook-Based Tool Input Forwarding
+
+      1. Add POST /api/pending-tool-input endpoint to WheelHub (packages/cyclist/src/server.ts) that calls storePendingToolInput() from span-correlation.ts
+      2. Extend the existing cyclist-pretooluse hook (pennyfarthing-dist/pf/hooks/cyclist_pretooluse.py) to also POST tool input to /api/pending-tool-input before returning approval decision
+      3. The existing span correlation in otlp-receiver.ts will then match pending inputs with OTEL tool_result events, enriching Read/Edit/Write/Grep/Glob spans
+
+      ## Solution: Drill-Through Detail View
+
+      4. Upgrade BasePanel from Static to support optional keyboard interactivity (opt-in via panel flag)
+      5. Add row selection to AuditLogPanel (j/k or arrow keys, highlighted row with reverse video)
+      6. Add inline expand/collapse on Enter — show full input, output, error details, absolute timestamp
+      7. Store full span data (not just truncated) to support drill-through
+
+      ## Key Files
+
+      - pennyfarthing-dist/pf/bikerack/audit_log_panel.py — TUI panel (already improved)
+      - pennyfarthing-dist/pf/hooks/cyclist_pretooluse.py — PreToolUse hook
+      - packages/cyclist/src/span-correlation.ts — storePendingToolInput()
+      - packages/cyclist/src/otlp-receiver.ts — consumePendingToolInput() correlation
+      - packages/cyclist/src/server.ts — WheelHub API routes
+      - pennyfarthing-dist/pf/bikerack/base_panel.py — BasePanel (needs interactivity support)
+
+      ## Acceptance Criteria
+
+      - [ ] Read tool calls show file path in Input column
+      - [ ] Grep tool calls show pattern + path in Input column
+      - [ ] Edit/Write tool calls show file path in Input column
+      - [ ] Row selection with j/k or arrow keys (highlighted row)
+      - [ ] Enter expands inline detail block with full input/output
+      - [ ] 44 existing audit log tests still pass
+    points: 5
+    priority: p1
+    status: backlog
+    workflow: tdd
