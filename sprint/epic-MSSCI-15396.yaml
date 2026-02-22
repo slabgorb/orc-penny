@@ -160,3 +160,18 @@ stories:
     workflow: tdd
     completed: '2026-02-21'
     review_verdict: approved
+  - id: 120-12
+    title: Enrich statusbar with additional context (current directory, story ID)
+    description: |-
+      The statusline currently shows: agent role, theme character, repo name, branch, model, and context usage.
+
+      Add more useful context to the statusbar display:
+      - Current working directory (or relative path from project root)
+      - Active story ID (if a session is active)
+      - Any other relevant at-a-glance info
+
+      Keep the layout compact — truncate or abbreviate as needed to fit within terminal width.
+    points: 1
+    priority: p1
+    status: backlog
+    workflow: trivial

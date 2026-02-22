@@ -5,59 +5,35 @@ Orchestrator for Pennyfarthing framework development. Manages sprint tracking, a
 <critical>
 ## Two Git Repos
 
-- `pennyfarthing-orchestrator/` (this repo) — sprint files, sessions, docs, orchestration
-- `pennyfarthing/` (inlined) — framework source, separate git history
-
-Sprint management stays here. Framework development happens in `pennyfarthing/`.
+- **This repo** (`pennyfarthing-orchestrator/`) — sprint files, sessions, docs, orchestration. Trunk-based: PRs target `main`.
+- **`pennyfarthing/`** (inlined) — framework source, separate git history. Gitflow: PRs target `develop`.
 </critical>
 
 <critical>
 ## Rules
 
-1. **Never edit `.pennyfarthing/` symlinked directories** — they point to `pennyfarthing/pennyfarthing-dist/` - edit them in the child repo
-2. **Never edit sprint YAML directly** — use scripts
-3. **Sidecars are local** — `.pennyfarthing/sidecars/` is writable, captures agent learnings
-4. **Publishing framework** — after changes in `pennyfarthing/`, build and publish to npm
-5. **Dogfood symlinks** — `.claude/commands/` and `.claude/skills/` are symlinks to `pennyfarthing/pennyfarthing-dist/` here. End-user installs use file copies instead (to avoid node_modules drift). Edit the source in `pennyfarthing-dist/`, not the symlink targets.
+1. **Never edit `.pennyfarthing/` symlinked dirs** — edit source at `pennyfarthing/pennyfarthing-dist/`
+2. **Never edit sprint YAML directly** — use `pf sprint story` commands
+3. **Never edit `node_modules/`** — trace symlinks to source repo
+4. **Modify `pennyfarthing/pennyfarthing-dist/`** — single source of truth for all distributed files
+5. **Use `.js` extensions** in relative TypeScript imports
+6. **Return result objects** `{success, data?, error?}` — don't throw
+7. **Use Haiku for subagents** — never Opus for mechanical tasks
+8. **Runtime scripts use `.pennyfarthing/` paths** — never `pennyfarthing-dist/`
+9. **Dogfood symlinks** — `.claude/commands/` and `.claude/skills/` symlink to `pennyfarthing-dist/`. Edit source, not targets.
 </critical>
-
-<critical>
-## Framework Implementation Rules
-
-1. **Modify `pennyfarthing/pennyfarthing-dist/`** — single source of truth for all definitions
-2. **Use `.js` extensions** in all relative TypeScript imports
-3. **Return result objects** `{success, data?, error?}` instead of throwing
-4. **Use Haiku for subagents** — never Opus for mechanical tasks
-5. **Scripts use `.pennyfarthing/` paths** — never `pennyfarthing-dist/` in runtime scripts
-</critical>
-
-<code-editing>
-Never edit files inside `node_modules/` or symlink targets. Trace symlinks back to the actual source repo (`pennyfarthing/pennyfarthing-dist/`) and edit there.
-</code-editing>
 
 <git-operations>
-NEVER skip GPG/SSH commit signing. Do not use `--no-gpg-sign`, `--no-sign`, or any flag that bypasses commit signature verification. If signing fails, stop and tell the user.
+NEVER skip GPG/SSH commit signing. If signing fails, stop and tell the user.
 
 Commit format: `<type>(<scope>): <subject>`
 
-Per-repo branching is defined in `.pennyfarthing/repos.yaml` (`branch_strategy` and `default_branch` fields).
+Branching per `.pennyfarthing/repos.yaml`. This repo: `main`. `pennyfarthing/`: `develop`.
 
-This repo uses **trunk-based development** (ADR-0026). Single long-lived branch: `main`.
-Feature branches and PRs target `main` directly. There is no `develop` branch.
+"Pull all repos" = include ALL workspace repos including `pennyfarthing/`.
 
-The `pennyfarthing/` child repo uses gitflow — PRs target `develop` there.
-
-When user says "pull all repos" or "pull everything", include ALL repos in the workspace (including `pennyfarthing/` and any other related repos).
-
-Framework commits go to the `pennyfarthing/` repo:
-```bash
-cd pennyfarthing && git add . && git commit -m "feat: add new feature"
-```
-
-Orchestrator commits stay here:
-```bash
-git add sprint/ && git commit -m "chore(sprint): update status"
-```
+Framework commits: `cd pennyfarthing && git add . && git commit -m "feat: ..."`
+Orchestrator commits: `git add sprint/ && git commit -m "chore(sprint): ..."`
 </git-operations>
 
 <info>
@@ -65,33 +41,19 @@ git add sprint/ && git commit -m "chore(sprint): update status"
 
 | Directory | Purpose |
 |-----------|---------|
-| `.pennyfarthing/` | Runtime framework (symlinks to `pennyfarthing/pennyfarthing-dist/`) — agents, guides, personas, scripts, workflows |
+| `.pennyfarthing/` | Runtime framework (symlinks → `pennyfarthing/pennyfarthing-dist/`) |
 | `.pennyfarthing/sidecars/` | Agent learning files (local, writable, NOT symlinked) |
 | `pennyfarthing/` | Inlined framework source repo |
-| `sprint/` | Sprint tracking — `current-sprint.yaml` (index), `epic-*.yaml` (per-epic shards), `planning/`, `context/` |
+| `sprint/` | Sprint tracking — `current-sprint.yaml` (index), `epic-*.yaml` (shards) |
 | `.session/` | Active work sessions |
-| `docs/` | Documentation — `adr/` (Architecture Decision Records) |
-| `justfile` | Task runner recipes (`just help` for list) |
-</info>
-
-<info>
-## Development
-
-```bash
-# Framework changes
-cd pennyfarthing && pnpm install && pnpm build && pnpm test
-
-# Just commands
-just dev       # Start development environment
-just test      # Run tests
-just build     # Build framework
-```
+| `docs/adr/` | Architecture Decision Records |
+| `justfile` | Task runner (`just help`) |
 </info>
 
 <info>
 ## Workflows & Agents
 
-Use `/workflow list` to see available workflows, `/workflow` to check current status.
+`/workflow list` for all workflows, `/workflow` for current status.
 
 | Workflow | Flow |
 |----------|------|
@@ -102,86 +64,70 @@ Use `/workflow list` to see available workflows, `/workflow` to check current st
 | `bdd-tandem` | SM → UX+Architect → TEA → Dev+UX → Reviewer+PM → SM |
 | `agent-docs` | SM → Orchestrator → Tech Writer → SM |
 
-| Command | Agent |
-|---------|-------|
-| `/sm` | Scrum Master (story management) |
-| `/tea` | Test Engineer/Architect |
-| `/dev` | Developer |
-| `/reviewer` | Code Reviewer |
-| `/architect` | System design |
-| `/pm` | Product Manager |
-| `/tech-writer` | Documentation |
-| `/ux-designer` | UX design |
-| `/devops` | Infrastructure and deployment |
-| `/orchestrator` | Multi-agent coordination |
-| `/ba` | Business Analyst (requirements discovery) |
+| Command | Agent | Command | Agent |
+|---------|-------|---------|-------|
+| `/sm` | Scrum Master | `/pm` | Product Manager |
+| `/tea` | Test Engineer | `/tech-writer` | Documentation |
+| `/dev` | Developer | `/ux-designer` | UX Design |
+| `/reviewer` | Code Reviewer | `/devops` | Infrastructure |
+| `/architect` | System Design | `/orchestrator` | Meta-operations |
+| `/ba` | Business Analyst | | |
 
 **Sprint:** `/sprint status`, `/sprint backlog`, `/sprint work`
 
-**Subagents** (via Task tool with `subagent_type`): `sm-setup`, `sm-finish`, `sm-handoff`, `testing-runner`, `handoff`, `reviewer-preflight`
+**Subagents** (Task tool): `sm-setup`, `sm-finish`, `sm-file-summary`, `testing-runner`, `reviewer-preflight`, `tandem-backseat`
 
-**Handoff protocol:** Agent completes work → spawns subagent → subagent updates session → next agent reads state and continues.
+**Handoff:** Agent writes assessment → `pf.sh handoff resolve-gate` → `complete-phase` → `marker` → next agent activates.
 </info>
 
 <info>
-## Framework Structure (inside `pennyfarthing/`)
+## Framework Structure (`pennyfarthing/`)
 
 | Directory | Purpose |
 |-----------|---------|
 | `pennyfarthing-dist/` | Published package (source of truth) — agents, commands, guides, skills, personas, workflows, scripts |
-| `packages/core/` | Main package (`@pennyfarthing/core`) — CLI, server (WheelHub), API routes, shared utilities (theme-loader, portrait-resolver, markers) |
-| `packages/cyclist/` | Visual terminal (Electron, React 19, Tailwind v4, shadcn/ui, dockview panels) — thin wrapper over core server |
-| `packages/shared/` | **Deprecated** — absorbed into `packages/core/src/shared/` (story 98-16). Kept for backward compat |
-| `packages/benchmark/` | Performance benchmarking and persona evaluation |
+| `pennyfarthing-dist/pf/` | Python CLI package (hooks, jira, sprint, story, prime) |
+| `packages/core/` | `@pennyfarthing/core` — CLI, WheelHub server, API routes, shared utilities |
+| `packages/cyclist/` | Visual terminal (React 19, Tailwind v4, dockview) — thin wrapper over core |
+| `packages/electron/` | Electron shell (legacy, minimal use) |
+| `packages/benchmark/` | Persona benchmarking (JobFair) |
 | `packages/themes-*/` | Theme packages (comedy, literary, mythology-fantasy, prestige-tv, realistic, scifi, superheroes) |
-| `pennyfarthing-dist/pf/` | Distributed Python package (hooks, jira, sprint, story, prime) |
-| `tests/` | Framework tests |
 
-**Migration (98-16/17/18):** Shared utilities and WheelHub server moved into core. Cyclist is now a thin wrapper adding WebSocket + OTLP. Import shared utils from `packages/core/src/shared/`.
+**Display modes:** BikeRack panels render in three contexts:
+- **TUI** — `pf bikerack start` launches panels alongside Claude Code CLI in the terminal
+- **GUI** — Cyclist web UI with full dockview panel layout in a browser
+- **IDE** — VS Code / Cursor sidebar panels via WheelHub API
 
 **Key files:**
 
 | File | Purpose |
 |------|---------|
 | `pennyfarthing-dist/agents/*.md` | Agent and subagent definitions |
-| `.pennyfarthing/config.local.yaml` | Theme, bell_mode, relay_mode, permission_mode |
+| `.pennyfarthing/config.local.yaml` | Theme, bell_mode, relay_mode, permission_mode, statusbar |
+| `.pennyfarthing/repos.yaml` | Repo topology — ownership, symlinks, branch strategy, never-edit zones |
 | `.session/{story-id}-session.md` | Active work context |
 | `pennyfarthing-dist/guides/` | Behavior guides and component docs |
-</info>
-
-<info>
-## Cyclist (Visual Terminal)
-
-Electron app: React 19, Tailwind v4, shadcn/ui, dockview-react panels.
-
-**Codenames:** WheelHub (server — `packages/core/src/server/`), TirePump (context clearing), JobFair (benchmarking), BikeRack (standalone panel viewer)
-
-**Key components:** `DockviewWorkspace.tsx` (layout), `MessageView.tsx` (conversation), `ToolCallBlock.tsx` / `ToolStack.tsx` (tool visualization), `QuickActions.tsx` (Reflector marker detection)
-
-**BikeRack:** Standalone panel viewer mode — Dockview layout with `?panel=X` routing, `--project-dir` for decoupled launch. Key files: `bikerack.ts` (entry), `BikeRackWorkspace.tsx` (layout), `StandalonePanel.tsx` (routing)
-
-**Panels:** MessagePanel (sacred center), ProgressPanel, ChangedPanel, DiffsPanel, SprintPanel, BikeLanePanel, ACPanel, AcceptanceCriteriaPanel, SettingsPanel, DebugPanel, GitPanel, TodoPanel, AuditLogPanel, WorkflowPanel, HotspotsPanel
 </info>
 
 <context>
 ## Component Guides
 
-For detailed behavior, key files, configuration, and APIs for each Cyclist component:
+Read guides for detailed behavior, key files, and APIs. All at `pennyfarthing/pennyfarthing-dist/guides/`.
 
-| Component | What it is | Guide |
-|-----------|-----------|-------|
-| **BikeLane** | Workflow engine — phased, stepped, and procedural workflow orchestration | `pennyfarthing/pennyfarthing-dist/guides/bikelane.md` |
-| **BikeRack** | Standalone panel viewer for CLI-first development — WheelHub without Cyclist UI | `pennyfarthing/pennyfarthing-dist/guides/bikerack.md` |
-| **Gates** | Conditional checks blocking phase transitions until quality thresholds are met | `pennyfarthing/pennyfarthing-dist/guides/gates.md` |
-| **Handoff CLI** | Phase gate resolution, session transitions, and marker generation | `pennyfarthing/pennyfarthing-dist/guides/handoff-cli.md` |
-| **Hooks** | Claude Code hook system — session start, pre/post tool use, git hooks | `pennyfarthing/pennyfarthing-dist/guides/hooks.md` |
-| **Bell Mode** | Message queue injection via PostToolUse hook — queue messages while Claude works | `pennyfarthing/pennyfarthing-dist/guides/bell-mode.md` |
-| **Relay Mode** | Automatic agent handoff execution — skips user confirmation on HANDOFF markers | `pennyfarthing/pennyfarthing-dist/guides/relay-mode.md` |
-| **TirePump** | Context clearing system — resets Claude session, reloads agent with fresh context | `pennyfarthing/pennyfarthing-dist/guides/tirepump.md` |
-| **Prime** | Agent activation system — bootstraps agents with tiered context (identity, workflow, session) | `pennyfarthing/pennyfarthing-dist/guides/prime.md` |
-| **Reflector** | Agent-to-UI protocol — `<!-- CYCLIST:TYPE:value -->` markers drive QuickActions buttons | `pennyfarthing/pennyfarthing-dist/guides/reflector.md` |
-| **Tandem Protocol** | Background observer pairing and consultation protocol for agent collaboration | `pennyfarthing/pennyfarthing-dist/guides/tandem-protocol.md` |
-| **Output Styles** | Configurable response modes (terse, verbose, teaching) | `pennyfarthing/pennyfarthing-dist/guides/output-styles.md` |
-| **Brownfield Tools** | Codebase analysis — hotspots, complexity, dead code, dependencies, health score | `pennyfarthing/pennyfarthing-dist/guides/brownfield-tools.md` |
-| **Benchmarks (JobFair)** | Persona evaluation — OCEAN trait correlation with agent task performance | `pennyfarthing/packages/benchmark/docs/benchmarks-guide.md` |
+| Component | Guide | Purpose |
+|-----------|-------|---------|
+| BikeLane | `bikelane.md` | Workflow engine — phased, stepped, procedural |
+| BikeRack | `bikerack.md` | Standalone panel viewer for CLI-first dev |
+| Gates | `gates.md` | Phase transition quality checks |
+| Handoff CLI | `handoff-cli.md` | Gate resolution, session transitions, markers |
+| Hooks | `hooks.md` | Claude Code hooks — session, pre/post tool use |
+| Bell Mode | `bell-mode.md` | Message queue injection via PostToolUse |
+| Relay Mode | `relay-mode.md` | Auto-handoff execution |
+| TirePump | `tirepump.md` | Context clearing and session reload |
+| Prime | `prime.md` | Agent activation with tiered context |
+| Reflector | `reflector.md` | Agent-to-UI markers for QuickActions |
+| Tandem | `tandem-protocol.md` | Background observer pairing |
+| Output Styles | `output-styles.md` | Response modes (terse, verbose, teaching) |
+| Brownfield | `brownfield-tools.md` | Codebase analysis — hotspots, complexity, health |
+| Benchmarks | `../../packages/benchmark/docs/benchmarks-guide.md` | Persona evaluation (OCEAN traits) |
 </context>
