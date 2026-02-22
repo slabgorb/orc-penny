@@ -130,11 +130,25 @@ stories:
     review_verdict: approved
   - id: 120-10
     jira: MSSCI-15416
-    title: Add setting to move footer bar to header position
-    points: 2
+    title: Customizable bar layout ordering (menu/profile/content/status)
+    description: |-
+      Customizable bar layout ordering (menu/profile/content/status)
+
+      The Claude Code TUI has four layout regions arranged vertically: menu bar, profile bar, content area, and status bar. Currently these are hardcoded in order: menu/profile/content/status.
+
+      Add a configuration setting that lets users reorder these regions. For example, a user could configure status/content/profile/menu to put the status bar at the top and menu at the bottom.
+
+      ## Acceptance Criteria
+      - Add a `layout_order` (or similar) setting to config.local.yaml under a top-level key
+      - Setting accepts an ordered list of the four regions: menu, profile, content, status
+      - Default order is: menu, profile, content, status (current behavior)
+      - All four regions must be present (validate; reject partial lists)
+      - The rendering pipeline respects the configured order
+      - Individual bar toggle settings (like workflow.statusbar) still work independently — a disabled bar is simply omitted from the layout
+    points: 3
     priority: p1
     status: backlog
-    workflow: trivial
+    workflow: tdd
   - id: 120-11
     jira: MSSCI-15417
     title: Auto-reload Cyclist on code changes
