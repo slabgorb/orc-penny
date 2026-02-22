@@ -76,6 +76,15 @@ set -g focus-events on
 # Generous scrollback for when you do enter copy-mode
 set -g history-limit 50000
 
+# --- Pane splitting ---
+# New splits target the top pane (Claude Code work area) rather than
+# rearranging the whole layout. The bottom pane (TUI) stays untouched.
+# Vertical split (left/right) within top pane
+bind | split-window -h -t '{top}'
+bind \\ split-window -h -t '{top}'
+# Horizontal split (top/bottom) within top pane
+bind - split-window -v -t '{top}'
+
 # --- Pane resize ---
 # Aggressively resize windows when switching between clients with different
 # terminal sizes (avoids the "small dots" problem in shared sessions)
