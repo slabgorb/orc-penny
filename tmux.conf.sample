@@ -52,6 +52,16 @@ set -gq utf8-option on
 # Full mouse support: click to select pane, scroll, drag borders to resize
 set -g mouse on
 
+# --- Copy mode (macOS clipboard) ---
+# Use vi-style keys in copy mode
+set -g mode-keys vi
+# Mouse drag auto-enters copy mode; releasing the button copies to clipboard
+bind -T copy-mode-vi MouseDragEnd1Pane send -X copy-pipe-and-cancel "pbcopy"
+# 'y' in copy mode also copies to clipboard
+bind -T copy-mode-vi y send -X copy-pipe-and-cancel "pbcopy"
+# Enter in copy mode copies to clipboard
+bind -T copy-mode-vi Enter send -X copy-pipe-and-cancel "pbcopy"
+
 # Allow mouse scroll to enter copy-mode in the normal buffer but pass
 # scroll events through when an app (like Claude Code) uses alternate screen
 set -ga terminal-overrides ",*:smcup@:rmcup@"
