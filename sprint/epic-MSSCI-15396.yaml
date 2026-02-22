@@ -176,5 +176,9 @@ stories:
       Keep the layout compact — truncate or abbreviate as needed to fit within terminal width.
     points: 1
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-22'
     workflow: trivial
+    completed: '2026-02-22'
+    review_verdict: approved
