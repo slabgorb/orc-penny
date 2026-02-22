@@ -11,6 +11,7 @@ epics:
   - MSSCI-14510
   - MSSCI-15391
   - MSSCI-15421
+  - MSSCI-15488
 stories:
   - id: MSSCI-15038
     jira: MSSCI-15038

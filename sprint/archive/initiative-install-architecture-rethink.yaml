@@ -1,0 +1,27 @@
+name: Install Architecture Rethink
+status: canceled
+deprecated_date: '2026-02-22'
+deprecated_note: |-
+  Superseded by Epic 126 (Python-First Installation) and ADR-0028.
+  Original plan assumed npm as primary distribution with Node-only init and
+  deferred Python setup. New approach inverts this: Python is the installer,
+  Node is a managed dependency. All 6 original epics (111-116) are canceled
+  and replaced by the single consolidated epic 126.
+superseded_by:
+  epic: 126
+  adr: ADR-0028
+description: |
+  ARCHIVED — Original description preserved for history.
+  Redesign Pennyfarthing's installation from a 19-operation, two-runtime gauntlet
+  into a three-phase progressive system: minimal Node-only init, auto-triggered
+  interactive setup, and self-contained agents with frontmatter hooks.
+  Implements ADR-0027. Supersedes install-overhaul-epics.
+total_points: 55
+epics:
+  - epic-111  # DEPRECATED — Spike: Validate Frontmatter Hooks (5 pts)
+  - epic-112  # DEPRECATED — Minimal Init: Node-Only Bootstrap (16 pts)
+  - epic-113  # DEPRECATED — Auto-Setup: Claude Guides Configuration (8 pts)
+  - epic-114  # DEPRECATED — Config Consolidation (5 pts)
+  - epic-115  # DEPRECATED — Frontmatter Hook Migration (8 pts)
+  - epic-116  # DEPRECATED — Upgrade Path: v11 to v12 (13 pts)
+stories: []

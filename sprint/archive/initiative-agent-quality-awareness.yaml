@@ -1,0 +1,15 @@
+name: "Agent Quality Awareness"
+status: canceled
+canceled_date: '2026-02-22'
+canceled_note: |-
+  Canceled during sprint 2608 planning. Agent self-awareness and confidence
+  gating concepts have not proven necessary — agents already pause on ambiguity
+  via standard Claude Code behavior. No stories were started.
+description: |
+  ARCHIVED — Original description preserved for history.
+  Agent self-awareness and confidence gating — agents pause and
+  clarify when instructions are ambiguous instead of guessing.
+total_points: 5
+epics:
+  - MSSCI-14662  # CANCELED — never started
+standalone_stories: []

@@ -1,9 +1,6 @@
 future:
   initiatives:
-  - install-architecture-rethink
   - benchmarking
-  - agent-quality-awareness
   - technical-debt
-  - tandem-workflows
   - unsorted-backlog
   - bikerack-extraction

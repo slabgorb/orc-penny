@@ -1,6 +1,6 @@
 # ADR-0027: Installation Architecture Rethink
 
-**Status:** Proposed
+**Status:** Superseded by [ADR-0028](0028-python-first-installation.md)
 **Date:** 2026-02-17
 **Author:** Architect (Corporal Newkirk)
 **Supersedes:** Partially extends ADR-0005, ADR-0021, ADR-0026
