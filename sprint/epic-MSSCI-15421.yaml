@@ -5,7 +5,24 @@ description: |-
   Consolidate fragmented sprint state across 6 storage locations and 4 reader
   implementations into a unified SprintContext model. Eliminates status drift,
   reader divergence (TS/Python merge shards differently), and architectural hacks.
-  Source: sprint/planning/sprint-state-consolidation-proposal.md
+
+  Five-move strategy (see sprint/planning/sprint-state-consolidation-proposal.md):
+    Move 1: SprintContext first-class object — unified resolution (125-1 to 125-4)
+    Move 2: Single canonical data service — Python canonical, TS via subprocess (125-5, 125-6)
+    Move 3: Story lifecycle state machine — atomic multi-system transitions (125-7)
+    Move 4: Event-driven Jira sync — real-time replaces batch reconciliation (125-8)
+    Move 5: Managed focus contexts — lifecycle-tracked sprint switching (125-9, 125-10)
+
+  Complementary to prd-sprint-data-management.md (write-side, complete). This epic
+  addresses read-side consolidation and cross-system coordination.
+
+  Open questions (resolve before Move 3+):
+    1. Source of truth — YAML-primary assumed, needs confirmation
+    2. State machine scope — story-only or include epic/sprint status?
+
+  Source docs:
+    - sprint/planning/sprint-state-consolidation-proposal.md (primary)
+    - sprint/planning/prd-sprint-data-management.md (write-side predecessor)
 priority: p1
 status: backlog
 repos: pennyfarthing
