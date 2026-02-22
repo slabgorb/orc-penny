@@ -25,7 +25,8 @@ stories:
     description: Merge the AuditLogPanel and token/context usage display into a unified panel in the BikeRack TUI. Currently audit log entries and token count metrics live in separate views. Combine them so the user sees a single panel with token usage summary at the top and the scrollable audit log below.
     points: 2
     priority: p2
-    status: backlog
+    status: canceled
+    assigned_to: keith.avery@1898andco.io
     workflow: trivial
   - id: 120-3
     jira: MSSCI-15399
@@ -42,10 +43,7 @@ stories:
     jira: MSSCI-15400
     title: Fix TUI reconnecting flicker from unsupported WS channel
     description: >-
-      BikeRack TUI connection status flickers between Connected and
-      Reconnecting because ws_client.py uses a single shared connection state
-      and the nonexistent background-tasks WS channel poisons it for all
-      other working channels.
+      BikeRack TUI connection status flickers between Connected and Reconnecting because ws_client.py uses a single shared connection state and the nonexistent background-tasks WS channel poisons it for all other working channels.
     points: 2
     priority: p1
     refs:
@@ -60,9 +58,7 @@ stories:
     jira: MSSCI-15401
     title: Fix npm path resolution assuming monorepo layout
     description: >-
-      Umbrella issue: 12+ features silently fail or crash in npm-installed
-      projects because path resolution hardcodes the monorepo directory
-      layout. Need a unified get_dist_root() function.
+      Umbrella issue: 12+ features silently fail or crash in npm-installed projects because path resolution hardcodes the monorepo directory layout. Need a unified get_dist_root() function.
     points: 5
     priority: p1
     refs:
@@ -78,13 +74,7 @@ stories:
     jira: MSSCI-15411
     title: Sprint panel ignores active sprint preference from sprint registry
     description: >-
-      The TUI Sprint panel always loads sprint/current-sprint.yaml instead of
-      respecting the user's active sprint set via `pf sprint use <name>`. The
-      sprint registry (sprint/sprints.yaml) and config.local.yaml sprint.active
-      preference work correctly for CLI agents but the TUI does not read them.
-      Fix the SprintPanel to resolve the active sprint through the registry,
-      display the correct sprint data, and show provenance (sprint name, type,
-      source path) in the panel header.
+      The TUI Sprint panel always loads sprint/current-sprint.yaml instead of respecting the user's active sprint set via `pf sprint use <name>`. The sprint registry (sprint/sprints.yaml) and config.local.yaml sprint.active preference work correctly for CLI agents but the TUI does not read them. Fix the SprintPanel to resolve the active sprint through the registry, display the correct sprint data, and show provenance (sprint name, type, source path) in the panel header.
     points: 5
     priority: p1
     refs:
