@@ -228,5 +228,8 @@ stories:
       - [ ] 44 existing audit log tests still pass
     points: 5
     priority: p1
-    status: backlog
+    status: done
     workflow: tdd
+    completed: '2026-02-22'
+    review_findings: 'CRITICAL: /api/pending-tool-input endpoint missing from WheelHub — hook forwards to 404. HIGH: AC1-3 tests are hasattr-only, no behavioral verification.'
+    review_verdict: approved
