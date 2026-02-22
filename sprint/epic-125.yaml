@@ -1,0 +1,147 @@
+id: '125'
+type: epic
+title: Sprint State Engine Consolidation
+description: |-
+  Consolidate fragmented sprint state across 6 storage locations and 4 reader
+  implementations into a unified SprintContext model. Eliminates status drift,
+  reader divergence (TS/Python merge shards differently), and architectural hacks.
+  Source: sprint/planning/sprint-state-consolidation-proposal.md
+priority: p1
+status: backlog
+repos: pennyfarthing
+stories:
+  - id: 125-1
+    title: Define SprintContext dataclass and resolve_sprint_context() function
+    description: |-
+      Create SprintContext dataclass bundling sprint_file, context_root, session_root, repos, name, type, is_default. Implement resolve_sprint_context(project_root) that handles the 90% default case (orchestrator's own sprint) and the 10% focus case (registry lookup via sprints.yaml + config.local.yaml preference). Single resolution function replaces all scattered path logic.
+
+      AC:
+      - SprintContext dataclass defined with all fields from proposal
+      - resolve_sprint_context() returns correct context for default case (no preference set)
+      - resolve_sprint_context() returns correct context for focus case (preference set, registry lookup)
+      - Unit tests cover both paths and edge cases (missing registry, invalid preference)
+    points: 3
+    priority: p1
+    status: backlog
+    workflow: tdd
+  - id: 125-2
+    title: Replace Python CLI sprint resolution with SprintContext
+    description: |-
+      Replace loader.py, yaml_io.py, and shard_merge.py sprint path resolution with calls to resolve_sprint_context(). All Python CLI commands that read sprint data should go through SprintContext. Preserve existing behavior — this is a refactor, not a feature change.
+
+      AC:
+      - All Python sprint commands use SprintContext for path resolution
+      - No hardcoded sprint file paths remain in CLI code
+      - Existing tests still pass
+      - Focus switching (pf sprint use) works through SprintContext
+    points: 2
+    priority: p1
+    status: backlog
+    workflow: tdd
+  - id: 125-3
+    title: Replace TypeScript sprint-data.ts resolution with SprintContext
+    description: |-
+      Replace sprint-data.ts independent resolution logic with SprintContext. TypeScript can either call resolve_sprint_context via subprocess or share the resolution algorithm. Eliminates the TS/Python divergence in shard merging and registry resolution.
+
+      AC:
+      - sprint-data.ts uses SprintContext (via subprocess or shared logic)
+      - Orphan epic shard detection matches Python behavior
+      - Future initiative resolution matches Python behavior
+      - WebSocket broadcast still works with new data path
+    points: 2
+    priority: p1
+    status: backlog
+    workflow: tdd
+  - id: 125-4
+    title: Add sprint provenance indicator to BikeRack TUI
+    description: |-
+      When SprintContext.is_default is False, show provenance indicator in BikeRack TUI sprint panel (e.g. "[spike: ocsf-rs1]" in header). When is_default is True, show nothing extra. Unblocks GH issue #1028.
+
+      AC:
+      - Sprint panel header shows context name and type when not default
+      - No visual change when on the default/main sprint
+    points: 1
+    priority: p1
+    status: backlog
+    workflow: trivial
+  - id: 125-5
+    title: Add pf sprint data --json canonical output for subprocess consumers
+    description: |-
+      Add pf sprint data --json command that outputs the canonical merged sprint view as JSON. This becomes the single subprocess interface for TypeScript and other consumers. Includes stories, epics, metrics, and sprint metadata.
+
+      AC:
+      - pf sprint data --json outputs complete merged sprint as JSON
+      - Output includes stories with all fields, epic metadata, sprint header
+      - Orphan detection included in output
+      - Response time under 500ms for typical sprint size
+    points: 2
+    priority: p2
+    status: backlog
+    workflow: tdd
+  - id: 125-6
+    title: Migrate Cyclist sprint panel to canonical data service
+    description: |-
+      Migrate Cyclist sprint panel from direct YAML reading (sprint-data.ts) to consuming pf sprint data --json via subprocess. Eliminates the independent TypeScript implementation. sprint-data.ts becomes a thin wrapper that calls the CLI and broadcasts via WebSocket.
+
+      AC:
+      - Sprint panel data comes from pf sprint data --json subprocess
+      - sprint-data.ts no longer implements shard merging or YAML parsing
+      - WebSocket broadcast unchanged from consumer perspective
+      - File watcher triggers subprocess refresh (not direct YAML read)
+    points: 2
+    priority: p2
+    status: backlog
+    workflow: tdd
+  - id: 125-7
+    title: Implement story lifecycle state machine with transition validation
+    description: |-
+      Define explicit story status transitions (backlog→in_progress→review→done, with canceled from any state). Each transition atomically updates YAML, Jira, and session file. Invalid transitions are rejected with clear error messages.
+
+      AC:
+      - State machine defined with valid transitions
+      - Single transition function updates YAML + Jira + session atomically
+      - Invalid transitions rejected with error
+      - Partial failure reports which steps succeeded/failed
+    points: 3
+    priority: p2
+    status: backlog
+    workflow: tdd
+  - id: 125-8
+    title: Event-driven Jira sync on story transitions
+    description: |-
+      Every story transition via the state machine (125-7) immediately syncs to Jira. Batch reconcile/sync commands become audit tools that report drift, not primary sync mechanism.
+
+      AC:
+      - Story transitions sync to Jira in real-time
+      - pf sprint reconcile becomes audit-only (reports drift, doesn't fix)
+      - Transition failures are reported clearly, no silent drift
+    points: 3
+    priority: p2
+    status: backlog
+    workflow: tdd
+  - id: 125-9
+    title: Extend sprints.yaml with managed focus context fields
+    description: |-
+      Extend sprints.yaml entries with owner, participants, status (active/completed/abandoned), parent_epic, and created fields. Makes focus contexts visible and lifecycle-tracked.
+
+      AC:
+      - sprints.yaml schema extended with new fields
+      - Existing entries continue to work (backward compatible)
+      - Schema validation updated
+    points: 2
+    priority: p3
+    status: backlog
+    workflow: trivial
+  - id: 125-10
+    title: Add pf sprint focus commands (use/close/status)
+    description: |-
+      Add CLI commands for managing focus contexts: pf sprint focus use (switch), pf sprint focus close (mark completed), pf sprint focus status (show current). Replaces raw config editing.
+
+      AC:
+      - pf sprint focus use NAME switches active sprint context
+      - pf sprint focus close NAME marks focus as completed
+      - pf sprint focus status shows current focus and all active contexts
+    points: 2
+    priority: p3
+    status: backlog
+    workflow: trivial
