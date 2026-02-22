@@ -9,8 +9,10 @@ description: |-
 priority: p1
 status: backlog
 repos: pennyfarthing
+jira: MSSCI-15421
 stories:
   - id: 125-1
+    jira: MSSCI-15422
     title: Define SprintContext dataclass and resolve_sprint_context() function
     description: |-
       Create SprintContext dataclass bundling sprint_file, context_root, session_root, repos, name, type, is_default. Implement resolve_sprint_context(project_root) that handles the 90% default case (orchestrator's own sprint) and the 10% focus case (registry lookup via sprints.yaml + config.local.yaml preference). Single resolution function replaces all scattered path logic.
@@ -22,9 +24,13 @@ stories:
       - Unit tests cover both paths and edge cases (missing registry, invalid preference)
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     workflow: tdd
+    completed: '2026-02-22'
+    review_verdict: approved
   - id: 125-2
+    jira: MSSCI-15423
     title: Replace Python CLI sprint resolution with SprintContext
     description: |-
       Replace loader.py, yaml_io.py, and shard_merge.py sprint path resolution with calls to resolve_sprint_context(). All Python CLI commands that read sprint data should go through SprintContext. Preserve existing behavior — this is a refactor, not a feature change.
@@ -39,6 +45,7 @@ stories:
     status: backlog
     workflow: tdd
   - id: 125-3
+    jira: MSSCI-15424
     title: Replace TypeScript sprint-data.ts resolution with SprintContext
     description: |-
       Replace sprint-data.ts independent resolution logic with SprintContext. TypeScript can either call resolve_sprint_context via subprocess or share the resolution algorithm. Eliminates the TS/Python divergence in shard merging and registry resolution.
@@ -53,6 +60,7 @@ stories:
     status: backlog
     workflow: tdd
   - id: 125-4
+    jira: MSSCI-15425
     title: Add sprint provenance indicator to BikeRack TUI
     description: |-
       When SprintContext.is_default is False, show provenance indicator in BikeRack TUI sprint panel (e.g. "[spike: ocsf-rs1]" in header). When is_default is True, show nothing extra. Unblocks GH issue #1028.
@@ -65,6 +73,7 @@ stories:
     status: backlog
     workflow: trivial
   - id: 125-5
+    jira: MSSCI-15426
     title: Add pf sprint data --json canonical output for subprocess consumers
     description: |-
       Add pf sprint data --json command that outputs the canonical merged sprint view as JSON. This becomes the single subprocess interface for TypeScript and other consumers. Includes stories, epics, metrics, and sprint metadata.
@@ -79,6 +88,7 @@ stories:
     status: backlog
     workflow: tdd
   - id: 125-6
+    jira: MSSCI-15427
     title: Migrate Cyclist sprint panel to canonical data service
     description: |-
       Migrate Cyclist sprint panel from direct YAML reading (sprint-data.ts) to consuming pf sprint data --json via subprocess. Eliminates the independent TypeScript implementation. sprint-data.ts becomes a thin wrapper that calls the CLI and broadcasts via WebSocket.
@@ -93,6 +103,7 @@ stories:
     status: backlog
     workflow: tdd
   - id: 125-7
+    jira: MSSCI-15428
     title: Implement story lifecycle state machine with transition validation
     description: |-
       Define explicit story status transitions (backlog→in_progress→review→done, with canceled from any state). Each transition atomically updates YAML, Jira, and session file. Invalid transitions are rejected with clear error messages.
@@ -107,6 +118,7 @@ stories:
     status: backlog
     workflow: tdd
   - id: 125-8
+    jira: MSSCI-15429
     title: Event-driven Jira sync on story transitions
     description: |-
       Every story transition via the state machine (125-7) immediately syncs to Jira. Batch reconcile/sync commands become audit tools that report drift, not primary sync mechanism.
@@ -120,6 +132,7 @@ stories:
     status: backlog
     workflow: tdd
   - id: 125-9
+    jira: MSSCI-15430
     title: Extend sprints.yaml with managed focus context fields
     description: |-
       Extend sprints.yaml entries with owner, participants, status (active/completed/abandoned), parent_epic, and created fields. Makes focus contexts visible and lifecycle-tracked.
@@ -133,6 +146,7 @@ stories:
     status: backlog
     workflow: trivial
   - id: 125-10
+    jira: MSSCI-15431
     title: Add pf sprint focus commands (use/close/status)
     description: |-
       Add CLI commands for managing focus contexts: pf sprint focus use (switch), pf sprint focus close (mark completed), pf sprint focus status (show current). Replaces raw config editing.
@@ -145,3 +159,10 @@ stories:
     priority: p3
     status: backlog
     workflow: trivial
+  - id: 125-11
+    title: Clean up stale shard file when write_sprint renames epic shard
+    points: 1
+    priority: p1
+    status: done
+    workflow: tdd
+    completed: '2026-02-22'
