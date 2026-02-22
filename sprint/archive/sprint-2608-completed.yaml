@@ -14,6 +14,7 @@ completed_epics:
   - MSSCI-15373
   - '110'
   - MSSCI-15310
+  - MSSCI-15365
 completed_stories:
   - id: 110-1
     epic: MSSCI-15184
@@ -229,4 +230,39 @@ completed_stories:
     epic: MSSCI-15310
     title: Fix version reporting inconsistency (2.0.0 vs 11.4.0)
     points: 1
+    completed: '2026-02-21'
+  - id: 123-1
+    epic: MSSCI-15365
+    title: Package contents assertion test and npm pack gate
+    points: 3
+    completed: '2026-02-21'
+  - id: 123-2
+    epic: MSSCI-15365
+    title: Automate changelog comparison link updates
+    points: 2
+    completed: '2026-02-21'
+  - id: 123-3
+    epic: MSSCI-15365
+    title: Add pf release deprecate command
+    points: 3
+    completed: '2026-02-21'
+  - id: 123-4
+    epic: MSSCI-15365
+    title: Implement pf release dry-run command
+    points: 3
+    completed: '2026-02-21'
+  - id: 123-5
+    epic: MSSCI-15365
+    title: Document pnpm publish requirement in release gotchas
+    points: 1
+    completed: '2026-02-22'
+  - id: 123-6
+    epic: MSSCI-15365
+    title: Consumer install smoke test in CI
+    points: 3
+    completed: '2026-02-21'
+  - id: 123-7
+    epic: MSSCI-15365
+    title: Set up git-lfs for portrait images in cyclist package
+    points: 2
     completed: '2026-02-21'

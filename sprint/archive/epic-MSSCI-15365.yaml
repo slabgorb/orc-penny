@@ -3,7 +3,7 @@ type: epic
 title: Release Tooling Hardening
 description: Harden the release pipeline after 11.3.x packaging failures. Pre-publish gates, tarball assertion, changelog automation, deprecation tooling, and pnpm publish documentation.
 priority: p2
-status: in_progress
+status: done
 repos: pennyfarthing
 jira: MSSCI-15365
 stories:
@@ -76,9 +76,12 @@ stories:
     priority: p1
     refs:
       - github: 1898andCo/pennyfarthing-orchestrator#89
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     workflow: trivial
+    completed: '2026-02-22'
     type: chore
+    review_verdict: approved
   - id: 123-6
     jira: MSSCI-15371
     title: Consumer install smoke test in CI
@@ -108,3 +111,4 @@ stories:
     workflow: trivial
     completed: '2026-02-21'
     type: chore
+completed: '2026-02-22'

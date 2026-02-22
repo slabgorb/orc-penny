@@ -10,7 +10,6 @@ sprint:
 epics:
   - MSSCI-14510
   - MSSCI-15396
-  - MSSCI-15365
   - MSSCI-15391
 stories:
   - id: MSSCI-15038
