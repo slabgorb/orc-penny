@@ -3,7 +3,7 @@ description: |
   Infrastructure cleanup and separation of concerns for maintainability.
 status: backlog
 blocked_by:
-total_points: 20
+total_points: 21
 epics: []
 standalone_stories:
   - id: 39-6
@@ -77,3 +77,11 @@ standalone_stories:
     repos: pennyfarthing
     workflow: trivial
     type: bug
+  - id: td-6
+    title: Make pf-settings skill config-structure-aware
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: chore
