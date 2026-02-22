@@ -1,1 +1,4 @@
-* @slabgorb @arcaven
+# Code owners — last matching pattern wins
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+* @1898andCo/application-admins @1898andCo/iac-admins
