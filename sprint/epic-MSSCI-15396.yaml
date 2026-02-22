@@ -121,9 +121,13 @@ stories:
     title: Add statusbar CLI toggle setting
     points: 1
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-22'
     workflow: trivial
+    completed: '2026-02-22'
     type: chore
+    review_verdict: approved
   - id: 120-10
     jira: MSSCI-15416
     title: Add setting to move footer bar to header position
