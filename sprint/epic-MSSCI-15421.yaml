@@ -77,8 +77,11 @@ stories:
       - WebSocket broadcast still works with new data path
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     workflow: tdd
+    completed: '2026-02-23'
+    review_verdict: approved
   - id: 125-4
     jira: MSSCI-15425
     title: Add sprint provenance indicator to BikeRack TUI
