@@ -77,10 +77,13 @@ stories:
       - Node packages installed via detected package manager
       - Handles partial completion and re-entry gracefully
     points: 5
-    status: backlog
+    status: in_progress
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-23'
     repos: pennyfarthing
-    workflow: tdd
+    workflow: tdd-tandem
     type: feature
+    review_verdict: approved
   - id: 126-4
     jira: MSSCI-15492
     title: Remove uv/pf.sh wrapper chain — global pf invoked directly
