@@ -167,10 +167,11 @@ stories:
       - Transition failures are reported clearly, no silent drift
     points: 3
     priority: p2
-    status: in_progress
+    status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-02-23'
     workflow: tdd
+    completed: '2026-02-23'
     review_verdict: approved
   - id: 125-9
     jira: MSSCI-15430
