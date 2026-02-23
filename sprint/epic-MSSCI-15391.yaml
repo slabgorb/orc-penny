@@ -24,8 +24,11 @@ stories:
     description: Add interactive controls to the debug panel that let users fire off brownfield code quality analysis tools (hotspots, dead code, health score) directly from the UI. Currently these tools are CLI-only via pf debug. Add action buttons or a command palette in the debug panel that triggers analysis runs and displays results inline, so users can assess code quality without leaving the TUI/Cyclist.
     points: 3
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     workflow: tdd
+    completed: '2026-02-23'
+    review_verdict: approved
   - id: 121-3
     jira: MSSCI-15394
     title: Fix footer keybinding labels — bracket display is inaccurate
