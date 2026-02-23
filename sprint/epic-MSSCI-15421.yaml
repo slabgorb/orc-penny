@@ -111,8 +111,10 @@ stories:
       - Response time under 500ms for typical sprint size
     points: 2
     priority: p2
-    status: backlog
+    status: in_progress
+    assigned_to: keith.avery@1898andco.io
     workflow: tdd
+    started: '2026-02-23'
   - id: 125-6
     jira: MSSCI-15427
     title: Migrate Cyclist sprint panel to canonical data service
