@@ -25,11 +25,13 @@ stories:
       - pip install pf from private PyPI installs globally with pf on PATH
       - pf --version works after install
     points: 3
-    status: backlog
+    status: done
     assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-23'
     type: feature
+    review_verdict: approved
   - id: 126-2
     jira: MSSCI-15490
     title: Rewrite pf init in Python — directory structure, commands/skills, settings
