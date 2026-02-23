@@ -16,6 +16,7 @@ completed_epics:
   - MSSCI-15310
   - MSSCI-15365
   - MSSCI-15396
+  - MSSCI-15391
 completed_stories:
   - id: 110-1
     epic: MSSCI-15184
@@ -337,3 +338,23 @@ completed_stories:
     title: OTEL enrichment and background task tracking in CLI mode
     points: 5
     completed: '2026-02-22'
+  - id: 121-1
+    epic: MSSCI-15391
+    title: Improve debug panel refresh rate for real-time token usage tracking
+    points: 2
+    completed: '2026-02-20'
+  - id: 121-2
+    epic: MSSCI-15391
+    title: Add code quality rules trigger from debug panel
+    points: 3
+    completed: '2026-02-23'
+  - id: 121-3
+    epic: MSSCI-15391
+    title: Fix footer keybinding labels — bracket display is inaccurate
+    points: 1
+    completed: '2026-02-21'
+  - id: 121-4
+    epic: MSSCI-15391
+    title: Fix git sync cache busting for stale UI state
+    points: 2
+    completed: '2026-02-23'

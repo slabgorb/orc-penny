@@ -3,7 +3,7 @@ type: epic
 title: Debug Panel and Brownfield Tools Fixes
 description: Fix issues with the Debug panel in Cyclist/BikeRack and the brownfield analysis tools (hotspots, dead code, health score). Improve reliability, output formatting, and panel rendering.
 priority: p2
-status: in_progress
+status: done
 repos: pennyfarthing
 jira: MSSCI-15391
 stories:
@@ -52,6 +52,10 @@ stories:
     priority: p2
     refs:
       - github: 1898andCo/pennyfarthing-orchestrator#31
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     workflow: tdd
+    completed: '2026-02-23'
     type: bug
+    review_verdict: approved
+completed: '2026-02-23'
