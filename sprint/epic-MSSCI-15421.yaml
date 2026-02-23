@@ -203,8 +203,11 @@ stories:
       - pf sprint focus status shows current focus and all active contexts
     points: 2
     priority: p3
-    status: backlog
+    status: in_progress
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-23'
     workflow: trivial
+    review_verdict: approved
   - id: 125-11
     title: Clean up stale shard file when write_sprint renames epic shard
     points: 1
