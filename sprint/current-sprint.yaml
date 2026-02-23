@@ -31,3 +31,11 @@ standalone_stories:
     repos: pennyfarthing
     pr: 1070
     branch: feat/MSSCI-15501-auto-pull-lfs-portraits
+  - id: MSSCI-15514
+    jira: MSSCI-15514
+    title: Archive stepped workflow sessions on completion
+    points: 2
+    status: done
+    repos: pennyfarthing
+    pr: 1079
+    branch: feat/MSSCI-15514-archive-stepped-workflow-sessions
