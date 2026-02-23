@@ -111,10 +111,13 @@ stories:
       - Response time under 500ms for typical sprint size
     points: 2
     priority: p2
-    status: in_progress
+    status: done
     assigned_to: keith.avery@1898andco.io
-    workflow: tdd
     started: '2026-02-23'
+    workflow: tdd
+    completed: '2026-02-23'
+    review_findings: Missing Path import in data() makes orphan detection silently fail
+    review_verdict: approved
   - id: 125-6
     jira: MSSCI-15427
     title: Migrate Cyclist sprint panel to canonical data service
