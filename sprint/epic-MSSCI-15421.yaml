@@ -131,8 +131,11 @@ stories:
       - File watcher triggers subprocess refresh (not direct YAML read)
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
     workflow: tdd
+    completed: "2026-02-23"
+    review_verdict: approved
   - id: 125-7
     jira: MSSCI-15428
     title: Implement story lifecycle state machine with transition validation
