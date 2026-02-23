@@ -149,8 +149,12 @@ stories:
       - Partial failure reports which steps succeeded/failed
     points: 3
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-23'
     workflow: tdd
+    completed: '2026-02-23'
+    review_verdict: approved
   - id: 125-8
     jira: MSSCI-15429
     title: Event-driven Jira sync on story transitions
