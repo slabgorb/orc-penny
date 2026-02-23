@@ -26,6 +26,7 @@ stories:
       - pf --version works after install
     points: 3
     status: backlog
+    assigned_to: keith.avery@1898andco.io
     repos: pennyfarthing
     workflow: tdd
     type: feature
