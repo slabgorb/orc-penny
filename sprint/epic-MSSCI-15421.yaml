@@ -185,8 +185,12 @@ stories:
       - Schema validation updated
     points: 2
     priority: p3
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-23'
     workflow: trivial
+    completed: '2026-02-23'
+    review_verdict: approved
   - id: 125-10
     jira: MSSCI-15431
     title: Add pf sprint focus commands (use/close/status)
