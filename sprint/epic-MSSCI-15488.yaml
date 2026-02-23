@@ -50,10 +50,14 @@ stories:
       - Idempotent — running twice produces same result
       - --dry-run flag shows what would be done without doing it
     points: 5
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-23'
     repos: pennyfarthing
-    workflow: tdd
+    workflow: tdd-tandem
+    completed: '2026-02-23'
     type: feature
+    review_verdict: approved
   - id: 126-3
     jira: MSSCI-15491
     title: Integrate auto-setup into pf init — repo discovery, theme, git hooks, Node install
