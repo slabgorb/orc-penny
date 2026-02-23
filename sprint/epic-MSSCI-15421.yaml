@@ -150,7 +150,7 @@ stories:
     points: 3
     priority: p2
     status: done
-    assigned_to: keith.avery@1898andco.io
+    assigned_to: test@example.com
     started: '2026-02-23'
     workflow: tdd
     completed: '2026-02-23'
@@ -168,7 +168,9 @@ stories:
     points: 3
     priority: p2
     status: backlog
+    assigned_to: keith.avery@1898andco.io
     workflow: tdd
+    review_verdict: approved
   - id: 125-9
     jira: MSSCI-15430
     title: Extend sprints.yaml with managed focus context fields
