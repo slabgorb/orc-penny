@@ -266,6 +266,26 @@ claude:
 
     exec claude
 
+# Launch tmux dev layout (2 columns: pf-1 + pf-2, each with Claude + TUI)
+tmux-dev:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [[ ! -f "{{root}}/tmux-dev" ]]; then
+        echo "No tmux-dev found. Copy from sample:"
+        echo "  cp tmux-dev.sample tmux-dev && chmod +x tmux-dev"
+        echo "  cp tmux.conf.sample tmux.conf"
+        exit 1
+    fi
+    exec "{{root}}/tmux-dev"
+
+# =============================================================================
+# tmux
+# =============================================================================
+
+# Launch tmux dev layout (claude on top, tui on bottom)
+tmux dir=invocation:
+    {{root}}/tmux-dev "{{dir}}"
+
 # =============================================================================
 # Development
 # =============================================================================
