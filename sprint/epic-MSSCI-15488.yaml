@@ -280,7 +280,9 @@ stories:
     description: "Housekeeping debt from party-mode review. Three issues in one story: (1) _MINIMAL_SETTINGS in init/core.py and _PYTHON_HOOKS in upgrade/core.py define the same 5 hooks independently — extract to shared constant. (2) verify_pf_cli() install_hint says 'pipx install -e pennyfarthing-dist/' (dev path) instead of 'pip install pennyfarthing-scripts' (user path). (3) Dead code: run_auto_setup() in setup.py is never called — remove or wire up. (4) _copy_tree() does rmtree before copytree, nuking user files in skill dirs — add pre-flight check."
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-24'
     workflow: trivial
     acceptance_criteria:
       - Single _INFRASTRUCTURE_HOOKS constant imported by both init/core.py and upgrade/core.py
@@ -288,7 +290,9 @@ stories:
       - run_auto_setup() either removed or wired to a code path
       - _copy_tree() preserves non-pf user files or warns before overwriting
       - Existing tests still pass after refactor
+    completed: '2026-02-24'
     type: chore
+    review_verdict: approved
   - id: 126-14
     jira: MSSCI-15602
     title: pf upgrade cleanup — remove npm artifacts and stale symlinks
