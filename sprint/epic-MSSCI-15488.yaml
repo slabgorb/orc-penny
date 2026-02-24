@@ -300,3 +300,18 @@ stories:
       - All cleanup requires user confirmation (or --yes flag for CI)
       - Dry-run shows what would be cleaned without acting
     type: chore
+  - id: 126-15
+    title: Pull LFS portraits during pf init/setup so TUI portraits work out of the box
+    description: |-
+      Portrait files are stored in Git LFS. After pf init or pf-setup, the portrait files remain as LFS pointers (ASCII text) instead of actual PNGs. The BikeRack TUI persona bar shows no portrait because the images aren't real files.
+
+      MSSCI-15501 added auto-pull on theme set, but that only covers pf theme set. New installs that run pf init followed by pf-setup need LFS portraits pulled as part of the setup flow so the TUI works immediately without manual git lfs pull.
+    points: 2
+    priority: p2
+    status: backlog
+    workflow: trivial
+    acceptance_criteria:
+      - pf init or pf-setup runs git lfs pull for the selected theme's portraits
+      - Only pulls portraits for the active theme (not all themes)
+      - Graceful degradation if git-lfs is not installed (warn, don't fail)
+      - Works for both fresh installs and upgrades
