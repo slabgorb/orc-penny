@@ -67,7 +67,9 @@ stories:
     title: Rewire Cyclist to Depend on BikeRack
     points: 3
     priority: p0
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-24'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
@@ -77,7 +79,9 @@ stories:
       - IS_BIKERACK env var is removed — mode determined by entry point and service registration
       - /ws/claude channel only exists when ClaudeService registers it (BikeRack never registers it)
       - Cyclist IDE control plane (ClaudeService, MessagePanel, bell mode, Reflector, TirePump, permissions, dockview) remains in packages/cyclist/
+    completed: '2026-02-24'
     type: feature
+    review_verdict: approved
   - id: 124-5
     jira: MSSCI-15556
     title: Move Display Components and Update Entry Points
