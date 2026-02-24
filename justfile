@@ -48,33 +48,38 @@ test:
 test-cyclist:
     just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" test-cyclist
 
-# Install dependencies
-install:
-    just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" install
-
 # =============================================================================
-# VS Code Extension - delegates to pennyfarthing repo
+# Portraits
 # =============================================================================
 
-# VS Code extension commands
-vscode *args:
-    just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" vscode {{args}}
-
-# =============================================================================
-# Portraits - delegates to pennyfarthing repo
-# =============================================================================
-
-# Generate portraits for a theme
-portraits theme:
-    just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" portraits {{theme}}
-
-# Preview portrait generation (dry-run)
-portraits-preview theme:
-    just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" portraits-preview {{theme}}
-
-# Generate portraits for all themes
-portraits-all:
-    just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" portraits-all
+# Portraits: generate <theme|all>, preview <theme|all>
+portraits *args:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    script="{{pennyfarthing}}/pennyfarthing-dist/scripts/portraits/generate-portraits.sh"
+    args=({{args}})
+    cmd="${args[0]:-}"
+    target="${args[1]:-}"
+    case "$cmd" in
+        generate)
+            if [[ "$target" == "all" || -z "$target" ]]; then
+                "$script" --skip-existing
+            else
+                "$script" --theme "$target" --skip-existing
+            fi
+            ;;
+        preview)
+            if [[ "$target" == "all" || -z "$target" ]]; then
+                "$script" --dry-run
+            else
+                "$script" --theme "$target" --dry-run
+            fi
+            ;;
+        *)
+            echo "Usage: just portraits <generate|preview> [theme|all]"
+            exit 1
+            ;;
+    esac
 
 # Start WheelHub server (API + WebSocket on port 2898)
 # Usage: just wheelhub [start|stop|status]
@@ -261,49 +266,16 @@ claude:
 
     exec claude
 
-# Launch tmux dev layout (2 columns: pf-1 + pf-2, each with Claude + TUI)
-tmux-dev:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    if [[ ! -f "{{root}}/tmux-dev" ]]; then
-        echo "No tmux-dev found. Copy from sample:"
-        echo "  cp tmux-dev.sample tmux-dev && chmod +x tmux-dev"
-        echo "  cp tmux.conf.sample tmux.conf"
-        exit 1
-    fi
-    exec "{{root}}/tmux-dev"
-
 # =============================================================================
-# tmux
-# =============================================================================
-
-# Launch tmux dev layout (claude on top, tui on bottom)
-tmux dir=invocation:
-    {{root}}/tmux-dev "{{dir}}"
-
-# =============================================================================
-# Development - orchestrator sync with pennyfarthing
+# Development
 # =============================================================================
 
 # Watch pennyfarthing for changes and auto-rebuild (runs pnpm dev)
 dev:
     cd {{pennyfarthing}} && pnpm dev
 
-# Manual sync: rebuild pennyfarthing (symlinks auto-update via npm link)
-sync:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    echo "Building pennyfarthing..."
-    cd {{pennyfarthing}} && npm run build
-    echo "✓ Pennyfarthing rebuilt"
-    echo "✓ Symlinks automatically updated (npm link in place)"
-    # Show version for confirmation
-    echo ""
-    echo "Linked version:"
-    cat {{pennyfarthing}}/VERSION
-
 # =============================================================================
-# Setup & Health
+# Setup
 # =============================================================================
 
 # Bootstrap workspace from scratch (fresh clone)
@@ -336,77 +308,6 @@ setup:
 
     echo ""
     echo "=== Setup complete ==="
-    echo "Run 'just doctor' to verify."
-
-# Check workspace health
-doctor:
-    #!/usr/bin/env bash
-    set -euo pipefail
-
-    echo "=== Workspace Health Check ==="
-    errors=0
-
-    # Check pennyfarthing/ exists
-    if [ -d "{{pennyfarthing}}" ]; then
-        echo "  [OK] pennyfarthing/ exists"
-    else
-        echo "  [FAIL] pennyfarthing/ missing (run: just setup)"
-        errors=$((errors + 1))
-    fi
-
-    # Check node_modules
-    if [ -d "{{root}}/node_modules" ]; then
-        echo "  [OK] node_modules/ exists"
-    else
-        echo "  [FAIL] node_modules/ missing (run: npm install)"
-        errors=$((errors + 1))
-    fi
-
-    # Check .pennyfarthing symlinks resolve
-    for link in agents guides scripts workflows personas; do
-        target="{{root}}/.pennyfarthing/$link"
-        if [ -L "$target" ] && [ -e "$target" ]; then
-            echo "  [OK] .pennyfarthing/$link symlink resolves"
-        elif [ -L "$target" ]; then
-            echo "  [FAIL] .pennyfarthing/$link broken symlink"
-            errors=$((errors + 1))
-        else
-            echo "  [WARN] .pennyfarthing/$link does not exist"
-        fi
-    done
-
-    # Check sprint loader health
-    export PYTHONPATH="{{pennyfarthing}}/pennyfarthing-dist:${PYTHONPATH:-}"
-    if python3 -c "
-    import sys
-    sys.path.insert(0, '{{pennyfarthing}}')
-    from pf.sprint.loader import load_sprint
-    data = load_sprint(project_root=None)
-    if data and 'epics' in data:
-        epics = data['epics']
-        if epics and isinstance(epics[0], str):
-            print('  [FAIL] Sprint loader returns unmerged string refs')
-            sys.exit(1)
-        elif epics and isinstance(epics[0], dict):
-            print('  [OK] Sprint loader returns full epic dicts (' + str(len(epics)) + ' epics)')
-        else:
-            print('  [OK] Sprint has no epics (empty)')
-    else:
-        print('  [WARN] No sprint data found')
-    " 2>/dev/null; then
-        :
-    else
-        echo "  [FAIL] Sprint loader health check failed"
-        errors=$((errors + 1))
-    fi
-
-    echo ""
-    if [ $errors -eq 0 ]; then
-        echo "All checks passed."
-    else
-        echo "$errors check(s) failed."
-        exit 1
-    fi
 
 # =============================================================================
 # Orchestrator-specific tasks
@@ -424,17 +325,8 @@ sidecar-prune:
 # Validation - delegates to pennyfarthing repo
 # =============================================================================
 
-# Validate agent files against schema
-validate-agents *args:
-    just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" validate-agents {{args}}
-
-# Validate subagent YAML frontmatter
-validate-subagents:
+# Run all validations (agents, subagents, sprint)
+validate:
+    just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" validate-agents
     just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" validate-subagents
-
-# Validate sprint YAML structure
-validate-sprint *args:
-    just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" validate-sprint {{args}}
-
-# Run all validations
-validate: validate-agents validate-subagents validate-sprint
+    just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" validate-sprint
