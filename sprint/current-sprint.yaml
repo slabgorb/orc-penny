@@ -8,9 +8,7 @@ sprint:
   status: active
   number: 2608
 epics:
-  - MSSCI-14510
-  - MSSCI-15421
-  - MSSCI-15488
+  - MSSCI-15551
 stories:
   - id: MSSCI-15038
     jira: MSSCI-15038

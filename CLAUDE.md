@@ -55,14 +55,11 @@ Orchestrator commits: `git add sprint/ && git commit -m "chore(sprint): ..."`
 
 `/workflow list` for all workflows, `/workflow` for current status.
 
-| Workflow | Flow |
-|----------|------|
-| `tdd` | SM → TEA → Dev → Reviewer → SM |
-| `tdd-tandem` | SM → TEA+Architect → Dev+TEA → Reviewer+PM → SM |
-| `trivial` | SM → Dev → Reviewer → SM |
-| `bdd` | SM → UX → TEA → Dev → Reviewer → SM |
-| `bdd-tandem` | SM → UX+Architect → TEA → Dev+UX → Reviewer+PM → SM |
-| `agent-docs` | SM → Orchestrator → Tech Writer → SM |
+Workflow definitions live in `pennyfarthing/pennyfarthing-dist/workflows/*.yaml`. Each YAML defines phases, agents, tandem/team pairings, and gates. **Read the YAML — don't rely on summaries.**
+
+- `pf workflow list` — all available workflows
+- `pf workflow show <name>` — phase details for a specific workflow
+- Session file `**Workflow:**` line tells you which workflow is active
 
 | Command | Agent | Command | Agent |
 |---------|-------|---------|-------|

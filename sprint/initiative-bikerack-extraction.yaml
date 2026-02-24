@@ -1,9 +1,0 @@
-name: "BikeRack Extraction"
-description: |
-  Extract BikeRack from Cyclist into a standalone package (packages/bikerack/).
-  Introduces DataSource<T> provider abstraction. Prerequisite for BikeShop.
-status: backlog
-blocked_by:
-total_points: 18
-epics:
-  - epic-124
