@@ -1,7 +1,7 @@
 id: '124'
 type: epic
 title: 'Epic: BikeRack Standalone Package Extraction'
-status: in_progress
+status: done
 repos: pennyfarthing
 jira: MSSCI-15551
 points: 18
@@ -107,7 +107,9 @@ stories:
     title: CI, Build, and Test Fixup
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-24'
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria:
@@ -116,4 +118,7 @@ stories:
       - CI pipeline handles packages/bikerack/ as a build and test target
       - Package publish configuration is correct for @pennyfarthing/bikerack
       - npm install @pennyfarthing/bikerack works in isolation without pulling Electron
+    completed: '2026-02-24'
     type: chore
+    review_verdict: approved
+completed: '2026-02-24'

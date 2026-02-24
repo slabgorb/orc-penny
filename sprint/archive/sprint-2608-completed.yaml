@@ -18,6 +18,7 @@ completed_epics:
   - MSSCI-15396
   - MSSCI-15391
   - MSSCI-14510
+  - MSSCI-15551
 completed_stories:
   - id: 110-1
     epic: MSSCI-15184
@@ -504,3 +505,33 @@ completed_stories:
     title: 'Bug: archive_epic does not populate completed_stories in sprint completed file'
     points: 2
     completed: '2026-02-14'
+  - id: 124-1
+    epic: MSSCI-15551
+    title: Extract Server Engine into packages/bikerack/
+    points: 5
+    completed: '2026-02-24'
+  - id: 124-2
+    epic: MSSCI-15551
+    title: Move WebSocket and OTLP from Cyclist to BikeRack
+    points: 3
+    completed: '2026-02-24'
+  - id: 124-3
+    epic: MSSCI-15551
+    title: Introduce DataSource<T> and Refactor Panel Hooks
+    points: 3
+    completed: '2026-02-24'
+  - id: 124-4
+    epic: MSSCI-15551
+    title: Rewire Cyclist to Depend on BikeRack
+    points: 3
+    completed: '2026-02-24'
+  - id: 124-5
+    epic: MSSCI-15551
+    title: Move Display Components and Update Entry Points
+    points: 2
+    completed: '2026-02-24'
+  - id: 124-6
+    epic: MSSCI-15551
+    title: CI, Build, and Test Fixup
+    points: 2
+    completed: '2026-02-24'
