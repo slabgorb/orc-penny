@@ -17,6 +17,7 @@ completed_epics:
   - MSSCI-15365
   - MSSCI-15396
   - MSSCI-15391
+  - MSSCI-14510
 completed_stories:
   - id: 110-1
     epic: MSSCI-15184
@@ -358,3 +359,148 @@ completed_stories:
     title: Fix git sync cache busting for stale UI state
     points: 2
     completed: '2026-02-23'
+  - id: 91-1
+    epic: MSSCI-14510
+    title: Productize Layer 1 file reference validator
+    points: 3
+    completed: '2026-02-08'
+  - id: 91-2
+    epic: MSSCI-14510
+    title: 'CI polish: ::warning annotations, summary table, and PR comments'
+    points: 2
+    completed: '2026-02-24'
+  - id: 91-3
+    epic: MSSCI-14510
+    title: 'Research: Layer 0 linter selection and adoption plan'
+    points: 2
+    completed: '2026-02-24'
+  - id: 91-4
+    epic: MSSCI-14510
+    title: 'Research: Layer 1 validator adaptation from BMAD'
+    points: 2
+    completed: '2026-02-24'
+  - id: 91-5
+    epic: MSSCI-14510
+    title: 'Research: Layer 2 schema validation approach and gap analysis'
+    points: 3
+    completed: '2026-02-24'
+  - id: 91-6
+    epic: MSSCI-14510
+    title: 'Research: Layer 3 graph validation feasibility study'
+    points: 3
+    completed: '2026-02-24'
+  - id: 91-7
+    epic: MSSCI-14510
+    title: Enforce ESLint across all packages
+    points: 3
+    completed: '2026-02-10'
+  - id: 91-8
+    epic: MSSCI-14510
+    title: Add Ruff to CI for Python scripts
+    points: 1
+    completed: '2026-02-10'
+  - id: 91-9
+    epic: MSSCI-14510
+    title: Add markdownlint to CI
+    points: 2
+    completed: '2026-02-10'
+  - id: 91-10
+    epic: MSSCI-14510
+    title: Add yamllint for workflow and config files
+    points: 2
+    completed: '2026-02-10'
+  - id: 91-11
+    epic: MSSCI-14510
+    title: Workflow YAML schema validation
+    points: 5
+    completed: '2026-02-10'
+  - id: 91-12
+    epic: MSSCI-14510
+    title: Agent definition structural validation
+    points: 5
+    completed: '2026-02-10'
+  - id: 91-13
+    epic: MSSCI-14510
+    title: Skill registry and command schema validation
+    points: 3
+    completed: '2026-02-10'
+  - id: 91-14
+    epic: MSSCI-14510
+    title: Workflow graph validation
+    points: 8
+    completed: '2026-02-19'
+  - id: 91-15
+    epic: MSSCI-14510
+    title: Cross-entity reference validation
+    points: 5
+    completed: "2026-02-19"
+  - id: 91-16
+    epic: MSSCI-14510
+    title: run-ci.md references wrong path for run-ci.sh
+    points: 1
+    completed: '2026-02-07'
+  - id: 91-17
+    epic: MSSCI-14510
+    title: setup.md references /theme instead of /set-theme
+    points: 1
+    completed: '2026-02-07'
+  - id: 91-18
+    epic: MSSCI-14510
+    title: workflow skill.md broken link to BIKELANE.md
+    points: 1
+    completed: '2026-02-07'
+  - id: 91-19
+    epic: MSSCI-14510
+    title: workflow skill.md broken link to ADR 0005 (renumbered)
+    points: 1
+    completed: '2026-02-07'
+  - id: 91-20
+    epic: MSSCI-14510
+    title: workflow skill.md wrong path depth for architecture.yaml
+    points: 1
+    completed: '2026-02-07'
+  - id: 91-21
+    epic: MSSCI-14510
+    title: step-05 references unimplemented import-epic-to-future.sh
+    points: 1
+    completed: '2026-02-07'
+  - id: 91-22
+    epic: MSSCI-14510
+    title: Broken ADR link in skills/workflow/skill.md
+    points: 1
+    completed: '2026-02-09'
+  - id: 91-23
+    epic: MSSCI-14510
+    title: Stale guide ref in tdd-flow-pattern.md
+    points: 1
+    completed: '2026-02-09'
+  - id: 91-25
+    epic: MSSCI-14510
+    title: Preserve assigned_to field through story lifecycle
+    points: 2
+    completed: '2026-02-10'
+  - id: 91-26
+    epic: MSSCI-14510
+    title: Enhance pf sprint info to return full sprint header
+    points: 1
+    completed: '2026-02-10'
+  - id: 91-24
+    epic: MSSCI-14510
+    title: Sprint shard write-time validation and reference integrity
+    points: 5
+    completed: '2026-02-10'
+  - id: 91-27
+    epic: MSSCI-14510
+    title: Normalize stepped workflow output paths and de-collision document names
+    points: 3
+    completed: '2026-02-11'
+  - id: 91-28
+    epic: MSSCI-14510
+    title: 'validate-refs: differentiate native vs plugin reference sources'
+    points: 2
+    completed: '2026-02-16'
+  - id: 91-29
+    epic: MSSCI-14510
+    title: 'Bug: archive_epic does not populate completed_stories in sprint completed file'
+    points: 2
+    completed: '2026-02-14'

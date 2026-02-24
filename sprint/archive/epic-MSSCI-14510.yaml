@@ -11,7 +11,7 @@ description: |
   Layer 2: Schema validation (YAML fields, required props, enums)
   Layer 3: Graph validation (step transitions, reachability)
 priority: p1
-status: in_progress
+status: done
 repos: pennyfarthing
 jira: MSSCI-14510
 points: 60
@@ -48,7 +48,7 @@ stories:
       2pts remaining here for CI reporting enhancements.
     points: 2
     priority: p2
-    status: planning
+    status: canceled
     assigned_to: michael.pursifull@1898andco.io
     repos: pennyfarthing
   - id: 91-3
@@ -60,7 +60,7 @@ stories:
       YAML files. Document existing configs, gaps, and adoption plan.
     points: 2
     priority: p2
-    status: in_progress
+    status: canceled
     assigned_to: michael.pursifull@1898andco.io
     started: '2026-02-16'
     repos: pennyfarthing
@@ -73,7 +73,7 @@ stories:
       types, false positive handling, runtime variable exclusions.
     points: 2
     priority: p2
-    status: in_progress
+    status: canceled
     assigned_to: michael.pursifull@1898andco.io
     started: '2026-02-16'
     repos: pennyfarthing
@@ -88,7 +88,7 @@ stories:
       structural constraints.
     points: 3
     priority: p2
-    status: planning
+    status: canceled
     assigned_to: michael.pursifull@1898andco.io
     repos: pennyfarthing
   - id: 91-6
@@ -100,7 +100,7 @@ stories:
       markers, collaboration menus. Define scope and approach.
     points: 3
     priority: p3
-    status: planning
+    status: canceled
     assigned_to: michael.pursifull@1898andco.io
     repos: pennyfarthing
   - id: 91-7
@@ -393,3 +393,4 @@ stories:
     workflow: trivial
     completed: '2026-02-14'
     type: bug
+completed: '2026-02-24'
