@@ -46,3 +46,10 @@ standalone_stories:
     repos: pennyfarthing
     pr: 1080
     branch: feat/MSSCI-15519-portrait-size-setting
+  - id: MSSCI-15580
+    jira: MSSCI-15580
+    title: Show ordinal IDs in sprint panel (TUI and GUI)
+    points: 2
+    status: done
+    repos: pennyfarthing
+    pr: 1111
