@@ -219,10 +219,14 @@ stories:
       - session-start.js removed (functionality in Python)
       - No Node-based init code remains
     points: 2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-24'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-02-24'
     type: chore
+    review_verdict: approved
   - id: 126-10
     jira: MSSCI-15498
     title: E2E tests — fresh install, upgrade from npm, pf init --dry-run
