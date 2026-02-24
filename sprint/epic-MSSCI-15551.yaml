@@ -1,7 +1,7 @@
 id: '124'
 type: epic
 title: 'Epic: BikeRack Standalone Package Extraction'
-status: backlog
+status: in_progress
 repos: pennyfarthing
 jira: MSSCI-15551
 points: 18
@@ -11,7 +11,9 @@ stories:
     title: Extract Server Engine into packages/bikerack/
     points: 5
     priority: p0
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-24'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
@@ -19,7 +21,9 @@ stories:
       - packages/bikerack/ has its own package.json with @pennyfarthing/bikerack name
       - packages/bikerack/ builds independently via the monorepo build toolchain
       - No Electron dependency exists in packages/bikerack/package.json
+    completed: '2026-02-24'
     type: feature
+    review_verdict: approved
   - id: 124-2
     jira: MSSCI-15553
     title: Move WebSocket and OTLP from Cyclist to BikeRack
