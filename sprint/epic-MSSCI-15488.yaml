@@ -195,10 +195,14 @@ stories:
       - Checks cover Python install, Node packages, config, hooks, directories
       - Removed checks for things that can no longer break
     points: 3
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-24'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-24'
     type: feature
+    review_verdict: approved
   - id: 126-9
     jira: MSSCI-15497
     title: Remove Node init.ts, npx entry point, postinstall.cjs
