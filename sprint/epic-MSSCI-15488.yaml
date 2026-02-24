@@ -77,11 +77,12 @@ stories:
       - Node packages installed via detected package manager
       - Handles partial completion and re-entry gracefully
     points: 5
-    status: in_progress
+    status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-02-23'
     repos: pennyfarthing
     workflow: tdd-tandem
+    completed: '2026-02-24'
     type: feature
     review_verdict: approved
   - id: 126-4
