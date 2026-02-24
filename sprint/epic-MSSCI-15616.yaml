@@ -1,0 +1,62 @@
+id: '132'
+title: 'Epic: Developer Discovery & Onboarding'
+priority: P1
+status: backlog
+repos: pennyfarthing
+jira: MSSCI-15616
+points: 9
+stories:
+  - id: 132-1
+    jira: MSSCI-15617
+    title: Create Getting Started Guide
+    points: 3
+    priority: P1
+    status: backlog
+    repos: pennyfarthing
+    workflow: agent-docs
+    acceptance_criteria: []
+    type: feature
+  - id: 132-2
+    jira: MSSCI-15618
+    title: Add Welcome Banner Discovery Nudge
+    points: 1
+    priority: P1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    acceptance_criteria: []
+    type: feature
+  - id: 132-3
+    jira: MSSCI-15619
+    title: Create What Pennyfarthing Does Reference Card
+    points: 2
+    priority: P2
+    status: backlog
+    repos: pennyfarthing
+    workflow: agent-docs
+    acceptance_criteria: []
+    type: feature
+  - id: 132-4
+    jira: MSSCI-15620
+    title: Add Developer Guidance Section to CLAUDE.md Init Template
+    points: 1
+    priority: P2
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-24'
+    repos: pennyfarthing
+    workflow: trivial
+    acceptance_criteria: []
+    completed: '2026-02-24'
+    type: feature
+    review_verdict: approved
+  - id: 132-5
+    jira: MSSCI-15621
+    title: Remove Deprecated Skill and Command Files
+    points: 2
+    priority: P2
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    acceptance_criteria: []
+    type: chore
