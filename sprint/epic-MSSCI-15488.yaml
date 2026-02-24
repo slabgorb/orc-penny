@@ -254,3 +254,49 @@ stories:
     status: backlog
     workflow: trivial
     type: chore
+  - id: 126-12
+    title: Wire setup auto-detection into session-start hook
+    description: Session-start hook should detect incomplete setup (pf init ran but /pf-setup did not) and inject additionalContext telling Claude to run /pf-setup. Replaces the removed setup-detector.js. Without this, users who run pf init but miss the setup prompt get a half-configured installation with no nudge to complete it.
+    points: 3
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-24'
+    workflow: tdd
+    acceptance_criteria:
+      - session_start.py checks for .pennyfarthing/ present but config.local.yaml missing theme key
+      - When incomplete setup detected, hook returns additionalContext with setup instructions
+      - When setup is complete, hook is a no-op (no performance penalty on every session)
+      - 'Detection also covers: repos.yaml missing, settings.local.json missing'
+      - Unit tests for detection logic and additionalContext output
+    completed: '2026-02-24'
+    type: chore
+    review_verdict: approved
+  - id: 126-13
+    title: Extract shared hook constants and fix onboarding rough edges
+    description: "Housekeeping debt from party-mode review. Three issues in one story: (1) _MINIMAL_SETTINGS in init/core.py and _PYTHON_HOOKS in upgrade/core.py define the same 5 hooks independently — extract to shared constant. (2) verify_pf_cli() install_hint says 'pipx install -e pennyfarthing-dist/' (dev path) instead of 'pip install pennyfarthing-scripts' (user path). (3) Dead code: run_auto_setup() in setup.py is never called — remove or wire up. (4) _copy_tree() does rmtree before copytree, nuking user files in skill dirs — add pre-flight check."
+    points: 2
+    priority: p1
+    status: backlog
+    workflow: trivial
+    acceptance_criteria:
+      - Single _INFRASTRUCTURE_HOOKS constant imported by both init/core.py and upgrade/core.py
+      - verify_pf_cli() install_hint shows user-facing pip install command
+      - run_auto_setup() either removed or wired to a code path
+      - _copy_tree() preserves non-pf user files or warns before overwriting
+      - Existing tests still pass after refactor
+    type: chore
+  - id: 126-14
+    title: pf upgrade cleanup — remove npm artifacts and stale symlinks
+    description: "pf upgrade detects node_modules/@pennyfarthing but doesn't clean up npm-era artifacts. After migration, users are left with: (1) node_modules/@pennyfarthing still present, (2) old Node commands/symlinks in .claude/commands that reference npx pennyfarthing, (3) stale .pennyfarthing/manifest.json (Node-era) alongside new init-manifest.json. Upgrade should offer to remove these artifacts (with user confirmation) and produce a clean post-migration state."
+    points: 2
+    priority: p2
+    status: backlog
+    workflow: trivial
+    acceptance_criteria:
+      - pf upgrade --clean offers to remove node_modules/@pennyfarthing directory
+      - Stale symlinks in .claude/commands/ pointing to node_modules are detected and removed
+      - Old manifest.json (Node-era) removed after migration to init-manifest.json
+      - All cleanup requires user confirmation (or --yes flag for CI)
+      - Dry-run shows what would be cleaned without acting
+    type: chore
