@@ -4,7 +4,7 @@ description: |
   and no work started. Triage into proper epics or cancel as needed.
 status: backlog
 blocked_by:
-total_points: 10
+total_points: 12
 epics: []
 standalone_stories:
   - id: MSSCI-14302
@@ -69,3 +69,11 @@ standalone_stories:
     repos: orchestrator
     workflow: trivial
     type: chore
+  - id: ub-2
+    title: Epic promote fails for inline initiative epics — extract to shards on workflow finish
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: bug

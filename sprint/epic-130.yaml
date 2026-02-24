@@ -1,0 +1,30 @@
+id: epic-130
+title: "Epic: Automated Context Creation"
+points: 7
+priority: P1
+repos: pennyfarthing
+stories:
+  - id: "130-1"
+    title: "/pf-context create epic Skill"
+    points: 2
+    type: feature
+    status: backlog
+    workflow: tdd
+    priority: P1
+    repos: pennyfarthing
+  - id: "130-2"
+    title: "/pf-context create story Skill (PM-Only Mode)"
+    points: 3
+    type: feature
+    status: backlog
+    workflow: tdd
+    priority: P1
+    repos: pennyfarthing
+  - id: "130-3"
+    title: "Tandem Partner Selection and Integration"
+    points: 2
+    type: feature
+    status: backlog
+    workflow: tdd
+    priority: P1
+    repos: pennyfarthing

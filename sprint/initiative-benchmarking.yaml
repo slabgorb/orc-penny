@@ -29,7 +29,7 @@ description: 'Research-backed improvements to agent benchmarking methodology.
   See: pennyfarthing-dist/guides/measurement-framework.md
 
   '
-status: research_complete
+status: canceled
 blocked_by: Need stable benchmark baseline before measuring improvements
 total_points: 59
 research_references:
@@ -40,9 +40,9 @@ research_references:
   url: https://arxiv.org/abs/2502.00561
   key_insight: Four-level measurement framework; construct validity; inter-rater reliability
 epics:
-  - MSSCI-12792
-  - epic-42
-  - epic-43
-  - epic-44
-  - epic-45
-  - epic-46
+- MSSCI-12792
+- epic-42
+- epic-43
+- epic-44
+- epic-45
+- epic-46
