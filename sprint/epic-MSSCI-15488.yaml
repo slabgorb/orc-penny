@@ -125,10 +125,15 @@ stories:
       - persona-config.yaml references removed
       - Existing user settings preserved during migration
     points: 3
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-24'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-24'
     type: feature
+    review_findings: 'HIGH: data loss risk (unlink before write), HIGH: migration never called in production (no callers outside tests). MEDIUM: no error handling, TypeScript persona-config fallback survives'
+    review_verdict: approved
   - id: 126-6
     jira: MSSCI-15494
     title: Frontmatter hooks on all agents and skills, shrink settings.local.json
