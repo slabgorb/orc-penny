@@ -87,7 +87,7 @@ stories:
     title: Move Display Components and Update Entry Points
     points: 2
     priority: p1
-    status: in_progress
+    status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-02-24'
     repos: pennyfarthing
@@ -98,7 +98,10 @@ stories:
       - pf bikerack start works and launches the standalone BikeRack product
       - Panel components remain in core (shared by BikeRack, Cyclist, and future BikeShop)
       - Port 2898 convention preserved for BikeRack (vs 1898 for Cyclist)
+    completed: '2026-02-24'
     type: feature
+    review_findings: App.tsx broken imports from deleted components
+    review_verdict: approved
   - id: 124-6
     jira: MSSCI-15557
     title: CI, Build, and Test Fixup
