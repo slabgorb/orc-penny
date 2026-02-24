@@ -47,7 +47,9 @@ stories:
     title: Introduce DataSource<T> and Refactor Panel Hooks
     points: 3
     priority: p0
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-24'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
@@ -57,7 +59,9 @@ stories:
       - WebSocketDataSource is implemented in packages/bikerack/ for live local data
       - TypeScript enforces the contract at compile time — a missing implementation is a build error
       - Mock providers can be created for testing
+    completed: '2026-02-24'
     type: feature
+    review_verdict: approved
   - id: 124-4
     jira: MSSCI-15555
     title: Rewire Cyclist to Depend on BikeRack
