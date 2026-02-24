@@ -148,10 +148,15 @@ stories:
       - settings.local.json reduced to 5 infrastructure hooks
       - No functional regression — all hooks still fire correctly
     points: 5
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-24'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-24'
     type: feature
+    review_findings: 'HIGH: SKILL.md case-sensitivity bug silently drops skill hooks on Linux. MEDIUM: mutation hazard in merge_with_infrastructure. LOW: dead FrontmatterHooks dataclass.'
+    review_verdict: approved
   - id: 126-7
     jira: MSSCI-15495
     title: pf upgrade — detect npm-based install, migrate to Python-based
