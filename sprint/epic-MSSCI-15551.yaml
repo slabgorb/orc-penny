@@ -14,7 +14,11 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
-    acceptance_criteria: []
+    acceptance_criteria:
+      - packages/bikerack/src/ contains Express app factory, route mounting, all 30+ API routers, OTLP receiver interface, file watchers, settings management, story-parser, sprint-data, env detection, paths resolution
+      - packages/bikerack/ has its own package.json with @pennyfarthing/bikerack name
+      - packages/bikerack/ builds independently via the monorepo build toolchain
+      - No Electron dependency exists in packages/bikerack/package.json
     type: feature
   - id: 124-2
     jira: MSSCI-15553
@@ -24,7 +28,11 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
-    acceptance_criteria: []
+    acceptance_criteria:
+      - All 15 WebSocket channel handlers are in packages/bikerack/
+      - Real OTLP receiver implementation is in packages/bikerack/
+      - Core retains only interface stubs, not implementations
+      - BikeRack can start its server and serve all WebSocket channels without Cyclist
     type: feature
   - id: 124-3
     jira: MSSCI-15554
@@ -34,7 +42,13 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
-    acceptance_criteria: []
+    acceptance_criteria:
+      - "@pennyfarthing/core exports a DataSource<T> typed provider interface"
+      - 11+ panel hooks (useSprint, useGitStatus, useDiffs, etc.) consume DataSource<T> instead of direct WebSocket URLs
+      - Interface supports parameterized queries for future multi-session composition
+      - WebSocketDataSource is implemented in packages/bikerack/ for live local data
+      - TypeScript enforces the contract at compile time — a missing implementation is a build error
+      - Mock providers can be created for testing
     type: feature
   - id: 124-4
     jira: MSSCI-15555
@@ -44,7 +58,13 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
-    acceptance_criteria: []
+    acceptance_criteria:
+      - packages/cyclist/package.json lists @pennyfarthing/bikerack as a dependency
+      - Cyclist starts BikeRack's server engine on launch
+      - Cyclist wires ClaudeService and registers /ws/claude channel on top of BikeRack's server
+      - IS_BIKERACK env var is removed — mode determined by entry point and service registration
+      - /ws/claude channel only exists when ClaudeService registers it (BikeRack never registers it)
+      - Cyclist IDE control plane (ClaudeService, MessagePanel, bell mode, Reflector, TirePump, permissions, dockview) remains in packages/cyclist/
     type: feature
   - id: 124-5
     jira: MSSCI-15556
@@ -54,7 +74,12 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
-    acceptance_criteria: []
+    acceptance_criteria:
+      - BikeRackWorkspace, BikeRackIndex, StandalonePanel are in packages/bikerack/
+      - Entry point expanded in packages/bikerack/src/ with full launcher (start server + Claude CLI) and cleanup (port file, process management)
+      - pf bikerack start works and launches the standalone BikeRack product
+      - Panel components remain in core (shared by BikeRack, Cyclist, and future BikeShop)
+      - Port 2898 convention preserved for BikeRack (vs 1898 for Cyclist)
     type: feature
   - id: 124-6
     jira: MSSCI-15557
@@ -64,5 +89,10 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: trivial
-    acceptance_criteria: []
+    acceptance_criteria:
+      - pnpm build succeeds across all packages with correct dependency ordering
+      - All existing tests pass with updated import paths
+      - CI pipeline handles packages/bikerack/ as a build and test target
+      - Package publish configuration is correct for @pennyfarthing/bikerack
+      - npm install @pennyfarthing/bikerack works in isolation without pulling Electron
     type: chore

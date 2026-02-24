@@ -1,6 +1,6 @@
 # ADR-0026: Single Package Consolidation
 
-## Status: Proposed
+## Status: Superseded by [ADR-0030: BikeRack Package Extraction](0030-bikerack-package-extraction.md)
 
 ## Context
 
