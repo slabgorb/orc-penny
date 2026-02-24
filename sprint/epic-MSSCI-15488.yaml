@@ -101,10 +101,15 @@ stories:
       - No uv references remain in runtime code
       - All agent activation commands updated
     points: 2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-24'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-24'
     type: feature
+    review_findings: Missed commands/*.md (12 files), init/core.py, settings template, list-workflows.sh - all still reference deleted wrapper chain
+    review_verdict: approved
   - id: 126-5
     jira: MSSCI-15493
     title: Config consolidation — migrate preferences.yaml into config.local.yaml
