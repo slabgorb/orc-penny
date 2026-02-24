@@ -173,10 +173,14 @@ stories:
       - Config files migrated (preferences.yaml → config.local.yaml)
       - Clear reporting of what changed
     points: 5
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-24'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-24'
     type: feature
+    review_verdict: approved
   - id: 126-8
     jira: MSSCI-15496
     title: Reduce doctor to ~10 health checks with --fix mode
