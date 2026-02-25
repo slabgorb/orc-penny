@@ -11,10 +11,13 @@ stories:
     title: Create Getting Started Guide
     points: 3
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-25'
     repos: pennyfarthing
     workflow: agent-docs
     acceptance_criteria: []
+    completed: '2026-02-25'
     type: feature
   - id: 132-2
     jira: MSSCI-15618
