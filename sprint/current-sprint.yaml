@@ -88,18 +88,18 @@ standalone_stories:
     workflow: trivial
     type: chore
   - id: td-4
-    title: Shard completed archive like active sprint (index + per-epic refs)
+    title: Sprint metrics must include completed stories from archive shards
     points: 3
     priority: p1
     status: backlog
-    repos: orchestrator
+    repos: pennyfarthing
     workflow: trivial
-    type: refactor
+    type: bug
   - id: td-5
     title: Re-load agent after plan mode context clear
     points: 2
     priority: p2
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: trivial
     type: bug
