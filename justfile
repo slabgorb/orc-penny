@@ -318,12 +318,22 @@ setup:
     echo "Step 3/6: Building framework..."
     cd "{{pennyfarthing}}" && pnpm build
 
-    # Step 4: Install pf CLI (always editable-install from local repo to stay current)
+    # Step 4: Install pf CLI (editable-install from local repo to stay current)
     echo "Step 4/6: Installing pf CLI from local repo..."
-    pip3 install -e "{{pennyfarthing}}" --quiet 2>/dev/null || pip3 install -e "{{pennyfarthing}}"
+    if command -v uv >/dev/null 2>&1; then
+        uv tool install --editable "{{pennyfarthing}}" --force --quiet 2>/dev/null \
+            || uv tool install --editable "{{pennyfarthing}}" --force
+    elif command -v pipx >/dev/null 2>&1; then
+        pipx install --editable "{{pennyfarthing}}" --force --quiet 2>/dev/null \
+            || pipx install --editable "{{pennyfarthing}}" --force
+    else
+        pip3 install -e "{{pennyfarthing}}" --quiet 2>/dev/null \
+            || pip3 install -e "{{pennyfarthing}}" --break-system-packages
+    fi
     if ! command -v pf >/dev/null 2>&1; then
         echo ""
         echo "Warning: pf installed but not on PATH."
+        echo "  If using uv/pipx, ensure ~/.local/bin is on PATH."
         echo "  Add to your shell profile: export PATH=\"\$HOME/.local/bin:\$PATH\""
         echo "  Then restart your shell and re-run: just setup"
         exit 1
