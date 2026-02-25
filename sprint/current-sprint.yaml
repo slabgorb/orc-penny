@@ -91,9 +91,11 @@ standalone_stories:
     title: Sprint metrics must include completed stories from archive shards
     points: 3
     priority: p1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: trivial
+    pr: 1148
+    branch: fix/td-4-sprint-metrics-archive
     type: bug
   - id: td-5
     title: Re-load agent after plan mode context clear
