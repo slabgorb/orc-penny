@@ -1,38 +1,44 @@
-id: epic-129
+id: "129"
 title: "Epic: Context Validation & Visibility"
-points: 6
 priority: P1
+status: backlog
 repos: pennyfarthing
+jira: MSSCI-15680
+points: 6
 stories:
   - id: "129-1"
+    jira: MSSCI-15681
     title: "Fix Context Check Bugs in sprint-data.ts"
     points: 1
-    type: fix
-    status: backlog
-    workflow: trivial
     priority: P1
+    status: backlog
     repos: pennyfarthing
+    workflow: trivial
+    type: fix
   - id: "129-2"
+    jira: MSSCI-15682
     title: "Create Context Schema YAML"
     points: 1
-    type: feature
-    status: backlog
-    workflow: trivial
     priority: P1
+    status: backlog
     repos: pennyfarthing
+    workflow: trivial
+    type: feature
   - id: "129-3"
+    jira: MSSCI-15683
     title: "Build Context Validator Python Module and CLI"
     points: 3
-    type: feature
-    status: backlog
-    workflow: tdd
     priority: P1
+    status: backlog
     repos: pennyfarthing
+    workflow: tdd
+    type: feature
   - id: "129-4"
+    jira: MSSCI-15684
     title: "Generate Context Document Templates from Schema"
     points: 1
-    type: feature
-    status: backlog
-    workflow: trivial
     priority: P1
+    status: backlog
     repos: pennyfarthing
+    workflow: trivial
+    type: feature

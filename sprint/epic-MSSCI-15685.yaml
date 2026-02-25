@@ -1,30 +1,35 @@
-id: epic-130
+id: "130"
 title: "Epic: Automated Context Creation"
-points: 7
 priority: P1
+status: backlog
 repos: pennyfarthing
+jira: MSSCI-15685
+points: 7
 stories:
   - id: "130-1"
+    jira: MSSCI-15686
     title: "/pf-context create epic Skill"
     points: 2
-    type: feature
-    status: backlog
-    workflow: tdd
     priority: P1
+    status: backlog
     repos: pennyfarthing
+    workflow: tdd
+    type: feature
   - id: "130-2"
+    jira: MSSCI-15687
     title: "/pf-context create story Skill (PM-Only Mode)"
     points: 3
-    type: feature
-    status: backlog
-    workflow: tdd
     priority: P1
+    status: backlog
     repos: pennyfarthing
+    workflow: tdd
+    type: feature
   - id: "130-3"
+    jira: MSSCI-15688
     title: "Tandem Partner Selection and Integration"
     points: 2
-    type: feature
-    status: backlog
-    workflow: tdd
     priority: P1
+    status: backlog
     repos: pennyfarthing
+    workflow: tdd
+    type: feature

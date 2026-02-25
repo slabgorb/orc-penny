@@ -8,7 +8,9 @@ sprint:
   status: active
   number: 2608
 epics:
-  - MSSCI-15616
+  - MSSCI-15680
+  - MSSCI-15685
+  - MSSCI-15676
 stories:
   - id: MSSCI-15038
     jira: MSSCI-15038
@@ -52,3 +54,93 @@ standalone_stories:
     status: done
     repos: pennyfarthing
     pr: 1111
+  - id: 39-6
+    title: Release gate integration
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+  - id: td-1
+    title: Standardize epic context naming to numeric IDs
+    points: 1
+    priority: p2
+    status: backlog
+    repos: both
+    workflow: trivial
+  - id: td-2
+    title: Complete documentation overhaul — update all CLAUDE-*.md domain docs
+    points: 5
+    priority: p2
+    status: backlog
+    repos: both
+    workflow: agent-docs
+    type: chore
+    tags:
+      - agent-file
+      - documentation
+  - id: td-3
+    title: BikeRack panel state persistence
+    points: 2
+    priority: p2
+    status: done
+    repos: pennyfarthing
+    workflow: trivial
+    type: chore
+  - id: td-4
+    title: Shard completed archive like active sprint (index + per-epic refs)
+    points: 3
+    priority: p1
+    status: backlog
+    repos: orchestrator
+    workflow: trivial
+    type: refactor
+  - id: td-5
+    title: Re-load agent after plan mode context clear
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: bug
+  - id: td-6
+    title: Make pf-settings skill config-structure-aware
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: chore
+  - id: MSSCI-14302
+    title: Sprint panel promote/archive epic buttons are stubs
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+  - id: MSSCI-12728
+    title: Configurable project directory isolation for Pennyfarthing
+    points: 3
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+  - id: MSSCI-14110
+    title: Pennyfarthing health scripts - drift-detection.sh bash array bug
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+  - id: ub-1
+    title: Adopt research spike repo structure and orchestrator-side tracking
+    points: 3
+    priority: p2
+    status: backlog
+    repos: orchestrator
+    workflow: trivial
+    type: chore
+  - id: ub-2
+    title: Epic promote fails for inline initiative epics — extract to shards on workflow finish
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: bug

@@ -172,28 +172,6 @@ tui:
 
     pf launch tui --port "$port" --project-dir "{{root}}" --foreground
 
-# Launch TUI in dev mode (auto-reload on Python file changes)
-tui-dev:
-    #!/usr/bin/env bash
-    set -euo pipefail
-
-    pid_file="{{root}}/.wheelhub-pid"
-    port_file="{{root}}/.bikerack-port"
-
-    # Start WheelHub if not running
-    if ! ([[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null); then
-        just --justfile "{{root}}/justfile" wheelhub start
-    fi
-
-    port=$(cat "$port_file" 2>/dev/null)
-    if [[ -z "$port" ]]; then
-        echo "Error: WheelHub port not found"
-        exit 1
-    fi
-
-    PYTHONPATH="{{root}}/pennyfarthing/pennyfarthing-dist/src" \
-        python3 -c "from pf.bikerack.tui import dev_main; from pathlib import Path; dev_main(port=$port, project_dir=Path('{{root}}'))"
-
 # Launch GUI in Chrome (starts WheelHub if needed)
 gui:
     #!/usr/bin/env bash
