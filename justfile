@@ -175,11 +175,6 @@ portraits *args:
 
 # [pf-migrated]     pf launch tui --port "$port" --project-dir "{{root}}" --foreground
 
-# Launch GUI in Chrome (starts WheelHub if needed)
-gui:
-    #!/usr/bin/env bash
-    set -euo pipefail
-
 # Launch TUI in dev mode (auto-reload on Python file changes)
 tui-dev:
     #!/usr/bin/env bash
