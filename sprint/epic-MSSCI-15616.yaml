@@ -143,7 +143,7 @@ stories:
     title: Add just status dual-repo git wrapper
     points: 1
     priority: p2
-    status: backlog
+    status: canceled
     workflow: tdd
   - id: 132-13
     jira: MSSCI-15649
