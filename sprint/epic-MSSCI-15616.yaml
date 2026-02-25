@@ -158,9 +158,13 @@ stories:
     title: Reconcile Getting Started guide with Python-first install (ADR-0028)
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-25'
     workflow: tdd
     type: chore
+    review_verdict: approved
+    completed: "2026-02-25"
   - id: 132-14
     jira: MSSCI-15650
     title: Add fresh-clone smoke test to CI
