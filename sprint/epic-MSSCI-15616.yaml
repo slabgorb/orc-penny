@@ -72,3 +72,15 @@ stories:
     completed: '2026-02-25'
     type: chore
     review_verdict: approved
+  - id: 132-6
+    jira: MSSCI-15640
+    title: Create Guided Tour Stepped Workflow
+    description: "Create a 'guided-tour' stepped workflow (BikeLane) that walks new developers through Pennyfarthing's key features interactively. Steps should cover: theme selection, agent activation, workflow basics, sprint commands, and hook/config overview. Each step has a gate verifying the user completed the action. Integrates with the getting-started guide (132-1) and welcome nudge (132-2) as entry points."
+    points: 5
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-25'
+    workflow: tdd
+    completed: '2026-02-25'
+    review_verdict: approved
