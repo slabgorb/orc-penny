@@ -23,3 +23,7 @@ Task tool only accepts built-in types (`Bash`, `general-purpose`, `Explore`, `Pl
 <gotcha name="monorepo-build-order">
 `just cyclist` auto-detects missing workspace deps. If `@pennyfarthing/core` not found, run `pnpm run build` first.
 </gotcha>
+
+<gotcha name="tmux-send-keys-enter">
+`tmux send-keys ... Enter` doesn't submit in some zsh configs. Use `C-j` (line feed) instead of `Enter` to execute commands in tmux panes.
+</gotcha>
