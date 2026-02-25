@@ -129,8 +129,12 @@ stories:
     title: Add guided tour prompt to pf-setup completion step
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-25'
     workflow: tdd
+    completed: '2026-02-25'
+    review_verdict: approved
   - id: 132-11
     jira: MSSCI-15647
     title: Build pf status dashboard command
