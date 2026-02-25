@@ -140,8 +140,12 @@ stories:
     title: Build pf status dashboard command
     points: 3
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-25'
     workflow: tdd
+    completed: '2026-02-25'
+    review_verdict: approved
   - id: 132-12
     jira: MSSCI-15648
     title: Add just status dual-repo git wrapper
