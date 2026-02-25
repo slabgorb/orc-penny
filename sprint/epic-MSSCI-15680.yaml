@@ -44,3 +44,21 @@ stories:
     repos: pennyfarthing
     workflow: trivial
     type: feature
+  - id: 129-5
+    jira: MSSCI-15694
+    title: Integrate frontmatter hooks into pf init pipeline
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-25'
+    workflow: tdd
+    completed: '2026-02-25'
+    review_verdict: approved
+  - id: 129-6
+    jira: MSSCI-15695
+    title: Detect stale hooks and prompt upgrade on session start
+    points: 2
+    priority: p1
+    status: backlog
+    workflow: tdd

@@ -71,7 +71,8 @@ standalone_stories:
     title: Complete documentation overhaul — update all CLAUDE-*.md domain docs
     points: 5
     priority: p2
-    status: backlog
+    status: canceled
+    notes: Completed elsewhere
     repos: both
     workflow: agent-docs
     type: chore
@@ -106,7 +107,7 @@ standalone_stories:
     title: Make pf-settings skill config-structure-aware
     points: 1
     priority: p1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: trivial
     type: chore
