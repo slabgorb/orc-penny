@@ -24,11 +24,16 @@ stories:
     title: Add Welcome Banner Discovery Nudge
     points: 1
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-25'
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
+    completed: '2026-02-25'
     type: feature
+    review_findings: Cyclist mode drops show_nudge silently; repeated nudge when .pennyfarthing/ missing
+    review_verdict: approved
   - id: 132-3
     jira: MSSCI-15619
     title: Create What Pennyfarthing Does Reference Card
