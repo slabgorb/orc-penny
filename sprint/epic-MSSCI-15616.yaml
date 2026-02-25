@@ -107,3 +107,60 @@ stories:
     completed: '2026-02-25'
     type: feature
     review_verdict: approved
+  - id: 132-8
+    jira: MSSCI-15644
+    title: Create root README.md with 4-step quick start
+    points: 2
+    priority: p1
+    status: backlog
+    workflow: tdd
+  - id: 132-9
+    jira: MSSCI-15645
+    title: Add pf CLI installation to just setup bootstrap
+    points: 3
+    priority: p1
+    status: backlog
+    workflow: tdd
+  - id: 132-10
+    jira: MSSCI-15646
+    title: Add guided tour prompt to pf-setup completion step
+    points: 2
+    priority: p1
+    status: backlog
+    workflow: tdd
+  - id: 132-11
+    jira: MSSCI-15647
+    title: Build pf status dashboard command
+    points: 3
+    priority: p2
+    status: backlog
+    workflow: tdd
+  - id: 132-12
+    jira: MSSCI-15648
+    title: Add just status dual-repo git wrapper
+    points: 1
+    priority: p2
+    status: backlog
+    workflow: tdd
+  - id: 132-13
+    jira: MSSCI-15649
+    title: Reconcile Getting Started guide with Python-first install (ADR-0028)
+    points: 2
+    priority: p1
+    status: backlog
+    workflow: tdd
+    type: chore
+  - id: 132-14
+    jira: MSSCI-15650
+    title: Add fresh-clone smoke test to CI
+    points: 3
+    priority: p2
+    status: backlog
+    workflow: tdd
+  - id: 132-15
+    jira: MSSCI-15651
+    title: Add practice story to guided tour sprint step
+    points: 3
+    priority: p3
+    status: backlog
+    workflow: tdd
