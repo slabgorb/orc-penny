@@ -113,15 +113,17 @@ stories:
     title: Create root README.md with 4-step quick start
     points: 2
     priority: p1
-    status: backlog
+    status: done
     workflow: tdd
+    completed: '2026-02-25'
   - id: 132-9
     jira: MSSCI-15645
     title: Add pf CLI installation to just setup bootstrap
     points: 3
     priority: p1
-    status: backlog
+    status: done
     workflow: tdd
+    completed: '2026-02-25'
   - id: 132-10
     jira: MSSCI-15646
     title: Add guided tour prompt to pf-setup completion step
