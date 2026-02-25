@@ -11,7 +11,9 @@ stories:
     title: "Fix Context Check Bugs in sprint-data.ts"
     points: 1
     priority: P1
-    status: backlog
+    status: in_progress
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-25'
     repos: pennyfarthing
     workflow: trivial
     type: fix
