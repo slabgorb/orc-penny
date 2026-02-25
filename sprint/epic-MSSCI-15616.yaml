@@ -85,13 +85,15 @@ stories:
     completed: '2026-02-25'
     review_verdict: approved
   - id: 132-7
+    jira: MSSCI-15642
     title: Enhance guided tour with interactive deep-dives and switch gates
     points: 5
     priority: p2
-    status: backlog
-    workflow: tdd
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-25'
     repos: pennyfarthing
-    type: feature
+    workflow: tdd
     acceptance_criteria:
       - All agent commands in step files use /pf- prefix (e.g., /pf-sm, /pf-dev)
       - Step 3 lists all 11 agents with correct commands, roles, and theme characters
@@ -102,3 +104,6 @@ stories:
       - New <switch> gate type in BikeLane schema maps menu options to AskUserQuestion choices
       - Stepped workflow engine recognizes <switch> gates and agents translate to AskUserQuestion
       - Existing guided-tour step gates updated to use <switch> where appropriate
+    completed: '2026-02-25'
+    type: feature
+    review_verdict: approved
