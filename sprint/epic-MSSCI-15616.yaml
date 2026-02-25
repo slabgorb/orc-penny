@@ -55,8 +55,12 @@ stories:
     title: Remove Deprecated Skill and Command Files
     points: 2
     priority: P2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-25'
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
+    completed: '2026-02-25'
     type: chore
+    review_verdict: approved
