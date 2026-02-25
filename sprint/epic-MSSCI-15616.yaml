@@ -169,5 +169,10 @@ stories:
     title: Add practice story to guided tour sprint step
     points: 3
     priority: p3
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-25'
     workflow: tdd
+    completed: '2026-02-25'
+    review_findings: 'HIGH: Double-prefixed shard ref — PRACTICE_EPIC_ID=epic-tour-practice registered in index, but shard_merge constructs epic-{ref}.yaml producing epic-epic-tour-practice.yaml which doesn''t exist. Ref should be tour-practice.'
+    review_verdict: approved
