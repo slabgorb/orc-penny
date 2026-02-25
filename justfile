@@ -7,6 +7,9 @@ pennyfarthing := root / "pennyfarthing"
 # Directory from which just was invoked
 invocation := invocation_directory()
 
+import '.pennyfarthing/justfile.pf'
+
+
 # Default recipe - list available commands
 default:
     @just --list
@@ -81,102 +84,107 @@ portraits *args:
             ;;
     esac
 
-# Start WheelHub server (API + WebSocket on port 2898)
-# Usage: just wheelhub [start|stop|status]
-wheelhub *args:
-    #!/usr/bin/env bash
-    set -euo pipefail
+# [pf-migrated] # Start WheelHub server (API + WebSocket on port 2898)
+# [pf-migrated] # Usage: just wheelhub [start|stop|status]
+# [pf-migrated] wheelhub *args:
+# [pf-migrated]     #!/usr/bin/env bash
+# [pf-migrated]     set -euo pipefail
 
-    project_dir="{{root}}"
-    pid_file="$project_dir/.wheelhub-pid"
-    port_file="$project_dir/.bikerack-port"
-    logfile="$project_dir/.session/wheelhub.log"
+# [pf-migrated]     project_dir="{{root}}"
+# [pf-migrated]     pid_file="$project_dir/.wheelhub-pid"
+# [pf-migrated]     port_file="$project_dir/.bikerack-port"
+# [pf-migrated]     logfile="$project_dir/.session/wheelhub.log"
 
-    subcmd="{{args}}"
-    case "${subcmd:-start}" in
-        stop)
-            if [[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null; then
-                kill "$(cat "$pid_file")"
-                rm -f "$pid_file" "$port_file"
-                echo "WheelHub stopped"
-            else
-                rm -f "$pid_file" "$port_file"
-                echo "WheelHub not running"
-            fi
-            ;;
-        status)
-            if [[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null; then
-                port=$(cat "$port_file" 2>/dev/null || echo "?")
-                echo "WheelHub running (PID: $(cat "$pid_file"), port: $port)"
-                echo "  http://127.0.0.1:$port"
-            else
-                echo "WheelHub not running"
-            fi
-            ;;
-        start)
-            # Idempotent — already running? Just report.
-            if [[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null; then
-                port=$(cat "$port_file" 2>/dev/null || echo "?")
-                echo "WheelHub already running (port: $port)"
-                exit 0
-            fi
+# [pf-migrated]     subcmd="{{args}}"
+# [pf-migrated]     case "${subcmd:-start}" in
+# [pf-migrated]         stop)
+# [pf-migrated]             if [[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null; then
+# [pf-migrated]                 kill "$(cat "$pid_file")"
+# [pf-migrated]                 rm -f "$pid_file" "$port_file"
+# [pf-migrated]                 echo "WheelHub stopped"
+# [pf-migrated]             else
+# [pf-migrated]                 rm -f "$pid_file" "$port_file"
+# [pf-migrated]                 echo "WheelHub not running"
+# [pf-migrated]             fi
+# [pf-migrated]             ;;
+# [pf-migrated]         status)
+# [pf-migrated]             if [[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null; then
+# [pf-migrated]                 port=$(cat "$port_file" 2>/dev/null || echo "?")
+# [pf-migrated]                 echo "WheelHub running (PID: $(cat "$pid_file"), port: $port)"
+# [pf-migrated]                 echo "  http://127.0.0.1:$port"
+# [pf-migrated]             else
+# [pf-migrated]                 echo "WheelHub not running"
+# [pf-migrated]             fi
+# [pf-migrated]             ;;
+# [pf-migrated]         start)
+# [pf-migrated]             # Idempotent — already running? Just report.
+# [pf-migrated]             if [[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null; then
+# [pf-migrated]                 port=$(cat "$port_file" 2>/dev/null || echo "?")
+# [pf-migrated]                 echo "WheelHub already running (port: $port)"
+# [pf-migrated]                 exit 0
+# [pf-migrated]             fi
 
-            rm -f "$pid_file" "$port_file"
+# [pf-migrated]             rm -f "$pid_file" "$port_file"
 
-            bikerack_js="{{pennyfarthing}}/packages/cyclist/dist/bikerack.js"
-            if [[ ! -f "$bikerack_js" ]]; then
-                echo "Build required..."
-                cd "{{pennyfarthing}}" && pnpm run build
-            fi
+# [pf-migrated]             bikerack_js="{{pennyfarthing}}/packages/cyclist/dist/bikerack.js"
+# [pf-migrated]             if [[ ! -f "$bikerack_js" ]]; then
+# [pf-migrated]                 echo "Build required..."
+# [pf-migrated]                 cd "{{pennyfarthing}}" && pnpm run build
+# [pf-migrated]             fi
 
-            mkdir -p "$(dirname "$logfile")"
-            IS_BIKERACK=1 CYCLIST_PROJECT_DIR="$project_dir" \
-                node "$bikerack_js" >> "$logfile" 2>&1 &
-            echo $! > "$pid_file"
+# [pf-migrated]             mkdir -p "$(dirname "$logfile")"
+# [pf-migrated]             IS_BIKERACK=1 CYCLIST_PROJECT_DIR="$project_dir" \
+# [pf-migrated]                 node "$bikerack_js" >> "$logfile" 2>&1 &
+# [pf-migrated]             echo $! > "$pid_file"
 
-            # Wait for port file (up to 10s)
-            for i in $(seq 1 20); do
-                if [[ -f "$port_file" ]]; then
-                    port=$(cat "$port_file")
-                    echo "WheelHub running at http://127.0.0.1:$port"
-                    exit 0
-                fi
-                sleep 0.5
-            done
-            echo "Warning: WheelHub didn't start within 10s. Check $logfile"
-            ;;
-        *)
-            echo "Usage: just wheelhub [start|stop|status]"
-            exit 1
-            ;;
-    esac
+# [pf-migrated]             # Wait for port file (up to 10s)
+# [pf-migrated]             for i in $(seq 1 20); do
+# [pf-migrated]                 if [[ -f "$port_file" ]]; then
+# [pf-migrated]                     port=$(cat "$port_file")
+# [pf-migrated]                     echo "WheelHub running at http://127.0.0.1:$port"
+# [pf-migrated]                     exit 0
+# [pf-migrated]                 fi
+# [pf-migrated]                 sleep 0.5
+# [pf-migrated]             done
+# [pf-migrated]             echo "Warning: WheelHub didn't start within 10s. Check $logfile"
+# [pf-migrated]             ;;
+# [pf-migrated]         *)
+# [pf-migrated]             echo "Usage: just wheelhub [start|stop|status]"
+# [pf-migrated]             exit 1
+# [pf-migrated]             ;;
+# [pf-migrated]     esac
 
-# Launch TUI (starts WheelHub if needed)
-tui:
-    #!/usr/bin/env bash
-    set -euo pipefail
+# [pf-migrated] # Launch TUI (starts WheelHub if needed)
+# [pf-migrated] tui:
+# [pf-migrated]     #!/usr/bin/env bash
+# [pf-migrated]     set -euo pipefail
 
-    pid_file="{{root}}/.wheelhub-pid"
-    port_file="{{root}}/.bikerack-port"
+# [pf-migrated]     pid_file="{{root}}/.wheelhub-pid"
+# [pf-migrated]     port_file="{{root}}/.bikerack-port"
 
-    # Start WheelHub if not running
-    if ! ([[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null); then
-        just --justfile "{{root}}/justfile" wheelhub start
-    fi
+# [pf-migrated]     # Start WheelHub if not running
+# [pf-migrated]     if ! ([[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null); then
+# [pf-migrated]         just --justfile "{{root}}/justfile" wheelhub start
+# [pf-migrated]     fi
 
-    port=$(cat "$port_file" 2>/dev/null)
-    if [[ -z "$port" ]]; then
-        echo "Error: WheelHub port not found"
-        exit 1
-    fi
+# [pf-migrated]     port=$(cat "$port_file" 2>/dev/null)
+# [pf-migrated]     if [[ -z "$port" ]]; then
+# [pf-migrated]         echo "Error: WheelHub port not found"
+# [pf-migrated]         exit 1
+# [pf-migrated]     fi
 
-    pf launch tui --port "$port" --project-dir "{{root}}" --foreground
+# [pf-migrated]     pf launch tui --port "$port" --project-dir "{{root}}" --foreground
 
 # Launch GUI in Chrome (starts WheelHub if needed)
 gui:
     #!/usr/bin/env bash
     set -euo pipefail
 
+# Launch TUI in dev mode (auto-reload on Python file changes)
+tui-dev:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
     pid_file="{{root}}/.wheelhub-pid"
     port_file="{{root}}/.bikerack-port"
 
@@ -191,67 +199,84 @@ gui:
         exit 1
     fi
 
-    url="http://127.0.0.1:$port"
-    echo "Opening $url"
-    open -a "Google Chrome" "$url"
+    PYTHONPATH="{{root}}/pennyfarthing/pennyfarthing-dist/src" \
+        python3 -c "from pf.bikerack.tui import dev_main; from pathlib import Path; dev_main(port=$port, project_dir=Path('{{root}}'))"
 
-# Launch Claude with OTEL pre-configured for WheelHub/BikeRack
-claude:
-    #!/usr/bin/env bash
-    set -euo pipefail
+# [pf-migrated]     pid_file="{{root}}/.wheelhub-pid"
+# [pf-migrated]     port_file="{{root}}/.bikerack-port"
 
-    project_dir="{{root}}"
-    PORT=""
+# [pf-migrated]     # Start WheelHub if not running
+# [pf-migrated]     if ! ([[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null); then
+# [pf-migrated]         just --justfile "{{root}}/justfile" wheelhub start
+# [pf-migrated]     fi
 
-    # Check .cyclist-port first, then .bikerack-port (same order as session_start.py)
-    for port_file in "$project_dir/.cyclist-port" "$project_dir/.bikerack-port"; do
-        if [[ -f "$port_file" ]]; then
-            candidate=$(cat "$port_file" 2>/dev/null)
-            if [[ "$candidate" =~ ^[0-9]+$ ]]; then
-                # Verify port is actually listening
-                if (echo >/dev/tcp/localhost/"$candidate") 2>/dev/null; then
-                    PORT="$candidate"
-                    break
-                else
-                    echo "[just claude] Stale port file $port_file (port $candidate not listening), skipping" >&2
-                fi
-            fi
-        fi
-    done
+# [pf-migrated]     port=$(cat "$port_file" 2>/dev/null)
+# [pf-migrated]     if [[ -z "$port" ]]; then
+# [pf-migrated]         echo "Error: WheelHub port not found"
+# [pf-migrated]         exit 1
+# [pf-migrated]     fi
 
-    if [[ -n "$PORT" ]]; then
-        echo "[just claude] OTEL configured → http://localhost:$PORT" >&2
-        export CLAUDE_CODE_ENABLE_TELEMETRY="1"
-        export OTEL_EXPORTER_OTLP_PROTOCOL="http/json"
-        export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:$PORT"
-        export OTEL_LOGS_EXPORTER="otlp"
-        export OTEL_METRICS_EXPORTER="otlp"
-    else
-        echo "[just claude] No WheelHub/BikeRack running — launching without OTEL" >&2
-        echo "[just claude] Start one first: just wheelhub start" >&2
-    fi
+# [pf-migrated]     url="http://127.0.0.1:$port"
+# [pf-migrated]     echo "Opening $url"
+# [pf-migrated]     open -a "Google Chrome" "$url"
 
-    exec claude
+# [pf-migrated] # Launch Claude with OTEL pre-configured for WheelHub/BikeRack
+# [pf-migrated] claude:
+# [pf-migrated]     #!/usr/bin/env bash
+# [pf-migrated]     set -euo pipefail
 
-# Launch tmux dev layout (2 columns: pf-1 + pf-2, each with Claude + TUI)
-tmux-dev:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    if [[ ! -f "{{root}}/tmux-dev" ]]; then
-        echo "No tmux-dev found. Copy from sample:"
-        echo "  cp tmux-dev.sample tmux-dev && chmod +x tmux-dev"
-        echo "  cp tmux.conf.sample tmux.conf"
-        exit 1
-    fi
-    exec "{{root}}/tmux-dev"
+# [pf-migrated]     project_dir="{{root}}"
+# [pf-migrated]     PORT=""
+
+# [pf-migrated]     # Check .cyclist-port first, then .bikerack-port (same order as session_start.py)
+# [pf-migrated]     for port_file in "$project_dir/.cyclist-port" "$project_dir/.bikerack-port"; do
+# [pf-migrated]         if [[ -f "$port_file" ]]; then
+# [pf-migrated]             candidate=$(cat "$port_file" 2>/dev/null)
+# [pf-migrated]             if [[ "$candidate" =~ ^[0-9]+$ ]]; then
+# [pf-migrated]                 # Verify port is actually listening
+# [pf-migrated]                 if (echo >/dev/tcp/localhost/"$candidate") 2>/dev/null; then
+# [pf-migrated]                     PORT="$candidate"
+# [pf-migrated]                     break
+# [pf-migrated]                 else
+# [pf-migrated]                     echo "[just claude] Stale port file $port_file (port $candidate not listening), skipping" >&2
+# [pf-migrated]                 fi
+# [pf-migrated]             fi
+# [pf-migrated]         fi
+# [pf-migrated]     done
+
+# [pf-migrated]     if [[ -n "$PORT" ]]; then
+# [pf-migrated]         echo "[just claude] OTEL configured → http://localhost:$PORT" >&2
+# [pf-migrated]         export CLAUDE_CODE_ENABLE_TELEMETRY="1"
+# [pf-migrated]         export OTEL_EXPORTER_OTLP_PROTOCOL="http/json"
+# [pf-migrated]         export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:$PORT"
+# [pf-migrated]         export OTEL_LOGS_EXPORTER="otlp"
+# [pf-migrated]         export OTEL_METRICS_EXPORTER="otlp"
+# [pf-migrated]     else
+# [pf-migrated]         echo "[just claude] No WheelHub/BikeRack running — launching without OTEL" >&2
+# [pf-migrated]         echo "[just claude] Start one first: just wheelhub start" >&2
+# [pf-migrated]     fi
+
+# [pf-migrated]     exec claude
+
+# [pf-migrated] # Launch tmux dev layout (2 columns: pf-1 + pf-2, each with Claude + TUI)
+# [pf-migrated] tmux-dev:
+# [pf-migrated]     #!/usr/bin/env bash
+# [pf-migrated]     set -euo pipefail
+# [pf-migrated]     if [[ ! -f "{{root}}/tmux-dev" ]]; then
+# [pf-migrated]         echo "No tmux-dev found. Copy from sample:"
+# [pf-migrated]         echo "  cp tmux-dev.sample tmux-dev && chmod +x tmux-dev"
+# [pf-migrated]         echo "  cp tmux.conf.sample tmux.conf"
+# [pf-migrated]         exit 1
+# [pf-migrated]     fi
+# [pf-migrated]     exec "{{root}}/tmux-dev"
 
 # =============================================================================
 # tmux
 # =============================================================================
 
-# Launch tmux dev layout (claude on top, tui on bottom)
-tmux dir=invocation:
-    {{root}}/tmux-dev "{{dir}}"
+# [pf-migrated] # Launch tmux dev layout (claude on top, tui on bottom)
+# [pf-migrated] tmux dir=invocation:
+# [pf-migrated]     {{root}}/tmux-dev "{{dir}}"
 
 # =============================================================================
 # Development
