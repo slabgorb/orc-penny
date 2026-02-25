@@ -39,10 +39,11 @@ stories:
     title: Create What Pennyfarthing Does Reference Card
     points: 2
     priority: P2
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: agent-docs
     acceptance_criteria: []
+    completed: '2026-02-25'
     type: feature
   - id: 132-4
     jira: MSSCI-15620
