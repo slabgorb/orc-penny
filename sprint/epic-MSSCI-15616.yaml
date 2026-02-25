@@ -162,9 +162,9 @@ stories:
     assigned_to: keith.avery@1898andco.io
     started: '2026-02-25'
     workflow: tdd
+    completed: "2026-02-25"
     type: chore
     review_verdict: approved
-    completed: "2026-02-25"
   - id: 132-14
     jira: MSSCI-15650
     title: Add fresh-clone smoke test to CI

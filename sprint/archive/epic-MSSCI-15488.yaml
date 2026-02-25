@@ -7,7 +7,7 @@ description: |-
   installation and auto-setup. Eliminates uv, npm distribution, Node-based init,
   and wrapper script chain. Implements ADR-0028. Supersedes epics 111-116.
 priority: p1
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-15488
 stories:
@@ -242,12 +242,14 @@ stories:
       - E2E test: pf init is idempotent (run twice, same result)
       - Tests run in CI with isolated environments
     points: 5
-    status: in_progress
+    status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-02-24'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-25'
     type: feature
+    review_verdict: approved
   - id: 126-11
     jira: MSSCI-15599
     title: Update stale pennyfarthing init references to pf setup
@@ -348,3 +350,4 @@ stories:
     completed: '2026-02-24'
     type: bug
     review_verdict: approved
+completed: '2026-02-25'

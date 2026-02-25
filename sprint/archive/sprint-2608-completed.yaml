@@ -19,6 +19,7 @@ completed_epics:
   - MSSCI-15391
   - MSSCI-14510
   - MSSCI-15551
+  - MSSCI-15488
 completed_stories:
   - id: 110-1
     epic: MSSCI-15184
@@ -533,5 +534,85 @@ completed_stories:
   - id: 124-6
     epic: MSSCI-15551
     title: CI, Build, and Test Fixup
+    points: 2
+    completed: '2026-02-24'
+  - id: 126-1
+    epic: MSSCI-15488
+    title: Publish pf package to private PyPI with CI pipeline
+    points: 3
+    completed: '2026-02-23'
+  - id: 126-2
+    epic: MSSCI-15488
+    title: Rewrite pf init in Python — directory structure, commands/skills, settings
+    points: 5
+    completed: '2026-02-23'
+  - id: 126-3
+    epic: MSSCI-15488
+    title: Integrate auto-setup into pf init — repo discovery, theme, git hooks, Node install
+    points: 5
+    completed: '2026-02-24'
+  - id: 126-4
+    epic: MSSCI-15488
+    title: Remove uv/pf.sh wrapper chain — global pf invoked directly
+    points: 2
+    completed: '2026-02-24'
+  - id: 126-5
+    epic: MSSCI-15488
+    title: Config consolidation — migrate preferences.yaml into config.local.yaml
+    points: 3
+    completed: '2026-02-24'
+  - id: 126-6
+    epic: MSSCI-15488
+    title: Frontmatter hooks on all agents and skills, shrink settings.local.json
+    points: 5
+    completed: '2026-02-24'
+  - id: 126-7
+    epic: MSSCI-15488
+    title: pf upgrade — detect npm-based install, migrate to Python-based
+    points: 5
+    completed: '2026-02-24'
+  - id: 126-8
+    epic: MSSCI-15488
+    title: Reduce doctor to ~10 health checks with --fix mode
+    points: 3
+    completed: '2026-02-24'
+  - id: 126-9
+    epic: MSSCI-15488
+    title: Remove Node init.ts, npx entry point, postinstall.cjs
+    points: 2
+    completed: '2026-02-24'
+  - id: 126-10
+    epic: MSSCI-15488
+    title: E2E tests — fresh install, upgrade from npm, pf init --dry-run
+    points: 5
+    completed: '2026-02-25'
+  - id: 126-11
+    epic: MSSCI-15488
+    title: Update stale pennyfarthing init references to pf setup
+    points: 2
+    completed: '2026-02-25'
+  - id: 126-12
+    epic: MSSCI-15488
+    title: Wire setup auto-detection into session-start hook
+    points: 3
+    completed: '2026-02-24'
+  - id: 126-13
+    epic: MSSCI-15488
+    title: Extract shared hook constants and fix onboarding rough edges
+    points: 2
+    completed: '2026-02-24'
+  - id: 126-14
+    epic: MSSCI-15488
+    title: pf upgrade cleanup — remove npm artifacts and stale symlinks
+    points: 2
+    completed: '2026-02-24'
+  - id: 126-15
+    epic: MSSCI-15488
+    title: Pull LFS portraits during pf init/setup so TUI portraits work out of the box
+    points: 2
+    completed: '2026-02-24'
+  - id: 126-16
+    epic: MSSCI-15488
+    title: Epic promote fails for inline initiative epics — extract to shards on workflow finish
     points: 2
     completed: '2026-02-24'
