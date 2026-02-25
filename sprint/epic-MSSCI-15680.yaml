@@ -11,11 +11,12 @@ stories:
     title: "Fix Context Check Bugs in sprint-data.ts"
     points: 1
     priority: P1
-    status: in_progress
+    status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-02-25'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-02-25'
     type: fix
   - id: "129-2"
     jira: MSSCI-15682
