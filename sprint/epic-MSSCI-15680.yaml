@@ -23,10 +23,14 @@ stories:
     title: "Create Context Schema YAML"
     points: 1
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-25'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-02-25'
     type: feature
+    review_verdict: approved
   - id: "129-3"
     jira: MSSCI-15683
     title: "Build Context Validator Python Module and CLI"
