@@ -295,28 +295,55 @@ setup:
     echo "=== Pennyfarthing Orchestrator Setup ==="
     echo ""
 
+    # Validate Python version early
+    if ! python3 -c "import sys; sys.exit(0 if sys.version_info >= (3, 11) else 1)" 2>/dev/null; then
+        echo "Error: Python 3.11+ is required but not found."
+        echo "  Install: brew install python@3.11  (or pyenv install 3.11)"
+        exit 1
+    fi
+
     # Step 1: Clone pennyfarthing repo if missing
     if [ ! -d "{{pennyfarthing}}" ]; then
-        echo "Step 1/4: Cloning pennyfarthing framework..."
+        echo "Step 1/5: Cloning pennyfarthing framework..."
         git clone git@github.com:1898andCo/pennyfarthing.git "{{pennyfarthing}}"
     else
-        echo "Step 1/4: pennyfarthing/ already exists, skipping clone"
+        echo "Step 1/5: pennyfarthing/ already exists, skipping clone"
     fi
 
     # Step 2: Install framework dependencies
-    echo "Step 2/4: Installing framework dependencies..."
+    echo "Step 2/5: Installing framework dependencies..."
     cd "{{pennyfarthing}}" && pnpm install
 
     # Step 3: Build framework
-    echo "Step 3/4: Building framework..."
+    echo "Step 3/5: Building framework..."
     cd "{{pennyfarthing}}" && pnpm build
 
-    # Step 4: Install orchestrator deps (triggers postinstall -> pennyfarthing update)
-    echo "Step 4/4: Installing orchestrator and linking..."
+    # Step 4: Install pf CLI
+    if command -v pf >/dev/null 2>&1 && pf --version >/dev/null 2>&1; then
+        echo "Step 4/5: pf CLI already installed ($(pf --version 2>&1)), skipping"
+    else
+        echo "Step 4/5: Installing pf CLI..."
+        pip3 install -e "{{pennyfarthing}}" --quiet
+        if ! command -v pf >/dev/null 2>&1; then
+            echo ""
+            echo "Warning: pf installed but not on PATH."
+            echo "  Add to your shell profile: export PATH=\"\$HOME/.local/bin:\$PATH\""
+            echo "  Then restart your shell and re-run: just setup"
+            exit 1
+        fi
+        echo "  Installed: $(pf --version 2>&1)"
+    fi
+
+    # Step 5: Install orchestrator deps (triggers postinstall -> pennyfarthing update)
+    echo "Step 5/5: Installing orchestrator and linking..."
     cd "{{root}}" && npm install
 
     echo ""
     echo "=== Setup complete ==="
+    echo ""
+    echo "Next steps:"
+    echo "  just claude       # start Claude Code"
+    echo "  /guided-tour      # interactive walkthrough"
 
 # =============================================================================
 # Orchestrator-specific tasks
