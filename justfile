@@ -304,39 +304,39 @@ setup:
 
     # Step 1: Clone pennyfarthing repo if missing
     if [ ! -d "{{pennyfarthing}}" ]; then
-        echo "Step 1/5: Cloning pennyfarthing framework..."
+        echo "Step 1/6: Cloning pennyfarthing framework..."
         git clone git@github.com:1898andCo/pennyfarthing.git "{{pennyfarthing}}"
     else
-        echo "Step 1/5: pennyfarthing/ already exists, skipping clone"
+        echo "Step 1/6: pennyfarthing/ already exists, skipping clone"
     fi
 
     # Step 2: Install framework dependencies
-    echo "Step 2/5: Installing framework dependencies..."
+    echo "Step 2/6: Installing framework dependencies..."
     cd "{{pennyfarthing}}" && pnpm install
 
     # Step 3: Build framework
-    echo "Step 3/5: Building framework..."
+    echo "Step 3/6: Building framework..."
     cd "{{pennyfarthing}}" && pnpm build
 
-    # Step 4: Install pf CLI
-    if command -v pf >/dev/null 2>&1 && pf --version >/dev/null 2>&1; then
-        echo "Step 4/5: pf CLI already installed ($(pf --version 2>&1)), skipping"
-    else
-        echo "Step 4/5: Installing pf CLI..."
-        pip3 install -e "{{pennyfarthing}}" --quiet
-        if ! command -v pf >/dev/null 2>&1; then
-            echo ""
-            echo "Warning: pf installed but not on PATH."
-            echo "  Add to your shell profile: export PATH=\"\$HOME/.local/bin:\$PATH\""
-            echo "  Then restart your shell and re-run: just setup"
-            exit 1
-        fi
-        echo "  Installed: $(pf --version 2>&1)"
+    # Step 4: Install pf CLI (always editable-install from local repo to stay current)
+    echo "Step 4/6: Installing pf CLI from local repo..."
+    pip3 install -e "{{pennyfarthing}}" --quiet 2>/dev/null || pip3 install -e "{{pennyfarthing}}"
+    if ! command -v pf >/dev/null 2>&1; then
+        echo ""
+        echo "Warning: pf installed but not on PATH."
+        echo "  Add to your shell profile: export PATH=\"\$HOME/.local/bin:\$PATH\""
+        echo "  Then restart your shell and re-run: just setup"
+        exit 1
     fi
+    echo "  Installed: $(pf --version 2>&1)"
 
     # Step 5: Install orchestrator deps (triggers postinstall -> pennyfarthing update)
-    echo "Step 5/5: Installing orchestrator and linking..."
+    echo "Step 5/6: Installing orchestrator and linking..."
     cd "{{root}}" && npm install
+
+    # Step 6: Initialize project (creates settings.local.json with hooks)
+    echo "Step 6/6: Initializing Pennyfarthing project..."
+    cd "{{root}}" && pf init
 
     echo ""
     echo "=== Setup complete ==="
