@@ -242,7 +242,9 @@ stories:
       - E2E test: pf init is idempotent (run twice, same result)
       - Tests run in CI with isolated environments
     points: 5
-    status: backlog
+    status: in_progress
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-24'
     repos: pennyfarthing
     workflow: tdd
     type: feature
