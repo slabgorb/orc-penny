@@ -11,7 +11,7 @@ stories:
     title: "Fix Context Check Bugs in sprint-data.ts"
     points: 1
     priority: P1
-    status: done
+    status: canceled
     assigned_to: keith.avery@1898andco.io
     started: '2026-02-25'
     repos: pennyfarthing
@@ -47,6 +47,7 @@ stories:
   - id: "129-4"
     jira: MSSCI-15684
     title: "Generate Context Document Templates from Schema"
+    description: Delivered as part of 130-1
     points: 1
     priority: P1
     status: done

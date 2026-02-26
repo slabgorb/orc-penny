@@ -11,7 +11,9 @@ stories:
     title: "/pf-context create epic Skill"
     points: 2
     priority: P1
-    status: backlog
+    status: in_progress
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-26'
     repos: pennyfarthing
     workflow: tdd
     type: feature
