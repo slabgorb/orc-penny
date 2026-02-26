@@ -49,10 +49,15 @@ stories:
     title: "Generate Context Document Templates from Schema"
     points: 1
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-26'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-02-26'
     type: feature
+    review_findings: 'HIGH: f-string backslash SyntaxError on Python 3.11 (templates.py:39). MEDIUM: 10 ruff violations (unused import, f-strings without placeholders, missing exception chaining, unsorted imports). Route back to dev for lint fixes.'
+    review_verdict: approved
   - id: 129-5
     jira: MSSCI-15694
     title: Integrate frontmatter hooks into pf init pipeline
