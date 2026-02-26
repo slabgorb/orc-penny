@@ -147,3 +147,11 @@ standalone_stories:
     repos: pennyfarthing
     workflow: trivial
     type: bug
+  - id: MSSCI-15736
+    jira: MSSCI-15736
+    title: tmux config overhaul — CSI u fix, mouse copy, integrated status bar
+    points: 3
+    status: done
+    repos: both
+    pr: 123
+    branch: feat/MSSCI-15736-tmux-config-overhaul
