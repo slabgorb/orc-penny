@@ -154,3 +154,11 @@ standalone_stories:
     repos: both
     pr: 123
     branch: feat/MSSCI-15736-tmux-config-overhaul
+  - id: MSSCI-15748
+    jira: MSSCI-15748
+    title: Add theme-based spinner verbs and feature discovery tips
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1154
+    branch: feat/MSSCI-15748-spinner-verbs
