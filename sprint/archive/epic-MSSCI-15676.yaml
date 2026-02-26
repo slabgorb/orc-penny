@@ -1,7 +1,7 @@
 id: '131'
 title: 'Epic: Gate-Enforced Context Pipeline'
 priority: P1
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-15676
 points: 6
@@ -39,8 +39,14 @@ stories:
     title: TEA Context Gate and Agent Integration
     points: 2
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-26'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
+    completed: '2026-02-26'
     type: feature
+    review_findings: 'Missing entry_gate in 3 workflows: tdd-team.yaml, review-tandem.yaml, 2party-tdd.yaml'
+    review_verdict: approved
+completed: '2026-02-26'

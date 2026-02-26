@@ -22,6 +22,7 @@ completed_epics:
   - MSSCI-15488
   - MSSCI-15680
   - MSSCI-15685
+  - MSSCI-15676
 completed_stories:
   - id: 110-1
     epic: MSSCI-15184
@@ -663,3 +664,18 @@ completed_stories:
     title: "Tandem Partner Selection and Integration"
     points: 2
     completed: "2026-02-26"
+  - id: 131-1
+    epic: MSSCI-15676
+    title: Update sm-setup-exit Gate with Context Validation Cascade
+    points: 2
+    completed: '2026-02-26'
+  - id: 131-2
+    epic: MSSCI-15676
+    title: SM Auto-Triggers Context Creation on Gate Failure
+    points: 2
+    completed: '2026-02-26'
+  - id: 131-3
+    epic: MSSCI-15676
+    title: TEA Context Gate and Agent Integration
+    points: 2
+    completed: '2026-02-26'
