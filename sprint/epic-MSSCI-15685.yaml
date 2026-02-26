@@ -11,12 +11,14 @@ stories:
     title: "/pf-context create epic Skill"
     points: 2
     priority: P1
-    status: in_progress
+    status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-02-26'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-26'
     type: feature
+    review_verdict: approved
   - id: "130-2"
     jira: MSSCI-15687
     title: "/pf-context create story Skill (PM-Only Mode)"
