@@ -60,10 +60,6 @@ claude:
 
     exec claude
 
-# Launch tmux dev layout (Claude + TUI in split panes)
-tmux-dev:
-    exec "{{root}}/tmux-dev"
-
-# Launch tmux dev layout for a specific directory
-tmux dir=invocation_directory():
-    "{{root}}/tmux-dev" "{{dir}}"
+# Launch tmux dev layout: vert (default), right, left
+tmux layout="vert" dir=invocation_directory():
+    "{{root}}/tmux-dev" "{{layout}}" "{{dir}}"

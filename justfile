@@ -266,12 +266,8 @@ tui-dev:
 # [pf-migrated]     exec "{{root}}/tmux-dev"
 
 # =============================================================================
-# tmux
+# tmux — see .pennyfarthing/justfile.pf
 # =============================================================================
-
-# [pf-migrated] # Launch tmux dev layout (claude on top, tui on bottom)
-# [pf-migrated] tmux dir=invocation:
-# [pf-migrated]     {{root}}/tmux-dev "{{dir}}"
 
 # =============================================================================
 # Development
