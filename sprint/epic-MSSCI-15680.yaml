@@ -36,10 +36,14 @@ stories:
     title: "Build Context Validator Python Module and CLI"
     points: 3
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-25'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-26'
     type: feature
+    review_verdict: approved
   - id: "129-4"
     jira: MSSCI-15684
     title: "Generate Context Document Templates from Schema"
