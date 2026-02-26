@@ -11,11 +11,15 @@ stories:
     title: Update sm-setup-exit Gate with Context Validation Cascade
     points: 2
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-26'
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
+    completed: '2026-02-26'
     type: feature
+    review_verdict: approved
   - id: 131-2
     jira: MSSCI-15678
     title: SM Auto-Triggers Context Creation on Gate Failure

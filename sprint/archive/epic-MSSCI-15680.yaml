@@ -1,7 +1,7 @@
 id: "129"
 title: "Epic: Context Validation & Visibility"
 priority: P1
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-15680
 points: 6
@@ -81,3 +81,4 @@ stories:
     workflow: tdd
     completed: '2026-02-26'
     review_verdict: approved
+completed: '2026-02-26'
