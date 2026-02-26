@@ -21,6 +21,7 @@ completed_epics:
   - MSSCI-15551
   - MSSCI-15488
   - MSSCI-15680
+  - MSSCI-15685
 completed_stories:
   - id: 110-1
     epic: MSSCI-15184
@@ -647,3 +648,18 @@ completed_stories:
     title: Detect stale hooks and prompt upgrade on session start
     points: 2
     completed: '2026-02-26'
+  - id: "130-1"
+    epic: MSSCI-15685
+    title: "/pf-context create epic Skill"
+    points: 2
+    completed: '2026-02-26'
+  - id: "130-2"
+    epic: MSSCI-15685
+    title: "/pf-context create story Skill (PM-Only Mode)"
+    points: 3
+    completed: '2026-02-26'
+  - id: "130-3"
+    epic: MSSCI-15685
+    title: "Tandem Partner Selection and Integration"
+    points: 2
+    completed: "2026-02-26"
