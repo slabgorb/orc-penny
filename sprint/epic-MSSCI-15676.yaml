@@ -25,11 +25,15 @@ stories:
     title: SM Auto-Triggers Context Creation on Gate Failure
     points: 2
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-26'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
+    completed: '2026-02-26'
     type: feature
+    review_verdict: approved
   - id: 131-3
     jira: MSSCI-15679
     title: TEA Context Gate and Agent Integration
