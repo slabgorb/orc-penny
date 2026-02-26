@@ -117,19 +117,19 @@ standalone_stories:
     title: Sprint panel promote/archive epic buttons are stubs
     points: 2
     priority: p2
-    status: backlog
+    status: canceled
     repos: pennyfarthing
   - id: MSSCI-12728
     title: Configurable project directory isolation for Pennyfarthing
     points: 3
     priority: p3
-    status: backlog
+    status: canceled
     repos: pennyfarthing
   - id: MSSCI-14110
     title: Pennyfarthing health scripts - drift-detection.sh bash array bug
     points: 2
     priority: p2
-    status: backlog
+    status: canceled
     repos: pennyfarthing
   - id: ub-1
     title: Adopt research spike repo structure and orchestrator-side tracking
