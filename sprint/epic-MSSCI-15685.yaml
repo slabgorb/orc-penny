@@ -24,10 +24,14 @@ stories:
     title: "/pf-context create story Skill (PM-Only Mode)"
     points: 3
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-26'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-26'
     type: feature
+    review_verdict: approved
   - id: "130-3"
     jira: MSSCI-15688
     title: "Tandem Partner Selection and Integration"
