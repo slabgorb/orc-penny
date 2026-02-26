@@ -75,5 +75,9 @@ stories:
     title: Detect stale hooks and prompt upgrade on session start
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-26'
     workflow: tdd
+    completed: '2026-02-26'
+    review_verdict: approved
