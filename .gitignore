@@ -67,3 +67,7 @@ tmux.conf
 .pennyfarthing/tmux-status-left
 .pennyfarthing/tmux-status-right
 .pennyfarthing/tmux-activity
+
+# direnv + venv
+.envrc
+.venv/
