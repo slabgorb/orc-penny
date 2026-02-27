@@ -1,89 +1,64 @@
-# Story 132-5: Fix standalone OTLP enrichment pipeline for BikeRack TUI mode
+# Story 132-5: Sprint totals must include archived stories from current sprint
 
-**Status:** in-progress
-**Phase:** finish
+## Story Details
+- **ID:** 132-5
+- **Epic:** 132 (MSSCI-15765) — Release Workflow Hardening (11.x Followup)
+- **Type:** bug
+- **Priority:** p0
+- **Points:** 2
+- **Repos:** pennyfarthing
+- **Workflow:** trivial
+
+## Problem Context
+
+Sprint metrics are not counting archived stories from the current sprint. The issue:
+- `sprint-2608-completed.yaml` contains 145 stories / 356 points
+- The metrics backend only shows 32 points done
+- The archive file is being counted in the "all-time" bucket instead of current sprint totals
+- Both TUI Sprint panel and `pf sprint metrics` show wrong numbers
+
+Related work: Story MSSCI-15763 "Move sprint calculations to backend" recently completed, so the calculation logic is now in the WheelHub API routes or core package.
+
+## Workflow Tracking
 **Workflow:** trivial
-**Repos:** pennyfarthing
-**Branch:** feature/132-5-fix-standalone-otlp-enrichment
-**Points:** 2
-**Epic:** 132 — Release Workflow Hardening (11.x Followup)
+**Phase:** finish
+**Phase Started:** 2026-02-27T12:05:12Z
 
----
+### Phase History
+| Phase | Started | Ended | Duration |
+|-------|---------|-------|----------|
+| setup | 2026-02-27T11:58:27Z | 2026-02-27T11:59:36Z | 1m 9s |
+| implement | 2026-02-27T11:59:36Z | 2026-02-27T12:03:52Z | 4m 16s |
+| review | 2026-02-27T12:03:52Z | 2026-02-27T12:05:12Z | 1m 20s |
+| finish | 2026-02-27T12:05:12Z | - | - |
 
-## Context
+## Notes
+- Fix likely involves sprint calculation backend in WheelHub API or core package
+- Check: How archived stories are loaded and counted in sprint metrics calculations
+- Check: Sprint totals endpoint in packages/core
 
-PR #1158 moved `_forward_tool_input()` before the `is_cyclist_running()` gate in `cyclist_pretooluse.py`, so tool inputs are now forwarded to WheelHub in both Cyclist and BikeRack TUI modes. However, the server-side standalone OTLP receiver discards them:
-
-1. `storePendingToolInput()` in `otlp-receiver.ts` is a no-op in standalone mode (line 191)
-2. `processOTLPTraces()` is also a no-op in standalone mode (line 134-135)
-3. Enrichment functions in `file-enrichment.ts` need the span correlation map, which is never populated without trace processing
-
-The audit log in BikeRack TUI mode only gets basic entries (tool name, success, timestamp) but never gets enrichment data (file size, line count, git status, diffs, duration).
-
-## Acceptance Criteria
-
-- [ ] `storePendingToolInput()` stores inputs in standalone mode (not no-op)
-- [ ] Standalone OTLP receiver correlates pending tool inputs with incoming log events
-- [ ] Audit log entries in BikeRack TUI mode include enrichment data (file path, language, file size, line count, git status)
-- [ ] Edit operations show diff summary (lines added/removed)
-- [ ] Bash operations show command (redacted), exit code, output summary, duration
-- [ ] Existing Cyclist provider mode is unaffected (no regression)
-
-## Key Files
-
-- `packages/core/src/server/otlp-receiver.ts` — standalone OTLP processing, `storePendingToolInput` no-op
-- `packages/core/src/server/span-correlation.ts` — correlation map and pending tool input storage
-- `packages/core/src/server/file-enrichment.ts` — enrichment functions (Read, Edit, Bash, Task)
-- `packages/core/src/server/server.ts:255` — `/api/pending-tool-input` endpoint
-- `pennyfarthing-dist/src/pf/hooks/cyclist_pretooluse.py` — hook that forwards tool inputs (already fixed)
-
-## Approach
-
-The standalone `processLogEvents()` already processes `claude_code.tool_result` events. The fix should:
-1. Make `storePendingToolInput()` actually store inputs in standalone mode (use the `span-correlation.ts` functions directly)
-2. In `processLogEvents()`, when processing a `tool_result`, consume the matching pending tool input to get full input params
-3. Run the appropriate enrichment function based on tool type
-4. Store enriched data on the audit log entry / tool event
-
----
-
-## Assessments
-
-### Dev Assessment
+## Dev Assessment
 
 **Implementation Complete:** Yes
 **Files Changed:**
-- `packages/core/src/server/otlp-receiver.ts` — Added local pending input queue, fixed `storePendingToolInput()` to store instead of no-op, modified `processLogEvents()` to consume pending inputs and enrich audit entries (sync: file path, language, diff, redacted command, exit code, duration; async: file size, line count, git status)
-- `packages/core/src/server/otlp-receiver.test.ts` — 10 new tests covering all enrichment paths
+- `pennyfarthing-dist/src/pf/sprint/loader.py` - Added `exclude_current` and `only_current` filters to `get_archived_stories()`
+- `pennyfarthing-dist/src/pf/sprint/cli.py` - Updated `data()` and `metrics()` to include current sprint archived stories in done counts
 
-**Tests:** 31/31 passing (21 existing + 10 new)
-**Branch:** feature/132-5-fix-standalone-otlp-enrichment (pushed)
+**Tests:** N/A (trivial workflow, Python CLI — no test suite for this path)
+**Branch:** feat/132-5-sprint-totals-archived-fix (pushed)
 
-**ACs met:**
-- [x] `storePendingToolInput()` stores inputs in standalone mode
-- [x] Standalone OTLP receiver correlates pending inputs with log events
-- [x] Audit log entries include file path, language, file size, line count, git status
-- [x] Edit operations show diff summary
-- [x] Bash operations show command (redacted), exit code, duration
-- [x] Existing Cyclist provider mode unaffected (provider path unchanged, all existing tests pass)
+**Results:** `pf sprint metrics` now shows 388 done pts (was 32). `pf sprint data --json` shows 385 completed pts (was ~32). Prior sprint archives correctly separated at 351 pts.
 
-**Handoff:** To review
+**Handoff:** To Reviewer for code review
 
-### Dev Re-Review Note
-
-Manual testing completed. Issues found during testing have been fixed and committed. Debug logging removed. Returning to review phase for re-review by Granny Weatherwax.
-
-### Reviewer Assessment
+## Reviewer Assessment
 
 **Verdict:** APPROVED
-**Data flow traced:** PreToolUse hook → `server.ts:262` `/api/pending-tool-input` → `storePendingToolInput` → `_pendingToolInputs` queue → `processLogEvents` → `consumePendingInput` → `enrichEntrySync`/`enrichEntryAsync` → audit log entry (safe: provider delegation checked first, FIFO matching by toolName, 10s expiry)
-**Pattern observed:** Clean sync/async enrichment split — sync fields (filePath, language, diff, command, exitCode) available immediately, async fields (fileSize, lineCount, gitStatus) populated in background. Follows existing Cyclist enrichment patterns at `file-enrichment.ts`.
-**Error handling:** Async enrichment errors silently caught at `otlp-receiver.ts:344` (.catch(() => {})) — acceptable for fire-and-forget TUI panel data.
-**Findings (non-blocking):**
-- [MEDIUM] FIFO-by-toolName matching in `consumePendingInput` (`otlp-receiver.ts:221`) — known limitation, OTEL events lack toolId
-- [MEDIUM] ToolEvent listeners never receive async enrichment fields (`otlp-receiver.ts:349-363`) — acceptable for current consumers
-- [LOW] Dead import `createOutputSummary` (`otlp-receiver.ts:21`)
-- [LOW] Non-null assertion on `parsedParams!` (`otlp-receiver.ts:333`) — caught by try/catch
-
-**Tests:** 31/31 passing (21 existing + 10 new)
+**Data flow traced:** Sprint number (int) from `current-sprint.yaml` → compared to archive `sprint.number` → filters correctly at `loader.py:296`
+**Pattern observed:** Backward-compatible parameter addition with safe defaults at `loader.py:260-263`
+**Error handling:** Missing sprint number in archive → treated as prior sprint (safe default) at `loader.py:295-296`
+**Observations:** 5 total (3 verified good, 1 low severity, 1 verified edge case). No critical or high issues.
 **Handoff:** To SM for finish-story
+
+## SM Assessment (setup → implement)
+**Bug:** Sprint totals exclude 356 points / 145 stories from `sprint/archive/sprint-2608-completed.yaml`. The archive is counted under "all-time" (707 archived) instead of current sprint done. Both CLI `pf sprint metrics` and TUI Sprint panel show ~32 pts done when the real number is ~388. The calculation logic was recently moved to the backend (MSSCI-15763) so the fix is in the core package sprint calculation code. Trivial workflow — Dev implements and reviews.

@@ -144,10 +144,11 @@ standalone_stories:
     title: Epic promote fails for inline initiative epics — extract to shards on workflow finish
     points: 2
     priority: p1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: trivial
     type: bug
+    completed: '2026-02-27'
   - id: MSSCI-15736
     jira: MSSCI-15736
     title: tmux config overhaul — CSI u fix, mouse copy, integrated status bar
