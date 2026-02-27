@@ -35,8 +35,13 @@ stories:
     title: Automate changelog comparison link updates
     points: 1
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-27'
     workflow: trivial
+    completed: '2026-02-27'
+    review_findings: release.sh auto-fix creates uncommitted changes after clean-tree pre-flight check
+    review_verdict: approved
   - id: 132-4
     jira: MSSCI-15769
     title: Implement pf release dry-run command
