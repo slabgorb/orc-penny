@@ -1,0 +1,36 @@
+id: '134'
+type: epic
+title: "Impact Summary & Boss-Readable PR"
+initiative: session-feedback
+description: |
+  Boss can understand a story's upstream effects in 30 seconds via Impact
+  Summary, delivered through a self-contained, jargon-free PR description
+  generated from the session file.
+priority: p1
+status: backlog
+repos: pennyfarthing
+stories:
+  - id: 134-1
+    title: Add Impact Summary compilation to SM finish flow
+    points: 3
+    type: feature
+    status: backlog
+    workflow: tdd
+    priority: p1
+    repos: pennyfarthing
+  - id: 134-2
+    title: Generate boss-readable PR body from session file
+    points: 3
+    type: feature
+    status: backlog
+    workflow: tdd
+    priority: p1
+    repos: pennyfarthing
+  - id: 134-3
+    title: Update session-artifacts guide for Impact Summary and PR body
+    points: 1
+    type: docs
+    status: backlog
+    workflow: trivial
+    priority: p2
+    repos: pennyfarthing

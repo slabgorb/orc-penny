@@ -1,0 +1,28 @@
+id: '135'
+type: epic
+title: "Sprint Findings Aggregation"
+description: |
+  Sprint retro can surface cross-story patterns from aggregated findings —
+  identifying systemic issues across the sprint.
+status: backlog
+stories:
+  - id: 135-1
+    title: Create sprint findings aggregation script
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria: []
+    type: feature
+  - id: 135-2
+    title: Integrate aggregated findings into retro workflow
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria: []
+    type: feature
+initiative: session-feedback
+total_points: 4
