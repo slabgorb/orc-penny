@@ -47,8 +47,13 @@ stories:
     title: Implement pf release dry-run command
     points: 3
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-27'
     workflow: tdd
+    completed: '2026-02-27'
+    delivered_in: 126-1
+    notes: Implemented as part of 126-1 (PyPI src/ layout migration). Full implementation + 47 tests already existed.
   - id: 132-5
     title: Sprint totals must include archived stories from current sprint
     points: 2
