@@ -15,11 +15,12 @@ stories:
     title: Add Impact Summary compilation to SM finish flow
     points: 3
     priority: p1
-    status: in_progress
+    status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-02-27'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-02-27'
     type: feature
     review_verdict: approved
   - id: 134-2
