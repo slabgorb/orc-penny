@@ -49,3 +49,14 @@ stories:
     priority: p2
     status: backlog
     workflow: tdd
+  - id: 132-5
+    title: Sprint totals must include archived stories from current sprint
+    points: 2
+    priority: p0
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-27'
+    completed: '2026-02-27'
+    workflow: trivial
+    type: bug
+    review_verdict: approved
