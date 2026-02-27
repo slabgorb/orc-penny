@@ -61,7 +61,7 @@ stories:
     status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-02-27'
-    completed: '2026-02-27'
     workflow: trivial
+    completed: '2026-02-27'
     type: bug
     review_verdict: approved

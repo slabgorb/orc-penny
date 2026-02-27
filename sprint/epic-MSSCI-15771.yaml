@@ -16,10 +16,14 @@ stories:
     title: Add Delivery Findings section to session template
     points: 1
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-27'
     repos: pennyfarthing
     workflow: trivial
     type: chore
+    review_verdict: approved
+    completed: "2026-02-27"
   - id: 133-2
     jira: MSSCI-15773
     title: Add finding-capture to agent exit behaviors
