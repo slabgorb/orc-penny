@@ -23,6 +23,7 @@ completed_epics:
   - MSSCI-15680
   - MSSCI-15685
   - MSSCI-15676
+  - MSSCI-15765
 completed_stories:
   - id: 110-1
     epic: MSSCI-15184
@@ -679,3 +680,28 @@ completed_stories:
     title: TEA Context Gate and Agent Integration
     points: 2
     completed: '2026-02-26'
+  - id: 132-1
+    epic: MSSCI-15765
+    title: Fix pf-* prefix filter in init and doctor
+    points: 2
+    completed: '2026-02-26'
+  - id: 132-2
+    epic: MSSCI-15765
+    title: Add package contents verification to release workflow
+    points: 2
+    completed: '2026-02-27'
+  - id: 132-3
+    epic: MSSCI-15765
+    title: Automate changelog comparison link updates
+    points: 1
+    completed: '2026-02-27'
+  - id: 132-4
+    epic: MSSCI-15765
+    title: Implement pf release dry-run command
+    points: 3
+    completed: '2026-02-27'
+  - id: 132-5
+    epic: MSSCI-15765
+    title: Sprint totals must include archived stories from current sprint
+    points: 2
+    completed: '2026-02-27'

@@ -3,7 +3,7 @@ type: epic
 title: Release Workflow Hardening (11.x Followup)
 description: 'Address remaining 11.x retro items: pf-* prefix bugs, release verification gates, changelog automation, and dry-run capability.'
 priority: p2
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-15765
 stories:
@@ -65,3 +65,4 @@ stories:
     completed: '2026-02-27'
     type: bug
     review_verdict: approved
+completed: '2026-02-27'
