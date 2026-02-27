@@ -161,3 +161,11 @@ standalone_stories:
     repos: pennyfarthing
     pr: 1154
     branch: feat/MSSCI-15748-spinner-verbs
+  - id: MSSCI-15763
+    jira: MSSCI-15763
+    title: Move sprint calculations to backend
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1165
+    branch: feat/MSSCI-15763-move-sprint-calcs-to-backend
