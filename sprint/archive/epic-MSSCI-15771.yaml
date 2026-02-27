@@ -7,7 +7,7 @@ description: |
   validation gate confirms finding format correctness before downstream
   compilation.
 priority: p1
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-15771
 stories:
@@ -55,9 +55,14 @@ stories:
     title: Update session-artifacts guide for Delivery Findings
     points: 1
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-27'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-02-27'
     type: docs
+    review_verdict: approved
 initiative: session-feedback
 gate: finding-format-validation
+completed: '2026-02-27'

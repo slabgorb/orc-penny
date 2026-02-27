@@ -24,6 +24,7 @@ completed_epics:
   - MSSCI-15685
   - MSSCI-15676
   - MSSCI-15765
+  - MSSCI-15771
 completed_stories:
   - id: 110-1
     epic: MSSCI-15184
@@ -704,4 +705,24 @@ completed_stories:
     epic: MSSCI-15765
     title: Sprint totals must include archived stories from current sprint
     points: 2
+    completed: '2026-02-27'
+  - id: 133-1
+    epic: MSSCI-15771
+    title: Add Delivery Findings section to session template
+    points: 1
+    completed: "2026-02-27"
+  - id: 133-2
+    epic: MSSCI-15771
+    title: Add finding-capture to agent exit behaviors
+    points: 3
+    completed: '2026-02-27'
+  - id: 133-3
+    epic: MSSCI-15771
+    title: Create finding format validation gate
+    points: 2
+    completed: '2026-02-27'
+  - id: 133-4
+    epic: MSSCI-15771
+    title: Update session-artifacts guide for Delivery Findings
+    points: 1
     completed: '2026-02-27'
