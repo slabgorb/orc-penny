@@ -69,5 +69,9 @@ tmux.conf
 .pennyfarthing/tmux-activity
 
 # direnv + venv
+.direnv/
 .envrc
 .venv/
+
+# Pennyfarthing local state
+.pennyfarthing/.discovery-nudge-shown

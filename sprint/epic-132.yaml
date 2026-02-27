@@ -10,9 +10,13 @@ stories:
     title: Fix pf-* prefix filter in init and doctor
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-26'
     workflow: trivial
+    completed: '2026-02-26'
     type: bug
+    review_verdict: approved
   - id: 132-2
     title: Add package contents verification to release workflow
     points: 2
