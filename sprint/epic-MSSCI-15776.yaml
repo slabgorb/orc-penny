@@ -15,10 +15,13 @@ stories:
     title: Add Impact Summary compilation to SM finish flow
     points: 3
     priority: p1
-    status: backlog
+    status: in_progress
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-27'
     repos: pennyfarthing
     workflow: tdd
     type: feature
+    review_verdict: approved
   - id: 134-2
     jira: MSSCI-15778
     title: Generate boss-readable PR body from session file
