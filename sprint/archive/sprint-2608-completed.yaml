@@ -25,6 +25,7 @@ completed_epics:
   - MSSCI-15676
   - MSSCI-15765
   - MSSCI-15771
+  - MSSCI-15776
 completed_stories:
   - id: 110-1
     epic: MSSCI-15184
@@ -726,3 +727,18 @@ completed_stories:
     title: Update session-artifacts guide for Delivery Findings
     points: 1
     completed: '2026-02-27'
+  - id: 134-1
+    epic: MSSCI-15776
+    title: Add Impact Summary compilation to SM finish flow
+    points: 3
+    completed: '2026-02-27'
+  - id: 134-2
+    epic: MSSCI-15776
+    title: Generate boss-readable PR body from session file
+    points: 3
+    completed: '2026-02-27'
+  - id: 134-3
+    epic: MSSCI-15776
+    title: Update session-artifacts guide for Impact Summary and PR body
+    points: 1
+    completed: '2026-02-28'

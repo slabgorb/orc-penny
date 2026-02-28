@@ -6,7 +6,7 @@ description: |
   Summary, delivered through a self-contained, jargon-free PR description
   generated from the session file.
 priority: p1
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-15776
 stories:
@@ -41,8 +41,13 @@ stories:
     title: Update session-artifacts guide for Impact Summary and PR body
     points: 1
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-28'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-02-28'
     type: docs
+    review_verdict: approved
 initiative: session-feedback
+completed: '2026-02-28'
