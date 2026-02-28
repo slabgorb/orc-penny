@@ -26,6 +26,7 @@ completed_epics:
   - MSSCI-15765
   - MSSCI-15771
   - MSSCI-15776
+  - MSSCI-15780
 completed_stories:
   - id: 110-1
     epic: MSSCI-15184
@@ -741,4 +742,14 @@ completed_stories:
     epic: MSSCI-15776
     title: Update session-artifacts guide for Impact Summary and PR body
     points: 1
+    completed: '2026-02-28'
+  - id: 135-1
+    epic: MSSCI-15780
+    title: Create sprint findings aggregation script
+    points: 2
+    completed: '2026-02-28'
+  - id: 135-2
+    epic: MSSCI-15780
+    title: Integrate aggregated findings into retro workflow
+    points: 2
     completed: '2026-02-28'
