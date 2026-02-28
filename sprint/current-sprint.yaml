@@ -9,6 +9,7 @@ sprint:
   number: 2608
 epics:
   - MSSCI-15780
+  - MSSCI-15839
 stories:
   - id: MSSCI-15038
     jira: MSSCI-15038
