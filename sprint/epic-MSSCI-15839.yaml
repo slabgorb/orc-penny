@@ -46,6 +46,10 @@ stories:
     title: Fix TUI data pipeline — context, sprint, and debug panel fallbacks
     points: 3
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-28'
     workflow: tdd
+    completed: '2026-02-28'
     type: bug
+    review_verdict: approved
