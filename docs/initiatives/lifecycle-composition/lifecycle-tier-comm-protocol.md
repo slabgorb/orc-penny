@@ -1,5 +1,5 @@
 ---
-bibliography: ../references.bib
+bibliography: ../../../references.bib
 csl: chicago-author-date.csl
 ---
 
@@ -10,7 +10,7 @@ csl: chicago-author-date.csl
 **Agent:** BA (Avasarala)
 **Version:** 0.1 (first draft — will not survive contact with reality)
 **Depends On:** Input A (Work Products), Input B+C (Tier Definitions + VSM Mapping)
-**Index:** `lifecycle-composition-index.md`
+**Index:** `INDEX.md`
 
 ---
 

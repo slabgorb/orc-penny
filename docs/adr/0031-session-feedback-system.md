@@ -7,7 +7,7 @@
 
 ## Context
 
-The boss reviews PRs to understand what happened during story delivery. Session files capture workflow mechanics faithfully — phases, assessments, handoffs — but lack structured feedback about upstream effects discovered during implementation: spec gaps, architecture issues, documentation drift. The tier model (`docs/lifecycle-tier-work-products.md`, lines 228-248) defines "Delivery Finding" as the missing upward-flowing artifact, but it is unimplemented.
+The boss reviews PRs to understand what happened during story delivery. Session files capture workflow mechanics faithfully — phases, assessments, handoffs — but lack structured feedback about upstream effects discovered during implementation: spec gaps, architecture issues, documentation drift. The tier model (`docs/initiatives/lifecycle-composition/lifecycle-tier-work-products.md`, lines 228-248) defines "Delivery Finding" as the missing upward-flowing artifact, but it is unimplemented.
 
 Today, when a TEA agent discovers a spec ambiguity, a Dev agent finds that an ADR recommendation doesn't hold, or a Reviewer flags documentation drift, these observations are buried in free-text assessment prose. The boss must read all three assessments to extract findings that matter for future planning. Nothing flows upward.
 
@@ -223,4 +223,4 @@ Reviewer reviews the branch diff (`git diff develop...HEAD`), not a PR. The PR i
 
 - ADR-0009: Session File Coordination — establishes session file as coordination artifact
 - ADR-0025: Script-First Gate Extraction — gate pattern used for exit checks
-- Tier Model: `docs/lifecycle-tier-work-products.md` — defines Delivery Finding artifact (lines 228-248)
+- Tier Model: `docs/initiatives/lifecycle-composition/lifecycle-tier-work-products.md` — defines Delivery Finding artifact (lines 228-248)

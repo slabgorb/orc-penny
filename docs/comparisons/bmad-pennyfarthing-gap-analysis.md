@@ -38,7 +38,7 @@
 ### Agent Architecture Differences
 
 - **BMAD** uses YAML agent definitions (`.agent.yaml`), menu-driven commands per agent
-- **Pennyfarthing** uses Markdown agent definitions (`.md`), separate command system (47 commands)
+- **Pennyfarthing** uses Markdown agent definitions (`.md`), separate command system (37 commands)
 - **BMAD** has external modules for specialized agents (TEA, Game Dev, Creative Intelligence, WDS, Cyber Sec)
 - **Pennyfarthing** is monolithic dist with all agents bundled
 - **Pennyfarthing** decomposes complex agents into primary + subagents for mechanical tasks
@@ -139,6 +139,9 @@ Phased workflows are agent-driven with automatic handoffs. BMAD has no equivalen
 | 2party-tdd | SM → party → TEA → Dev → QA → Reviewer → SM | Story refinement + TDD |
 | tdd-tandem | Tandem pairs through phases | TDD with backseat observers |
 | bdd-tandem | Tandem pairs through phases | BDD with backseat observers |
+| tdd-team | Dev + Architect team through phases | TDD with full-session teammate collaboration |
+| bdd-team | UX + Architect team through phases | BDD with full-session teammate collaboration |
+| review-tandem | SM → TEA → Dev → Reviewer (+Architect) → SM | TDD with focused architectural review tandem |
 | agent-docs | Orchestrator → Tech Writer → SM | Agent documentation updates |
 | patch | Dev only | Interrupt-driven bug fix |
 
@@ -177,10 +180,10 @@ Pennyfarthing's TEA focuses on the RED phase of TDD (writing failing tests, acce
 
 | Category | BMAD | Pennyfarthing |
 |----------|------|---------------|
-| Commands | Menu-driven (per agent YAML) | 47 dedicated command files |
-| Guides | -- | 25 system behavior docs |
+| Commands | Menu-driven (per agent YAML) | 37 dedicated command files |
+| Guides | -- | 33 system behavior docs |
 | Persona Themes | -- | **98** themed character packs across 8 packages |
-| Skills | -- | 19 reusable capability libraries |
+| Skills | -- | 22 reusable capability libraries |
 | Scripts | -- | 18 script directories |
 | Output Styles | -- | 3 (terse, verbose, teaching) |
 | Migrations | -- | 6 framework upgrade scripts |
@@ -253,7 +256,7 @@ These BMAD modules have no Pennyfarthing equivalent:
 
 | Gap | Impact | Notes |
 |-----|--------|-------|
-| Phased workflow engine (8 workflows) | High | TDD, BDD, trivial, patch, tandem, agent-docs — automatic agent handoffs |
+| Phased workflow engine (11 workflows) | High | TDD, BDD, trivial, patch, tandem, team, review-tandem, agent-docs — automatic agent handoffs |
 | Reviewer agent | High | Adversarial code review gate with preflight subagent |
 | DevOps agent | Medium | CI/CD, infrastructure, deployment |
 | Orchestrator agent | Medium | Meta-operations, process improvement |
@@ -264,10 +267,10 @@ These BMAD modules have no Pennyfarthing equivalent:
 | Git Cleanup workflow (5 steps) | Low | Commit organization |
 | Interactive Debug workflow (4 steps) | Low | Structured debugging |
 | Full sidecar system | Medium | All agents, health checks, migration, prime integration |
-| 47 dedicated commands | Medium | Decoupled command system |
-| 25 guides | High | System behavior documentation |
+| 37 dedicated commands | Medium | Decoupled command system |
+| 33 guides | High | System behavior documentation |
 | 98 persona themes | Low | Themed character packs |
-| 19 skills | Medium | Reusable capability libraries |
+| 22 skills | Medium | Reusable capability libraries |
 | 18 script directories | Medium | Workflow execution and integrations |
 | Output styles | Low | Terse, verbose, teaching |
 | Migration system | Low | Framework upgrade scripts |

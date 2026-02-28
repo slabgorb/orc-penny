@@ -33,7 +33,7 @@ BMAD defines 9 agent personas (Business Analyst, PM, Architect, Scrum Master, De
 
 ### Pennyfarthing
 
-**Version:** 10.4.0 | **License:** Internal | **Status:** In-house framework
+**Version:** 12.1.0 | **License:** Internal | **Status:** In-house framework
 
 Pennyfarthing is a multi-agent orchestration framework built around Claude Code. It manages the full sprint lifecycle: story assignment, test-driven development, automated agent handoffs, code review, and sprint completion.
 
@@ -179,7 +179,7 @@ This is not cosmetic theming. Pennyfarthing runs scientific studies measuring wh
 | Gate system | Embedded in step content | First-class `gates:` section in workflow YAML (`after_steps`, `gate_marker`) |
 | Mode system | Tri-modal (create/validate/edit) | Tri-modal + custom routing modes (research: market/domain/technical) |
 | Collaboration menus | Per-workflow custom | Standardized A/P/C across all stepped workflows |
-| Workflow count | 17 | 28 (8 phased + 14 stepped + 6 utility) |
+| Workflow count | 17 | 32 (11 phased + 21 stepped) |
 
 ---
 
@@ -202,7 +202,7 @@ Both projects are actively developed:
 
 | Metric | BMAD | Pennyfarthing |
 |--------|------|---------------|
-| Current version | 6.0.0-Beta.8 | 10.4.0 |
+| Current version | 6.0.0-Beta.8 | 12.1.0 |
 | Changelog lines | 1,673 | 2,489 |
 | Latest release | February 8, 2026 | February 12, 2026 |
 

@@ -121,7 +121,7 @@ Without this, tier definitions are organizational charts without substance, and 
 ## Resume Instructions
 
 1. Load BA agent (`/ba`)
-2. Read THIS file first (`docs/lifecycle-composition-index.md`)
+2. Read THIS file first (`docs/initiatives/lifecycle-composition/INDEX.md`)
 3. Check "What's In Progress" for current phase and next input needed
 4. Read the relevant prior documents listed in the Document Inventory
 5. Continue from where we left off

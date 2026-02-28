@@ -505,7 +505,7 @@ sequenceDiagram
 | Agent workflows and selection logic | [lifecycle-workflow-maps.md](lifecycle-workflow-maps.md) |
 | Tier definitions (discovery → implementation) | [lifecycle-tier-definitions.md](lifecycle-tier-definitions.md) |
 | Tier work products | [lifecycle-tier-work-products.md](lifecycle-tier-work-products.md) |
-| Pre-epic sketch conventions | [pre-epic-sketch-convention.md](pre-epic-sketch-convention.md) |
+| Pre-epic sketch conventions | [pre-epic-sketch-convention.md](../../conventions/pre-epic-sketch-convention.md) |
 | BikeLane engine details | `pennyfarthing/pennyfarthing-dist/guides/bikelane.md` |
 | Handoff CLI reference | `pennyfarthing/pennyfarthing-dist/guides/handoff-cli.md` |
 | Gate system | `pennyfarthing/pennyfarthing-dist/guides/gates.md` |

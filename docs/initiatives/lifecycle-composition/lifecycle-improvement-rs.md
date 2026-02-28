@@ -1,5 +1,5 @@
 ---
-bibliography: ../references.bib
+bibliography: ../../../references.bib
 csl: chicago-author-date.csl
 ---
 
@@ -45,19 +45,19 @@ The BMAD product lifecycle is a one-way street with one front door: it starts at
 
 | Document | Purpose |
 |----------|---------|
-| [Lifecycle Composition Index](lifecycle-composition-index.md) | Initiative tracker — all documents, research tracks, and progress |
-| [BMAD vs Pennyfarthing](bmad-vs-pennyfarthing.md) | Feature-by-feature comparison, "left vs right" framework |
-| [Gap Analysis](bmad-pennyfarthing-gap-analysis.md) | Agent, workflow, and infrastructure gaps between BMAD and Pennyfarthing |
-| [BMAD Integration](../sprint/planning/bmad-integration.md) | How BMAD and Pennyfarthing work together today |
-| [Gate Extraction Epics](../sprint/planning/gate-epics.md) | Declarative gate system — epic and story breakdown |
+| [Lifecycle Composition Index](INDEX.md) | Initiative tracker — all documents, research tracks, and progress |
+| [BMAD vs Pennyfarthing](../../comparisons/bmad-vs-pennyfarthing.md) | Feature-by-feature comparison, "left vs right" framework |
+| [Gap Analysis](../../comparisons/bmad-pennyfarthing-gap-analysis.md) | Agent, workflow, and infrastructure gaps between BMAD and Pennyfarthing |
+| [BMAD Integration](../../../sprint/planning/bmad-integration.md) | How BMAD and Pennyfarthing work together today |
+| [Gate Extraction Epics](../../../sprint/planning/gate-epics.md) | Declarative gate system — epic and story breakdown |
 | [Tier Communication Protocol](lifecycle-tier-comm-protocol.md) | Channel taxonomy for inter-tier communication (Finding, Intent, Alert, etc.) |
 | [Tier Definitions](lifecycle-tier-definitions.md) | Formal tier definitions with VSM S1–S5 mapping |
 | [Research Synthesis](lifecycle-research-synthesis.md) | Unified synthesis across five research tracks (171 sources) |
-| [BMAD Multi-Dev Lessons Learned](../ccmp/_bmad-output/bmad-multi-dev-lessons-learned.md) | Team-scale BMAD usage: solo tool finding, gate discovery, quality trajectory |
-| [OCSF Spike Findings](../poller-orchestrator/sprint/planning/spike-findings-ocsf.md) | Validated spike lifecycle model; lessons on charter-first exploration |
-| [Axiathon Divergence Analysis](../poller-orchestrator/sprint/planning/axiathon-ocsf-divergence-alignment-analysis.md) | Cross-project analysis of BMAD-generated architecture failures |
-| [Context Window Measurement Procedure](context-window-measurement-procedure.md) | Repeatable methodology for measuring context consumption at session start |
-| [Context Window Measurement Results](context-window-measurement-results.md) | Empirical data from 5 projects (3 BMAD, 2 Pennyfarthing) — grounds section 8 charts |
+| [BMAD Multi-Dev Lessons Learned](../../../ccmp/_bmad-output/bmad-multi-dev-lessons-learned.md) | Team-scale BMAD usage: solo tool finding, gate discovery, quality trajectory |
+| [OCSF Spike Findings](../../../poller-orchestrator/sprint/planning/spike-findings-ocsf.md) | Validated spike lifecycle model; lessons on charter-first exploration |
+| [Axiathon Divergence Analysis](../../../poller-orchestrator/sprint/planning/axiathon-ocsf-divergence-alignment-analysis.md) | Cross-project analysis of BMAD-generated architecture failures |
+| [Context Window Measurement Procedure](data/context-window-measurement-procedure.md) | Repeatable methodology for measuring context consumption at session start |
+| [Context Window Measurement Results](data/context-window-measurement-results.md) | Empirical data from 5 projects (3 BMAD, 2 Pennyfarthing) — grounds section 8 charts |
 
 ---
 
@@ -274,9 +274,9 @@ Pennyfarthing's BikeLane engine addresses this by supporting **three distinct wo
 | **Phased** | Agent-driven with automated handoffs, session state tracking | Implementation — where multiple agents need to coordinate in sequence | TDD, BDD, Trivial, Agent-Docs |
 | **Procedural** | Flexible checklists, agent decides order, no fixed sequence | Reviews and exploration — where structure matters but order doesn't | Code Review, Retrospective, Brainstorming |
 
-BMAD's stepped workflows are equivalent to Pennyfarthing's stepped type — and Pennyfarthing has already ported all nine of BMAD's Phase 1-3 planning workflows into BikeLane (see [BMAD vs Pennyfarthing](bmad-vs-pennyfarthing.md) and [BMAD Integration](../sprint/planning/bmad-integration.md)). But BMAD has no equivalent of phased or procedural workflows, which is why its implementation phase (Phase 4) is the weakest — it's trying to use a planning mechanism for execution.
+BMAD's stepped workflows are equivalent to Pennyfarthing's stepped type — and Pennyfarthing has already ported all nine of BMAD's Phase 1-3 planning workflows into BikeLane (see [BMAD vs Pennyfarthing](../../comparisons/bmad-vs-pennyfarthing.md) and [BMAD Integration](../../../sprint/planning/bmad-integration.md)). But BMAD has no equivalent of phased or procedural workflows, which is why its implementation phase (Phase 4) is the weakest — it's trying to use a planning mechanism for execution.
 
-Beyond workflow types, Pennyfarthing is introducing **declarative gates**: quality checkpoints defined as markdown files with structured pass/fail criteria, attached to workflow transitions. Gates can be evaluated by lightweight subagents (Haiku by default), support nesting and composition, and replace the current pattern where gate logic is buried inside agent handoff code (see [Gate Extraction Epics](../sprint/planning/gate-epics.md)). Gates are to workflow transitions what acceptance criteria are to stories — explicit, declarative, and testable.
+Beyond workflow types, Pennyfarthing is introducing **declarative gates**: quality checkpoints defined as markdown files with structured pass/fail criteria, attached to workflow transitions. Gates can be evaluated by lightweight subagents (Haiku by default), support nesting and composition, and replace the current pattern where gate logic is buried inside agent handoff code (see [Gate Extraction Epics](../../../sprint/planning/gate-epics.md)). Gates are to workflow transitions what acceptance criteria are to stories — explicit, declarative, and testable.
 
 The initial evidence for gates is compelling, though drawn from a single project. In the xMP project, a 17-finding audit documenting specific process gaps was completed on 2026-01-29. Story 2.2 was implemented the next day — less than 24 hours later — and shipped with seven of the same failures the audit had just identified [@pursifull_2026a, Theme 8]. The audit existed. The remediation plans were written. None of it was in the developer's execution path. Documenting process gaps does not prevent them from recurring; only enforcement embedded in the workflow does [@pursifull_2026a, Finding #5]. A formal checklist evaluated by an AI agent caught and fixed all seven failures on its first use, and process quality across the project improved from 43% to 100% compliance as formal checkpoints were adopted [@pursifull_2026a, Finding #7]. These results are from one project (xMP/CCMP) and need replication across additional projects to confirm the pattern.
 
@@ -444,7 +444,7 @@ BMAD stores everything in flat files: one `epics.md` for all epics and stories, 
 
 BMAD knows this. The PRD and architecture documents get too large for a single context window, and BMAD offers a chunking strategy — but it's manual, undifferentiated ("split the PRD into sections"), and only addresses those two artifacts. The sprint file, the epic backlog, the story details, the acceptance criteria — those continue to grow as monolithic flat files with no sharding, no selective loading, and no mechanism for loading only what's relevant to the current task. The xMP project already had to constrain story points to 2–3 maximum "for AI context efficiency" — the context window was already the binding constraint on story sizing [@pursifull_2026c].
 
-The problem is structural, not incidental, and it's measurable today. We ran a standardized context window measurement (see `context-window-measurement-procedure.md`) across five real projects — three using BMAD and two using Pennyfarthing — loading PM persona + PRD + architecture + all epics + all stories in a clean session. The test deliberately loads *everything* to measure total project footprint, not per-session footprint. The results (see `context-window-measurement-results.md`) confirm the scaling argument: **any spec-driven approach that loads project artifacts into context will hit a hard ceiling as the project grows.** This is not a BMAD-specific problem — it's a structural consequence of file-backed context loading. Pennyfarthing's selective loading techniques (discussed below) can defer the wall, but the wall exists for both frameworks and for any framework built on the same architecture. Project context grows somewhere between quadratically and exponentially with scale:
+The problem is structural, not incidental, and it's measurable today. We ran a standardized context window measurement (see `data/context-window-measurement-procedure.md`) across five real projects — three using BMAD and two using Pennyfarthing — loading PM persona + PRD + architecture + all epics + all stories in a clean session. The test deliberately loads *everything* to measure total project footprint, not per-session footprint. The results (see `data/context-window-measurement-results.md`) confirm the scaling argument: **any spec-driven approach that loads project artifacts into context will hit a hard ceiling as the project grows.** This is not a BMAD-specific problem — it's a structural consequence of file-backed context loading. Pennyfarthing's selective loading techniques (discussed below) can defer the wall, but the wall exists for both frameworks and for any framework built on the same architecture. Project context grows somewhere between quadratically and exponentially with scale:
 
 | Growth Driver | Rate | Example |
 |---------------|------|---------|
@@ -487,7 +487,7 @@ xychart-beta
     line [167, 167, 167, 167, 167]
 ```
 
-> **Measured data** from five real projects (3 BMAD, 2 Pennyfarthing), each with one developer, zero implementation work. B = BMAD, P = Pennyfarthing. Lower line (100K) = estimated performance ceiling (see caveats below). Upper line (167K) = effective capacity. This test loads all project artifacts to measure total footprint — Pennyfarthing projects show higher context here because the full-load test negates selective loading; at comparable scale (7 epics, ~50 stories), Pennyfarthing's total footprint is actually 15K *higher* than BMAD's due to richer metadata (see `context-window-measurement-results.md`). The point is not framework comparison — it's that both frameworks, and any file-backed approach, face the same ceiling. axiathon (25 epics, 268 stories) is at 97% of effective capacity before a single line of code.
+> **Measured data** from five real projects (3 BMAD, 2 Pennyfarthing), each with one developer, zero implementation work. B = BMAD, P = Pennyfarthing. Lower line (100K) = estimated performance ceiling (see caveats below). Upper line (167K) = effective capacity. This test loads all project artifacts to measure total footprint — Pennyfarthing projects show higher context here because the full-load test negates selective loading; at comparable scale (7 epics, ~50 stories), Pennyfarthing's total footprint is actually 15K *higher* than BMAD's due to richer metadata (see `data/context-window-measurement-results.md`). The point is not framework comparison — it's that both frameworks, and any file-backed approach, face the same ceiling. axiathon (25 epics, 268 stories) is at 97% of effective capacity before a single line of code.
 
 ```mermaid
 ---
@@ -508,7 +508,7 @@ xychart-beta
     line [60, 60, 60, 60, 60]
 ```
 
-> **Same data as % of usable capacity** (200K window minus 33K reserved buffer = 167K effective). The 60% line marks the estimated performance ceiling (conservative; frontier models may tolerate more — see caveats above). Three of five projects are at or near it. axiathon at 97% means the PM agent has 5K tokens for the entire conversation. See `context-window-measurement-results.md` for the full framework comparison.
+> **Same data as % of usable capacity** (200K window minus 33K reserved buffer = 167K effective). The 60% line marks the estimated performance ceiling (conservative; frontier models may tolerate more — see caveats above). Three of five projects are at or near it. axiathon at 97% means the PM agent has 5K tokens for the entire conversation. See `data/context-window-measurement-results.md` for the full framework comparison.
 
 With a team, the picture accelerates. Each contributor doesn't just add their own work — they add cross-references, coordination context, and the overhead of tracking who is doing what. Sprint planning context alone grows with the number of parallel tracks:
 
@@ -582,7 +582,7 @@ Pennyfarthing addresses the structural dimension:
 | **Sidecar pruning** | Line limits (40–50 lines) with health-check enforcement | Bounded growth, forced consolidation |
 | **Shard validation** | Write-time integrity checks prevent broken references [@pursifull_2026t] | Prevents silent loading failures |
 
-These mechanisms keep the context-to-work ratio manageable for projects up to about 20–30 epics with one or two contributors. Measured data confirms that Pennyfarthing's sharding benefit appears in routine use (selective loading), not in total project footprint — see the apples-to-apples comparison in `context-window-measurement-results.md`. But they're all *structural* solutions — manual sharding decisions, hand-tuned tier thresholds, explicit load paths. None of them address the retrieval problem: given 200 context files, 50 completed stories, and 30 research documents, which 5 are relevant to the story I'm about to implement?
+These mechanisms keep the context-to-work ratio manageable for projects up to about 20–30 epics with one or two contributors. Measured data confirms that Pennyfarthing's sharding benefit appears in routine use (selective loading), not in total project footprint — see the apples-to-apples comparison in `data/context-window-measurement-results.md`. But they're all *structural* solutions — manual sharding decisions, hand-tuned tier thresholds, explicit load paths. None of them address the retrieval problem: given 200 context files, 50 completed stories, and 30 research documents, which 5 are relevant to the story I'm about to implement?
 
 #### What's needed next
 
@@ -597,7 +597,7 @@ Without these, every additional epic and every additional team member accelerate
 
 ### A note on scope
 
-BMAD has problems beyond the eight listed here. Some — like the single flat workflow type (3c), the absence of automated handoffs (3b), and the lack of programmatic validation — Pennyfarthing has already solved. Others, like the organizational model assumptions and the gap between planning artifacts and execution reality, are still being explored (see [BMAD vs Pennyfarthing](bmad-vs-pennyfarthing.md); [Gap Analysis](bmad-pennyfarthing-gap-analysis.md)). A cross-project analysis of BMAD-generated architecture artifacts found five categories of failure where the planning outputs diverged from industry consensus, requiring human-led research to validate and correct [@pursifull_2026f].
+BMAD has problems beyond the eight listed here. Some — like the single flat workflow type (3c), the absence of automated handoffs (3b), and the lack of programmatic validation — Pennyfarthing has already solved. Others, like the organizational model assumptions and the gap between planning artifacts and execution reality, are still being explored (see [BMAD vs Pennyfarthing](../../comparisons/bmad-vs-pennyfarthing.md); [Gap Analysis](../../comparisons/bmad-pennyfarthing-gap-analysis.md)). A cross-project analysis of BMAD-generated architecture artifacts found five categories of failure where the planning outputs diverged from industry consensus, requiring human-led research to validate and correct [@pursifull_2026f].
 
 This document is about the **lifecycle problem** specifically — not a catalog of everything wrong with spec-driven development as practiced by BMAD. BMAD was the incubator. It introduced the core ideas — agent personas, stepped workflows, structured planning artifacts — and we continue to lift innovations from it. BMAD's contributions are substantial: without its demonstration that AI agents could follow structured processes to produce real planning artifacts, the entire approach documented here would not exist. But Brian Madison's orientation as a PMP-style process thinker constrains what BMAD can become. The framework optimizes for upfront planning discipline at the expense of execution feedback, runtime adaptation, and operational composability. Those are the gaps this proposal addresses.
 

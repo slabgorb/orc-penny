@@ -5,7 +5,7 @@
 **Agent:** BA (Avasarala)
 **Product:** Axiathon (enterprise SIEM platform)
 **Team:** 7-12 people (PM/PO, Architect, platform engineers, professional SE)
-**Index:** `lifecycle-composition-index.md`
+**Index:** `INDEX.md`
 
 ---
 

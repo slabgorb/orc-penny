@@ -1,5 +1,5 @@
 ---
-bibliography: ../references.bib
+bibliography: ../../../references.bib
 csl: chicago-author-date.csl
 ---
 
@@ -9,7 +9,7 @@ csl: chicago-author-date.csl
 **Date:** 2026-02-14
 **Agent:** BA (Avasarala)
 **Depends On:** Input A (Tier Work Products)
-**Index:** `lifecycle-composition-index.md`
+**Index:** `INDEX.md`
 **Confidence:** Medium — untested design. Will be revised by delivery experience.
 
 ---

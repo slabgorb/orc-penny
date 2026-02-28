@@ -2,7 +2,7 @@
 
 **Date:** 2026-02-15
 **Origin:** Observed during poller-orchestrator OCSF architecture phase
-**Relates to:** Lifecycle Composition Initiative (lifecycle-improvement-rs.md, Gap #6: no feedback artifact)
+**Relates to:** Lifecycle Composition Initiative (initiatives/lifecycle-composition/lifecycle-improvement-rs.md, Gap #6: no feedback artifact)
 
 ---
 
