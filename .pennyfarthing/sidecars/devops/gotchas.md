@@ -27,3 +27,11 @@ Task tool only accepts built-in types (`Bash`, `general-purpose`, `Explore`, `Pl
 <gotcha name="tmux-send-keys-enter">
 `tmux send-keys ... Enter` doesn't submit in some zsh configs. Use `C-j` (line feed) instead of `Enter` to execute commands in tmux panes.
 </gotcha>
+
+<gotcha name="lfs-portraits-dev" severity="high">
+Dev environment portrait files are LFS pointers (130-byte ASCII text). Run `git lfs pull` in `pennyfarthing/` before `pf init` from dev to get real PNGs. The pip-installed `pf._dist` always has real images (wheel build resolves LFS).
+</gotcha>
+
+<gotcha name="wheelhub-self-contained" severity="info">
+WheelHub (`wheelhub.mjs`) is fully bundled (~1.8MB) — express, ws, yaml all baked in. Consumer projects do NOT need `npm install` for WheelHub to work. Only `node` binary needed.
+</gotcha>
