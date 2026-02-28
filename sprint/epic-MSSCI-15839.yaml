@@ -32,9 +32,13 @@ stories:
     title: Fix init/doctor prefix filtering for Python dist layout
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-28'
     workflow: trivial
+    completed: '2026-02-28'
     type: bug
+    review_verdict: approved
   - id: 136-4
     jira: MSSCI-15844
     title: Extract shared TUI color thresholds and contrast constants
