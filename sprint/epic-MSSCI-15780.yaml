@@ -12,11 +12,15 @@ stories:
     title: Create sprint findings aggregation script
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-28'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
+    completed: '2026-02-28'
     type: feature
+    review_verdict: approved
   - id: 135-2
     jira: MSSCI-15782
     title: Integrate aggregated findings into retro workflow
