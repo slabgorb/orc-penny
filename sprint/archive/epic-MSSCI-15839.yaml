@@ -3,7 +3,7 @@ type: epic
 title: Post-install reliability — fix consumer-facing bugs from Python-first migration
 description: Five root causes account for 18 of 30 open issues across pennyfarthing and orc-penny. Fix PATH resolution, WheelHub monorepo assumptions, init/doctor prefix filtering, TUI color constants, and TUI data pipeline.
 priority: p1
-status: ready
+status: done
 repos: pennyfarthing
 jira: MSSCI-15839
 stories:
@@ -68,3 +68,4 @@ stories:
     completed: '2026-02-28'
     type: bug
     review_verdict: approved
+completed: '2026-03-01'

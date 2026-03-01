@@ -27,6 +27,7 @@ completed_epics:
   - MSSCI-15771
   - MSSCI-15776
   - MSSCI-15780
+  - MSSCI-15839
 completed_stories:
   - id: 110-1
     epic: MSSCI-15184
@@ -752,4 +753,29 @@ completed_stories:
     epic: MSSCI-15780
     title: Integrate aggregated findings into retro workflow
     points: 2
+    completed: '2026-02-28'
+  - id: 136-1
+    epic: MSSCI-15839
+    title: Unified pf discovery — fix PATH resolution in hooks, launchers, and setup
+    points: 5
+    completed: '2026-02-28'
+  - id: 136-2
+    epic: MSSCI-15839
+    title: WheelHub pip-install support — remove monorepo path assumptions
+    points: 3
+    completed: '2026-02-28'
+  - id: 136-3
+    epic: MSSCI-15839
+    title: Fix init/doctor prefix filtering for Python dist layout
+    points: 2
+    completed: '2026-02-28'
+  - id: 136-4
+    epic: MSSCI-15839
+    title: Extract shared TUI color thresholds and contrast constants
+    points: 2
+    completed: '2026-02-28'
+  - id: 136-5
+    epic: MSSCI-15839
+    title: Fix TUI data pipeline — context, sprint, and debug panel fallbacks
+    points: 3
     completed: '2026-02-28'
