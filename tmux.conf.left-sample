@@ -8,12 +8,6 @@
 # │            │                         │
 # └────────────┴─────────────────────────┘
 
-# --- Base indices ---
-# Explicit zero-base so tmux-dev pane references (.0, .1) always work,
-# even when a prior session set pane-base-index to 1
-set -g base-index 0
-set -g pane-base-index 0
-
 # --- Key passthrough ---
 # Enable extended keys (CSI u mode) so shift+enter, ctrl+enter, etc.
 # are properly distinguished from plain enter in Claude Code CLI.
