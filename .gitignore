@@ -75,3 +75,7 @@ tmux.conf
 
 # Pennyfarthing local state
 .pennyfarthing/.discovery-nudge-shown
+# Local pf shim (machine-specific absolute paths)
+.pennyfarthing/bin/
+# tmux runtime cache files
+# Local tmux config (copied from sample)

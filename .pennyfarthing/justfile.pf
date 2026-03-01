@@ -4,6 +4,17 @@
 #
 # Requires `root := justfile_directory()` in the parent justfile.
 
+# Run pf CLI command via the project-local shim
+# Usage: just pf doctor, just pf sprint status, just pf settings show
+pf *args:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [[ -z "{{args}}" ]]; then
+        "{{root}}/.pennyfarthing/bin/pf" --help || true
+    else
+        "{{root}}/.pennyfarthing/bin/pf" {{args}}
+    fi
+
 # Start WheelHub server (API + WebSocket)
 # Usage: just wheelhub [start|stop|status]
 wheelhub *args:
@@ -11,19 +22,19 @@ wheelhub *args:
     set -euo pipefail
     subcmd="{{args}}"
     case "${subcmd:-start}" in
-        start)  pf launch gui --no-open ;;
-        stop)   pf launch stop ;;
-        status) pf launch status ;;
+        start)  just pf launch gui --no-open ;;
+        stop)   just pf launch stop ;;
+        status) just pf launch status ;;
         *)      echo "Usage: just wheelhub [start|stop|status]"; exit 1 ;;
     esac
 
 # Launch TUI panel viewer (starts WheelHub if needed)
 tui:
-    pf launch tui --foreground
+    just pf launch tui --foreground
 
 # Launch GUI dashboard in browser (starts WheelHub if needed)
 gui:
-    pf launch gui
+    just pf launch gui
 
 # Launch Claude with OTEL pre-configured for WheelHub/BikeRack
 claude:
@@ -60,6 +71,13 @@ claude:
 
     exec claude
 
-# Launch tmux dev layout: vert (default), right, left
-tmux layout="vert" dir=invocation_directory():
-    "{{root}}/tmux-dev" "{{layout}}" "{{dir}}"
+# Launch tmux dev layout (Claude + TUI in split panes)
+# Usage: just tmux-dev [layout] [split]
+#   layout: bottom (default), top, right, left — where to place the TUI
+#   split:  TUI pane size % (default: 50 for top/bottom, 35 for right/left)
+tmux-dev layout="bottom" split="":
+    exec "{{root}}/tmux-dev" "{{layout}}" {{split}}
+
+# Launch tmux dev layout for a specific directory
+tmux layout="bottom" split="" dir=invocation_directory():
+    "{{root}}/tmux-dev" "{{layout}}" {{split}} "{{dir}}"
