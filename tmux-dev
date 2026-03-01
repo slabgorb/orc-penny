@@ -19,12 +19,18 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# Parse layout argument (vert, right, left)
+# Parse layout argument (vert, right, left — plus bottom/top aliases)
 LAYOUT="vert"
-if [[ "${1:-}" =~ ^(vert|right|left)$ ]]; then
+if [[ "${1:-}" =~ ^(vert|right|left|bottom|top)$ ]]; then
   LAYOUT="$1"
   shift
 fi
+
+# Normalize aliases
+case "$LAYOUT" in
+  bottom) LAYOUT="vert" ;;   # TUI on bottom = vert layout
+  top)    LAYOUT="vert" ;;   # TUI on top (same split, swap pane order below)
+esac
 
 DIR="${1:-$(pwd)}"
 DIR="$(cd "$DIR" && pwd)"
