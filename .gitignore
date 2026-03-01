@@ -30,6 +30,7 @@ pennyfarthing/
 !package.json
 !package-lock.json
 !tsconfig.json
+!.claude/settings.json
 
 # Pennyfarthing runtime
 .session/*
