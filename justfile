@@ -15,27 +15,6 @@ default:
     @just --list
 
 # =============================================================================
-# GUI - delegates to pennyfarthing repo
-# =============================================================================
-
-# GUI - unified command for BikeRack GUI operations
-# Run modes: here, web, server, verbose, dir=/path
-# Maintenance: setup, doctor, build, clean
-gui *args:
-    #!/usr/bin/env bash
-    set -euo pipefail
-
-    # Transform 'here' to use invocation directory when delegating
-    args="{{args}}"
-    if [[ "$args" == *"here"* ]]; then
-        # Replace 'here' with explicit dir= pointing to where user ran just
-        args="${args/here/dir={{invocation}}}"
-    fi
-
-    # Run just from pennyfarthing directory
-    just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" gui $args
-
-# =============================================================================
 # Build & Test - delegates to pennyfarthing repo
 # =============================================================================
 
