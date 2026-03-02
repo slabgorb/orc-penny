@@ -44,9 +44,13 @@ stories:
       Update xml-tags.md taxonomy.
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-01'
     workflow: trivial
+    completed: '2026-03-02'
     type: feature
+    review_verdict: approved
   - id: 137-3
     jira: MSSCI-15923
     title: "Gate validation for stepped workflows"
@@ -94,3 +98,10 @@ stories:
     status: backlog
     workflow: tdd
     type: feature
+  - id: 137-6
+    title: Remove legacy text menus from migrated switch files
+    points: 1
+    priority: p2
+    status: backlog
+    workflow: trivial
+    type: chore
