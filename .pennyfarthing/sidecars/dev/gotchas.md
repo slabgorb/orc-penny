@@ -39,3 +39,7 @@ All Cyclist features use WebSocket (`/ws/claude`, `/ws/context`, `/ws/stats`, `/
 <gotcha name="nested-scroll">
 Only leaf elements scroll. Parents use `overflow: hidden`. `.message-panel-content` is hidden; `.message-list` scrolls.
 </gotcha>
+
+<gotcha name="pf-install-dual">
+`pf` CLI has two installs: **editable** in direnv for dogfooding repos (`pip install -e pennyfarthing-dist/`), **global** via pipx for consumer repos (`pipx install pennyfarthing-dist/ --force`). After version bumps, re-run both. The direnv install takes priority when inside pf-1/pf-2; pipx is the fallback for all other repos.
+</gotcha>

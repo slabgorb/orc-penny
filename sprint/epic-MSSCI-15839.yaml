@@ -72,43 +72,49 @@ stories:
     title: WheelHub crashes on pipx install — findMonorepoRoot uses __dirname instead of project root
     points: 2
     priority: p1
-    status: backlog
+    status: done
     workflow: tdd
+    completed: '2026-03-02'
     type: bug
   - id: 136-7
     title: WheelHub cannot resolve pennyfarthing-dist in distributed projects
     points: 2
     priority: p1
-    status: backlog
+    status: done
     workflow: tdd
+    completed: '2026-03-02'
     type: bug
   - id: 136-8
     title: pf launch fails — bikerack entry.js path wrong when installed via uv tool
     points: 2
     priority: p1
-    status: backlog
+    status: done
     workflow: tdd
+    completed: '2026-03-02'
     type: bug
   - id: 136-9
     title: context.py not found in npm-installed projects — missing search path
     points: 2
     priority: p1
-    status: backlog
+    status: done
     workflow: tdd
+    completed: '2026-03-02'
     type: bug
   - id: 136-10
     title: WheelHub not launched on initial startup
     points: 2
     priority: p1
-    status: backlog
+    status: done
     workflow: tdd
+    completed: '2026-03-02'
     type: bug
   - id: 136-11
     title: doctor --fix and update fail to restore missing .claude/commands/ and .claude/skills/
     points: 2
     priority: p1
-    status: backlog
+    status: done
     workflow: tdd
+    completed: '2026-03-02'
     type: bug
   - id: 136-12
     title: pf CLI missing setup command — users try CLI before discovering skill
@@ -120,8 +126,9 @@ stories:
     title: run-pf.sh should prefer global pf over broken local venv
     points: 1
     priority: p2
-    status: backlog
+    status: done
     workflow: trivial
+    completed: '2026-03-02'
     type: bug
   - id: 136-14
     title: SM sprint status omits completed stories

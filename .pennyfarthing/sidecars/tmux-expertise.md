@@ -48,6 +48,7 @@
 - Claude Code issue #6072 tracks TERM_PROGRAM detection
 - tmux status line `#()` commands run every `status-interval` seconds (5s default)
 - `#{pane_current_path}` must resolve to project root for cache file path
+- **TUI startup race:** SGR mouse events and focus-in (`^[[I`) arrive before Textual initializes terminal modes, printing raw escape sequences. Fix: `clear &&` before `just tui` in tmux-dev. If it happens mid-session, resize the pane to force a full Textual redraw: `tmux resize-pane -t %1 -y 24 && tmux resize-pane -t %1 -y 25`
 
 ## Real-Time Tool Activity
 - PostToolUse hook (`bell_mode.py`) writes `.pennyfarthing/tmux-activity` on each tool use
