@@ -83,9 +83,14 @@ stories:
       Document stepped activation protocol in agent-behavior.md.
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-02'
     workflow: tdd
+    completed: '2026-03-02'
     type: feature
+    review_findings: '2 HIGH issues: (1) load_step_content() dead code - not wired into tiers.py/cli.py, (2) step_name field never populated. 2 MEDIUM: text output missing step fields, no redirect for STEPPED state. 3 ACs not met.'
+    review_verdict: approved
   - id: 137-5
     jira: MSSCI-15925
     title: "Tandem and team collaboration on stepped workflow steps"

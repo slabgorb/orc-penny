@@ -1,12 +1,39 @@
-# Sprint TO Sprint 2610 - Completed Stories
-# Jira Sprint ID: 311
-# Archived: 2026-03-02
-
 sprint:
   name: "TO Sprint 2610"
   jira_sprint_id: 311
   jira_sprint_name: "TO Sprint 2610"
   goal: Installation, agents and workflows
 
-completed:
-  # Completed stories will be appended here by pf sprint archive
+completed_epics:
+  - '110'
+completed_stories:
+  - id: 110-1
+    epic: '110'
+    title: Cross-panel event bus with Changed-to-Diffs navigation
+    points: 5
+    completed: "2026-02-16"
+  - id: 110-2
+    epic: '110'
+    title: Story drill-through with dossier detail screen
+    points: 5
+    completed: '2026-02-21'
+  - id: 110-3
+    epic: '110'
+    title: Portrait image header with textual-image
+    points: 3
+    completed: "2026-02-17"
+  - id: 110-4
+    epic: '110'
+    title: Split-pane layouts with workflow-aware presets
+    points: 5
+    completed: '2026-02-21'
+  - id: 110-5
+    epic: '110'
+    title: Filter archived epics from active sprint view in TUI
+    points: 2
+    completed: '2026-02-21'
+  - id: 110-6
+    epic: '110'
+    title: Add completed epics section to TUI sprint panel
+    points: 2
+    completed: '2026-02-21'
