@@ -141,9 +141,11 @@ stories:
     title: Sprint status undercounts completed points — ignores archived epics
     points: 2
     priority: p2
-    status: backlog
+    status: done
     workflow: tdd
+    completed: '2026-03-02'
     type: bug
+    review_verdict: approved
   - id: 136-16
     title: Phase name vs agent name confusion in handoff session file
     points: 1
