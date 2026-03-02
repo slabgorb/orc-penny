@@ -15,13 +15,13 @@ default:
     @just --list
 
 # =============================================================================
-# Cyclist - delegates to pennyfarthing repo
+# GUI - delegates to pennyfarthing repo
 # =============================================================================
 
-# Cyclist - unified command for all Cyclist operations
+# GUI - unified command for BikeRack GUI operations
 # Run modes: here, web, server, verbose, dir=/path
-# Maintenance: setup, doctor, build, clean, rebuild, package, install
-cyclist *args:
+# Maintenance: setup, doctor, build, clean
+gui *args:
     #!/usr/bin/env bash
     set -euo pipefail
 
@@ -33,7 +33,7 @@ cyclist *args:
     fi
 
     # Run just from pennyfarthing directory
-    just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" cyclist $args
+    just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" gui $args
 
 # =============================================================================
 # Build & Test - delegates to pennyfarthing repo
@@ -47,9 +47,9 @@ build:
 test:
     just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" test
 
-# Run tests for cyclist package only
-test-cyclist:
-    just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" test-cyclist
+# Run tests for GUI package only
+test-gui:
+    just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" test-gui
 
 # =============================================================================
 # Portraits

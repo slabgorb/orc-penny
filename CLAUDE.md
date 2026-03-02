@@ -85,14 +85,14 @@ Workflow definitions live in `pennyfarthing/pennyfarthing-dist/workflows/*.yaml`
 | `pennyfarthing-dist/` | Published package (source of truth) — agents, commands, guides, skills, personas, workflows, scripts |
 | `pennyfarthing-dist/pf/` | Python CLI package (hooks, jira, sprint, story, prime) |
 | `packages/core/` | `@pennyfarthing/core` — CLI, WheelHub server, API routes, shared utilities |
-| `packages/cyclist/` | Visual terminal (React 19, Tailwind v4, dockview) — thin wrapper over core |
+| `packages/cyclist/` | BikeRack GUI (React 19, Tailwind v4, dockview) — browser UI over core |
 | `packages/electron/` | Electron shell (legacy, minimal use) |
 | `packages/benchmark/` | Persona benchmarking (JobFair) |
 | `packages/themes-*/` | Theme packages (comedy, literary, mythology-fantasy, prestige-tv, realistic, scifi, superheroes) |
 
 **Display modes:** BikeRack panels render in three contexts:
 - **TUI** — `pf bikerack start` launches panels alongside Claude Code CLI in the terminal
-- **GUI** — Cyclist web UI with full dockview panel layout in a browser
+- **GUI** — BikeRack browser UI with full dockview panel layout
 - **IDE** — VS Code / Cursor sidebar panels via WheelHub API
 
 **Key files:**
