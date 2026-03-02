@@ -347,6 +347,7 @@ stories:
     status: backlog
     workflow: trivial
     type: bug
+    review_verdict: approved
   - id: 103-23
     jira: MSSCI-15954
     title: Statusline and TUI context bar use different color thresholds

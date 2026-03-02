@@ -63,7 +63,9 @@ stories:
       bump, commit). Update gates.md guide and workflow-schema.md.
     points: 3
     priority: p1
-    status: backlog
+    status: in_progress
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-02'
     workflow: tdd
     type: feature
   - id: 137-4
