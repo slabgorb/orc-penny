@@ -109,3 +109,10 @@ stories:
     status: backlog
     workflow: trivial
     type: chore
+  - id: 137-7
+    title: Sprint status aggregates all archive files instead of filtering by current sprint
+    points: 2
+    priority: p1
+    status: backlog
+    workflow: tdd
+    type: bug
