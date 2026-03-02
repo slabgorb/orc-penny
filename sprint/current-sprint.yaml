@@ -172,3 +172,10 @@ standalone_stories:
     repos: pennyfarthing
     pr: 1165
     branch: feat/MSSCI-15763-move-sprint-calcs-to-backend
+  - id: MSSCI-15933
+    jira: MSSCI-15933
+    title: Fix WheelHub crash in consumer projects and rename env var
+    points: 2
+    status: done
+    repos: pennyfarthing
+    pr: 1226

@@ -13,7 +13,9 @@ OBSOLETE — npm install of pennyfarthing is no longer used. See `pf-init-instal
 </pattern>
 
 <pattern name="pf-init-install">
-Consumer projects install pennyfarthing via `pf init <target-dir>`. This copies content dirs (agents, guides, personas, workflows, etc.) from the pf CLI's bundled dist root. No npm, no git submodules. `pf` is installed globally via `pipx install pennyfarthing-scripts`. Re-run `pf init` to update.
+Consumer projects install pennyfarthing via `pf init <target-dir>`. This copies content dirs (agents, guides, personas, workflows, etc.) from the pf CLI's bundled dist root. No npm, no git submodules. Re-run `pf init` to update.
+
+**Global install:** `pipx install <path-to-pennyfarthing-source>` (e.g. `pipx install ~/Projects/pf-1/pennyfarthing/`). Not on PyPI — must install from local source. The direnv-local version takes precedence inside dev repos.
 </pattern>
 
 <pattern name="consumer-projects">
@@ -37,4 +39,14 @@ Portraits live in `~/.local/share/pennyfarthing/portraits/` (XDG_DATA_HOME).
 
 <pattern name="python-hook-wrapper">
 Shell wrapper → `find-root.sh` → set PYTHONPATH (dogfooding or node_modules) → `python3 -m pennyfarthing_scripts.<module>`. Don't use relative `../../..` traversal.
+</pattern>
+
+<pattern name="wheelhub-bundle-rebuild">
+WheelHub bundle rebuild procedure:
+1. `cd pennyfarthing/packages/core && pnpm run build:tsc`
+2. `cd pennyfarthing && npx esbuild packages/core/dist/server/entry.js --bundle --format=esm --platform=node --outfile=/tmp/wheelhub.mjs`
+3. Patch CJS shim: replace default esbuild Proxy shim with `createRequire` import (see gotchas)
+4. Copy to `pennyfarthing-dist/src/pf/_dist/server/wheelhub.mjs`
+5. `pipx install --force pennyfarthing/` to update pip package
+6. `pf init` in consumer projects to update local copy
 </pattern>
