@@ -1,0 +1,160 @@
+id: '136'
+type: epic
+title: Post-install reliability — fix consumer-facing bugs from Python-first migration
+description: Five root causes account for 18 of 30 open issues across pennyfarthing and orc-penny. Fix PATH resolution, WheelHub monorepo assumptions, init/doctor prefix filtering, TUI color constants, and TUI data pipeline.
+priority: p1
+status: in_progress
+repos: pennyfarthing
+jira: MSSCI-15839
+stories:
+  - id: 136-1
+    jira: MSSCI-15840
+    title: Unified pf discovery — fix PATH resolution in hooks, launchers, and setup
+    points: 5
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-28'
+    workflow: tdd
+    completed: '2026-02-28'
+    type: bug
+    review_verdict: approved
+  - id: 136-2
+    jira: MSSCI-15842
+    title: WheelHub pip-install support — remove monorepo path assumptions
+    points: 3
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-28'
+    workflow: tdd
+    completed: '2026-02-28'
+    type: bug
+    review_findings: _ensure_wheelhub returns (None,None,False) but gui/tui callers use port=None
+    review_verdict: approved
+  - id: 136-3
+    jira: MSSCI-15843
+    title: Fix init/doctor prefix filtering for Python dist layout
+    points: 2
+    priority: p2
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-28'
+    workflow: trivial
+    completed: '2026-02-28'
+    type: bug
+    review_verdict: approved
+  - id: 136-4
+    jira: MSSCI-15844
+    title: Extract shared TUI color thresholds and contrast constants
+    points: 2
+    priority: p2
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-28'
+    workflow: trivial
+    completed: '2026-02-28'
+    type: bug
+    review_verdict: approved
+  - id: 136-5
+    jira: MSSCI-15845
+    title: Fix TUI data pipeline — context, sprint, and debug panel fallbacks
+    points: 3
+    priority: p2
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-28'
+    workflow: tdd
+    completed: '2026-02-28'
+    type: bug
+    review_verdict: approved
+  - id: 136-6
+    title: WheelHub crashes on pipx install — findMonorepoRoot uses __dirname instead of project root
+    points: 2
+    priority: p1
+    status: backlog
+    workflow: tdd
+    type: bug
+  - id: 136-7
+    title: WheelHub cannot resolve pennyfarthing-dist in distributed projects
+    points: 2
+    priority: p1
+    status: backlog
+    workflow: tdd
+    type: bug
+  - id: 136-8
+    title: pf launch fails — bikerack entry.js path wrong when installed via uv tool
+    points: 2
+    priority: p1
+    status: backlog
+    workflow: tdd
+    type: bug
+  - id: 136-9
+    title: context.py not found in npm-installed projects — missing search path
+    points: 2
+    priority: p1
+    status: backlog
+    workflow: tdd
+    type: bug
+  - id: 136-10
+    title: WheelHub not launched on initial startup
+    points: 2
+    priority: p1
+    status: backlog
+    workflow: tdd
+    type: bug
+  - id: 136-11
+    title: doctor --fix and update fail to restore missing .claude/commands/ and .claude/skills/
+    points: 2
+    priority: p1
+    status: backlog
+    workflow: tdd
+    type: bug
+  - id: 136-12
+    title: pf CLI missing setup command — users try CLI before discovering skill
+    points: 1
+    priority: p2
+    status: backlog
+    workflow: trivial
+  - id: 136-13
+    title: run-pf.sh should prefer global pf over broken local venv
+    points: 1
+    priority: p2
+    status: backlog
+    workflow: trivial
+    type: bug
+  - id: 136-14
+    title: SM sprint status omits completed stories
+    points: 1
+    priority: p2
+    status: backlog
+    workflow: trivial
+    type: bug
+  - id: 136-15
+    title: Sprint status undercounts completed points — ignores archived epics
+    points: 2
+    priority: p2
+    status: backlog
+    workflow: tdd
+    type: bug
+  - id: 136-16
+    title: Phase name vs agent name confusion in handoff session file
+    points: 1
+    priority: p2
+    status: backlog
+    workflow: trivial
+    type: bug
+  - id: 136-17
+    title: Setup workflow step-06 missing wheelhub/bikerack/tui justfile recipes
+    points: 1
+    priority: p2
+    status: backlog
+    workflow: trivial
+    type: bug
+  - id: 136-18
+    title: Add In Review status for stories
+    points: 2
+    priority: p2
+    status: backlog
+    workflow: tdd
+completed: '2026-03-01'

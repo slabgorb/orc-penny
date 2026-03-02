@@ -1,0 +1,382 @@
+id: '103'
+title: BikeRack TUI — Terminal-Native Dashboard
+description: |
+  Replace the browser-based Cyclist dashboard with a terminal-native TUI
+  companion built on Rich/Textual (Python). Connects to WheelHub over
+  WebSocket, renders 10 panels, switches via /bc slash command. Consumes
+  existing WebSocket channels unchanged — zero server-side modifications.
+
+  PRD: sprint/planning/prd.md
+priority: P1
+status: in_progress
+repos: pennyfarthing
+jira: MSSCI-14951
+stories:
+  - id: '103-1'
+    jira: MSSCI-14956
+    title: Textual app scaffold with basic layout
+    description: |
+      Create the core Textual application shell for BikeRack TUI.
+      Single-panel layout with header (connection status area),
+      main content area (panel render target), and footer (panel name,
+      keybindings). Entry point for `pf bikerack` to launch.
+
+      FRs: FR1
+    points: 2
+    priority: P0
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    workflow: tdd
+    completed: '2026-02-13'
+  - id: '103-2'
+    jira: MSSCI-14957
+    title: WheelHub WebSocket client with auto-reconnect
+    description: |
+      Python WebSocket client that connects to WheelHub at the configured
+      port. Subscribes to panel channels, receives JSON payloads, dispatches
+      to panel renderers. Auto-reconnect on disconnect with backoff.
+      Reads port from .pennyfarthing/config.local.yaml.
+
+      FRs: FR3, FR4
+      NFRs: NFR6, NFR7, NFR8, NFR9, NFR11, NFR14
+    points: 3
+    priority: P0
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    workflow: tdd
+    completed: '2026-02-13'
+  - id: '103-3'
+    jira: MSSCI-14958
+    title: '`pf bikerack` launcher command'
+    description: |
+      Add `bikerack` subcommand to `pf` CLI. Starts WheelHub (if not
+      running), launches Claude CLI, opens TUI in companion terminal
+      pane. TUI process independent of Claude session — closing TUI
+      does not kill Claude, closing Claude does not kill TUI.
+
+      FRs: FR1, FR2
+      NFRs: NFR10
+    points: 2
+    priority: P0
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    workflow: tdd
+    completed: '2026-02-13'
+  - id: '103-4'
+    jira: MSSCI-14959
+    title: Connection status indicator in TUI header
+    description: |
+      TUI header displays WheelHub connection state: connected,
+      disconnected, reconnecting. Updates within 5 seconds of state
+      change. TUI remains responsive while disconnected.
+
+      FRs: FR4
+      NFRs: NFR6, NFR8
+    points: 1
+    priority: P0
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    workflow: tdd
+    completed: '2026-02-13'
+  - id: '103-5'
+    jira: MSSCI-14960
+    title: Base panel abstraction (channel subscription + Rich rendering)
+    description: |
+      Base panel class that panels inherit from. Handles: subscribe to
+      WebSocket channel by key, receive JSON payload, call render method,
+      display Rich output in main content area. Real-time updates when
+      new data arrives. Panels implement render() with Rich tables/trees.
+
+      FRs: FR5, FR21, FR22
+      NFRs: NFR1
+    points: 3
+    priority: P0
+    status: done
+    workflow: tdd
+    completed: '2026-02-13'
+  - id: '103-6'
+    jira: MSSCI-14961
+    title: SprintPanel implementation
+    description: |
+      First panel — proves the full vertical slice. Subscribes to
+      /ws/sprint channel. Renders sprint status as Rich table: story
+      list with status, points, Jira status, velocity. Default panel
+      on launch.
+
+      FRs: FR7, FR10, FR11
+    points: 2
+    priority: P0
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-13'
+    workflow: tdd
+    completed: '2026-02-14'
+  - id: '103-7'
+    jira: MSSCI-14962
+    title: '`/bc` slash command skill registration'
+    description: |
+      Register /bc as a Pennyfarthing slash command skill following the
+      /sprint pattern. `/bc show <panel>` invokes `pf bikerack show
+      <panel>` which sends a panel-switch message to the TUI (via
+      WheelHub or direct IPC). Panel switches in < 200ms.
+
+      FRs: FR6
+      NFRs: NFR2
+    points: 2
+    priority: P0
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-13'
+    workflow: tdd
+    completed: '2026-02-13'
+  - id: '103-8'
+    jira: MSSCI-14963
+    title: Panel persistence (extend ERB mechanism)
+    description: |
+      Extend the existing Cyclist panel saving mechanism to persist
+      last-viewed panel for TUI. On launch, restore last panel instead
+      of defaulting to Sprint (Sprint remains default if no saved state).
+      Single source of truth shared with ERB version.
+
+      FRs: FR8
+      NFRs: NFR12
+    points: 2
+    priority: P1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-14'
+    workflow: tdd
+    completed: "2026-02-14"
+  - id: '103-9'
+    jira: MSSCI-14964
+    title: Panel header chrome (current panel indicator, Nerd Font icons)
+    description: |
+      Panel name displayed in header/footer with Nerd Font icon per
+      panel type. Developer can see which panel is active at a glance.
+
+      FRs: FR9
+    points: 1
+    priority: P1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-14'
+    workflow: tdd
+    completed: '2026-02-14'
+  - id: '103-10'
+    jira: MSSCI-14965
+    title: GitPanel (multi-repo status)
+    description: |
+      Key differentiator panel. Subscribes to /ws/git channel. Renders
+      multi-repo git status as Rich table: repo name, branch, ahead/behind,
+      staged/unstaged counts, status icons with Nerd Font glyphs.
+
+      FRs: FR13
+    points: 2
+    priority: P0
+    status: done
+    workflow: tdd
+    completed: '2026-02-14'
+    blocked_by:
+      - '103-5'
+  - id: '103-11'
+    jira: MSSCI-14966
+    title: ProgressPanel (at-a-glance story dashboard)
+    description: |
+      Unified progress panel combining story context, workflow phase,
+      AC completion, todo status, git changes, and context window usage
+      into a single at-a-glance view. Subscribes to /ws/story, /ws/todos,
+      /ws/git, /ws/sprint, /ws/context channels. Replaces the need for
+      separate WorkflowPanel, ACPanel, and TodoPanel.
+
+      See: sprint/planning/create-epics-and-stories.md (epic-105)
+      PRD: sprint/planning/progress-panel-prd.md
+      UX: sprint/planning/progress-panel-ux-design.md
+    points: 5
+    priority: P1
+    status: done
+    workflow: tdd
+    completed: '2026-02-14'
+    blocked_by:
+      - '103-5'
+  - id: '103-12'
+    jira: MSSCI-14967
+    title: ACPanel (acceptance criteria checklist)
+    description: |
+      Superseded by ProgressPanel (103-11) which consolidates AC, Todo,
+      and Workflow into a single panel.
+    points: 1
+    priority: P1
+    status: done
+    workflow: tdd
+    delivered_in: '103-11'
+    notes: Superseded by ProgressPanel (103-11)
+  - id: '103-13'
+    jira: MSSCI-14968
+    title: TodoPanel (task checklist)
+    description: |
+      Superseded by ProgressPanel (103-11) which consolidates AC, Todo,
+      and Workflow into a single panel.
+    points: 1
+    priority: P1
+    status: done
+    workflow: tdd
+    delivered_in: '103-11'
+    notes: Superseded by ProgressPanel (103-11)
+  - id: '103-14'
+    jira: MSSCI-14969
+    title: ChangedPanel (file list with status)
+    description: |
+      Subscribes to /ws/changed channel. Renders changed files as
+      Rich table with file path, change type icon, and status.
+
+      FRs: FR15
+    points: 1
+    priority: P1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    workflow: tdd
+    completed: '2026-02-14'
+    blocked_by:
+      - '103-5'
+  - id: '103-15'
+    jira: MSSCI-14970
+    title: AuditLogPanel (scrolling event log)
+    description: |
+      Subscribes to /ws/audit channel. Renders scrolling audit log
+      with timestamps, event types, and details. Auto-scrolls to
+      latest entry.
+
+      FRs: FR19
+    points: 1
+    priority: P1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    workflow: tdd
+    completed: "2026-02-14"
+    blocked_by:
+      - '103-5'
+  - id: '103-16'
+    jira: MSSCI-14971
+    title: BackgroundPanel (task status)
+    description: |
+      Subscribes to /ws/background channel. Renders background task
+      list with status indicators (running, completed, failed).
+
+      FRs: FR17
+    points: 1
+    priority: P1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    workflow: tdd
+    completed: '2026-02-14'
+    blocked_by:
+      - '103-5'
+  - id: '103-17'
+    jira: MSSCI-14972
+    title: DebugPanel (log viewer)
+    description: |
+      Subscribes to /ws/debug channel. Renders debug log output
+      with level-based coloring and auto-scroll.
+
+      FRs: FR20
+    points: 1
+    priority: P1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    workflow: tdd
+    completed: '2026-02-15'
+    blocked_by:
+      - '103-5'
+  - id: '103-18'
+    jira: MSSCI-14973
+    title: DiffsPanel — Rich diff rendering with syntax highlighting
+    description: |
+      The one Redesign panel. Subscribes to /ws/diffs channel. Renders
+      file diffs with syntax highlighting using Rich's built-in diff
+      support. File headers, added/removed line coloring, line numbers.
+
+      FRs: FR14
+    points: 3
+    priority: P0
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-14'
+    workflow: tdd
+    completed: '2026-02-14'
+    blocked_by:
+      - '103-5'
+  - id: '103-19'
+    jira: MSSCI-14974
+    title: Large diff handling (truncation/pagination)
+    description: |
+      Handle diffs > 1000 lines without blocking TUI event loop.
+      Truncate with "showing first N lines" indicator, or paginate.
+      Ensure TUI remains responsive during large diff rendering.
+
+      FRs: FR14
+      NFRs: NFR5
+    points: 2
+    priority: P1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    workflow: tdd
+    completed: '2026-02-15'
+  - id: 103-20
+    title: TUI launcher entry point (just tui)
+    points: 2
+    priority: p1
+    status: done
+    workflow: tdd
+    completed: "2026-02-14"
+  - id: 103-21
+    title: Add git fetch cooldown to prevent frequent network calls during active sessions
+    points: 1
+    priority: p2
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-14'
+    workflow: trivial
+    completed: "2026-02-14"
+  - id: 103-22
+    title: TUI pane shows raw SGR mouse/focus escape sequences on startup
+    points: 1
+    priority: p2
+    status: backlog
+    workflow: trivial
+    type: bug
+  - id: 103-23
+    title: Statusline and TUI context bar use different color thresholds
+    points: 1
+    priority: p2
+    status: backlog
+    workflow: trivial
+    type: bug
+  - id: 103-24
+    title: Debug panel tools should check prerequisites before running
+    points: 2
+    priority: p2
+    status: backlog
+    workflow: tdd
+    type: bug
+  - id: 103-25
+    title: 4 copies of tui.py across install paths causes confusion when patching
+    points: 2
+    priority: p1
+    status: backlog
+    workflow: tdd
+    type: bug
+  - id: 103-26
+    title: Status line [rev] tag has insufficient text contrast
+    points: 1
+    priority: p2
+    status: backlog
+    workflow: trivial
+    type: bug
+  - id: 103-27
+    title: TUI shows persistent Reconnecting when any single WS channel is unsupported
+    points: 2
+    priority: p1
+    status: backlog
+    workflow: tdd
+    type: bug
+completed: '2026-02-15'
