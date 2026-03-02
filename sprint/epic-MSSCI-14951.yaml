@@ -322,6 +322,7 @@ stories:
     workflow: tdd
     completed: '2026-02-15'
   - id: 103-20
+    jira: MSSCI-15951
     title: TUI launcher entry point (just tui)
     points: 2
     priority: p1
@@ -329,6 +330,7 @@ stories:
     workflow: tdd
     completed: "2026-02-14"
   - id: 103-21
+    jira: MSSCI-15952
     title: Add git fetch cooldown to prevent frequent network calls during active sessions
     points: 1
     priority: p2
@@ -338,6 +340,7 @@ stories:
     workflow: trivial
     completed: "2026-02-14"
   - id: 103-22
+    jira: MSSCI-15953
     title: TUI pane shows raw SGR mouse/focus escape sequences on startup
     points: 1
     priority: p2
@@ -345,6 +348,7 @@ stories:
     workflow: trivial
     type: bug
   - id: 103-23
+    jira: MSSCI-15954
     title: Statusline and TUI context bar use different color thresholds
     points: 1
     priority: p2
@@ -352,6 +356,7 @@ stories:
     workflow: trivial
     type: bug
   - id: 103-24
+    jira: MSSCI-15955
     title: Debug panel tools should check prerequisites before running
     points: 2
     priority: p2
@@ -359,6 +364,7 @@ stories:
     workflow: tdd
     type: bug
   - id: 103-25
+    jira: MSSCI-15956
     title: 4 copies of tui.py across install paths causes confusion when patching
     points: 2
     priority: p1
@@ -366,6 +372,7 @@ stories:
     workflow: tdd
     type: bug
   - id: 103-26
+    jira: MSSCI-15957
     title: Status line [rev] tag has insufficient text contrast
     points: 1
     priority: p2
@@ -373,6 +380,7 @@ stories:
     workflow: trivial
     type: bug
   - id: 103-27
+    jira: MSSCI-15958
     title: TUI shows persistent Reconnecting when any single WS channel is unsupported
     points: 2
     priority: p1
