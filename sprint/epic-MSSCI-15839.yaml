@@ -127,7 +127,9 @@ stories:
     title: pf CLI missing setup command — users try CLI before discovering skill
     points: 1
     priority: p2
-    status: backlog
+    status: in_progress
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-02T21:11:59Z'
     workflow: trivial
   - id: 136-13
     jira: MSSCI-15945
@@ -184,18 +186,21 @@ stories:
     status: backlog
     workflow: tdd
   - id: 136-19
+    jira: MSSCI-16048
     title: Integrate Context7 API for automated skill documentation updates
     points: 3
     priority: p2
     status: backlog
     workflow: tdd
   - id: 136-20
+    jira: MSSCI-16049
     title: Integrate Perplexity MCP for agent research tasks
     points: 3
     priority: p2
     status: backlog
     workflow: tdd
   - id: 136-21
+    jira: MSSCI-16050
     title: Unified Research Tools section in agent-coordination guide
     points: 2
     priority: p2
