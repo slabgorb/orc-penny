@@ -41,6 +41,33 @@ Portraits live in `~/.local/share/pennyfarthing/portraits/` (XDG_DATA_HOME).
 Shell wrapper → `find-root.sh` → set PYTHONPATH (dogfooding or node_modules) → `python3 -m pennyfarthing_scripts.<module>`. Don't use relative `../../..` traversal.
 </pattern>
 
+<pattern name="bikerack-architecture">
+BikeRack is the integration layer between Claude Code, WheelHub (Node server), and the TUI/GUI.
+
+**Components:**
+- **WheelHub** — Node Express server (`wheelhub.mjs`), serves dashboard + receives OTEL on same HTTP port
+- **OTEL** — Claude Code sends spans/logs/metrics to `http://localhost:{port}/v1/*`
+- **TUI** — Python terminal UI, connects to WheelHub via HTTP/WS
+- **GUI** — React browser UI (Cyclist/dockview), connects to WheelHub
+
+**Port/PID files** (project root, gitignored):
+- `.bikerack-port` — HTTP port (default 2898, range 2898-2907), dot-prefixed
+- `bikerack-pid` — WheelHub Node process PID, no dot prefix
+- `bikerack-tui-pid` — TUI process PID, no dot prefix
+- OTEL endpoint = same port as dashboard (no separate OTEL port)
+
+**Startup chain:**
+1. `just wheelhub` → checks running, stops if needed, starts WheelHub, writes `bikerack.port` + `bikerack.pid`
+2. `just claude` → reads `bikerack.port`, sets OTEL env vars, execs claude
+3. `just tui` / `just gui` → reads `bikerack.port`, connects to WheelHub
+
+**Key files:**
+- Node entry: `pennyfarthing/packages/core/src/server/entry.ts` (PORT_FILE const, findAvailablePort)
+- Python launcher: `pennyfarthing/pennyfarthing-dist/src/pf/bikerack/launcher.py` (write_port_file, write_pid_file)
+- Justfile: `.pennyfarthing/justfile.pf` (distributed recipes, source at pennyfarthing-dist)
+- Health check: `GET /health` → `{status: 'ok'}`
+</pattern>
+
 <pattern name="wheelhub-bundle-rebuild">
 WheelHub bundle rebuild procedure:
 1. `cd pennyfarthing/packages/core && pnpm run build:tsc`

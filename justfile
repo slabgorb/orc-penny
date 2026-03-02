@@ -159,12 +159,12 @@ tui-dev:
     #!/usr/bin/env bash
     set -euo pipefail
 
-    pid_file="{{root}}/.wheelhub-pid"
+    pid_file="{{root}}/bikerack-pid"
     port_file="{{root}}/.bikerack-port"
 
     # Start WheelHub if not running
     if ! ([[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null); then
-        just --justfile "{{root}}/justfile" wheelhub start
+        just --justfile "{{root}}/justfile" wheelhub
     fi
 
     port=$(cat "$port_file" 2>/dev/null)
