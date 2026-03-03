@@ -43,3 +43,11 @@ Only leaf elements scroll. Parents use `overflow: hidden`. `.message-panel-conte
 <gotcha name="pf-install-dual">
 `pf` CLI has two installs: **editable** in direnv for dogfooding repos (`pip install -e pennyfarthing-dist/`), **global** via pipx for consumer repos (`pipx install pennyfarthing-dist/ --force`). After version bumps, re-run both. The direnv install takes priority when inside pf-1/pf-2; pipx is the fallback for all other repos.
 </gotcha>
+
+<gotcha name="core-test-hang">
+`node --test dist/**/*.test.js` in `packages/core` can hang for 3+ minutes on `server.test.js` (tries real HTTP connections on port 3000). Pipe-to-grep also hangs because of buffering. Use `> /tmp/file 2>&1` redirect instead of pipes. Run individual test files when debugging: `node --test dist/path/to/specific.test.js`.
+</gotcha>
+
+<gotcha name="stale-tests-bikerack">
+`packages/bikerack/` never existed. Tests referencing it (bikerack-extraction, data-source, websocket-otlp-extraction) are dead. `packages/shared/` was absorbed into core (Story 98-16). Tandem portraits (`cyclist-tandem.png`) were never generated. Skill registry has 22 skills not 23.
+</gotcha>
