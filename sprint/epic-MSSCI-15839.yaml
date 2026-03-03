@@ -372,9 +372,13 @@ stories:
     title: Fix pf sprint story add --repos flag not persisting repos field
     points: 1
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-03'
     workflow: trivial
+    completed: '2026-03-03'
     type: bug
+    review_verdict: approved
   - id: 136-29
     jira: MSSCI-16111
     title: Implement pf release dry-run command
