@@ -1,0 +1,49 @@
+id: '137'
+type: epic
+title: 'Epic: Batch Execution & Tracking'
+description: Developer can select the batch workflow, have an architect decompose work into units, fan out parallel agents in worktrees, and see every unit's status in the session file.
+priority: P1
+status: backlog
+repos: pennyfarthing
+jira: MSSCI-16090
+stories:
+  - id: 137-1
+    jira: MSSCI-16091
+    title: Create Batch Workflow YAML
+    points: 2
+    priority: P1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    acceptance_criteria: []
+    type: feature
+  - id: 137-2
+    jira: MSSCI-16092
+    title: Add Session Units XML Tracking
+    points: 1
+    priority: P1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    acceptance_criteria: []
+    type: feature
+  - id: 137-3
+    jira: MSSCI-16093
+    title: Extend Session Tooling for Unit Status Updates
+    points: 1
+    priority: P1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    acceptance_criteria: []
+    type: feature
+  - id: 137-4
+    jira: MSSCI-16094
+    title: Add Batch Fan-Out to Orchestrator Agent Definition
+    points: 1
+    priority: P1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    acceptance_criteria: []
+    type: feature

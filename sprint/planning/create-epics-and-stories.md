@@ -6,457 +6,264 @@ stepsCompleted:
   - step-04-final-validation
   - step-05-import-to-future
 inputDocuments:
-  - sprint/planning/session-feedback-prd.md
-  - sprint/planning/session-feedback-prd-validation.md
-  - docs/adr/0031-session-feedback-system.md
+  - sprint/planning/batch-prd.md
+  - pennyfarthing/pennyfarthing-dist/patterns/fan-out-fan-in-pattern.md
+  - pennyfarthing/pennyfarthing-dist/schemas/workflow-schema.md
 ---
 
-# Session Feedback System - Epic Breakdown
+# Batch Workflow Integration - Epic Breakdown
 
 ## Overview
 
-This document provides the complete epic and story breakdown for the Session Feedback System, decomposing the requirements from the PRD, Architecture ADR-0031, and validation report into implementable stories. Where the ADR diverges from the PRD, the ADR is authoritative.
+This document provides the complete epic and story breakdown for Batch Workflow Integration, decomposing the requirements from the PRD and embedded Architecture into implementable stories.
 
 ## Requirements Inventory
 
 ### Functional Requirements
 
-**Phase 1: Impact Summary**
+- **FR-1: Batch Workflow YAML** (MVP #1, 2pt) — As a developer, I can select the `batch` workflow for a story so that parallel execution follows BikeLane ceremony. `workflows/batch-workflow.yaml` passes existing validator without schema changes. 4 phases: decompose (architect), fan-out (orchestrator), review (reviewer), finish (sm). Gates: manual on decompose, manual on fan-out, approval on review. Triggers: `batch` tag on stories.
 
-FR1: Session files MUST include an `## Impact Summary` section after Delivery Findings
-FR2: Impact Summary MUST contain a count of findings by type (Gap, Conflict, Question, Improvement)
-FR3: Impact Summary MUST flag Blocking items with bold `**BLOCKING:**` prefix on a dedicated line before the finding list
-FR4: Impact Summary MUST contain a one-line description per finding
-FR5: `sm-finish` subagent MUST generate the Impact Summary from Delivery Findings (not retroactive assessment scanning)
-FR6: Impact Summary MUST be generated even when no findings exist ("No upstream effects noted")
-FR7: Archived session files MUST preserve the Impact Summary section
+- **FR-2: Session Units Tracking** (MVP #2, 1pt) — As a developer, I can see all batch units and their status in the session file. `<units>` XML element in session file. Each `<unit>` has: id, status (pending/in_progress/completed/failed), description, worktree path, branch, PR URL. Grep-parseable, consistent with existing session schema. Session schema documentation updated.
 
-**Phase 2: Structured Delivery Findings**
+- **FR-3: Orchestrator Batch Prompt** (MVP #3, 1pt) — As the orchestrator agent, I have instructions to invoke `/batch` with story context and track results back to session units. Orchestrator agent definition includes batch fan-out execution flow. Spawns parallel agents via Task tool with `isolation: "worktree"`. Updates session unit status on completion/failure. Passes story acceptance criteria to each worker agent.
 
-FR8: Session files MUST include a `## Delivery Findings` section before agent assessments
-FR9: Each finding MUST be a markdown list item with: type (bold), urgency (parenthetical), one-sentence description, affected spec (relative path), and what needs to change
-FR10: Finding types MUST be one of: Gap, Conflict, Question, Improvement
-FR11: Finding urgency MUST be one of: blocking, non-blocking
-FR12: TEA agent MUST capture findings during RED phase (or write explicit "No findings" entry)
-FR13: Dev agent MUST capture findings during GREEN phase (or write explicit "No findings" entry)
-FR14: Reviewer agent MUST capture findings during REVIEW phase (or write explicit "No findings" entry)
-FR15: `sm-finish` MUST compile Impact Summary from structured Delivery Findings entries
-FR16: Delivery Findings MUST be pure markdown list items (no YAML blocks) for human readability and script parseability
+- **FR-4: Session Update Tooling** (MVP #4, 1pt) — As an agent, I can update individual unit status in the session file. `fix-session-phase` extended to handle `--unit <id> --status <status>` arguments. Updates single unit without clobbering other units. Supports all unit status values: pending, in_progress, completed, failed.
 
-**Late PR Creation (from ADR)**
-
-FR20: SM MUST create PR after review approval (not before), with full body generated from session file
-FR21: PR body MUST use zero framework jargon — translation map: TEA→"Test design", Dev→"Implementation", Reviewer→"Code review", SM→"Story completion", AC→"Requirements"
-FR22: PR body MUST include: Summary, What Was Done, What This Work Revealed (Impact Summary), Docs That May Need Updating, Details (assessments cleaned of jargon), Full Findings
-FR23: `reviewer-preflight` MUST handle missing PR_NUMBER gracefully (PR doesn't exist during review phase)
-
-**Phase 2 Growth: Aggregation**
-
-FR17: A script MUST be able to collect Delivery Findings across archived sessions for a given sprint
-FR18: Aggregated findings MUST be groupable by type, affected spec, and urgency
-FR19: Retrospective workflow SHOULD consume aggregated findings as input
+- **FR-5: File-Overlap Independence Check** (MVP #5, 1pt) — As a developer, I'm warned before fan-out if two units touch the same file. Pre-fan-out gate checks unit file lists for intersection. If overlap found, blocks with warning listing conflicting files and units. Developer can override or request re-decomposition.
 
 ### NonFunctional Requirements
 
-NFR1: Performance — SM Impact Summary generation < 30 seconds; finding entry by agent < 5 seconds (template fill); sprint aggregation < 10 seconds for 20 stories
-NFR2: Backward Compatibility — existing sessions without new sections MUST continue to parse. Verified by running sm-finish against archived sessions that lack new sections; all must complete without error
-NFR3: Schema Consistency — new sections follow existing session file markdown structure; finding format is fixed per ADR R1; field names match tier model terminology
-NFR4: Agent Adoption — agent definitions updated with finding capture responsibility; capture adds < 2 minutes to phase time; template snippets provided in agent guides
+- **NFR-1: No workflow engine changes** — Batch workflow must work within existing BikeLane infrastructure. Zero modifications to workflow-schema.ts or handoff.ts.
+- **NFR-2: Additive only** — No migration needed for existing workflows, sessions, or sprint data. Batch is a new workflow alongside tdd/trivial/bdd.
+- **NFR-3: Worktree cleanup** — No stale `.claude/worktrees/batch-*` directories after 24h. Claude Code manages lifecycle; Pennyfarthing monitors.
+- **NFR-4: Graceful failure** — Failed units report status clearly in session. Batch blocks at review gate on any failure — doesn't silently pass.
+- **NFR-5: Unit count range** — Respects `/batch` hard constraint of 5-30 units per run.
 
 ### Additional Requirements
 
-**From ADR-0031 (authoritative):**
+**From Embedded Architecture (PRD Technical Architecture Reference):**
+- Fan-out is a single phase — orchestrator agent uses internal fan-out/fan-in pattern, not a new workflow engine concept
+- Session uses XML `<units>` element, not YAML — consistent with session schema
+- Failed units block the batch — strict by default, partial completion deferred to Growth
+- No tandem observers — unnecessary overhead for isolated worktree execution
+- New standalone `batch` workflow type, not a modifier on existing workflows
+- No starter template — brownfield, all code exists within Pennyfarthing framework
 
-- Pure markdown findings — no YAML code blocks, no schema validation complexity
-- Agent self-report model — agents write findings when they have full context, not SM guessing later
-- "No findings" is explicit (R3) — distinguishes "checked and found nothing" from "forgot to check"
-- Agents ONLY append to Delivery Findings — never edit or remove another agent's entries (R2)
-- Doc references use relative paths from project root (R4)
-- Impact Summary is compiled from findings, not editorial — SM reads verbatim (R6)
-- Session file section order: Description → ACs → Technical Context → Delivery Findings → Impact Summary → Assessments → Phase Log
+**From Fan-out/Fan-in Pattern:**
+- Implicit parallelism via multiple Task calls in single message, or explicit background with `run_in_background: true`
+- Result aggregation after all parallel tasks complete
+- Partial failure handling: log failures, mark status, block at review gate
+- Concurrency: 5-10 items use explicit background with batching
 
-**From ADR-0031 — Files Affected:**
-
-- `agents/sm-finish.md` — PR creation moves after summary compilation; --body includes full session content
-- `agents/reviewer-preflight.md` — PR_NUMBER becomes optional; step 5 conditional
-- `agents/reviewer.md` — Remove PR_NUMBER from required params; add finding-capture template
-- `agents/sm-setup.md` — Add `## Delivery Findings` placeholder to session template
-- `agents/tea.md` — Add finding-capture to assessment template
-- `agents/dev.md` — Add finding-capture to assessment template
-- `agents/sm.md` — Add Impact Summary compilation + PR body generation to finish flow
-- `guides/session-artifacts.md` — Document new sections
-
-**From Validation Report:**
-
-- FR3 measurability resolved by ADR's explicit bold prefix format
-- NFR2-NFR3 need explicit verification methods (added above)
-- PRD frontmatter metadata gap is non-blocking
+**From Workflow Schema:**
+- Must conform to existing YAML schema: `name`, `phases[]` (each with `name`, `agent`, optional `input`/`output`/`gate`), `triggers`
+- Gate types available: `manual`, `approval`, `tests_pass`, `tests_fail`, `quality_pass`
+- Validated at load time — invalid workflows report field-path errors
 
 ### FR Coverage Map
 
-| FR | Epic | Description |
-|----|------|-------------|
-| FR1 | Epic 2 | Impact Summary section in session files |
-| FR2 | Epic 2 | Count findings by type |
-| FR3 | Epic 2 | Bold BLOCKING prefix |
-| FR4 | Epic 2 | One-line description per finding |
-| FR5 | Epic 2 | SM generates Impact Summary from findings |
-| FR6 | Epic 2 | Generate even when no findings |
-| FR7 | Epic 2 | Archive preserves Impact Summary |
-| FR8 | Epic 1 | Delivery Findings section in session files |
-| FR9 | Epic 1 | Finding format: type, urgency, description, spec, action |
-| FR10 | Epic 1 | Types: Gap, Conflict, Question, Improvement |
-| FR11 | Epic 1 | Urgency: blocking, non-blocking |
-| FR12 | Epic 1 | TEA captures findings in RED |
-| FR13 | Epic 1 | Dev captures findings in GREEN |
-| FR14 | Epic 1 | Reviewer captures findings in REVIEW |
-| FR15 | Epic 2 | SM compiles summary from structured findings |
-| FR16 | Epic 1 | Pure markdown format, script-parseable |
-| FR17 | Epic 3 | Collect findings across archived sessions |
-| FR18 | Epic 3 | Group by type, spec, urgency |
-| FR19 | Epic 3 | Retro workflow consumes aggregated findings |
-| FR20 | Epic 2 | PR created after review with full body |
-| FR21 | Epic 2 | Zero framework jargon in PR |
-| FR22 | Epic 2 | PR body structure (Summary, What Done, Revealed, etc.) |
-| FR23 | Epic 1 | Reviewer-preflight handles missing PR_NUMBER |
+| FR | Epic | Story | Description |
+|----|------|-------|-------------|
+| FR-1 | Epic 1 | 1.1 | Batch workflow YAML definition (4 phases, gates, triggers) |
+| FR-2 | Epic 1 | 1.2 | Session `<units>` XML tracking element |
+| FR-3 | Epic 1 | 1.4 | Orchestrator agent batch fan-out instructions |
+| FR-4 | Epic 1 | 1.3 | `fix-session-phase` extended for per-unit status |
+| FR-5 | Epic 2 | 2.1 | File-overlap intersection check before fan-out |
 
-**Coverage: 23/23 FRs mapped. Zero orphans.**
+**Coverage: 5/5 FRs mapped. Zero orphans.**
 
 ## Epic List
 
-### Epic 1: Agent Finding Capture & Workflow Unblocking
-Agents can systematically record upstream findings discovered during their phase. The reviewer workflow is unblocked to operate without a PR. A validation script confirms finding format correctness before downstream compilation.
+### Epic 1: Batch Execution & Tracking
+After this epic: developer can select the `batch` workflow, have an architect decompose work into units, fan out parallel agents in worktrees, and see every unit's status in the session file. Full happy path and partial-failure path work end-to-end.
+**FRs covered:** FR-1, FR-2, FR-3, FR-4
+**NFRs addressed:** NFR-1, NFR-2, NFR-3, NFR-4, NFR-5
+**Points:** 5
 
-**FRs covered:** FR8, FR9, FR10, FR11, FR12, FR13, FR14, FR16, FR23
-**NFRs addressed:** NFR2 (backward compat), NFR4 (agent adoption)
-**Files:** `sm-setup.md`, `tea.md`, `dev.md`, `reviewer.md`, `reviewer-preflight.md`, `guides/session-artifacts.md`
-
-**Gate:** Finding format validation — a gate script confirms all findings in the session match R1 format (type, urgency, description, affected spec, proposed action) before Epic 2 compilation can proceed.
-
-**Standalone value:** Session files capture what agents learned. Reviewer works without PR_NUMBER. Even without summary compilation, the boss can read Delivery Findings directly.
-
-### Epic 2: Impact Summary & Boss-Readable PR
-Boss can understand a story's upstream effects in 30 seconds via Impact Summary, delivered through a self-contained, jargon-free PR description generated from the session file.
-
-**FRs covered:** FR1, FR2, FR3, FR4, FR5, FR6, FR7, FR15, FR20, FR21, FR22
-**NFRs addressed:** NFR1 (performance), NFR3 (schema consistency)
-**Files:** `sm-finish.md`, `sm.md`, `guides/session-artifacts.md`
-
-**Standalone value:** The boss reads the PR and gets the full picture — what was done, what was revealed, what docs may need updating. Impact Summary compiles from findings; PR body translates to boss-readable language. One user outcome: "boss understands the story."
-
-### Epic 3: Sprint Findings Aggregation
-Sprint retro can surface cross-story patterns from aggregated findings — identifying systemic issues across the sprint.
-
-**FRs covered:** FR17, FR18, FR19
-**Files:** New aggregation script, retro workflow integration
-
-**Standalone value:** Growth epic. Uses archived sessions from Epics 1+2. Sprint-level visibility into recurring gaps, conflicts, and improvement opportunities.
-
----
-
-## Epic 1: Agent Finding Capture & Workflow Unblocking
-
-Agents can systematically record upstream findings discovered during their phase. The reviewer workflow is unblocked to operate without a PR. A validation script confirms finding format correctness before downstream compilation.
-
-### Story 1.1: Add Delivery Findings section to session template
-
-As a SM agent setting up a new story,
-I want the session template to include a `## Delivery Findings` section placeholder,
-So that agents have a designated location to append their findings during subsequent phases.
-
-**Acceptance Criteria:**
-
-**Given** SM runs story setup via `sm-setup`
-**When** the session file is created from the template
-**Then** the session file contains a `## Delivery Findings` section positioned before agent assessment sections
-**And** the section contains the text "No findings yet."
-
-**Given** an existing archived session file without a `## Delivery Findings` section
-**When** `sm-finish` processes it
-**Then** it completes without error (backward compatibility)
-
-**FRs:** FR8
-**NFRs:** NFR2
-**Files:** `agents/sm-setup.md`
-**Points:** 1
-
-### Story 1.2: Add finding-capture to agent exit behaviors
-
-As a TEA/Dev/Reviewer agent completing my phase,
-I want a finding-capture template in my exit behavior,
-So that I can record upstream findings (or explicitly note "no findings") before handoff.
-
-**Acceptance Criteria:**
-
-**Given** TEA completes the RED phase and discovered a spec ambiguity
-**When** TEA writes their assessment
-**Then** TEA also appends a finding to `## Delivery Findings` in the format: `- **{Type}** ({urgency}): {description}. Affects \`{path}\` ({what needs to change}). *Found by {Agent} during {human-phase-name}.*`
-**And** the type is one of: Gap, Conflict, Question, Improvement
-**And** the urgency is one of: blocking, non-blocking
-**And** the human-phase-name is "test design" (not "red" or "RED")
-
-**Given** Dev completes the GREEN phase with no upstream findings
-**When** Dev writes their assessment
-**Then** Dev appends `- No upstream findings during implementation.` to the Delivery Findings section
-
-**Given** Reviewer completes the REVIEW phase
-**When** Reviewer writes their assessment
-**Then** Reviewer appends findings (or explicit "no findings") to the Delivery Findings section
-**And** Reviewer uses human-phase-name "code review" (not "review" or "REVIEW")
-
-**Given** any agent appends to `## Delivery Findings`
-**When** another agent's entries already exist in the section
-**Then** the new agent's entries are appended below existing entries without modifying or removing them (R2)
-
-**Given** Reviewer is invoked during the review phase
-**When** no PR exists yet (late PR creation workflow)
-**Then** `reviewer-preflight` completes without error when PR_NUMBER is absent
-**And** preflight step 5 (PR-specific checks) is skipped gracefully
-
-**Given** Reviewer's agent definition
-**When** checking required parameters
-**Then** PR_NUMBER is not listed as a required parameter
-
-**FRs:** FR9, FR10, FR11, FR12, FR13, FR14, FR16, FR23
-**NFRs:** NFR4
-**Files:** `agents/tea.md`, `agents/dev.md`, `agents/reviewer.md`, `agents/reviewer-preflight.md`
-**Points:** 3
-
-### Story 1.3: Create finding format validation gate
-
-As a gate system verifying story readiness,
-I want a validation script that confirms all Delivery Findings match the R1 format,
-So that malformed findings are caught before Impact Summary compilation in Epic 2.
-
-**Acceptance Criteria:**
-
-**Given** a session file with correctly formatted Delivery Findings entries
-**When** the validation gate script runs against it
-**Then** the script exits with status 0 (pass)
-**And** reports the count of findings parsed
-
-**Given** a session file with a finding missing the type (e.g., no bold `**Gap**`)
-**When** the validation gate script runs
-**Then** the script exits with status 1 (fail)
-**And** reports which finding failed and what is missing
-
-**Given** a session file with a finding using an invalid type (e.g., "Bug" instead of Gap/Conflict/Question/Improvement)
-**When** the validation gate script runs
-**Then** the script exits with status 1 (fail)
-**And** reports the invalid type value
-
-**Given** a session file with a finding using an invalid urgency (e.g., "critical" instead of blocking/non-blocking)
-**When** the validation gate script runs
-**Then** the script exits with status 1 (fail)
-
-**Given** a session file where all agent phases have explicit "No upstream findings" entries
-**When** the validation gate script runs
-**Then** the script exits with status 0 (pass — explicit no-findings is valid)
-
-**Given** a session file with no `## Delivery Findings` section (legacy session)
-**When** the validation gate script runs
-**Then** the script exits with status 0 (pass — backward compatible, section is optional)
-
-**FRs:** FR16
-**NFRs:** NFR2, NFR3
-**Files:** New gate script (e.g., `scripts/validate-findings.sh` or `pf/gates/findings.py`)
-**Points:** 2
-
-### Story 1.4: Update session-artifacts guide for Delivery Findings
-
-As an agent reading the session-artifacts guide,
-I want documentation of the `## Delivery Findings` section format and my capture responsibilities,
-So that I know exactly what to write and where.
-
-**Acceptance Criteria:**
-
-**Given** an agent reads `guides/session-artifacts.md`
-**When** looking for Delivery Findings documentation
-**Then** the guide contains a section describing the `## Delivery Findings` format
-**And** includes the finding template: `- **{Type}** ({urgency}): {description}. Affects \`{path}\` ({what needs to change}). *Found by {Agent} during {human-phase-name}.*`
-**And** lists valid types: Gap, Conflict, Question, Improvement
-**And** lists valid urgencies: blocking, non-blocking
-**And** documents the "No upstream findings" explicit entry format
-**And** documents the human-phase-name mapping: RED→"test design", GREEN→"implementation", REVIEW→"code review"
-
-**Given** the updated session-artifacts guide
-**When** comparing the documented section order to ADR-0031
-**Then** the guide reflects: Description → ACs → Technical Context → Delivery Findings → Impact Summary → Assessments → Phase Log
-
-**Given** an agent reading the guide
-**When** looking for append-only rules
-**Then** the guide documents R2 (agents only append, never edit others' entries) and R3 ("no findings" is explicit)
-
-**FRs:** FR9, FR10, FR11 (documentation of format)
-**NFRs:** NFR4 (template snippets provided)
-**Files:** `guides/session-artifacts.md`
+### Epic 2: Pre-Fan-Out Safety
+After this epic: developer is warned before fan-out if two units would touch the same file — preventing the worst failure mode of parallel work.
+**FRs covered:** FR-5
 **Points:** 1
 
 ---
 
-## Epic 2: Impact Summary & Boss-Readable PR
+## Epic 1: Batch Execution & Tracking
 
-Boss can understand a story's upstream effects in 30 seconds via Impact Summary, delivered through a self-contained, jargon-free PR description generated from the session file.
+Developer can select the `batch` workflow, have an architect decompose work into units, fan out parallel agents in worktrees, and see every unit's status in the session file.
 
-### Story 2.1: Add Impact Summary compilation to SM finish flow
+### Story 1.1: Create Batch Workflow YAML
 
-As the boss reviewing a completed story,
-I want an Impact Summary section in the session file compiled from Delivery Findings,
-So that I can understand the story's upstream effects in 30 seconds without reading full assessments.
-
-**Acceptance Criteria:**
-
-**Given** a session file with 3 Delivery Findings (1 Gap, 1 Conflict, 1 Improvement, all non-blocking)
-**When** SM runs the finish phase
-**Then** `sm-finish` writes an `## Impact Summary` section to the session file
-**And** the summary contains `**Upstream Effects:** 3 findings (1 Gap, 1 Conflict, 0 Question, 1 Improvement)`
-**And** the summary contains `**Blocking:** None`
-**And** the summary contains one line per finding with `- **{Type}:** {description}. Affects \`{path}\`.`
-**And** the summary includes a `**Docs that may need updating:**` list with deduplicated paths
-
-**Given** a session file with a blocking finding
-**When** SM runs the finish phase
-**Then** the Impact Summary contains `**BLOCKING:**` on a dedicated line before the finding list
-**And** the blocking finding is listed first
-
-**Given** a session file where all agents wrote "No upstream findings"
-**When** SM runs the finish phase
-**Then** the Impact Summary contains `**Upstream Effects:** No upstream effects noted`
-**And** the Blocking line reads `**Blocking:** None`
-
-**Given** SM compiles the Impact Summary
-**When** writing the section
-**Then** the summary is placed after `## Delivery Findings` and before agent assessment sections
-**And** the summary is compiled from findings verbatim (R6 — not editorial)
-
-**Given** a completed session file with Impact Summary
-**When** the session is archived
-**Then** the archived file preserves the Impact Summary section intact
-
-**FRs:** FR1, FR2, FR3, FR4, FR5, FR6, FR7, FR15
-**NFRs:** NFR1 (< 30s), NFR3
-**Files:** `agents/sm-finish.md`, `agents/sm.md`
-**Points:** 3
-
-### Story 2.2: Generate boss-readable PR body from session file
-
-As the boss reading a PR description,
-I want a self-contained, jargon-free summary of what was done and what was revealed,
-So that I can understand the story without using Pennyfarthing or reading raw session files.
+As a developer,
+I want a `batch` workflow definition that follows BikeLane ceremony,
+So that parallel story execution uses the same phase/gate/handoff infrastructure as all other workflows.
 
 **Acceptance Criteria:**
 
-**Given** SM has compiled the Impact Summary
-**When** SM generates the PR body
-**Then** the PR body follows this structure: Summary, What Was Done, What This Work Revealed, Docs That May Need Updating, Details (Test Design, Implementation, Code Review, Full Findings)
+**Given** the workflow file is created at `pennyfarthing-dist/workflows/batch.yaml`
+**When** the existing workflow validator loads it
+**Then** it passes validation without any schema changes to `workflow-schema.ts` or `handoff.ts`
 
-**Given** a session file with TEA, Dev, and Reviewer assessments
-**When** SM generates the PR body
-**Then** framework jargon is translated: TEA→"Test design", Dev→"Implementation", Reviewer→"Code review", SM→"Story completion", Acceptance Criteria→"Requirements"
-**And** no references to "RED phase", "GREEN phase", "REVIEW phase", "sm-finish", or other framework terms appear
+**Given** the batch workflow definition
+**When** inspecting its phases
+**Then** it defines 4 phases in order: decompose (architect), fan-out (orchestrator), review (reviewer), finish (sm)
 
-**Given** the PR body includes the "What This Work Revealed" section
-**When** the boss reads it
-**Then** it contains the Impact Summary content (findings count, blocking status, per-finding descriptions)
+**Given** the decompose phase
+**When** the architect completes unit decomposition
+**Then** a `manual` gate requires developer approval of unit boundaries before proceeding
 
-**Given** the PR body includes "Docs That May Need Updating"
-**When** findings reference affected specs
-**Then** the doc paths are deduplicated and listed with reasons
+**Given** the fan-out phase
+**When** the orchestrator completes parallel execution
+**Then** a `manual` gate requires all batch units to be resolved before proceeding
 
-**Given** SM generates the PR body
-**When** creating the PR with `gh pr create`
-**Then** the full body is passed via `--body` flag
-**And** the PR is created after reviewer approval (not before)
+**Given** the review phase
+**When** the reviewer completes batch consistency review
+**Then** an `approval` gate requires reviewer approval before proceeding
 
-**Given** `reviewer-preflight` runs after PR creation
-**When** a PR now exists
-**Then** preflight step 5 (PR-specific checks) executes normally
+**Given** the workflow triggers section
+**When** a story has the `batch` tag
+**Then** the batch workflow is selected by the routing engine
 
-**FRs:** FR20, FR21, FR22
-**NFRs:** NFR1
-**Files:** `agents/sm-finish.md`, `agents/sm.md`
-**Points:** 3
+**Given** the workflow is added to the workflows directory
+**When** `pf workflow list` is run
+**Then** `batch` appears in the available workflows list
 
-### Story 2.3: Update session-artifacts guide for Impact Summary and PR body
+**FRs:** FR-1
+**NFRs:** NFR-1, NFR-2
+**Points:** 2
 
-As an SM agent reading the session-artifacts guide,
-I want documentation of the Impact Summary format and PR body generation process,
-So that I know exactly how to compile findings and generate the boss-readable PR.
+### Story 1.2: Add Session Units XML Tracking
+
+As a developer,
+I want batch units tracked as `<units>` XML in the session file,
+So that I can see all units and their status at a glance.
 
 **Acceptance Criteria:**
 
-**Given** an SM agent reads `guides/session-artifacts.md`
-**When** looking for Impact Summary documentation
-**Then** the guide documents the full Impact Summary format including: upstream effects count, blocking status, per-finding lines, docs-that-may-need-updating list
+**Given** a batch workflow session file
+**When** the orchestrator begins the fan-out phase
+**Then** a `<units>` XML element is present in the session file
 
-**Given** the session-artifacts guide
-**When** documenting the PR body structure
-**Then** the guide includes the complete PR body template (Summary, What Was Done, What This Work Revealed, Docs, Details)
-**And** includes the jargon translation map
+**Given** the `<units>` element
+**When** inspecting its structure
+**Then** each `<unit>` has attributes: `id`, `status`, `description`
+**And** each `<unit>` has optional child elements: `worktree`, `branch`, `pr`
 
-**Given** the updated guide
-**When** comparing section order to ADR-0031
-**Then** the complete session file structure is documented: Description → ACs → Technical Context → Delivery Findings → Impact Summary → Assessments → Phase Log
+**Given** a unit's status attribute
+**When** reading it
+**Then** the value is one of: `pending`, `in_progress`, `completed`, `failed`
 
-**FRs:** FR1, FR5 (documentation of format and process)
-**NFRs:** NFR3
-**Files:** `guides/session-artifacts.md`
+**Given** the `<units>` XML block
+**When** running `grep` against the session file
+**Then** unit IDs and statuses are parseable with standard text tools
+
+**Given** the session schema documentation at `pennyfarthing-dist/schemas/session-schema.md`
+**When** this story is complete
+**Then** the schema includes the `<units>` element definition with all attributes and child elements documented
+
+**FRs:** FR-2
+**NFRs:** NFR-4
+**Points:** 1
+
+### Story 1.3: Extend Session Tooling for Unit Status Updates
+
+As an agent running in a batch worktree,
+I want to update my unit's status in the session file,
+So that the orchestrator and developer can track progress without parsing agent output.
+
+**Acceptance Criteria:**
+
+**Given** a session file with a `<units>` block containing 5 units
+**When** `pf workflow fix-phase --unit 3 --status completed` is run
+**Then** unit 3's status attribute changes to `completed`
+**And** all other units remain unchanged
+
+**Given** a session file with a `<units>` block
+**When** `pf workflow fix-phase --unit 3 --status failed` is run
+**Then** unit 3's status attribute changes to `failed`
+
+**Given** `pf workflow fix-phase --unit 3 --status invalid_value` is run
+**When** the status value is not one of pending/in_progress/completed/failed
+**Then** the command exits with an error message listing valid status values
+
+**Given** `pf workflow fix-phase --unit 99 --status completed` is run
+**When** unit 99 does not exist in the `<units>` block
+**Then** the command exits with an error message indicating the unit was not found
+
+**Given** optional metadata fields `--branch` and `--pr`
+**When** `pf workflow fix-phase --unit 3 --status completed --branch batch-unit-3 --pr https://github.com/org/repo/pull/42` is run
+**Then** the unit's `branch` and `pr` child elements are updated alongside the status
+
+**FRs:** FR-4
+**NFRs:** NFR-4
+**Points:** 1
+
+### Story 1.4: Add Batch Fan-Out to Orchestrator Agent Definition
+
+As the orchestrator agent entering the fan-out phase,
+I want batch execution instructions in my agent definition,
+So that I can decompose, spawn parallel agents, and track results back to session units.
+
+**Acceptance Criteria:**
+
+**Given** the orchestrator agent definition at `pennyfarthing-dist/agents/orchestrator.md`
+**When** the orchestrator is activated for the `fan-out` phase of a batch workflow
+**Then** the agent definition contains a batch execution section with fan-out instructions
+
+**Given** the batch execution instructions
+**When** the orchestrator reads the unit definitions from the decompose phase output
+**Then** the instructions direct spawning one agent per unit via Task tool with `isolation: "worktree"`
+
+**Given** the orchestrator spawns parallel agents
+**When** each agent completes or fails
+**Then** the instructions direct updating unit status via `pf workflow fix-phase --unit <id> --status <status>`
+**And** the instructions direct updating `--branch` and `--pr` metadata on completion
+
+**Given** the orchestrator spawns parallel agents
+**When** passing context to each worker agent
+**Then** the instructions direct passing the story's acceptance criteria and the unit's specific scope/file list
+
+**Given** the batch uses the fan-out/fan-in pattern
+**When** the orchestrator tracks unit count
+**Then** the instructions enforce the 5-30 unit constraint from `/batch`
+**And** the instructions direct using explicit background execution (`run_in_background: true`) for 5+ units
+
+**FRs:** FR-3
+**NFRs:** NFR-3, NFR-5
 **Points:** 1
 
 ---
 
-## Epic 3: Sprint Findings Aggregation
+## Epic 2: Pre-Fan-Out Safety
 
-Sprint retro can surface cross-story patterns from aggregated findings — identifying systemic issues across the sprint.
+Developer is warned before fan-out if two units would touch the same file — preventing the worst failure mode of parallel work.
 
-### Story 3.1: Create sprint findings aggregation script
+### Story 2.1: File-Overlap Independence Check
 
-As an SM running a sprint retrospective,
-I want a script that collects Delivery Findings across all archived sessions for a sprint,
-So that I can identify recurring patterns and systemic issues.
-
-**Acceptance Criteria:**
-
-**Given** a sprint with 5 archived sessions, 3 of which contain Delivery Findings
-**When** running the aggregation script with the sprint identifier
-**Then** the script collects all findings from all archived sessions for that sprint
-**And** outputs findings grouped by type (all Gaps together, all Conflicts together, etc.)
-**And** outputs findings grouped by affected spec (all findings referencing the same doc together)
-**And** completes in < 10 seconds
-
-**Given** archived sessions that predate the Delivery Findings feature (no section)
-**When** the aggregation script encounters them
-**Then** they are skipped without error
-
-**Given** the aggregation output
-**When** reviewing grouped findings
-**Then** each finding retains its source attribution (story ID, agent, phase)
-
-**FRs:** FR17, FR18
-**NFRs:** NFR1 (< 10s for 20 stories), NFR2
-**Files:** New script (e.g., `pf/sprint/aggregate_findings.py`)
-**Points:** 2
-
-### Story 3.2: Integrate aggregated findings into retrospective workflow
-
-As an SM facilitating a sprint retro,
-I want the retro workflow to consume aggregated findings as input,
-So that the retro discussion is grounded in what stories actually revealed.
+As a developer reviewing the architect's unit decomposition,
+I want a warning if two units touch the same file,
+So that I can prevent merge conflicts from parallel worktree execution.
 
 **Acceptance Criteria:**
 
-**Given** the retro workflow is started for a sprint
-**When** the workflow loads input data
-**Then** it runs the aggregation script and includes findings summary as context
+**Given** the architect has produced unit definitions with file lists
+**When** the decompose phase's manual gate is evaluated
+**Then** a file-overlap check runs before presenting the gate to the developer
 
-**Given** aggregated findings show 3 stories found Gaps in `session-artifacts.md`
-**When** the retro presents patterns
-**Then** the pattern is surfaced: "3 stories found gaps in session-artifacts.md"
+**Given** units 1 and 4 both list `src/components/Button.tsx` in their file lists
+**When** the overlap check runs
+**Then** it blocks with a warning listing the conflicting file and the unit IDs (1 and 4)
 
-**Given** a sprint with no Delivery Findings in any archived session
-**When** the retro workflow loads findings
-**Then** it reports "No delivery findings recorded this sprint" and continues without error
+**Given** no units share any files in their file lists
+**When** the overlap check runs
+**Then** it passes silently and the manual gate proceeds normally
 
-**FRs:** FR19
-**Files:** Retro workflow definition, aggregation script integration
-**Points:** 2
+**Given** an overlap is detected
+**When** the warning is presented to the developer
+**Then** the developer can choose to override (proceed anyway) or request re-decomposition
+
+**Given** multiple overlaps exist across several units
+**When** the overlap check reports
+**Then** all conflicting file/unit pairs are listed, not just the first one found
+
+**FRs:** FR-5
+**Points:** 1
