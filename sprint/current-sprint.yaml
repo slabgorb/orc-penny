@@ -9,3 +9,12 @@ sprint:
 epics:
   - MSSCI-15839
   - MSSCI-15920
+standalone_stories:
+  - id: MSSCI-16066
+    jira: MSSCI-16066
+    title: Remove is_gui gating from relay mode handoff
+    points: 2
+    status: done
+    repos: pennyfarthing
+    pr: 1238
+    branch: feat/MSSCI-16066-remove-isgui-relay
