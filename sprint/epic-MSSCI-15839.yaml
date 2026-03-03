@@ -271,8 +271,12 @@ stories:
       4. Test with two simultaneous projects
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-03'
     workflow: tdd
+    completed: '2026-03-03'
+    review_verdict: approved
   - id: 136-24
     jira: MSSCI-16062
     title: Add project identity to WheelHub /health endpoint for cross-project verification
