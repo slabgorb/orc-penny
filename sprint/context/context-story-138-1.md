@@ -1,5 +1,5 @@
 ---
-parent: 138
+parent: context-epic-138.md
 workflow: trivial
 ---
 
@@ -7,42 +7,70 @@ workflow: trivial
 
 ## Business Context
 
-Code duplication is one of the most common quality issues in agentic coding sessions. Dev agents frequently reimplement logic that already exists elsewhere, creating maintenance burdens and inconsistency. The simplify-reuse Haiku teammate addresses this by scanning changed files for duplicated logic, extractable helpers, and shared patterns — catching reuse opportunities before the Reviewer ever sees the code. This reduces Dev-Reviewer round-trips and produces cleaner, more maintainable output.
-
-This is the first of three simplify teammate definitions. Each teammate focuses on a single quality dimension with an isolated context window, keeping token costs low (Rule 7: Haiku for mechanical tasks).
+The `simplify-reuse` agent catches code duplication before the Reviewer agent, reducing round-trip rejections. It operates as one member of a three-agent team spawned by TEA during the verify phase of TDD workflows. By analyzing changed files for duplicated logic and extractable helper functions, simplify-reuse helps keep implementations lean and DRY, improving framework health without changing the reviewer's adversarial role.
 
 ## Technical Guardrails
 
-- **Create:** `pennyfarthing-dist/agents/simplify-reuse.md`
-- **Follow:** Tactical agent template at `pennyfarthing-dist/agents/templates/agent-template-tactical.md`
-- **Model:** Haiku (Rule 7 — never Opus for mechanical tasks)
-- **Input contract:** Receives list of changed files from `git diff --name-only` (passed by TEA)
-- **Output contract:** Returns `SIMPLIFY_RESULT` YAML format (see FR-5 in PRD)
-- **Behavior:** Report findings only — does NOT modify files directly
-- **Context isolation:** Receives only changed file list and file contents — no session history, no story context
-- **Lint boundary:** Focuses on semantic reuse (duplicated logic, extractable patterns) — does NOT flag style issues already caught by eslint/ruff
+This is a **tactical subagent definition** — a Haiku-class helper that runs in isolation with no side effects. Follow the tactical agent template at `pennyfarthing-dist/agents/templates/agent-template-tactical.md` for consistent section ordering and structure.
+
+### Core Requirements
+
+- **Model:** Haiku (per Rule 7: never Opus for mechanical tasks)
+- **Behavior:** Report-only. Do NOT modify files. Analyzes and suggests.
+- **Invocation:** Via Agent tool with `run_in_background: true`, spawned by TEA with a file list
+- **Output Format:** SIMPLIFY_RESULT YAML (see below)
+- **Confidence Levels:** high, medium, low — TEA auto-applies high, reviews medium/low manually
+
+### SIMPLIFY_RESULT Format
+
+The subagent MUST return findings in this exact structure:
+
+```yaml
+SIMPLIFY_RESULT:
+  agent: simplify-reuse
+  status: clean | findings
+  findings:
+    - file: "path/to/file.ts"
+      line: 42
+      category: "duplicated-logic"
+      description: "What was found"
+      suggestion: "What to do about it"
+      confidence: high | medium | low
+```
+
+If status is `clean`, the `findings` array is empty or omitted.
+
+### Categories (for simplify-reuse)
+
+- `duplicated-logic` — same code pattern appears multiple times
+- `extractable-helper` — function that could be extracted to reduce duplication
+- `shared-validation` — validation logic repeated across files or functions
+- `copy-paste-pattern` — suspicious near-identical blocks
+- `missing-abstraction` — pattern suggests a missing utility function
 
 ## Scope Boundaries
 
 **In scope:**
-- Agent definition markdown file with role, instructions, input/output contracts
-- Focus areas: duplicated logic across changed files, extractable helpers, shared patterns
-- Structured finding format with file paths, line references, and suggested extractions
-- Confidence levels (high/medium/low) for each finding
+- Definition file: `pennyfarthing-dist/agents/simplify-reuse.md`
+- Follows tactical agent template: title, persona, role, helpers, responsibilities, skills, context, reasoning-mode, on-activation, Assessment Template, Handoff, exit
+- Detailed behavior for analyzing changed files for duplication and extraction opportunities
+- Example workflow showing input (file list from `git diff --name-only`), analysis, and output format
 
 **Out of scope:**
-- TEA integration logic (story 138-4)
-- Workflow YAML changes (story 138-5)
-- SIMPLIFY_RESULT format definition (story 138-7 — but this agent must use the format)
-- Modifying any existing agent definitions
-- Runtime behavior — this is a static agent definition file
+- Integration into TEA verify phase — that's story 138-4
+- The simplify-quality agent definition — that's story 138-2
+- The simplify-efficiency agent definition — that's story 138-3
+- Workflow YAML modifications (`tdd.yaml`, `tdd-tandem.yaml`) — those are story 138-5 and 138-6
+- Session assessment template updates — that's story 138-7
 
 ## AC Context
 
-1. **Agent file exists at correct path** — `pennyfarthing-dist/agents/simplify-reuse.md` is created following the tactical agent template structure
-2. **Haiku model specified** — Agent definition specifies Haiku as the model, consistent with Rule 7
-3. **Input contract defined** — Agent expects a list of changed file paths and reads those files for analysis
-4. **Output contract uses SIMPLIFY_RESULT format** — Returns structured YAML with `agent: simplify-reuse`, status, and findings array
-5. **Finding categories appropriate to reuse** — Categories include `duplicated-logic`, `extractable-helper`, `shared-pattern`, etc.
-6. **Report-only behavior explicit** — Agent instructions clearly state it reports findings and does NOT modify files
-7. **Confidence levels assigned** — Each finding includes `confidence: high | medium | low` to guide TEA's aggregation decisions
+A story is complete when:
+- [ ] File `pennyfarthing-dist/agents/simplify-reuse.md` exists and follows the tactical template structure
+- [ ] Agent definition clearly describes what files it receives and what it analyzes for
+- [ ] Output format section shows the SIMPLIFY_RESULT YAML structure with representative fields
+- [ ] Responsibilities include "analyze changed files for duplication" and "report findings only"
+- [ ] Confidence levels (high/medium/low) are documented with TEA's decision rules
+- [ ] The agent can be invoked via Agent tool with parameters: file list, story context (optional)
+- [ ] No code modifications — the definition explicitly states "Report only. Do NOT edit files."
+- [ ] Definition can be read and used as a template for simplify-quality and simplify-efficiency stories

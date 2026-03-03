@@ -1,5 +1,5 @@
 ---
-parent: 138
+parent: context-epic-138.md
 workflow: trivial
 ---
 
@@ -40,11 +40,14 @@ This is the third of three simplify teammate definitions. A key nuance: this tea
 
 ## AC Context
 
-1. **Agent file exists at correct path** — `pennyfarthing-dist/agents/simplify-efficiency.md` is created following the tactical agent template structure
-2. **Haiku model specified** — Agent definition specifies Haiku as the model, consistent with Rule 7
-3. **Input contract defined** — Agent expects a list of changed file paths and reads those files for analysis
-4. **Output contract uses SIMPLIFY_RESULT format** — Returns structured YAML with `agent: simplify-efficiency`, status, and findings array
-5. **Finding categories appropriate to efficiency** — Categories include `over-engineering`, `premature-abstraction`, `redundant-operation`, `unnecessary-complexity`, etc.
-6. **Intentional complexity respected** — Agent instructions acknowledge that error handling and edge case coverage may look like over-engineering but are often intentional; these should be flagged with low confidence, not asserted as problems
-7. **Report-only behavior explicit** — Agent reports findings with simplification rationale, does NOT modify files
-8. **Confidence levels assigned** — Each finding includes `confidence: high | medium | low`, with ambiguous cases defaulting to low
+**Testable detail:**
+
+- File created at `/Users/keithavery/Projects/pf-1/pennyfarthing/pennyfarthing-dist/agents/simplify-efficiency.md`
+- Contains all required tactical agent sections in correct order: `<persona>`, `<role>`, `<helpers>`, `<responsibilities>`, `<skills>`, `<context>`, `<reasoning-mode>`, `<on-activation>`, workflow section, assessment template, handoff protocol, `<exit>`
+- `<responsibilities>` includes at least 4 efficiency-focused duties (e.g., unnecessary complexity detection, over-abstraction analysis, redundant operation identification, premature optimization flagging)
+- `<helpers>` specifies Haiku model and describes what helper tasks do
+- Workflow section describes: receive changed file list → analyze for efficiency issues → return SIMPLIFY_RESULT YAML with agent, status, and findings array
+- Finding categories include `over-engineering`, `unnecessary-complexity`, `premature-abstraction`, `redundant-operations`, or equivalent
+- Confidence guidance documented: high = objectively simpler after removal, medium = likely beneficial, low = ambiguous or potentially intentional (error handling, edge cases)
+- Assessment template shows expected SIMPLIFY_RESULT output format with findings containing file, line, category, description, suggestion, confidence
+- Handoff section present and follows pattern from tactical template (gate resolution, phase completion, marker)

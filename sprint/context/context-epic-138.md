@@ -4,9 +4,10 @@
 
 Integrate Claude Code's `/simplify` concept into Pennyfarthing's TDD workflow as three specialized Haiku teammates running under TEA during the verify phase. Each teammate focuses on a single quality dimension (reuse, quality, efficiency) with isolated context windows, reporting structured findings that TEA aggregates and applies. The existing quality-pass gate serves as the regression safety net.
 
-**Priority:** P1
+**Priority:** P0/P1
 **Repo:** pennyfarthing
 **Stories:** 7 (8 points)
+**Jira:** MSSCI-16073
 
 ## Planning Documents
 
@@ -133,7 +134,7 @@ SIMPLIFY_RESULT:
 ## Cross-Epic Dependencies
 
 **Depends on:**
-- Epic 136 (Post-install reliability) — TEA agent and workflow YAMLs must be stable before modification
+- None — TEA agent, TDD workflows, quality-pass gate, and fan-out pattern all exist
 
 **Depended on by:**
-- None currently — this is a new capability with no downstream consumers yet
+- Epic 137 (Batch Execution) references simplify as a pre-merge quality check in batch PRD

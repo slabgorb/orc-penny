@@ -1,5 +1,5 @@
 ---
-parent: 138
+parent: context-epic-138.md
 workflow: trivial
 ---
 
@@ -7,35 +7,59 @@ workflow: trivial
 
 ## Business Context
 
-Transparency is a core success criterion for the simplify feature. Human operators reviewing session files need to see exactly what each simplify teammate found, what TEA applied, and what was rejected (and why). This story adds a structured "Simplify Report" section to TEA's session assessment template, making simplify results visible in every story's session file. This enables tracking of simplify effectiveness over time and builds trust in the automated quality process.
+Human operators need visibility into what the three simplify teammates (reuse, quality, efficiency) found and how their suggestions were applied. Currently, the TEA assessment template has no section for simplify findings—operators can't see what improvements were made or rejected. Story 138-6 adds a new "Simplify Report" section to the TEA assessment, giving human operators a clear summary of each teammate's findings and whether suggestions were applied, rejected, or had issues.
 
 ## Technical Guardrails
 
-- **Modify:** TEA assessment template section (in `pennyfarthing-dist/agents/tea.md` or the session assessment template, wherever the assessment format is defined)
-- **Format:** Per FR-4.1 in PRD — structured markdown with per-teammate summaries and applied/rejected counts
-- **Section placement:** After existing assessment sections, before handoff notes
-- **Clean code case:** When all teammates report `status: clean`, the section should still appear with "No issues found" entries (Journey 2 in PRD)
-- **Regression case:** When a simplify fix is reverted, the section should document what was reverted and why (Journey 3 in PRD)
+The assessment template lives in `pennyfarthing-dist/agents/tea.md` under the `<assessment-template>` section (lines 114-152). The template is a markdown block embedded in the agent definition, shown to TEA as a reference for what to write into the session file.
+
+The new Simplify Report section follows this pattern:
+
+```markdown
+### Simplify Report
+- **Reuse:** {findings summary or "No issues found"}
+- **Quality:** {findings summary or "No issues found"}
+- **Efficiency:** {findings summary or "No issues found"}
+- **Applied:** {N}/{total} suggestions | **Rejected:** {M} ({reasons})
+```
+
+**Key markdown format rules:**
+- Subsection header: `### Simplify Report` (not `##` — this is a subsection within the TEA Assessment)
+- Four bullet points: one for each teammate, plus a summary of applied/rejected counts
+- Each teammate bullet: `**{Name}:**` (bold) followed by either a one-line summary of findings or "No issues found"
+- Applied/Rejected line: `**Applied:** {count}/{total}` and `**Rejected:** {count}` with brief reasons in parentheses
+- This section appears AFTER the `**Handoff:**` line in the template but BEFORE any delivery findings (delivery findings go in a separate session section, not the assessment)
+
+**Assessment template context:**
+- Used by TEA during RED, GREEN, and VERIFY phases
+- RED phase (test design) assessment is simpler — just test files and status
+- VERIFY phase (test verification, where simplify happens) assessment should include the Simplify Report
+- The template is a reference guide TEA reads; TEA adapts it based on context (e.g., RED assessment ≠ VERIFY assessment)
 
 ## Scope Boundaries
 
 **In scope:**
-- Define the Simplify Report section format in TEA's assessment template
-- Cover all reporting scenarios: findings applied, findings rejected, clean code, teammate failure, regression/revert
-- Ensure the format is human-readable in session file markdown
+- Update `<assessment-template>` section in `pennyfarthing-dist/agents/tea.md` to include the new Simplify Report subsection
+- Include an example showing how simplify findings map to the report format
+- Document that the Simplify Report only appears in VERIFY phase assessments, not RED assessments
 
 **Out of scope:**
-- TEA integration logic for populating the template (story 138-4)
-- Subagent definitions (stories 138-1, 138-2, 138-3)
-- BikeRack metrics dashboard (post-MVP growth feature)
-- Historical trend tracking (post-MVP)
+- Implementing the logic that populates the report (that's in TEA's VERIFY phase behavior — 138-4)
+- The structured finding format or SIMPLIFY_RESULT YAML (that's 138-7)
+- BikeRack visualization of simplify findings (that's Growth, not MVP)
+- Creating actual simplify teammate definitions (that's 138-1, 138-2, 138-3)
 
 ## AC Context
 
-1. **Simplify Report section defined** — TEA assessment template includes a `### Simplify Report` section with the format specified in FR-4.1:
-   - Per-teammate summary line (Reuse, Quality, Efficiency) with findings or "No issues found"
-   - Applied/rejected counts with rejection reasons
-2. **Clean code scenario handled** — When all three teammates report `status: clean`, the section renders with "No issues found" for each category and "Applied: 0/0 suggestions"
-3. **Regression scenario handled** — When a simplify fix is reverted due to quality-pass gate failure, the section documents what was reverted and references the failing test/check
-4. **Teammate failure scenario handled** — If a teammate failed or timed out, the section notes the failure rather than silently omitting the category
-5. **Section integrates with existing assessment** — The Simplify Report does not break or overlap with existing TEA assessment sections
+**Testable detail:** The updated `tea.md` file at `pennyfarthing-dist/agents/tea.md` lines 114-152 (the `<assessment-template>` section) must include a `### Simplify Report` subsection with the four-bullet format shown above. An example assessment should demonstrate all three teammates reporting findings and the applied/rejected summary. The section must be clearly marked as VERIFY-phase-only (RED phase assessments don't include it).
+
+**Acceptance criteria:**
+1. `<assessment-template>` section in `pennyfarthing-dist/agents/tea.md` includes a `### Simplify Report` subsection after the Handoff line
+2. The report format matches the template: three teammate bullets + applied/rejected summary
+3. An example TEA assessment shows what a real Simplify Report looks like (e.g., "Reuse: Extracted shared validation to validate_input() (3 call sites)")
+4. The template notes that Simplify Report is VERIFY-phase-only; RED assessments don't include it
+5. The documentation is clear enough for TEA to use as a reference when writing assessments during VERIFY
+
+**Depends on:**
+- 138-4 (TEA verify extension) — so TEA knows how to gather simplify findings
+- 138-7 (SIMPLIFY_RESULT format) — so the findings have a consistent structure to aggregate
