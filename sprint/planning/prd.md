@@ -1,254 +1,318 @@
 ---
 stepsCompleted:
-  - step-01-initialization
+  - step-01-init
   - step-02-discovery
-  - step-03-success-criteria
-  - step-04-user-journeys
-  - step-05-domain-skipped
-  - step-06-innovation-skipped
+  - step-03-success
+  - step-04-journeys
+  - step-05-domain (skipped)
+  - step-06-innovation (skipped)
   - step-07-project-type
   - step-08-scoping
   - step-09-functional
   - step-10-nonfunctional
   - step-11-polish
-inputDocuments:
-  - .pennyfarthing/repos.yaml
-  - pennyfarthing/pennyfarthing-dist/guides/worktree-mode.md
-  - pennyfarthing/pennyfarthing-dist/src/pf/git/worktree.py
-documentCounts:
-  briefs: 0
-  research: 0
-  projectDocs: 3
+  - step-12-complete
+inputDocuments: []
 workflowType: 'prd'
+documentCounts:
+  briefCount: 0
+  researchCount: 0
+  brainstormingCount: 0
+  projectDocsCount: 0
 classification:
-  projectType: developer_tool
-  domain: general
-  complexity: medium
+  projectType: CLI Tool / Developer Tooling
+  domain: Developer Experience (DX) / Build Infrastructure
+  complexity: Medium
   projectContext: brownfield
 ---
 
-# Product Requirements Document - Multi-Repo Worktree Support
+# Product Requirements Document - Simplify Integration
 
-**Author:** keithavery
+**Author:** Keith Avery
 **Date:** 2026-03-03
-
-## Executive Summary
-
-Pennyfarthing's orchestrator pattern manages multiple git repos under a single project root, configured via `repos.yaml`. Developers need to work on parallel tasks (bug fixes, PR reviews, concurrent stories) without cloning the entire project. Git worktrees solve this, but the current `pf git worktree` implementation lacks safe cleanup, clear status reporting, and Claude Code integration.
-
-This PRD defines enhancements to the existing worktree commands to make multi-repo worktrees reliable for consumer developers and framework contributors. The primary audience is consumer developers using Pennyfarthing on their own projects. Secondary audiences are framework contributors and the dogfooding setup where `pennyfarthing/` is inlined with symlinks.
-
-**Differentiator:** Single-command worktree management across multiple repos with safe-by-default cleanup that prevents silent work loss.
 
 ## Success Criteria
 
-### User Success
+### User Success (The Agent)
 
-- A consumer developer who has never used the feature creates a worktree, does work in it, and cleans it up without reading source code or asking for help
-- No work is silently lost — cleanup warns about uncommitted changes and unmerged branches before removing anything
-- The worktree feels like a normal checkout: `pf` commands work, sessions are isolated, tests run
+- **TEA verify catches bloat before Reviewer** — Reviewer never has to reject for code quality issues that simplify would have caught
+- **No regressions from simplify** — quality-pass gate after simplify ensures tests, lint, and types still pass after any applied fixes
+- **Transparent reporting** — TEA summarizes what each teammate found and what was applied/rejected in the session assessment
 
-### Business Success
+### Business Success (Framework Health)
 
-- Lowers the barrier for contributors — someone helping with a bug fix doesn't need to clone a second copy of the repo
-- Reduces context-switching friction when juggling parallel stories
+- **Faster review cycles** — fewer Dev-Reviewer round-trips on code quality issues
+- **Context-efficient** — Haiku teammates keep token costs low; each loads only changed files in isolated context windows
+- **Measurable improvement** — can track issues-found-per-story across reuse, quality, and efficiency categories
 
 ### Technical Success
 
-- Single `pf git worktree create` command handles all repos defined in `repos.yaml`
-- Consumer projects: worktrees work without symlink rewiring (`.pennyfarthing/` is plain files)
-- Dogfooding: worktrees rewire `.pennyfarthing/` symlinks to point at the worktree'd framework
-- Cleanup is safe-by-default with dirty state warnings
-- No orphaned git worktree references after removal
+- **Fan-out/fan-in pattern** — fits existing infrastructure (team block in workflow YAML, Agent tool with `run_in_background`)
+- **No new gates or phases** — extends the existing verify phase, doesn't add workflow complexity
+- **Haiku teammates** — follows Rule 7 (never Opus for mechanical tasks)
+- **quality-pass is the safety net** — catches any regressions from applied fixes
+- **Configurable** — team block can be present or absent; base TDD verify works without it
 
 ### Measurable Outcomes
 
-- A new contributor can create, use, and clean up a worktree in under 5 minutes with no assistance
-- Zero incidents of silent work loss from worktree cleanup
-- All existing `pf` commands function correctly inside a worktree
+- Reviewer rejections for code quality issues: **reduced 50%+**
+- Simplify teammate execution time: **< 30s** (parallel Haiku agents on changed files)
+- False positive rate: **< 10%** (suggestions TEA rejects as incorrect)
+
+## Product Scope
+
+### MVP - Minimum Viable Product
+
+- 3 Haiku subagent definitions (`simplify-reuse`, `simplify-quality`, `simplify-efficiency`)
+- TEA agent updated to spawn teammates during verify phase and aggregate results
+- `tdd` and `tdd-tandem` workflow YAMLs updated with team block on verify phase
+- Session assessment template updated to include simplify findings report
+
+### Growth Features (Post-MVP)
+
+- Simplify metrics dashboard in BikeRack GUI
+- Custom focus areas per project (`CLAUDE.md` rules fed to teammates)
+- Extension to `trivial` and `bdd` workflows
+- Historical trend tracking (are agents getting cleaner over time?)
+
+### Won't Have (Explicit Out of Scope)
+
+- No new workflow phases — verify is sufficient
+- No new gates — quality-pass already catches regressions
+- No changes to Reviewer agent — Reviewer stays adversarial, simplify is constructive
+- No simplify on unchanged files — only `git diff` scope
 
 ## User Journeys
 
-### Journey 1: Dana — Consumer Developer, Context Switch
+### Journey 1: TEA Verify with Simplify (Happy Path)
 
-Dana is building a feature in her project's API repo when a teammate pings her: "Can you review my PR? There's a merge conflict with your branch." She can't switch branches — she's mid-work with uncommitted changes.
+TEA activates for verify phase. Reads session file, sees `team:` block with three simplify teammates. TEA identifies changed files via `git diff`, spawns all three Haiku teammates in parallel with the file list. Each teammate runs its focused analysis, reports findings via structured output. TEA collects all three reports, reviews each suggestion — applies clean wins, rejects false positives (e.g., "that repeated code is intentional"). TEA commits fixes: `refactor: simplify code per verify review`. Quality-pass gate fires — lint, typecheck, tests all green. TEA writes assessment with simplify report section. Hands off to Reviewer. Reviewer gets cleaner code, focuses on logic and security.
 
-She runs `pf git worktree create wt-review feat/teammate-fix`. A new worktree appears with both her API and UI repos checked out to the right branch. She `cd`s in, reviews the code, pushes a fix, and runs `pf git worktree remove wt-review`. Back to her feature branch in under 10 minutes. She never stashed, never cloned, never lost context.
+### Journey 2: Simplify Finds Nothing (Clean Code)
 
-**Reveals:** Create must be fast and obvious. Remove must confirm it's clean. `pf` commands must work inside the worktree without configuration.
+Dev wrote clean code. TEA spawns three teammates. All three report: no issues found. TEA notes "simplify: clean" in assessment, moves straight to quality-pass gate. Zero overhead beyond the parallel agent spawn time.
 
-### Journey 2: Chris — Contributor, Drive-By Fix
+### Journey 3: Simplify Causes a Regression (Safety Net)
 
-Chris saw a bug in Pennyfarthing's sprint validation and wants to help. He already has `pf-2` cloned from last month. Rather than figuring out what state his checkout is in, he creates a worktree: `pf git worktree create wt-bugfix fix/sprint-validation`.
+A simplify teammate suggests removing "redundant" error handling. TEA applies it. Quality-pass gate fires — tests fail. TEA sees the regression, reverts the simplify change, re-runs gate. Gate passes. TEA notes in assessment: "simplify-efficiency suggestion reverted — error handling was intentional, tested by test_error_boundary." Lesson captured.
 
-He makes the fix, runs tests, commits, pushes, opens a PR. Then `pf git worktree remove wt-bugfix`. He didn't touch his main checkout. He didn't have to remember what branch he was on before.
+### Journey 4: Human Operator Reviewing Results
 
-**Reveals:** Worktree create must work even if the main checkout is dirty. The contributor shouldn't need to understand the orchestrator's internal topology — just which repo they're fixing.
-
-### Journey 3: Keith — Dogfooding, Parallel Stories
-
-Keith is mid-story on a workflow enhancement when a P0 bug comes in. He creates a worktree for the hotfix. In the worktree, `.pennyfarthing/` symlinks need to resolve to the worktree'd copy of `pennyfarthing/pennyfarthing-dist/`, not the original. He fixes the bug, the session file tracks that it's a worktree context, and his main story is untouched.
-
-**Reveals:** Dogfooding requires symlink rewiring. Session isolation must be airtight — two stories, two sessions, no cross-contamination. This is Growth scope, not MVP.
-
-### Journey 4: Dana, Two Weeks Later — The Returner
-
-Dana created `wt-review` two weeks ago and forgot about it. She runs `pf git worktree list` and sees it. She tries `pf git worktree remove wt-review` and gets:
+The human operator opens the session file after a story completes. The TEA Assessment has a new section:
 
 ```
-Warning: wt-review has uncommitted changes in api (2 files modified)
-Warning: Branch feat/teammate-fix has not been merged
-Remove anyway? [y/N]
+### Simplify Report
+- **Reuse:** Extracted shared validation to `validate_input()` (3 call sites)
+- **Quality:** Renamed `x` → `config_path` in 2 files
+- **Efficiency:** No issues found
+- **Applied:** 2/2 suggestions | **Rejected:** 0
 ```
 
-She realizes she left debug logging in there. She goes in, cleans it up, pushes, and then removes. Her work wasn't silently destroyed.
+Visible exactly what simplify did and whether it's earning its keep.
 
-**Reveals:** List and status must surface staleness. Remove must be safe-by-default. The warning needs to be specific enough to act on — not just "dirty," but what is dirty and where.
+### Journey 5: Workflow Without Simplify (Trivial/Chore)
+
+A 1-point chore goes through the `trivial` workflow. No verify phase, no simplify teammates. Nothing changes for small work. Simplify only activates on TDD workflows where the verify phase exists.
 
 ### Journey Requirements Summary
 
-| Capability | Revealed By | Scope |
-|---|---|---|
-| Multi-repo worktree create from `repos.yaml` | Dana, Chris | MVP |
-| Works with dirty main checkout | Chris | MVP |
-| `pf` commands work inside worktrees | Dana | MVP |
-| Safe remove with dirty/unmerged warnings | Dana (Returner) | MVP |
-| Worktree list with status | Dana (Returner) | MVP |
-| Session file worktree context | Dana, Keith | MVP |
-| Symlink rewiring for dogfooding | Keith | Growth |
-| Specific warnings (which files, which repo) | Dana (Returner) | MVP |
+| Capability | Revealed By |
+|-----------|-------------|
+| Teammate spawning in verify phase | Journey 1 |
+| Changed file discovery (`git diff`) | Journey 1 |
+| Structured finding reports | Journeys 1, 2 |
+| TEA aggregation and judgment | Journey 1 |
+| Regression detection and rollback | Journey 3 |
+| Session assessment simplify section | Journeys 1, 2, 3, 4 |
+| Workflow-level configurability | Journey 5 |
 
-## Product Scope & Phased Development
+## Project Type: CLI Tool / Developer Tooling
 
-### MVP Strategy
+### Command Structure
 
-**Approach:** Problem-solving MVP — the minimum that makes a consumer developer say "this is useful" for parallel work across repos.
-**Resource:** Solo developer, one sprint.
+No new CLI commands. Simplify integration is invisible to the user — it runs automatically when TEA enters the verify phase on workflows with a `team:` block containing simplify teammates. No flags, no config, no opt-in beyond the workflow YAML.
 
-### Phase 1 — MVP
+### Architecture Pattern
 
-| Feature | Journey | Dependency |
-|---|---|---|
-| Enhanced `create` — multi-repo from `repos.yaml` | Dana, Chris | None (refine existing) |
-| Safe `remove` — dirty/unmerged warnings, confirm prompt | Dana (Returner) | None (enhance existing) |
-| Enhanced `list` — show branch, dirty state per repo | Dana (Returner) | None (enhance existing) |
-| Session file worktree context block | Dana | Create must write it |
-| Updated `worktree-mode.md` guide | All | After implementation |
+Fan-out/fan-in within an existing workflow phase:
 
-**Core Journeys Supported:** Dana (context switch), Chris (drive-by fix), Dana (returner cleanup)
+```
+TEA (verify leader, Opus)
+  ├── simplify-reuse (Haiku, background)
+  ├── simplify-quality (Haiku, background)
+  └── simplify-efficiency (Haiku, background)
+       │
+       └── TEA aggregates → applies/rejects → quality-pass gate
+```
 
-### Phase 2 — Growth
+### Integration Points
 
-| Feature | Journey | Dependency |
-|---|---|---|
-| Claude Code hook integration (`WorktreeCreate`/`WorktreeRemove`) | Dana, Chris | MVP create/remove |
-| Dogfooding symlink rewiring | Keith | MVP create |
-| `status` with health/staleness indicators | Dana (Returner) | MVP list |
+| Integration Point | Mechanism | Existing? |
+|-------------------|-----------|-----------|
+| Workflow YAML `team:` block | `tdd.yaml`, `tdd-tandem.yaml` verify phase | Yes (extend) |
+| TEA agent verify behavior | `agents/tea.md` | Yes (extend) |
+| Subagent definitions | `agents/simplify-*.md` | No (create 3 new) |
+| Session assessment template | TEA assessment in session file | Yes (extend) |
+| Changed file discovery | `git diff --name-only` | Yes (reuse) |
 
-### Phase 3 — Vision
+## Detailed Scoping
 
-| Feature | Dependency |
-|---|---|
-| Auto-cleanup on `pf sprint story finish` | Phase 1 remove |
-| Stale worktree pruning (age-based) | Phase 2 status |
-| Shared `node_modules` | Only if pain emerges |
+### Phase 1: MVP
 
-### Risk Mitigation
+| Deliverable | Priority | Effort | Dependencies |
+|------------|----------|--------|--------------|
+| `simplify-reuse.md` agent definition | P0 | 1pt | None |
+| `simplify-quality.md` agent definition | P0 | 1pt | None |
+| `simplify-efficiency.md` agent definition | P0 | 1pt | None |
+| TEA agent verify phase update | P0 | 2pt | Agent defs |
+| `tdd.yaml` verify team block | P0 | 1pt | Agent defs |
+| `tdd-tandem.yaml` verify team block | P0 | 1pt | Agent defs |
+| TEA assessment template update | P1 | 1pt | TEA update |
 
-**Technical:** Symlink rewiring (Phase 2) is the hardest part — relative vs absolute paths, what happens when the framework worktree is removed but the orchestrator worktree remains. Mitigated by deferring to Growth.
-**Market:** Low — solves a concrete workflow pain. No validation needed.
-**Resource:** Solo developer. MVP scoped for one sprint. Growth is incremental.
+**Total MVP: ~8 points**
 
-## Developer Tool Specific Requirements
+### Phase 2: Growth
 
-### Technical Architecture
-
-- **Language:** Python (Click CLI), consistent with existing `pf git` command group
-- **Installation:** Ships as part of `pf` — no additional dependencies beyond git 2.15+
-- **Configuration:** Reads `repos.yaml` for repo topology — no new config files
-
-### Claude Code Integration
-
-- Implement `WorktreeCreate` and `WorktreeRemove` hooks in `.pennyfarthing/settings.yaml` template
-- When Claude Code's `EnterWorktree` fires, delegate to `pf git worktree create` for multi-repo awareness
-- Worktrees created by either mechanism visible to `pf git worktree list`
-- Session file worktree context block written regardless of creation method
-
-### CLI Surface
-
-| Command | Behavior | Status |
-|---|---|---|
-| `pf git worktree create <name> <branch>` | Create worktrees for repos in `repos.yaml` | Exists, enhance |
-| `pf git worktree remove <name>` | Safe remove with dirty/unmerged warnings | Exists, enhance |
-| `pf git worktree list` | List all worktrees with status | Exists, enhance |
-| `pf git worktree status` | Detailed health per worktree | Exists, keep |
-
-### Documentation
-
-- Update `worktree-mode.md` guide with multi-repo consumer workflow
-- Add quick-start examples for common scenarios (context switch, drive-by fix)
-- Document Claude Code hook integration
+| Deliverable | Priority | Effort |
+|------------|----------|--------|
+| BikeRack simplify metrics panel | P2 | 3pt |
+| CLAUDE.md rule injection to teammates | P2 | 2pt |
+| `bdd.yaml` / `bdd-tandem.yaml` extension | P2 | 1pt |
+| `trivial.yaml` review-phase integration | P3 | 2pt |
+| Historical trend tracking | P3 | 3pt |
 
 ## Functional Requirements
 
-### Worktree Creation
+### FR-1: Simplify Teammate Agent Definitions
 
-- **FR1:** Developer can create a named worktree that spans all repos defined in `repos.yaml` with a single command
-- **FR2:** Developer can create a worktree targeting specific repos (filter by name or type) instead of all repos
-- **FR3:** Developer can create a worktree from an existing branch or have a new branch created automatically
-- **FR4:** Developer can create a worktree even when the main checkout has uncommitted changes
-- **FR5:** Developer receives clear output showing which repos had worktrees created, the paths, and the branch name
+Three Haiku subagent definitions at `pennyfarthing-dist/agents/`:
 
-### Worktree Removal
+**FR-1.1: `simplify-reuse.md`**
+- Receives: list of changed files (from `git diff --name-only`)
+- Analyzes: duplicated logic, extractable helpers, shared patterns across changed files
+- Returns: structured findings with file paths, line references, and suggested extractions
+- Does NOT: modify files directly — reports only
 
-- **FR6:** Developer can remove a named worktree and all its repo checkouts with a single command
-- **FR7:** Developer is warned before removal if any repo in the worktree has uncommitted changes, with specifics (which repo, how many files)
-- **FR8:** Developer is warned before removal if any branch in the worktree has not been merged, with specifics (which repo, which branch)
-- **FR9:** Developer must explicitly confirm removal when warnings are present
-- **FR10:** Developer can force-remove a worktree to bypass warnings when intentional
+**FR-1.2: `simplify-quality.md`**
+- Receives: list of changed files
+- Analyzes: naming conventions, readability, code structure, dead code, unnecessary comments
+- Returns: structured findings with specific improvements and rationale
+- Does NOT: enforce style rules already covered by lint (eslint, ruff) — focuses on semantic quality
 
-### Worktree Discovery
+**FR-1.3: `simplify-efficiency.md`**
+- Receives: list of changed files
+- Analyzes: unnecessary complexity, redundant operations, over-engineering, premature abstractions
+- Returns: structured findings with specific simplifications and rationale
+- Respects: intentional complexity (error handling, edge cases) — flags but doesn't force removal
 
-- **FR11:** Developer can list all active worktrees with branch and dirty state per repo
-- **FR12:** Developer can view detailed status of a specific worktree including per-repo branch, uncommitted file count, and merge state
-- **FR13:** Developer can see which session file (if any) is associated with each worktree
+### FR-2: TEA Verify Phase Extension
 
-### Session Integration
+**FR-2.1: Changed File Discovery**
+- TEA runs `git diff --name-only` against the base branch to identify files changed in the story
+- Filters out non-code files (images, configs, lockfiles)
+- Passes the file list to all three teammates
 
-- **FR14:** When a worktree is created, the system can write a worktree context block to the active session file
-- **FR15:** Agents can detect they are operating in a worktree context by reading the session file
-- **FR16:** `pf` commands resolve correctly when run from within a worktree directory
+**FR-2.2: Teammate Spawning**
+- TEA spawns all three simplify teammates using the Agent tool with `run_in_background: true`
+- Each teammate receives the same file list but analyzes through its specific lens
+- Teammates run as Haiku models (Rule 7)
 
-### Claude Code Integration
+**FR-2.3: Result Aggregation**
+- TEA collects results from all three teammates via `TaskOutput`
+- Reviews each finding — applies clean wins, rejects false positives
+- If applying changes: commits with `refactor: simplify code per verify review`
+- If rejecting: documents reason in assessment
 
-- **FR17:** When Claude Code's `EnterWorktree` is triggered, the system delegates to multi-repo worktree creation
-- **FR18:** Worktrees created via Claude Code hooks are visible to `pf git worktree list`
-- **FR19:** When Claude Code cleans up a worktree, the system delegates to safe multi-repo removal
+**FR-2.4: Regression Safety**
+- After applying any simplify fixes, TEA re-runs quality checks before the formal quality-pass gate
+- If tests fail post-simplify: TEA reverts the offending change, documents in assessment
+- quality-pass gate is the final safety net — unchanged from current behavior
 
-### Dogfooding Support
+### FR-3: Workflow YAML Updates
 
-- **FR20:** In dogfooding topology, worktree creation rewires `.pennyfarthing/` symlinks to point at the worktree'd framework source
-- **FR21:** The system detects whether the current project uses symlinked `.pennyfarthing/` (dogfooding) or plain files (consumer) and behaves accordingly
-- **FR22:** Worktree removal in dogfooding mode restores no residual symlink state
+**FR-3.1: `tdd.yaml` verify phase**
+```yaml
+- name: verify
+  agent: tea
+  input: [implementation, passing_tests]
+  output: [quality_verified]
+  gate:
+    file: gates/quality-pass
+    type: quality_pass
+    condition: Lint, typecheck, and all tests passing
+  team:
+    teammates:
+      - agent: simplify-reuse
+        task: "Review changed files for code duplication and extraction opportunities. Report findings only."
+      - agent: simplify-quality
+        task: "Review changed files for naming, readability, and structural quality. Report findings only."
+      - agent: simplify-efficiency
+        task: "Review changed files for unnecessary complexity and over-engineering. Report findings only."
+```
 
-### Documentation
+**FR-3.2: `tdd-tandem.yaml` verify phase**
+Same team block added alongside the existing architect teammate.
 
-- **FR23:** Developer can follow a guide to create, use, and clean up worktrees for common scenarios
-- **FR24:** Guide covers both consumer and contributor workflows with quick-start examples
+### FR-4: Session Assessment Extension
 
-**Scope mapping:** FR1-16, FR23-24 = MVP. FR17-19 = Phase 2 (Claude Code integration). FR20-22 = Phase 2 (dogfooding).
+**FR-4.1: Simplify Report Section**
+TEA assessment template gains a new section:
+
+```markdown
+### Simplify Report
+- **Reuse:** {findings summary or "No issues found"}
+- **Quality:** {findings summary or "No issues found"}
+- **Efficiency:** {findings summary or "No issues found"}
+- **Applied:** {N}/{total} suggestions | **Rejected:** {M} ({reasons})
+```
+
+### FR-5: Structured Finding Format
+
+Each simplify teammate returns findings in a consistent format:
+
+```yaml
+SIMPLIFY_RESULT:
+  agent: simplify-reuse | simplify-quality | simplify-efficiency
+  status: clean | findings
+  findings:
+    - file: "path/to/file.ts"
+      line: 42
+      category: "duplicated-logic" | "naming" | "over-engineering" | etc.
+      description: "What was found"
+      suggestion: "What to do about it"
+      confidence: high | medium | low
+```
+
+TEA uses `confidence: high` findings as auto-apply candidates and reviews `medium`/`low` manually.
 
 ## Non-Functional Requirements
 
-### Reliability
+### NFR-1: Performance
 
-- **NFR1:** Worktree removal never deletes uncommitted changes without explicit user confirmation
-- **NFR2:** If worktree creation fails partway through (e.g., second repo fails), the system reports what succeeded and what failed — no silent partial state
-- **NFR3:** `pf git worktree list` accurately reflects actual filesystem and git state — no stale entries showing worktrees that don't exist
-- **NFR4:** After worktree removal, `git worktree prune` is run to prevent orphaned git references
+- All three teammates execute in parallel — total simplify time bounded by the slowest teammate
+- Target: < 30 seconds for a typical story (10-20 changed files)
+- No impact on quality-pass gate execution time (runs after simplify, not during)
 
-### Integration
+### NFR-2: Token Efficiency
 
-- **NFR5:** `pf git worktree` commands work with any valid `repos.yaml` configuration, not just known project layouts
-- **NFR6:** Session file worktree context follows the existing session schema — no new file formats
-- **NFR7:** Claude Code hooks (`WorktreeCreate`/`WorktreeRemove`) receive enough context to delegate to `pf git worktree` without additional user input
+- Each Haiku teammate operates in an isolated context window — no cross-contamination
+- Teammates receive only the changed file list and file contents — no session history, no story context
+- TEA's context grows by ~3 structured result blocks (one per teammate) — minimal overhead
+
+### NFR-3: Reliability
+
+- If a teammate fails or times out, TEA proceeds with available results (partial failure tolerance per fan-out/fan-in pattern)
+- quality-pass gate is unmodified — serves as the ultimate reliability backstop
+- Teammate failures are logged in the session assessment, not silently swallowed
+
+### NFR-4: Backward Compatibility
+
+- Workflows without `team:` blocks on verify phase work exactly as before
+- `trivial` workflow is unaffected (no verify phase)
+- TEA agent behavior when no teammates are configured is unchanged
+- No changes to any existing gate definitions
+
+### NFR-5: Configurability
+
+- Enabled/disabled by presence of `team:` block in workflow YAML — no runtime config needed
+- Future: per-project CLAUDE.md rules can be injected into teammate prompts for project-specific focus areas

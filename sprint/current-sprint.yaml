@@ -9,6 +9,7 @@ sprint:
   status: active
 epics:
   - MSSCI-15839
+  - MSSCI-16073
 standalone_stories:
   - id: MSSCI-16066
     jira: MSSCI-16066
