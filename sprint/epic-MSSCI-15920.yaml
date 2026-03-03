@@ -104,9 +104,13 @@ stories:
       architecture step 6.
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-03'
     workflow: tdd
+    completed: '2026-03-03'
     type: feature
+    review_verdict: approved
   - id: 137-6
     title: Remove legacy text menus from migrated switch files
     points: 1
