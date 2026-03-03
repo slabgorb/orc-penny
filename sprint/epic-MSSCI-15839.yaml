@@ -181,9 +181,13 @@ stories:
     title: Setup workflow step-06 missing wheelhub/bikerack/tui justfile recipes
     points: 1
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-03'
     workflow: trivial
+    completed: '2026-03-03'
     type: bug
+    review_verdict: approved
   - id: 136-18
     jira: MSSCI-15950
     title: Add In Review status for stories
