@@ -6,6 +6,7 @@ sprint:
 
 completed_epics:
   - '110'
+  - MSSCI-15920
 completed_stories:
   - id: 110-1
     epic: '110'
@@ -37,3 +38,38 @@ completed_stories:
     title: Add completed epics section to TUI sprint panel
     points: 2
     completed: '2026-02-21'
+  - id: 137-1
+    epic: MSSCI-15920
+    title: "Research spike — <switch> and <gate> tag design for stepped workflows"
+    points: 1
+    completed: '2026-03-01'
+  - id: 137-2
+    epic: MSSCI-15920
+    title: "Replace static collaboration menus with AskUserQuestion"
+    points: 2
+    completed: '2026-03-02'
+  - id: 137-3
+    epic: MSSCI-15920
+    title: "Gate validation for stepped workflows"
+    points: 3
+    completed: '2026-03-02'
+  - id: 137-4
+    epic: MSSCI-15920
+    title: "Workflow-type-aware agent initialization"
+    points: 2
+    completed: '2026-03-02'
+  - id: 137-5
+    epic: MSSCI-15920
+    title: "Tandem and team collaboration on stepped workflow steps"
+    points: 2
+    completed: '2026-03-03'
+  - id: 137-6
+    epic: MSSCI-15920
+    title: Remove legacy text menus from migrated switch files
+    points: 1
+    completed: '2026-03-03'
+  - id: 137-7
+    epic: MSSCI-15920
+    title: Sprint status aggregates all archive files instead of filtering by current sprint
+    points: 2
+    completed: '2026-03-03'
