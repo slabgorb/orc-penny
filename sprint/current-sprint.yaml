@@ -1,12 +1,12 @@
 sprint:
   name: TO Sprint 2610
-  number: 2610
   jira_sprint_id: 311
   jira_sprint_name: TO Sprint 2610
   goal: Installation, agents and workflows
   start_date: '2026-03-02'
   end_date: '2026-03-15'
   status: active
+  number: 2610
 epics:
   - MSSCI-15839
   - MSSCI-16073

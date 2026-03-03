@@ -341,13 +341,39 @@ stories:
     completed: '2026-03-03'
     review_verdict: approved
   - id: 136-26
+    jira: MSSCI-16108
     title: Remove stale npm/uv-era references from setup workflows and docs
     points: 2
     priority: p1
-    status: in_progress
+    status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-03-03'
-    workflow: trivial
-    type: chore
     repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-03-03'
+    type: chore
+    review_verdict: approved
+  - id: 136-27
+    jira: MSSCI-16109
+    title: 'Fix auto-load-sm hook skill name: sm should be pf-sm'
+    points: 1
+    priority: p1
+    status: backlog
+    workflow: trivial
+    type: bug
+  - id: 136-28
+    jira: MSSCI-16110
+    title: Fix pf sprint story add --repos flag not persisting repos field
+    points: 1
+    priority: p2
+    status: backlog
+    workflow: trivial
+    type: bug
+  - id: 136-29
+    jira: MSSCI-16111
+    title: Implement pf release dry-run command
+    points: 3
+    priority: p2
+    status: backlog
+    workflow: tdd
 completed: '2026-03-01'

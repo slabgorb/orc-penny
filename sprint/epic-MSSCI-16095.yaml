@@ -1,4 +1,4 @@
-id: '138'
+id: '139'
 type: epic
 title: 'Epic: Pre-Fan-Out Safety'
 description: Developer is warned before fan-out if two units would touch the same file — preventing the worst failure mode of parallel work.
@@ -7,7 +7,7 @@ status: backlog
 repos: pennyfarthing
 jira: MSSCI-16095
 stories:
-  - id: 138-1
+  - id: 139-1
     jira: MSSCI-16096
     title: File-Overlap Independence Check
     points: 1
