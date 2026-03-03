@@ -1,9 +1,9 @@
 ---
-parent: context-epic-137.md
+parent: context-epic-140.md
 workflow: trivial
 ---
 
-# Story 137-3: Extend Session Tooling for Unit Status Updates
+# Story 140-3: Extend Session Tooling for Unit Status Updates
 
 ## Business Context
 
@@ -31,14 +31,14 @@ From `/Users/keithavery/Projects/pf-1/pennyfarthing/pennyfarthing-dist/src/pf/wo
 
 ### Session Units XML Structure
 
-From story 137-2 (adds units element), the session will have:
+From story 140-2 (adds units element), the session will have:
 
 ```xml
 <units>
-  <unit id="1" status="pending" branch="batch-137-1">
+  <unit id="1" status="pending" branch="batch-140-1">
     Add aria-labels to form components A-E
   </unit>
-  <unit id="2" status="in_progress" branch="batch-137-2" pr="https://github.com/...">
+  <unit id="2" status="in_progress" branch="batch-140-2" pr="https://github.com/...">
     Add aria-labels to form components F-J
   </unit>
 </units>
@@ -52,10 +52,10 @@ Extend `pf workflow fix-phase` with optional `--unit` and `--status` flags:
 
 ```bash
 # Fix phase (existing behavior)
-pf workflow fix-phase 137-1 review
+pf workflow fix-phase 140-1 review
 
 # Update unit status (new behavior)
-pf workflow fix-phase 137-1 --unit 2 --status completed
+pf workflow fix-phase 140-1 --unit 2 --status completed
 ```
 
 When `--unit` is specified:
@@ -75,17 +75,17 @@ When `--unit` is specified:
 - Validate status is one of the four allowed values
 
 **Out of scope:**
-- Creating the `<units>` element — that's story 137-2
-- Orchestrator agent behavior calling this command — that's story 137-4
+- Creating the `<units>` element — that's story 140-2
+- Orchestrator agent behavior calling this command — that's story 140-4
 - File-overlap checking — that's epic 138
-- Workflow YAML — that's story 137-1
-- Session schema documentation — that's story 137-2 (modifies session-schema.md)
+- Workflow YAML — that's story 140-1
+- Session schema documentation — that's story 140-2 (modifies session-schema.md)
 
 ## AC Context
 
 ### AC 1: Command accepts `--unit` and `--status` flags
 
-**Testable:** `pf workflow fix-phase 137-1 --unit 2 --status completed` runs without error
+**Testable:** `pf workflow fix-phase 140-1 --unit 2 --status completed` runs without error
 
 - `--unit` accepts numeric ID (1, 2, ..., N)
 - `--status` accepts: `pending`, `in_progress`, `completed`, `failed`
@@ -99,13 +99,13 @@ When `--unit` is specified:
 Setup:
 ```xml
 <units>
-  <unit id="1" status="pending" branch="batch-137-1">Unit 1</unit>
-  <unit id="2" status="in_progress" branch="batch-137-2" pr="https://...">Unit 2</unit>
-  <unit id="3" status="pending" branch="batch-137-3">Unit 3</unit>
+  <unit id="1" status="pending" branch="batch-140-1">Unit 1</unit>
+  <unit id="2" status="in_progress" branch="batch-140-2" pr="https://...">Unit 2</unit>
+  <unit id="3" status="pending" branch="batch-140-3">Unit 3</unit>
 </units>
 ```
 
-Command: `pf workflow fix-phase 137-1 --unit 2 --status completed`
+Command: `pf workflow fix-phase 140-1 --unit 2 --status completed`
 
 Verify:
 - Unit 1 remains `status="pending"`, branch unchanged
@@ -116,8 +116,8 @@ Verify:
 
 **Testable:** Command rejects invalid unit ID or status with clear error message
 
-- `pf workflow fix-phase 137-1 --unit 99 --status completed` → Error: "Unit 99 not found"
-- `pf workflow fix-phase 137-1 --unit 2 --status invalid` → Error: "Invalid status 'invalid'. Must be one of: pending, in_progress, completed, failed"
+- `pf workflow fix-phase 140-1 --unit 99 --status completed` → Error: "Unit 99 not found"
+- `pf workflow fix-phase 140-1 --unit 2 --status invalid` → Error: "Invalid status 'invalid'. Must be one of: pending, in_progress, completed, failed"
 - Non-existent story ID still caught as before: "Session file not found"
 
 ### AC 4: Preserves all unit attributes except status
@@ -126,16 +126,16 @@ Verify:
 
 Before:
 ```xml
-<unit id="3" status="pending" branch="batch-137-3" pr="https://github.com/anthropic/batch-pr-3">
+<unit id="3" status="pending" branch="batch-140-3" pr="https://github.com/anthropic/batch-pr-3">
   Implement feature X
 </unit>
 ```
 
-Command: `pf workflow fix-phase 137-1 --unit 3 --status completed`
+Command: `pf workflow fix-phase 140-1 --unit 3 --status completed`
 
 After:
 ```xml
-<unit id="3" status="completed" branch="batch-137-3" pr="https://github.com/anthropic/batch-pr-3">
+<unit id="3" status="completed" branch="batch-140-3" pr="https://github.com/anthropic/batch-pr-3">
   Implement feature X
 </unit>
 ```
@@ -196,7 +196,7 @@ This preserves everything else in the unit element (other attributes, text conte
 ## Reference Files
 
 - **Batch PRD** (FR-4): `/Users/keithavery/Projects/pf-1/sprint/planning/batch-prd.md`
-- **Epic Context**: `/Users/keithavery/Projects/pf-1/sprint/context/context-epic-137.md`
-- **Session Schema**: `/Users/keithavery/Projects/pf-1/pennyfarthing/pennyfarthing-dist/schemas/session-schema.md` (will be updated in 137-2)
+- **Epic Context**: `/Users/keithavery/Projects/pf-1/sprint/context/context-epic-140.md`
+- **Session Schema**: `/Users/keithavery/Projects/pf-1/pennyfarthing/pennyfarthing-dist/schemas/session-schema.md` (will be updated in 140-2)
 - **Existing fix-phase impl**: `/Users/keithavery/Projects/pf-1/pennyfarthing/pennyfarthing-dist/src/pf/workflow/cli.py` (lines 779-937)
 - **Fan-out/Fan-in Pattern**: `/Users/keithavery/Projects/pf-1/pennyfarthing/pennyfarthing-dist/patterns/fan-out-fan-in-pattern.md`

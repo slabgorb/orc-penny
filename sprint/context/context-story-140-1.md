@@ -1,9 +1,9 @@
 ---
-parent: context-epic-137.md
+parent: context-epic-140.md
 workflow: trivial
 ---
 
-# Story 137-1: Create Batch Workflow YAML
+# Story 140-1: Create Batch Workflow YAML
 
 ## Business Context
 
@@ -79,9 +79,9 @@ workflow:
 **Out of scope:**
 
 - Modifying the workflow schema itself (schema is fixed)
-- Implementing the orchestrator agent definition or batch-specific prompts (story 137-2)
-- Creating the session `<units>` XML tracking element (story 137-2)
-- Building the session update tooling or file-overlap check (stories 137-3, 138-1)
+- Implementing the orchestrator agent definition or batch-specific prompts (story 140-2)
+- Creating the session `<units>` XML tracking element (story 140-2)
+- Building the session update tooling or file-overlap check (stories 140-3, 138-1)
 - Testing the workflow end-to-end; validation only confirms schema compliance
 
 ## AC Context

@@ -1,9 +1,9 @@
 ---
-parent: context-epic-137.md
+parent: context-epic-140.md
 workflow: trivial
 ---
 
-# Story 137-4: Add Batch Fan-Out to Orchestrator Agent Definition
+# Story 140-4: Add Batch Fan-Out to Orchestrator Agent Definition
 
 ## Business Context
 
@@ -59,9 +59,9 @@ Each unit executes in its own worktree (`.claude/worktrees/batch-<story-id>-<uni
 
 **Out of scope:**
 
-- Batch workflow YAML definition — that's story 137-1
-- Session `<units>` XML schema or example — that's story 137-2
-- Session update tooling (`fix-session-phase` extension) — that's story 137-3
+- Batch workflow YAML definition — that's story 140-1
+- Session `<units>` XML schema or example — that's story 140-2
+- Session update tooling (`fix-session-phase` extension) — that's story 140-3
 - File-overlap independence check — that's story 138-1
 - Worker agent behavior or implementations — those are separate stories
 

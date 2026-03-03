@@ -1,9 +1,9 @@
 ---
-parent: context-epic-137.md
+parent: context-epic-140.md
 workflow: trivial
 ---
 
-# Story 137-2: Add Session Units XML Tracking
+# Story 140-2: Add Session Units XML Tracking
 
 ## Business Context
 
@@ -40,9 +40,9 @@ The new `<units>` element must integrate seamlessly with this design:
 
 **Out of scope:**
 
-- Implementing tooling to write/update units in the session file — that's story 137-4 (fix-session-phase extension)
-- Building batch workflow YAML — that's story 137-1
-- Orchestrator fan-out logic — that's story 137-3
+- Implementing tooling to write/update units in the session file — that's story 140-4 (fix-session-phase extension)
+- Building batch workflow YAML — that's story 140-1
+- Orchestrator fan-out logic — that's story 140-3
 - File-overlap checking — that's epic 138 (story 138-5)
 
 ## AC Context
