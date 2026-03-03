@@ -200,8 +200,10 @@ stories:
     title: Integrate Context7 API for automated skill documentation updates
     points: 3
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: Josh Magady
     workflow: tdd
+    completed: '2026-03-03'
   - id: 136-20
     jira: MSSCI-16049
     title: Integrate Perplexity MCP for agent research tasks
