@@ -12,11 +12,15 @@ stories:
     title: Create Batch Workflow YAML
     points: 2
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-03'
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
+    completed: '2026-03-03'
     type: feature
+    review_verdict: approved
   - id: 140-2
     jira: MSSCI-16092
     title: Add Session Units XML Tracking
