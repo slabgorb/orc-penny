@@ -16,8 +16,26 @@ pf *args:
     fi
 
 # Start WheelHub server (API + WebSocket + OTEL ingestion)
+# Stops existing instance first if running. Writes .bikerack-port and bikerack-pid.
 wheelhub:
-    just pf launch wheelhub
+    #!/usr/bin/env bash
+    set -euo pipefail
+    project_dir="{{root}}"
+    pid_file="$project_dir/bikerack-pid"
+    port_file="$project_dir/.bikerack-port"
+
+    # Stop if already running
+    if [[ -f "$pid_file" ]]; then
+        old_pid=$(cat "$pid_file" 2>/dev/null)
+        if [[ "$old_pid" =~ ^[0-9]+$ ]] && kill -0 "$old_pid" 2>/dev/null; then
+            echo "[wheelhub] Stopping existing instance (PID $old_pid)" >&2
+            kill "$old_pid" 2>/dev/null || true
+            sleep 0.5
+        fi
+        rm -f "$pid_file" "$port_file"
+    fi
+
+    just pf launch gui --no-open
 
 # Launch TUI panel viewer (starts WheelHub if needed)
 tui:
@@ -28,10 +46,17 @@ claude:
     #!/usr/bin/env bash
     set -euo pipefail
 
-    # Get port from WheelHub (starts it if needed)
-    PORT=$(just pf launch wheelhub 2>/dev/null | tail -1)
-    if ! [[ "$PORT" =~ ^[0-9]+$ ]]; then
-        PORT=""
+    project_dir="{{root}}"
+    PORT=""
+
+    port_file="$project_dir/.bikerack-port"
+    if [[ -f "$port_file" ]]; then
+        candidate=$(cat "$port_file" 2>/dev/null)
+        if [[ "$candidate" =~ ^[0-9]+$ ]]; then
+            if (echo >/dev/tcp/localhost/"$candidate") 2>/dev/null; then
+                PORT="$candidate"
+            fi
+        fi
     fi
 
     if [[ -n "$PORT" ]]; then
