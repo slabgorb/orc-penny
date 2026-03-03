@@ -12,8 +12,12 @@ stories:
     title: Create simplify-reuse subagent definition
     points: 1
     priority: p0
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-03'
     workflow: trivial
+    completed: '2026-03-03'
+    review_verdict: approved
   - id: 138-2
     jira: MSSCI-16075
     title: Create simplify-quality subagent definition
@@ -21,6 +25,7 @@ stories:
     priority: p0
     status: backlog
     workflow: trivial
+    review_verdict: approved
   - id: 138-3
     jira: MSSCI-16076
     title: Create simplify-efficiency subagent definition
