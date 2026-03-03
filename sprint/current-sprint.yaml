@@ -1,5 +1,6 @@
 sprint:
   name: TO Sprint 2610
+  number: 2610
   jira_sprint_id: 311
   jira_sprint_name: TO Sprint 2610
   goal: Installation, agents and workflows
