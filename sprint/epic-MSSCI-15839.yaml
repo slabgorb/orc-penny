@@ -307,8 +307,9 @@ stories:
       3. Fallback to process.cwd() if env var not set
     points: 2
     priority: p1
-    status: backlog
+    status: done
     workflow: tdd
+    completed: '2026-03-03'
   - id: 136-25
     jira: MSSCI-16063
     title: justfile.pf claude recipe uses stale WheelHub launch — sync pf init templates to consumer projects
