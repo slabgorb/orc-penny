@@ -26,7 +26,9 @@ stories:
     title: Add Session Units XML Tracking
     points: 1
     priority: P1
-    status: backlog
+    status: in_progress
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-03'
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
