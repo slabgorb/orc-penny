@@ -43,17 +43,23 @@ stories:
     title: Extend TEA verify phase to spawn and aggregate simplify teammates
     points: 2
     priority: p0
-    status: in_progress
+    status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-03-04'
     workflow: tdd
+    completed: '2026-03-04'
   - id: 138-5
     jira: MSSCI-16078
     title: Add simplify team block to tdd and tdd-tandem workflow YAMLs
     points: 1
     priority: p0
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-04'
     workflow: trivial
+    completed: '2026-03-04'
+    review_findings: VALID_AGENT_NAMES allowlist missing simplify-reuse, simplify-quality, simplify-efficiency — workflow validator rejects all three
+    review_verdict: approved
   - id: 138-6
     jira: MSSCI-16079
     title: Update TEA assessment template with simplify report section
