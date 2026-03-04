@@ -40,11 +40,16 @@ stories:
     title: Extend Session Tooling for Unit Status Updates
     points: 1
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-04'
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
+    completed: '2026-03-04'
     type: feature
+    review_findings: Commit e08637632 landed on develop instead of feature branch. Code quality is clean but no PR can be created for finish phase.
+    review_verdict: approved
   - id: 140-4
     jira: MSSCI-16094
     title: Add Batch Fan-Out to Orchestrator Agent Definition
