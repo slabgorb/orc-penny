@@ -3,7 +3,7 @@ type: epic
 title: 'Epic: Batch Execution & Tracking'
 description: Developer can select the batch workflow, have an architect decompose work into units, fan out parallel agents in worktrees, and see every unit's status in the session file.
 priority: P1
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-16090
 stories:
@@ -55,8 +55,13 @@ stories:
     title: Add Batch Fan-Out to Orchestrator Agent Definition
     points: 1
     priority: P1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-04'
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
+    completed: '2026-03-04'
     type: feature
+    review_verdict: approved
+completed: '2026-03-04'
