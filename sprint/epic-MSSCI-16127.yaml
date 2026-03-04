@@ -214,10 +214,14 @@ stories:
     title: Improve agent handoff command documentation and examples
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-04'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-04'
     type: chore
+    review_verdict: approved
   - id: 141-15
     jira: MSSCI-16149
     title: Delete Dead Shell/Python Scripts That Duplicate pf CLI
