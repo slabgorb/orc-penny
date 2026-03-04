@@ -269,10 +269,15 @@ stories:
       AC: Both core and cyclist story-parser.ts replaced with pf CLI subprocess calls. No direct sprint YAML or session file parsing in TypeScript. Jira URL comes from config not hardcode. TypeScript theme discovery replaced with pf CLI calls. CATEGORY_MAP eliminated (categories in theme YAML). pennyfarthing.ts project detection and persona assembly use pf CLI. FSWatcher retained for cache invalidation only. Panel render latency measured before/after with no perceptible regression. Contract tests validate CLI JSON schemas match TypeScript interfaces. GUI panels still render correctly. Depends on 141-16.
     points: 8
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-04'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-04'
     type: refactor
+    review_findings: 'Build broken: cyclist/theme-metadata.ts imports removed deriveCategory/CATEGORY_MAP; 8 cyclist test files import from deleted story-parser.ts'
+    review_verdict: approved
   - id: 141-18
     jira: MSSCI-16152
     title: Replace TypeScript Workflow Engine with pf CLI Delegation
