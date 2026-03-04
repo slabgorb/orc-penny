@@ -43,10 +43,11 @@ stories:
     title: Extend TEA verify phase to spawn and aggregate simplify teammates
     points: 2
     priority: p0
-    status: in_progress
+    status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-03-04'
     workflow: tdd
+    completed: '2026-03-04'
   - id: 138-5
     jira: MSSCI-16078
     title: Add simplify team block to tdd and tdd-tandem workflow YAMLs
