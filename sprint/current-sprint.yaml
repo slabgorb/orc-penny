@@ -1,55 +1,25 @@
 sprint:
-  name: TO Sprint 2608
-  jira_sprint_id: 310
-  jira_sprint_name: TO Sprint 2608
+  name: TO Sprint 2610
+  jira_sprint_id: 311
+  jira_sprint_name: TO Sprint 2610
   goal: Installation, agents and workflows
-  start_date: '2026-02-16'
-  end_date: '2026-03-01'
+  start_date: '2026-03-02'
+  end_date: '2026-03-15'
   status: active
-  number: 2608
+  number: 2610
 epics:
-  - MSSCI-15488
-  - MSSCI-15616
-stories:
-  - id: MSSCI-15038
-    jira: MSSCI-15038
-    title: Add party-mode roleplay variant and validate-refs CI/pre-commit
-    points: 3
-    priority: p1
-    status: done
-    repos: pennyfarthing
-    workflow: trivial
-    pr: 859
-    branch: feat/MSSCI-15038-party-mode-roleplay
+  - MSSCI-15839
+  - MSSCI-16073
+  - MSSCI-16090
+  - MSSCI-16095
+  - MSSCI-16127
+stories: []
 standalone_stories:
-  - id: MSSCI-15501
-    jira: MSSCI-15501
-    title: Auto-pull LFS portraits on theme set
+  - id: MSSCI-16066
+    jira: MSSCI-16066
+    title: Remove is_gui gating from relay mode handoff
     points: 2
     status: done
     repos: pennyfarthing
-    pr: 1070
-    branch: feat/MSSCI-15501-auto-pull-lfs-portraits
-  - id: MSSCI-15514
-    jira: MSSCI-15514
-    title: Archive stepped workflow sessions on completion
-    points: 2
-    status: done
-    repos: pennyfarthing
-    pr: 1079
-    branch: feat/MSSCI-15514-archive-stepped-workflow-sessions
-  - id: MSSCI-15519
-    jira: MSSCI-15519
-    title: Add configurable portrait size to BikeRack TUI
-    points: 2
-    status: done
-    repos: pennyfarthing
-    pr: 1080
-    branch: feat/MSSCI-15519-portrait-size-setting
-  - id: MSSCI-15580
-    jira: MSSCI-15580
-    title: Show ordinal IDs in sprint panel (TUI and GUI)
-    points: 2
-    status: done
-    repos: pennyfarthing
-    pr: 1111
+    pr: 1238
+    branch: feat/MSSCI-16066-remove-isgui-relay

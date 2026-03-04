@@ -85,14 +85,14 @@ Workflow definitions live in `pennyfarthing/pennyfarthing-dist/workflows/*.yaml`
 | `pennyfarthing-dist/` | Published package (source of truth) — agents, commands, guides, skills, personas, workflows, scripts |
 | `pennyfarthing-dist/pf/` | Python CLI package (hooks, jira, sprint, story, prime) |
 | `packages/core/` | `@pennyfarthing/core` — CLI, WheelHub server, API routes, shared utilities |
-| `packages/cyclist/` | Visual terminal (React 19, Tailwind v4, dockview) — thin wrapper over core |
+| `packages/cyclist/` | BikeRack GUI (React 19, Tailwind v4, dockview) — browser UI over core |
 | `packages/electron/` | Electron shell (legacy, minimal use) |
 | `packages/benchmark/` | Persona benchmarking (JobFair) |
 | `packages/themes-*/` | Theme packages (comedy, literary, mythology-fantasy, prestige-tv, realistic, scifi, superheroes) |
 
 **Display modes:** BikeRack panels render in three contexts:
 - **TUI** — `pf bikerack start` launches panels alongside Claude Code CLI in the terminal
-- **GUI** — Cyclist web UI with full dockview panel layout in a browser
+- **GUI** — BikeRack browser UI with full dockview panel layout
 - **IDE** — VS Code / Cursor sidebar panels via WheelHub API
 
 **Key files:**
@@ -109,22 +109,5 @@ Workflow definitions live in `pennyfarthing/pennyfarthing-dist/workflows/*.yaml`
 <context>
 ## Component Guides
 
-Read guides for detailed behavior, key files, and APIs. All at `pennyfarthing/pennyfarthing-dist/guides/`.
-
-| Component | Guide | Purpose |
-|-----------|-------|---------|
-| BikeLane | `bikelane.md` | Workflow engine — phased, stepped, procedural |
-| BikeRack | `bikerack.md` | Standalone panel viewer for CLI-first dev |
-| Gates | `gates.md` | Phase transition quality checks |
-| Handoff CLI | `handoff-cli.md` | Gate resolution, session transitions, markers |
-| Hooks | `hooks.md` | Claude Code hooks — session, pre/post tool use |
-| Bell Mode | `bell-mode.md` | Message queue injection via PostToolUse |
-| Relay Mode | `relay-mode.md` | Auto-handoff execution |
-| TirePump | `tirepump.md` | Context clearing and session reload |
-| Prime | `prime.md` | Agent activation with tiered context |
-| Reflector | `reflector.md` | Agent-to-UI markers for QuickActions |
-| Tandem | `tandem-protocol.md` | Background observer pairing |
-| Output Styles | `output-styles.md` | Response modes (terse, verbose, teaching) |
-| Brownfield | `brownfield-tools.md` | Codebase analysis — hotspots, complexity, health |
-| Benchmarks | `../../packages/benchmark/docs/benchmarks-guide.md` | Persona evaluation (OCEAN traits) |
+See `pennyfarthing/CLAUDE.md` for the full Component Guides table. All guides live at `pennyfarthing/pennyfarthing-dist/guides/`.
 </context>

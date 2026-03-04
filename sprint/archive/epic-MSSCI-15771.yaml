@@ -1,0 +1,68 @@
+id: '133'
+type: epic
+title: "Agent Finding Capture & Workflow Unblocking"
+description: |
+  Agents can systematically record upstream findings discovered during their
+  phase. The reviewer workflow is unblocked to operate without a PR. A
+  validation gate confirms finding format correctness before downstream
+  compilation.
+priority: p1
+status: done
+repos: pennyfarthing
+jira: MSSCI-15771
+stories:
+  - id: 133-1
+    jira: MSSCI-15772
+    title: Add Delivery Findings section to session template
+    points: 1
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-27'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: "2026-02-27"
+    type: chore
+    review_verdict: approved
+  - id: 133-2
+    jira: MSSCI-15773
+    title: Add finding-capture to agent exit behaviors
+    points: 3
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-27'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-27'
+    type: feature
+    review_verdict: approved
+  - id: 133-3
+    jira: MSSCI-15774
+    title: Create finding format validation gate
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-27'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-27'
+    type: feature
+    review_verdict: approved
+  - id: 133-4
+    jira: MSSCI-15775
+    title: Update session-artifacts guide for Delivery Findings
+    points: 1
+    priority: p2
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-27'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-02-27'
+    type: docs
+    review_verdict: approved
+initiative: session-feedback
+gate: finding-format-validation
+completed: '2026-02-27'
