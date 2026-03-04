@@ -355,10 +355,14 @@ stories:
       AC: pf serve starts a persistent HTTP server exposing all --json endpoints as HTTP routes. WheelHub reverse-proxies /api/pf/* to pf serve. TypeScript subprocess calls in story-parser, theme-loader, and workflow engine replaced with fetch() to WheelHub /api/pf/* routes. pf serve auto-starts when WheelHub starts (spawned as child process). pf serve shuts down when WheelHub shuts down. Latency regression test shows improvement over subprocess pattern. Error contract preserved ({error, code, detail} JSON on failure).
     points: 5
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-04'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-04'
     type: feature
+    review_verdict: approved
   - id: 141-23
     jira: MSSCI-16160
     title: Add actionable fix instructions to all validators that can halt agents
