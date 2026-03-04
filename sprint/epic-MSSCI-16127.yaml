@@ -181,3 +181,11 @@ stories:
       - SprintPanel.tsx Electron API references removed (Electron is deprecated)
       - Build passes with strict type checking
     type: chore
+  - id: 141-13
+    title: Fix Jira story transition — claim stories as In Progress during setup
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: bug
