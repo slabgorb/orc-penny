@@ -326,9 +326,12 @@ stories:
       AC: Shell script behavior documented with test cases BEFORE porting (test the legacy, then migrate). pf validate agent includes all checks from shell scripts (mindset tags, line-position, content-outside-tags). Shell validation scripts deleted. pf validate agent passes on current agent files. Justfile recipes and CI references to deleted scripts updated.
     points: 3
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-04'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-04'
     type: refactor
   - id: 141-21
     jira: MSSCI-16155
