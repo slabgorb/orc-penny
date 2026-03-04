@@ -182,7 +182,9 @@ stories:
     title: Remove as-any from UI Components
     points: 2
     priority: P3
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-04'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
@@ -191,7 +193,9 @@ stories:
       - MessageView.tsx message group assertion replaced with proper types
       - SprintPanel.tsx Electron API references removed (Electron is deprecated)
       - Build passes with strict type checking
+    completed: '2026-03-04'
     type: chore
+    review_verdict: approved
   - id: 141-13
     jira: MSSCI-16156
     title: Fix Jira story transition — claim stories as In Progress during setup
