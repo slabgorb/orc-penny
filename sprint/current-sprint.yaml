@@ -35,3 +35,11 @@ standalone_stories:
     repos: pennyfarthing
     pr: 1268
     branch: feat/MSSCI-16164-homebrew-tap-shell-installer
+  - id: MSSCI-16187
+    jira: MSSCI-16187
+    title: Rewrite onboarding docs with three user journeys and brew-first install
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1276
+    branch: feat/MSSCI-16187-rewrite-onboarding-docs
