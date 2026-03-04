@@ -20,3 +20,11 @@ standalone_stories:
     repos: pennyfarthing
     pr: 1238
     branch: feat/MSSCI-16066-remove-isgui-relay
+  - id: MSSCI-16164
+    jira: MSSCI-16164
+    title: Homebrew tap + shell installer
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1268
+    branch: feat/MSSCI-16164-homebrew-tap-shell-installer
