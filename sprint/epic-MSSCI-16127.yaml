@@ -128,9 +128,9 @@ stories:
       - shared/skill-search.ts returns result objects instead of throwing
       - All callers updated to handle result objects
       - Tests pass
+    completed: "2026-03-04"
     type: chore
     review_verdict: approved
-    completed: "2026-03-04"
   - id: 141-9
     jira: MSSCI-16136
     title: Convert Throw to Result Objects in CLI Utils
@@ -344,9 +344,13 @@ stories:
     type: feature
   - id: 141-23
     jira: MSSCI-16160
-    title: Improve sprint YAML validation error messages — surface offending story ID and suggest fix
-    points: 1
+    title: Add actionable fix instructions to all validators that can halt agents
+    points: 3
     priority: p2
-    status: backlog
-    workflow: trivial
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-04'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-04'
     type: chore
