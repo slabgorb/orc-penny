@@ -186,6 +186,7 @@ stories:
       - Build passes with strict type checking
     type: chore
   - id: 141-13
+    jira: MSSCI-16156
     title: Fix Jira story transition — claim stories as In Progress during setup
     points: 1
     priority: p1
@@ -194,6 +195,7 @@ stories:
     workflow: trivial
     type: bug
   - id: 141-14
+    jira: MSSCI-16157
     title: Improve agent handoff command documentation and examples
     points: 2
     priority: p2
