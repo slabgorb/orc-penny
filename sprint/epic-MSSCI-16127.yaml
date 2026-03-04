@@ -74,6 +74,7 @@ stories:
       - No source code imports from packages/shared/
       - Build and tests pass after removal
     type: chore
+    review_verdict: approved
   - id: 141-5
     jira: MSSCI-16132
     title: Add Tests for Core API Routes (agent-load through dependencies)
