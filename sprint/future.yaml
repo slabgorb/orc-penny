@@ -1,6 +1,2 @@
 future:
-  initiatives:
-  - benchmarking
-  - technical-debt
-  - unsorted-backlog
-  - context-gate
+  initiatives: []

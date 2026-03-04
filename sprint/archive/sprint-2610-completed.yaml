@@ -1,0 +1,76 @@
+sprint:
+  name: "TO Sprint 2610"
+  number: 2610
+  jira_sprint_id: 311
+  jira_sprint_name: "TO Sprint 2610"
+  goal: Installation, agents and workflows
+
+completed_epics:
+  - '110'
+  - MSSCI-15920
+completed_stories:
+  - id: 110-1
+    epic: '110'
+    title: Cross-panel event bus with Changed-to-Diffs navigation
+    points: 5
+    completed: "2026-02-16"
+  - id: 110-2
+    epic: '110'
+    title: Story drill-through with dossier detail screen
+    points: 5
+    completed: '2026-02-21'
+  - id: 110-3
+    epic: '110'
+    title: Portrait image header with textual-image
+    points: 3
+    completed: "2026-02-17"
+  - id: 110-4
+    epic: '110'
+    title: Split-pane layouts with workflow-aware presets
+    points: 5
+    completed: '2026-02-21'
+  - id: 110-5
+    epic: '110'
+    title: Filter archived epics from active sprint view in TUI
+    points: 2
+    completed: '2026-02-21'
+  - id: 110-6
+    epic: '110'
+    title: Add completed epics section to TUI sprint panel
+    points: 2
+    completed: '2026-02-21'
+  - id: 137-1
+    epic: MSSCI-15920
+    title: "Research spike — <switch> and <gate> tag design for stepped workflows"
+    points: 1
+    completed: '2026-03-01'
+  - id: 137-2
+    epic: MSSCI-15920
+    title: "Replace static collaboration menus with AskUserQuestion"
+    points: 2
+    completed: '2026-03-02'
+  - id: 137-3
+    epic: MSSCI-15920
+    title: "Gate validation for stepped workflows"
+    points: 3
+    completed: '2026-03-02'
+  - id: 137-4
+    epic: MSSCI-15920
+    title: "Workflow-type-aware agent initialization"
+    points: 2
+    completed: '2026-03-02'
+  - id: 137-5
+    epic: MSSCI-15920
+    title: "Tandem and team collaboration on stepped workflow steps"
+    points: 2
+    completed: '2026-03-03'
+  - id: 137-6
+    epic: MSSCI-15920
+    title: Remove legacy text menus from migrated switch files
+    points: 1
+    completed: '2026-03-03'
+  - id: 137-7
+    epic: MSSCI-15920
+    title: Sprint status aggregates all archive files instead of filtering by current sprint
+    points: 2
+    completed: '2026-03-03'

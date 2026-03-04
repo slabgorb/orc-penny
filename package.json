@@ -3,18 +3,5 @@
   "version": "1.0.0",
   "private": true,
   "description": "Orchestrator for Pennyfarthing agent development",
-  "type": "module",
-  "scripts": {
-    "postinstall": "pennyfarthing update || true"
-  },
-  "dependencies": {
-    "@pennyfarthing/core": "^11.1.1",
-    "@pennyfarthing/themes-comedy": "^11.4.0",
-    "@pennyfarthing/themes-literary": "^11.1.1",
-    "@pennyfarthing/themes-mythology-fantasy": "^11.1.1",
-    "@pennyfarthing/themes-prestige-tv": "^11.1.1",
-    "@pennyfarthing/themes-realistic": "^11.1.1",
-    "@pennyfarthing/themes-scifi": "^11.1.1",
-    "@pennyfarthing/themes-superheroes": "^11.1.1"
-  }
+  "type": "module"
 }

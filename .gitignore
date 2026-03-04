@@ -30,6 +30,7 @@ pennyfarthing/
 !package.json
 !package-lock.json
 !tsconfig.json
+!.claude/settings.json
 
 # Pennyfarthing runtime
 .session/*
@@ -61,3 +62,21 @@ sprint/.migration-backup-*/
 
 # Local tmux development layout
 tmux.conf
+
+# tmux status cache files (written by hooks at runtime)
+.pennyfarthing/tmux-status
+.pennyfarthing/tmux-status-left
+.pennyfarthing/tmux-status-right
+.pennyfarthing/tmux-activity
+
+# direnv + venv
+.direnv/
+.envrc
+.venv/
+
+# Pennyfarthing local state
+.pennyfarthing/.discovery-nudge-shown
+# Local pf shim (machine-specific absolute paths)
+.pennyfarthing/bin/
+# tmux runtime cache files
+# Local tmux config (copied from sample)

@@ -1,0 +1,53 @@
+id: '134'
+type: epic
+title: "Impact Summary & Boss-Readable PR"
+description: |
+  Boss can understand a story's upstream effects in 30 seconds via Impact
+  Summary, delivered through a self-contained, jargon-free PR description
+  generated from the session file.
+priority: p1
+status: done
+repos: pennyfarthing
+jira: MSSCI-15776
+stories:
+  - id: 134-1
+    jira: MSSCI-15777
+    title: Add Impact Summary compilation to SM finish flow
+    points: 3
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-27'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-27'
+    type: feature
+    review_verdict: approved
+  - id: 134-2
+    jira: MSSCI-15778
+    title: Generate boss-readable PR body from session file
+    points: 3
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-27'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-27'
+    type: feature
+    review_verdict: approved
+  - id: 134-3
+    jira: MSSCI-15779
+    title: Update session-artifacts guide for Impact Summary and PR body
+    points: 1
+    priority: p2
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-28'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-02-28'
+    type: docs
+    review_verdict: approved
+initiative: session-feedback
+completed: '2026-02-28'

@@ -1,0 +1,191 @@
+id: '141'
+type: epic
+title: 'Epic: Tech Debt Audit'
+description: >-
+  Tech debt audit findings from March 2026. Covers dependency hygiene, dead code
+  cleanup, test coverage gaps, error handling pattern violations, and type safety
+  improvements across the pennyfarthing framework.
+priority: P2
+status: backlog
+repos: pennyfarthing
+jira: MSSCI-16127
+stories:
+  - id: 141-1
+    jira: MSSCI-16128
+    title: Hoist Shared UI Dependencies to Monorepo Root
+    points: 2
+    priority: P1
+    status: done
+    repos: pennyfarthing
+    workflow: trivial
+    acceptance_criteria:
+      - All @radix-ui packages appear only in root package.json, not in core or cyclist
+      - class-variance-authority, clsx, cmdk, lucide-react, tailwind-merge hoisted to root
+      - pnpm install succeeds with no duplicate warnings
+      - Both packages build and pass tests after hoisting
+    completed: '2026-03-03'
+    type: chore
+    review_verdict: approved
+  - id: 141-2
+    jira: MSSCI-16129
+    title: Unify Dependency Version Drift
+    points: 1
+    priority: P1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-03'
+    repos: pennyfarthing
+    workflow: trivial
+    acceptance_criteria:
+      - '@types/ws uses single version across all packages'
+      - yaml package uses single version across all packages
+      - pnpm install produces clean lockfile
+    completed: '2026-03-04'
+    type: chore
+  - id: 141-3
+    jira: MSSCI-16130
+    title: Audit Unexported Hooks — Export or Delete
+    points: 3
+    priority: P2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria:
+      - Every hook file in public/hooks/ is either exported from index.ts or deleted
+      - useMessageStream is removed (deprecated in favor of ClaudeContext)
+      - No hook file exists without a corresponding export or explicit deprecation plan
+      - All existing imports still resolve after changes
+    type: chore
+  - id: 141-4
+    jira: MSSCI-16131
+    title: Remove Deprecated Bikerack Shim and Stale References
+    points: 1
+    priority: P2
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    acceptance_criteria:
+      - cyclist/src/bikerack.ts shim file is removed
+      - No source code references packages/bikerack/ (provenance headers acceptable)
+      - No source code imports from packages/shared/
+      - Build and tests pass after removal
+    type: chore
+  - id: 141-5
+    jira: MSSCI-16132
+    title: Add Tests for Core API Routes (agent-load through dependencies)
+    points: 5
+    priority: P2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria:
+      - Test files exist for agent-load, approval-gate, audit-log, bell, code-markers, complexity, context, dead-code, dependencies API routes
+      - Each test covers happy path and at least one error case
+      - Tests run via node --test and pass
+    type: test
+  - id: 141-6
+    jira: MSSCI-16133
+    title: Add Tests for Core API Routes (evaluation through portrait)
+    points: 5
+    priority: P2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria:
+      - Test files exist for evaluation, file-browser, git, health-score, hook-request, hotspots, identity, mode, otlp, permissions, persona, portrait API routes
+      - Each test covers happy path and at least one error case
+      - Tests run via node --test and pass
+    type: test
+  - id: 141-7
+    jira: MSSCI-16134
+    title: Add Tests for Core API Routes (settings through welcome)
+    points: 3
+    priority: P2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria:
+      - Test files exist for settings, stats, story, telemetry, theme-agents, todos, token-stats, welcome API routes
+      - Each test covers happy path and at least one error case
+      - Tests run via node --test and pass
+    type: test
+  - id: 141-8
+    jira: MSSCI-16135
+    title: Convert Throw to Result Objects in Scripts and Generators
+    points: 3
+    priority: P3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria:
+      - scripts/generate-report.ts returns result objects instead of throwing
+      - shared/generate-skill-docs.ts returns result objects instead of throwing
+      - shared/skill-search.ts returns result objects instead of throwing
+      - All callers updated to handle result objects
+      - Tests pass
+    type: chore
+  - id: 141-9
+    jira: MSSCI-16136
+    title: Convert Throw to Result Objects in CLI Utils
+    points: 3
+    priority: P3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria:
+      - cli/utils/themes.ts returns result objects instead of throwing
+      - cli/utils/files.ts returns result objects instead of throwing
+      - cli/utils/version.ts and manifest.ts return result objects instead of throwing
+      - All callers updated to handle result objects
+      - Tests pass
+    type: chore
+  - id: 141-10
+    jira: MSSCI-16137
+    title: Convert Throw to Result Objects in Cyclist File-Browser
+    points: 2
+    priority: P3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria:
+      - cyclist/src/file-browser.ts returns result objects instead of throwing (6 sites)
+      - All callers updated to handle result objects
+      - Tests pass
+    type: chore
+  - id: 141-11
+    jira: MSSCI-16138
+    title: Type OTLP Receiver Payloads Properly
+    points: 2
+    priority: P3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria:
+      - TypeScript interfaces defined for OTLP metric and log payloads
+      - All as-any casts in otlp-receiver.ts replaced with typed alternatives
+      - Build passes with strict type checking
+      - Existing tests pass
+    type: chore
+  - id: 141-12
+    jira: MSSCI-16139
+    title: Remove as-any from UI Components
+    points: 2
+    priority: P3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria:
+      - DockviewWorkspace.tsx panel ID assertions replaced with proper types
+      - ProgressPanel.tsx criteria/todo filtering properly typed
+      - MessageView.tsx message group assertion replaced with proper types
+      - SprintPanel.tsx Electron API references removed (Electron is deprecated)
+      - Build passes with strict type checking
+    type: chore
+  - id: 141-13
+    title: Fix Jira story transition — claim stories as In Progress during setup
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: bug
