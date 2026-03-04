@@ -3,7 +3,7 @@ type: epic
 title: Post-install reliability — fix consumer-facing bugs from Python-first migration
 description: Five root causes account for 18 of 30 open issues across pennyfarthing and orc-penny. Fix PATH resolution, WheelHub monorepo assumptions, init/doctor prefix filtering, TUI color constants, and TUI data pipeline.
 priority: p1
-status: in_progress
+status: done
 repos: pennyfarthing
 jira: MSSCI-15839
 stories:
@@ -221,8 +221,12 @@ stories:
     title: Unified Research Tools section in agent-coordination guide
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-04'
     workflow: tdd
+    completed: '2026-03-04'
+    review_verdict: approved
   - id: 136-22
     jira: MSSCI-16060
     title: tmux-dev WheelHub launch crashes script — pipefail propagates non-zero exit

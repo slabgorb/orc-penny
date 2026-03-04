@@ -8,6 +8,7 @@ sprint:
 completed_epics:
   - '110'
   - MSSCI-15920
+  - MSSCI-15839
 completed_stories:
   - id: 110-1
     epic: '110'
@@ -73,4 +74,149 @@ completed_stories:
     epic: MSSCI-15920
     title: Sprint status aggregates all archive files instead of filtering by current sprint
     points: 2
+    completed: '2026-03-03'
+  - id: 136-1
+    epic: MSSCI-15839
+    title: Unified pf discovery — fix PATH resolution in hooks, launchers, and setup
+    points: 5
+    completed: '2026-02-28'
+  - id: 136-2
+    epic: MSSCI-15839
+    title: WheelHub pip-install support — remove monorepo path assumptions
+    points: 3
+    completed: '2026-02-28'
+  - id: 136-3
+    epic: MSSCI-15839
+    title: Fix init/doctor prefix filtering for Python dist layout
+    points: 2
+    completed: '2026-02-28'
+  - id: 136-4
+    epic: MSSCI-15839
+    title: Extract shared TUI color thresholds and contrast constants
+    points: 2
+    completed: '2026-02-28'
+  - id: 136-5
+    epic: MSSCI-15839
+    title: Fix TUI data pipeline — context, sprint, and debug panel fallbacks
+    points: 3
+    completed: '2026-02-28'
+  - id: 136-6
+    epic: MSSCI-15839
+    title: WheelHub crashes on pipx install — findMonorepoRoot uses __dirname instead of project root
+    points: 2
+    completed: '2026-03-02'
+  - id: 136-7
+    epic: MSSCI-15839
+    title: WheelHub cannot resolve pennyfarthing-dist in distributed projects
+    points: 2
+    completed: '2026-03-02'
+  - id: 136-8
+    epic: MSSCI-15839
+    title: pf launch fails — bikerack entry.js path wrong when installed via uv tool
+    points: 2
+    completed: '2026-03-02'
+  - id: 136-9
+    epic: MSSCI-15839
+    title: context.py not found in npm-installed projects — missing search path
+    points: 2
+    completed: '2026-03-02'
+  - id: 136-10
+    epic: MSSCI-15839
+    title: WheelHub not launched on initial startup
+    points: 2
+    completed: '2026-03-02'
+  - id: 136-11
+    epic: MSSCI-15839
+    title: doctor --fix and update fail to restore missing .claude/commands/ and .claude/skills/
+    points: 2
+    completed: '2026-03-02'
+  - id: 136-12
+    epic: MSSCI-15839
+    title: pf CLI missing setup command — users try CLI before discovering skill
+    points: 1
+    completed: '2026-03-03'
+  - id: 136-13
+    epic: MSSCI-15839
+    title: run-pf.sh should prefer global pf over broken local venv
+    points: 1
+    completed: '2026-03-02'
+  - id: 136-14
+    epic: MSSCI-15839
+    title: SM sprint status omits completed stories
+    points: 1
+    completed: '2026-03-02'
+  - id: 136-15
+    epic: MSSCI-15839
+    title: Sprint status undercounts completed points — ignores archived epics
+    points: 2
+    completed: '2026-03-02'
+  - id: 136-16
+    epic: MSSCI-15839
+    title: Phase name vs agent name confusion in handoff session file
+    points: 1
+    completed: '2026-03-03'
+  - id: 136-17
+    epic: MSSCI-15839
+    title: Setup workflow step-06 missing wheelhub/bikerack/tui justfile recipes
+    points: 1
+    completed: '2026-03-03'
+  - id: 136-18
+    epic: MSSCI-15839
+    title: Add In Review status for stories
+    points: 2
+    completed: '2026-03-04'
+  - id: 136-19
+    epic: MSSCI-15839
+    title: Integrate Context7 API for automated skill documentation updates
+    points: 3
+    completed: '2026-03-03'
+  - id: 136-20
+    epic: MSSCI-15839
+    title: Integrate Perplexity MCP for agent research tasks
+    points: 3
+    completed: '2026-03-04'
+  - id: 136-21
+    epic: MSSCI-15839
+    title: Unified Research Tools section in agent-coordination guide
+    points: 2
+    completed: '2026-03-04'
+  - id: 136-22
+    epic: MSSCI-15839
+    title: tmux-dev WheelHub launch crashes script — pipefail propagates non-zero exit
+    points: 2
+    completed: '2026-03-03'
+  - id: 136-23
+    epic: MSSCI-15839
+    title: TUI connects to wrong WheelHub — kill port-scanning fallback and enforce project-scoped discovery
+    points: 3
+    completed: '2026-03-03'
+  - id: 136-24
+    epic: MSSCI-15839
+    title: Add project identity to WheelHub /health endpoint for cross-project verification
+    points: 2
+    completed: '2026-03-03'
+  - id: 136-25
+    epic: MSSCI-15839
+    title: justfile.pf claude recipe uses stale WheelHub launch — sync pf init templates to consumer projects
+    points: 1
+    completed: '2026-03-03'
+  - id: 136-26
+    epic: MSSCI-15839
+    title: Remove stale npm/uv-era references from setup workflows and docs
+    points: 2
+    completed: '2026-03-03'
+  - id: 136-27
+    epic: MSSCI-15839
+    title: 'Fix auto-load-sm hook skill name: sm should be pf-sm'
+    points: 1
+    completed: '2026-03-03'
+  - id: 136-28
+    epic: MSSCI-15839
+    title: Fix pf sprint story add --repos flag not persisting repos field
+    points: 1
+    completed: '2026-03-03'
+  - id: 136-29
+    epic: MSSCI-15839
+    title: Implement pf release dry-run command
+    points: 3
     completed: '2026-03-03'

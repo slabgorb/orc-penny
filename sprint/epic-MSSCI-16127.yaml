@@ -189,3 +189,11 @@ stories:
     repos: pennyfarthing
     workflow: trivial
     type: bug
+  - id: 141-14
+    title: Improve agent handoff command documentation and examples
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: chore
