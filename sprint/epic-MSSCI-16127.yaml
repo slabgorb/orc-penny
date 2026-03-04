@@ -2,9 +2,7 @@ id: '141'
 type: epic
 title: 'Epic: Tech Debt Audit'
 description: >-
-  Tech debt audit findings from March 2026. Covers dependency hygiene, dead code
-  cleanup, test coverage gaps, error handling pattern violations, and type safety
-  improvements across the pennyfarthing framework.
+  Tech debt audit findings from March 2026. Covers dependency hygiene, dead code cleanup, test coverage gaps, error handling pattern violations, and type safety improvements across the pennyfarthing framework.
 priority: P2
 status: backlog
 repos: pennyfarthing
@@ -119,7 +117,9 @@ stories:
     title: Convert Throw to Result Objects in Scripts and Generators
     points: 3
     priority: P3
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-04'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
@@ -129,6 +129,8 @@ stories:
       - All callers updated to handle result objects
       - Tests pass
     type: chore
+    review_verdict: approved
+    completed: "2026-03-04"
   - id: 141-9
     jira: MSSCI-16136
     title: Convert Throw to Result Objects in CLI Utils
