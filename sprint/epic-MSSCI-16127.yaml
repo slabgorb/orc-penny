@@ -390,3 +390,19 @@ stories:
     status: canceled
     repos: pennyfarthing
     workflow: tdd
+  - id: 141-25
+    jira: MSSCI-16184
+    title: Support Project-Level Workflow Definitions
+    description: Workflows currently only live in pennyfarthing-dist/workflows/. Add support for project-level workflow definitions at .pennyfarthing/project/workflows/ that override or extend the distributed defaults.
+    points: 3
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-04'
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria:
+      - pf workflow list shows project-level workflows alongside distributed ones
+      - Project workflows in .pennyfarthing/project/workflows/ override distributed workflows with the same name
+      - pf workflow show works for project-level workflow definitions
+    completed: '2026-03-04'
