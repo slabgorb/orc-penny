@@ -3,7 +3,7 @@ type: epic
 title: Simplify Integration — automated code quality via TEA verify teammates
 description: Integrate Claude Code /simplify concept into Pennyfarthing TDD workflow as 3 specialized Haiku teammates (reuse, quality, efficiency) running under TEA during verify phase. Fan-out/fan-in pattern with quality-pass gate as safety net. ~8 points MVP.
 priority: p1
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-16073
 stories:
@@ -65,8 +65,12 @@ stories:
     title: Update TEA assessment template with simplify report section
     points: 1
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-04'
     workflow: trivial
+    completed: '2026-03-04'
+    review_verdict: approved
   - id: 138-7
     jira: MSSCI-16080
     title: Define SIMPLIFY_RESULT structured finding format
@@ -78,3 +82,4 @@ stories:
     workflow: trivial
     completed: '2026-03-04'
     review_verdict: approved
+completed: '2026-03-04'
