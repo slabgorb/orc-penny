@@ -45,17 +45,20 @@ All six files live at `pennyfarthing/packages/core/src/workflow/`:
 
 ### Subprocess Pattern
 
-Subprocess calls follow the same pattern established in 141-17 for `story-parser.ts`:
+Subprocess calls follow the same pattern established in 141-17 for `story-parser.ts`, using the shared `pf` binary resolution utility (from 141-16) and the subprocess mock helper (`pf-mock.ts` from 141-17):
 
 ```typescript
-import { execFile } from 'child_process';
-import { promisify } from 'util';
-const execFileAsync = promisify(execFile);
+import { execFileSync } from 'child_process';
 
-async function callPfCli(args: string[]): Promise<{ success: boolean; data?: unknown; error?: string }> {
+function callPf(args: string[], projectDir: string): { success: boolean; data?: unknown; error?: string } {
   try {
-    const { stdout } = await execFileAsync('pf', args);
-    return { success: true, data: JSON.parse(stdout) };
+    const pfBin = resolvePfBinary(); // shared utility from 141-16
+    const output = execFileSync(pfBin, args, {
+      cwd: projectDir,
+      encoding: 'utf8',
+      timeout: 10000,
+    });
+    return { success: true, data: JSON.parse(output) };
   } catch (err) {
     return { success: false, error: String(err) };
   }
@@ -95,8 +98,8 @@ Edit files at `pennyfarthing/packages/core/src/workflow/` (the inlined framework
 **Out of scope:**
 
 - Adding `--json` flags to `pf` CLI commands — that is story 141-16 (this story depends on 141-16 being done)
-- Replacing `story-parser.ts` — that is story 141-17
-- Replacing `theme-loader.ts` or `pennyfarthing.ts` — that is story 141-19
+- Replacing `story-parser.ts` or `theme-loader.ts` — that is story 141-17
+- Replacing `theme-loader.ts` or `pennyfarthing.ts` — that is story 141-17 (merged with 141-19)
 - Modifying workflow YAML files in `pennyfarthing-dist/workflows/`
 - Changing the Python implementation in `pennyfarthing-dist/pf/` (Python is the target, not the subject)
 - GUI rendering components in `packages/cyclist/` (those consume the TypeScript API layer, not the workflow engine directly)
@@ -133,8 +136,41 @@ Edit files at `pennyfarthing/packages/core/src/workflow/` (the inlined framework
 - Testable: Unit test mocks `pf handoff resolve-gate --json` and asserts the TypeScript wrapper returns `{success: true, data: {passed, gateType, message}}`
 - Testable: `grep -n "GATE\|isGate\|gateType\|source.*workflow.*step-meta.*marker" packages/core/src/workflow/gate-handler.ts` returns no results (detection logic removed)
 
-**AC 5: Depends on 141-16**
+**AC 5: Integration smoke test covers full story lifecycle through CLI layer**
+
+After all workflow delegation is in place, a smoke test exercises the end-to-end lifecycle:
+1. Start a story (session file created)
+2. Advance through workflow phases (each phase transition goes through `pf handoff complete-phase`)
+3. Trigger a handoff gate (gate checking via `pf handoff resolve-gate`)
+4. Verify session file state is consistent at each step
+
+This can be a single integration test that creates a temporary project directory with a session file and walks it through phases. The test should use the real `pf` CLI (not mocks) to verify the full pipeline works.
+
+Testable: test creates a session, calls phase transitions, and asserts session file contains expected workflow state after each transition. Test must pass in CI after 141-16 and 141-17 are merged.
+
+**AC 6: Round-trip byte-compatibility test for session-state format**
+
+The critical constraint: Python writes the `## Workflow State` section, TypeScript reads it (via `pf` CLI now), and they must agree on format exactly. A round-trip test verifies:
+
+1. Python writes a `## Workflow State` section to a session file (via `pf handoff complete-phase`)
+2. TypeScript reads the session via `pf handoff status --json` and gets correct data
+3. Python reads the same file via `pf handoff status --json` and gets identical data
+4. Assert the two JSON payloads are equal
+
+This test catches format drift between the write path (Python) and read paths (both). It should cover edge cases: empty workflow state, multi-step workflows, workflows with tandem phases.
+
+**AC 7: Use feature branch shared with 141-17 to avoid rebase conflicts**
+
+Both 141-17 and 141-18 modify `@pennyfarthing/core` extensively. To avoid rebase hell:
+- Both stories develop on a shared feature branch (e.g., `feature/cli-consolidation`)
+- 141-17 merges first (story-parser + theme-loader), then 141-18 merges on top
+- One PR from the feature branch to `develop` at the end, or two sequential PRs
+
+This is a process constraint, not a code change. The Dev and TEA should coordinate.
+
+**AC 8: Depends on 141-16**
 
 - This story cannot be implemented without `pf workflow route --json`, `pf handoff resolve-gate --json`, `pf handoff status --json`, and related `--json` flags added in story 141-16
 - Pre-condition check: `pf workflow route --help` includes `--json` flag; `pf handoff resolve-gate --help` includes `--json` flag
 - Testable: CI runs after 141-16 merges; this story's branch is rebased on the branch that includes 141-16 changes
+- Uses the subprocess mock helper (`pf-mock.ts`) created in 141-17 for unit tests
