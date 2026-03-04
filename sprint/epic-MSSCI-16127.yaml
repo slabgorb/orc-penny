@@ -221,10 +221,14 @@ stories:
       AC: Listed scripts deleted or dead functions removed. No remaining callers reference deleted scripts (verified via grep across source, hooks, justfile, CI, and CLAUDE.md). pf validate, pf sprint backlog, pf workflow type, pf context still work.
     points: 1
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-04'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-04'
     type: chore
+    review_verdict: approved
   - id: 141-16
     jira: MSSCI-16150
     title: Add --json Output to pf CLI for GUI Consumption
