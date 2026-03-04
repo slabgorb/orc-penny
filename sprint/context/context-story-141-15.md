@@ -70,11 +70,13 @@ Test: After deletion, `git status` in `pennyfarthing/` shows the four files remo
 
 Red test (write first): A test asserting these four file paths do not exist under `pennyfarthing-dist/scripts/`. Can be added to the existing `test_wrapper_removal.py` file or a new `test_dead_scripts.py`. Pattern: `assert not path.exists(), f"Dead script should be deleted: {path}"`.
 
-**AC: No remaining callers reference deleted scripts**
+**AC: No remaining callers reference deleted scripts (verified via grep across source, hooks, justfile, CI, and CLAUDE.md)**
 
 Test: `grep -r "backlog\.sh\|get-workflow-type\.py\|check-context\.sh\|validate-subagent-frontmatter\.sh" pennyfarthing-dist/` returns no hits in any `.sh`, `.py`, `.md`, `.yaml`, `.ts`, or `.js` file. Stale README entries and pattern file references must be cleaned up before this passes.
 
-Red test: A test scanning all distributed files for references to the deleted script names. Similar to `test_wrapper_removal.py`'s approach — collect violations, assert empty list.
+Additionally verify: `grep -r "backlog\.sh\|get-workflow-type\.py\|check-context\.sh\|validate-subagent-frontmatter\.sh" justfile .github/ CLAUDE.md pennyfarthing/CLAUDE.md` returns no hits. Hook scripts in `.pennyfarthing/scripts/` and `pennyfarthing-dist/pf/hooks/` must also be checked.
+
+Red test: A test scanning all distributed files, justfile, CI configs, and CLAUDE.md files for references to the deleted script names. Similar to `test_wrapper_removal.py`'s approach — collect violations, assert empty list.
 
 **AC: pf validate, pf sprint backlog, pf workflow type, pf context still work**
 

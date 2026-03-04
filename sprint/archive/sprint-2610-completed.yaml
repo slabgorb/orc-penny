@@ -10,6 +10,7 @@ completed_epics:
   - MSSCI-15920
   - MSSCI-15839
   - MSSCI-16090
+  - MSSCI-16095
 completed_stories:
   - id: 110-1
     epic: '110'
@@ -239,5 +240,10 @@ completed_stories:
   - id: 140-4
     epic: MSSCI-16090
     title: Add Batch Fan-Out to Orchestrator Agent Definition
+    points: 1
+    completed: '2026-03-04'
+  - id: 139-1
+    epic: MSSCI-16095
+    title: File-Overlap Independence Check
     points: 1
     completed: '2026-03-04'

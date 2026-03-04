@@ -7,18 +7,16 @@ workflow: tdd
 
 ## Business Context
 
-Four distinct cleanup items grouped into one story because each is a 2-point-or-less move with no shared dependencies.
+Two cleanup items that remain after trivial items were absorbed into adjacent stories (141-17 and 141-18).
+
+**Absorbed into other stories (no longer in scope here):**
+- Jira URL dedup — handled by 141-17 (story-parser replacement removes the hardcode)
+- `toSlug()` / `oceanSuffix()` dedup — handled by 141-17 (during `pennyfarthing.ts` / `theme-agents.ts` refactor)
+- Token limits (`MAX_TOKENS_PER_BLOCK`) — moved to config during 141-18 workflow delegation
+
+**Remaining items:**
 
 **Agent evaluation in the wrong package.** `packages/cyclist/src/agent-evaluation.ts` (644 lines) is a full Job Fair benchmarking engine — it computes completion rates, error rates, tool efficiency, regression alerts, persona comparisons, trend detection, and baseline comparisons against stored Job Fair profiles. None of this is GUI rendering logic. It lives in cyclist because it was written there during Story 19-9, before `packages/benchmark` was planned. The correct home is either a new `packages/benchmark` package or the `pf benchmark` CLI in `pennyfarthing-dist/pf/`. As long as the cyclist UI and the core server stub can still call the evaluation API, the location does not matter to callers.
-
-**Slug generation duplicated in two TypeScript files.** `toSlug()` and `oceanSuffix()` appear verbatim in both `packages/core/src/server/pennyfarthing.ts` (lines 47–56) and `packages/core/src/server/api/theme-agents.ts` (lines 41–50). Both are private functions. A third call site in `theme-agents.ts`'s `getFullThemeData` (line 103) computes the slug inline using the same expression. This is three-way duplication. A shared utility — either in `packages/core/src/server/` as a `slug-utils.ts` or promoted into `packages/shared/` — should be the single source.
-
-**Token limits baked into source code.** `packages/cyclist/src/usage-stats.ts` lines 113–118 declare:
-```
-const MAX_TOKENS_PER_BLOCK = 217_000_000;   // empirically derived
-const WEEKLY_MAX_TOKENS = 2_850_000_000;    // empirically derived
-```
-The comments acknowledge these are empirically derived — they will change when Anthropic changes plan limits. These belong in a config location that can be updated without a TypeScript rebuild (e.g., a key in `.pennyfarthing/config.local.yaml`, a `pf` CLI env var, or defaults in the `pf` CLI's Python layer with a TypeScript override path).
 
 **Settings migration unreachable from Python.** `packages/core/src/server/settings.ts` contains `migrateSettings()` (lines 192–240), which handles four legacy config shapes: `permission_mode: 'turbo'`, `handoff_mode: 'auto'/'manual'`, and `auto_handoff: boolean`. This function is TypeScript-only. The `pf` Python CLI reads `.pennyfarthing/config.local.yaml` directly — if a project has a legacy config, Python will see stale keys and either fail silently or misread settings. Python needs a migration path that maps the same four legacy formats to the current schema.
 
@@ -58,18 +56,17 @@ cd pennyfarthing/packages/cyclist && npx vitest run
 
 **In scope:**
 - Move `packages/cyclist/src/agent-evaluation.ts` (the real 644-line implementation) into `packages/benchmark/` or `packages/core/src/benchmark/` alongside `benchmark-integration.ts`; update the core server stub to import from the new location if the move affects it
-- Deduplicate `toSlug` + `oceanSuffix` into a single shared utility file within `packages/core/src/server/` (or `packages/shared/`); update all three call sites in `pennyfarthing.ts` and `theme-agents.ts`
-- Move `MAX_TOKENS_PER_BLOCK` and `WEEKLY_MAX_TOKENS` from hardcoded constants to a config source (a config key with defaults acceptable; a `pf` CLI flag also acceptable); the default values (217M and 2.85B) stay the same
 - Add Python-callable settings migration in the `pf` CLI that applies the same four legacy-format transforms as `migrateSettings()` in TypeScript
 
 **Out of scope:**
 - Changing any evaluation scoring logic inside `agent-evaluation.ts` — this is a relocation, not a rewrite
 - Building a full `packages/benchmark` package beyond what is needed to house `agent-evaluation.ts` (no new CLI commands, no new test harnesses unless needed for AC verification)
 - Removing the legacy config keys from existing `.pennyfarthing/config.local.yaml` files — migration should be forward-only (read old, write new on save), not destructive
-- Story 141-17's Jira URL extraction from `story-parser.ts` — that is a separate story
+- `toSlug()` / `oceanSuffix()` dedup — absorbed into 141-17
+- Token limits (`MAX_TOKENS_PER_BLOCK`) — absorbed into 141-18
+- Jira URL extraction — handled by 141-17
 - The `pf` CLI `--json` output work from story 141-16 — no dependency on that here
 - Any changes to the `pf benchmark` command's user-facing behavior — this story is backend relocation only
-- Changing the `usage-stats.ts` polling mechanism, ccusage integration, or feature flag (`CCUSAGE_DISABLED`)
 
 ## AC Context
 
@@ -85,21 +82,7 @@ Either option satisfies the AC. The core server stub (`packages/core/src/server/
 
 Testable: after move, `pnpm run build` succeeds in both core and cyclist; the existing evaluation tests (if any accompany the cyclist file) pass in their new location; no file named `agent-evaluation.ts` remains under `packages/cyclist/src/`.
 
-**AC2: Slug generation deduplicated (single source)**
-
-After the change, `toSlug()` and `oceanSuffix()` exist in exactly one location. All existing call sites import from that location rather than defining their own copies. The slug generation behavior must not change — the test for slug correctness is that `toSlug('Hamlet Pierce')` still returns `'hamlet-pierce'` and `oceanSuffix({O:5,C:4,E:2,A:4,N:2})` still returns `'54242'`.
-
-Verify by grepping: `grep -rn "function toSlug\|function oceanSuffix" packages/` should return exactly one file.
-
-**AC3: Token limits moved to config or pf CLI**
-
-After the change, `MAX_TOKENS_PER_BLOCK` and `WEEKLY_MAX_TOKENS` are not module-level `const` literals in `usage-stats.ts`. Instead, `usage-stats.ts` reads the values from a config source (acceptable: a `getTokenLimits()` function from settings, a `pf config get` subprocess call, or constants defined in a separate config file under `.pennyfarthing/`).
-
-Default values remain 217,000,000 and 2,850,000,000 unless overridden. The polling behavior in `fetchUsageFromCcusage()` must continue to compute percentages correctly using whatever the resolved limit values are.
-
-Testable: a unit test can override the config source and verify that `fetchUsageFromCcusage()` computes a different percentage when given a different limit — this was not previously testable because the values were hardcoded private constants.
-
-**AC4: Settings migration callable from Python path**
+**AC2: Settings migration callable from Python path**
 
 The Python `pf` CLI must be able to load `.pennyfarthing/config.local.yaml` and apply the same four legacy-format migrations that `migrateSettings()` applies in TypeScript:
 

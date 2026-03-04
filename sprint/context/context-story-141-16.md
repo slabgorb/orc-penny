@@ -58,7 +58,7 @@ cd pennyfarthing/pennyfarthing-dist/src && python -m pytest pf/tests/ -x
 - Tests for each new `--json` path (TEA writes these first in TDD flow)
 
 **Out of scope:**
-- Replacing any TypeScript file-parsing code — that is 141-17, 141-18, 141-19
+- Replacing any TypeScript file-parsing code — that is 141-17 (merged with 141-19), 141-18
 - Adding `--json` to commands not listed above (e.g., `pf sprint status`, `pf workflow list`, `pf theme list`)
 - Changing any human-readable (non-`--json`) output format of any existing command
 - Adding a `pf story info` alias (the command is `pf sprint story show`; the description's shorthand is informal)
@@ -105,10 +105,22 @@ Five commands require `--json` support. The testable criterion for each:
 - Reads from the active session file in `.session/`; if no session exists, `status` is `"no_session"` and all other fields are null
 - `gate_type` is the gate type for the current phase (from the workflow YAML `phases[].gate.type`); `next_phase` and `next_agent` are the subsequent phase entry in the workflow
 
-**AC2: Output schema documented**
+**AC2: Output schema documented (success AND error responses)**
 
-Each command's docstring must include a `JSON Schema` section showing the output shape. Example format for `pf handoff status`:
+Each command's docstring must include a `JSON Schema` section showing both the success and error output shapes. Error responses must return JSON to stdout (not bare stderr) so the TypeScript subprocess caller can always parse the output.
 
+Error response contract — all commands use this shape on failure:
+```
+{
+  "error": string,      // human-readable error message
+  "code": string,       // machine-readable error code (e.g., "STORY_NOT_FOUND", "NO_SESSION", "THEME_NOT_FOUND")
+  "detail": string|null // optional additional context
+}
+```
+
+Exit codes: 0 for success, 1 for expected errors (story not found, no session, etc.), 2 for unexpected errors (Python traceback, YAML parse failure). The TypeScript layer must be able to distinguish between "no data" (exit 1, parseable error JSON) and "pf is broken" (exit 2, possibly no JSON).
+
+Success response example for `pf handoff status --json`:
 ```
 JSON Output (--json):
   {
@@ -122,7 +134,17 @@ JSON Output (--json):
   }
 ```
 
-**AC3: TypeScript layer can replace direct file parsing with subprocess calls to these commands**
+**AC3: pf binary resolution strategy defined for non-PATH contexts (IDE extensions, GUI launches)**
+
+The TypeScript layer must resolve the `pf` binary reliably even when launched from environments where `~/.local/bin` is not on PATH (e.g., VS Code extensions, Electron apps, IDE-spawned processes). Strategy:
+
+1. Check `PF_BIN` environment variable (explicit override)
+2. Check `~/.local/bin/pf` (uv/pipx default install location)
+3. Fall back to bare `pf` on PATH (works in terminal sessions)
+
+This resolution logic should be a shared utility in core that all subprocess callers use. Document in the CLI docstring that `PF_BIN` is the override mechanism.
+
+**AC4: TypeScript layer can replace direct file parsing with subprocess calls to these commands**
 
 This is a forward-looking validation AC, not a code change in this story. The TEA verifies it by confirming that:
 - `pf sprint story show 141-1 --json` produces output with all fields that `StoryInfo` (in `story-parser.ts`) currently computes from direct file parsing
@@ -131,6 +153,6 @@ This is a forward-looking validation AC, not a code change in this story. The TE
 
 The test can be a simple integration test that calls each subprocess and checks for the required top-level keys — no need to validate every field value.
 
-**AC4: Blocks 141-17, 141-18, 141-19**
+**AC5: Blocks 141-17, 141-18**
 
-These three follow-on stories depend on the JSON output established here. No implementation change required; this AC is satisfied when ACs 1–3 pass and the story is marked done. The dependency is tracked in the epic YAML.
+These two follow-on stories depend on the JSON output established here (141-19 was merged into 141-17). No implementation change required; this AC is satisfied when ACs 1–4 pass and the story is marked done. The dependency is tracked in the epic YAML.

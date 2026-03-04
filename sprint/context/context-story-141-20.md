@@ -106,6 +106,19 @@ Run full validator against real agents: `pf validate agent`
 
 ## AC Context
 
+### AC 0: Shell script behavior documented with test cases BEFORE porting (test the legacy, then migrate)
+
+Before porting any check from shell to Python, the legacy shell behavior must be captured as test cases. This ensures the Python port matches exactly.
+
+Process:
+1. For each of the 10 missing checks, run the shell script against a synthetic agent file that triggers the check
+2. Record the exact output (error/warning message format, exit code)
+3. Write a Python test case that expects the same behavior
+4. The test fails initially (check not yet ported) — this is the RED phase
+5. Port the check, make the test pass — this is the GREEN phase
+
+Testable: Each of the 10 checks has at least one test case written BEFORE the Python implementation. The test file should have a clear `# Legacy behavior captured from validate-agent-schema.sh` comment for each test.
+
 ### AC 1: `pf validate agent` includes all checks from shell scripts (mindset tags, line-position, content-outside-tags)
 
 Testable: `pf validate agent` output covers every check category that the shell scripts covered. The 10 missing checks above must each have at least one test case in the test file.
@@ -151,7 +164,11 @@ Testable: After the story is complete, neither file exists:
 - `pennyfarthing/pennyfarthing-dist/scripts/validation/validate-agent-schema.sh` — deleted
 - `pennyfarthing/pennyfarthing-dist/scripts/misc/validate-subagent-frontmatter.sh` — deleted
 
-Any CI steps, Justfile targets, or script references that invoke these shell scripts must also be removed or updated to call `pf validate agent` instead. Search for callers: `grep -r "validate-agent-schema\|validate-subagent-frontmatter" pennyfarthing/`.
+Any CI steps, Justfile targets, or script references that invoke these shell scripts must also be removed or updated to call `pf validate agent` instead. Search for callers: `grep -r "validate-agent-schema\|validate-subagent-frontmatter" pennyfarthing/ justfile .github/`.
+
+### AC 4: Justfile recipes and CI references to deleted scripts updated
+
+Testable: `grep -r "validate-agent-schema\|validate-subagent-frontmatter" justfile .github/ pennyfarthing/pennyfarthing-dist/scripts/` returns no hits referencing the deleted scripts. Any justfile recipe or CI step that previously called these scripts now calls `pf validate agent` instead (or is removed if redundant).
 
 ### AC 3: `pf validate agent` passes on current agent files
 
