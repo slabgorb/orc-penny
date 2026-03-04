@@ -164,7 +164,9 @@ stories:
     title: Type OTLP Receiver Payloads Properly
     points: 2
     priority: P3
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-04'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
@@ -172,7 +174,9 @@ stories:
       - All as-any casts in otlp-receiver.ts replaced with typed alternatives
       - Build passes with strict type checking
       - Existing tests pass
+    completed: '2026-03-04'
     type: chore
+    review_verdict: approved
   - id: 141-12
     jira: MSSCI-16139
     title: Remove as-any from UI Components
