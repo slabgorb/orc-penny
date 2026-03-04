@@ -20,3 +20,11 @@ standalone_stories:
     repos: pennyfarthing
     pr: 1238
     branch: feat/MSSCI-16066-remove-isgui-relay
+  - id: MSSCI-16146
+    jira: MSSCI-16146
+    title: Wire pf validate into CI + add document type validators
+    points: 5
+    status: done
+    repos: pennyfarthing
+    pr: 1260
+    branch: feat/MSSCI-16146-pf-validate-ci-doc-validators
