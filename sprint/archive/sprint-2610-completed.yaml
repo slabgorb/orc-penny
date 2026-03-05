@@ -393,3 +393,8 @@ completed_stories:
     title: Convert Throw to Result Objects in Cyclist File-Browser
     points: 2
     completed: '2026-03-05'
+  - id: 141-9
+    epic: ''
+    title: Convert Throw to Result Objects in CLI Utils
+    points: 3
+    completed: '2026-03-05'
