@@ -1,0 +1,35 @@
+id: MSSCI-16214
+type: epic
+title: Multi-Judge Validation
+priority: p2
+status: backlog
+repos: pennyfarthing
+stories:
+  - id: MSSCI-16214-1
+    title: Add --multi-judge flag to /solo command
+    points: 3
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: MSSCI-16214-2
+    title: Implement Krippendorff Alpha calculation
+    points: 3
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: MSSCI-16214-3
+    title: Update finalize-run for multi-judge storage
+    points: 2
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: MSSCI-16214-4
+    title: Multi-judge test on high-variance scenarios
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd

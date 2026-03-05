@@ -1,0 +1,28 @@
+id: MSSCI-16210
+type: epic
+title: Anchored Rubric Criteria
+priority: p1
+status: backlog
+repos: pennyfarthing
+stories:
+  - id: MSSCI-16210-1
+    title: Create rubric-anchors.md with behavioral scales
+    points: 3
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: MSSCI-16210-2
+    title: Reference anchors in judge prompts
+    points: 2
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: MSSCI-16210-3
+    title: 'Variance test: measure CV reduction'
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd

@@ -1,0 +1,35 @@
+id: MSSCI-16212
+type: epic
+title: Gold Standard References
+priority: p2
+status: backlog
+repos: pennyfarthing
+stories:
+  - id: MSSCI-16212-1
+    title: Add gold_standard schema to scenarios
+    points: 2
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: MSSCI-16212-2
+    title: Update judge to use gold standard as calibration
+    points: 2
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: MSSCI-16212-3
+    title: Create gold standards for 5 high-variance scenarios
+    points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: MSSCI-16212-4
+    title: 'Variance comparison: with/without gold standard'
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd

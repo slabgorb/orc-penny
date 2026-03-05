@@ -1,0 +1,28 @@
+id: MSSCI-16213
+type: epic
+title: Difficulty Profile Enhancement
+priority: p2
+status: backlog
+repos: pennyfarthing
+stories:
+  - id: MSSCI-16213-1
+    title: Add difficulty_profile schema to scenarios
+    points: 2
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: MSSCI-16213-2
+    title: Populate difficulty profiles from baseline data
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: MSSCI-16213-3
+    title: Update schema.yaml with new fields documentation
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
