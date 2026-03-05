@@ -403,3 +403,8 @@ completed_stories:
     title: Add Tests for Core API Routes (agent-load through dependencies)
     points: 5
     completed: '2026-03-05'
+  - id: 141-26
+    epic: ''
+    title: Wire output_style config to prime activation
+    points: 2
+    completed: '2026-03-05'

@@ -431,3 +431,16 @@ stories:
       - Project workflows in .pennyfarthing/project/workflows/ override distributed workflows with the same name
       - pf workflow show works for project-level workflow definitions
     completed: '2026-03-04'
+  - id: 141-26
+    jira: MSSCI-16208
+    title: Wire output_style config to prime activation
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-05'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-05'
+    type: chore
+    review_verdict: approved
