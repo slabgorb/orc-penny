@@ -81,13 +81,14 @@ stories:
     title: Add Tests for Core API Routes (agent-load through dependencies)
     points: 5
     priority: P2
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
       - Test files exist for agent-load, approval-gate, audit-log, bell, code-markers, complexity, context, dead-code, dependencies API routes
       - Each test covers happy path and at least one error case
       - Tests run via node --test and pass
+    completed: "2026-03-05"
     type: test
     review_verdict: approved
   - id: 141-6
@@ -95,26 +96,30 @@ stories:
     title: Add Tests for Core API Routes (evaluation through portrait)
     points: 5
     priority: P2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-05'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
       - Test files exist for evaluation, file-browser, git, health-score, hook-request, hotspots, identity, mode, otlp, permissions, persona, portrait API routes
       - Each test covers happy path and at least one error case
       - Tests run via node --test and pass
+    completed: "2026-03-05"
     type: test
   - id: 141-7
     jira: MSSCI-16134
     title: Add Tests for Core API Routes (settings through welcome)
     points: 3
     priority: P2
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
       - Test files exist for settings, stats, story, telemetry, theme-agents, todos, token-stats, welcome API routes
       - Each test covers happy path and at least one error case
       - Tests run via node --test and pass
+    completed: '2026-03-05'
     type: test
   - id: 141-8
     jira: MSSCI-16135
