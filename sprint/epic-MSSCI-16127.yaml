@@ -300,10 +300,14 @@ stories:
       AC: TypeScript workflow files delegate to pf CLI. No direct session file mutation from TypeScript. Workflow routing uses pf workflow route. Gate checking uses pf handoff resolve-gate. Integration smoke test covers full story lifecycle through CLI layer. Round-trip byte-compatibility test for session-state format. Depends on 141-16. Use feature branch shared with 141-17 to avoid rebase conflicts.
     points: 5
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-05'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-05'
     type: refactor
+    review_verdict: approved
   - id: 141-19
     jira: MSSCI-16153
     title: MERGED into 141-17
