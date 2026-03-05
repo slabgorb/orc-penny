@@ -154,14 +154,18 @@ stories:
     title: Convert Throw to Result Objects in Cyclist File-Browser
     points: 2
     priority: P3
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-05'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
       - cyclist/src/file-browser.ts returns result objects instead of throwing (6 sites)
       - All callers updated to handle result objects
       - Tests pass
+    completed: '2026-03-05'
     type: chore
+    review_verdict: approved
   - id: 141-11
     jira: MSSCI-16138
     title: Type OTLP Receiver Payloads Properly

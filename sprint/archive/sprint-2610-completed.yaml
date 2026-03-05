@@ -388,3 +388,8 @@ completed_stories:
     title: Homebrew tap + shell installer
     points: 3
     completed: ''
+  - id: 141-10
+    epic: ''
+    title: Convert Throw to Result Objects in Cyclist File-Browser
+    points: 2
+    completed: '2026-03-05'
