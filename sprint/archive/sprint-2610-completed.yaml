@@ -283,3 +283,108 @@ completed_stories:
     title: Define SIMPLIFY_RESULT structured finding format
     points: 1
     completed: '2026-03-04'
+  - id: 141-1
+    epic: MSSCI-16127
+    title: Hoist Shared UI Dependencies to Monorepo Root
+    points: 2
+    completed: '2026-03-03'
+  - id: 141-2
+    epic: MSSCI-16127
+    title: Unify Dependency Version Drift
+    points: 1
+    completed: '2026-03-04'
+  - id: 141-3
+    epic: MSSCI-16127
+    title: Audit Unexported Hooks — Export or Delete
+    points: 3
+    completed: '2026-03-04'
+  - id: 141-4
+    epic: MSSCI-16127
+    title: Remove Deprecated Bikerack Shim and Stale References
+    points: 1
+    completed: '2026-03-04'
+  - id: 141-8
+    epic: MSSCI-16127
+    title: Convert Throw to Result Objects in Scripts and Generators
+    points: 3
+    completed: '2026-03-04'
+  - id: 141-11
+    epic: MSSCI-16127
+    title: Type OTLP Receiver Payloads Properly
+    points: 2
+    completed: '2026-03-04'
+  - id: 141-12
+    epic: MSSCI-16127
+    title: Remove as-any from UI Components
+    points: 2
+    completed: '2026-03-04'
+  - id: 141-13
+    epic: MSSCI-16127
+    title: Fix Jira story transition — claim stories as In Progress during setup
+    points: 1
+    completed: '2026-03-04'
+  - id: 141-14
+    epic: MSSCI-16127
+    title: Improve agent handoff command documentation and examples
+    points: 2
+    completed: '2026-03-04'
+  - id: 141-15
+    epic: MSSCI-16127
+    title: Delete Dead Shell/Python Scripts That Duplicate pf CLI
+    points: 1
+    completed: '2026-03-04'
+  - id: 141-16
+    epic: MSSCI-16127
+    title: Add --json Output to pf CLI for GUI Consumption
+    points: 3
+    completed: '2026-03-04'
+  - id: 141-17
+    epic: MSSCI-16127
+    title: Replace TypeScript File Parsers with pf CLI Subprocess Calls
+    points: 8
+    completed: '2026-03-04'
+  - id: 141-18
+    epic: MSSCI-16127
+    title: Replace TypeScript Workflow Engine with pf CLI Delegation
+    points: 5
+    completed: '2026-03-05'
+  - id: 141-19
+    epic: MSSCI-16127
+    title: MERGED into 141-17
+    points: 0
+    completed: '2026-03-04'
+  - id: 141-20
+    epic: MSSCI-16127
+    title: Consolidate Agent Validation — Port Shell Checks to pf validate
+    points: 3
+    completed: '2026-03-04'
+  - id: 141-21
+    epic: MSSCI-16127
+    title: Extract Hardcoded Values and Relocate Misplaced Business Logic
+    points: 2
+    completed: '2026-03-05'
+  - id: 141-23
+    epic: MSSCI-16127
+    title: Add actionable fix instructions to all validators that can halt agents
+    points: 3
+    completed: '2026-03-04'
+  - id: 141-25
+    epic: MSSCI-16127
+    title: Support Project-Level Workflow Definitions
+    points: 3
+    completed: '2026-03-04'
+  - id: MSSCI-16066
+    epic: ''
+    title: Remove is_gui gating from relay mode handoff
+    points: 2
+    completed: ''
+  - id: MSSCI-16146
+    epic: ''
+    title: Wire pf validate into CI + add document type validators
+    points: 5
+    completed: ''
+  - id: MSSCI-16164
+    epic: ''
+    title: Homebrew tap + shell installer
+    points: 3
+    completed: ''
