@@ -398,3 +398,8 @@ completed_stories:
     title: Convert Throw to Result Objects in CLI Utils
     points: 3
     completed: '2026-03-05'
+  - id: 141-5
+    epic: ''
+    title: Add Tests for Core API Routes (agent-load through dependencies)
+    points: 5
+    completed: '2026-03-05'

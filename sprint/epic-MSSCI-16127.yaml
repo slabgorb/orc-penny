@@ -89,6 +89,7 @@ stories:
       - Each test covers happy path and at least one error case
       - Tests run via node --test and pass
     type: test
+    review_verdict: approved
   - id: 141-6
     jira: MSSCI-16133
     title: Add Tests for Core API Routes (evaluation through portrait)
