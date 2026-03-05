@@ -8,6 +8,10 @@
 #   ui_layer:        Rendering context (react | cli | none)
 #   components_path: Where UI components live (optional, for repos with ui_layer)
 
+# PR title format template. Placeholders: {jira_key}, {type}, {scope}, {title}
+# Default: "{jira_key} - {type}({scope}): {title}"
+pr_title_format: "{jira_key} - {type}({scope}): {title}"
+
 repos:
   orchestrator:
     path: .

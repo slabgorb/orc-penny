@@ -51,3 +51,19 @@ standalone_stories:
     repos: pennyfarthing
     pr: 1281
     branch: feat/MSSCI-16200-add-in-review-status
+  - id: MSSCI-16204
+    jira: MSSCI-16204
+    title: Consumer gate extensions via config + gate files
+    points: 2
+    status: done
+    repos: pennyfarthing
+    pr: 1283
+    branch: feat/MSSCI-16204-gate-extensions
+  - id: MSSCI-16205
+    jira: MSSCI-16205
+    title: Configurable PR title format via repos.yaml
+    points: 2
+    status: done
+    repos: pennyfarthing
+    pr: 1284
+    branch: feat/MSSCI-16205-pr-title-format
