@@ -390,6 +390,7 @@ stories:
     status: canceled
     repos: pennyfarthing
     workflow: tdd
+    review_verdict: approved
   - id: 141-25
     jira: MSSCI-16184
     title: Support Project-Level Workflow Definitions
