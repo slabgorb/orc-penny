@@ -43,3 +43,11 @@ standalone_stories:
     repos: pennyfarthing
     pr: 1276
     branch: feat/MSSCI-16187-rewrite-onboarding-docs
+  - id: MSSCI-16200
+    jira: MSSCI-16200
+    title: Model story statuses on Jira lifecycle — add in_review support
+    points: 5
+    status: done
+    repos: pennyfarthing
+    pr: 1281
+    branch: feat/MSSCI-16200-add-in-review-status
