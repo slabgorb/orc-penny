@@ -67,3 +67,11 @@ standalone_stories:
     repos: pennyfarthing
     pr: 1284
     branch: feat/MSSCI-16205-pr-title-format
+  - id: MSSCI-16209
+    jira: MSSCI-16209
+    title: Add tests for core API routes (settings through welcome)
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1288
+    branch: feat/MSSCI-16209-add-tests-core-api-routes
