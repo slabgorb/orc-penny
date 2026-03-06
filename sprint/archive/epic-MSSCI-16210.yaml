@@ -2,7 +2,7 @@ id: '42'
 type: epic
 title: Anchored Rubric Criteria
 priority: p0
-status: in_progress
+status: done
 repos: pennyfarthing
 jira: MSSCI-16210
 stories:
@@ -35,6 +35,11 @@ stories:
     title: 'Variance test: measure CV reduction'
     points: 1
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-06'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-06'
+    review_verdict: approved
+completed: '2026-03-06'

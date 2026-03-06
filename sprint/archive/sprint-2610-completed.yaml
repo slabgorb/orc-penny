@@ -13,6 +13,7 @@ completed_epics:
   - MSSCI-16095
   - MSSCI-16073
   - MSSCI-16127
+  - MSSCI-16210
 completed_stories:
   - id: 110-1
     epic: '110'
@@ -458,6 +459,11 @@ completed_stories:
     epic: ''
     title: Reference anchors in judge prompts
     points: 2
+    completed: '2026-03-06'
+  - id: 42-3
+    epic: ''
+    title: 'Variance test: measure CV reduction'
+    points: 1
     completed: '2026-03-06'
   - id: 43-1
     epic: ''
