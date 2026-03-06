@@ -439,3 +439,8 @@ completed_stories:
     title: Implement Krippendorff Alpha calculation
     points: 3
     completed: '2026-03-06'
+  - id: 44-3
+    epic: ''
+    title: Update finalize-run for multi-judge storage
+    points: 2
+    completed: '2026-03-06'

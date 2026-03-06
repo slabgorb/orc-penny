@@ -56,7 +56,9 @@ stories:
       Update finalize-run validation to handle judge arrays. Validate each judge verdict independently (timestamp, response length, token counts, score extraction). Add agreement validation: warn if Krippendorff's Alpha < 0.67 for any run. Store both individual verdicts and aggregated metrics. Backward compatible with single-judge runs.
     points: 2
     priority: p0
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-06'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
@@ -66,6 +68,8 @@ stories:
       - Low-agreement warning (alpha < 0.67) printed but does not block storage
       - Summary YAML statistics.mean uses aggregated judge means (not first-judge-only)
       - Existing single-judge results remain loadable and comparable
+    completed: '2026-03-06'
+    review_verdict: approved
   - id: 44-4
     jira: MSSCI-16218
     title: Multi-judge test on high-variance scenarios
