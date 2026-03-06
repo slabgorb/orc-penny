@@ -23,9 +23,13 @@ stories:
     title: Update judge for red herring detection
     points: 2
     priority: p0
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-06'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-06'
+    review_verdict: approved
   - id: 43-3
     jira: MSSCI-16224
     title: 'Pilot: Add red herrings to order-service scenario'

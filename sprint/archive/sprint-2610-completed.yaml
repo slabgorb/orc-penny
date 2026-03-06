@@ -470,3 +470,8 @@ completed_stories:
     title: Add red_herrings schema to scenarios
     points: 2
     completed: '2026-03-06'
+  - id: 43-2
+    epic: ''
+    title: Update judge for red herring detection
+    points: 2
+    completed: '2026-03-06'
