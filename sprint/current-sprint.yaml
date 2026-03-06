@@ -78,3 +78,11 @@ standalone_stories:
     repos: pennyfarthing
     pr: 1288
     branch: feat/MSSCI-16209-add-tests-core-api-routes
+  - id: MSSCI-16233
+    jira: MSSCI-16233
+    title: Rebuild WheelHub bundle with in_review status mapping
+    points: 1
+    status: done
+    repos: pennyfarthing
+    pr: 1296
+    branch: feat/MSSCI-16233-wheelhub-in-review-bundle
