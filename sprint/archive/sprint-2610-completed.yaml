@@ -449,3 +449,13 @@ completed_stories:
     title: Add difficulty_profile schema to scenarios
     points: 2
     completed: '2026-03-06'
+  - id: 42-1
+    epic: ''
+    title: Create rubric-anchors.md with behavioral scales
+    points: 3
+    completed: '2026-03-06'
+  - id: 42-2
+    epic: ''
+    title: Reference anchors in judge prompts
+    points: 2
+    completed: '2026-03-06'
