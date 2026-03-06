@@ -444,3 +444,8 @@ completed_stories:
     title: Update finalize-run for multi-judge storage
     points: 2
     completed: '2026-03-06'
+  - id: 46-1
+    epic: ''
+    title: Add difficulty_profile schema to scenarios
+    points: 2
+    completed: '2026-03-06'
