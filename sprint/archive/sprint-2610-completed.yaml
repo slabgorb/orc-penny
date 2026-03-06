@@ -459,3 +459,8 @@ completed_stories:
     title: Reference anchors in judge prompts
     points: 2
     completed: '2026-03-06'
+  - id: 43-1
+    epic: ''
+    title: Add red_herrings schema to scenarios
+    points: 2
+    completed: '2026-03-06'
