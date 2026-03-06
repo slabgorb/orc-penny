@@ -14,6 +14,7 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    review_verdict: approved
   - id: 45-2
     jira: MSSCI-16226
     title: Update judge to use gold standard as calibration
