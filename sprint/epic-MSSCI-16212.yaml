@@ -1,32 +1,37 @@
-id: MSSCI-16212
+id: '45'
 type: epic
 title: Gold Standard References
 priority: p2
 status: backlog
 repos: pennyfarthing
+jira: MSSCI-16212
 stories:
-  - id: MSSCI-16212-1
+  - id: 45-1
+    jira: MSSCI-16225
     title: Add gold_standard schema to scenarios
     points: 2
     priority: p0
     status: backlog
     repos: pennyfarthing
     workflow: tdd
-  - id: MSSCI-16212-2
+  - id: 45-2
+    jira: MSSCI-16226
     title: Update judge to use gold standard as calibration
     points: 2
     priority: p0
     status: backlog
     repos: pennyfarthing
     workflow: tdd
-  - id: MSSCI-16212-3
+  - id: 45-3
+    jira: MSSCI-16227
     title: Create gold standards for 5 high-variance scenarios
     points: 3
     priority: p1
     status: backlog
     repos: pennyfarthing
     workflow: tdd
-  - id: MSSCI-16212-4
+  - id: 45-4
+    jira: MSSCI-16228
     title: 'Variance comparison: with/without gold standard'
     points: 1
     priority: p1

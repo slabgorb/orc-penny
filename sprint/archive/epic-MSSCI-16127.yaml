@@ -4,7 +4,7 @@ title: 'Epic: Tech Debt Audit'
 description: >-
   Tech debt audit findings from March 2026. Covers dependency hygiene, dead code cleanup, test coverage gaps, error handling pattern violations, and type safety improvements across the pennyfarthing framework.
 priority: P2
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-16127
 stories:
@@ -444,3 +444,4 @@ stories:
     completed: '2026-03-05'
     type: chore
     review_verdict: approved
+completed: '2026-03-05'

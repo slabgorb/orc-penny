@@ -12,6 +12,7 @@ completed_epics:
   - MSSCI-16090
   - MSSCI-16095
   - MSSCI-16073
+  - MSSCI-16127
 completed_stories:
   - id: 110-1
     epic: '110'
@@ -408,3 +409,33 @@ completed_stories:
     title: Wire output_style config to prime activation
     points: 2
     completed: '2026-03-05'
+  - id: 44-1
+    epic: ''
+    title: Add --multi-judge flag to /solo command
+    points: 3
+    completed: '2026-03-05'
+  - id: 141-6
+    epic: MSSCI-16127
+    title: Add Tests for Core API Routes (evaluation through portrait)
+    points: 5
+    completed: "2026-03-05"
+  - id: 141-7
+    epic: MSSCI-16127
+    title: Add Tests for Core API Routes (settings through welcome)
+    points: 3
+    completed: '2026-03-05'
+  - id: 141-22
+    epic: MSSCI-16127
+    title: Add pf serve — Persistent Python Server with WheelHub Reverse Proxy
+    points: 5
+    completed: '2026-03-04'
+  - id: 141-24
+    epic: MSSCI-16127
+    title: Wire pf serve into WheelHub lifecycle
+    points: 3
+    completed: '2026-03-05'
+  - id: 44-2
+    epic: ''
+    title: Implement Krippendorff Alpha calculation
+    points: 3
+    completed: '2026-03-06'

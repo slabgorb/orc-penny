@@ -34,7 +34,9 @@ stories:
       Implement Krippendorff's Alpha (interval scale) for measuring inter-rater agreement across N judges. Also compute Cronbach's alpha for internal consistency. Both operate on the 1-10 dimension scores (not just the 1-100 total). Report agreement per dimension (correctness, depth, quality, persona) to identify which dimensions judges disagree on most. Research basis: Galileo framework recommends Cronbach's alpha + McDonald's omega; PersonaGym uses multi-evaluator ensemble. Krippendorff's Alpha is preferred over Fleiss' kappa because our scores are ordinal/interval (1-10), not categorical.
     points: 3
     priority: p0
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-06'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
@@ -45,6 +47,8 @@ stories:
       - Unreliable dimensions flagged in output with recommendation to revise rubric anchors
       - Unit tests with known agreement matrices (perfect agreement, zero agreement, moderate agreement)
       - Functions exported from packages/core/src/benchmark/index.ts
+    completed: '2026-03-06'
+    review_verdict: approved
   - id: 44-3
     jira: MSSCI-16217
     title: Update finalize-run for multi-judge storage

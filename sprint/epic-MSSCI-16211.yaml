@@ -1,25 +1,29 @@
-id: MSSCI-16211
+id: '43'
 type: epic
 title: False Positive Traps (Red Herrings)
 priority: p1
 status: backlog
 repos: pennyfarthing
+jira: MSSCI-16211
 stories:
-  - id: MSSCI-16211-1
+  - id: 43-1
+    jira: MSSCI-16222
     title: Add red_herrings schema to scenarios
     points: 2
     priority: p0
     status: backlog
     repos: pennyfarthing
     workflow: tdd
-  - id: MSSCI-16211-2
+  - id: 43-2
+    jira: MSSCI-16223
     title: Update judge for red herring detection
     points: 2
     priority: p0
     status: backlog
     repos: pennyfarthing
     workflow: tdd
-  - id: MSSCI-16211-3
+  - id: 43-3
+    jira: MSSCI-16224
     title: 'Pilot: Add red herrings to order-service scenario'
     points: 3
     priority: p1

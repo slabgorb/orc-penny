@@ -1,25 +1,29 @@
-id: MSSCI-16210
+id: '42'
 type: epic
 title: Anchored Rubric Criteria
-priority: p1
+priority: p0
 status: backlog
 repos: pennyfarthing
+jira: MSSCI-16210
 stories:
-  - id: MSSCI-16210-1
+  - id: 42-1
+    jira: MSSCI-16219
     title: Create rubric-anchors.md with behavioral scales
     points: 3
     priority: p0
     status: backlog
     repos: pennyfarthing
     workflow: tdd
-  - id: MSSCI-16210-2
+  - id: 42-2
+    jira: MSSCI-16220
     title: Reference anchors in judge prompts
     points: 2
     priority: p0
     status: backlog
     repos: pennyfarthing
     workflow: tdd
-  - id: MSSCI-16210-3
+  - id: 42-3
+    jira: MSSCI-16221
     title: 'Variance test: measure CV reduction'
     points: 1
     priority: p1
