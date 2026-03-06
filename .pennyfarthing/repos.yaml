@@ -77,6 +77,11 @@ repos:
     ui_layer: react
     components_path: packages/cyclist/src/components
 
+gates:
+  extensions:
+    dev-exit:
+      - pf-init-impact
+
 # Architecture notes:
 # - Unlike other orchestrators (conductor, siemulator) which have api/ui subrepos,
 #   this orchestrator manages the pennyfarthing framework itself
