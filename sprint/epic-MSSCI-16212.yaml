@@ -11,9 +11,10 @@ stories:
     title: Add gold_standard schema to scenarios
     points: 2
     priority: p0
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-06'
     review_verdict: approved
   - id: 45-2
     jira: MSSCI-16226
