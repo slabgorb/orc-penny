@@ -490,3 +490,8 @@ completed_stories:
     title: 'Variance comparison: with/without gold standard'
     points: 1
     completed: '2026-03-06'
+  - id: 46-2
+    epic: ''
+    title: Populate difficulty profiles from baseline data
+    points: 2
+    completed: '2026-03-06'
