@@ -19,6 +19,20 @@ Always use `$CLAUDE_PROJECT_DIR` as base. Multi-repo: `source $CLAUDE_PROJECT_DI
 `.claude/` dirs are symlinks to `pennyfarthing-dist/`. Edit source, changes are immediate.
 </pattern>
 
+<pattern name="pf-init-impact">
+**Self-review addendum:** Before handoff, check if any changed files affect
+`pf init` / project setup. Files in `pennyfarthing-dist/` are distributed to
+consumer projects. Ask yourself:
+
+- Will this overwrite project-local customizations on next `pf init` or upgrade?
+- Does this add new files that should be seeded once but never overwritten?
+- Are config/gate/schema changes backwards-compatible with existing installs?
+- Do project-local overrides (`.pennyfarthing/gates/`, `.pennyfarthing/config.local.yaml`)
+  still take precedence after this change?
+
+If any answer is "no" or "unsure", flag it as a Delivery Finding before exit.
+</pattern>
+
 <pattern name="notifications">
 Message view IS the notification system. Errors to `console.error`, no toast UI.
 </pattern>
