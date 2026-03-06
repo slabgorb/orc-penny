@@ -8,11 +8,10 @@ sprint:
   status: active
   number: 2610
 epics:
-  - MSSCI-16127
-  - MSSCI-16210
-  - MSSCI-16211
   - MSSCI-16214
+  - MSSCI-16210
   - MSSCI-16212
+  - MSSCI-16211
   - MSSCI-16213
 stories: []
 standalone_stories:
