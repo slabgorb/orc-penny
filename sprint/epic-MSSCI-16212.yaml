@@ -41,6 +41,10 @@ stories:
     title: 'Variance comparison: with/without gold standard'
     points: 1
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-06'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-06'
+    review_verdict: approved

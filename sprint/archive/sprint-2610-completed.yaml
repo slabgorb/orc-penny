@@ -485,3 +485,8 @@ completed_stories:
     title: Update judge to use gold standard as calibration
     points: 2
     completed: '2026-03-06'
+  - id: 45-4
+    epic: ''
+    title: 'Variance comparison: with/without gold standard'
+    points: 1
+    completed: '2026-03-06'
