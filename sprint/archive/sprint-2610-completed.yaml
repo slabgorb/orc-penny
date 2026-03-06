@@ -480,3 +480,8 @@ completed_stories:
     title: Add gold_standard schema to scenarios
     points: 2
     completed: '2026-03-06'
+  - id: 45-2
+    epic: ''
+    title: Update judge to use gold standard as calibration
+    points: 2
+    completed: '2026-03-06'
