@@ -1,125 +1,103 @@
-All code read, build verified, tests pass, clippy clean. Here is my structured review.
+All tests pass, clippy clean, but **nightly fmt fails**. Now I have a complete picture. Here is my adversarial review.
 
 ---
 
-# Adversarial Code Review — Story 6.1: CLI Framework & Structure
+# Story 6.1 Review: CLI Framework & Structure
 
-## Review Checklist
+## Review Checklist Completion
 
 - [x] Find at least 5 observations
-- [x] Trace data flow (token/tenant → header injection → HTTP request)
-- [x] Wiring check (CLI → command dispatch → stub handlers)
+- [x] Trace data flow (tenant ID → header → HTTP request)
+- [x] Wiring (CLI struct → commands → handlers)
 - [x] Identify patterns (good and bad)
 - [x] Verify error handling
 - [x] Security analysis
-- [x] Hard questions (edge cases)
+- [x] Hard questions (malformed input, silent failures)
 - [x] Make judgment
 
 ---
 
 ## Findings
 
-### `[HIGH]` CWE-113: Header injection not prevented at construction — `client.rs:20-28`
+### `[CRITICAL]` No `main.rs` — binary cannot be built
 
-`SiemClient::with_token()` and `with_tenant()` accept arbitrary strings including CRLF characters. While reqwest will reject invalid header values at request time (panicking or returning an error), the test at `siem_client.rs:216-241` explicitly acknowledges this gap with a vacuous assertion (`|| true`) that always passes. The story spec (AC-7) requires header injection prevention. The code defers safety to reqwest's runtime check rather than validating at the trust boundary as required by the project's Rust conventions. A `\r\n` in a tenant ID will cause a **panic** in reqwest when building the request, crashing the CLI with no user-friendly error.
+The story's core deliverable is the `axiathon` binary. There is no `src/main.rs` and no `[[bin]]` section in `Cargo.toml`. This crate produces only a library. `cargo run -p axiathon-client` would fail. The story spec explicitly lists `main.rs` as "Binary entry point, tracing init, dispatch, exit codes" under Key Files to Create. Without it, there is no CLI — every AC that involves actually running `axiathon <command>` is untestable at the binary level.
 
-**Fix:** Validate token/tenant strings in `with_token()` and `with_tenant()` to reject CRLF characters, returning a `Result<Self, CliError>` or stripping dangerous characters.
+### `[HIGH]` `SiemClient::new` silently drops invalid headers — at `client.rs:24,30`
 
-### `[HIGH]` Nightly `cargo fmt` check fails — `siem_client.rs`
+When `HeaderValue::from_str(tid)` returns `Err` (e.g., for a non-ASCII tenant ID), the header is silently not added. This means:
+- A malformed tenant ID produces requests **without tenant isolation** — no X-Tenant-ID header, no error, no warning.
+- A malformed auth token produces **unauthenticated** requests silently.
 
-`cargo +nightly fmt --all --check` reports formatting differences in `tests/siem_client.rs`. Per gotchas.md, nightly fmt must pass before approval. This is a blocking CI gate.
+This is a silent failure that could cause tenant data leakage. The function should return `Result<Self, CliError>` and propagate the error.
 
-**Fix:** Run `cargo +nightly fmt --all` and commit the result.
+### `[HIGH]` Header injection tests are vacuous — at `siem_client.rs:209-230`
 
-### `[MEDIUM]` Missing `keyring` dependency — workspace `Cargo.toml` vs `axiathon-client/Cargo.toml`
+`siem_client_rejects_tenant_id_with_newlines` creates a client with `"evil\r\nX-Injected: true"` as tenant ID. `HeaderValue::from_str` silently drops the invalid value (see finding above), so the header is simply absent. The test then connects to `localhost:9999` which isn't listening, gets `ServerUnavailable`, and declares success. The test would **pass identically** even if header injection were NOT prevented — it's testing connection refusal, not header validation. Same for `siem_client_rejects_token_with_newlines`.
 
-The story spec explicitly lists `keyring 3` as a key dependency for OS keychain credential storage (AC-8). It is not in the workspace dependencies, nor in `axiathon-client/Cargo.toml`. While Story 9.1 implements the actual login flow, the story spec says the framework should include the keyring infrastructure. The `ClientConfig::token()` method at `config.rs:76-78` always returns `None` and has no keyring integration path.
+### `[HIGH]` `ClientConfig` silently accepts unknown fields including `token` — at `config.rs:11-17`
 
-**Impact:** Low-risk for this story since login is Story 9.1, but the dependency was explicitly listed as in-scope. The stub is acceptable if intentional.
+`#[serde(default)]` without `#[serde(deny_unknown_fields)]` means a config file containing `token = "my-secret"` or `password = "foo"` is silently accepted and ignored. AC-8 says "Tokens in OS keychain, NOT config file." The test at `config_loading.rs:162` checks that `token` doesn't appear in `Debug` output, which it won't because the field doesn't exist on the struct — but the user gets no warning that they're putting secrets in a plaintext file. Should either deny unknown fields or at minimum warn on `token`/`api_token`/`password`/`secret` field names.
 
-### `[MEDIUM]` `OutputFormatter` is a concrete struct, not a trait — `output.rs:34`
+### `[MEDIUM]` `init` command is a stub, not functional — at `commands/init.rs:3`
 
-AC-4 specifies "the `OutputFormatter` trait provides consistent formatting." The implementation uses a concrete `struct OutputFormatter` with a `format` field and match-based dispatch, not a trait with separate implementations. This works functionally but doesn't match the architectural specification. Future command implementations expecting a trait bound (`impl OutputFormatter`) will need a different API.
+AC scope says "axiathon init first-time setup (functional, not stub)". The implementation returns `NotImplemented("not yet implemented")`. This violates the in-scope requirement.
 
-### `[MEDIUM]` `apply_env_overrides_with` doesn't read actual env vars — `config.rs:80-91`
+### `[MEDIUM]` Nightly `cargo fmt` check fails — at `siem_client.rs`
 
-AC-8 requires `AXIATHON_API_URL` and `AXIATHON_TIMEOUT` env vars to override config file values. The implementation `apply_env_overrides_with()` takes explicit parameters instead of reading from `std::env::var()`. There is no code anywhere that actually reads `AXIATHON_API_URL` or `AXIATHON_TIMEOUT` from the environment. The `main.rs` doesn't call this method at all — config loading is not wired into the main dispatch loop.
+Per `gotchas.md`: "Always include `cargo +nightly fmt --all --check` in the preflight. Nightly rustfmt enforces import ordering that stable does not." The check shows formatting diffs in `siem_client.rs`. This is flagged as a mandatory pre-approval check.
 
-**Impact:** Env var override functionality specified in AC-8 is not actually wired up. The method exists but is only used in tests with manually-provided values.
+### `[MEDIUM]` `Completion` shell argument is raw `String`, not `Shell` enum — at `cli.rs:88`
 
-### `[MEDIUM]` Silent `.ok()` error swallowing in CSV writer — `output.rs:87-91`
+The `shell` field is `String`, so `axiathon completion garbage` parses successfully at the clap level but returns an empty string at runtime (`completion.rs:12`). Using `clap_complete::Shell` directly as the clap value type would give immediate validation with proper error messages. Current behavior is a silent failure for invalid shell names.
 
-Three `.ok()` calls silently discard write errors:
-```rust
-writer.write_record(headers).ok();  // line 87
-writer.write_record(row).ok();      // line 89
-writer.flush().ok();                // line 91
-```
-Per project conventions (bash.md, rust.md), errors should not be silently swallowed. If a CSV write fails, the user gets truncated output with no indication of failure.
+### `[MEDIUM]` `OutputFormatter` is a struct, not a trait — at `output.rs:18`
 
-### `[MEDIUM]` `unwrap_or_default()` in JSON/CSV formatters — `output.rs:82,92-93`
+AC-4 specifies "OutputFormatter trait with Table/Json/Csv impls." The implementation is a struct with an internal `OutputFormat` enum dispatching in a single `format()` method. This prevents downstream code (e.g., TUI, plugins) from implementing custom formatters. The architecture doc and AC are explicit about a trait.
 
-`serde_json::to_string_pretty(&response).unwrap_or_default()` at line 82 silently returns empty string on serialization failure. Similarly `into_inner().unwrap_or_default()` at line 92. These should propagate errors or use `expect()` with an actionable message per project Rust rules ("No `unwrap()` in production code").
+### `[MEDIUM]` `toml` version is 0.8, spec says 0.9 — at `Cargo.toml:22`
 
-### `[MEDIUM]` `main.rs` ignores global flags — `main.rs:8-16`
+Technical guardrails specify `toml 0.9`. The crate uses `toml = "0.8"`. While 0.9 may not exist yet (explaining the deviation), this should be documented.
 
-The `Cli` struct captures `format`, `verbose`, `quiet`, `tenant`, `server`, `config`, and `no_color`, but `main.rs` only reads `cli.command`. None of the global flags are passed to command handlers or used to configure the `SiemClient`, output formatting, or config loading. The `--server` and `--tenant` flags are dead code at runtime.
+### `[LOW]` `rules` and `tenant` stubs both reference Story 6.6 — at `commands/rules.rs:4`, `commands/tenant.rs:4`
 
-### `[LOW]` Test for token in config is weak — `config_loading.rs:133-147`
+Both return `"not yet implemented (Story 6.6)"`. Rules management is likely a different story than tenant management. One of these references is wrong.
 
-The `client_config_does_not_store_token_field` test uses `if let Ok(config)` — if parsing rejects the unknown `token` field (which it does, since `RawConfig` uses `deny_unknown_fields`), the assertion is never reached. The test passes either way. The `deny_unknown_fields` behavior is the correct security behavior, but the test should explicitly assert the `Err` case contains a message about unknown fields.
+### `[LOW]` `timeout` is `i64` when only positive values are valid — at `config.rs:15`
 
-### `[LOW]` Header injection tests are vacuous — `siem_client.rs:216-241`
+Using `i64` for timeout allows negative deserialization, then `.max(1) as u64` clamps it. A `u64` field with serde validation would be cleaner and prevent the type mismatch entirely.
 
-Both `siem_client_rejects_newlines_in_token` and `siem_client_rejects_newlines_in_tenant_id` use `|| true` in their assertions, making them always pass regardless of behavior. These are effectively no-op tests. Either the code should validate inputs and tests should assert rejection, or these tests should be removed.
+### `[VERIFIED]` CWE-209 error Display messages do not leak internals — `error.rs:13-49`
 
-### `[VERIFIED]` CWE-209 error sanitization — `error.rs:1-31`
+`ServerError(String)` Display shows "server error — contact your administrator" and does NOT include the inner string. `ConfigError(String)` shows generic message. `NotFound(String)` shows generic "resource not found". Tests at `error_exit_codes.rs:82-119` properly verify this. Good.
 
-`ServerError(String)` stores raw server error details in the variant payload but the `Display` impl shows a generic message: `"server error: the server encountered an internal error"`. The inner string is not exposed to users. Similarly `NotFound(String)` shows a generic message. Good pattern — the `Debug` impl will still show internals for logs, but `Display` (user-facing) is sanitized.
+### `[VERIFIED]` `#![forbid(unsafe_code)]` in production code — `lib.rs:2`
 
-### `[VERIFIED]` `deny_unknown_fields` on `RawConfig` — `config.rs:6`
+Library crate forbids unsafe. Test crate downgrades to `deny` with documented rationale for `env::set_var`. Good separation.
 
-The `#[serde(deny_unknown_fields)]` attribute correctly rejects unknown fields like `token` or `password` in the config file. This prevents secret leakage through config files and catches typos.
+### `[VERIFIED]` Exit code mapping is correct — `error.rs:53-59`
 
-### `[VERIFIED]` Exit code mapping — `error.rs:33-41`
+Auth→3, Authz→4, everything else→1. Matches AC-3.
 
-Exit codes correctly map: 3 for auth, 4 for authz, 1 for everything else. Clap handles exit code 2 for usage errors automatically.
+### `[VERIFIED]` clap derive macros used throughout, no imperative building — `cli.rs`
 
-### `[VERIFIED]` `#![forbid(unsafe_code)]` — `main.rs:1`, `lib.rs:2`
+Parser/Subcommand derives only. Matches AC-6.
 
-Both the binary and library crate correctly forbid unsafe code.
+### `[VERIFIED]` Global flags use `global = true` — `cli.rs:14-39`
 
-### `[VERIFIED]` No server-side crate imports — `Cargo.toml:13`
-
-`axiathon-client` depends only on `axiathon-core` and external crates. No server-side crate imports (storage, detection, ingestion, query). Dependency boundary is correctly maintained.
-
----
-
-## Summary
-
-| Severity | Count | Blocking? |
-|----------|-------|-----------|
-| High     | 2     | YES       |
-| Medium   | 5     | NO        |
-| Low      | 2     | NO        |
-| Verified | 5     | —         |
-
-The two **High** findings are:
-1. **Header injection**: CRLF in token/tenant values can cause a reqwest panic (uncontrolled crash). Tests for this are vacuous (`|| true`).
-2. **Nightly fmt failure**: CI gate will fail.
-
-The Medium findings around env var wiring, silent error swallowing, and unused global flags represent incomplete AC coverage but are acceptable for a framework story if addressed in follow-up stories.
+All seven global flags (`format`, `verbose`, `quiet`, `server`, `tenant`, `config`, `no_color`) correctly use `global = true`. Tests verify they work both before and after subcommands.
 
 ---
 
 ## Verdict: **CHANGES_REQUESTED**
 
-The nightly fmt failure is a hard CI gate violation per gotchas.md. The header injection vulnerability (CRLF in token/tenant causing panics) with vacuous test assertions is a High-severity correctness issue. Both must be fixed before approval.
+### Blocking issues (must fix):
+1. **No `main.rs`** — the story's primary deliverable (the binary) does not exist
+2. **Silent header drops in `SiemClient::new`** — tenant isolation can be silently bypassed
+3. **Vacuous header injection tests** — tests pass for the wrong reason
+4. **Unknown config fields silently accepted** — secrets can be placed in config without warning
 
-**Required fixes:**
-1. Run `cargo +nightly fmt --all` and commit
-2. Add CRLF validation in `SiemClient::with_token()` and `with_tenant()`, fix the vacuous `|| true` tests to actually assert rejection
-
-**Recommended (non-blocking):**
-3. Replace `.ok()` calls in CSV/JSON formatters with proper error handling or `expect()` with actionable messages
-4. Wire env var reading (`AXIATHON_API_URL`, `AXIATHON_TIMEOUT`) into actual `std::env::var` calls
+### Should fix before merge:
+5. Nightly fmt failures (per gotchas.md, this blocks approval)
+6. `init` command is a stub, not functional per scope
+7. `Completion` shell argument should use `Shell` enum for validation

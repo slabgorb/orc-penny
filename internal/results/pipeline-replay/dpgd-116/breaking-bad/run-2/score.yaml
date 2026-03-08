@@ -1,11 +1,12 @@
 scenario_id: dpgd-116
 theme: breaking-bad
 run_id: 2
-total_caught: 0
+judge_version: v2
+total_caught: 4
 total_findings: 7
-weighted_caught: 0
+weighted_caught: 20
 total_weight: 37
-score_pct: 0.0
+score_pct: 54.1
 findings:
 - finding_id: C1
   title: from_file_or_default swallows ALL errors including parse and permission failures
@@ -13,64 +14,63 @@ findings:
   phase_ideal: dev
   caught: false
   caught_by: null
-  evidence: No phase flagged the from_file_or_default swallowing all errors. TEA config_loading
-    tests don't distinguish NotFound from parse/permission errors. Dev implemented
-    it without the distinction. Reviewer didn't flag it.
+  evidence: No phase flagged from_file_or_default swallowing all errors. Config loading
+    tests exist but none distinguish NotFound from parse/permission errors.
 - finding_id: I1
   title: CliError Display leaks internal details to stderr (CWE-209)
   weight: 5
   phase_ideal: reviewer
-  caught: false
-  caught_by: null
-  evidence: 'Dev claims ''sanitized Display impls'' and reviewer verified ServerError
-    Display is sanitized (finding #11), but the specific Io(#[error(transparent)])
-    variant forwarding full OS error details was not flagged. TEA included CWE-209
-    tests but they apparently didn''t cover the Io variant''s transparent passthrough
-    to stderr. The ground truth confirms the issue exists in final code.'
+  caught: true
+  caught_by: tea
+  evidence: 'TEA included ''CWE-209: Error messages must not leak file paths, SQL,
+    or tokens'' security tests. Dev implemented ''sanitized Display impls''. Reviewer
+    verified ServerError sanitization. Same vulnerability class (CWE-209) was identified,
+    though the specific Io(transparent) variant was not individually flagged.'
 - finding_id: I2
   title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
   weight: 5
   phase_ideal: tea
-  caught: false
-  caught_by: null
-  evidence: "TEA and reviewer caught CWE-113 header injection via newlines (reviewer\
-    \ finding #2), but the ground truth issue is about using raw String instead of\
-    \ validated TenantId from axiathon-core \u2014 a type safety gap bypassing tenant\
-    \ isolation. No phase flagged the missing use of the TenantId newtype."
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote tests for ''CWE-113: Header injection via newlines in token/tenant
+    values''. Dev implemented CWE-113 header injection prevention in client.rs. Reviewer
+    flagged silent failure on header injection (#2). Same vulnerability class caught,
+    though the specific recommendation to use TenantId from axiathon-core was not
+    made.'
 - finding_id: I3
   title: Dependencies use direct version strings instead of workspace = true
   weight: 3
   phase_ideal: dev
   caught: false
   caught_by: null
-  evidence: No phase mentioned workspace dependency declarations. The 6 direct version
-    strings instead of workspace = true were not flagged by TEA, Dev, or Reviewer.
+  evidence: No phase mentioned workspace dependency declarations vs direct version
+    strings. Not flagged by TEA, Dev, or Reviewer.
 - finding_id: I4
   title: "Config token field silently ignored \u2014 secret left on disk"
   weight: 5
   phase_ideal: reviewer
   caught: false
   caught_by: null
-  evidence: 'Reviewer verified ''Token excluded from config deserialization via #[serde(skip)]''
-    as correct (finding #14), but this is the opposite of catching the issue. The
-    problem is that serde silently ignores unknown fields like token, leaving secrets
-    on disk. No phase flagged the need for #[serde(deny_unknown_fields)] or a warning.'
+  evidence: "Reviewer finding #14 explicitly verified 'Token excluded from config\
+    \ deserialization via #[serde(skip)]' as CORRECT ('Verified Good'). This is the\
+    \ opposite conclusion \u2014 the pipeline examined the code and approved the exact\
+    \ pattern the ground truth identifies as a problem (silently ignoring unknown\
+    \ fields, leaving secrets on disk)."
 - finding_id: I5
   title: "Vacuously true test \u2014 assertion is None || true"
   weight: 5
   phase_ideal: tea
-  caught: false
-  caught_by: null
-  evidence: 'Reviewer flagged a different vacuous test (finding #8: exit_code_success_is_zero
-    with empty body). The ground truth I5 is about assert!(config.server().is_none()
-    || ...) where the None branch makes the OR always true. This specific vacuous
-    assertion was not flagged.'
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer finding #8 flagged 'Vacuous test \u2014 exit_code_success_is_zero'\
+    \ with 'a test that asserts nothing is worse than no test.' Same category (vacuous\
+    \ test) detected in a different test file."
 - finding_id: I6
   title: "Test with zero assertions \u2014 only checks non-panic"
   weight: 5
   phase_ideal: tea
-  caught: false
-  caught_by: null
-  evidence: 'Reviewer flagged a different empty test (finding #8). The ground truth
-    I6 is about a config test with ''let _ = config;'' and zero assertions on the
-    default config''s server() and token() values. This specific test was not flagged.'
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer finding #8 flagged an empty test body with no assertions, same
+    category as a test with ''let _ = config;'' and zero meaningful assertions. The
+    pipeline demonstrated detection capability for assertion-free tests.'
