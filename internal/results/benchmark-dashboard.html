@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pipeline Replay Benchmark Dashboard</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  :root {
+    --bg: #1a1a2e;
+    --card: #16213e;
+    --text: #e0e0e0;
+    --text-muted: #8899aa;
+    --accent: #4fc3f7;
+    --tea-color: #4fc3f7;
+    --dev-color: #81c784;
+    --rev-color: #ffb74d;
+    --grid: rgba(255,255,255,0.06);
+    --border: rgba(255,255,255,0.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    line-height: 1.5;
+    padding: 20px;
+  }
+  h1 {
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+    color: var(--accent);
+  }
+  .subtitle {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+  .mono {
+    font-family: "SF Mono", "Cascadia Code", "Fira Code", ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Filter bar */
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    background: var(--card);
+    padding: 10px 16px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+  }
+  .filter-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .filter-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+  .chip {
+    display: inline-block;
+    padding: 2px 10px;
+    font-size: 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .chip.active {
+    background: var(--accent);
+    color: #0a0a1a;
+    border-color: var(--accent);
+    font-weight: 500;
+  }
+  .chip:hover:not(.active) {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+  select, input[type=range] {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 3px 6px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  select:focus, input:focus { outline: 1px solid var(--accent); }
+
+  /* Chart containers */
+  .chart-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .chart-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .chart-subtitle {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+
+  /* Scatter */
+  .scatter-quadrant {
+    font-size: 11px;
+    fill: rgba(255,255,255,0.35);
+    font-weight: 500;
+    pointer-events: none;
+  }
+  .scatter-dot {
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .scatter-dot:hover { opacity: 1 !important; }
+  .control-marker {
+    stroke: var(--accent);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .quadrant-line {
+    stroke: var(--text-muted);
+    stroke-dasharray: 4,4;
+    stroke-width: 0.5;
+    opacity: 0.4;
+  }
+
+  /* Tooltip */
+  .tooltip {
+    position: absolute;
+    pointer-events: none;
+    background: #0d1117;
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 12px;
+    line-height: 1.6;
+    max-width: 320px;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+  .tooltip .tt-name {
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .tooltip .tt-row { display: flex; justify-content: space-between; gap: 16px; }
+  .tooltip .tt-label { color: var(--text-muted); }
+  .tooltip .tt-val { color: var(--text); font-family: "SF Mono", monospace; }
+  .tooltip .tt-runs { margin-top: 4px; font-size: 11px; color: var(--text-muted); }
+
+  /* Heatmap */
+  .heatmap-cell { cursor: default; }
+  .heatmap-wrap { overflow-x: auto; }
+  .heatmap-label {
+    font-size: 11px;
+    fill: var(--text-muted);
+  }
+  .heatmap-cell-text {
+    font-size: 10px;
+    font-family: "SF Mono", monospace;
+    fill: var(--text);
+    pointer-events: none;
+  }
+
+  /* Phase attribution */
+  .phase-bar-label {
+    font-size: 11px;
+    fill: var(--text-muted);
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 8px;
+    font-size: 11px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-muted);
+  }
+  .legend-swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+  }
+
+  /* Strip dots */
+  .strip-dot {
+    fill: var(--accent);
+    opacity: 0.6;
+    stroke: var(--accent);
+    stroke-width: 0.5;
+  }
+
+  /* Axis */
+  .axis text {
+    font-size: 11px;
+    fill: var(--text-muted);
+  }
+  .axis line, .axis path {
+    stroke: var(--grid);
+  }
+  .axis-label {
+    font-size: 11px;
+    fill: var(--text-muted);
+  }
+
+  /* Two-col layout for companions */
+  .companions {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 16px;
+  }
+  @media (max-width: 900px) {
+    .companions { grid-template-columns: 1fr; }
+  }
+
+  /* N=1 badge */
+  .n1-badge {
+    font-size: 9px;
+    fill: var(--text-muted);
+    font-style: italic;
+  }
+
+  .tier-checks { display: flex; gap: 8px; }
+  .tier-check { display: flex; align-items: center; gap: 3px; font-size: 12px; color: var(--text-muted); cursor: pointer; }
+  .tier-check input { cursor: pointer; }
+
+  .slider-group { display: flex; align-items: center; gap: 6px; }
+  .slider-val { font-size: 11px; color: var(--text-muted); font-family: "SF Mono", monospace; min-width: 24px; text-align: right; }
+</style>
+</head>
+<body>
+
+<h1>Pipeline Replay Benchmark</h1>
+<div class="subtitle">Persona theme performance on seeded-defect scenarios &mdash; weighted catch rate vs consistency</div>
+
+<div class="filter-bar" id="filters">
+  <div class="filter-group">
+    <span class="filter-label">Scenario</span>
+    <div id="scenario-chips"></div>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">Genre</span>
+    <div id="genre-chips"></div>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">Tier</span>
+    <div class="tier-checks" id="tier-checks"></div>
+  </div>
+  <div class="filter-group slider-group">
+    <span class="filter-label">Zeitgeist</span>
+    <span class="slider-val" id="zeit-min-val">0</span>
+    <input type="range" id="zeit-min" min="0" max="100" value="0" step="1">
+    <span style="color:var(--text-muted);font-size:11px">&ndash;</span>
+    <input type="range" id="zeit-max" min="0" max="100" value="100" step="1">
+    <span class="slider-val" id="zeit-max-val">100</span>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">Color by</span>
+    <select id="ocean-color">
+      <option value="none">None</option>
+      <option value="O">Openness</option>
+      <option value="C">Conscientiousness</option>
+      <option value="E">Extraversion</option>
+      <option value="A">Agreeableness</option>
+      <option value="N">Neuroticism</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">Role</span>
+    <select id="ocean-role">
+      <option value="avg">Team Avg</option>
+      <option value="tea">TEA</option>
+      <option value="dev">Dev</option>
+      <option value="reviewer">Reviewer</option>
+    </select>
+  </div>
+</div>
+
+<div class="chart-section">
+  <div class="chart-title">Mean Weighted Score vs Consistency</div>
+  <div class="chart-subtitle">Each dot = one theme. Size = sqrt(n). Quadrant lines drawn at control baseline.</div>
+  <svg id="scatter"></svg>
+</div>
+
+<div class="companions">
+  <div class="chart-section">
+    <div class="chart-title">Finding Hit Rate</div>
+    <div class="chart-subtitle">Catch rate per ground-truth finding across themes (sorted by mean score)</div>
+    <div class="heatmap-wrap"><svg id="heatmap"></svg></div>
+  </div>
+  <div class="chart-section">
+    <div class="chart-title">Phase Attribution</div>
+    <div class="chart-subtitle">Share of catches by pipeline phase</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--tea-color)"></div>TEA</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--dev-color)"></div>Dev</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--rev-color)"></div>Reviewer</div>
+    </div>
+    <svg id="phase-attr"></svg>
+  </div>
+</div>
+
+<div class="tooltip" id="tooltip" style="display:none"></div>
+
+<script>
+// Embedded data fallback (will be replaced by fetch if available)
+let EMBEDDED_DATA = null;
+
+async function loadData() {
+  // Try fetch first (works when served via HTTP)
+  try {
+    const resp = await fetch('benchmark-viz-data.json');
+    if (resp.ok) return await resp.json();
+  } catch(e) {}
+  // Fallback to embedded
+  if (EMBEDDED_DATA) return EMBEDDED_DATA;
+  // Last resort: try absolute path patterns
+  console.error('Could not load data. Serve via HTTP or embed data.');
+  return null;
+}
+
+// ── State ──
+let DATA = null;
+let state = {
+  scenario: null,
+  genres: new Set(),
+  genreFilter: new Set(),
+  tiers: new Set(['S','A','B','C','D']),
+  zeitMin: 0,
+  zeitMax: 100,
+  oceanColor: 'none',
+  oceanRole: 'avg',
+  selectedTheme: null,
+};
+
+// ── Color scales ──
+const oceanColorScale = d3.scaleSequential(d3.interpolateRdYlBu).domain([5, 1]);
+const defaultDotColor = '#4fc3f7';
+
+function getOceanValue(themeMeta, trait, role) {
+  const ocean = themeMeta.ocean || {};
+  if (role === 'avg') {
+    const roles = ['tea','dev','reviewer'];
+    const vals = roles.map(r => (ocean[r] || {})[trait] || 3);
+    return vals.reduce((a,b) => a+b, 0) / vals.length;
+  }
+  return (ocean[role] || {})[trait] || 3;
+}
+
+function dotColor(themeMeta) {
+  if (state.oceanColor === 'none') return defaultDotColor;
+  const val = getOceanValue(themeMeta, state.oceanColor, state.oceanRole);
+  return oceanColorScale(val);
+}
+
+// ── Tooltip ──
+const tooltip = d3.select('#tooltip');
+function showTooltip(evt, html) {
+  tooltip.style('display','block').html(html);
+  const tw = tooltip.node().offsetWidth;
+  const th = tooltip.node().offsetHeight;
+  let x = evt.pageX + 12;
+  let y = evt.pageY - 10;
+  if (x + tw > window.innerWidth - 20) x = evt.pageX - tw - 12;
+  if (y + th > window.innerHeight - 20) y = evt.pageY - th - 10;
+  tooltip.style('left', x+'px').style('top', y+'px');
+}
+function hideTooltip() { tooltip.style('display','none'); }
+
+// ── Prepare theme list ──
+function getFilteredThemes() {
+  const scenario = DATA.scenarios[state.scenario];
+  if (!scenario) return [];
+  return Object.entries(scenario.themes)
+    .map(([key, val]) => ({ key, ...val }))
+    .filter(t => {
+      // Control is ALWAYS shown regardless of filters
+      if (t.key === 'control') return true;
+      const genre = (t.meta.dimensions || {}).genre || 'unknown';
+      if (state.genreFilter.size > 0 && !state.genreFilter.has(genre)) return false;
+      const tier = t.meta.tier || 'D';
+      if (!state.tiers.has(tier)) return false;
+      const z = t.meta.zeitgeist || 0;
+      if (z < state.zeitMin || z > state.zeitMax) return false;
+      return true;
+    })
+    .sort((a,b) => b.stats.mean - a.stats.mean);
+}
+
+// ── Scatter ──
+function renderScatter() {
+  const themes = getFilteredThemes();
+  const svg = d3.select('#scatter');
+  svg.selectAll('*').remove();
+
+  const container = svg.node().parentNode;
+  const width = container.clientWidth - 32;
+  const height = Math.min(420, width * 0.55);
+  const margin = { top: 30, right: 30, bottom: 45, left: 55 };
+  const w = width - margin.left - margin.right;
+  const h = height - margin.top - margin.bottom;
+
+  svg.attr('width', width).attr('height', height);
+  const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+
+  // Scales
+  const xExtent = d3.extent(themes, d => d.stats.mean);
+  const xPad = Math.max(5, (xExtent[1] - xExtent[0]) * 0.1);
+  const x = d3.scaleLinear()
+    .domain([Math.max(0, (xExtent[0]||0) - xPad), Math.min(100, (xExtent[1]||100) + xPad)])
+    .range([0, w]);
+
+  const consistency = d => d.stats.n > 1 ? 100 - d.stats.std : null;
+  const yVals = themes.filter(t => t.stats.n > 1).map(consistency);
+  const yExtent = d3.extent(yVals);
+  const yPad = Math.max(3, ((yExtent[1]||100) - (yExtent[0]||80)) * 0.15);
+  const y = d3.scaleLinear()
+    .domain([Math.max(0, (yExtent[0]||80) - yPad), Math.min(100, (yExtent[1]||100) + yPad)])
+    .range([h, 0]);
+
+  const rScale = d => Math.max(4, Math.sqrt(d.stats.n) * 5);
+
+  // Axes
+  g.append('g').attr('class','axis')
+    .attr('transform', `translate(0,${h})`)
+    .call(d3.axisBottom(x).ticks(8).tickSize(-h).tickFormat(d => d+'%'))
+    .call(g => g.selectAll('.tick line').attr('stroke', 'var(--grid)'))
+    .call(g => g.select('.domain').remove());
+
+  g.append('g').attr('class','axis')
+    .call(d3.axisLeft(y).ticks(6).tickSize(-w).tickFormat(d => d.toFixed(0)))
+    .call(g => g.selectAll('.tick line').attr('stroke', 'var(--grid)'))
+    .call(g => g.select('.domain').remove());
+
+  // Axis labels
+  g.append('text').attr('class','axis-label')
+    .attr('x', w/2).attr('y', h + 38).attr('text-anchor','middle')
+    .text('Mean Weighted Score %');
+  g.append('text').attr('class','axis-label')
+    .attr('transform','rotate(-90)')
+    .attr('x', -h/2).attr('y', -42).attr('text-anchor','middle')
+    .text('Consistency (100 - std)');
+
+  // Quadrant lines (at control values)
+  const control = themes.find(t => t.key === 'control');
+  if (control && control.stats.n > 1) {
+    const cx = control.stats.mean;
+    const cy = 100 - control.stats.std;
+    g.append('line').attr('class','quadrant-line')
+      .attr('x1', x(cx)).attr('x2', x(cx)).attr('y1', 0).attr('y2', h);
+    g.append('line').attr('class','quadrant-line')
+      .attr('x1', 0).attr('x2', w).attr('y1', y(cy)).attr('y2', y(cy));
+
+    // Quadrant overlays
+    const qx = x(cx), qy = y(cy);
+    const quads = [
+      { x: qx, y: 0, w: w - qx, h: qy, color: 'rgba(76,175,80,0.06)', label: 'More Accurate\nMore Consistent', tx: w-8, ty: 16, anchor: 'end' },
+      { x: qx, y: qy, w: w - qx, h: h - qy, color: 'rgba(255,183,77,0.06)', label: 'More Accurate\nLess Consistent', tx: w-8, ty: h-8, anchor: 'end' },
+      { x: 0, y: 0, w: qx, h: qy, color: 'rgba(144,164,174,0.06)', label: 'Less Accurate\nMore Consistent', tx: 8, ty: 16, anchor: 'start' },
+      { x: 0, y: qy, w: qx, h: h - qy, color: 'rgba(239,83,80,0.06)', label: 'Less Accurate\nLess Consistent', tx: 8, ty: h-8, anchor: 'start' },
+    ];
+    quads.forEach(q => {
+      g.append('rect')
+        .attr('x', q.x).attr('y', q.y)
+        .attr('width', q.w).attr('height', q.h)
+        .attr('fill', q.color)
+        .attr('pointer-events', 'none');
+      const lines = q.label.split('\n');
+      lines.forEach((line, li) => {
+        g.append('text').attr('class','scatter-quadrant')
+          .attr('x', q.tx).attr('y', q.ty + li * 13).attr('text-anchor', q.anchor)
+          .text(line);
+      });
+    });
+  }
+
+  // Dots (n>1)
+  const multiRun = themes.filter(t => t.stats.n > 1);
+  const singleRun = themes.filter(t => t.stats.n === 1);
+  const labelPositions = [];
+
+  // Strip plot dots for selected theme
+  function renderStrip(theme) {
+    g.selectAll('.strip-dot').remove();
+    if (!theme) return;
+    theme.runs.forEach(r => {
+      g.append('circle').attr('class','strip-dot')
+        .attr('cx', x(r.score_pct))
+        .attr('cy', y(consistency(theme)) + (Math.random()-0.5)*16)
+        .attr('r', 3);
+    });
+  }
+
+  multiRun.forEach(t => {
+    const isControl = t.key === 'control';
+    const cx = x(t.stats.mean);
+    const cy = y(consistency(t));
+    const r = rScale(t);
+    const col = dotColor(t.meta);
+
+    if (isControl) {
+      // Diamond marker
+      const s = r + 2;
+      g.append('path')
+        .attr('class','scatter-dot')
+        .attr('d', `M${cx},${cy-s} L${cx+s},${cy} L${cx},${cy+s} L${cx-s},${cy} Z`)
+        .attr('fill', col).attr('fill-opacity', 0.7)
+        .attr('stroke', col).attr('stroke-width', 1.5)
+        .datum(t)
+        .on('mouseover', (evt, d) => showScatterTip(evt, d))
+        .on('mouseout', hideTooltip)
+        .on('click', (evt, d) => { state.selectedTheme = state.selectedTheme === d.key ? null : d.key; renderStrip(state.selectedTheme ? d : null); });
+    } else {
+      g.append('circle')
+        .attr('class','scatter-dot')
+        .attr('cx', cx).attr('cy', cy).attr('r', r)
+        .attr('fill', col).attr('fill-opacity', 0.65)
+        .attr('stroke', col).attr('stroke-width', 1)
+        .datum(t)
+        .on('mouseover', (evt, d) => showScatterTip(evt, d))
+        .on('mouseout', hideTooltip)
+        .on('click', (evt, d) => { state.selectedTheme = state.selectedTheme === d.key ? null : d.key; renderStrip(state.selectedTheme ? d : null); });
+    }
+
+    // Label (stored for collision avoidance)
+    labelPositions.push({ x: cx, y: cy - r - 4, name: t.meta.name || t.key });
+  });
+
+  // Simple label collision avoidance: shift overlapping labels vertically
+  labelPositions.sort((a,b) => a.x - b.x);
+  for (let i = 1; i < labelPositions.length; i++) {
+    const prev = labelPositions[i-1];
+    const curr = labelPositions[i];
+    const dx = Math.abs(curr.x - prev.x);
+    const dy = Math.abs(curr.y - prev.y);
+    if (dx < 60 && dy < 14) {
+      curr.y = prev.y - 14;
+    }
+  }
+  labelPositions.forEach(lp => {
+    g.append('text')
+      .attr('x', lp.x).attr('y', lp.y)
+      .attr('text-anchor','middle')
+      .attr('font-size','10px')
+      .attr('fill', 'var(--text-muted)')
+      .text(lp.name);
+  });
+
+  // n=1 themes: put at bottom with a note
+  singleRun.forEach((t, i) => {
+    const cx = x(t.stats.mean);
+    const cyPos = h - 10;
+    const col = dotColor(t.meta);
+
+    g.append('circle')
+      .attr('class','scatter-dot')
+      .attr('cx', cx).attr('cy', cyPos).attr('r', 4)
+      .attr('fill', col).attr('fill-opacity', 0.4)
+      .attr('stroke', col).attr('stroke-width', 1)
+      .attr('stroke-dasharray', '2,2')
+      .datum(t)
+      .on('mouseover', (evt, d) => showScatterTip(evt, d))
+      .on('mouseout', hideTooltip);
+
+    g.append('text').attr('class','n1-badge')
+      .attr('x', cx).attr('y', cyPos + 14).attr('text-anchor','middle')
+      .text(t.meta.name || t.key);
+  });
+
+  if (singleRun.length > 0) {
+    g.append('text')
+      .attr('x', w).attr('y', h - 22)
+      .attr('text-anchor','end')
+      .attr('font-size','9px')
+      .attr('fill','var(--text-muted)')
+      .attr('font-style','italic')
+      .text('n=1 themes shown at bottom (insufficient data for consistency)');
+  }
+}
+
+function showScatterTip(evt, d) {
+  const chars = d.meta.characters || {};
+  const charsLine = ['tea','dev','reviewer']
+    .filter(r => chars[r])
+    .map(r => `<span style="color:${r==='tea'?'var(--tea-color)':r==='dev'?'var(--dev-color)':'var(--rev-color)'}">${chars[r]}</span>`)
+    .join(' / ');
+  const runs = d.runs.map(r => r.score_pct.toFixed(1) + '%').join(', ');
+  const html = `
+    <div class="tt-name">${d.meta.name || d.key}</div>
+    ${charsLine ? `<div style="font-size:11px;margin-bottom:4px">${charsLine}</div>` : ''}
+    <div class="tt-row"><span class="tt-label">Mean</span><span class="tt-val mono">${d.stats.mean.toFixed(1)}%</span></div>
+    <div class="tt-row"><span class="tt-label">Std</span><span class="tt-val mono">${d.stats.std.toFixed(1)}</span></div>
+    <div class="tt-row"><span class="tt-label">n</span><span class="tt-val mono">${d.stats.n}</span></div>
+    <div class="tt-row"><span class="tt-label">Tier</span><span class="tt-val">${d.meta.tier || '?'}</span></div>
+    <div class="tt-row"><span class="tt-label">Zeitgeist</span><span class="tt-val mono">${d.meta.zeitgeist != null ? d.meta.zeitgeist : '?'}</span></div>
+    <div class="tt-row"><span class="tt-label">Genre</span><span class="tt-val">${(d.meta.dimensions||{}).genre || '?'}</span></div>
+    <div class="tt-runs">Runs: ${runs}</div>
+  `;
+  showTooltip(evt, html);
+}
+
+// ── Heatmap ──
+function renderHeatmap() {
+  const themes = getFilteredThemes();
+  const scenario = DATA.scenarios[state.scenario];
+  if (!scenario) return;
+
+  const findings = scenario.ground_truth || [];
+  const svg = d3.select('#heatmap');
+  svg.selectAll('*').remove();
+
+  const container = svg.node().parentNode;
+  const availWidth = container.clientWidth - 32;
+
+  // Flipped: themes = rows, findings = columns
+  const rowH = 22;
+  const labelW = 140;  // theme name column
+  const colW = Math.max(36, Math.min(52, (availWidth - labelW - 20) / Math.max(findings.length, 1)));
+  const headerH = 50;  // space for column headers
+  const width = labelW + findings.length * colW + 20;
+  const height = headerH + themes.length * rowH + 10;
+
+  svg.attr('width', width).attr('height', height);
+
+  const g = svg.append('g').attr('transform', 'translate(0,0)');
+
+  // Column headers (finding IDs — short, e.g. C1, I1, I2)
+  findings.forEach((f, i) => {
+    const cx = labelW + i * colW + colW / 2;
+    // Finding ID
+    g.append('text')
+      .attr('class','heatmap-label')
+      .attr('x', cx).attr('y', 16)
+      .attr('text-anchor','middle')
+      .attr('font-size','10px')
+      .attr('font-weight','600')
+      .attr('fill', f.severity === 'critical' ? '#ef5350' : 'var(--text-secondary)')
+      .text(f.id);
+    // Weight badge
+    g.append('text')
+      .attr('x', cx).attr('y', 30)
+      .attr('text-anchor','middle')
+      .attr('font-size','8px')
+      .attr('fill','var(--text-muted)')
+      .attr('font-family','"SF Mono", monospace')
+      .text(`w${f.weight}`);
+    // Tooltip with full title
+    g.append('rect')
+      .attr('x', cx - colW/2).attr('y', 0)
+      .attr('width', colW).attr('height', headerH)
+      .attr('fill','transparent')
+      .append('title').text(`${f.id}: ${f.title} (weight: ${f.weight})`);
+  });
+
+  // Separator line under headers
+  g.append('line')
+    .attr('x1', labelW).attr('x2', labelW + findings.length * colW)
+    .attr('y1', headerH - 8).attr('y2', headerH - 8)
+    .attr('stroke','var(--text-muted)').attr('stroke-opacity', 0.3);
+
+  const yOff = headerH;
+
+  // Rows = themes
+  themes.forEach((t, ti) => {
+    const ry = yOff + ti * rowH;
+
+    // Row label (theme name — horizontal, readable)
+    g.append('text')
+      .attr('class','heatmap-label')
+      .attr('x', labelW - 8)
+      .attr('y', ry + rowH/2 + 3)
+      .attr('text-anchor','end')
+      .attr('font-size','10px')
+      .attr('fill', t.key === 'control' ? 'var(--accent)' : 'var(--text-muted)')
+      .text(t.meta.name || t.key);
+
+    // Cells = findings
+    findings.forEach((f, fi) => {
+      const rates = t.finding_catch_rates[f.id];
+      const caught = rates ? rates.caught : 0;
+      const total = rates ? rates.total : t.stats.n;
+      const rate = total > 0 ? caught / total : 0;
+
+      const cx = labelW + fi * colW;
+
+      g.append('rect')
+        .attr('class','heatmap-cell')
+        .attr('x', cx + 1).attr('y', ry + 1)
+        .attr('width', colW - 2).attr('height', rowH - 2)
+        .attr('rx', 2)
+        .attr('fill', rate > 0 ? d3.interpolateBlues(rate * 0.8 + 0.2) : 'rgba(255,255,255,0.02)')
+        .attr('opacity', rate > 0 ? 0.9 : 0.3);
+
+      if (total > 0) {
+        g.append('text')
+          .attr('class','heatmap-cell-text')
+          .attr('x', cx + colW/2).attr('y', ry + rowH/2 + 3)
+          .attr('text-anchor','middle')
+          .attr('fill', rate > 0.5 ? '#0a0a1a' : 'var(--text-muted)')
+          .text(`${caught}/${total}`);
+      }
+    });
+  });
+}
+
+// ── Phase Attribution ──
+function renderPhaseAttr() {
+  const themes = getFilteredThemes();
+  const svg = d3.select('#phase-attr');
+  svg.selectAll('*').remove();
+
+  const barH = 18;
+  const gap = 4;
+  const labelW = 90;
+  const barW = 170;
+  const width = labelW + barW + 20;
+  const height = themes.length * (barH + gap) + 10;
+
+  svg.attr('width', width).attr('height', height);
+  const g = svg.append('g');
+
+  themes.forEach((t, i) => {
+    const fy = i * (barH + gap);
+    const pa = t.phase_attribution || {};
+
+    g.append('text')
+      .attr('class','phase-bar-label')
+      .attr('x', labelW - 6).attr('y', fy + barH/2 + 3)
+      .attr('text-anchor','end')
+      .attr('font-size','10px')
+      .attr('fill', t.key === 'control' ? 'var(--accent)' : 'var(--text-muted)')
+      .text((t.meta.name || t.key) + ` (n=${t.stats.n})`);
+
+    let xOff = labelW;
+    const phases = [
+      { key: 'tea', color: 'var(--tea-color)' },
+      { key: 'dev', color: 'var(--dev-color)' },
+      { key: 'reviewer', color: 'var(--rev-color)' },
+    ];
+    phases.forEach(p => {
+      const pct = (pa[p.key] || 0) / 100;
+      const bw = pct * barW;
+      if (bw > 0) {
+        g.append('rect')
+          .attr('x', xOff).attr('y', fy)
+          .attr('width', bw).attr('height', barH)
+          .attr('fill', p.color)
+          .attr('rx', 1)
+          .attr('opacity', 0.8);
+        if (bw > 18) {
+          g.append('text')
+            .attr('x', xOff + bw/2).attr('y', fy + barH/2 + 3)
+            .attr('text-anchor','middle')
+            .attr('font-size','9px')
+            .attr('fill','#0a0a1a')
+            .attr('font-family','"SF Mono", monospace')
+            .text(Math.round(pa[p.key]) + '%');
+        }
+        xOff += bw;
+      }
+    });
+  });
+}
+
+// ── Filters ──
+function buildFilters() {
+  const scenarios = Object.keys(DATA.scenarios);
+  state.scenario = scenarios[0];
+
+  // Scenario chips
+  const sc = d3.select('#scenario-chips');
+  scenarios.forEach(s => {
+    sc.append('span').attr('class', 'chip' + (s === state.scenario ? ' active' : ''))
+      .text(s).on('click', function() {
+        state.scenario = s;
+        state.selectedTheme = null;
+        sc.selectAll('.chip').classed('active', false);
+        d3.select(this).classed('active', true);
+        rebuildGenres();
+        renderAll();
+      });
+  });
+
+  rebuildGenres();
+
+  // Tier checkboxes
+  const tiers = ['S','A','B','C','D'];
+  const tc = d3.select('#tier-checks');
+  tiers.forEach(t => {
+    const label = tc.append('label').attr('class','tier-check');
+    label.append('input').attr('type','checkbox').attr('checked', true)
+      .on('change', function() {
+        if (this.checked) state.tiers.add(t); else state.tiers.delete(t);
+        renderAll();
+      });
+    label.append('span').text(t);
+  });
+
+  // Zeitgeist sliders
+  d3.select('#zeit-min').on('input', function() {
+    state.zeitMin = +this.value;
+    d3.select('#zeit-min-val').text(this.value);
+    renderAll();
+  });
+  d3.select('#zeit-max').on('input', function() {
+    state.zeitMax = +this.value;
+    d3.select('#zeit-max-val').text(this.value);
+    renderAll();
+  });
+
+  // OCEAN dropdowns
+  d3.select('#ocean-color').on('change', function() {
+    state.oceanColor = this.value;
+    renderAll();
+  });
+  d3.select('#ocean-role').on('change', function() {
+    state.oceanRole = this.value;
+    renderAll();
+  });
+}
+
+function rebuildGenres() {
+  const scenario = DATA.scenarios[state.scenario];
+  if (!scenario) return;
+
+  const genres = new Set();
+  Object.values(scenario.themes).forEach(t => {
+    const g = (t.meta.dimensions || {}).genre;
+    if (g) genres.add(g);
+  });
+
+  state.genres = genres;
+  state.genreFilter.clear();
+
+  const gc = d3.select('#genre-chips');
+  gc.selectAll('*').remove();
+
+  // "All" chip
+  gc.append('span').attr('class','chip active').text('all')
+    .on('click', function() {
+      state.genreFilter.clear();
+      gc.selectAll('.chip').classed('active', false);
+      d3.select(this).classed('active', true);
+      renderAll();
+    });
+
+  Array.from(genres).sort().forEach(g => {
+    gc.append('span').attr('class','chip').text(g)
+      .on('click', function() {
+        gc.selectAll('.chip').classed('active', false);
+        if (state.genreFilter.has(g)) {
+          state.genreFilter.clear();
+          gc.select('.chip').classed('active', true); // "all"
+        } else {
+          state.genreFilter.clear();
+          state.genreFilter.add(g);
+          d3.select(this).classed('active', true);
+        }
+        renderAll();
+      });
+  });
+}
+
+function renderAll() {
+  renderScatter();
+  renderHeatmap();
+  renderPhaseAttr();
+}
+
+// ── Init ──
+loadData().then(data => {
+  if (!data) {
+    document.body.innerHTML = '<p style="color:#ff5252;padding:40px">Failed to load data. Serve via HTTP: <code>python3 -m http.server</code> from internal/results/</p>';
+    return;
+  }
+  DATA = data;
+  buildFilters();
+  renderAll();
+  window.addEventListener('resize', renderAll);
+});
+</script>
+
+<!-- Embedded data fallback for file:// protocol -->
+<script>
+(function() {
+  // This block loads the embedded JSON data
+  // Re-generate by running: python3 scripts/benchmark-viz-data.py
+  // Then paste the JSON below (or use the companion .json file with a local server)
+  try {
+    EMBEDDED_DATA = {"generated": "benchmark-viz-data.py", "scenarios": {"dpgd-116": {"scenario_id": "dpgd-116", "ground_truth": [{"id": "C1", "title": "from_file_or_default swallows ALL errors including parse and permission failures", "weight": 8, "severity": "important", "phase_ideal": "dev"}, {"id": "I1", "title": "CliError Display leaks internal details to stderr (CWE-209)", "weight": 5, "severity": "important", "phase_ideal": "reviewer"}, {"id": "I2", "title": "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)", "weight": 5, "severity": "important", "phase_ideal": "tea"}, {"id": "I3", "title": "Dependencies use direct version strings instead of workspace = true", "weight": 3, "severity": "important", "phase_ideal": "dev"}, {"id": "I4", "title": "Config token field silently ignored \u2014 secret left on disk", "weight": 5, "severity": "important", "phase_ideal": "reviewer"}, {"id": "I5", "title": "Vacuously true test \u2014 assertion is None || true", "weight": 5, "severity": "important", "phase_ideal": "tea"}, {"id": "I6", "title": "Test with zero assertions \u2014 only checks non-panic", "weight": 5, "severity": "important", "phase_ideal": "tea"}], "total_weight": 36, "themes": {"control": {"meta": {"name": "Control", "tier": "D", "zeitgeist": 8.0, "category": "TV Series", "dimensions": {"tone": "eerie", "era": "contemporary", "genre": "sci-fi-thriller", "energy": "unsettling"}, "ocean": {"tea": {"O": 3, "C": 3, "E": 3, "A": 3, "N": 3}, "dev": {"O": 3, "C": 3, "E": 3, "A": 3, "N": 3}, "reviewer": {"O": 3, "C": 3, "E": 3, "A": 3, "N": 3}}, "characters": {"tea": "Test Engineer (baseline control)", "dev": "Developer (baseline control)", "reviewer": "Code Reviewer (baseline control)"}}, "runs": [{"run_id": 1, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": false, "caught_by": null}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 2, "dev": 0, "reviewer": 1}}, {"run_id": 2, "score_pct": 54.1, "weighted_caught": 20, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "dev"}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 2, "reviewer": 2}}, {"run_id": 3, "score_pct": 48.6, "weighted_caught": 18, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 3}}, {"run_id": 4, "score_pct": 27.0, "weighted_caught": 10, "total_caught": 2, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 1}}], "stats": {"n": 4, "mean": 42.5, "std": 10.2, "min": 27.0, "max": 54.1}, "finding_catch_rates": {"C1": {"caught": 0, "total": 4, "caught_by": {}}, "I1": {"caught": 4, "total": 4, "caught_by": {"tea": 3, "dev": 1}}, "I2": {"caught": 3, "total": 4, "caught_by": {"tea": 1, "reviewer": 2}}, "I3": {"caught": 1, "total": 4, "caught_by": {"reviewer": 1}}, "I4": {"caught": 3, "total": 4, "caught_by": {"dev": 1, "reviewer": 2}}, "I5": {"caught": 2, "total": 4, "caught_by": {"reviewer": 2}}, "I6": {"caught": 0, "total": 4, "caught_by": {}}}, "phase_attribution": {"tea": 30.8, "dev": 15.4, "reviewer": 53.8}}, "discworld": {"meta": {"name": "Discworld", "tier": "A", "zeitgeist": 98.0, "category": "Literature", "dimensions": {"tone": "satirical", "era": "timeless", "genre": "fantasy", "energy": "measured"}, "ocean": {"tea": {"O": 3, "C": 5, "E": 2, "A": 5, "N": 1}, "dev": {"O": 5, "C": 5, "E": 2, "A": 3, "N": 3}, "reviewer": {"O": 3, "C": 5, "E": 2, "A": 1, "N": 1}}, "characters": {"tea": "Igor", "dev": "Ponder Stibbons", "reviewer": "Granny Weatherwax"}}, "runs": [{"run_id": 1, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 1, "reviewer": 1}}, {"run_id": 2, "score_pct": 48.6, "weighted_caught": 18, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 3}}, {"run_id": 3, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 3}}, {"run_id": 4, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 2}}], "stats": {"n": 4, "mean": 42.5, "std": 3.5, "min": 40.5, "max": 48.6}, "finding_catch_rates": {"C1": {"caught": 0, "total": 4, "caught_by": {}}, "I1": {"caught": 4, "total": 4, "caught_by": {"dev": 1, "tea": 1, "reviewer": 2}}, "I2": {"caught": 4, "total": 4, "caught_by": {"tea": 2, "reviewer": 2}}, "I3": {"caught": 1, "total": 4, "caught_by": {"reviewer": 1}}, "I4": {"caught": 4, "total": 4, "caught_by": {"reviewer": 4}}, "I5": {"caught": 0, "total": 4, "caught_by": {}}, "I6": {"caught": 0, "total": 4, "caught_by": {}}}, "phase_attribution": {"tea": 23.1, "dev": 7.7, "reviewer": 69.2}}, "enlightenment-thinkers": {"meta": {"name": "Enlightenment Thinkers", "tier": "B", "zeitgeist": 74.5, "category": "History", "dimensions": {"tone": "contemplative", "era": "historical", "genre": "philosophy", "energy": "measured"}, "ocean": {"tea": {"O": 5, "C": 4, "E": 4, "A": 4, "N": 2}, "dev": {"O": 5, "C": 5, "E": 5, "A": 5, "N": 2}, "reviewer": {"O": 5, "C": 5, "E": 1, "A": 3, "N": 2}}, "characters": {"tea": "David Hume", "dev": "Benjamin Franklin", "reviewer": "Immanuel Kant"}}, "runs": [{"run_id": 1, "score_pct": 27.0, "weighted_caught": 10, "total_caught": 2, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 2}}, {"run_id": 2, "score_pct": 48.6, "weighted_caught": 18, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 3}}, {"run_id": 3, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 3}}], "stats": {"n": 3, "mean": 38.7, "std": 8.9, "min": 27.0, "max": 48.6}, "finding_catch_rates": {"C1": {"caught": 0, "total": 3, "caught_by": {}}, "I1": {"caught": 3, "total": 3, "caught_by": {"reviewer": 3}}, "I2": {"caught": 2, "total": 3, "caught_by": {"tea": 1, "reviewer": 1}}, "I3": {"caught": 1, "total": 3, "caught_by": {"reviewer": 1}}, "I4": {"caught": 3, "total": 3, "caught_by": {"reviewer": 3}}, "I5": {"caught": 0, "total": 3, "caught_by": {}}, "I6": {"caught": 0, "total": 3, "caught_by": {}}}, "phase_attribution": {"tea": 11.1, "dev": 0.0, "reviewer": 88.9}}, "firefly": {"meta": {"name": "Firefly", "tier": "A", "zeitgeist": 82.3, "category": "TV Series", "dimensions": {"tone": "wry", "era": "futuristic", "genre": "space-western", "energy": "scrappy"}, "ocean": {"tea": {"O": 1, "C": 2, "E": 4, "A": 1, "N": 2}, "dev": {"O": 3, "C": 3, "E": 4, "A": 2, "N": 3}, "reviewer": {"O": 5, "C": 2, "E": 2, "A": 3, "N": 5}}, "characters": {"tea": "Jayne Cobb", "dev": "Malcolm Reynolds", "reviewer": "River Tam"}}, "runs": [{"run_id": 1, "score_pct": 27.0, "weighted_caught": 10, "total_caught": 2, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": false, "caught_by": null}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 2, "dev": 0, "reviewer": 0}}, {"run_id": 2, "score_pct": 48.6, "weighted_caught": 18, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "dev"}, {"finding_id": "I3", "caught": true, "caught_by": "dev"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 2, "reviewer": 1}}, {"run_id": 3, "score_pct": 13.5, "weighted_caught": 5, "total_caught": 1, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": false, "caught_by": null}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 0}}, {"run_id": 4, "score_pct": 27.0, "weighted_caught": 10, "total_caught": 2, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": false, "caught_by": null}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 2, "dev": 0, "reviewer": 0}}, {"run_id": 5, "score_pct": 62.2, "weighted_caught": 23, "total_caught": 5, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "dev"}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 2, "dev": 1, "reviewer": 2}}, {"run_id": 6, "score_pct": 48.6, "weighted_caught": 18, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 1, "reviewer": 2}}], "stats": {"n": 6, "mean": 37.8, "std": 16.6, "min": 13.5, "max": 62.2}, "finding_catch_rates": {"C1": {"caught": 1, "total": 6, "caught_by": {"reviewer": 1}}, "I1": {"caught": 6, "total": 6, "caught_by": {"tea": 5, "dev": 1}}, "I2": {"caught": 4, "total": 6, "caught_by": {"tea": 3, "dev": 1}}, "I3": {"caught": 2, "total": 6, "caught_by": {"dev": 1, "reviewer": 1}}, "I4": {"caught": 3, "total": 6, "caught_by": {"reviewer": 2, "dev": 1}}, "I5": {"caught": 1, "total": 6, "caught_by": {"reviewer": 1}}, "I6": {"caught": 0, "total": 6, "caught_by": {}}}, "phase_attribution": {"tea": 47.1, "dev": 23.5, "reviewer": 29.4}}, "game-of-thrones": {"meta": {"name": "Game of Thrones", "tier": "S", "zeitgeist": 79.3, "category": "TV Series", "dimensions": {"tone": "dramatic", "era": "medieval", "genre": "fantasy", "energy": "intense"}, "ocean": {"tea": {"O": 4, "C": 4, "E": 4, "A": 1, "N": 2}, "dev": {"O": 4, "C": 4, "E": 4, "A": 3, "N": 2}, "reviewer": {"O": 4, "C": 4, "E": 2, "A": 2, "N": 2}}, "characters": {"tea": "Tywin Lannister", "dev": "Tyrion Lannister", "reviewer": "Petyr Baelish (Littlefinger)"}}, "runs": [{"run_id": 1, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 3}}, {"run_id": 2, "score_pct": 48.6, "weighted_caught": 18, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 1, "reviewer": 3}}, {"run_id": 3, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 2}}, {"run_id": 4, "score_pct": 48.6, "weighted_caught": 18, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 1, "reviewer": 2}}], "stats": {"n": 4, "mean": 44.5, "std": 4.1, "min": 40.5, "max": 48.6}, "finding_catch_rates": {"C1": {"caught": 0, "total": 4, "caught_by": {}}, "I1": {"caught": 4, "total": 4, "caught_by": {"reviewer": 2, "dev": 2}}, "I2": {"caught": 4, "total": 4, "caught_by": {"reviewer": 2, "tea": 2}}, "I3": {"caught": 2, "total": 4, "caught_by": {"reviewer": 2}}, "I4": {"caught": 4, "total": 4, "caught_by": {"reviewer": 4}}, "I5": {"caught": 0, "total": 4, "caught_by": {}}, "I6": {"caught": 0, "total": 4, "caught_by": {}}}, "phase_attribution": {"tea": 14.3, "dev": 14.3, "reviewer": 71.4}}, "gilligans-island": {"meta": {"name": "Gilligan's Island", "tier": "D", "zeitgeist": 71.8, "category": "TV Series", "dimensions": {"tone": "comedic", "era": "retro", "genre": "comedy", "energy": "slapstick"}, "ocean": {"tea": {"O": 3, "C": 5, "E": 3, "A": 5, "N": 2}, "dev": {"O": 4, "C": 1, "E": 4, "A": 5, "N": 3}, "reviewer": {"O": 1, "C": 4, "E": 4, "A": 1, "N": 3}}, "characters": {"tea": "Mary Ann Summers", "dev": "Gilligan", "reviewer": "Thurston Howell III"}}, "runs": [{"run_id": 1, "score_pct": 48.6, "weighted_caught": 18, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": true, "caught_by": "tea"}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": false, "caught_by": null}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 3, "dev": 0, "reviewer": 0}}, {"run_id": 2, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 2}}, {"run_id": 3, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 1, "reviewer": 2}}, {"run_id": 4, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 2}}], "stats": {"n": 4, "mean": 42.5, "std": 3.5, "min": 40.5, "max": 48.6}, "finding_catch_rates": {"C1": {"caught": 1, "total": 4, "caught_by": {"tea": 1}}, "I1": {"caught": 4, "total": 4, "caught_by": {"tea": 1, "reviewer": 2, "dev": 1}}, "I2": {"caught": 4, "total": 4, "caught_by": {"tea": 3, "reviewer": 1}}, "I3": {"caught": 0, "total": 4, "caught_by": {}}, "I4": {"caught": 3, "total": 4, "caught_by": {"reviewer": 3}}, "I5": {"caught": 0, "total": 4, "caught_by": {}}, "I6": {"caught": 0, "total": 4, "caught_by": {}}}, "phase_attribution": {"tea": 41.7, "dev": 8.3, "reviewer": 50.0}}, "house-md": {"meta": {"name": "House MD", "tier": "D", "zeitgeist": 73.0, "category": "TV Series", "dimensions": {"tone": "acerbic", "era": "contemporary", "genre": "drama", "energy": "intense"}, "ocean": {"tea": {"O": 3, "C": 5, "E": 3, "A": 2, "N": 2}, "dev": {"O": 3, "C": 4, "E": 3, "A": 3, "N": 3}, "reviewer": {"O": 5, "C": 2, "E": 3, "A": 1, "N": 4}}, "characters": {"tea": "Eric Foreman", "dev": "Robert Chase", "reviewer": "Gregory House (Reviewer Mode)"}}, "runs": [{"run_id": 1, "score_pct": 35.1, "weighted_caught": 13, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 2}}, {"run_id": 2, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 1, "reviewer": 2}}, {"run_id": 3, "score_pct": 54.1, "weighted_caught": 20, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 4}}, {"run_id": 4, "score_pct": 75.7, "weighted_caught": 28, "total_caught": 6, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": true, "caught_by": "reviewer"}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 6}}], "stats": {"n": 4, "mean": 51.4, "std": 15.7, "min": 35.1, "max": 75.7}, "finding_catch_rates": {"C1": {"caught": 0, "total": 4, "caught_by": {}}, "I1": {"caught": 3, "total": 4, "caught_by": {"dev": 1, "reviewer": 2}}, "I2": {"caught": 3, "total": 4, "caught_by": {"tea": 1, "reviewer": 2}}, "I3": {"caught": 2, "total": 4, "caught_by": {"reviewer": 2}}, "I4": {"caught": 4, "total": 4, "caught_by": {"reviewer": 4}}, "I5": {"caught": 3, "total": 4, "caught_by": {"reviewer": 3}}, "I6": {"caught": 1, "total": 4, "caught_by": {"reviewer": 1}}}, "phase_attribution": {"tea": 6.2, "dev": 6.2, "reviewer": 87.5}}, "jazz-legends": {"meta": {"name": "Jazz Legends", "tier": "D", "zeitgeist": 68.2, "category": "Music", "dimensions": {"tone": "soulful", "era": "historical", "genre": "arts", "energy": "improvisational"}, "ocean": {"tea": {"O": 5, "C": 5, "E": 3, "A": 4, "N": 4}, "dev": {"O": 5, "C": 4, "E": 3, "A": 2, "N": 3}, "reviewer": {"O": 5, "C": 4, "E": 2, "A": 3, "N": 3}}, "characters": {"tea": "John Coltrane", "dev": "Miles Davis", "reviewer": "Thelonious Monk"}}, "runs": [{"run_id": 1, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 3}}, {"run_id": 2, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 1, "reviewer": 1}}, {"run_id": 3, "score_pct": 27.0, "weighted_caught": 10, "total_caught": 2, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "dev"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 2, "reviewer": 0}}, {"run_id": 4, "score_pct": 27.0, "weighted_caught": 10, "total_caught": 2, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 2}}], "stats": {"n": 4, "mean": 33.8, "std": 6.8, "min": 27.0, "max": 40.5}, "finding_catch_rates": {"C1": {"caught": 0, "total": 4, "caught_by": {}}, "I1": {"caught": 4, "total": 4, "caught_by": {"reviewer": 2, "dev": 2}}, "I2": {"caught": 2, "total": 4, "caught_by": {"reviewer": 1, "tea": 1}}, "I3": {"caught": 0, "total": 4, "caught_by": {}}, "I4": {"caught": 4, "total": 4, "caught_by": {"reviewer": 3, "dev": 1}}, "I5": {"caught": 0, "total": 4, "caught_by": {}}, "I6": {"caught": 0, "total": 4, "caught_by": {}}}, "phase_attribution": {"tea": 10.0, "dev": 30.0, "reviewer": 60.0}}, "mash": {"meta": {"name": "MASH", "tier": "A", "zeitgeist": 74.25, "category": "TV Series", "dimensions": {"tone": "satirical", "era": "historical", "genre": "comedy-drama", "energy": "bittersweet"}, "ocean": {"tea": {"O": 3, "C": 5, "E": 2, "A": 5, "N": 4}, "dev": {"O": 5, "C": 5, "E": 3, "A": 2, "N": 2}, "reviewer": {"O": 4, "C": 5, "E": 3, "A": 4, "N": 2}}, "characters": {"tea": "Radar O'Reilly", "dev": "Major Charles Emerson Winchester III", "reviewer": "Colonel Sherman Potter"}}, "runs": [{"run_id": 1, "score_pct": 48.6, "weighted_caught": 18, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": true, "caught_by": "tea"}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 1, "reviewer": 1}}, {"run_id": 2, "score_pct": 67.6, "weighted_caught": 25, "total_caught": 5, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": true, "caught_by": "reviewer"}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 4}}, {"run_id": 3, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 1, "reviewer": 1}}, {"run_id": 4, "score_pct": 35.1, "weighted_caught": 13, "total_caught": 2, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": true, "caught_by": "tea"}, {"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": true, "caught_by": "dev"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": false, "caught_by": null}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 1, "reviewer": 0}}], "stats": {"n": 4, "mean": 48.0, "std": 12.3, "min": 35.1, "max": 67.6}, "finding_catch_rates": {"C1": {"caught": 2, "total": 4, "caught_by": {"tea": 2}}, "I1": {"caught": 3, "total": 4, "caught_by": {"dev": 2, "tea": 1}}, "I2": {"caught": 3, "total": 4, "caught_by": {"reviewer": 1, "tea": 1, "dev": 1}}, "I3": {"caught": 0, "total": 4, "caught_by": {}}, "I4": {"caught": 3, "total": 4, "caught_by": {"reviewer": 3}}, "I5": {"caught": 1, "total": 4, "caught_by": {"reviewer": 1}}, "I6": {"caught": 1, "total": 4, "caught_by": {"reviewer": 1}}}, "phase_attribution": {"tea": 30.8, "dev": 23.1, "reviewer": 46.2}}, "monty-python": {"meta": {"name": "Monty Python", "tier": "D", "zeitgeist": 82.3, "category": "TV Series", "dimensions": {"tone": "comedic", "era": "historical", "genre": "comedy", "energy": "high-energy"}, "ocean": {"tea": {"O": 4, "C": 5, "E": 4, "A": 1, "N": 3}, "dev": {"O": 3, "C": 5, "E": 2, "A": 4, "N": 1}, "reviewer": {"O": 3, "C": 5, "E": 4, "A": 1, "N": 2}}, "characters": {"tea": "Mr. Praline", "dev": "Bicycle Repair Man", "reviewer": "The Argument Professional"}}, "runs": [{"run_id": 1, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 2}}, {"run_id": 2, "score_pct": 48.6, "weighted_caught": 18, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 1, "reviewer": 2}}, {"run_id": 3, "score_pct": 48.6, "weighted_caught": 18, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 2, "dev": 0, "reviewer": 2}}, {"run_id": 4, "score_pct": 48.6, "weighted_caught": 18, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 1, "reviewer": 3}}], "stats": {"n": 4, "mean": 46.6, "std": 3.5, "min": 40.5, "max": 48.6}, "finding_catch_rates": {"C1": {"caught": 0, "total": 4, "caught_by": {}}, "I1": {"caught": 4, "total": 4, "caught_by": {"reviewer": 1, "dev": 2, "tea": 1}}, "I2": {"caught": 3, "total": 4, "caught_by": {"tea": 3}}, "I3": {"caught": 3, "total": 4, "caught_by": {"reviewer": 3}}, "I4": {"caught": 4, "total": 4, "caught_by": {"reviewer": 4}}, "I5": {"caught": 1, "total": 4, "caught_by": {"reviewer": 1}}, "I6": {"caught": 0, "total": 4, "caught_by": {}}}, "phase_attribution": {"tea": 26.7, "dev": 13.3, "reviewer": 60.0}}, "princess-bride": {"meta": {"name": "Princess Bride", "tier": "B", "zeitgeist": 91.0, "category": "Film", "dimensions": {"tone": "whimsical", "era": "timeless", "genre": "fantasy-adventure", "energy": "swashbuckling"}, "ocean": {"tea": {"O": 3, "C": 5, "E": 2, "A": 4, "N": 2}, "dev": {"O": 5, "C": 4, "E": 4, "A": 3, "N": 3}, "reviewer": {"O": 4, "C": 4, "E": 4, "A": 4, "N": 2}}, "characters": {"tea": "Fezzik", "dev": "Inigo Montoya", "reviewer": "Westley (The Dread Pirate Roberts)"}}, "runs": [{"run_id": 1, "score_pct": 54.1, "weighted_caught": 20, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": true, "caught_by": "reviewer"}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 4}}, {"run_id": 2, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 2}}, {"run_id": 3, "score_pct": 67.6, "weighted_caught": 25, "total_caught": 5, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": true, "caught_by": "reviewer"}], "caught_by_phase": {"tea": 1, "dev": 1, "reviewer": 3}}, {"run_id": 4, "score_pct": 35.1, "weighted_caught": 13, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 2}}], "stats": {"n": 4, "mean": 49.3, "std": 12.6, "min": 35.1, "max": 67.6}, "finding_catch_rates": {"C1": {"caught": 0, "total": 4, "caught_by": {}}, "I1": {"caught": 2, "total": 4, "caught_by": {"tea": 1, "dev": 1}}, "I2": {"caught": 4, "total": 4, "caught_by": {"reviewer": 2, "tea": 2}}, "I3": {"caught": 1, "total": 4, "caught_by": {"reviewer": 1}}, "I4": {"caught": 4, "total": 4, "caught_by": {"reviewer": 4}}, "I5": {"caught": 2, "total": 4, "caught_by": {"reviewer": 2}}, "I6": {"caught": 2, "total": 4, "caught_by": {"reviewer": 2}}}, "phase_attribution": {"tea": 20.0, "dev": 6.7, "reviewer": 73.3}}, "rome": {"meta": {"name": "Rome", "tier": "A", "zeitgeist": 80.0, "category": "History", "dimensions": {"tone": "serious", "era": "ancient", "genre": "historical-drama", "energy": "commanding"}, "ocean": {"tea": {"O": 3, "C": 4, "E": 4, "A": 2, "N": 3}, "dev": {"O": 2, "C": 5, "E": 3, "A": 3, "N": 2}, "reviewer": {"O": 4, "C": 5, "E": 3, "A": 1, "N": 3}}, "characters": {"tea": "Atia of the Julii", "dev": "Lucius Vorenus", "reviewer": "Marcus Tullius Cicero"}}, "runs": [{"run_id": 1, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 1, "reviewer": 1}}, {"run_id": 2, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 2, "dev": 0, "reviewer": 1}}, {"run_id": 3, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 2, "dev": 0, "reviewer": 1}}, {"run_id": 4, "score_pct": 54.1, "weighted_caught": 20, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 3}}], "stats": {"n": 4, "mean": 43.9, "std": 5.9, "min": 40.5, "max": 54.1}, "finding_catch_rates": {"C1": {"caught": 0, "total": 4, "caught_by": {}}, "I1": {"caught": 4, "total": 4, "caught_by": {"dev": 1, "tea": 2, "reviewer": 1}}, "I2": {"caught": 4, "total": 4, "caught_by": {"tea": 4}}, "I3": {"caught": 0, "total": 4, "caught_by": {}}, "I4": {"caught": 4, "total": 4, "caught_by": {"reviewer": 4}}, "I5": {"caught": 1, "total": 4, "caught_by": {"reviewer": 1}}, "I6": {"caught": 0, "total": 4, "caught_by": {}}}, "phase_attribution": {"tea": 46.2, "dev": 7.7, "reviewer": 46.2}}, "shakespeare": {"meta": {"name": "Shakespeare", "tier": "D", "zeitgeist": 79.0, "category": "Literature", "dimensions": {"tone": "dramatic", "era": "historical", "genre": "literary", "energy": "measured"}, "ocean": {"tea": {"O": 4, "C": 4, "E": 4, "A": 2, "N": 4}, "dev": {"O": 3, "C": 4, "E": 4, "A": 4, "N": 3}, "reviewer": {"O": 4, "C": 4, "E": 3, "A": 1, "N": 3}}, "characters": {"tea": "Hamlet, Prince of Denmark", "dev": "Puck (Robin Goodfellow)", "reviewer": "Portia"}}, "runs": [{"run_id": 1, "score_pct": 48.6, "weighted_caught": 18, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 1, "reviewer": 3}}, {"run_id": 2, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 1, "reviewer": 2}}, {"run_id": 3, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 1, "reviewer": 2}}, {"run_id": 4, "score_pct": 62.2, "weighted_caught": 23, "total_caught": 5, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": false, "caught_by": null}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": true, "caught_by": "reviewer"}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 4}}], "stats": {"n": 4, "mean": 48.0, "std": 8.9, "min": 40.5, "max": 62.2}, "finding_catch_rates": {"C1": {"caught": 0, "total": 4, "caught_by": {}}, "I1": {"caught": 4, "total": 4, "caught_by": {"dev": 3, "reviewer": 1}}, "I2": {"caught": 3, "total": 4, "caught_by": {"reviewer": 2, "tea": 1}}, "I3": {"caught": 2, "total": 4, "caught_by": {"reviewer": 2}}, "I4": {"caught": 3, "total": 4, "caught_by": {"reviewer": 3}}, "I5": {"caught": 2, "total": 4, "caught_by": {"reviewer": 2}}, "I6": {"caught": 1, "total": 4, "caught_by": {"reviewer": 1}}}, "phase_attribution": {"tea": 6.7, "dev": 20.0, "reviewer": 73.3}}, "star-trek-tos": {"meta": {"name": "Star Trek TOS", "tier": "B", "zeitgeist": 84.75, "category": "TV Series", "dimensions": {"tone": "dramatic", "era": "futuristic", "genre": "sci-fi", "energy": "bold"}, "ocean": {"tea": {"O": 4, "C": 5, "E": 3, "A": 4, "N": 2}, "dev": {"O": 3, "C": 4, "E": 4, "A": 4, "N": 4}, "reviewer": {"O": 5, "C": 5, "E": 2, "A": 2, "N": 1}}, "characters": {"tea": "Montgomery \"Scotty\" Scott", "dev": "Dr. Leonard \"Bones\" McCoy", "reviewer": "Mr. Spock"}}, "runs": [{"run_id": 1, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "dev"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 2, "reviewer": 0}}, {"run_id": 2, "score_pct": 13.5, "weighted_caught": 5, "total_caught": 1, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": false, "caught_by": null}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 1}}, {"run_id": 3, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 1, "reviewer": 1}}, {"run_id": 4, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 1, "reviewer": 1}}], "stats": {"n": 4, "mean": 33.8, "std": 11.7, "min": 13.5, "max": 40.5}, "finding_catch_rates": {"C1": {"caught": 0, "total": 4, "caught_by": {}}, "I1": {"caught": 4, "total": 4, "caught_by": {"dev": 3, "reviewer": 1}}, "I2": {"caught": 3, "total": 4, "caught_by": {"tea": 3}}, "I3": {"caught": 0, "total": 4, "caught_by": {}}, "I4": {"caught": 3, "total": 4, "caught_by": {"dev": 1, "reviewer": 2}}, "I5": {"caught": 0, "total": 4, "caught_by": {}}, "I6": {"caught": 0, "total": 4, "caught_by": {}}}, "phase_attribution": {"tea": 30.0, "dev": 40.0, "reviewer": 30.0}}, "stephen-king": {"meta": {"name": "stephen-king", "tier": "A", "zeitgeist": null, "category": "Literature", "dimensions": {"tone": "dark", "era": "contemporary", "genre": "horror", "energy": "creeping"}, "ocean": {"tea": {"O": 5, "C": 4, "E": 4, "A": 1, "N": 1}, "dev": {"O": 4, "C": 4, "E": 2, "A": 2, "N": 4}, "reviewer": {"O": 3, "C": 5, "E": 1, "A": 2, "N": 1}}, "characters": {"tea": "Pennywise", "dev": "Jack Torrance", "reviewer": "Roland Deschain"}}, "runs": [{"run_id": 1, "score_pct": 75.7, "weighted_caught": 28, "total_caught": 6, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "dev"}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": true, "caught_by": "reviewer"}], "caught_by_phase": {"tea": 1, "dev": 1, "reviewer": 4}}, {"run_id": 2, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "dev"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 2, "dev": 1, "reviewer": 0}}, {"run_id": 3, "score_pct": 27.0, "weighted_caught": 10, "total_caught": 2, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": false, "caught_by": null}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 2}}, {"run_id": 4, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "dev"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 1, "reviewer": 2}}], "stats": {"n": 4, "mean": 45.9, "std": 18.1, "min": 27.0, "max": 75.7}, "finding_catch_rates": {"C1": {"caught": 0, "total": 4, "caught_by": {}}, "I1": {"caught": 4, "total": 4, "caught_by": {"reviewer": 3, "tea": 1}}, "I2": {"caught": 4, "total": 4, "caught_by": {"tea": 2, "reviewer": 2}}, "I3": {"caught": 1, "total": 4, "caught_by": {"reviewer": 1}}, "I4": {"caught": 3, "total": 4, "caught_by": {"dev": 3}}, "I5": {"caught": 1, "total": 4, "caught_by": {"reviewer": 1}}, "I6": {"caught": 1, "total": 4, "caught_by": {"reviewer": 1}}}, "phase_attribution": {"tea": 21.4, "dev": 21.4, "reviewer": 57.1}}, "the-expanse": {"meta": {"name": "The Expanse", "tier": "S", "zeitgeist": 91.0, "category": "TV Series", "dimensions": {"tone": "gritty", "era": "futuristic", "genre": "sci-fi", "energy": "tense"}, "ocean": {"tea": {"O": 2, "C": 4, "E": 2, "A": 3, "N": 1}, "dev": {"O": 5, "C": 5, "E": 3, "A": 4, "N": 3}, "reviewer": {"O": 4, "C": 5, "E": 4, "A": 2, "N": 2}}, "characters": {"tea": "Amos Burton", "dev": "Naomi Nagata", "reviewer": "Chrisjen Avasarala"}}, "runs": [{"run_id": 1, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 1, "reviewer": 2}}, {"run_id": 2, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 3}}, {"run_id": 3, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 2, "dev": 0, "reviewer": 1}}, {"run_id": 4, "score_pct": 67.6, "weighted_caught": 25, "total_caught": 5, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": true, "caught_by": "reviewer"}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 4}}], "stats": {"n": 4, "mean": 47.3, "std": 11.7, "min": 40.5, "max": 67.6}, "finding_catch_rates": {"C1": {"caught": 0, "total": 4, "caught_by": {}}, "I1": {"caught": 4, "total": 4, "caught_by": {"dev": 1, "reviewer": 2, "tea": 1}}, "I2": {"caught": 4, "total": 4, "caught_by": {"reviewer": 2, "tea": 2}}, "I3": {"caught": 0, "total": 4, "caught_by": {}}, "I4": {"caught": 4, "total": 4, "caught_by": {"reviewer": 4}}, "I5": {"caught": 1, "total": 4, "caught_by": {"reviewer": 1}}, "I6": {"caught": 1, "total": 4, "caught_by": {"reviewer": 1}}}, "phase_attribution": {"tea": 21.4, "dev": 7.1, "reviewer": 71.4}}, "the-west-wing": {"meta": {"name": "The West Wing", "tier": "S", "zeitgeist": 84.5, "category": "TV Series", "dimensions": {"tone": "idealistic", "era": "contemporary", "genre": "political-drama", "energy": "rapid"}, "ocean": {"tea": {"O": 4, "C": 4, "E": 4, "A": 4, "N": 2}, "dev": {"O": 4, "C": 5, "E": 3, "A": 2, "N": 4}, "reviewer": {"O": 4, "C": 4, "E": 5, "A": 3, "N": 4}}, "characters": {"tea": "Sam Seaborn", "dev": "Toby Ziegler", "reviewer": "Josh Lyman"}}, "runs": [{"run_id": 1, "score_pct": 35.1, "weighted_caught": 13, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 1, "reviewer": 2}}, {"run_id": 2, "score_pct": 54.1, "weighted_caught": 20, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "dev"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": true, "caught_by": "reviewer"}], "caught_by_phase": {"tea": 0, "dev": 1, "reviewer": 3}}, {"run_id": 3, "score_pct": 62.2, "weighted_caught": 23, "total_caught": 5, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": true, "caught_by": "reviewer"}], "caught_by_phase": {"tea": 0, "dev": 1, "reviewer": 4}}, {"run_id": 4, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 1, "reviewer": 1}}], "stats": {"n": 4, "mean": 48.0, "std": 10.7, "min": 35.1, "max": 62.2}, "finding_catch_rates": {"C1": {"caught": 0, "total": 4, "caught_by": {}}, "I1": {"caught": 4, "total": 4, "caught_by": {"dev": 3, "reviewer": 1}}, "I2": {"caught": 3, "total": 4, "caught_by": {"dev": 1, "reviewer": 1, "tea": 1}}, "I3": {"caught": 2, "total": 4, "caught_by": {"reviewer": 2}}, "I4": {"caught": 4, "total": 4, "caught_by": {"reviewer": 4}}, "I5": {"caught": 0, "total": 4, "caught_by": {}}, "I6": {"caught": 2, "total": 4, "caught_by": {"reviewer": 2}}}, "phase_attribution": {"tea": 6.7, "dev": 26.7, "reviewer": 66.7}}}}, "dpgd-117": {"scenario_id": "dpgd-117", "ground_truth": [{"id": "I1", "title": "Dependencies inline instead of workspace level", "weight": 3, "severity": "important", "phase_ideal": "dev"}, {"id": "I2", "title": "FieldErrorCode missing #[non_exhaustive]", "weight": 5, "severity": "important", "phase_ideal": "reviewer"}, {"id": "I3", "title": "Hardcoded trace_id 'none'", "weight": 5, "severity": "important", "phase_ideal": "dev"}, {"id": "I4", "title": "Zero structured logging", "weight": 5, "severity": "important", "phase_ideal": "dev"}, {"id": "I5", "title": "Security comment claims tracing that doesn't exist", "weight": 3, "severity": "important", "phase_ideal": "reviewer"}, {"id": "I6", "title": "Non-ASCII tenant header silently treated as missing", "weight": 8, "severity": "important", "phase_ideal": "tea"}, {"id": "I7", "title": "CWE-209 test gap \u2014 no body assertion", "weight": 5, "severity": "important", "phase_ideal": "tea"}, {"id": "I8", "title": "CORS preflight test doesn't verify CORS headers", "weight": 5, "severity": "important", "phase_ideal": "tea"}, {"id": "I9", "title": "Wrong log levels \u2014 error! for 4xx client errors", "weight": 5, "severity": "important", "phase_ideal": "reviewer"}, {"id": "I10", "title": "CORS allows Any origin/method/header (CWE-942)", "weight": 8, "severity": "important", "phase_ideal": "dev"}], "total_weight": 52, "themes": {"control": {"meta": {"name": "Control", "tier": "D", "zeitgeist": 8.0, "category": "TV Series", "dimensions": {"tone": "eerie", "era": "contemporary", "genre": "sci-fi-thriller", "energy": "unsettling"}, "ocean": {"tea": {"O": 3, "C": 3, "E": 3, "A": 3, "N": 3}, "dev": {"O": 3, "C": 3, "E": 3, "A": 3, "N": 3}, "reviewer": {"O": 3, "C": 3, "E": 3, "A": 3, "N": 3}}, "characters": {"tea": "Test Engineer (baseline control)", "dev": "Developer (baseline control)", "reviewer": "Code Reviewer (baseline control)"}}, "runs": [{"run_id": 0, "score_pct": 19.2, "weighted_caught": 10, "total_caught": 2, "total_findings": 10, "total_weight": 52, "findings": [{"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}, {"finding_id": "I7", "caught": false, "caught_by": null}, {"finding_id": "I8", "caught": false, "caught_by": null}, {"finding_id": "I9", "caught": false, "caught_by": null}, {"finding_id": "I10", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 2}}, {"run_id": 1, "score_pct": 28.8, "weighted_caught": 15, "total_caught": 3, "total_findings": 10, "total_weight": 52, "findings": [{"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}, {"finding_id": "I7", "caught": false, "caught_by": null}, {"finding_id": "I8", "caught": false, "caught_by": null}, {"finding_id": "I9", "caught": false, "caught_by": null}, {"finding_id": "I10", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 3}}, {"run_id": 2, "score_pct": 28.8, "weighted_caught": 15, "total_caught": 3, "total_findings": 10, "total_weight": 52, "findings": [{"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}, {"finding_id": "I7", "caught": false, "caught_by": null}, {"finding_id": "I8", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I9", "caught": false, "caught_by": null}, {"finding_id": "I10", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 3}}, {"run_id": 3, "score_pct": 25.0, "weighted_caught": 13, "total_caught": 2, "total_findings": 10, "total_weight": 52, "findings": [{"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}, {"finding_id": "I7", "caught": false, "caught_by": null}, {"finding_id": "I8", "caught": false, "caught_by": null}, {"finding_id": "I9", "caught": false, "caught_by": null}, {"finding_id": "I10", "caught": true, "caught_by": "reviewer"}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 2}}, {"run_id": 4, "score_pct": 19.2, "weighted_caught": 10, "total_caught": 2, "total_findings": 10, "total_weight": 52, "findings": [{"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}, {"finding_id": "I7", "caught": false, "caught_by": null}, {"finding_id": "I8", "caught": false, "caught_by": null}, {"finding_id": "I9", "caught": false, "caught_by": null}, {"finding_id": "I10", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 2}}], "stats": {"n": 5, "mean": 24.2, "std": 4.3, "min": 19.2, "max": 28.8}, "finding_catch_rates": {"I1": {"caught": 0, "total": 5, "caught_by": {}}, "I2": {"caught": 3, "total": 5, "caught_by": {"reviewer": 3}}, "I3": {"caught": 2, "total": 5, "caught_by": {"reviewer": 2}}, "I4": {"caught": 5, "total": 5, "caught_by": {"reviewer": 5}}, "I5": {"caught": 0, "total": 5, "caught_by": {}}, "I6": {"caught": 0, "total": 5, "caught_by": {}}, "I7": {"caught": 0, "total": 5, "caught_by": {}}, "I8": {"caught": 1, "total": 5, "caught_by": {"reviewer": 1}}, "I9": {"caught": 0, "total": 5, "caught_by": {}}, "I10": {"caught": 1, "total": 5, "caught_by": {"reviewer": 1}}}, "phase_attribution": {"tea": 0.0, "dev": 0.0, "reviewer": 100.0}}, "discworld": {"meta": {"name": "Discworld", "tier": "A", "zeitgeist": 98.0, "category": "Literature", "dimensions": {"tone": "satirical", "era": "timeless", "genre": "fantasy", "energy": "measured"}, "ocean": {"tea": {"O": 3, "C": 5, "E": 2, "A": 5, "N": 1}, "dev": {"O": 5, "C": 5, "E": 2, "A": 3, "N": 3}, "reviewer": {"O": 3, "C": 5, "E": 2, "A": 1, "N": 1}}, "characters": {"tea": "Igor", "dev": "Ponder Stibbons", "reviewer": "Granny Weatherwax"}}, "runs": [{"run_id": 1, "score_pct": 25.0, "weighted_caught": 13, "total_caught": 2, "total_findings": 10, "total_weight": 52, "findings": [{"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}, {"finding_id": "I7", "caught": false, "caught_by": null}, {"finding_id": "I8", "caught": false, "caught_by": null}, {"finding_id": "I9", "caught": false, "caught_by": null}, {"finding_id": "I10", "caught": true, "caught_by": "reviewer"}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 2}}], "stats": {"n": 1, "mean": 25.0, "std": 0, "min": 25.0, "max": 25.0}, "finding_catch_rates": {"I1": {"caught": 0, "total": 1, "caught_by": {}}, "I2": {"caught": 0, "total": 1, "caught_by": {}}, "I3": {"caught": 0, "total": 1, "caught_by": {}}, "I4": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}, "I5": {"caught": 0, "total": 1, "caught_by": {}}, "I6": {"caught": 0, "total": 1, "caught_by": {}}, "I7": {"caught": 0, "total": 1, "caught_by": {}}, "I8": {"caught": 0, "total": 1, "caught_by": {}}, "I9": {"caught": 0, "total": 1, "caught_by": {}}, "I10": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}}, "phase_attribution": {"tea": 0.0, "dev": 0.0, "reviewer": 100.0}}, "firefly": {"meta": {"name": "Firefly", "tier": "A", "zeitgeist": 82.3, "category": "TV Series", "dimensions": {"tone": "wry", "era": "futuristic", "genre": "space-western", "energy": "scrappy"}, "ocean": {"tea": {"O": 1, "C": 2, "E": 4, "A": 1, "N": 2}, "dev": {"O": 3, "C": 3, "E": 4, "A": 2, "N": 3}, "reviewer": {"O": 5, "C": 2, "E": 2, "A": 3, "N": 5}}, "characters": {"tea": "Jayne Cobb", "dev": "Malcolm Reynolds", "reviewer": "River Tam"}}, "runs": [{"run_id": 1, "score_pct": 44.2, "weighted_caught": 23, "total_caught": 4, "total_findings": 10, "total_weight": 52, "findings": [{"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}, {"finding_id": "I7", "caught": false, "caught_by": null}, {"finding_id": "I8", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I9", "caught": false, "caught_by": null}, {"finding_id": "I10", "caught": true, "caught_by": "reviewer"}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 4}}], "stats": {"n": 1, "mean": 44.2, "std": 0, "min": 44.2, "max": 44.2}, "finding_catch_rates": {"I1": {"caught": 0, "total": 1, "caught_by": {}}, "I2": {"caught": 0, "total": 1, "caught_by": {}}, "I3": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}, "I4": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}, "I5": {"caught": 0, "total": 1, "caught_by": {}}, "I6": {"caught": 0, "total": 1, "caught_by": {}}, "I7": {"caught": 0, "total": 1, "caught_by": {}}, "I8": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}, "I9": {"caught": 0, "total": 1, "caught_by": {}}, "I10": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}}, "phase_attribution": {"tea": 0.0, "dev": 0.0, "reviewer": 100.0}}, "gilligans-island": {"meta": {"name": "Gilligan's Island", "tier": "D", "zeitgeist": 71.8, "category": "TV Series", "dimensions": {"tone": "comedic", "era": "retro", "genre": "comedy", "energy": "slapstick"}, "ocean": {"tea": {"O": 3, "C": 5, "E": 3, "A": 5, "N": 2}, "dev": {"O": 4, "C": 1, "E": 4, "A": 5, "N": 3}, "reviewer": {"O": 1, "C": 4, "E": 4, "A": 1, "N": 3}}, "characters": {"tea": "Mary Ann Summers", "dev": "Gilligan", "reviewer": "Thurston Howell III"}}, "runs": [{"run_id": 1, "score_pct": 9.6, "weighted_caught": 5, "total_caught": 1, "total_findings": 10, "total_weight": 52, "findings": [{"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}, {"finding_id": "I7", "caught": false, "caught_by": null}, {"finding_id": "I8", "caught": false, "caught_by": null}, {"finding_id": "I9", "caught": false, "caught_by": null}, {"finding_id": "I10", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 1}}], "stats": {"n": 1, "mean": 9.6, "std": 0, "min": 9.6, "max": 9.6}, "finding_catch_rates": {"I1": {"caught": 0, "total": 1, "caught_by": {}}, "I2": {"caught": 0, "total": 1, "caught_by": {}}, "I3": {"caught": 0, "total": 1, "caught_by": {}}, "I4": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}, "I5": {"caught": 0, "total": 1, "caught_by": {}}, "I6": {"caught": 0, "total": 1, "caught_by": {}}, "I7": {"caught": 0, "total": 1, "caught_by": {}}, "I8": {"caught": 0, "total": 1, "caught_by": {}}, "I9": {"caught": 0, "total": 1, "caught_by": {}}, "I10": {"caught": 0, "total": 1, "caught_by": {}}}, "phase_attribution": {"tea": 0.0, "dev": 0.0, "reviewer": 100.0}}, "the-expanse": {"meta": {"name": "The Expanse", "tier": "S", "zeitgeist": 91.0, "category": "TV Series", "dimensions": {"tone": "gritty", "era": "futuristic", "genre": "sci-fi", "energy": "tense"}, "ocean": {"tea": {"O": 2, "C": 4, "E": 2, "A": 3, "N": 1}, "dev": {"O": 5, "C": 5, "E": 3, "A": 4, "N": 3}, "reviewer": {"O": 4, "C": 5, "E": 4, "A": 2, "N": 2}}, "characters": {"tea": "Amos Burton", "dev": "Naomi Nagata", "reviewer": "Chrisjen Avasarala"}}, "runs": [{"run_id": 1, "score_pct": 19.2, "weighted_caught": 10, "total_caught": 2, "total_findings": 10, "total_weight": 52, "findings": [{"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}, {"finding_id": "I7", "caught": false, "caught_by": null}, {"finding_id": "I8", "caught": false, "caught_by": null}, {"finding_id": "I9", "caught": false, "caught_by": null}, {"finding_id": "I10", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 2}}], "stats": {"n": 1, "mean": 19.2, "std": 0, "min": 19.2, "max": 19.2}, "finding_catch_rates": {"I1": {"caught": 0, "total": 1, "caught_by": {}}, "I2": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}, "I3": {"caught": 0, "total": 1, "caught_by": {}}, "I4": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}, "I5": {"caught": 0, "total": 1, "caught_by": {}}, "I6": {"caught": 0, "total": 1, "caught_by": {}}, "I7": {"caught": 0, "total": 1, "caught_by": {}}, "I8": {"caught": 0, "total": 1, "caught_by": {}}, "I9": {"caught": 0, "total": 1, "caught_by": {}}, "I10": {"caught": 0, "total": 1, "caught_by": {}}}, "phase_attribution": {"tea": 0.0, "dev": 0.0, "reviewer": 100.0}}, "the-matrix": {"meta": {"name": "The Matrix", "tier": "S", "zeitgeist": 85.0, "category": "Film", "dimensions": {"tone": "serious", "era": "futuristic", "genre": "sci-fi", "energy": "high-energy"}, "ocean": {"tea": {"O": 5, "C": 5, "E": 2, "A": 1, "N": 1}, "dev": {"O": 3, "C": 5, "E": 3, "A": 1, "N": 4}, "reviewer": {"O": 4, "C": 4, "E": 4, "A": 1, "N": 2}}, "characters": {"tea": "The Architect", "dev": "Agent Smith", "reviewer": "The Merovingian"}}, "runs": [{"run_id": 1, "score_pct": 44.2, "weighted_caught": 23, "total_caught": 4, "total_findings": 10, "total_weight": 52, "findings": [{"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": true, "caught_by": "tea"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}, {"finding_id": "I7", "caught": false, "caught_by": null}, {"finding_id": "I8", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I9", "caught": false, "caught_by": null}, {"finding_id": "I10", "caught": true, "caught_by": "reviewer"}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 3}}], "stats": {"n": 1, "mean": 44.2, "std": 0, "min": 44.2, "max": 44.2}, "finding_catch_rates": {"I1": {"caught": 0, "total": 1, "caught_by": {}}, "I2": {"caught": 0, "total": 1, "caught_by": {}}, "I3": {"caught": 1, "total": 1, "caught_by": {"tea": 1}}, "I4": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}, "I5": {"caught": 0, "total": 1, "caught_by": {}}, "I6": {"caught": 0, "total": 1, "caught_by": {}}, "I7": {"caught": 0, "total": 1, "caught_by": {}}, "I8": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}, "I9": {"caught": 0, "total": 1, "caught_by": {}}, "I10": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}}, "phase_attribution": {"tea": 25.0, "dev": 0.0, "reviewer": 75.0}}}}}};
+  } catch(e) {
+    // {"generated": "benchmark-viz-data.py", "scenarios": {"dpgd-116": {"scenario_id": "dpgd-116", "ground_truth": [{"id": "C1", "title": "from_file_or_default swallows ALL errors including parse and permission failures", "weight": 8, "severity": "important", "phase_ideal": "dev"}, {"id": "I1", "title": "CliError Display leaks internal details to stderr (CWE-209)", "weight": 5, "severity": "important", "phase_ideal": "reviewer"}, {"id": "I2", "title": "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)", "weight": 5, "severity": "important", "phase_ideal": "tea"}, {"id": "I3", "title": "Dependencies use direct version strings instead of workspace = true", "weight": 3, "severity": "important", "phase_ideal": "dev"}, {"id": "I4", "title": "Config token field silently ignored \u2014 secret left on disk", "weight": 5, "severity": "important", "phase_ideal": "reviewer"}, {"id": "I5", "title": "Vacuously true test \u2014 assertion is None || true", "weight": 5, "severity": "important", "phase_ideal": "tea"}, {"id": "I6", "title": "Test with zero assertions \u2014 only checks non-panic", "weight": 5, "severity": "important", "phase_ideal": "tea"}], "total_weight": 36, "themes": {"control": {"meta": {"name": "Control", "tier": "D", "zeitgeist": 8.0, "category": "TV Series", "dimensions": {"tone": "eerie", "era": "contemporary", "genre": "sci-fi-thriller", "energy": "unsettling"}, "ocean": {"tea": {"O": 3, "C": 3, "E": 3, "A": 3, "N": 3}, "dev": {"O": 3, "C": 3, "E": 3, "A": 3, "N": 3}, "reviewer": {"O": 3, "C": 3, "E": 3, "A": 3, "N": 3}}, "characters": {"tea": "Test Engineer (baseline control)", "dev": "Developer (baseline control)", "reviewer": "Code Reviewer (baseline control)"}}, "runs": [{"run_id": 1, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": false, "caught_by": null}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 2, "dev": 0, "reviewer": 1}}, {"run_id": 2, "score_pct": 54.1, "weighted_caught": 20, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "dev"}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 2, "reviewer": 2}}, {"run_id": 3, "score_pct": 48.6, "weighted_caught": 18, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 3}}, {"run_id": 4, "score_pct": 27.0, "weighted_caught": 10, "total_caught": 2, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 1}}], "stats": {"n": 4, "mean": 42.5, "std": 10.2, "min": 27.0, "max": 54.1}, "finding_catch_rates": {"C1": {"caught": 0, "total": 4, "caught_by": {}}, "I1": {"caught": 4, "total": 4, "caught_by": {"tea": 3, "dev": 1}}, "I2": {"caught": 3, "total": 4, "caught_by": {"tea": 1, "reviewer": 2}}, "I3": {"caught": 1, "total": 4, "caught_by": {"reviewer": 1}}, "I4": {"caught": 3, "total": 4, "caught_by": {"dev": 1, "reviewer": 2}}, "I5": {"caught": 2, "total": 4, "caught_by": {"reviewer": 2}}, "I6": {"caught": 0, "total": 4, "caught_by": {}}}, "phase_attribution": {"tea": 30.8, "dev": 15.4, "reviewer": 53.8}}, "discworld": {"meta": {"name": "Discworld", "tier": "A", "zeitgeist": 98.0, "category": "Literature", "dimensions": {"tone": "satirical", "era": "timeless", "genre": "fantasy", "energy": "measured"}, "ocean": {"tea": {"O": 3, "C": 5, "E": 2, "A": 5, "N": 1}, "dev": {"O": 5, "C": 5, "E": 2, "A": 3, "N": 3}, "reviewer": {"O": 3, "C": 5, "E": 2, "A": 1, "N": 1}}, "characters": {"tea": "Igor", "dev": "Ponder Stibbons", "reviewer": "Granny Weatherwax"}}, "runs": [{"run_id": 1, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 1, "reviewer": 1}}, {"run_id": 2, "score_pct": 48.6, "weighted_caught": 18, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 3}}, {"run_id": 3, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 3}}, {"run_id": 4, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 2}}], "stats": {"n": 4, "mean": 42.5, "std": 3.5, "min": 40.5, "max": 48.6}, "finding_catch_rates": {"C1": {"caught": 0, "total": 4, "caught_by": {}}, "I1": {"caught": 4, "total": 4, "caught_by": {"dev": 1, "tea": 1, "reviewer": 2}}, "I2": {"caught": 4, "total": 4, "caught_by": {"tea": 2, "reviewer": 2}}, "I3": {"caught": 1, "total": 4, "caught_by": {"reviewer": 1}}, "I4": {"caught": 4, "total": 4, "caught_by": {"reviewer": 4}}, "I5": {"caught": 0, "total": 4, "caught_by": {}}, "I6": {"caught": 0, "total": 4, "caught_by": {}}}, "phase_attribution": {"tea": 23.1, "dev": 7.7, "reviewer": 69.2}}, "enlightenment-thinkers": {"meta": {"name": "Enlightenment Thinkers", "tier": "B", "zeitgeist": 74.5, "category": "History", "dimensions": {"tone": "contemplative", "era": "historical", "genre": "philosophy", "energy": "measured"}, "ocean": {"tea": {"O": 5, "C": 4, "E": 4, "A": 4, "N": 2}, "dev": {"O": 5, "C": 5, "E": 5, "A": 5, "N": 2}, "reviewer": {"O": 5, "C": 5, "E": 1, "A": 3, "N": 2}}, "characters": {"tea": "David Hume", "dev": "Benjamin Franklin", "reviewer": "Immanuel Kant"}}, "runs": [{"run_id": 1, "score_pct": 27.0, "weighted_caught": 10, "total_caught": 2, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 2}}], "stats": {"n": 1, "mean": 27.0, "std": 0, "min": 27.0, "max": 27.0}, "finding_catch_rates": {"C1": {"caught": 0, "total": 1, "caught_by": {}}, "I1": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}, "I2": {"caught": 0, "total": 1, "caught_by": {}}, "I3": {"caught": 0, "total": 1, "caught_by": {}}, "I4": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}, "I5": {"caught": 0, "total": 1, "caught_by": {}}, "I6": {"caught": 0, "total": 1, "caught_by": {}}}, "phase_attribution": {"tea": 0.0, "dev": 0.0, "reviewer": 100.0}}, "firefly": {"meta": {"name": "Firefly", "tier": "A", "zeitgeist": 82.3, "category": "TV Series", "dimensions": {"tone": "wry", "era": "futuristic", "genre": "space-western", "energy": "scrappy"}, "ocean": {"tea": {"O": 1, "C": 2, "E": 4, "A": 1, "N": 2}, "dev": {"O": 3, "C": 3, "E": 4, "A": 2, "N": 3}, "reviewer": {"O": 5, "C": 2, "E": 2, "A": 3, "N": 5}}, "characters": {"tea": "Jayne Cobb", "dev": "Malcolm Reynolds", "reviewer": "River Tam"}}, "runs": [{"run_id": 1, "score_pct": 27.0, "weighted_caught": 10, "total_caught": 2, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": false, "caught_by": null}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 2, "dev": 0, "reviewer": 0}}, {"run_id": 2, "score_pct": 48.6, "weighted_caught": 18, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "dev"}, {"finding_id": "I3", "caught": true, "caught_by": "dev"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 2, "reviewer": 1}}, {"run_id": 3, "score_pct": 13.5, "weighted_caught": 5, "total_caught": 1, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": false, "caught_by": null}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 0}}, {"run_id": 4, "score_pct": 27.0, "weighted_caught": 10, "total_caught": 2, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": false, "caught_by": null}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 2, "dev": 0, "reviewer": 0}}, {"run_id": 5, "score_pct": 62.2, "weighted_caught": 23, "total_caught": 5, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "dev"}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 2, "dev": 1, "reviewer": 2}}, {"run_id": 6, "score_pct": 48.6, "weighted_caught": 18, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 1, "reviewer": 2}}], "stats": {"n": 6, "mean": 37.8, "std": 16.6, "min": 13.5, "max": 62.2}, "finding_catch_rates": {"C1": {"caught": 1, "total": 6, "caught_by": {"reviewer": 1}}, "I1": {"caught": 6, "total": 6, "caught_by": {"tea": 5, "dev": 1}}, "I2": {"caught": 4, "total": 6, "caught_by": {"tea": 3, "dev": 1}}, "I3": {"caught": 2, "total": 6, "caught_by": {"dev": 1, "reviewer": 1}}, "I4": {"caught": 3, "total": 6, "caught_by": {"reviewer": 2, "dev": 1}}, "I5": {"caught": 1, "total": 6, "caught_by": {"reviewer": 1}}, "I6": {"caught": 0, "total": 6, "caught_by": {}}}, "phase_attribution": {"tea": 47.1, "dev": 23.5, "reviewer": 29.4}}, "game-of-thrones": {"meta": {"name": "Game of Thrones", "tier": "S", "zeitgeist": 79.3, "category": "TV Series", "dimensions": {"tone": "dramatic", "era": "medieval", "genre": "fantasy", "energy": "intense"}, "ocean": {"tea": {"O": 4, "C": 4, "E": 4, "A": 1, "N": 2}, "dev": {"O": 4, "C": 4, "E": 4, "A": 3, "N": 2}, "reviewer": {"O": 4, "C": 4, "E": 2, "A": 2, "N": 2}}, "characters": {"tea": "Tywin Lannister", "dev": "Tyrion Lannister", "reviewer": "Petyr Baelish (Littlefinger)"}}, "runs": [{"run_id": 1, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 3}}, {"run_id": 2, "score_pct": 48.6, "weighted_caught": 18, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 1, "reviewer": 3}}, {"run_id": 3, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 2}}, {"run_id": 4, "score_pct": 48.6, "weighted_caught": 18, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 1, "reviewer": 2}}], "stats": {"n": 4, "mean": 44.5, "std": 4.1, "min": 40.5, "max": 48.6}, "finding_catch_rates": {"C1": {"caught": 0, "total": 4, "caught_by": {}}, "I1": {"caught": 4, "total": 4, "caught_by": {"reviewer": 2, "dev": 2}}, "I2": {"caught": 4, "total": 4, "caught_by": {"reviewer": 2, "tea": 2}}, "I3": {"caught": 2, "total": 4, "caught_by": {"reviewer": 2}}, "I4": {"caught": 4, "total": 4, "caught_by": {"reviewer": 4}}, "I5": {"caught": 0, "total": 4, "caught_by": {}}, "I6": {"caught": 0, "total": 4, "caught_by": {}}}, "phase_attribution": {"tea": 14.3, "dev": 14.3, "reviewer": 71.4}}, "gilligans-island": {"meta": {"name": "Gilligan's Island", "tier": "D", "zeitgeist": 71.8, "category": "TV Series", "dimensions": {"tone": "comedic", "era": "retro", "genre": "comedy", "energy": "slapstick"}, "ocean": {"tea": {"O": 3, "C": 5, "E": 3, "A": 5, "N": 2}, "dev": {"O": 4, "C": 1, "E": 4, "A": 5, "N": 3}, "reviewer": {"O": 1, "C": 4, "E": 4, "A": 1, "N": 3}}, "characters": {"tea": "Mary Ann Summers", "dev": "Gilligan", "reviewer": "Thurston Howell III"}}, "runs": [{"run_id": 1, "score_pct": 48.6, "weighted_caught": 18, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": true, "caught_by": "tea"}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": false, "caught_by": null}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 3, "dev": 0, "reviewer": 0}}, {"run_id": 2, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 2}}, {"run_id": 3, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 1, "reviewer": 2}}, {"run_id": 4, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 2}}], "stats": {"n": 4, "mean": 42.5, "std": 3.5, "min": 40.5, "max": 48.6}, "finding_catch_rates": {"C1": {"caught": 1, "total": 4, "caught_by": {"tea": 1}}, "I1": {"caught": 4, "total": 4, "caught_by": {"tea": 1, "reviewer": 2, "dev": 1}}, "I2": {"caught": 4, "total": 4, "caught_by": {"tea": 3, "reviewer": 1}}, "I3": {"caught": 0, "total": 4, "caught_by": {}}, "I4": {"caught": 3, "total": 4, "caught_by": {"reviewer": 3}}, "I5": {"caught": 0, "total": 4, "caught_by": {}}, "I6": {"caught": 0, "total": 4, "caught_by": {}}}, "phase_attribution": {"tea": 41.7, "dev": 8.3, "reviewer": 50.0}}, "house-md": {"meta": {"name": "House MD", "tier": "D", "zeitgeist": 73.0, "category": "TV Series", "dimensions": {"tone": "acerbic", "era": "contemporary", "genre": "drama", "energy": "intense"}, "ocean": {"tea": {"O": 3, "C": 5, "E": 3, "A": 2, "N": 2}, "dev": {"O": 3, "C": 4, "E": 3, "A": 3, "N": 3}, "reviewer": {"O": 5, "C": 2, "E": 3, "A": 1, "N": 4}}, "characters": {"tea": "Eric Foreman", "dev": "Robert Chase", "reviewer": "Gregory House (Reviewer Mode)"}}, "runs": [{"run_id": 1, "score_pct": 35.1, "weighted_caught": 13, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 2}}, {"run_id": 2, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 1, "reviewer": 2}}, {"run_id": 3, "score_pct": 54.1, "weighted_caught": 20, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 4}}, {"run_id": 4, "score_pct": 75.7, "weighted_caught": 28, "total_caught": 6, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": true, "caught_by": "reviewer"}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 6}}], "stats": {"n": 4, "mean": 51.4, "std": 15.7, "min": 35.1, "max": 75.7}, "finding_catch_rates": {"C1": {"caught": 0, "total": 4, "caught_by": {}}, "I1": {"caught": 3, "total": 4, "caught_by": {"dev": 1, "reviewer": 2}}, "I2": {"caught": 3, "total": 4, "caught_by": {"tea": 1, "reviewer": 2}}, "I3": {"caught": 2, "total": 4, "caught_by": {"reviewer": 2}}, "I4": {"caught": 4, "total": 4, "caught_by": {"reviewer": 4}}, "I5": {"caught": 3, "total": 4, "caught_by": {"reviewer": 3}}, "I6": {"caught": 1, "total": 4, "caught_by": {"reviewer": 1}}}, "phase_attribution": {"tea": 6.2, "dev": 6.2, "reviewer": 87.5}}, "jazz-legends": {"meta": {"name": "Jazz Legends", "tier": "D", "zeitgeist": 68.2, "category": "Music", "dimensions": {"tone": "soulful", "era": "historical", "genre": "arts", "energy": "improvisational"}, "ocean": {"tea": {"O": 5, "C": 5, "E": 3, "A": 4, "N": 4}, "dev": {"O": 5, "C": 4, "E": 3, "A": 2, "N": 3}, "reviewer": {"O": 5, "C": 4, "E": 2, "A": 3, "N": 3}}, "characters": {"tea": "John Coltrane", "dev": "Miles Davis", "reviewer": "Thelonious Monk"}}, "runs": [{"run_id": 1, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 3}}, {"run_id": 2, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 1, "reviewer": 1}}, {"run_id": 3, "score_pct": 27.0, "weighted_caught": 10, "total_caught": 2, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "dev"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 2, "reviewer": 0}}, {"run_id": 4, "score_pct": 27.0, "weighted_caught": 10, "total_caught": 2, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 2}}], "stats": {"n": 4, "mean": 33.8, "std": 6.8, "min": 27.0, "max": 40.5}, "finding_catch_rates": {"C1": {"caught": 0, "total": 4, "caught_by": {}}, "I1": {"caught": 4, "total": 4, "caught_by": {"reviewer": 2, "dev": 2}}, "I2": {"caught": 2, "total": 4, "caught_by": {"reviewer": 1, "tea": 1}}, "I3": {"caught": 0, "total": 4, "caught_by": {}}, "I4": {"caught": 4, "total": 4, "caught_by": {"reviewer": 3, "dev": 1}}, "I5": {"caught": 0, "total": 4, "caught_by": {}}, "I6": {"caught": 0, "total": 4, "caught_by": {}}}, "phase_attribution": {"tea": 10.0, "dev": 30.0, "reviewer": 60.0}}, "mash": {"meta": {"name": "MASH", "tier": "A", "zeitgeist": 74.25, "category": "TV Series", "dimensions": {"tone": "satirical", "era": "historical", "genre": "comedy-drama", "energy": "bittersweet"}, "ocean": {"tea": {"O": 3, "C": 5, "E": 2, "A": 5, "N": 4}, "dev": {"O": 5, "C": 5, "E": 3, "A": 2, "N": 2}, "reviewer": {"O": 4, "C": 5, "E": 3, "A": 4, "N": 2}}, "characters": {"tea": "Radar O'Reilly", "dev": "Major Charles Emerson Winchester III", "reviewer": "Colonel Sherman Potter"}}, "runs": [{"run_id": 1, "score_pct": 48.6, "weighted_caught": 18, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": true, "caught_by": "tea"}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 1, "reviewer": 1}}, {"run_id": 2, "score_pct": 67.6, "weighted_caught": 25, "total_caught": 5, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": true, "caught_by": "reviewer"}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 4}}, {"run_id": 3, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 1, "reviewer": 1}}, {"run_id": 4, "score_pct": 35.1, "weighted_caught": 13, "total_caught": 2, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": true, "caught_by": "tea"}, {"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": true, "caught_by": "dev"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": false, "caught_by": null}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 1, "reviewer": 0}}], "stats": {"n": 4, "mean": 48.0, "std": 12.3, "min": 35.1, "max": 67.6}, "finding_catch_rates": {"C1": {"caught": 2, "total": 4, "caught_by": {"tea": 2}}, "I1": {"caught": 3, "total": 4, "caught_by": {"dev": 2, "tea": 1}}, "I2": {"caught": 3, "total": 4, "caught_by": {"reviewer": 1, "tea": 1, "dev": 1}}, "I3": {"caught": 0, "total": 4, "caught_by": {}}, "I4": {"caught": 3, "total": 4, "caught_by": {"reviewer": 3}}, "I5": {"caught": 1, "total": 4, "caught_by": {"reviewer": 1}}, "I6": {"caught": 1, "total": 4, "caught_by": {"reviewer": 1}}}, "phase_attribution": {"tea": 30.8, "dev": 23.1, "reviewer": 46.2}}, "monty-python": {"meta": {"name": "Monty Python", "tier": "D", "zeitgeist": 82.3, "category": "TV Series", "dimensions": {"tone": "comedic", "era": "historical", "genre": "comedy", "energy": "high-energy"}, "ocean": {"tea": {"O": 4, "C": 5, "E": 4, "A": 1, "N": 3}, "dev": {"O": 3, "C": 5, "E": 2, "A": 4, "N": 1}, "reviewer": {"O": 3, "C": 5, "E": 4, "A": 1, "N": 2}}, "characters": {"tea": "Mr. Praline", "dev": "Bicycle Repair Man", "reviewer": "The Argument Professional"}}, "runs": [{"run_id": 1, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 2}}, {"run_id": 2, "score_pct": 48.6, "weighted_caught": 18, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 1, "reviewer": 2}}, {"run_id": 3, "score_pct": 48.6, "weighted_caught": 18, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 2, "dev": 0, "reviewer": 2}}, {"run_id": 4, "score_pct": 48.6, "weighted_caught": 18, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 1, "reviewer": 3}}], "stats": {"n": 4, "mean": 46.6, "std": 3.5, "min": 40.5, "max": 48.6}, "finding_catch_rates": {"C1": {"caught": 0, "total": 4, "caught_by": {}}, "I1": {"caught": 4, "total": 4, "caught_by": {"reviewer": 1, "dev": 2, "tea": 1}}, "I2": {"caught": 3, "total": 4, "caught_by": {"tea": 3}}, "I3": {"caught": 3, "total": 4, "caught_by": {"reviewer": 3}}, "I4": {"caught": 4, "total": 4, "caught_by": {"reviewer": 4}}, "I5": {"caught": 1, "total": 4, "caught_by": {"reviewer": 1}}, "I6": {"caught": 0, "total": 4, "caught_by": {}}}, "phase_attribution": {"tea": 26.7, "dev": 13.3, "reviewer": 60.0}}, "princess-bride": {"meta": {"name": "Princess Bride", "tier": "B", "zeitgeist": 91.0, "category": "Film", "dimensions": {"tone": "whimsical", "era": "timeless", "genre": "fantasy-adventure", "energy": "swashbuckling"}, "ocean": {"tea": {"O": 3, "C": 5, "E": 2, "A": 4, "N": 2}, "dev": {"O": 5, "C": 4, "E": 4, "A": 3, "N": 3}, "reviewer": {"O": 4, "C": 4, "E": 4, "A": 4, "N": 2}}, "characters": {"tea": "Fezzik", "dev": "Inigo Montoya", "reviewer": "Westley (The Dread Pirate Roberts)"}}, "runs": [{"run_id": 1, "score_pct": 54.1, "weighted_caught": 20, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": true, "caught_by": "reviewer"}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 4}}, {"run_id": 2, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 2}}, {"run_id": 3, "score_pct": 67.6, "weighted_caught": 25, "total_caught": 5, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": true, "caught_by": "reviewer"}], "caught_by_phase": {"tea": 1, "dev": 1, "reviewer": 3}}, {"run_id": 4, "score_pct": 35.1, "weighted_caught": 13, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 2}}], "stats": {"n": 4, "mean": 49.3, "std": 12.6, "min": 35.1, "max": 67.6}, "finding_catch_rates": {"C1": {"caught": 0, "total": 4, "caught_by": {}}, "I1": {"caught": 2, "total": 4, "caught_by": {"tea": 1, "dev": 1}}, "I2": {"caught": 4, "total": 4, "caught_by": {"reviewer": 2, "tea": 2}}, "I3": {"caught": 1, "total": 4, "caught_by": {"reviewer": 1}}, "I4": {"caught": 4, "total": 4, "caught_by": {"reviewer": 4}}, "I5": {"caught": 2, "total": 4, "caught_by": {"reviewer": 2}}, "I6": {"caught": 2, "total": 4, "caught_by": {"reviewer": 2}}}, "phase_attribution": {"tea": 20.0, "dev": 6.7, "reviewer": 73.3}}, "rome": {"meta": {"name": "Rome", "tier": "A", "zeitgeist": 80.0, "category": "History", "dimensions": {"tone": "serious", "era": "ancient", "genre": "historical-drama", "energy": "commanding"}, "ocean": {"tea": {"O": 3, "C": 4, "E": 4, "A": 2, "N": 3}, "dev": {"O": 2, "C": 5, "E": 3, "A": 3, "N": 2}, "reviewer": {"O": 4, "C": 5, "E": 3, "A": 1, "N": 3}}, "characters": {"tea": "Atia of the Julii", "dev": "Lucius Vorenus", "reviewer": "Marcus Tullius Cicero"}}, "runs": [{"run_id": 1, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 1, "reviewer": 1}}, {"run_id": 2, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 2, "dev": 0, "reviewer": 1}}, {"run_id": 3, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 2, "dev": 0, "reviewer": 1}}, {"run_id": 4, "score_pct": 54.1, "weighted_caught": 20, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 3}}], "stats": {"n": 4, "mean": 43.9, "std": 5.9, "min": 40.5, "max": 54.1}, "finding_catch_rates": {"C1": {"caught": 0, "total": 4, "caught_by": {}}, "I1": {"caught": 4, "total": 4, "caught_by": {"dev": 1, "tea": 2, "reviewer": 1}}, "I2": {"caught": 4, "total": 4, "caught_by": {"tea": 4}}, "I3": {"caught": 0, "total": 4, "caught_by": {}}, "I4": {"caught": 4, "total": 4, "caught_by": {"reviewer": 4}}, "I5": {"caught": 1, "total": 4, "caught_by": {"reviewer": 1}}, "I6": {"caught": 0, "total": 4, "caught_by": {}}}, "phase_attribution": {"tea": 46.2, "dev": 7.7, "reviewer": 46.2}}, "shakespeare": {"meta": {"name": "Shakespeare", "tier": "D", "zeitgeist": 79.0, "category": "Literature", "dimensions": {"tone": "dramatic", "era": "historical", "genre": "literary", "energy": "measured"}, "ocean": {"tea": {"O": 4, "C": 4, "E": 4, "A": 2, "N": 4}, "dev": {"O": 3, "C": 4, "E": 4, "A": 4, "N": 3}, "reviewer": {"O": 4, "C": 4, "E": 3, "A": 1, "N": 3}}, "characters": {"tea": "Hamlet, Prince of Denmark", "dev": "Puck (Robin Goodfellow)", "reviewer": "Portia"}}, "runs": [{"run_id": 1, "score_pct": 48.6, "weighted_caught": 18, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 1, "reviewer": 3}}, {"run_id": 2, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 1, "reviewer": 2}}, {"run_id": 3, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 1, "reviewer": 2}}, {"run_id": 4, "score_pct": 62.2, "weighted_caught": 23, "total_caught": 5, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": false, "caught_by": null}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": true, "caught_by": "reviewer"}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 4}}], "stats": {"n": 4, "mean": 48.0, "std": 8.9, "min": 40.5, "max": 62.2}, "finding_catch_rates": {"C1": {"caught": 0, "total": 4, "caught_by": {}}, "I1": {"caught": 4, "total": 4, "caught_by": {"dev": 3, "reviewer": 1}}, "I2": {"caught": 3, "total": 4, "caught_by": {"reviewer": 2, "tea": 1}}, "I3": {"caught": 2, "total": 4, "caught_by": {"reviewer": 2}}, "I4": {"caught": 3, "total": 4, "caught_by": {"reviewer": 3}}, "I5": {"caught": 2, "total": 4, "caught_by": {"reviewer": 2}}, "I6": {"caught": 1, "total": 4, "caught_by": {"reviewer": 1}}}, "phase_attribution": {"tea": 6.7, "dev": 20.0, "reviewer": 73.3}}, "snow-crash": {"meta": {"name": "Snow Crash", "tier": "A", "zeitgeist": 81.5, "category": "Literature", "dimensions": {"tone": "satirical", "era": "futuristic", "genre": "cyberpunk", "energy": "frenetic"}, "ocean": {"tea": {"O": 4, "C": 3, "E": 5, "A": 3, "N": 2}, "dev": {"O": 5, "C": 4, "E": 3, "A": 3, "N": 3}, "reviewer": {"O": 5, "C": 5, "E": 2, "A": 2, "N": 2}}, "characters": {"tea": "Raven", "dev": "Lagos", "reviewer": "The Librarian"}}, "runs": [{"run_id": 1, "score_pct": 48.6, "weighted_caught": 18, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": true, "caught_by": "dev"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 2, "reviewer": 1}}], "stats": {"n": 1, "mean": 48.6, "std": 0, "min": 48.6, "max": 48.6}, "finding_catch_rates": {"C1": {"caught": 0, "total": 1, "caught_by": {}}, "I1": {"caught": 1, "total": 1, "caught_by": {"dev": 1}}, "I2": {"caught": 1, "total": 1, "caught_by": {"tea": 1}}, "I3": {"caught": 1, "total": 1, "caught_by": {"dev": 1}}, "I4": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}, "I5": {"caught": 0, "total": 1, "caught_by": {}}, "I6": {"caught": 0, "total": 1, "caught_by": {}}}, "phase_attribution": {"tea": 25.0, "dev": 50.0, "reviewer": 25.0}}, "star-trek-tos": {"meta": {"name": "Star Trek TOS", "tier": "B", "zeitgeist": 84.75, "category": "TV Series", "dimensions": {"tone": "dramatic", "era": "futuristic", "genre": "sci-fi", "energy": "bold"}, "ocean": {"tea": {"O": 4, "C": 5, "E": 3, "A": 4, "N": 2}, "dev": {"O": 3, "C": 4, "E": 4, "A": 4, "N": 4}, "reviewer": {"O": 5, "C": 5, "E": 2, "A": 2, "N": 1}}, "characters": {"tea": "Montgomery \"Scotty\" Scott", "dev": "Dr. Leonard \"Bones\" McCoy", "reviewer": "Mr. Spock"}}, "runs": [{"run_id": 1, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "dev"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 2, "reviewer": 0}}], "stats": {"n": 1, "mean": 40.5, "std": 0, "min": 40.5, "max": 40.5}, "finding_catch_rates": {"C1": {"caught": 0, "total": 1, "caught_by": {}}, "I1": {"caught": 1, "total": 1, "caught_by": {"dev": 1}}, "I2": {"caught": 1, "total": 1, "caught_by": {"tea": 1}}, "I3": {"caught": 0, "total": 1, "caught_by": {}}, "I4": {"caught": 1, "total": 1, "caught_by": {"dev": 1}}, "I5": {"caught": 0, "total": 1, "caught_by": {}}, "I6": {"caught": 0, "total": 1, "caught_by": {}}}, "phase_attribution": {"tea": 33.3, "dev": 66.7, "reviewer": 0.0}}, "stephen-king": {"meta": {"name": "stephen-king", "tier": "A", "zeitgeist": null, "category": "Literature", "dimensions": {"tone": "dark", "era": "contemporary", "genre": "horror", "energy": "creeping"}, "ocean": {"tea": {"O": 5, "C": 4, "E": 4, "A": 1, "N": 1}, "dev": {"O": 4, "C": 4, "E": 2, "A": 2, "N": 4}, "reviewer": {"O": 3, "C": 5, "E": 1, "A": 2, "N": 1}}, "characters": {"tea": "Pennywise", "dev": "Jack Torrance", "reviewer": "Roland Deschain"}}, "runs": [{"run_id": 1, "score_pct": 75.7, "weighted_caught": 28, "total_caught": 6, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "dev"}, {"finding_id": "I5", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I6", "caught": true, "caught_by": "reviewer"}], "caught_by_phase": {"tea": 1, "dev": 1, "reviewer": 4}}, {"run_id": 2, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "tea"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "dev"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 2, "dev": 1, "reviewer": 0}}, {"run_id": 3, "score_pct": 27.0, "weighted_caught": 10, "total_caught": 2, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": false, "caught_by": null}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 2}}, {"run_id": 4, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "dev"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 1, "reviewer": 2}}], "stats": {"n": 4, "mean": 45.9, "std": 18.1, "min": 27.0, "max": 75.7}, "finding_catch_rates": {"C1": {"caught": 0, "total": 4, "caught_by": {}}, "I1": {"caught": 4, "total": 4, "caught_by": {"reviewer": 3, "tea": 1}}, "I2": {"caught": 4, "total": 4, "caught_by": {"tea": 2, "reviewer": 2}}, "I3": {"caught": 1, "total": 4, "caught_by": {"reviewer": 1}}, "I4": {"caught": 3, "total": 4, "caught_by": {"dev": 3}}, "I5": {"caught": 1, "total": 4, "caught_by": {"reviewer": 1}}, "I6": {"caught": 1, "total": 4, "caught_by": {"reviewer": 1}}}, "phase_attribution": {"tea": 21.4, "dev": 21.4, "reviewer": 57.1}}, "the-west-wing": {"meta": {"name": "The West Wing", "tier": "S", "zeitgeist": 84.5, "category": "TV Series", "dimensions": {"tone": "idealistic", "era": "contemporary", "genre": "political-drama", "energy": "rapid"}, "ocean": {"tea": {"O": 4, "C": 4, "E": 4, "A": 4, "N": 2}, "dev": {"O": 4, "C": 5, "E": 3, "A": 2, "N": 4}, "reviewer": {"O": 4, "C": 4, "E": 5, "A": 3, "N": 4}}, "characters": {"tea": "Sam Seaborn", "dev": "Toby Ziegler", "reviewer": "Josh Lyman"}}, "runs": [{"run_id": 1, "score_pct": 35.1, "weighted_caught": 13, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 1, "reviewer": 2}}, {"run_id": 2, "score_pct": 54.1, "weighted_caught": 20, "total_caught": 4, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I2", "caught": true, "caught_by": "dev"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": true, "caught_by": "reviewer"}], "caught_by_phase": {"tea": 0, "dev": 1, "reviewer": 3}}, {"run_id": 3, "score_pct": 62.2, "weighted_caught": 23, "total_caught": 5, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": true, "caught_by": "reviewer"}], "caught_by_phase": {"tea": 0, "dev": 1, "reviewer": 4}}, {"run_id": 4, "score_pct": 40.5, "weighted_caught": 15, "total_caught": 3, "total_findings": 7, "total_weight": 37, "findings": [{"finding_id": "C1", "caught": false, "caught_by": null}, {"finding_id": "I1", "caught": true, "caught_by": "dev"}, {"finding_id": "I2", "caught": true, "caught_by": "tea"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 1, "dev": 1, "reviewer": 1}}], "stats": {"n": 4, "mean": 48.0, "std": 10.7, "min": 35.1, "max": 62.2}, "finding_catch_rates": {"C1": {"caught": 0, "total": 4, "caught_by": {}}, "I1": {"caught": 4, "total": 4, "caught_by": {"dev": 3, "reviewer": 1}}, "I2": {"caught": 3, "total": 4, "caught_by": {"dev": 1, "reviewer": 1, "tea": 1}}, "I3": {"caught": 2, "total": 4, "caught_by": {"reviewer": 2}}, "I4": {"caught": 4, "total": 4, "caught_by": {"reviewer": 4}}, "I5": {"caught": 0, "total": 4, "caught_by": {}}, "I6": {"caught": 2, "total": 4, "caught_by": {"reviewer": 2}}}, "phase_attribution": {"tea": 6.7, "dev": 26.7, "reviewer": 66.7}}}}, "dpgd-117": {"scenario_id": "dpgd-117", "ground_truth": [{"id": "I1", "title": "Dependencies inline instead of workspace level", "weight": 3, "severity": "important", "phase_ideal": "dev"}, {"id": "I2", "title": "FieldErrorCode missing #[non_exhaustive]", "weight": 5, "severity": "important", "phase_ideal": "reviewer"}, {"id": "I3", "title": "Hardcoded trace_id 'none'", "weight": 5, "severity": "important", "phase_ideal": "dev"}, {"id": "I4", "title": "Zero structured logging", "weight": 5, "severity": "important", "phase_ideal": "dev"}, {"id": "I5", "title": "Security comment claims tracing that doesn't exist", "weight": 3, "severity": "important", "phase_ideal": "reviewer"}, {"id": "I6", "title": "Non-ASCII tenant header silently treated as missing", "weight": 8, "severity": "important", "phase_ideal": "tea"}, {"id": "I7", "title": "CWE-209 test gap \u2014 no body assertion", "weight": 5, "severity": "important", "phase_ideal": "tea"}, {"id": "I8", "title": "CORS preflight test doesn't verify CORS headers", "weight": 5, "severity": "important", "phase_ideal": "tea"}, {"id": "I9", "title": "Wrong log levels \u2014 error! for 4xx client errors", "weight": 5, "severity": "important", "phase_ideal": "reviewer"}, {"id": "I10", "title": "CORS allows Any origin/method/header (CWE-942)", "weight": 8, "severity": "important", "phase_ideal": "dev"}], "total_weight": 52, "themes": {"control": {"meta": {"name": "Control", "tier": "D", "zeitgeist": 8.0, "category": "TV Series", "dimensions": {"tone": "eerie", "era": "contemporary", "genre": "sci-fi-thriller", "energy": "unsettling"}, "ocean": {"tea": {"O": 3, "C": 3, "E": 3, "A": 3, "N": 3}, "dev": {"O": 3, "C": 3, "E": 3, "A": 3, "N": 3}, "reviewer": {"O": 3, "C": 3, "E": 3, "A": 3, "N": 3}}, "characters": {"tea": "Test Engineer (baseline control)", "dev": "Developer (baseline control)", "reviewer": "Code Reviewer (baseline control)"}}, "runs": [{"run_id": 0, "score_pct": 19.2, "weighted_caught": 10, "total_caught": 2, "total_findings": 10, "total_weight": 52, "findings": [{"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}, {"finding_id": "I7", "caught": false, "caught_by": null}, {"finding_id": "I8", "caught": false, "caught_by": null}, {"finding_id": "I9", "caught": false, "caught_by": null}, {"finding_id": "I10", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 2}}, {"run_id": 1, "score_pct": 28.8, "weighted_caught": 15, "total_caught": 3, "total_findings": 10, "total_weight": 52, "findings": [{"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}, {"finding_id": "I7", "caught": false, "caught_by": null}, {"finding_id": "I8", "caught": false, "caught_by": null}, {"finding_id": "I9", "caught": false, "caught_by": null}, {"finding_id": "I10", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 3}}, {"run_id": 2, "score_pct": 28.8, "weighted_caught": 15, "total_caught": 3, "total_findings": 10, "total_weight": 52, "findings": [{"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}, {"finding_id": "I7", "caught": false, "caught_by": null}, {"finding_id": "I8", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I9", "caught": false, "caught_by": null}, {"finding_id": "I10", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 3}}, {"run_id": 3, "score_pct": 25.0, "weighted_caught": 13, "total_caught": 2, "total_findings": 10, "total_weight": 52, "findings": [{"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}, {"finding_id": "I7", "caught": false, "caught_by": null}, {"finding_id": "I8", "caught": false, "caught_by": null}, {"finding_id": "I9", "caught": false, "caught_by": null}, {"finding_id": "I10", "caught": true, "caught_by": "reviewer"}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 2}}, {"run_id": 4, "score_pct": 19.2, "weighted_caught": 10, "total_caught": 2, "total_findings": 10, "total_weight": 52, "findings": [{"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}, {"finding_id": "I7", "caught": false, "caught_by": null}, {"finding_id": "I8", "caught": false, "caught_by": null}, {"finding_id": "I9", "caught": false, "caught_by": null}, {"finding_id": "I10", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 2}}], "stats": {"n": 5, "mean": 24.2, "std": 4.3, "min": 19.2, "max": 28.8}, "finding_catch_rates": {"I1": {"caught": 0, "total": 5, "caught_by": {}}, "I2": {"caught": 3, "total": 5, "caught_by": {"reviewer": 3}}, "I3": {"caught": 2, "total": 5, "caught_by": {"reviewer": 2}}, "I4": {"caught": 5, "total": 5, "caught_by": {"reviewer": 5}}, "I5": {"caught": 0, "total": 5, "caught_by": {}}, "I6": {"caught": 0, "total": 5, "caught_by": {}}, "I7": {"caught": 0, "total": 5, "caught_by": {}}, "I8": {"caught": 1, "total": 5, "caught_by": {"reviewer": 1}}, "I9": {"caught": 0, "total": 5, "caught_by": {}}, "I10": {"caught": 1, "total": 5, "caught_by": {"reviewer": 1}}}, "phase_attribution": {"tea": 0.0, "dev": 0.0, "reviewer": 100.0}}, "discworld": {"meta": {"name": "Discworld", "tier": "A", "zeitgeist": 98.0, "category": "Literature", "dimensions": {"tone": "satirical", "era": "timeless", "genre": "fantasy", "energy": "measured"}, "ocean": {"tea": {"O": 3, "C": 5, "E": 2, "A": 5, "N": 1}, "dev": {"O": 5, "C": 5, "E": 2, "A": 3, "N": 3}, "reviewer": {"O": 3, "C": 5, "E": 2, "A": 1, "N": 1}}, "characters": {"tea": "Igor", "dev": "Ponder Stibbons", "reviewer": "Granny Weatherwax"}}, "runs": [{"run_id": 1, "score_pct": 25.0, "weighted_caught": 13, "total_caught": 2, "total_findings": 10, "total_weight": 52, "findings": [{"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}, {"finding_id": "I7", "caught": false, "caught_by": null}, {"finding_id": "I8", "caught": false, "caught_by": null}, {"finding_id": "I9", "caught": false, "caught_by": null}, {"finding_id": "I10", "caught": true, "caught_by": "reviewer"}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 2}}], "stats": {"n": 1, "mean": 25.0, "std": 0, "min": 25.0, "max": 25.0}, "finding_catch_rates": {"I1": {"caught": 0, "total": 1, "caught_by": {}}, "I2": {"caught": 0, "total": 1, "caught_by": {}}, "I3": {"caught": 0, "total": 1, "caught_by": {}}, "I4": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}, "I5": {"caught": 0, "total": 1, "caught_by": {}}, "I6": {"caught": 0, "total": 1, "caught_by": {}}, "I7": {"caught": 0, "total": 1, "caught_by": {}}, "I8": {"caught": 0, "total": 1, "caught_by": {}}, "I9": {"caught": 0, "total": 1, "caught_by": {}}, "I10": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}}, "phase_attribution": {"tea": 0.0, "dev": 0.0, "reviewer": 100.0}}, "firefly": {"meta": {"name": "Firefly", "tier": "A", "zeitgeist": 82.3, "category": "TV Series", "dimensions": {"tone": "wry", "era": "futuristic", "genre": "space-western", "energy": "scrappy"}, "ocean": {"tea": {"O": 1, "C": 2, "E": 4, "A": 1, "N": 2}, "dev": {"O": 3, "C": 3, "E": 4, "A": 2, "N": 3}, "reviewer": {"O": 5, "C": 2, "E": 2, "A": 3, "N": 5}}, "characters": {"tea": "Jayne Cobb", "dev": "Malcolm Reynolds", "reviewer": "River Tam"}}, "runs": [{"run_id": 1, "score_pct": 44.2, "weighted_caught": 23, "total_caught": 4, "total_findings": 10, "total_weight": 52, "findings": [{"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}, {"finding_id": "I7", "caught": false, "caught_by": null}, {"finding_id": "I8", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I9", "caught": false, "caught_by": null}, {"finding_id": "I10", "caught": true, "caught_by": "reviewer"}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 4}}], "stats": {"n": 1, "mean": 44.2, "std": 0, "min": 44.2, "max": 44.2}, "finding_catch_rates": {"I1": {"caught": 0, "total": 1, "caught_by": {}}, "I2": {"caught": 0, "total": 1, "caught_by": {}}, "I3": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}, "I4": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}, "I5": {"caught": 0, "total": 1, "caught_by": {}}, "I6": {"caught": 0, "total": 1, "caught_by": {}}, "I7": {"caught": 0, "total": 1, "caught_by": {}}, "I8": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}, "I9": {"caught": 0, "total": 1, "caught_by": {}}, "I10": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}}, "phase_attribution": {"tea": 0.0, "dev": 0.0, "reviewer": 100.0}}, "gilligans-island": {"meta": {"name": "Gilligan's Island", "tier": "D", "zeitgeist": 71.8, "category": "TV Series", "dimensions": {"tone": "comedic", "era": "retro", "genre": "comedy", "energy": "slapstick"}, "ocean": {"tea": {"O": 3, "C": 5, "E": 3, "A": 5, "N": 2}, "dev": {"O": 4, "C": 1, "E": 4, "A": 5, "N": 3}, "reviewer": {"O": 1, "C": 4, "E": 4, "A": 1, "N": 3}}, "characters": {"tea": "Mary Ann Summers", "dev": "Gilligan", "reviewer": "Thurston Howell III"}}, "runs": [{"run_id": 1, "score_pct": 9.6, "weighted_caught": 5, "total_caught": 1, "total_findings": 10, "total_weight": 52, "findings": [{"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}, {"finding_id": "I7", "caught": false, "caught_by": null}, {"finding_id": "I8", "caught": false, "caught_by": null}, {"finding_id": "I9", "caught": false, "caught_by": null}, {"finding_id": "I10", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 1}}], "stats": {"n": 1, "mean": 9.6, "std": 0, "min": 9.6, "max": 9.6}, "finding_catch_rates": {"I1": {"caught": 0, "total": 1, "caught_by": {}}, "I2": {"caught": 0, "total": 1, "caught_by": {}}, "I3": {"caught": 0, "total": 1, "caught_by": {}}, "I4": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}, "I5": {"caught": 0, "total": 1, "caught_by": {}}, "I6": {"caught": 0, "total": 1, "caught_by": {}}, "I7": {"caught": 0, "total": 1, "caught_by": {}}, "I8": {"caught": 0, "total": 1, "caught_by": {}}, "I9": {"caught": 0, "total": 1, "caught_by": {}}, "I10": {"caught": 0, "total": 1, "caught_by": {}}}, "phase_attribution": {"tea": 0.0, "dev": 0.0, "reviewer": 100.0}}, "the-expanse": {"meta": {"name": "The Expanse", "tier": "S", "zeitgeist": 91.0, "category": "TV Series", "dimensions": {"tone": "gritty", "era": "futuristic", "genre": "sci-fi", "energy": "tense"}, "ocean": {"tea": {"O": 2, "C": 4, "E": 2, "A": 3, "N": 1}, "dev": {"O": 5, "C": 5, "E": 3, "A": 4, "N": 3}, "reviewer": {"O": 4, "C": 5, "E": 4, "A": 2, "N": 2}}, "characters": {"tea": "Amos Burton", "dev": "Naomi Nagata", "reviewer": "Chrisjen Avasarala"}}, "runs": [{"run_id": 1, "score_pct": 19.2, "weighted_caught": 10, "total_caught": 2, "total_findings": 10, "total_weight": 52, "findings": [{"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I3", "caught": false, "caught_by": null}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}, {"finding_id": "I7", "caught": false, "caught_by": null}, {"finding_id": "I8", "caught": false, "caught_by": null}, {"finding_id": "I9", "caught": false, "caught_by": null}, {"finding_id": "I10", "caught": false, "caught_by": null}], "caught_by_phase": {"tea": 0, "dev": 0, "reviewer": 2}}], "stats": {"n": 1, "mean": 19.2, "std": 0, "min": 19.2, "max": 19.2}, "finding_catch_rates": {"I1": {"caught": 0, "total": 1, "caught_by": {}}, "I2": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}, "I3": {"caught": 0, "total": 1, "caught_by": {}}, "I4": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}, "I5": {"caught": 0, "total": 1, "caught_by": {}}, "I6": {"caught": 0, "total": 1, "caught_by": {}}, "I7": {"caught": 0, "total": 1, "caught_by": {}}, "I8": {"caught": 0, "total": 1, "caught_by": {}}, "I9": {"caught": 0, "total": 1, "caught_by": {}}, "I10": {"caught": 0, "total": 1, "caught_by": {}}}, "phase_attribution": {"tea": 0.0, "dev": 0.0, "reviewer": 100.0}}, "the-matrix": {"meta": {"name": "The Matrix", "tier": "S", "zeitgeist": 85.0, "category": "Film", "dimensions": {"tone": "serious", "era": "futuristic", "genre": "sci-fi", "energy": "high-energy"}, "ocean": {"tea": {"O": 5, "C": 5, "E": 2, "A": 1, "N": 1}, "dev": {"O": 3, "C": 5, "E": 3, "A": 1, "N": 4}, "reviewer": {"O": 4, "C": 4, "E": 4, "A": 1, "N": 2}}, "characters": {"tea": "The Architect", "dev": "Agent Smith", "reviewer": "The Merovingian"}}, "runs": [{"run_id": 1, "score_pct": 44.2, "weighted_caught": 23, "total_caught": 4, "total_findings": 10, "total_weight": 52, "findings": [{"finding_id": "I1", "caught": false, "caught_by": null}, {"finding_id": "I2", "caught": false, "caught_by": null}, {"finding_id": "I3", "caught": true, "caught_by": "tea"}, {"finding_id": "I4", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I5", "caught": false, "caught_by": null}, {"finding_id": "I6", "caught": false, "caught_by": null}, {"finding_id": "I7", "caught": false, "caught_by": null}, {"finding_id": "I8", "caught": true, "caught_by": "reviewer"}, {"finding_id": "I9", "caught": false, "caught_by": null}, {"finding_id": "I10", "caught": true, "caught_by": "reviewer"}], "caught_by_phase": {"tea": 1, "dev": 0, "reviewer": 3}}], "stats": {"n": 1, "mean": 44.2, "std": 0, "min": 44.2, "max": 44.2}, "finding_catch_rates": {"I1": {"caught": 0, "total": 1, "caught_by": {}}, "I2": {"caught": 0, "total": 1, "caught_by": {}}, "I3": {"caught": 1, "total": 1, "caught_by": {"tea": 1}}, "I4": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}, "I5": {"caught": 0, "total": 1, "caught_by": {}}, "I6": {"caught": 0, "total": 1, "caught_by": {}}, "I7": {"caught": 0, "total": 1, "caught_by": {}}, "I8": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}, "I9": {"caught": 0, "total": 1, "caught_by": {}}, "I10": {"caught": 1, "total": 1, "caught_by": {"reviewer": 1}}}, "phase_attribution": {"tea": 25.0, "dev": 0.0, "reviewer": 75.0}}}}}} not replaced yet - that's fine, fetch will work
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+# firefly:dev on cr-003
+agent:
+  theme: firefly
+  character: Malcolm Reynolds
+  effective_role: dev
+  source_role: dev
+  spec: firefly:dev
+  cross_role: false
+  ocean: O:3 C:3 E:4 A:2 N:3
+scenario:
+  name: cr-003
+  category: code-review
+  difficulty: medium
+statistics:
+  n: 10
+  mean: 77.65
+  std_dev: 7.43
+  min: 68.0
+  max: 90.18
+  scores:
+  - 70.35
+  - 80.31
+  - 72.75
+  - 76.36
+  - 68.0
+  - 70.35
+  - 90.18
+  - 78.06
+  - 90.18
+  - 79.93
+  ci_95:
+  - 73.04
+  - 82.25
+detection_profile:
+  f1_serde_bypass: 10/10
+  debug_secret_leak: 10/10
+  display_panic: 10/10
+  timing_side_channel: 10/10
+  clone_proliferation: 10/10
+  source_ip_spoofable: 10/10
+  unbounded_metadata: 10/10
+  missing_test_coverage: 10/10
+  non_exhaustive_error: 9/10
+  stringly_typed_event: 5/10
+efficiency:
+  avg_input_tokens: 2
+  avg_output_tokens: 834
+  tokens_per_point: 10.76
+observations:
+- F1 detection 10/10 -- ceiling-bound
+- DEBUG_SECRET_LEAK 10/10 -- highest secondary detection
+- STRINGLY_TYPED_EVENT 5/10 -- lowest detection
+- Score range 22.18 points (68.0-90.18)
+- 'Detection breadth: 10/10 finding types detected at least once'
+metadata:
+  created_at: '2026-03-07T13:02:25.157416Z'
+  pennyfarthing_version: 1.0.0
+  model: sonnet
+  execution_method: claude-p
+  judge_model: sonnet
+  judge_method: claude-p
+runs:
+- run_1.json
+- run_2.json
+- run_3.json
+- run_4.json
+- run_5.json
+- run_6.json
+- run_7.json
+- run_8.json
+- run_9.json
+- run_10.json

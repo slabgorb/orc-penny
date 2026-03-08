@@ -1,0 +1,233 @@
+# Pipeline Replay Scenario: DPGD-117 — Story 8.1 REST API Foundation
+#
+# Ground truth: 10 findings across 2 review rounds that the original
+# TDD pipeline (TEA→Dev→Reviewer) missed. The pipeline APPROVED the code,
+# then an external reviewer found 8 issues, and a re-review found 2 more
+# regressions introduced by the fixes.
+#
+# Original pipeline theme: the-matrix
+# Original pipeline characters:
+#   TEA: The Architect
+#   Dev: Agent Smith
+#   Reviewer: The Merovingian
+#   SM: Morpheus
+
+id: dpgd-117
+title: "Story 8.1: REST API Foundation"
+story_id: "8-1"
+jira: DPGD-117
+
+repo:
+  path: axiathon
+  base_commit: f6bdd2cf3106f624e8622853989bd0e93043552b
+  branch: feature/story-8.1-rest-api-foundation
+
+context:
+  epic: sprint/context/context-epic-8.md
+  story: sprint/context/context-story-8-1.md
+  session_archive: sprint/archive/DPGD-117-session.md
+
+phases: [tea, dev, reviewer]
+
+original_pipeline:
+  theme: the-matrix
+  tea:
+    tests_written: 47
+    acs_covered: 12
+    acs_total: 14
+    tests_status: "RED (compilation failures)"
+  dev:
+    files_changed: 15
+    tests_passing: "47/47"
+  reviewer:
+    verdict: approved
+    findings_noted: 2
+    findings_severity: [medium, low]
+
+ground_truth:
+  total_weight: 52
+
+  round_1:
+    description: "External review of pipeline-approved code"
+    fix_commit: e5a83df3ac066634043d744614d5a3d96abf2266
+    findings:
+      - id: I1
+        title: "Dependencies inline instead of workspace level"
+        severity: important
+        weight: 3
+        category: build
+        phase_ideal: dev
+        files: [crates/axiathon-server/Cargo.toml]
+        description: >
+          6 dependencies specify versions inline instead of using
+          workspace = true. Causes version drift risk across workspace crates.
+
+      - id: I2
+        title: "FieldErrorCode missing #[non_exhaustive]"
+        severity: important
+        weight: 5
+        category: api-design
+        phase_ideal: reviewer
+        files: [crates/axiathon-server/src/response.rs]
+        description: >
+          The FieldErrorCode enum lacks #[non_exhaustive], meaning downstream
+          crates cannot exhaustively match on it without breaking when new
+          variants are added.
+
+      - id: I3
+        title: "Hardcoded trace_id 'none'"
+        severity: important
+        weight: 5
+        category: observability
+        phase_ideal: dev
+        files: [crates/axiathon-server/src/routes/health.rs]
+        description: >
+          ResponseMeta uses a hardcoded "none" string for trace_id instead
+          of deriving it from the request context. Breaks distributed tracing.
+
+      - id: I4
+        title: "Zero structured logging"
+        severity: important
+        weight: 5
+        category: observability
+        phase_ideal: dev
+        files:
+          - crates/axiathon-server/src/error.rs
+          - crates/axiathon-server/src/middleware/tenant.rs
+        description: >
+          No tracing::error! or tracing::warn! calls anywhere in error
+          handling or middleware. Errors returned to clients but never logged.
+
+      - id: I5
+        title: "Security comment claims tracing that doesn't exist"
+        severity: important
+        weight: 3
+        category: documentation
+        phase_ideal: reviewer
+        files: [crates/axiathon-server/src/error.rs]
+        description: >
+          A SECURITY comment claims errors are "logged for debugging" but
+          no logging calls exist. Actively misleading documentation.
+
+      - id: I6
+        title: "Non-ASCII tenant header silently treated as missing"
+        severity: important
+        weight: 8
+        category: security
+        phase_ideal: tea
+        files: [crates/axiathon-server/src/middleware/tenant.rs]
+        description: >
+          When X-Tenant-ID contains non-ASCII characters, header extraction
+          silently fails and the request is treated as missing the header.
+          Should return an explicit error about invalid characters.
+
+      - id: I7
+        title: "CWE-209 test gap — no body assertion"
+        severity: important
+        weight: 5
+        category: testing
+        phase_ideal: tea
+        files: [crates/axiathon-server/tests/middleware_tests.rs]
+        description: >
+          The CWE-209 information exposure test checks the status code but
+          does not assert on response body content. Sensitive information
+          could leak in error response bodies undetected.
+
+      - id: I8
+        title: "CORS preflight test doesn't verify CORS headers"
+        severity: important
+        weight: 5
+        category: testing
+        phase_ideal: tea
+        files: [crates/axiathon-server/tests/middleware_tests.rs]
+        description: >
+          The CORS preflight test sends OPTIONS but only checks status code.
+          Doesn't verify Access-Control-Allow-Origin or other CORS headers
+          are present in the response.
+
+  round_2:
+    description: "Regressions introduced by round_1 fixes"
+    findings:
+      - id: I9
+        title: "Wrong log levels — error! for 4xx client errors"
+        severity: important
+        weight: 5
+        category: observability
+        phase_ideal: reviewer
+        fix_commit: 42a70f56725ab82abac778c0ac368107f4dd3524
+        files: [crates/axiathon-server/src/error.rs]
+        description: >
+          After adding structured logging (fixing I4), all errors use
+          tracing::error! regardless of status code. 4xx client errors
+          should use warn! to avoid alert fatigue. Only 5xx warrants error!.
+
+      - id: I10
+        title: "CORS allows Any origin/method/header (CWE-942)"
+        severity: important
+        weight: 8
+        category: security
+        phase_ideal: dev
+        fix_commit: eb16362d9e5d7992d5655bf182ecbd4c6ca8b858
+        files: [crates/axiathon-server/src/router.rs]
+        description: >
+          CORS middleware uses allow_origin(Any), allow_methods(Any), and
+          allow_headers(Any). Permits any origin to make credentialed
+          requests, violating CWE-942.
+
+phase_prompts:
+  tea: |
+    You are the TEA (Test Engineer/Architect) for Story 8.1: REST API Foundation.
+
+    Your task is the RED phase of TDD:
+    1. Read the epic and story context in this project's CLAUDE.md
+    2. Analyze the acceptance criteria thoroughly
+    3. Write comprehensive failing tests in crates/axiathon-server/tests/
+    4. Run `cargo test` to verify tests compile but fail (no implementation exists yet)
+
+    Write tests that cover:
+    - All acceptance criteria from the story context
+    - Security edge cases (CWE-209 information exposure, input validation, CORS)
+    - Error handling paths (malformed input, missing headers, invalid formats)
+    - Boundary conditions and non-happy-path scenarios
+
+    Do NOT implement any production code. Only write tests.
+    When done, provide a summary of tests written and ACs covered.
+
+  dev: |
+    You are the Dev (Developer) for Story 8.1: REST API Foundation.
+
+    Your task is the GREEN phase of TDD:
+    1. Read the epic and story context in this project's CLAUDE.md
+    2. Review the tests already written in crates/axiathon-server/tests/
+    3. Implement production code in crates/axiathon-server/src/ to make ALL tests pass
+    4. Run `cargo test` to verify all tests pass
+    5. Run `cargo clippy` to check for lint issues
+
+    Follow the architectural patterns described in the story context:
+    - Axum 0.8 with FromRef<AppState> substates
+    - ApiResponse<T> envelope for all responses
+    - CWE-209 compliant error sanitization
+    - Security-first middleware layering
+
+    Make the tests pass with clean, production-quality code.
+    When done, provide a summary of files changed and test results.
+
+  reviewer: |
+    You are the Reviewer (Code Reviewer) for Story 8.1: REST API Foundation.
+
+    Your task is the REVIEW phase:
+    1. Read the epic and story context in this project's CLAUDE.md
+    2. Read ALL code changes — both tests and implementation
+    3. Perform an adversarial security-focused review
+
+    Check for:
+    - Security: CWE patterns, information exposure, input validation, CORS policy
+    - Observability: structured logging, trace correlation, error reporting
+    - API design: envelope format, versioning, #[non_exhaustive] on public enums
+    - Build: workspace dependency management, unused dependencies
+    - Test quality: assertion completeness, edge case coverage, missing scenarios
+    - Code accuracy: comments matching reality, error messages matching behavior
+
+    Be thorough. The goal is to catch issues the TEA and Dev may have missed.
+    Output findings as a structured list: [SEVERITY] Finding title — description.
+    Conclude with a verdict: APPROVED, APPROVED_WITH_FINDINGS, or CHANGES_REQUESTED.
