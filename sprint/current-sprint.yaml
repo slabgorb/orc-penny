@@ -83,3 +83,11 @@ standalone_stories:
     repos: pennyfarthing
     pr: 1296
     branch: feat/MSSCI-16233-wheelhub-in-review-bundle
+  - id: MSSCI-16302
+    jira: MSSCI-16302
+    title: Add judge versioning and partial-match rubric
+    points: 2
+    status: done
+    repos: pennyfarthing
+    pr: 1309
+    branch: feat/MSSCI-16302-judge-versioning
