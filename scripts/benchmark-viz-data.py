@@ -121,8 +121,15 @@ def extract_scenario(scenario_dir: Path) -> dict:
             if not run_dir.is_dir() or not run_dir.name.startswith("run-"):
                 continue
 
+            # Prefer majority_vote.yaml when available
+            mv_path = run_dir / "majority_vote.yaml"
             score_path = run_dir / "score.yaml"
-            score = load_yaml(score_path)
+            if mv_path.exists():
+                score = load_yaml(mv_path)
+                score_source = "majority_vote"
+            else:
+                score = load_yaml(score_path)
+                score_source = "score"
             if not score:
                 continue
 
@@ -154,7 +161,7 @@ def extract_scenario(scenario_dir: Path) -> dict:
                 if caught and caught_by in caught_by_phase:
                     caught_by_phase[caught_by] += 1
 
-            runs.append({
+            run_entry = {
                 "run_id": run_num,
                 "score_pct": score.get("score_pct", 0),
                 "weighted_caught": score.get("weighted_caught", 0),
@@ -163,7 +170,12 @@ def extract_scenario(scenario_dir: Path) -> dict:
                 "total_weight": score.get("total_weight", 0),
                 "findings": findings_detail,
                 "caught_by_phase": caught_by_phase,
-            })
+                "score_source": score_source,
+                "judge_version": score.get("judge_version", "v1"),
+            }
+            if score_source == "majority_vote":
+                run_entry["n_judges"] = score.get("n_judges", 1)
+            runs.append(run_entry)
 
         if not runs:
             continue
