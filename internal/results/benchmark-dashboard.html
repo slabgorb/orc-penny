@@ -231,11 +231,75 @@
   /* Two-col layout for companions */
   .companions {
     display: grid;
-    grid-template-columns: 1fr 300px;
+    grid-template-columns: 1fr minmax(320px, 420px);
     gap: 16px;
   }
-  @media (max-width: 900px) {
+  @media (max-width: 1000px) {
     .companions { grid-template-columns: 1fr; }
+  }
+
+  /* Finding legend */
+  .finding-legend {
+    margin-top: 12px;
+    padding: 8px 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 11px;
+  }
+  .finding-legend-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .finding-legend-item {
+    display: flex;
+    gap: 8px;
+    padding: 2px 0;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+  .finding-legend-id {
+    font-family: "SF Mono", monospace;
+    font-weight: 600;
+    min-width: 28px;
+    flex-shrink: 0;
+  }
+  .finding-legend-id.critical { color: #ef5350; }
+
+  /* Dimension color legend */
+  .dim-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    padding: 8px 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 16px;
+    font-size: 11px;
+  }
+  .dim-legend-title {
+    width: 100%;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+  }
+  .dim-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-muted);
+  }
+  .dim-legend-swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
   }
 
   /* N=1 badge */
@@ -338,6 +402,8 @@
   </div>
 </div>
 
+<div id="dim-color-legend" class="dim-legend" style="display:none"></div>
+
 <div class="chart-section">
   <div class="chart-title">Mean Weighted Score vs Consistency</div>
   <div class="chart-subtitle">Each dot = one theme. Size = sqrt(n). Quadrant lines drawn at control baseline.</div>
@@ -349,6 +415,7 @@
     <div class="chart-title">Finding Hit Rate</div>
     <div class="chart-subtitle">Catch rate per ground-truth finding across themes (sorted by mean score)</div>
     <div class="heatmap-wrap"><svg id="heatmap"></svg></div>
+    <div id="finding-legend" class="finding-legend"></div>
   </div>
   <div class="chart-section">
     <div class="chart-title">Phase Attribution</div>
@@ -788,6 +855,15 @@ function renderHeatmap() {
       }
     });
   });
+
+  // Populate finding legend
+  const legendEl = document.getElementById('finding-legend');
+  if (legendEl && findings.length > 0) {
+    legendEl.innerHTML = '<div class="finding-legend-title">Finding Key</div>' +
+      findings.map(f =>
+        `<div class="finding-legend-item"><span class="finding-legend-id ${f.severity === 'critical' ? 'critical' : ''}">${f.id}</span><span>${f.title} <span style="opacity:0.5">(w${f.weight})</span></span></div>`
+      ).join('');
+  }
 }
 
 // ── Phase Attribution ──
@@ -798,8 +874,19 @@ function renderPhaseAttr() {
 
   const barH = 18;
   const gap = 4;
-  const labelW = 90;
-  const barW = 170;
+  const container = svg.node().parentNode;
+  const availW = container.clientWidth - 16;
+  // Measure longest label to size the label column
+  const tempSvg = d3.select(container).append('svg').attr('class','measure-tmp').style('position','absolute').style('visibility','hidden');
+  let maxLabelW = 0;
+  themes.forEach(t => {
+    const txt = tempSvg.append('text').attr('font-size','10px').text((t.meta.name || t.key) + ` (n=${t.stats.n})`);
+    maxLabelW = Math.max(maxLabelW, txt.node().getComputedTextLength());
+    txt.remove();
+  });
+  tempSvg.remove();
+  const labelW = Math.ceil(maxLabelW) + 12;
+  const barW = Math.max(120, availW - labelW - 20);
   const width = labelW + barW + 20;
   const height = themes.length * (barH + gap) + 10;
 
@@ -985,7 +1072,41 @@ function rebuildGenres() {
   });
 }
 
+function renderDimLegend() {
+  const el = document.getElementById('dim-color-legend');
+  if (state.dimColor === 'none' && state.oceanColor === 'none') {
+    el.style.display = 'none';
+    return;
+  }
+  el.style.display = 'flex';
+
+  if (state.dimColor !== 'none') {
+    // Categorical dimension coloring — collect unique values from visible themes
+    const themes = getFilteredThemes();
+    const vals = new Set();
+    themes.forEach(t => {
+      const v = (t.meta.dimensions || {})[state.dimColor];
+      if (v) vals.add(v);
+    });
+    const sorted = Array.from(vals).sort();
+    const label = state.dimColor.replace(/_/g, ' ');
+    el.innerHTML = `<div class="dim-legend-title">Color: ${label}</div>` +
+      sorted.map(v =>
+        `<div class="dim-legend-item"><div class="dim-legend-swatch" style="background:${dimCategoryColors(v)}"></div>${v}</div>`
+      ).join('');
+  } else {
+    // OCEAN coloring — gradient legend
+    const trait = {O:'Openness',C:'Conscientiousness',E:'Extraversion',A:'Agreeableness',N:'Neuroticism'}[state.oceanColor] || state.oceanColor;
+    const steps = [1,2,3,4,5];
+    el.innerHTML = `<div class="dim-legend-title">Color: ${trait} (${state.oceanRole})</div>` +
+      steps.map(v =>
+        `<div class="dim-legend-item"><div class="dim-legend-swatch" style="background:${oceanColorScale(v)}"></div>${v}</div>`
+      ).join('');
+  }
+}
+
 function renderAll() {
+  renderDimLegend();
   renderScatter();
   renderHeatmap();
   renderPhaseAttr();
