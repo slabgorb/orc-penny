@@ -7,9 +7,11 @@
 
 ## Executive Summary
 
-Cascade attribution on dpgd-116 reveals **no persona-driven variance** in defect detection. All 7 findings are caught (or missed) by the same phases regardless of which theme is active. Detection patterns are determined by **role definition** (what the agent is told to look for) and **code obviousness** (how visible the defect is), not by persona character traits.
+Cascade attribution on dpgd-116 reveals **no persona-driven variance** in defect detection. All 7 findings are caught (or missed) by the same phases regardless of which theme is active. Detection patterns are determined by **role definition** (what the agent is told to look for), not by persona character traits.
 
-**Signal assessment: Weak signal for persona-driven detection.** The data does not justify the expensive downstream experiments (47-6 A/B pipeline, 47-7 context ablation) at this time. Stories 47-3 through 47-5 (context doc generation and scoring) remain valuable for measuring *context document quality* differences across personas, but the pipeline itself appears persona-insensitive at the detection level.
+**Important limitation:** All dpgd-116 runs used the **same static epic and story context documents** — context was held constant across themes, not absent. Every agent (TEA, Dev, Reviewer) received identical context via `build_phase_claude_md()`. This means we can measure persona-driven variance (none found) but **cannot measure context-driven variance** from this dataset because the independent variable (context content) was never varied.
+
+**Signal assessment:** No persona effect at the pipeline detection level. Context effect is **untestable** from this data — stories 47-3/47-4 are critical to generate the context variance needed before 47-6/47-7 can answer the context question.
 
 ## Attribution Categories
 
@@ -52,8 +54,8 @@ Cascade attribution on dpgd-116 reveals **no persona-driven variance** in defect
 
 - **Catch rate:** 4/19 (21%) — firefly, gilligans-island, mash, star-trek-tng
 - **Catching phases:** reviewer (2), tea (2)
-- **Attribution: Code-obvious but deeply buried**
-- **Analysis:** This is the hardest finding — a subtle error-swallowing pattern that requires understanding Rust's `unwrap_or_default()` semantics. The 4 themes that catch it don't share obvious traits (2 comedy, 1 sci-fi, 1 sci-fi). The catch appears stochastic rather than persona-driven. Control also misses it. The low catch rate reflects genuine difficulty, not persona insensitivity.
+- **Attribution: Role-driven (low catch rate due to difficulty)**
+- **Analysis:** This is the hardest finding — a subtle error-swallowing pattern that requires understanding Rust's `unwrap_or_default()` semantics. The 4 themes that catch it don't share obvious traits (2 comedy, 1 sci-fi, 1 sci-fi). The catch appears stochastic rather than persona-driven. Control also misses it. The low catch rate reflects genuine difficulty — the role definition covers it, but agents don't reliably surface it.
 
 ### I1: CliError Display leaks internal details — CWE-209 (weight: 5)
 
@@ -101,13 +103,11 @@ Cascade attribution on dpgd-116 reveals **no persona-driven variance** in defect
 
 | Category | Findings | % of Weighted Score |
 |----------|----------|-------------------|
-| **Code-obvious** | (none clearly) | 0% |
-| **Role-driven** | I1, I2, I3, I4, I5, I6 | 76% (28/37 weight) |
+| **Role-driven** | C1, I1, I2, I3, I4, I5, I6 | 100% (37/37 weight) |
 | **Persona-driven** | (none detected) | 0% |
-| **Context-driven** | (none detected) | 0% |
-| **Difficulty-gated** | C1 | 24% (8/37 weight) |
+| **Context-driven** | (not measurable — context held constant) | N/A |
 
-**0% of catches appear persona-driven or context-driven.** 100% of detection variance is explained by role definition and finding difficulty.
+**0% of catches appear persona-driven.** All detection variance is explained by role definition. Context-driven attribution cannot be assessed from this dataset because all runs used identical static context documents — the independent variable was never varied. C1's low catch rate (21%) reflects finding difficulty, not a different attribution mechanism.
 
 ## Phase Attribution vs Ideal
 
@@ -143,21 +143,27 @@ Control (no theme) catches 5/7 findings — above the themed mean of 4.4. This d
 
 ## Signal Assessment
 
+### What this data tells us
+
+**Persona variance at the detection level: NO.** Changing the theme (persona character) does not change which findings are caught or which phase catches them. The pipeline is persona-insensitive for detection.
+
+**Context variance at the detection level: UNKNOWN.** All dpgd-116 runs used the same static epic and story context documents. Since context was never varied, this dataset cannot answer whether different context content would produce different detection outcomes. This is the central question of the epic — and it remains open.
+
 ### Is there enough variance to justify 47-3 through 47-7?
 
-**For 47-3 (PM personas) and 47-4 (Architect personas):** YES, but reframe. These stories generate context documents, not pipeline runs. The value is measuring whether PM/Architect persona choice affects *context document quality* — a different question from pipeline detection. The cascade attribution data doesn't answer this question because dpgd-116 runs used no upstream context documents.
+**For 47-3 (PM personas) and 47-4 (Architect personas):** YES — these are critical. The pipeline-replay runs load context docs into every agent's prompt via `build_phase_claude_md()`. Stories 47-3/47-4 generate *different* context documents using different PM and Architect personas. This creates the context variance that dpgd-116 lacks — the prerequisite for testing whether upstream context quality affects downstream detection.
 
-**For 47-5 (Score against manifests):** YES. Scoring context docs against concern/AC manifests is valuable regardless of pipeline attribution.
+**For 47-5 (Score against manifests):** YES. Scoring persona-generated context docs against concern/AC manifests measures whether personas produce meaningfully different context. This is the gating signal for 47-6/47-7.
 
-**For 47-6 (Context ablation):** NOT YET. Ablation experiments require evidence that context docs affect pipeline outcomes. Since dpgd-116 shows no persona effect at the pipeline level, ablation would be premature. Run 47-3/47-4/47-5 first and reassess.
+**For 47-6 (Context ablation):** GATE ON 47-5. If persona-generated context docs show meaningful quality variance (47-5), then ablation experiments become justified — remove sections from the good context and measure detection impact. If context docs don't vary across personas, ablation still has value (measuring which sections of static context matter) but at lower priority.
 
-**For 47-7 (A/B pipeline):** NOT YET. Same reasoning as 47-6. The baseline data shows role-driven detection, not context-driven. An A/B experiment comparing "good context vs no context" is only justified if 47-3/47-4 produce meaningfully different context docs.
+**For 47-7 (A/B pipeline):** GATE ON 47-5. Run the pipeline with persona-generated context (from 47-3/47-4) vs the original static context. Only justified if 47-5 shows the context docs are actually different.
 
-**For 47-8 (Question quality instrumentation):** DEPRIORITIZE. This is P3 and should wait for signal from 47-3/47-4.
+**For 47-8 (Question quality instrumentation):** DEPRIORITIZE. P3 — wait for signal from 47-3/47-4.
 
 ### Recommendation
 
-Proceed with 47-2, 47-3, 47-4, 47-5 as planned. Gate 47-6 and 47-7 on results from 47-5 (do the context docs actually vary?). If context docs show <10% quality variance across personas, cancel 47-6/47-7 and close the epic.
+Proceed with 47-2, 47-3, 47-4, 47-5 as planned. Gate 47-6 and 47-7 on 47-5 results (do the context docs actually vary across personas?). If context docs show <10% quality variance, deprioritize 47-6/47-7. The key insight from this analysis is that the epic's hypothesis is about **context**, not persona — and context variance has not yet been tested.
 
 ## Methodology Notes
 
@@ -166,3 +172,4 @@ Proceed with 47-2, 47-3, 47-4, 47-5 as planned. Gate 47-6 and 47-7 on results fr
 - 85 total score.yaml files analyzed (19 themes × 2–6 runs + 4 control runs)
 - Attribution classification based on evidence text in each score.yaml
 - No statistical significance testing performed — sample sizes (2–6 runs per theme) are too small for parametric tests
+- **Context setup:** All runs used identical static epic and story context documents, loaded into each agent's CLAUDE.md via `build_phase_claude_md()` in `pipeline_replay.py`. The only variable across themes was the persona definition — context content was held constant. This means persona-driven attribution can be assessed (none found) but context-driven attribution cannot (no variance in the independent variable).
