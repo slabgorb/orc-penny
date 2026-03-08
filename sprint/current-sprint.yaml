@@ -91,3 +91,11 @@ standalone_stories:
     repos: pennyfarthing
     pr: 1309
     branch: feat/MSSCI-16302-judge-versioning
+  - id: MSSCI-16303
+    jira: MSSCI-16303
+    title: Fix persona tracking — eliminate CYCLIST_SESSION_ID, set SESSION_ID before WheelHub spawn
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1310
+    branch: feat/MSSCI-16303-fix-persona-session-id
