@@ -77,7 +77,7 @@ stories:
       Run multi-judge (N=3) on 5 scenarios known to have high score variance in existing single-judge runs. Compare single-judge vs multi-judge agreement. Report whether ensemble scoring reduces effective variance (CV of aggregated means < CV of single-judge scores). This validates that multi-judge actually improves reliability in our specific context. Research basis: PersonaGym found model complexity doesn't predict persona capability; our multi-judge test determines whether judge ensemble actually reduces variance vs just adding cost.
     points: 2
     priority: p1
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:

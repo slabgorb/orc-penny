@@ -35,6 +35,6 @@ stories:
     title: 'Pilot: Add red herrings to order-service scenario'
     points: 3
     priority: p1
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd

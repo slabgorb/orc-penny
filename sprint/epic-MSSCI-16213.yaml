@@ -23,7 +23,7 @@ stories:
     title: Populate difficulty profiles from baseline data
     points: 2
     priority: p1
-    status: backlog
+    status: canceled
     assigned_to: keith.avery@1898andco.io
     started: '2026-03-06'
     repos: pennyfarthing
@@ -34,6 +34,6 @@ stories:
     title: Update schema.yaml with new fields documentation
     points: 1
     priority: p1
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd

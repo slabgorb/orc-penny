@@ -33,7 +33,7 @@ stories:
     title: Create gold standards for 5 high-variance scenarios
     points: 3
     priority: p1
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
   - id: 45-4
