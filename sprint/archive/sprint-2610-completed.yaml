@@ -14,6 +14,10 @@ completed_epics:
   - MSSCI-16073
   - MSSCI-16127
   - MSSCI-16210
+  - MSSCI-16211
+  - MSSCI-16214
+  - MSSCI-16212
+  - MSSCI-16213
 completed_stories:
   - id: 110-1
     epic: '110'
@@ -495,3 +499,28 @@ completed_stories:
     title: Populate difficulty profiles from baseline data
     points: 2
     completed: '2026-03-06'
+  - id: 47-1
+    epic: ''
+    title: Cascade attribution on dpgd-116 existing results
+    points: 2
+    completed: '2026-03-08'
+  - id: 43-3
+    epic: MSSCI-16211
+    title: 'Pilot: Add red herrings to order-service scenario'
+    points: 3
+    completed: '2026-03-08'
+  - id: 44-4
+    epic: MSSCI-16214
+    title: Multi-judge test on high-variance scenarios
+    points: 2
+    completed: '2026-03-08'
+  - id: 45-3
+    epic: MSSCI-16212
+    title: Create gold standards for 5 high-variance scenarios
+    points: 3
+    completed: '2026-03-08'
+  - id: 46-3
+    epic: MSSCI-16213
+    title: Update schema.yaml with new fields documentation
+    points: 1
+    completed: '2026-03-08'

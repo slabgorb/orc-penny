@@ -2,7 +2,7 @@ id: '44'
 type: epic
 title: Multi-Judge Validation
 priority: p0
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-16214
 stories:
@@ -86,3 +86,4 @@ stories:
       - 'Report: Krippendorff Alpha per scenario, CV comparison (single vs multi), dimension-level agreement'
       - Results stored in internal/results/multi-judge-validation/ for historical tracking
       - 'Written summary: does multi-judge reduce effective variance? By how much? Cost analysis (tokens/run)'
+completed: '2026-03-08'

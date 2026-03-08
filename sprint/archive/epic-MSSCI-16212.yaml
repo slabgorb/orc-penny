@@ -2,7 +2,7 @@ id: '45'
 type: epic
 title: Gold Standard References
 priority: p2
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-16212
 stories:
@@ -48,3 +48,4 @@ stories:
     workflow: tdd
     completed: '2026-03-06'
     review_verdict: approved
+completed: '2026-03-08'

@@ -1,14 +1,14 @@
-id: '43'
+id: '46'
 type: epic
-title: False Positive Traps (Red Herrings)
-priority: p1
-status: backlog
+title: Difficulty Profile Enhancement
+priority: p2
+status: done
 repos: pennyfarthing
-jira: MSSCI-16211
+jira: MSSCI-16213
 stories:
-  - id: 43-1
-    jira: MSSCI-16222
-    title: Add red_herrings schema to scenarios
+  - id: 46-1
+    jira: MSSCI-16229
+    title: Add difficulty_profile schema to scenarios
     points: 2
     priority: p0
     status: done
@@ -18,23 +18,23 @@ stories:
     workflow: tdd
     completed: '2026-03-06'
     review_verdict: approved
-  - id: 43-2
-    jira: MSSCI-16223
-    title: Update judge for red herring detection
+  - id: 46-2
+    jira: MSSCI-16230
+    title: Populate difficulty profiles from baseline data
     points: 2
-    priority: p0
-    status: done
+    priority: p1
+    status: canceled
     assigned_to: keith.avery@1898andco.io
     started: '2026-03-06'
     repos: pennyfarthing
     workflow: tdd
-    completed: '2026-03-06'
     review_verdict: approved
-  - id: 43-3
-    jira: MSSCI-16224
-    title: 'Pilot: Add red herrings to order-service scenario'
-    points: 3
+  - id: 46-3
+    jira: MSSCI-16231
+    title: Update schema.yaml with new fields documentation
+    points: 1
     priority: p1
     status: canceled
     repos: pennyfarthing
     workflow: tdd
+completed: '2026-03-08'
