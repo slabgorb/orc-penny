@@ -1,0 +1,41 @@
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 is the foundational CLI framework — every type, trait, and binary entry point needs test coverage.
+
+**Test Files:**
+
+| File | Tests | Coverage |
+|------|-------|----------|
+| `tests/cli_structure.rs` | 27 | AC-1 (command groups), AC-2 (help rendering), AC-5 (global flags), AC-6 (derive macros) |
+| `tests/error_exit_codes.rs` | 15 | AC-3 (exit code mapping 0/1/2/3/4), error trait impls, CWE-209 display safety |
+| `tests/output_formatting.rs` | 14 | AC-4 (table/json/csv formatting), metadata, escaping, empty rows |
+| `tests/siem_client.rs` | 15 | AC-7 (header injection, HTTP status mapping 401/403/404/429/5xx, connection refused) |
+| `tests/config_loading.rs` | 12 | AC-8 (TOML loading, env var overrides, precedence, token rejection) |
+| `tests/shell_completion.rs` | 9 | AC-9 (bash/zsh/fish/powershell generation, instructions to stderr) |
+| `tests/stub_handlers.rs` | 11 | AC-10 (stub messages, exit code 1, story references, stderr routing) |
+| `tests/security.rs` | 7 | CWE-209, panic resistance, silent error swallowing, config token leakage |
+
+**Tests Written:** 110 tests covering all 10 ACs
+**Status:** RED (failing — compilation errors because no implementation exists)
+
+**Failure modes:** All test files fail at compile time due to:
+- Missing `axiathon_client::error::CliError` type
+- Missing `axiathon_client::output::OutputFormatter` trait and formatters
+- Missing `axiathon_client::client::SiemClient` type
+- Missing `axiathon_client::config::ClientConfig` type
+- Missing `src/main.rs` binary entry point (no `axiathon` binary)
+
+**Security tests included:**
+- Header injection via tenant ID/token with CRLF characters
+- CWE-209: error display doesn't leak stack traces, credentials, or server internals
+- Server 500 responses don't pass raw bodies to users
+- Config files cannot source tokens (OS keychain only)
+- No panics on extremely long input, empty strings, or Unicode edge cases
+- Silent error swallowing detection
+
+**Handoff:** To Dev for implementation (GREEN phase)
+
+## Delivery Findings
+
+- No upstream findings during test design.

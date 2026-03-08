@@ -1,0 +1,22 @@
+## Dev Assessment
+
+**Implementation Complete:** Yes
+
+**Files Changed:**
+- `crates/axiathon-client/src/cli.rs` — Clap 4.x derive-based CLI struct with all command groups and global flags
+- `crates/axiathon-client/src/client.rs` — SiemClient HTTP wrapper with header injection and status code mapping
+- `crates/axiathon-client/src/config.rs` — ClientConfig TOML loading with env var overrides, token exclusion
+- `crates/axiathon-client/src/error.rs` — CliError enum with exit code mapping (0/1/3/4)
+- `crates/axiathon-client/src/output.rs` — OutputFormatter trait with Table/JSON/CSV implementations
+- `crates/axiathon-client/src/main.rs` — Binary entry point, error-to-exit-code dispatch
+- `crates/axiathon-client/src/commands/` — 10 command modules (query, rules, alerts, ingest, config, status, tenant, login, completion, init)
+- `crates/axiathon-client/src/lib.rs` — Module re-exports
+- `crates/axiathon-client/Cargo.toml` — Added uuid dependency
+- `Cargo.toml` — Added clap `env` feature; changed workspace lint from `forbid` to `deny` for unsafe_code (needed for Rust 2024 `set_var` in tests)
+- `crates/axiathon-client/tests/config_loading.rs` — Fixed env var tests for Rust 2024 (unsafe blocks + mutex for thread safety)
+
+**Tests:** 125/125 passing (GREEN)
+**Clippy:** Clean (0 warnings with `-D warnings`)
+**Branch:** `feat/6.1-cli-framework` (pushed)
+
+**Handoff:** To next phase (verify or review)
