@@ -1,0 +1,21 @@
+## Dev Assessment
+
+**Implementation Complete:** Yes
+
+**Files Changed:**
+- `Cargo.toml` — added `env` feature to clap workspace dependency
+- `crates/axiathon-client/Cargo.toml` — added `uuid` and `chrono` dependencies
+- `crates/axiathon-client/src/lib.rs` — module declarations and public re-exports
+- `crates/axiathon-client/src/cli.rs` — `Cli` parser, `Commands` enum, `OutputFormat`, global flags (clap 4.x derive)
+- `crates/axiathon-client/src/error.rs` — `CliError` enum with `exit_code()` mapping, sanitized Display (CWE-209)
+- `crates/axiathon-client/src/output.rs` — `OutputFormatter` trait, `TableFormatter` (comfy-table), `JsonFormatter` (with `ResponseMetadata`), `CsvFormatter`
+- `crates/axiathon-client/src/client.rs` — `SiemClient` with builder, header injection prevention, HTTP status mapping, SSRF protection
+- `crates/axiathon-client/src/config.rs` — `ClientConfig` TOML loading, env var overrides, URL/timeout validation, credential rejection
+- `crates/axiathon-client/src/completion.rs` — `generate_completions()` for bash/zsh/fish/powershell
+- `crates/axiathon-client/src/commands/` — 11 command modules (query, rules, alerts, ingest, config, status, tenant, login, completion, init, tui) with stub handlers referencing their implementation stories
+
+**Tests:** 137/137 passing (GREEN)
+**Clippy:** 0 warnings
+**Branch:** `feat/story-6.1-cli-framework-impl` (pushed)
+
+**Handoff:** To next phase (verify or review)

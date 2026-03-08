@@ -1,0 +1,93 @@
+Now I have the complete picture. Let me compile my findings.
+
+---
+
+## Code Review: Story 6.1 — CLI Framework & Structure
+
+*Reviewer: Commander Spock (visiting from Enterprise)*
+
+Fascinating. I have examined every module, every test, every dependency declaration. The code is... mostly logical, but several issues demand attention. Dr. McCoy would say "Dammit Jim, some of these are clearly wrong."
+
+---
+
+### Findings
+
+**[CRITICAL] Missing `main.rs` binary entry point — `axiathon` binary cannot be built** at `crates/axiathon-client/src/main.rs`
+
+The story explicitly requires producing the `axiathon` binary. There is no `main.rs`, no `[[bin]]` target in `Cargo.toml`. The crate compiles as a library only. Without `main.rs`, there is no binary, no exit code dispatch, no tracing init — AC-3 (exit codes via `std::process::exit()`) and AC-8 (config loading at startup) are structurally impossible. This is the core deliverable of Story 6.1.
+
+**[CRITICAL] `ServerError` Display leaks arbitrary server messages (CWE-209)** at `crates/axiathon-client/src/error.rs:28`
+
+`#[error("server returned error {0}")]` for `ServerError(u16, String)` — the Display impl shows only the status code `{0}`, but the second field `String` (the server message) is silently omitted from Display. This is *accidentally* safe for CWE-209, but the test at `error_exit_codes.rs:111-125` passes for the wrong reason: it asserts `!display.contains("panicked")` and `!display.contains("src/main.rs")`, but the message field is simply never rendered by `{0}` which only formats the first tuple field. The test appears to verify CWE-209 sanitization but actually tests a Display formatting quirk. If someone later changes to `{0}: {1}`, every server-side stack trace leaks to the user. This needs an explicit sanitization strategy, not an accidental omission.
+
+**[HIGH] `with_token()` and `with_tenant()` bypass header injection validation** at `crates/axiathon-client/src/client.rs:41,53`
+
+There are two API paths: `with_token()` (no validation) and `try_with_token()` (validates). The unsafe `with_token()` is `pub` and accepts arbitrary strings including `\r\n`. Tests only cover `try_with_token()`. Production code could easily call `with_token()` directly, bypassing CWE-113 protection. The `default_headers()` method silently swallows `HeaderValue::from_str` failures (line 75-83), which means an injected `\r\n` token would be silently dropped rather than causing an error — a silent failure. Either remove the unsafe variants or make them `pub(crate)` with clear documentation.
+
+**[HIGH] `init` command is a stub but story requires it to be functional** at `crates/axiathon-client/src/commands/init.rs`
+
+AC scope says: "Shell completion generation (functional, not stub)" and "`axiathon init` first-time setup (functional, not stub)". Completion is correctly implemented in `completion.rs`, but `init.rs` returns `NotImplemented("init")`. The story explicitly requires `init` to be functional.
+
+**[HIGH] `#![allow(unsafe_code)]` in test file contradicts project rules** at `crates/axiathon-client/tests/config_loading.rs:3`
+
+The project mandates `#![forbid(unsafe_code)]` in every application crate. The test file uses `#![allow(unsafe_code)]` to call `std::env::set_var` (unsafe in Rust 2024). While test code has different constraints, using `unsafe` for env var manipulation in tests that run potentially in parallel (cargo default) creates undefined behavior. These env var tests need `--test-threads=1` or a mutex guard, and the `unsafe` blocks need stronger justification.
+
+**[MEDIUM] `rules` stub references wrong story number** at `crates/axiathon-client/src/commands/rules.rs:4`
+
+The stub says `"Story 6.6"` but the story context doesn't define 6.6 as rules management. The epic overview lists stories 6.1-6.7 but the specific mapping isn't clear. Should be verified against the actual story assignment. Similarly, `tenant` references `"Story 6.7"` — needs verification.
+
+**[MEDIUM] `toml` workspace dependency version mismatch** at `Cargo.toml:67`
+
+The story Technical Guardrails specify `toml 0.9`, but workspace declares `toml = "0.8"`. This should match the architecture document's specification.
+
+**[MEDIUM] `--tenant` accepts raw `String` instead of validated `TenantId`** at `crates/axiathon-client/src/cli.rs:26`
+
+Per Rust rules: "Newtypes for IDs: `TenantId(String)` — prevents mixing ID types." The `--tenant` flag accepts `Option<String>` and passes it directly to `SiemClient::with_tenant()`. At this trust boundary (user input), validation should occur. `axiathon-core` exports `TenantId` — it should be used here or validated before use.
+
+**[MEDIUM] `default_headers()` silently drops invalid header values** at `crates/axiathon-client/src/client.rs:75-83`
+
+If `HeaderValue::from_str()` fails, the header is silently omitted. An auth token that can't be encoded as a header value would result in unauthenticated requests with no error — a silent failure that could lead to confusing "401 Unauthorized" errors downstream instead of a clear "invalid token format" error.
+
+**[MEDIUM] Config env var tests are not thread-safe** at `crates/axiathon-client/tests/config_loading.rs:69-138`
+
+`std::env::set_var` is process-global. Multiple tests mutating `AXIATHON_API_URL` and `AXIATHON_TIMEOUT` concurrently will produce flaky results. The `unsafe` blocks acknowledge single-threaded execution but nothing enforces `--test-threads=1`. These tests need a serial test annotation (e.g., `serial_test` crate) or a mutex.
+
+**[MEDIUM] No test for `deny_unknown_fields` on config** at `crates/axiathon-client/src/config.rs:19`
+
+`RawConfig` correctly uses `#[serde(deny_unknown_fields)]`, but the test at `config_loading.rs:179-203` tests token rejection by checking *either* error or `token().is_none()`. With `deny_unknown_fields`, a `token` field in TOML *will* error — but the test accepts both outcomes, making it a weak assertion. A dedicated test should assert that unknown fields are rejected.
+
+**[LOW] Nightly `rustfmt` import ordering fails** at `crates/axiathon-client/src/cli.rs:1` and `client.rs:2`
+
+Per the gotchas sidecar: "Always include `cargo +nightly fmt --all --check` in the preflight." Nightly fmt check shows import ordering violations in `cli.rs` and `client.rs`. This must be fixed before merge.
+
+**[LOW] `siem_client.rs` HTTP status tests unnecessarily use `#[tokio::test]`** at `crates/axiathon-client/tests/siem_client.rs:47-109`
+
+`map_status_code()` is a synchronous function. Using `#[tokio::test]` adds unnecessary async runtime overhead. Should be plain `#[test]`.
+
+**[VERIFIED] `#![forbid(unsafe_code)]` present in lib.rs** — confirmed at `crates/axiathon-client/src/lib.rs:2`
+
+**[VERIFIED] `#[non_exhaustive]` on `CliError` enum** — confirmed at `crates/axiathon-client/src/error.rs:15`
+
+**[VERIFIED] `deny_unknown_fields` on `RawConfig`** — prevents config file from silently accepting unknown keys, including `token`
+
+**[VERIFIED] Header injection prevention exists via `try_with_token`/`try_with_tenant`** — the safe path exists, though the unsafe path is also exposed
+
+**[VERIFIED] Token excluded from Debug output** — custom `Debug` impl on `SiemClient` shows `has_token` boolean, not actual value
+
+---
+
+### Summary
+
+| Severity | Count | Blocks? |
+|----------|-------|---------|
+| Critical | 2 | YES |
+| High | 3 | YES |
+| Medium | 5 | NO |
+| Low | 2 | NO |
+| Verified | 5 | — |
+
+### Verdict: **CHANGES_REQUESTED**
+
+The missing `main.rs` is a fundamental gap — the story's primary deliverable (the `axiathon` binary) cannot be produced. The `init` stub violates the explicit "functional, not stub" requirement. The dual safe/unsafe API surface for header injection is a security design flaw. The CWE-209 test gives a false sense of security. The nightly fmt violations must also be resolved per the project's gotchas.
+
+Logical. Thorough. Unapproved. As it should be.

@@ -1,0 +1,34 @@
+*Exhales a long plume of smoke and peers down from the mushroom.*
+
+"So you think you know who you are? Prove it."
+
+---
+
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 is a foundational feature story with 10 acceptance criteria covering CLI structure, error handling, output formatting, HTTP client, config loading, shell completion, and stub handlers.
+
+**Test Files:**
+
+| File | Tests | Coverage |
+|------|-------|----------|
+| `cli_structure.rs` | 30 | AC-1 (command groups), AC-2 (help rendering), AC-5 (global flags), AC-6 (clap derive) |
+| `exit_codes.rs` | 14 | AC-3 (exit codes 0/1/2/3/4, CliError::exit_code(), Display safety) |
+| `output_format.rs` | 16 | AC-4 (OutputFormatter trait, Table/JSON/CSV, ResponseMetadata, escaping) |
+| `siem_client.rs` | 16 | AC-7 (SiemClient construction, header injection, HTTP status mapping, timeout) |
+| `config_loading.rs` | 13 | AC-8 (TOML loading, env var overrides, XDG path, no token storage, validation) |
+| `shell_completion.rs` | 6 | AC-9 (bash/zsh/fish/powershell generation, command inclusion) |
+| `stub_handlers.rs` | 13 | AC-10 (stub handlers return "not yet implemented (Story X.Y)", exit code 1) |
+| `security.rs` | 10 | CWE-209 (error info exposure), header injection (CRLF/null), SSRF (URL scheme), config trust boundary |
+
+**Tests Written:** 118 tests covering all 10 ACs
+**Status:** RED (failing — compilation errors on all 7 test files, every referenced type is unresolved)
+
+**Security tests specifically cover:**
+- CWE-209: Server errors don't leak connection strings, auth errors don't expose tokens
+- Header injection: CRLF and null bytes rejected in tenant ID and auth token
+- SSRF prevention: `javascript:` and `file://` URLs rejected by SiemClient
+- Config trust boundary: URLs with embedded credentials rejected, negative/zero timeout rejected, extremely long URLs rejected, tokens not stored in config file
+
+**Handoff:** To Dev for implementation (GREEN phase)

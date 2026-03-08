@@ -1,0 +1,105 @@
+I've completed my thorough review. Here is my assessment.
+
+---
+
+# Code Review: Story 6.1 — CLI Framework & Structure
+
+**OFF WITH THEIR HEADS!** ...or perhaps not *all* of them. But several need a stern talking-to.
+
+*The King of Hearts whispers: "Consider, my dear, some of these are quite well done..."*
+
+---
+
+## Observations
+
+### [CRITICAL] Missing `main.rs` — No Binary Entry Point at `crates/axiathon-client/src/main.rs`
+
+**The story explicitly requires** a `main.rs` as the binary entry point with tracing init, dispatch, and exit code handling via `std::process::exit()`. No `main.rs` exists. No `[[bin]]` section in `Cargo.toml`. This crate is a **library only** — it cannot produce the `axiathon` binary. AC-3 (exit codes via process exit) and AC-9 (completion script to stdout, instructions to stderr) cannot be fulfilled without `main.rs`. This is the single biggest gap in the implementation.
+
+### [HIGH] Nightly `rustfmt` check fails — 440 lines of diff at `crates/axiathon-client/src/config.rs` and others
+
+Per `gotchas.md`: "Always include `cargo +nightly fmt --all --check` in the preflight. Nightly rustfmt enforces import ordering that stable does not." The nightly fmt check produces **440 lines** of diff across multiple files. This must be fixed before merge.
+
+### [HIGH] Vacuous security test — `config_rejects_non_https_url_with_warning` at `tests/security.rs:104`
+
+This test has a **silent pass-through on error**:
+```rust
+let config = ClientConfig::from_file(file.path());
+if let Ok(config) = config {
+    assert!(config.is_secure(), ...);
+}
+```
+If `from_file` returns `Err` (which it does — the implementation rejects non-HTTPS URLs), the test body is skipped entirely and the test passes vacuously. It asserts nothing. This should explicitly assert `config.is_err()` to verify the rejection, or use `unwrap()` and assert `is_secure() == false`. As written, this test would pass even if the security check were removed.
+
+### [HIGH] `tenant` flag uses raw `String`, not `TenantId` newtype at `crates/axiathon-client/src/cli.rs:37`
+
+The `--tenant` flag is `Option<String>`. The `axiathon-core` crate exports `TenantId` specifically to prevent mixing ID types (per Rust coding rules: "Newtypes for IDs"). The `SiemClient` also stores `tenant_id` as `Option<String>`. While clap parsing naturally produces strings, the conversion to `TenantId` should happen at the boundary (in `main.rs` dispatch or `SiemClient` construction) to get validation. Currently no validation of tenant ID format occurs anywhere.
+
+### [MEDIUM] `expect()` calls in production code at `crates/axiathon-client/src/output.rs:68-71,112-117`
+
+Eight `.expect()` calls in `output.rs` for JSON/CSV serialization. The Rust coding rules say "No `unwrap()` in production code — use `?` or `expect()` with actionable message." These `expect()` messages are descriptive ("CSV header write cannot fail"), which is borderline acceptable, but the `OutputFormatter::format()` method returns `String` — it should return `Result<String, CliError>` so callers can handle errors properly. Writing to a `Vec<u8>` is infallible in practice, so this is **medium** not high.
+
+### [MEDIUM] `config_does_not_store_tokens` test is vacuously passing at `tests/config_loading.rs:158-182`
+
+The config uses `#[serde(deny_unknown_fields)]`, so parsing a TOML with an unknown `token` field will error. The test then hits the `if let Ok(config)` branch which is never entered — the assertion on `api_token().is_none()` is never reached. The test passes because the `Err` case is silently accepted ("If parsing fails because 'token' is rejected, that's also acceptable"). This means the actual `api_token()` method returning `None` is **never tested**. Should add a separate test that verifies `api_token()` returns `None` on a valid config.
+
+### [MEDIUM] `client_crate_does_not_depend_on_server_crates` is a no-op at `tests/security.rs:171-182`
+
+```rust
+assert!(true, "axiathon-client depends only on axiathon-core for shared types");
+```
+`assert!(true)` is a no-op. This test provides zero assurance. A proper test would parse `Cargo.toml` and verify no server-side dependencies exist. As a compile-time check it adds nothing beyond what Cargo already enforces.
+
+### [MEDIUM] `cli_error_is_non_exhaustive` test proves nothing at `tests/security.rs:153-164`
+
+The test creates a `CliError`, matches it, and has a wildcard arm. But this compiles whether or not `#[non_exhaustive]` is present — the wildcard arm is always allowed. The test would need to be in an **external crate** to verify non-exhaustive behavior (since `#[non_exhaustive]` only affects external crate matching). Since the tests are in the same crate, this test is vacuous.
+
+### [LOW] `rules` stub references wrong story — `commands/rules.rs:19`
+
+The rules stub says `"Story 6.6"` but according to the epic context, rules management isn't explicitly assigned a single story number in the scope boundaries section. The story mapping should be verified against the actual backlog. (Minor — just needs fact-checking.)
+
+### [LOW] No `after_help` usage examples on any command — AC-2 gap
+
+AC-2 requires "include `after_help` usage examples for each command group." None of the command arg structs include `#[command(after_help = "...")]`. Help renders without panic (tested), but the content requirement for usage examples is not met.
+
+### [VERIFIED] `#![forbid(unsafe_code)]` present at `lib.rs:2`
+
+### [VERIFIED] `#[non_exhaustive]` on `CliError` enum at `error.rs:11`
+
+### [VERIFIED] SSRF protection: scheme validation in `SiemClient::builder().build()` at `client.rs:101-105`
+
+### [VERIFIED] Header injection prevention (CRLF + null) at `client.rs:132-142` with corresponding tests
+
+### [VERIFIED] CWE-209: `ServerError` Display sanitizes internal message at `error.rs:43-45`
+
+### [VERIFIED] `deny_unknown_fields` on all config structs at `config.rs:22,31,38`
+
+### [VERIFIED] Exit code mapping correct: 3 for auth, 4 for authz, 1 for others at `error.rs:53-59`
+
+### [VERIFIED] All 12 command groups present (query, rules, alerts, ingest, config, status, tenant, login, logout, tui, completion, init)
+
+### [VERIFIED] Clippy clean with `-D warnings`
+
+### [VERIFIED] All 109 tests pass
+
+---
+
+## Summary
+
+| Severity | Count | Blocking? |
+|----------|-------|-----------|
+| Critical | 1 | YES |
+| High | 3 | YES |
+| Medium | 3 | NO |
+| Low | 2 | NO |
+| Verified | 8 | — |
+
+---
+
+## Verdict: **CHANGES_REQUESTED**
+
+The missing `main.rs` is a showstopper — without it, this crate cannot produce the `axiathon` binary, which is the entire point of Story 6.1. The nightly fmt failures must be fixed per the gotchas. The vacuous security test creates a false sense of coverage. The `TenantId` newtype should be used at the boundary.
+
+*The Queen has spoken. Fix these, and perhaps I'll spare your heads.*
+
+*The King of Hearts adds: "The security hardening (SSRF, CWE-209, header injection, deny_unknown_fields) is genuinely strong work. The test coverage is broad. Address the blocking issues and this will be a solid foundation."*

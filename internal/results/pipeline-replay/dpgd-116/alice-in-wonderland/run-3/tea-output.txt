@@ -1,0 +1,39 @@
+*Exhales a long, contemplative puff of smoke*
+
+"So you think you can implement a CLI, do you? Explain yourself precisely — because I've written **96 tests** that say you haven't yet."
+
+---
+
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 is a foundational implementation story with 10 acceptance criteria requiring extensive new code.
+
+**Test Files:**
+
+| File | Tests | Coverage |
+|------|-------|----------|
+| `tests/cli_structure.rs` | 26 | AC-1 (command groups), AC-2 (help rendering), AC-5 (global flags), AC-6 (clap derive) |
+| `tests/exit_codes.rs` | 12 | AC-3 (exit codes 0/1/2/3/4 via `CliError::exit_code()`) |
+| `tests/output_format.rs` | 11 | AC-4 (`--format table\|json\|csv`, ANSI control, edge cases) |
+| `tests/siem_client.rs` | 11 | AC-7 (X-Tenant-ID, Authorization headers, HTTP→CliError mapping) |
+| `tests/config_loading.rs` | 9 | AC-8 (TOML loading, env var overrides, XDG paths, token exclusion) |
+| `tests/shell_completion.rs` | 6 | AC-9 (bash/zsh/fish/powershell generation) |
+| `tests/stub_handlers.rs` | 10 | AC-10 ("not yet implemented" messages with story refs) |
+| `tests/security.rs` | 11 | Header injection (CWE-113), error exposure (CWE-209), config validation |
+
+**Tests Written:** 96 tests covering 10 ACs
+**Status:** RED (fails to compile — no source modules exist yet)
+
+**Changes made:**
+- Added workspace deps: `clap_complete`, `comfy-table`, `csv`, `dirs`, `keyring`, `reqwest`, `toml`, `tempfile`, `wiremock`
+- Updated `crates/axiathon-client/Cargo.toml` with production and dev dependencies
+- Created 7 integration test files in `crates/axiathon-client/tests/`
+
+**Handoff:** To Dev for implementation (GREEN phase). The tests expect these public modules:
+- `axiathon_client::cli::Cli` (clap Parser)
+- `axiathon_client::error::CliError` (with `exit_code()` method)
+- `axiathon_client::output::{OutputFormat, OutputFormatter}`
+- `axiathon_client::client::SiemClient`
+- `axiathon_client::config::ClientConfig`
+- `axiathon_client::commands::completion::generate_completions`

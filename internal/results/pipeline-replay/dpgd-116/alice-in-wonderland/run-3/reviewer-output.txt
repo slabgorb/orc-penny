@@ -1,0 +1,119 @@
+Now I have a complete picture. Here is my review.
+
+---
+
+# Review: Story 6.1 — CLI Framework & Structure
+
+**OFF WITH THEIR HEADS!** This code shall not pass my garden gates. I have found serious problems that the preflight dared not catch. Let me enumerate what displeases me.
+
+---
+
+## Findings
+
+### [CRITICAL] Workspace `unsafe_code` lint downgraded from `forbid` to `deny` at `Cargo.toml:77`
+
+The diff shows `unsafe_code` was changed from `"forbid"` to `"deny"` at the workspace level. This weakens the safety guarantee for **every crate in the entire workspace** — not just the test code that needed it. The project's own Rust rules mandate `#![forbid(unsafe_code)]` for every application crate. This was done to accommodate `unsafe { std::env::set_var() }` / `remove_var()` in tests, and the test file even has `#![allow(unsafe_code)]` to suppress it.
+
+**Fix:** Revert the workspace lint back to `"forbid"`. Instead, use a per-crate override in `crates/axiathon-client/Cargo.toml` under `[lints.rust]` with `unsafe_code = "deny"` (not forbid) only for that crate, OR restructure the tests to avoid unsafe env manipulation (e.g., use `temp_env` crate, or pass config via file paths instead of env vars).
+
+---
+
+### [HIGH] No `main.rs` — the `axiathon` binary does not exist
+
+The story's primary deliverable is the `axiathon` binary. There is no `main.rs` and no `[[bin]]` section in `crates/axiathon-client/Cargo.toml`. The crate only produces a library (`lib.rs`). The entire dispatch loop (parse CLI args → load config → create SiemClient → match command → format output → exit with code) is absent. **AC-3** (exit code enforcement via `std::process::exit()`), **AC-10** (stub handlers printing messages), and the core binary entrypoint are all undelivered.
+
+---
+
+### [HIGH] Security tests are vacuous — no assertions at `tests/security.rs:14-38,148-152`
+
+Four security tests construct a value and then do `let _ = result;`:
+- `tenant_id_with_newline_rejected` (line 21)
+- `token_with_newline_rejected` (line 29)
+- `tenant_id_with_null_bytes_rejected` (line 37)
+- `siem_client_rejects_empty_url` (line 151)
+
+These tests assert **nothing**. The `SiemClient::new` does sanitize CRLF/null bytes (good!), but the tests never verify the sanitized value. They would pass even if the sanitization code were deleted. A test that cannot fail is not a test — it's decoration.
+
+**Fix:** After construction, issue a request through wiremock and assert the received header value does NOT contain `\r\n` or `\x00`. Or expose a method/test-only accessor to inspect the stored tenant/token values.
+
+---
+
+### [HIGH] `config_handles_missing_file` test is a tautology at `tests/config_loading.rs:63-67`
+
+```rust
+assert!(
+    result.is_ok() || result.is_err(),
+    "Missing file should not panic"
+);
+```
+
+`is_ok() || is_err()` is **always true** for any `Result`. This test asserts absolutely nothing. It cannot fail.
+
+**Fix:** Assert the specific expected behavior. Per the implementation, a missing explicit path returns defaults — so assert `result.is_ok()` and check the default values.
+
+---
+
+### [MEDIUM] `Completion` shell argument is raw `String`, not `clap_complete::Shell` at `cli.rs:85`
+
+The `Completion` variant takes `shell: String` instead of `clap_complete::Shell` (which implements `ValueEnum`). This means:
+1. Clap won't validate the shell name at parse time
+2. `--help` won't show the valid shell options
+3. Invalid shells silently produce empty output (line 18 of `completion.rs: return String::new()`) instead of an error
+
+Per AC-9, the command should generate completions for bash/zsh/fish/PowerShell. Using `Shell` as the type gives free validation and help text.
+
+---
+
+### [MEDIUM] Stub tests don't test actual stub dispatch at `tests/stub_handlers.rs`
+
+The stub handler tests manually construct `CliError::NotImplemented("Story X.Y")` and check its Display output. They never actually invoke the CLI with a stubbed command to verify that the stub handler fires. Since there's no `main.rs` and no command dispatch logic, these tests are testing the error type's Display impl in isolation — not the actual AC-10 behavior of "unimplemented commands print 'not yet implemented'".
+
+---
+
+### [MEDIUM] `toml` crate version mismatch with spec
+
+Story spec says `toml 0.9` but workspace declares `toml = "0.8"`. Minor but worth flagging since it may affect TOML parsing behavior in future stories.
+
+---
+
+### [MEDIUM] `output.rs` uses `.expect()` for infallible-looking but technically fallible operations at `output.rs:64,69-75`
+
+Five `.expect()` calls in CSV/JSON formatting methods. While these are unlikely to fail in practice, the project's Rust rules say "No `unwrap()` in production code — use `?` or `expect()` with actionable message." The `expect()` messages here ("CSV header write failed") are descriptive, so this is borderline acceptable — but returning `Result` from the format methods would be cleaner and prevent panics on pathological input.
+
+---
+
+### [LOW] `no_color` implementation swaps table preset instead of disabling ANSI colors at `output.rs:46-47`
+
+When `no_color` is true, the code switches to the `NOTHING` preset (which removes borders/decoration). This doesn't actually disable ANSI colors — it happens to work because comfy-table's `color` feature isn't enabled. If someone enables that feature later, colors will leak through despite `--no-color`. A more robust approach would be to also check `std::io::IsTerminal` per AC-4.
+
+---
+
+### [VERIFIED] Header injection sanitization logic in `client.rs:23-27` — strips `\r`, `\n`, `\0` from tenant and token values before storing. Correct approach for CWE-113.
+
+### [VERIFIED] Error Display messages in `error.rs` do not expose internal details (CWE-209). `ServerError` shows "please try again later", not the inner string.
+
+### [VERIFIED] Config tokens are never loaded from file — `token()` always returns `None`. `RawConfig` doesn't have a token field, so serde silently ignores it. Correct per security requirements.
+
+### [VERIFIED] Exit code mapping covers all specified codes (0/1/3/4, with 2 reserved for clap).
+
+### [VERIFIED] `#[non_exhaustive]` on `CliError` enum — correct per Rust rules.
+
+### [VERIFIED] Workspace dependency declarations are correct — all new deps declared at workspace level and referenced from crate.
+
+---
+
+## Verdict: **CHANGES_REQUESTED**
+
+*"Off with their heads!"*
+
+The King of Hearts whispers: *"Consider, my dear — the library code is quite well-structured, the error types are sound, the security sanitization is present. But a CLI story that delivers no binary entry point is a castle with no gate. And tests that assert nothing are guards asleep at their posts."*
+
+**Blocking issues (must fix):**
+1. Revert workspace `unsafe_code` from `deny` back to `forbid` — find another way to handle unsafe env var manipulation in tests
+2. Add `main.rs` with full command dispatch, exit code enforcement, config loading, and SiemClient construction
+3. Fix vacuous security tests to actually assert sanitization
+4. Fix the tautological `config_handles_missing_file` test
+
+**Should fix:**
+5. Use `clap_complete::Shell` type for the completion command's shell argument
+6. Add integration-style stub tests that invoke actual command dispatch (once `main.rs` exists)
