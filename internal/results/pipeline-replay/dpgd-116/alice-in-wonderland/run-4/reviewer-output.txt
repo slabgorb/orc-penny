@@ -1,105 +1,132 @@
-I've completed my thorough review. Here is my assessment.
+Good. I have all the data I need. Here is my verdict.
 
 ---
 
-# Code Review: Story 6.1 — CLI Framework & Structure
+# **OFF WITH THEIR HEADS!** Code Review: Story 6.1 — CLI Framework & Structure
 
-**OFF WITH THEIR HEADS!** ...or perhaps not *all* of them. But several need a stern talking-to.
-
-*The King of Hearts whispers: "Consider, my dear, some of these are quite well done..."*
+## VERDICT: **CHANGES_REQUESTED**
 
 ---
 
-## Observations
+## Blocking Findings
 
-### [CRITICAL] Missing `main.rs` — No Binary Entry Point at `crates/axiathon-client/src/main.rs`
+### 1. [CRITICAL] Nightly rustfmt formatting violations — `src/cli.rs`, `src/dispatch.rs`, `src/main.rs`, 4 test files
 
-**The story explicitly requires** a `main.rs` as the binary entry point with tracing init, dispatch, and exit code handling via `std::process::exit()`. No `main.rs` exists. No `[[bin]]` section in `Cargo.toml`. This crate is a **library only** — it cannot produce the `axiathon` binary. AC-3 (exit codes via process exit) and AC-9 (completion script to stdout, instructions to stderr) cannot be fulfilled without `main.rs`. This is the single biggest gap in the implementation.
+`cargo +nightly fmt --all --check` reports ~12 formatting diffs across 7 files. Per `gotchas.md`: *"Always include cargo +nightly fmt --all --check in the preflight. If it fails, flag it before approval — don't let it slip to post-merge."* This **will fail CI**.
 
-### [HIGH] Nightly `rustfmt` check fails — 440 lines of diff at `crates/axiathon-client/src/config.rs` and others
+**Fix:** Run `cargo +nightly fmt --all`.
 
-Per `gotchas.md`: "Always include `cargo +nightly fmt --all --check` in the preflight. Nightly rustfmt enforces import ordering that stable does not." The nightly fmt check produces **440 lines** of diff across multiple files. This must be fixed before merge.
+### 2. [CRITICAL] Missing `tui` and `logout` commands — AC-1 violation at `cli.rs:44-110`
 
-### [HIGH] Vacuous security test — `config_rejects_non_https_url_with_warning` at `tests/security.rs:104`
+AC-1 states: *"`axiathon --help` must show all command groups: query, rules, alerts, ingest, config, status, tenant, **login/logout**, **tui**, completion, init."*
 
-This test has a **silent pass-through on error**:
+The `Commands` enum has `Login` but is missing:
+- `Logout` — required by AC-1 (login/**logout** pair)
+- `Tui` — required by AC-1, launches TUI (Epic 4 stub)
+
+Both should be stub commands referencing their downstream stories.
+
+### 3. [CRITICAL] `init` command is a stub, must be functional — `dispatch.rs:39-41`
+
+The story scope explicitly says: *"In scope: `axiathon init` first-time setup **(functional, not stub)**"* and *"Any command handler implementation beyond stubs **(except completion and init which are functional)**"*.
+
+Currently:
 ```rust
-let config = ClientConfig::from_file(file.path());
-if let Ok(config) = config {
-    assert!(config.is_secure(), ...);
+Commands::Init => {
+    Err(CliError::NotImplemented("Story 6.1".to_string()))
 }
 ```
-If `from_file` returns `Err` (which it does — the implementation rejects non-HTTPS URLs), the test body is skipped entirely and the test passes vacuously. It asserts nothing. This should explicitly assert `config.is_err()` to verify the rejection, or use `unwrap()` and assert `is_secure() == false`. As written, this test would pass even if the security check were removed.
 
-### [HIGH] `tenant` flag uses raw `String`, not `TenantId` newtype at `crates/axiathon-client/src/cli.rs:37`
+This must create `~/.config/axiathon/cli.toml` with defaults and print instructions to stderr.
 
-The `--tenant` flag is `Option<String>`. The `axiathon-core` crate exports `TenantId` specifically to prevent mixing ID types (per Rust coding rules: "Newtypes for IDs"). The `SiemClient` also stores `tenant_id` as `Option<String>`. While clap parsing naturally produces strings, the conversion to `TenantId` should happen at the boundary (in `main.rs` dispatch or `SiemClient` construction) to get validation. Currently no validation of tenant ID format occurs anywhere.
-
-### [MEDIUM] `expect()` calls in production code at `crates/axiathon-client/src/output.rs:68-71,112-117`
-
-Eight `.expect()` calls in `output.rs` for JSON/CSV serialization. The Rust coding rules say "No `unwrap()` in production code — use `?` or `expect()` with actionable message." These `expect()` messages are descriptive ("CSV header write cannot fail"), which is borderline acceptable, but the `OutputFormatter::format()` method returns `String` — it should return `Result<String, CliError>` so callers can handle errors properly. Writing to a `Vec<u8>` is infallible in practice, so this is **medium** not high.
-
-### [MEDIUM] `config_does_not_store_tokens` test is vacuously passing at `tests/config_loading.rs:158-182`
-
-The config uses `#[serde(deny_unknown_fields)]`, so parsing a TOML with an unknown `token` field will error. The test then hits the `if let Ok(config)` branch which is never entered — the assertion on `api_token().is_none()` is never reached. The test passes because the `Err` case is silently accepted ("If parsing fails because 'token' is rejected, that's also acceptable"). This means the actual `api_token()` method returning `None` is **never tested**. Should add a separate test that verifies `api_token()` returns `None` on a valid config.
-
-### [MEDIUM] `client_crate_does_not_depend_on_server_crates` is a no-op at `tests/security.rs:171-182`
+### 4. [HIGH] `completion` silently does nothing for unknown shells — `commands/completion.rs:17`
 
 ```rust
-assert!(true, "axiathon-client depends only on axiathon-core for shared types");
+_ => return,
 ```
-`assert!(true)` is a no-op. This test provides zero assurance. A proper test would parse `Cargo.toml` and verify no server-side dependencies exist. As a compile-time check it adds nothing beyond what Cargo already enforces.
 
-### [MEDIUM] `cli_error_is_non_exhaustive` test proves nothing at `tests/security.rs:153-164`
+An unrecognized shell silently returns with exit code 0 (success). This violates AC-9 which expects installation instructions to stderr, and violates AC-3 which says errors go to stderr. "Success" when nothing happened is a silent failure. Should return an error or at least use `clap::ValueEnum` for the `Shell` type to get clap validation.
 
-The test creates a `CliError`, matches it, and has a wildcard arm. But this compiles whether or not `#[non_exhaustive]` is present — the wildcard arm is always allowed. The test would need to be in an **external crate** to verify non-exhaustive behavior (since `#[non_exhaustive]` only affects external crate matching). Since the tests are in the same crate, this test is vacuous.
+### 5. [HIGH] `apply_env_overrides` silently ignores invalid env var values — `config.rs:78-93`
 
-### [LOW] `rules` stub references wrong story — `commands/rules.rs:19`
+```rust
+/// Apply environment variable overrides. Invalid values are silently ignored.
+pub fn apply_env_overrides(&mut self, env_vars: &[(&str, &str)]) {
+```
 
-The rules stub says `"Story 6.6"` but according to the epic context, rules management isn't explicitly assigned a single story number in the scope boundaries section. The story mapping should be verified against the actual backlog. (Minor — just needs fact-checking.)
+The doc comment says "silently ignored" like it's a feature, but `AXIATHON_API_URL` has **no validation at all** in this path — no scheme check, nothing. A user sets `AXIATHON_API_URL=ftp://evil.com` and it's accepted without the http/https check that `from_file` enforces. Inconsistent validation is a bug.
 
-### [LOW] No `after_help` usage examples on any command — AC-2 gap
+### 6. [HIGH] `toml` version mismatch: workspace declares `0.8`, story spec says `0.9` — `Cargo.toml:49`
 
-AC-2 requires "include `after_help` usage examples for each command group." None of the command arg structs include `#[command(after_help = "...")]`. Help renders without panic (tested), but the content requirement for usage examples is not met.
+The story's Technical Guardrails say `toml 0.9`, workspace `Cargo.toml` has `toml = "0.8"`. Minor version mismatch — `0.9` may not exist yet, but the spec should be reconciled. If `0.8` is correct, fine, but document the deviation.
 
-### [VERIFIED] `#![forbid(unsafe_code)]` present at `lib.rs:2`
+---
 
-### [VERIFIED] `#[non_exhaustive]` on `CliError` enum at `error.rs:11`
+## Non-Blocking Findings
 
-### [VERIFIED] SSRF protection: scheme validation in `SiemClient::builder().build()` at `client.rs:101-105`
+### 7. [MEDIUM] Missing `keyring` dependency — no credential storage path
 
-### [VERIFIED] Header injection prevention (CRLF + null) at `client.rs:132-142` with corresponding tests
+AC-8 requires OS keychain via `keyring` crate. It's not in `Cargo.toml`. The story scope says credential *storage* is in scope, though login *implementation* is Story 9.1. At minimum the dependency should be declared and the SiemClient should have a `load_token_from_keychain()` method (even if login doesn't populate it yet).
 
-### [VERIFIED] CWE-209: `ServerError` Display sanitizes internal message at `error.rs:43-45`
+### 8. [MEDIUM] `SiemClient` CRLF rejection is silent — `client.rs:29-31`
 
-### [VERIFIED] `deny_unknown_fields` on all config structs at `config.rs:22,31,38`
+```rust
+if tenant_id.contains('\r') || tenant_id.contains('\n') {
+    return self;  // silently swallowed
+}
+```
 
-### [VERIFIED] Exit code mapping correct: 3 for auth, 4 for authz, 1 for others at `error.rs:53-59`
+Builder pattern silently ignores bad input. The caller has no way to know the tenant ID was rejected. Should return `Result` or log a warning via `tracing::warn!`.
 
-### [VERIFIED] All 12 command groups present (query, rules, alerts, ingest, config, status, tenant, login, logout, tui, completion, init)
+### 9. [MEDIUM] CSV writer errors silently swallowed — `output.rs:82-87`
 
-### [VERIFIED] Clippy clean with `-D warnings`
+```rust
+let _ = wtr.write_record(headers);
+```
 
-### [VERIFIED] All 109 tests pass
+Three `let _ =` calls discarding write results. If CSV serialization fails, the output is silently truncated with no error.
+
+### 10. [MEDIUM] `RawConfig` accepts unknown TOML fields without warning — `config.rs:10-14`
+
+`#[derive(Deserialize)]` without `#[serde(deny_unknown_fields)]` means a typo like `servar_url` is silently ignored. Users will get defaults with no hint their config is wrong.
+
+### 11. [LOW] `main.rs` doesn't load config or initialize SiemClient — `main.rs:9-16`
+
+The main function is Parse → Dispatch → Exit. There's no config loading, no SiemClient construction, no tracing initialization. While stubs don't need these, the wiring skeleton should exist so subsequent stories have a pattern to follow. The story says *"tracing init"* in the `main.rs` file description.
+
+### 12. [LOW] `OutputFormat` default should auto-detect TTY — AC-4
+
+AC-4 says: *"Table default for TTY, JSON for piped output."* The code has `format: Option<OutputFormat>` but no TTY detection logic anywhere. `std::io::IsTerminal` is mentioned in the spec but not used.
+
+---
+
+## Verified Good
+
+- [VERIFIED] `#![forbid(unsafe_code)]` in both `lib.rs:2` and `main.rs:2`
+- [VERIFIED] All 94 tests pass, clippy clean
+- [VERIFIED] Exit code mapping correct: 3=auth, 4=authz, 1=other at `error.rs:41-48`
+- [VERIFIED] `#[non_exhaustive]` on `CliError` at `error.rs:11`
+- [VERIFIED] CRLF injection checks present on both tenant and token at `client.rs:29,38`
+- [VERIFIED] HTTP status code mapping covers 401/403/404/429/5xx at `client.rs:54-62`
+- [VERIFIED] JSON output includes `ResponseMetadata` with request_id, timestamp, api_version at `output.rs:67-74`
+- [VERIFIED] No `unwrap()` without fallback in production code
+- [VERIFIED] Plural noun command names (rules, alerts) per architecture doc
+- [VERIFIED] Global flags all have `global = true` at `cli.rs:12-37`
+- [VERIFIED] No server-side crate imports — only `axiathon-core` dependency
 
 ---
 
 ## Summary
 
-| Severity | Count | Blocking? |
-|----------|-------|-----------|
-| Critical | 1 | YES |
+| Severity | Count | Blocks? |
+|----------|-------|---------|
+| Critical | 3 | YES |
 | High | 3 | YES |
-| Medium | 3 | NO |
-| Low | 2 | NO |
-| Verified | 8 | — |
+| Medium | 4 | No |
+| Low | 2 | No |
 
----
+**The King of Hearts whispers:** *"Consider, my dear... the bones are solid. The architecture is clean, tests are thorough, security checks are present. Fix the six blocking items and this is ready."*
 
-## Verdict: **CHANGES_REQUESTED**
+**The Queen roars:** Six blocking issues. Missing commands. Silent failures. A stub masquerading as functional code. Formatting that will explode CI. **OFF WITH THEIR HEADS!**
 
-The missing `main.rs` is a showstopper — without it, this crate cannot produce the `axiathon` binary, which is the entire point of Story 6.1. The nightly fmt failures must be fixed per the gotchas. The vacuous security test creates a false sense of coverage. The `TenantId` newtype should be used at the boundary.
-
-*The Queen has spoken. Fix these, and perhaps I'll spare your heads.*
-
-*The King of Hearts adds: "The security hardening (SSRF, CWE-209, header injection, deny_unknown_fields) is genuinely strong work. The test coverage is broad. Address the blocking issues and this will be a solid foundation."*
+**CHANGES_REQUESTED** — fix items 1-6, then resubmit for re-review.

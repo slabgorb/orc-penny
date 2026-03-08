@@ -1,93 +1,100 @@
-Now I have the complete picture. Let me compile my findings.
+Confirmed. Now I have everything needed for my review.
 
 ---
 
-## Code Review: Story 6.1 — CLI Framework & Structure
+# Code Review: Story 6.1 — CLI Framework & Structure
 
-*Reviewer: Commander Spock (visiting from Enterprise)*
-
-Fascinating. I have examined every module, every test, every dependency declaration. The code is... mostly logical, but several issues demand attention. Dr. McCoy would say "Dammit Jim, some of these are clearly wrong."
+*Fascinating. The implementation demonstrates considerable logical rigor. However, pure logic demands I report what I found, not what I wished to find.*
 
 ---
 
-### Findings
+## Observations
 
-**[CRITICAL] Missing `main.rs` binary entry point — `axiathon` binary cannot be built** at `crates/axiathon-client/src/main.rs`
+### `[HIGH]` Unsupported shell completion silently exits 0 — at `completion.rs:13-16`, `main.rs:34-37`
 
-The story explicitly requires producing the `axiathon` binary. There is no `main.rs`, no `[[bin]]` target in `Cargo.toml`. The crate compiles as a library only. Without `main.rs`, there is no binary, no exit code dispatch, no tracing init — AC-3 (exit codes via `std::process::exit()`) and AC-8 (config loading at startup) are structurally impossible. This is the core deliverable of Story 6.1.
+The `generate_completion()` function prints an error to stderr for unsupported shells but returns `()`. The caller in `main.rs:35` wraps it in `Ok(())`, meaning `axiathon completion garbage` exits with code **0** (success). Per AC-3, errors must exit with code 1. This is a correctness bug — scripts checking `$?` will falsely believe completion succeeded.
 
-**[CRITICAL] `ServerError` Display leaks arbitrary server messages (CWE-209)** at `crates/axiathon-client/src/error.rs:28`
+**Dr. McCoy says:** *Dammit Jim, the function returns nothing! How's main supposed to know it failed?*
 
-`#[error("server returned error {0}")]` for `ServerError(u16, String)` — the Display impl shows only the status code `{0}`, but the second field `String` (the server message) is silently omitted from Display. This is *accidentally* safe for CWE-209, but the test at `error_exit_codes.rs:111-125` passes for the wrong reason: it asserts `!display.contains("panicked")` and `!display.contains("src/main.rs")`, but the message field is simply never rendered by `{0}` which only formats the first tuple field. The test appears to verify CWE-209 sanitization but actually tests a Display formatting quirk. If someone later changes to `{0}: {1}`, every server-side stack trace leaks to the user. This needs an explicit sanitization strategy, not an accidental omission.
+### `[HIGH]` Nightly `rustfmt` check fails — 366 lines of diff across `client.rs`, `output.rs`, `main.rs`, and test files
 
-**[HIGH] `with_token()` and `with_tenant()` bypass header injection validation** at `crates/axiathon-client/src/client.rs:41,53`
+Per the gotchas sidecar: "Always include `cargo +nightly fmt --all --check` in the preflight. If it fails, flag it before approval." Primary issues: import ordering in `main.rs:3-7` (external `clap` before internal `axiathon_client`), line-length violations in `client.rs:73-76` and `output.rs:132,136`. This will fail CI.
 
-There are two API paths: `with_token()` (no validation) and `try_with_token()` (validates). The unsafe `with_token()` is `pub` and accepts arbitrary strings including `\r\n`. Tests only cover `try_with_token()`. Production code could easily call `with_token()` directly, bypassing CWE-113 protection. The `default_headers()` method silently swallows `HeaderValue::from_str` failures (line 75-83), which means an injected `\r\n` token would be silently dropped rather than causing an error — a silent failure. Either remove the unsafe variants or make them `pub(crate)` with clear documentation.
+### `[MEDIUM]` `SiemClient` does not actually wrap `reqwest::Client` — at `client.rs:8-12`
 
-**[HIGH] `init` command is a stub but story requires it to be functional** at `crates/axiathon-client/src/commands/init.rs`
+AC-7 states: "SiemClient wraps `reqwest::Client`." The current struct contains only `server_url`, `token`, `tenant` — no `reqwest::Client` field. It functions as a URL/header builder. While the HTTP calls are deferred to later stories, the AC is explicit about wrapping reqwest. At minimum, the struct should hold a `reqwest::Client` field even if unused methods aren't implemented yet.
 
-AC scope says: "Shell completion generation (functional, not stub)" and "`axiathon init` first-time setup (functional, not stub)". Completion is correctly implemented in `completion.rs`, but `init.rs` returns `NotImplemented("init")`. The story explicitly requires `init` to be functional.
+### `[MEDIUM]` URL validation accepts `"httpgarbage"` as valid — at `config.rs:51`
 
-**[HIGH] `#![allow(unsafe_code)]` in test file contradicts project rules** at `crates/axiathon-client/tests/config_loading.rs:3`
+```rust
+if url.starts_with("http") {
+    config.server_url = url;
+}
+```
 
-The project mandates `#![forbid(unsafe_code)]` in every application crate. The test file uses `#![allow(unsafe_code)]` to call `std::env::set_var` (unsafe in Rust 2024). While test code has different constraints, using `unsafe` for env var manipulation in tests that run potentially in parallel (cargo default) creates undefined behavior. These env var tests need `--test-threads=1` or a mutex guard, and the `unsafe` blocks need stronger justification.
+This accepts `"httpnotaurl"`, `"httpsomething"`, etc. Should be `starts_with("http://") || starts_with("https://")`. The current check is too permissive.
 
-**[MEDIUM] `rules` stub references wrong story number** at `crates/axiathon-client/src/commands/rules.rs:4`
+### `[MEDIUM]` Unknown TOML fields silently ignored — at `config.rs:15-22`
 
-The stub says `"Story 6.6"` but the story context doesn't define 6.6 as rules management. The epic overview lists stories 6.1-6.7 but the specific mapping isn't clear. Should be verified against the actual story assignment. Similarly, `tenant` references `"Story 6.7"` — needs verification.
+`RawConfig` uses default serde deserialization which silently discards unknown fields. A user with `sever_url = "..."` (typo) gets the default with no warning. Consider `#[serde(deny_unknown_fields)]` or at least logging a warning for unrecognized keys. The `token` field is intentionally deserialized and ignored (with a good security comment), but this makes the deny_unknown_fields approach trickier — a `#[serde(skip)]` on `token` would solve that.
 
-**[MEDIUM] `toml` workspace dependency version mismatch** at `Cargo.toml:67`
+### `[MEDIUM]` `keyring` missing from workspace dependencies — at `Cargo.toml`
 
-The story Technical Guardrails specify `toml 0.9`, but workspace declares `toml = "0.8"`. This should match the architecture document's specification.
+The story spec explicitly says: "Add to `[workspace.dependencies]`: ... `keyring` 3 ...". All other listed dependencies (`reqwest`, `comfy-table`, `clap_complete`, `dirs`, `csv`, `toml`) were added, but `keyring` was not. While keyring isn't used until Story 9.1, the story scope includes adding it to workspace deps now.
 
-**[MEDIUM] `--tenant` accepts raw `String` instead of validated `TenantId`** at `crates/axiathon-client/src/cli.rs:26`
+### `[MEDIUM]` No test for Logout dispatch path — at `main.rs:30`
 
-Per Rust rules: "Newtypes for IDs: `TenantId(String)` — prevents mixing ID types." The `--tenant` flag accepts `Option<String>` and passes it directly to `SiemClient::with_tenant()`. At this trust boundary (user input), validation should occur. `axiathon-core` exports `TenantId` — it should be used here or validated before use.
+`Commands::Logout => commands::login::handle_login()` dispatches to the *login* handler. This is technically correct for stubs but the coupling is fragile. There's no test verifying the Logout arm specifically. If someone later changes the Logout dispatch and breaks it, there's no regression coverage. The `stub_handlers.rs` tests cover `handle_login()` but don't exercise the Logout dispatch.
 
-**[MEDIUM] `default_headers()` silently drops invalid header values** at `crates/axiathon-client/src/client.rs:75-83`
+### `[LOW]` `expect()` in production output formatters — at `output.rs:108,132,136,139,140`
 
-If `HeaderValue::from_str()` fails, the header is silently omitted. An auth token that can't be encoded as a header value would result in unauthenticated requests with no error — a silent failure that could lead to confusing "401 Unauthorized" errors downstream instead of a clear "invalid token format" error.
+Five `expect()` calls in `CsvFormatter::format()` and `JsonFormatter::format()`. While writing to `Vec<u8>` can't fail for I/O, the Rust rules say "No `unwrap()` in production code — use `?` or `expect()` with actionable message." The messages ("CSV header write should not fail") are explanatory but not actionable. This is borderline acceptable since these truly can't fail, but worth noting.
 
-**[MEDIUM] Config env var tests are not thread-safe** at `crates/axiathon-client/tests/config_loading.rs:69-138`
+### `[VERIFIED]` CRLF header injection prevention — `client.rs:56-72`
 
-`std::env::set_var` is process-global. Multiple tests mutating `AXIATHON_API_URL` and `AXIATHON_TIMEOUT` concurrently will produce flaky results. The `unsafe` blocks acknowledge single-threaded execution but nothing enforces `--test-threads=1`. These tests need a serial test annotation (e.g., `serial_test` crate) or a mutex.
+Explicit `\r` and `\n` checks on both tenant and token before header construction. Empty tenant correctly skipped. Tests cover all injection paths.
 
-**[MEDIUM] No test for `deny_unknown_fields` on config** at `crates/axiathon-client/src/config.rs:19`
+### `[VERIFIED]` CWE-209 error sanitization — `error.rs:26-27`
 
-`RawConfig` correctly uses `#[serde(deny_unknown_fields)]`, but the test at `config_loading.rs:179-203` tests token rejection by checking *either* error or `token().is_none()`. With `deny_unknown_fields`, a `token` field in TOML *will* error — but the test accepts both outcomes, making it a weak assertion. A dedicated test should assert that unknown fields are rejected.
+`ServerError` Display impl returns generic "server error, please try again later" instead of echoing the raw server body. The internal string is stored for debug logging but never shown to users.
 
-**[LOW] Nightly `rustfmt` import ordering fails** at `crates/axiathon-client/src/cli.rs:1` and `client.rs:2`
+### `[VERIFIED]` Exit code mapping complete — `error.rs:48-58`
 
-Per the gotchas sidecar: "Always include `cargo +nightly fmt --all --check` in the preflight." Nightly fmt check shows import ordering violations in `cli.rs` and `client.rs`. This must be fixed before merge.
+All variants map correctly: 3 for auth, 4 for authz, 1 for everything else. No variant maps to 0.
 
-**[LOW] `siem_client.rs` HTTP status tests unnecessarily use `#[tokio::test]`** at `crates/axiathon-client/tests/siem_client.rs:47-109`
+### `[VERIFIED]` Dependency isolation — `Cargo.toml:12-27`
 
-`map_status_code()` is a synchronous function. Using `#[tokio::test]` adds unnecessary async runtime overhead. Should be plain `#[test]`.
+Only `axiathon-core` is imported. No server-side crates. The dependency boundary is correctly enforced.
 
-**[VERIFIED] `#![forbid(unsafe_code)]` present in lib.rs** — confirmed at `crates/axiathon-client/src/lib.rs:2`
+### `[VERIFIED]` Token never stored in config — `config.rs:20-21,64,87-91`
 
-**[VERIFIED] `#[non_exhaustive]` on `CliError` enum** — confirmed at `crates/axiathon-client/src/error.rs:15`
+The `token` field is deserialized and explicitly ignored. `ClientConfig::token()` always returns `None`. Security comment explains why.
 
-**[VERIFIED] `deny_unknown_fields` on `RawConfig`** — prevents config file from silently accepting unknown keys, including `token`
+### `[VERIFIED]` Clap declarative-only (AC-6) — `cli.rs`
 
-**[VERIFIED] Header injection prevention exists via `try_with_token`/`try_with_tenant`** — the safe path exists, though the unsafe path is also exposed
-
-**[VERIFIED] Token excluded from Debug output** — custom `Debug` impl on `SiemClient` shows `has_token` boolean, not actual value
+100% derive macros (`#[derive(Parser)]`, `#[derive(Subcommand)]`, `#[derive(ValueEnum)]`). No imperative command building anywhere.
 
 ---
 
-### Summary
+## Summary
 
 | Severity | Count | Blocks? |
 |----------|-------|---------|
-| Critical | 2 | YES |
-| High | 3 | YES |
+| Critical | 0 | — |
+| High | 2 | YES |
 | Medium | 5 | NO |
-| Low | 2 | NO |
+| Low | 1 | NO |
 | Verified | 5 | — |
 
-### Verdict: **CHANGES_REQUESTED**
+---
 
-The missing `main.rs` is a fundamental gap — the story's primary deliverable (the `axiathon` binary) cannot be produced. The `init` stub violates the explicit "functional, not stub" requirement. The dual safe/unsafe API surface for header injection is a security design flaw. The CWE-209 test gives a false sense of security. The nightly fmt violations must also be resolved per the project's gotchas.
+## Verdict: **CHANGES_REQUESTED**
 
-Logical. Thorough. Unapproved. As it should be.
+Two High-severity issues must be resolved:
+
+1. **Unsupported shell exits 0** — `generate_completion` must return `Result` so the caller can propagate exit code 1 for invalid shells.
+2. **Nightly fmt failures** — Run `cargo +nightly fmt --all` to fix all formatting issues.
+
+The Medium findings (reqwest wrapper, URL validation, unknown field handling, missing keyring dep, logout test gap) should be addressed but are not blocking individually. The security fundamentals (CRLF injection, CWE-209, token handling, dependency isolation) are all solid.
+
+*Logic dictates: fix the two blocking issues, re-run the preflight, and this implementation merits approval. The architecture is sound. Live long and prosper.*

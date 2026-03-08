@@ -1,34 +1,31 @@
-*Exhales a long plume of smoke and peers down from the mushroom.*
-
-"So you think you know who you are? Prove it."
-
----
+*Exhales a perfect smoke ring.*
 
 ## TEA Assessment
 
 **Tests Required:** Yes
-**Reason:** Story 6.1 is a foundational feature story with 10 acceptance criteria covering CLI structure, error handling, output formatting, HTTP client, config loading, shell completion, and stub handlers.
+**Reason:** Story 6.1 builds the entire CLI framework — every acceptance criterion needs test coverage.
 
 **Test Files:**
-
 | File | Tests | Coverage |
 |------|-------|----------|
-| `cli_structure.rs` | 30 | AC-1 (command groups), AC-2 (help rendering), AC-5 (global flags), AC-6 (clap derive) |
-| `exit_codes.rs` | 14 | AC-3 (exit codes 0/1/2/3/4, CliError::exit_code(), Display safety) |
-| `output_format.rs` | 16 | AC-4 (OutputFormatter trait, Table/JSON/CSV, ResponseMetadata, escaping) |
-| `siem_client.rs` | 16 | AC-7 (SiemClient construction, header injection, HTTP status mapping, timeout) |
-| `config_loading.rs` | 13 | AC-8 (TOML loading, env var overrides, XDG path, no token storage, validation) |
-| `shell_completion.rs` | 6 | AC-9 (bash/zsh/fish/powershell generation, command inclusion) |
-| `stub_handlers.rs` | 13 | AC-10 (stub handlers return "not yet implemented (Story X.Y)", exit code 1) |
-| `security.rs` | 10 | CWE-209 (error info exposure), header injection (CRLF/null), SSRF (URL scheme), config trust boundary |
+| `cli_structure.rs` | 18 | AC-1 (command groups), AC-2 (help), AC-5 (global flags), AC-6 (clap derive) |
+| `exit_codes.rs` | 13 | AC-3 (exit codes 0/1/2/3/4, CliError variants, trait bounds) |
+| `output_format.rs` | 12 | AC-4 (table/json/csv formatting, metadata, escaping, edge cases) |
+| `siem_client.rs` | 13 | AC-7 (construction, tenant/auth headers, HTTP→CliError mapping) |
+| `config_loading.rs` | 10 | AC-8 (TOML loading, env overrides, precedence, XDG paths) |
+| `shell_completion.rs` | 7 | AC-9 (bash/zsh/fish/powershell generation, binary name) |
+| `stub_handlers.rs` | 11 | AC-10 (NotImplemented errors with story references for each command) |
+| `security.rs` | 10 | CWE-209 error exposure, CRLF header injection, config validation |
 
-**Tests Written:** 118 tests covering all 10 ACs
-**Status:** RED (failing — compilation errors on all 7 test files, every referenced type is unresolved)
+**Tests Written:** 94 tests covering all 10 ACs
+**Status:** RED (compilation failure — modules `cli`, `error`, `output`, `client`, `config`, `commands` don't exist yet)
 
-**Security tests specifically cover:**
-- CWE-209: Server errors don't leak connection strings, auth errors don't expose tokens
-- Header injection: CRLF and null bytes rejected in tenant ID and auth token
-- SSRF prevention: `javascript:` and `file://` URLs rejected by SiemClient
-- Config trust boundary: URLs with embedded credentials rejected, negative/zero timeout rejected, extremely long URLs rejected, tokens not stored in config file
+**Key security tests:**
+- Auth error Display doesn't leak tokens/Bearer strings
+- Server error Display is concise (no raw response dumps)
+- Tenant ID rejects CRLF injection (`\r\n`)
+- Auth token rejects CRLF injection
+- Config rejects `file://` URLs, negative/zero timeouts
+- Corrupted config files produce errors (not silent fallback)
 
 **Handoff:** To Dev for implementation (GREEN phase)

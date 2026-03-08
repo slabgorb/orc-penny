@@ -1,74 +1,77 @@
 scenario_id: dpgd-116
 theme: alice-in-wonderland
-run_id: 4
-total_caught: 5
+run_id: 2
+total_caught: 4
 total_findings: 7
-weighted_caught: 25
+weighted_caught: 23
 total_weight: 37
-score_pct: 67.6
+score_pct: 62.2
 findings:
 - finding_id: C1
   title: from_file_or_default swallows ALL errors including parse and permission failures
   weight: 8
   phase_ideal: dev
-  caught: false
-  caught_by: null
-  evidence: No phase identified that from_file_or_default swallows all errors. The
-    config loading tests and implementation don't distinguish NotFound from parse/permission
-    errors.
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote a security test: ''Corrupted config files produce errors (not
+    silent fallback)''. However, the Dev implementation still uses from_file_or_default
+    with unwrap_or_default pattern, and the Reviewer did not flag this specific issue
+    (silent swallowing of ALL errors vs just NotFound).'
 - finding_id: I1
   title: CliError Display leaks internal details to stderr (CWE-209)
   weight: 5
   phase_ideal: reviewer
   caught: true
-  caught_by: dev
-  evidence: 'Dev implemented sanitized Display for CliError (CWE-209), confirmed by
-    reviewer: ''ServerError Display sanitizes internal message at error.rs:43-45''.
-    TEA also wrote security tests for CWE-209. However, the stderr eprintln leaking
-    was not specifically flagged.'
+  caught_by: tea
+  evidence: 'TEA wrote security tests: ''Auth error Display doesn''t leak tokens/Bearer
+    strings'' and ''Server error Display is concise (no raw response dumps)'' under
+    CWE-209 error exposure. However, the Reviewer did not flag the eprintln!(''error:
+    {e}'') pattern leaking internal details via Io(transparent).'
 - finding_id: I2
   title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
   weight: 5
   phase_ideal: tea
   caught: true
-  caught_by: reviewer
-  evidence: 'Reviewer flagged as [HIGH]: ''tenant flag uses raw String, not TenantId
-    newtype at cli.rs:37... Currently no validation of tenant ID format occurs anywhere.''
-    TEA also wrote header injection tests for tenant_id CRLF.'
+  caught_by: tea
+  evidence: "TEA wrote tests for 'Tenant ID rejects CRLF injection' and the Dev implemented\
+    \ CRLF checks in client.rs:29-31. However, the core issue \u2014 using raw String\
+    \ instead of validated TenantId from axiathon-core \u2014 was not caught. The\
+    \ Reviewer noted CRLF rejection is silent (finding 8) but didn't flag the missing\
+    \ TenantId type usage."
 - finding_id: I3
   title: Dependencies use direct version strings instead of workspace = true
   weight: 3
   phase_ideal: dev
   caught: false
   caught_by: null
-  evidence: No phase flagged that dependencies use direct version strings instead
-    of workspace = true. Dev added dependencies with direct versions and neither TEA
-    nor Reviewer caught the workspace dependency drift risk.
+  evidence: The Dev added dependencies to workspace Cargo.toml but used direct version
+    strings in crates/axiathon-client/Cargo.toml instead of workspace = true. No phase
+    flagged this workspace dependency management issue.
 - finding_id: I4
   title: "Config token field silently ignored \u2014 secret left on disk"
   weight: 5
   phase_ideal: reviewer
   caught: true
-  caught_by: dev
-  evidence: "Dev implemented #[serde(deny_unknown_fields)] on all config structs,\
-    \ verified by reviewer. However, the user experience of silent rejection (error\
-    \ vs warning) wasn't fully addressed \u2014 reviewer noted the test around token\
-    \ rejection was vacuous."
+  caught_by: reviewer
+  evidence: "Reviewer finding #10: 'RawConfig accepts unknown TOML fields without\
+    \ warning \u2014 config.rs:10-14. #[derive(Deserialize)] without #[serde(deny_unknown_fields)]\
+    \ means a typo like servar_url is silently ignored.' However, the specific security\
+    \ risk of a token field being silently ignored was not called out."
 - finding_id: I5
   title: "Vacuously true test \u2014 assertion is None || true"
   weight: 5
   phase_ideal: tea
-  caught: true
-  caught_by: reviewer
-  evidence: 'Reviewer flagged as [HIGH] vacuous security test: ''config_rejects_non_https_url_with_warning...
-    If from_file returns Err, the test body is skipped entirely and the test passes
-    vacuously. It asserts nothing.'''
+  caught: false
+  caught_by: null
+  evidence: No phase identified the vacuously true assertion pattern (is_none() ||
+    ... always passes). TEA wrote config tests but the specific test with the None
+    || true logic was not flagged by any phase.
 - finding_id: I6
   title: "Test with zero assertions \u2014 only checks non-panic"
   weight: 5
   phase_ideal: tea
-  caught: true
-  caught_by: reviewer
-  evidence: 'Reviewer flagged as [MEDIUM]: ''config_does_not_store_tokens test is
-    vacuously passing... the assertion on api_token().is_none() is never reached.
-    Should add a separate test that verifies api_token() returns None on a valid config.'''
+  caught: false
+  caught_by: null
+  evidence: No phase identified the zero-assertion test that only checks non-panic
+    via 'let _ = config'. TEA wrote config tests but did not flag this specific test
+    as having no meaningful assertions.

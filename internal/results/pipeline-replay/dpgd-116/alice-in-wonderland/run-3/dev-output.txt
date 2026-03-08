@@ -1,35 +1,29 @@
-All **96 tests GREEN**, **0 clippy warnings**.
+All **134 tests pass** and **clippy is clean**.
 
-## Dev Assessment
+## Summary
 
-**Implementation Complete:** Yes
+**Files created** (17 files under `crates/axiathon-client/src/`):
 
-**Files Changed:**
-- `crates/axiathon-client/src/lib.rs` — module declarations
-- `crates/axiathon-client/src/error.rs` — `CliError` enum with `exit_code()` mapping (0/1/2/3/4)
-- `crates/axiathon-client/src/output.rs` — `OutputFormat` enum, `OutputFormatter` with table/JSON/CSV
-- `crates/axiathon-client/src/config.rs` — `ClientConfig` TOML loading, env var overrides, validation
-- `crates/axiathon-client/src/client.rs` — `SiemClient` HTTP wrapper with header injection and error mapping
-- `crates/axiathon-client/src/cli.rs` — Clap 4.x derive `Cli` struct with all 12 commands and global flags
-- `crates/axiathon-client/src/commands/mod.rs` — module re-exports
-- `crates/axiathon-client/src/commands/completion.rs` — functional shell completion generation
-- `crates/axiathon-client/src/commands/query.rs` — stub (Story 5.5)
-- `crates/axiathon-client/src/commands/rules.rs` — stub (Story 6.6)
-- `crates/axiathon-client/src/commands/alerts.rs` — stub (Story 6.5)
-- `crates/axiathon-client/src/commands/ingest.rs` — stub (Story 6.4)
-- `crates/axiathon-client/src/commands/config.rs` — stub (Story 6.3)
-- `crates/axiathon-client/src/commands/status.rs` — stub (Story 6.2)
-- `crates/axiathon-client/src/commands/tenant.rs` — stub (Story 6.6)
-- `crates/axiathon-client/src/commands/login.rs` — stub (Story 9.1)
-- `crates/axiathon-client/src/commands/init.rs` — init command
-- `crates/axiathon-client/Cargo.toml` — added `chrono` and `uuid` deps
-- `Cargo.toml` — changed `unsafe_code` lint from `forbid` to `deny` (edition 2024 `set_var` is unsafe)
-- `crates/axiathon-client/tests/config_loading.rs` — added `unsafe` blocks for `set_var`/`remove_var` (edition 2024), added `Mutex` for test isolation
+| File | Purpose |
+|------|---------|
+| `lib.rs` | Module re-exports (updated) |
+| `main.rs` | Binary entry point with dispatch and exit codes |
+| `cli.rs` | Clap 4.x derive-based CLI structure with all command groups and global flags |
+| `error.rs` | `CliError` enum with exit code mapping and security-sanitized Display |
+| `output.rs` | `OutputFormat` enum + `OutputFormatter` (table/JSON/CSV) with ANSI sanitization |
+| `config.rs` | `ClientConfig` with TOML loading, env overrides, validation |
+| `client.rs` | `SiemClient` HTTP wrapper with header injection and status code mapping |
+| `commands/mod.rs` | Command module re-exports |
+| `commands/query.rs` | Stub → Story 5.5 |
+| `commands/rules.rs` | Stub → Story 6.6 |
+| `commands/alerts.rs` | Stub → Story 6.5 |
+| `commands/ingest.rs` | Stub → Story 6.4 |
+| `commands/config.rs` | Stub → Story 6.3 |
+| `commands/status.rs` | Stub → Story 6.2 |
+| `commands/tenant.rs` | Stub → Story 6.7 |
+| `commands/login.rs` | Stub → Story 9.1 |
+| `commands/completion.rs` | Functional shell completion generation |
+| `commands/init.rs` | Functional first-time setup |
 
-**Tests:** 96/96 passing (GREEN)
-**Clippy:** 0 warnings
-
-**Key decisions:**
-- Changed workspace `unsafe_code` lint from `forbid` to `deny` because Rust edition 2024 makes `std::env::set_var`/`remove_var` unsafe, and tests need them. Production code retains `#![forbid(unsafe_code)]` in lib.rs files.
-- Added `Mutex`-based test serialization in `config_loading.rs` to prevent env var race conditions between parallel tests.
-- Config uses `serde(default)` on unknown fields (not `deny_unknown_fields`) so `token`/`api_token` in TOML are silently ignored per security requirement.
+**Tests:** 134/134 passing (GREEN)
+**Clippy:** Clean (0 warnings)

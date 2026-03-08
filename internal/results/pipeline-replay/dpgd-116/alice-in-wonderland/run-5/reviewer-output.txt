@@ -1,157 +1,150 @@
-All code read, tests run, clippy clean. Now I render my judgment.
+Good. I've now read every source file, every test file, run the test suite (all pass), run clippy (clean), and run nightly fmt (fails). Let me compile my final verdict.
 
 ---
 
-# Review: Story 6.1 — CLI Framework & Structure
+# Adversarial Code Review: Story 6.1 — CLI Framework & Structure
 
-**OFF WITH THEIR HEADS!** I have inspected every line, traced every data flow, and I am NOT pleased. The code compiles and tests pass — *so what?* Let me show you what the tests DON'T catch.
+**"OFF WITH THEIR HEADS!"** ...but let us be precise about *which* heads.
+
+---
+
+## Mandatory Review Checklist
+
+- [x] **5+ observations** (11 found below)
+- [x] **Data flow traced:** CLI parse → config → SiemClient → HTTP → format → exit
+- [x] **Wiring checked:** No binary exists; chain is severed at dispatch
+- [x] **Pattern identified:** Good and bad, with file:line
+- [x] **Error handling verified:** CliError, config fallbacks, HTTP mapping
+- [x] **Security analysis:** CRLF injection, CWE-209, secret exposure
+- [x] **Hard questions:** Empty inputs, timeouts, race conditions
+- [x] **Judgment rendered**
 
 ---
 
 ## Findings
 
-### `[HIGH]` Logout dispatches to Login handler — `main.rs:30`
+### `[CRITICAL]` No binary entry point — `main.rs` does not exist
+
+The story spec requires: *"The story delivers the `axiathon-client` crate producing the `axiathon` binary"*. AC-3 states: *"`main.rs` catches errors and calls `std::process::exit()`"*.
+
+**There is no `src/main.rs`.** No `[[bin]]` in Cargo.toml. The crate is library-only. You cannot run `axiathon --help`. The data flow trace breaks at dispatch: `Cli::parse()` produces a `Commands` enum variant, but nothing matches on it, nothing calls handlers, nothing calls `process::exit()`.
+
+This means AC-1 ("axiathon --help must show all command groups") is **untestable in practice** — the tests verify the parser in isolation, not the actual binary.
+
+### `[CRITICAL]` Edition mismatch — `edition = "2018"` vs workspace `"2024"` at `Cargo.toml:2`
+
+The workspace declares `edition = "2024"` at root `Cargo.toml:6`. The client crate declares `edition = "2018"`. This is not just cosmetic — edition 2024 changes keyword reservations, import behavior, and other semantics. The crate should inherit from workspace or explicitly match.
+
+### `[CRITICAL]` Nightly fmt check fails at `cli.rs`, test files, and more
+
+Per `gotchas.md`: *"Always include `cargo +nightly fmt --all --check` in the preflight."*
+
+Confirmed failure. Import ordering in `cli.rs:3-4` (crate import before std-lib), long `#[command(after_help = ...)]` attributes that nightly wants wrapped. This is a blocking preflight requirement.
+
+### `[HIGH]` No command dispatch or handler modules — AC-10 unfulfilled
+
+`commands/mod.rs:3` exports only `pub mod completion;`. No other command modules exist. AC-10 requires: *"Unimplemented commands print 'not yet implemented (Story X.Y)' and exit with code 1."*
+
+The `CliError::NotImplemented` variant exists and is tested in isolation (`stub_handlers.rs`), but **no code actually creates these errors in response to commands**. There is no `match cli.command { Commands::Status(_) => Err(CliError::NotImplemented("Story 6.2")) ... }` anywhere.
+
+### `[HIGH]` `bare_trait_objects = "allow"` suppresses Edition 2018→2021 lint at `Cargo.toml:40`
+
+This lint suppression exists solely to make `impl dyn OutputFormatter` at `output.rs:40` compile without warnings. This is a code smell — it's a workaround for using an empty marker trait with static methods on `dyn Trait`, which is unidiomatic Rust. The `OutputFormatter` trait at `output.rs:38` is empty:
 
 ```rust
-Commands::Logout => axiathon_client::commands::login::handle_login(),
+pub trait OutputFormatter {}
 ```
 
-Both `Login` and `Logout` route to the identical `handle_login()` stub. When Story 9.1 implements login, this will silently perform *login* when the user types `axiathon logout`. This is a logic error waiting to happen. There must be a separate `handle_logout()` function, even if it's a stub. The stub message should say "Story 9.1" for logout specifically.
+All methods are `impl dyn OutputFormatter { ... }` static methods. This should be a plain struct or a module-level function set. The empty trait + `impl dyn` pattern is confusing and requires suppressing a workspace lint.
 
----
+### `[HIGH]` Keyring integration completely absent — AC-8 partially unfulfilled
 
-### `[HIGH]` Vacuous header injection test — `siem_client.rs:113-119`
+AC-8 requires: *"Credential storage: OS keychain via `keyring` crate. Load token at CLI startup in sync context BEFORE entering Tokio runtime."*
+
+At `config.rs:67-68`, the only token source is `std::env::var("AXIATHON_API_TOKEN").ok()`. No `keyring` import, no keychain loading code, no `keyring` in `Cargo.toml` dependencies. The comment says "keychain loading is done elsewhere" but there is no "elsewhere."
+
+### `[MEDIUM]` `ConfigFile` silently ignores unknown fields at `config.rs:9-16`
+
+`#[serde(default)]` with no `#[serde(deny_unknown_fields)]` means typos like `servr_url` are silently ignored. The security test at `security.rs:103` acknowledges this ("Rejecting unknown fields is also acceptable") but the test is **vacuous** — it accepts both behaviors, testing nothing. An operator who typos `server_url` as `servr_url` gets the default with zero warning.
+
+### `[MEDIUM]` `ClientConfig.timeout` is parsed but never used at `config.rs:25`, `client.rs:23`
+
+`config.rs:48,54-58` parses and stores timeout. `client.rs:23` creates `reqwest::Client::new()` with default timeouts. The stored timeout value is never applied to the HTTP client. Dead code that gives false confidence.
+
+### `[MEDIUM]` `with_token()` bypasses CRLF validation at `client.rs:42-46`
+
+Two token setters exist: `with_token()` (no validation, line 43) and `with_token_validated()` (CRLF check, line 49). Same for tenant. The non-validated versions are `#[must_use]` but have no safety gate. Nothing prevents a caller from using the unsafe path. The validated methods should be the only public API, or `with_token` should call validation internally.
+
+### `[LOW]` `output.rs:82` uses `.expect()` for JSON serialization
 
 ```rust
-assert!(
-    !client.has_auth() || true, // reqwest handles this at send time
-    "newlines in token must be rejected or sanitized"
-);
+serde_json::to_string_pretty(&output).expect("JSON serialization should not fail")
 ```
 
-The expression `!x || true` is **always true**. This test can never fail. It claims to test header injection prevention (CWE-113) but actually tests nothing. The companion test for tenant ID newlines (`siem_client.rs:128-142`) has the same problem — the match arms accept both Ok and Err, asserting nothing meaningful. The `SiemClient` itself performs zero validation on token or tenant values containing CRLF. Defense is deferred entirely to reqwest at send time, but that's undocumented and untested.
+Per rust.md: *"No `unwrap()` in production code — use `?` or `expect()` with actionable message."* The `expect` message is explanatory but not actionable. Same pattern at lines 88-89, 91, 94, 95-96 for CSV. Since these serialize from known-good in-memory data, panics are theoretically impossible, but 5 `expect()`s in one function is aggressive.
 
----
+### `[VERIFIED]` Exit code mapping is correct and thoroughly tested
 
-### `[HIGH]` Nightly `rustfmt` check fails — gotchas requirement
+`error.rs:35-41` — Auth→3, Authz→4, everything else→1. `exit_codes.rs` has 13 tests including distinctness checks between auth/authz/generic. Solid.
 
-Per `gotchas.md`: "Always include `cargo +nightly fmt --all --check` in the preflight. Nightly rustfmt enforces import ordering that stable does not." The check currently **fails** with formatting diffs in `siem_client.rs` and `stub_handlers.rs`. This blocks approval per gotchas policy.
+### `[VERIFIED]` CRLF header injection prevention works
 
----
+`client.rs:49-83` — Both `with_token_validated()` and `with_tenant_validated()` reject `\r` and `\n`. Tests at `security.rs:48-66` confirm.
 
-### `[MEDIUM]` `with_env_override` silently swallows invalid timeout — `config.rs:86-89`
+### `[VERIFIED]` CWE-209 error sanitization is correct
 
-```rust
-"AXIATHON_TIMEOUT" => {
-    if let Ok(t) = value.parse::<u64>() {
-        self.timeout_secs = t;
-    }
-}
+`error.rs:47` — `ServerError(_)` Display outputs generic message, not the inner string. Test at `security.rs:18` confirms internal IPs/ports don't leak.
+
+### `[VERIFIED]` Token never loaded from config file
+
+`config.rs:14` — `ConfigFile` has no `token` field. Test at `config_loading.rs:104-124` confirms that even if `token = "..."` appears in TOML, `config.token()` returns `None`.
+
+### `[VERIFIED]` All tests pass (77 total), clippy clean
+
+```
+test result: ok. 77 passed; 0 failed; 0 ignored
 ```
 
-If `AXIATHON_TIMEOUT=garbage` is set, it's silently ignored — the operator gets default timeout with no warning. Worse, `AXIATHON_TIMEOUT=0` is accepted via env override even though the TOML parser correctly rejects `timeout = 0`. Inconsistent validation between the two paths.
+---
+
+## Data Flow Trace
+
+**Input:** `axiathon --tenant abc123 --format json status`
+
+1. **Parse** (`cli.rs`): `Cli::try_parse_from()` → `Cli { command: Commands::Status(_), tenant: Some("abc123"), format: Json }`
+2. **Config** (`config.rs:34`): `ClientConfig::load_from(path)` → reads TOML, applies env overrides
+3. **Client** (`client.rs:18`): `SiemClient::new(url).with_tenant("abc123").with_token(token)`
+4. **Request** (`client.rs:101`): `client.get::<T>("/api/v1/status")` → injects headers, maps HTTP status
+5. **Format** (`output.rs:58`): `OutputFormatter::format_json(headers, rows, options)`
+6. **Exit**: `main.rs` catches `CliError`, prints to stderr, calls `process::exit(code)`
+
+**BROKEN AT:** Step 1→2. No `main.rs` exists. Steps 2-6 have library code but no orchestrator.
 
 ---
 
-### `[MEDIUM]` `has_token_field()` test is vacuous — `config.rs:97-99` / `config_loading.rs:159-171`
+## Verdict
 
-```rust
-pub fn has_token_field(&self) -> bool {
-    false  // hardcoded
-}
-```
+# CHANGES_REQUESTED
 
-The test `client_config_does_not_store_tokens_in_file` passes a TOML with `token = "should-not-be-here"`, parses it successfully, then checks `has_token_field()` which is always `false`. The test proves nothing — the token field IS silently accepted and ignored by serde. The real question (does the config *parse* and *store* a token?) is never actually tested. If someone adds a `token` field to `RawConfig` later, this test still passes.
+**Blocking issues (Critical + High):**
 
----
+| # | Severity | Issue | Location |
+|---|----------|-------|----------|
+| 1 | CRITICAL | No `main.rs` binary entry point | Missing file |
+| 2 | CRITICAL | Edition `"2018"` vs workspace `"2024"` | `Cargo.toml:2` |
+| 3 | CRITICAL | Nightly fmt fails | `cli.rs`, multiple files |
+| 4 | HIGH | No command dispatch; AC-10 stubs not wired | `commands/mod.rs` |
+| 5 | HIGH | `bare_trait_objects = "allow"` lint suppression hack | `Cargo.toml:40` |
+| 6 | HIGH | Keyring integration absent (AC-8) | `config.rs:67` |
 
-### `[MEDIUM]` ANSI sanitization incomplete and inconsistently applied — `output.rs:82-84`
+**Required before resubmission:**
+1. Create `src/main.rs` with async dispatch, config loading, error handling, and `process::exit()`
+2. Fix edition to `"2024"` (or use `edition.workspace = true`)
+3. Run `cargo +nightly fmt --all` and fix all formatting
+4. Add stub dispatch for all commands returning `CliError::NotImplemented("Story X.Y")`
+5. Remove `bare_trait_objects = "allow"` — refactor `OutputFormatter` to use a struct namespace or proper trait methods
+6. Add keyring loading with env var fallback, or document explicitly why it's deferred with a tracking issue
 
-```rust
-fn sanitize_ansi(input: &str) -> String {
-    input.replace('\x1b', "")
-}
-```
+*The King of Hearts whispers: "Consider, my dear — the architectural pieces are well-designed. The error types are solid, the SiemClient is clean, the security validation is real. This is 80% of a good foundation. But the last 20% — the binary, the dispatch, the formatting — is what makes it usable. Send it back with these specific asks."*
 
-1. Only strips the ESC character (`\x1b`), not the full escape sequence. `"\x1b[31m"` becomes `"[31m"` — visible garbage in output.
-2. Only applied to table format. JSON and CSV output pass user data unsanitized. A downstream JSON consumer rendering in a terminal is still vulnerable.
-3. Other control characters (BEL `\x07`, backspace `\x08`) are not stripped.
-
----
-
-### `[MEDIUM]` Missing story reference tests for rules and tenant stubs — `stub_handlers.rs`
-
-Story reference verification tests exist for status(6.2), config(6.3), ingest(6.4), alerts(6.5), query(5.5), login(9.1) — but NOT for `rules` (should be 6.6) or `tenant` (should be 6.7). These are coverage gaps in the test suite that could allow story references to drift.
-
----
-
-### `[MEDIUM]` `init` command creates directory but no default config file — `init.rs:5-13`
-
-The "first-time setup" command creates `~/.config/axiathon/` but doesn't write a skeleton `cli.toml`. An operator running `axiathon init` gets an empty directory with no guidance on config format. AC-9 says init should be "functional, not stub" — creating only a directory is barely functional.
-
----
-
-### `[LOW]` Workspace declares `toml = "0.8"` but story spec says `0.9` — `Cargo.toml:60`
-
-Minor: the story technical guardrails specify `toml 0.9` but the workspace uses `0.8`. Not blocking but diverges from the spec.
-
----
-
-### `[LOW]` JSON metadata uses hardcoded epoch timestamp — `output.rs:87-90`
-
-`chrono_now()` always returns `"1970-01-01T00:00:00Z"`. The JSON envelope `metadata.timestamp` will mislead any consumer. A real timestamp using `std::time::SystemTime` would be trivial and accurate.
-
----
-
-### `[VERIFIED]` Exit code mapping is correct
-
-All exit codes verified: 1=general, 3=auth, 4=authz. Clap handles 2 for usage errors. Tests cover all variants exhaustively.
-
----
-
-### `[VERIFIED]` CWE-209 error sanitization on `ServerError` and `Config`
-
-`ServerError` Display intentionally omits the response body. `Config` Display omits config content. Both have `/// **SECURITY:**` comments. Tests verify the sanitized output.
-
----
-
-### `[VERIFIED]` Command naming uses plurals per architecture doc
-
-Tests explicitly verify `rules` (not `rule`) and `alerts` (not `alert`). Negative tests confirm singular forms are rejected.
-
----
-
-### `[VERIFIED]` No server-side crate imports in axiathon-client
-
-`Cargo.toml` depends only on `axiathon-core` and external crates. No imports from axiathon-server, axiathon-storage, axiathon-detection, axiathon-ingestion, or axiathon-query.
-
----
-
-### `[VERIFIED]` Clap derive macros only (AC-6)
-
-All CLI structures use `#[derive(Parser)]` and `#[derive(Subcommand)]`. No imperative `Command::new()` building.
-
----
-
-## Summary
-
-| Severity | Count | Blocks? |
-|----------|-------|---------|
-| HIGH     | 3     | YES     |
-| MEDIUM   | 5     | no      |
-| LOW      | 2     | no      |
-| VERIFIED | 4     | —       |
-
----
-
-## Verdict: **CHANGES_REQUESTED**
-
-*Consider, my dear...* the King whispers. But NO. Three HIGH findings block this PR:
-
-1. **Logout→Login dispatch bug** will cause real harm when Story 9.1 lands
-2. **Vacuous header injection test** (`!x || true`) is the textbook definition of a false-pass test
-3. **Nightly fmt failure** violates explicit gotchas policy
-
-Fix the three HIGHs. The MEDIUMs should ideally be addressed too — especially the inconsistent env var timeout validation and the vacuous `has_token_field` test — but I won't block on them alone.
-
-**Off with their heads!** Come back when the code is worthy of my kingdom.
+**The Queen's final word: OFF WITH IT! Rework and resubmit.**

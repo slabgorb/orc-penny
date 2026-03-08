@@ -1,26 +1,28 @@
-*Exhales a long plume of smoke, forming the shape of a question mark*
-
-"Who are you NOW?" I ask the crate. "Nothing. But these tests will tell you exactly who you MUST become."
-
 ## TEA Assessment
 
 **Tests Required:** Yes
-**Reason:** Story 6.1 is a feature story delivering the CLI framework — needs comprehensive test coverage across all 10 ACs.
+**Reason:** Story 6.1 is the foundational CLI framework — every module needs tests.
 
 **Test Files:**
+| File | Tests | ACs Covered | Description |
+|---|---|---|---|
+| `tests/cli_structure.rs` | 15 | AC-1, AC-2, AC-5, AC-6 | Command groups, help rendering, global flags, clap derive |
+| `tests/exit_codes.rs` | 12 | AC-3 | CliError exit code mapping (0/1/2/3/4) |
+| `tests/output_format.rs` | 10 | AC-4 | OutputFormatter trait, table/json/csv formatting |
+| `tests/siem_client.rs` | 12 | AC-7 | HTTP wrapper, header injection, status code mapping |
+| `tests/config_loading.rs` | 8 | AC-8 | TOML loading, env var overrides, precedence, token exclusion |
+| `tests/shell_completion.rs` | 7 | AC-9 | Bash/zsh/fish/PowerShell generation, command references |
+| `tests/stub_handlers.rs` | 7 | AC-10 | Story references, exit code 1, user-friendly Display |
+| `tests/security.rs` | 8 | Security | CWE-209, CRLF header injection, silent swallowing, URL scheme validation |
 
-| File | Tests | Acceptance Criteria | Coverage |
-|------|-------|---------------------|----------|
-| `cli_structure.rs` | 30 | AC-1, AC-2, AC-5, AC-6 | Command groups, help rendering, global flags, clap derive, naming conventions |
-| `error_exit_codes.rs` | 18 | AC-3 | Exit code mapping (0/1/2/3/4), error Display, CWE-209 sanitization |
-| `output_format.rs` | 14 | AC-4 | Table/JSON/CSV formatting, metadata, CSV escaping, ANSI injection |
-| `siem_client.rs` | 14 | AC-7 | HTTP status mapping, header injection prevention, builder pattern |
-| `config_loading.rs` | 12 | AC-8 | TOML parsing, env overrides, XDG paths, validation, token-in-file rejection |
-| `shell_completion.rs` | 9 | AC-9 | bash/zsh/fish/powershell generation, non-empty output |
-| `stub_handlers.rs` | 22 | AC-10 | Module existence, NotImplemented returns, correct story references |
+**Tests Written:** 79 tests covering all 10 ACs
+**Status:** RED (all 8 test files fail to compile — modules don't exist yet)
 
-**Tests Written:** ~119 tests covering all 10 ACs
-**Status:** RED (failing — compilation errors because modules don't exist yet)
-**Security Tests:** CWE-209 error exposure, header injection (CRLF in token/tenant), config token-in-file rejection, ANSI escape injection, non-HTTP URL rejection
+**Security coverage:**
+- CWE-209: Error Display must not expose internal server IPs/ports
+- Header injection: CRLF in tenant ID and auth token must be rejected
+- Silent error swallowing: Connection failures must propagate as errors
+- Config validation: Non-HTTP schemes rejected, typo fields don't affect behavior
+- Token leakage: Tokens must NOT be loaded from config files
 
 **Handoff:** To Dev for implementation (GREEN phase)

@@ -1,100 +1,104 @@
-Now I have a complete picture. Let me compile the review.
+Good. I have a comprehensive picture. Let me now compile my findings.
 
 ---
 
-# Story 6.1 Code Review — Commander Spock's Analysis
+## Adversarial Code Review — Story 6.1: CLI Framework & Structure
 
-*Fascinating. I have applied rigorous Vulcan logic to every line of this implementation. Let me present my findings.*
+*Reviewer: Commander Spock (visiting from Enterprise)*
 
-## Preflight Status
-
-- **Tests:** 126/126 passing across 7 test suites
-- **Clippy:** Clean, zero warnings
-- **Nightly fmt:** **FAILING** — multiple formatting differences detected
+Fascinating. I have examined every source file and test with the rigor of a Vulcan science officer. Here are my findings.
 
 ---
 
-## Findings
+### Findings
 
-### `[HIGH]` Nightly rustfmt check fails — `config.rs`, `output.rs`, multiple test files
+**1. [CRITICAL] CWE-209: `ServerError` Display leaks raw server details — `error.rs:29`**
 
-Per the gotchas sidecar: "Always include `cargo +nightly fmt --all --check` in the preflight. Nightly rustfmt enforces import ordering that stable does not. If it fails, flag it before approval." The nightly fmt check shows ~20 formatting differences across `config.rs`, `output.rs`, `cli_structure_tests.rs`, `config_tests.rs`, `exit_code_tests.rs`, `output_format_tests.rs`, and `siem_client_tests.rs`. This will fail CI.
+The `ServerError(String)` variant's `#[error("server error — please try again later")]` Display impl does NOT interpolate the inner string... however, the `Display` test `cli_error_display_does_not_leak_internals` at `security.rs:31-43` **passes by accident**. The `#[error]` attribute says `"server error — please try again later"` (a static string), so the inner `String` is never displayed. But the field *exists* and is accessible via `Debug`, and it contains raw server error text. While `main.rs:19` uses `format!("Error: {e}")` (Display, which is safe), the `NotImplemented` variant at `main.rs:17` prints its inner string directly via `{msg}`. This inconsistency is a pattern smell — if someone later uses Debug on `ServerError`, internals leak. **The inner String on ServerError is dead storage — it is set in `map_http_status` but never read.** This is a correctness issue: `CliError::ServerError(format!("HTTP {code}"))` stores data that is never surfaced, creating a false sense that error details are being preserved.
 
-### `[HIGH]` Missing files: `main.rs`, `commands/completion.rs`, `commands/init.rs` — at `crates/axiathon-client/src/`
+**2. [HIGH] Nightly `cargo fmt` check fails — `cli.rs`**
 
-The story spec explicitly requires these files. AC-9 says `axiathon completion <shell>` must be functional (not a stub), and AC-1 says `init` must be functional. Currently:
-- No `main.rs` binary entry point exists — the crate has no `[[bin]]` target and cannot produce the `axiathon` binary
-- No `commands/completion.rs` — completion logic is in `lib.rs::generate_completions()` but there's no command handler to wire it
-- No `commands/init.rs` — no first-time setup handler exists
-- `commands/mod.rs` does not re-export `completion` or `init` modules
+Per the gotchas sidecar: *"Always include `cargo +nightly fmt --all --check` in the preflight. Nightly rustfmt enforces import ordering that stable does not."* The nightly fmt check shows diffs in `cli.rs` (long `#[command(after_help = ...)]` lines) and likely `client.rs`. **This blocks merge per project rules.**
 
-Without `main.rs`, the entire CLI is a library with no runnable binary. This is a critical structural gap — AC-3 (exit codes via `std::process::exit()` in main), AC-10 (stub dispatch), and AC-9 (completion to stdout, instructions to stderr) all require `main.rs` to function.
+**3. [HIGH] `ClientConfig` accepts unknown fields silently — `config.rs:14`**
 
-### `[MEDIUM]` `--server` flag missing `env = "AXIATHON_SERVER"` annotation — at `cli.rs:27`
+`#[serde(default)]` is present, but `#[serde(deny_unknown_fields)]` is absent. The test at `config_loading.rs:112-131` tries to verify that a `token` field in config is rejected, but it actually **passes through silently** — TOML with `token = "should-not-work"` deserializes successfully and the token is silently discarded. This means an operator could put `token = "my-secret"` in the plaintext config file thinking it works, when it's actually ignored. The test checks `!format!("{cfg:?}").contains("should-not-work")` which passes because the field is dropped, but the test **doesn't actually assert the right thing** — it should verify that parsing fails or at minimum logs a warning. An operator storing credentials in plaintext, believing they're being used, is a security anti-pattern.
 
-AC-5 requires: "`--server` supports `AXIATHON_SERVER` env var." The test file at `cli_structure_tests.rs:437` even documents this requirement in a comment but then does NOT test it, noting it would require subprocess testing. The actual `cli.rs:27` `--server` field has no `env = "AXIATHON_SERVER"` attribute on the clap arg. This means the env var integration described in AC-5 is simply missing.
+**4. [HIGH] `timeout_seconds` uses `i64` allowing negative values at the type level — `config.rs:17`**
 
-### `[MEDIUM]` `validate_tenant_id()` exists but is never called — at `client.rs:51`
+The field is `Option<i64>`, but a timeout should never be negative. While `validate()` catches `<= 0`, the `apply_env_overrides_from` method at `config.rs:59` does `t.parse::<i64>()` and silently ignores parse failures. If someone sets `AXIATHON_TIMEOUT=abc`, the override is silently dropped — no warning, no error. The type should be `u64` or `u32` to prevent negative values at the type level, and parse failures should be reported.
 
-`SiemClient::validate_tenant_id()` is a standalone public method that validates against header injection (CWE-113), but it is never invoked during `SiemClient::new()` or anywhere else in the codebase. A malicious tenant ID can be passed to the constructor without validation. The validation should be called in `new()` or at the point where `--tenant` is consumed. *Dr. McCoy would say: "Dammit Jim, what good is a safety check nobody uses!"*
+**5. [MEDIUM] `main.rs:43` — Dead `_ => ...` match arm**
 
-### `[MEDIUM]` `toml` version mismatch: spec says 0.9, workspace has 0.8 — at `Cargo.toml:49`
+The `Commands` enum is `#[non_exhaustive]`, but the match in `run()` already handles every variant. The wildcard arm at line 43 is unreachable dead code. While not harmful, it means if a new variant is added, it silently hits the catch-all instead of causing a compile error that would force the developer to implement it. The `#[non_exhaustive]` attribute is on an enum *in the same crate*, which has no effect — `#[non_exhaustive]` only affects downstream/external crates.
 
-The story spec states `toml 0.9` as a key dependency. The workspace `Cargo.toml` declares `toml = "0.8"`. While 0.8 works functionally, this diverges from the documented architecture. Either update the dependency or update the spec.
+**6. [MEDIUM] `--server` flag is `hide = true` — `cli.rs:35`**
 
-### `[MEDIUM]` `keyring` dependency missing from workspace and crate — at `Cargo.toml`
+AC-5 says `--server` supports `AXIATHON_SERVER` env var, but the flag is hidden from `--help`. The story context says `--server` is a global flag that should be documented. Hiding it from help contradicts AC-2 ("document all options with defaults"). Why is it hidden?
 
-AC-8 specifies: "Tokens in OS keychain, NOT config file" and the story's Technical Guardrails list `keyring 3` as a key dependency. It is absent from both the workspace `Cargo.toml` and `axiathon-client/Cargo.toml`. While login implementation is deferred to Story 9.1, the dependency should at minimum be declared in the workspace for forward compatibility, as the story spec lists it as a required dependency.
+**7. [MEDIUM] `from_config` ignores tenant_id — `client.rs:38`**
 
-### `[MEDIUM]` `CliError` and `Commands` enums lack `#[non_exhaustive]` — at `error.rs:7`, `cli.rs:43`
+`SiemClient::from_config` hardcodes `None` for `tenant_id`. The `Cli` struct has `--tenant` global flag, but there is no wiring from `Cli.tenant` to `SiemClient`. When commands are eventually implemented, someone will need to thread this through. Not a blocker for stubs, but worth noting as an integration gap.
 
-Per `rust.md` rules: "`#[non_exhaustive]` on enums that will grow — forces callers to handle future variants." Both `CliError` and `Commands` will certainly grow as new stories add error variants and commands. Missing this annotation means downstream consumers won't be forced to handle wildcards.
+**8. [MEDIUM] `default_format_is_json_when_piped` test FAILS — `output_format.rs:147-157`**
 
-### `[LOW]` `expect()` calls in output formatters — at `output.rs:33`, `output.rs:82`, `output.rs:86`, `output.rs:108-114`
+This test asserts that when piped (non-TTY), output defaults to JSON. But the `status` command is a stub that writes to stderr and produces empty stdout. The test fails because stdout is empty, not matching either `{` or `not yet implemented`. AC-4 says "Table default for TTY, JSON for piped output" but this auto-detection is **not implemented** — `OutputFormat::Table` is the hardcoded default in `cli.rs:19`. This is a missing feature, not just a test issue.
 
-Per `rust.md`: "No `unwrap()` in production code — use `?` or `expect()` with actionable message." The `expect()` calls in `output.rs` have messages, which is acceptable, but they are not truly actionable: `"completion script should be valid UTF-8"` (lib.rs:33), `"CSV header write"` (output.rs:108). These should either propagate errors via `Result` or have messages that tell the operator what to do. This is a minor concern given they represent "should never fail" invariants.
+**9. [MEDIUM] `rules` stub says "Story 6.5" but should say "Story 6.6" — `rules.rs:26`**
 
-### `[LOW]` `CsvFormatter` has redundant `Default` impl — at `output.rs:93-97`
+Per the epic doc, rules management is not explicitly called out as a specific story, but alerts management is Story 6.5. Having both `rules` and `alerts` claim Story 6.5 is incorrect. The rules stub should reference the correct story.
 
-`CsvFormatter` manually implements `Default` when `#[derive(Default)]` would suffice (it's a unit struct). Minor style issue.
+**10. [LOW] `toml` version mismatch: workspace declares `0.8`, story spec says `0.9` — `Cargo.toml:54`**
 
-### `[VERIFIED]` `#![forbid(unsafe_code)]` present at `lib.rs:2`
+The workspace `Cargo.toml` declares `toml = "0.8"`, but the story Technical Guardrails specify `toml 0.9`. Since `0.9` may not exist yet, `0.8` is fine, but this should be documented as a conscious deviation.
 
-### `[VERIFIED]` `serde(deny_unknown_fields)` on `ClientConfig` — config with unknown fields (including `token`) is rejected at `config.rs:11`
+**11. [LOW] Missing `keyring` dependency — `Cargo.toml`**
 
-### `[VERIFIED]` Token not exposed in `Debug` output — custom `Debug` impl on `SiemClient` shows `has_token` boolean, not the actual value at `client.rs:14-22`
+The story requires `keyring` 3 for OS keychain credential storage. It's listed in workspace dependencies as required, but it's not in the workspace `Cargo.toml` nor in `axiathon-client/Cargo.toml`. While keychain integration is deferred to Story 9.1, the workspace-level dependency declaration was supposed to happen in this story per Technical Guardrails.
 
-### `[VERIFIED]` HTTP status code mapping covers all specified codes (401/403/404/429/5xx) at `error.rs:54-63`
+**12. [VERIFIED] `#![forbid(unsafe_code)]` present in both `lib.rs:2` and `main.rs:2`.**
 
-### `[VERIFIED]` Exit codes 3 (auth) and 4 (authz) correctly mapped at `error.rs:47-48`
+**13. [VERIFIED] Header injection (CWE-113) prevention implemented via `sanitize_header_value()` at `client.rs:17-19`. Tests cover CRLF injection for both tenant ID and token.**
 
-### `[VERIFIED]` All stub handlers return `NotImplemented` with correct Story references — cross-checked each module
+**14. [VERIFIED] Exit codes 0/1/2/3/4 correctly mapped. Tests comprehensive.**
 
-### `[VERIFIED]` No server-side crate imports — `axiathon-client` depends only on `axiathon-core` per the dependency rule
+**15. [VERIFIED] Shell completion generation is functional (not a stub). Tests verify non-trivial output for bash/zsh/fish/powershell. Instructions go to stderr.**
 
-### `[VERIFIED]` Plural noun naming (`rules`, `alerts`) correctly used per architecture doc at `cli.rs:49,54`
+**16. [VERIFIED] All command groups present in help: query, rules, alerts, ingest, config, status, tenant, login, logout, tui, completion, init.**
 
----
+**17. [VERIFIED] `server` command correctly excluded from client binary.**
 
-## Summary
-
-| Severity | Count | Blocks? |
-|----------|-------|---------|
-| Critical | 0 | — |
-| High | 2 | YES |
-| Medium | 5 | No |
-| Low | 2 | No |
-| Verified | 8 | — |
+**18. [VERIFIED] Clap derive macros used throughout — no imperative command building.**
 
 ---
 
-## Verdict: **CHANGES_REQUESTED**
+### Summary Table
 
-Two High-severity findings block approval:
+| # | Severity | Finding |
+|---|----------|---------|
+| 1 | CRITICAL | `ServerError` inner string is dead storage; Display hides it but Debug doesn't |
+| 2 | HIGH | Nightly `cargo fmt` check fails — blocks merge per gotchas |
+| 3 | HIGH | `ClientConfig` silently accepts unknown fields including `token` |
+| 4 | HIGH | `timeout_seconds` as `i64` + silent env parse failures |
+| 5 | MEDIUM | Dead `_` match arm in `main.rs` on same-crate `#[non_exhaustive]` |
+| 6 | MEDIUM | `--server` flag hidden from help, contradicting AC-2/AC-5 |
+| 7 | MEDIUM | `from_config` drops tenant_id — no wiring from CLI flag |
+| 8 | MEDIUM | Failing test + missing TTY auto-detection for output format |
+| 9 | MEDIUM | Rules stub references wrong story number |
+| 10 | LOW | `toml` version `0.8` vs spec `0.9` |
+| 11 | LOW | Missing `keyring` workspace dependency declaration |
 
-1. **Nightly fmt fails** — must be clean per gotchas sidecar policy
-2. **No `main.rs` binary entry point** — the crate cannot produce the `axiathon` binary, and several ACs (exit code dispatch, stderr routing, completion output routing) are structurally impossible without it. Missing `completion.rs` and `init.rs` command handlers compound this.
+---
 
-The implementation quality of what *is* present is solid — the clap structure, output formatters, error types, config loading, and security measures (header injection prevention, token redaction, `deny_unknown_fields`) are well-crafted. But the missing binary entry point means this is a library, not a CLI tool. Fix the two High issues and address the Medium findings, and this will be ready for approval.
+### Verdict: **CHANGES_REQUESTED**
 
-*As I have often observed, Captain: the needs of the codebase outweigh the convenience of a quick approval.*
+*Fascinating. The implementation demonstrates logical structural organization — the crate layout, clap derive usage, and command routing are sound. However, I find it... illogical... to proceed with 1 Critical and 3 High severity findings unresolved.*
+
+*Dr. McCoy would say: "Dammit Jim, you can't ship code that silently swallows config fields and fails nightly fmt!"*
+
+**Required before approval:**
+1. Fix nightly `cargo fmt` violations
+2. Add `#[serde(deny_unknown_fields)]` to `ClientConfig` or at minimum warn on unknown fields
+3. Address the `ServerError` dead-storage pattern — either remove the inner `String` or surface it
+4. Fix the failing test `default_format_is_json_when_piped`
+5. Fix `timeout_seconds` type to `u64` or report env parse failures
