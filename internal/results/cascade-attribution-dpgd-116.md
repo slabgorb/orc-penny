@@ -7,7 +7,7 @@
 
 ## Executive Summary
 
-Cascade attribution on dpgd-116 reveals **no persona-driven variance** in defect detection. All 7 findings are caught (or missed) by the same phases regardless of which theme is active. Detection patterns are determined by **role definition** (what the agent is told to look for), not by persona character traits.
+Cascade attribution on dpgd-116 reveals **no persona-driven variance in phase routing** — which phase catches which finding is stable across themes. However, this does NOT mean personas have no effect on detection. Aggregate data shows 64% of persona themes beat control (51.1%), and specific findings show large persona-vs-control deltas (I3: +22.7pp, I5: +13.3pp). The correct conclusion is: **role definition determines which phase catches a finding, but persona presence affects whether it gets caught at all.**
 
 **Important limitation:** All dpgd-116 runs used the **same static epic and story context documents** — context was held constant across themes, not absent. Every agent (TEA, Dev, Reviewer) received identical context via `build_phase_claude_md()`. This means we can measure persona-driven variance (none found) but **cannot measure context-driven variance** from this dataset because the independent variable (context content) was never varied.
 
@@ -107,7 +107,7 @@ Cascade attribution on dpgd-116 reveals **no persona-driven variance** in defect
 | **Persona-driven** | (none detected) | 0% |
 | **Context-driven** | (not measurable — context held constant) | N/A |
 
-**0% of catches appear persona-driven.** All detection variance is explained by role definition. Context-driven attribution cannot be assessed from this dataset because all runs used identical static context documents — the independent variable was never varied. C1's low catch rate (21%) reflects finding difficulty, not a different attribution mechanism.
+**0% of catches show persona-driven phase routing** — role definition determines which phase catches each finding. However, **persona presence does affect overall catch rates vs control.** 64% of persona themes beat control's 51.1% average. Per-finding deltas are significant: I3 goes from 0% (control) to 22.7% (persona avg), I5 from 36.4% to 49.6%. The cascade attribution measures phase routing invariance, not whether personas improve detection overall — they do, modestly. Context-driven attribution cannot be assessed from this dataset because all runs used identical static context documents.
 
 ## Phase Attribution vs Ideal
 
@@ -135,7 +135,7 @@ Only 2/7 findings are caught by their ideal phase. Reviewer catches findings ass
 | Control catches (ever) | 5/7 |
 | Mean themed catches (ever) | 4.4/7 |
 
-Control (no theme) catches 5/7 findings — above the themed mean of 4.4. This does not support the hypothesis that personas improve detection. If anything, the neutral control performs at or above average.
+Control (no theme) catches 5/7 findings ever — above the themed mean of 4.4 ever-caught. However, "ever caught" masks frequency: control's per-run average (51.1%) is below the persona mean (52.9%), and 64% of persona themes beat control on average score. The ever-caught metric favors control's N=11 (more chances to catch each finding) over persona themes' typical N=4. Per-run weighted score is the fairer comparison.
 
 ### High Performers
 
