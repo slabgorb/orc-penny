@@ -25,9 +25,12 @@ stories:
     title: Port core API routes to FastAPI (data proxy + state + analysis)
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-09'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-09'
     type: refactor
   - id: 48-3
     jira: MSSCI-16315

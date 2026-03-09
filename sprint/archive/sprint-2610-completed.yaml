@@ -534,3 +534,8 @@ completed_stories:
     title: FastAPI skeleton + OTLP receiver + launcher switch
     points: 3
     completed: '2026-03-09'
+  - id: 48-2
+    epic: ''
+    title: Port core API routes to FastAPI (data proxy + state + analysis)
+    points: 3
+    completed: '2026-03-09'
