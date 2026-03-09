@@ -529,3 +529,8 @@ completed_stories:
     title: Write concern manifest and AC manifest for dpgd-116
     points: 2
     completed: '2026-03-08'
+  - id: 48-1
+    epic: ''
+    title: FastAPI skeleton + OTLP receiver + launcher switch
+    points: 3
+    completed: '2026-03-09'
