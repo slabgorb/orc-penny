@@ -1,0 +1,24 @@
+id: '49'
+type: epic
+title: Post-Migration Cleanup
+description: Remove dead TypeScript code and stale references after Python WheelHub migration (ADR-0034)
+priority: p1
+status: backlog
+repos: pennyfarthing
+stories:
+  - id: 49-1
+    title: TirePump removal — finish React cleanup and stale references
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: chore
+  - id: 49-2
+    title: Remove legacy TypeScript — dead CLI, BMAD, Jira modules
+    points: 3
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: chore
