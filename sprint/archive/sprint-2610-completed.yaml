@@ -550,3 +550,8 @@ completed_stories:
     title: Cleanup — remove Node.js server, build scripts, update docs
     points: 2
     completed: '2026-03-09'
+  - id: 49-1
+    epic: ''
+    title: TirePump removal — finish React cleanup and stale references
+    points: 2
+    completed: '2026-03-09'
