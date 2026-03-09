@@ -19,6 +19,7 @@ completed_epics:
   - MSSCI-16212
   - MSSCI-16213
   - MSSCI-16312
+  - '49'
 completed_stories:
   - id: 110-1
     epic: '110'
@@ -554,4 +555,9 @@ completed_stories:
     epic: ''
     title: TirePump removal — finish React cleanup and stale references
     points: 2
+    completed: '2026-03-09'
+  - id: 49-2
+    epic: ''
+    title: Remove legacy TypeScript — dead CLI, BMAD, Jira modules
+    points: 3
     completed: '2026-03-09'

@@ -9,7 +9,6 @@ sprint:
   number: 2610
 epics:
   - MSSCI-16293
-  - '49'
 stories: []
 standalone_stories:
   - id: MSSCI-16066

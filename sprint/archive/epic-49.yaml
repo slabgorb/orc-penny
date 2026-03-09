@@ -3,7 +3,7 @@ type: epic
 title: Post-Migration Cleanup
 description: Remove dead TypeScript code and stale references after Python WheelHub migration (ADR-0034)
 priority: p1
-status: backlog
+status: done
 repos: pennyfarthing
 stories:
   - id: 49-1
@@ -22,7 +22,12 @@ stories:
     title: Remove legacy TypeScript — dead CLI, BMAD, Jira modules
     points: 3
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-09'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-09'
     type: chore
+    review_verdict: approved
+completed: '2026-03-09'
