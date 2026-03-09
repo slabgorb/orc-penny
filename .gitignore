@@ -69,6 +69,10 @@ tmux.conf
 .pennyfarthing/tmux-status-right
 .pennyfarthing/tmux-activity
 
+# Python bytecode
+__pycache__/
+*.pyc
+
 # direnv + venv
 .direnv/
 .envrc

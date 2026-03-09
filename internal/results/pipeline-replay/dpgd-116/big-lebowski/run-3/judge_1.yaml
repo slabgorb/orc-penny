@@ -1,0 +1,84 @@
+scenario_id: dpgd-116
+theme: big-lebowski
+run_id: 3
+model: null
+judge_model: default
+judge_version: v2
+judge_pass: 1
+total_caught: 6
+total_findings: 7
+weighted_caught: 28
+total_weight: 37
+score_pct: 75.7
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: 'No phase identified that from_file_or_default swallows all errors including
+    parse/permission failures. TEA tested ''missing file defaults'' but as a happy
+    path. Reviewer flagged unknown fields (Finding #3) but not the error-swallowing
+    pattern in from_file_or_default.'
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: TEA wrote CWE-209 security tests at exit_codes.rs:102-129 checking that
+    error messages don't leak tokens, JWT prefixes, stack traces, or file paths. Same
+    vulnerability class (CWE-209 information exposure) was identified and tested for,
+    though the specific Io(transparent) propagation path may not be fully covered.
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: "TEA wrote header injection tests at siem_client.rs:202-225 for CWE-113\
+    \ (newlines in tenant ID and token values). Same vulnerability class identified.\
+    \ Reviewer also flagged (Finding #2) that these tests were vacuous, and that SiemClient\
+    \ silently drops headers \u2014 but neither phase flagged the raw String vs TenantId\
+    \ type issue specifically."
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer Finding #7: ''New dependencies not declared in workspace [workspace.dependencies]...
+    declared directly in the crate''s Cargo.toml with inline versions... This violates
+    the workspace dependency management pattern.'''
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer Finding #3: ''ConfigFile silently ignores unknown fields...
+    A user who writes tokken = "secret" (typo) or token = "secret" in their config
+    file gets zero feedback... An operator who accidentally puts credentials in the
+    config file would never know.'' Recommended #[serde(deny_unknown_fields)].'
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer Finding #5: 'json_formatter_includes_request_id test asserts\
+    \ parsed.get(\"request_id\").is_some() || parsed.get(\"meta\").is_some() \u2014\
+    \ This assertion passes as long as meta exists... The || logic defeats the purpose\
+    \ of the assertion.' Same category of vacuous OR-based assertion, different instance."
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer Finding #2: 'The header injection tests at siem_client.rs:202-225\
+    \ are vacuous: they construct a SiemClient and immediately discard it (let _ =\
+    \ result;). They don't assert anything \u2014 not that the header was rejected,\
+    \ not that construction failed. These tests pass for any implementation.' Same\
+    \ category of zero-assertion tests."

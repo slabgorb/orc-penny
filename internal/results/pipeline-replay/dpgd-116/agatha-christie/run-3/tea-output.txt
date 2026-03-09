@@ -1,0 +1,29 @@
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 introduces the entire CLI framework — foundational crate structure, command parsing, error handling, HTTP client, config loading, output formatting, and shell completions. Every AC requires test coverage.
+
+**Test Files:**
+| File | Tests | ACs Covered | Description |
+|------|-------|-------------|-------------|
+| `tests/cli_error_exit_codes.rs` | 14 | AC-3 | CliError enum, exit_code() mapping (1/3/4), CWE-209 error exposure checks |
+| `tests/cli_output_format.rs` | 17 | AC-4 | OutputFormatter trait, Table/JSON/CSV rendering, metadata, escaping, --no-color |
+| `tests/cli_siem_client.rs` | 17 | AC-7 | Header injection (X-Tenant-ID, Bearer), HTTP status mapping (401→403→404→429→5xx), connection errors, header injection prevention |
+| `tests/cli_config.rs` | 13 | AC-8 | TOML loading, env var overrides, defaults, validation, token-not-in-config security |
+| `tests/cli_command_structure.rs` | 38 | AC-1/2/5/6/9/10 | All command groups, plural nouns, help rendering, global flags, env var annotation, derive verification, completion shells, stubs |
+| `tests/cli_binary_integration.rs` | 30 | AC-1/2/3/5/9/10 | Binary-level tests via assert_cmd: help output, exit codes, stderr/stdout separation, completion scripts, stub messages |
+
+**Tests Written:** ~129 tests covering all 10 ACs
+**Status:** RED (all tests fail to compile — implementation modules do not yet exist)
+
+**Security Tests Included:**
+- CWE-209: Error Display must not leak internal IPs, ports, or file paths
+- Header injection: Tenant IDs and tokens with `\r\n` must not inject HTTP headers
+- Token storage: Config file must not expose/store API tokens (keychain only)
+- Silent error swallowing: HTTP errors must propagate, never silently succeed
+- Config validation: Rejects negative/zero timeout, empty URLs, invalid TOML
+
+**Handoff:** To Dev for implementation (GREEN phase)
+
+**Delivery Findings:**
+- No upstream findings during test design.

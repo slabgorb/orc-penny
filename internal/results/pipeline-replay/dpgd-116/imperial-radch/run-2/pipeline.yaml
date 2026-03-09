@@ -1,0 +1,98 @@
+scenario_id: dpgd-116
+theme: imperial-radch
+run_id: 2
+timestamp: '2026-03-09T16:14:02.740132+00:00'
+model_requested: opus
+models_used:
+- claude-haiku-4-5-20251001
+- claude-opus-4-6
+total_cost_usd: 4.6976
+worktree_path: /tmp/pf-replay/dpgd-116-imperial-radch-run-2
+phases:
+  tea:
+    token_usage:
+      input: 26
+      cache_creation: 51517
+      cache_read: 1060873
+      output: 20128
+    model_usage:
+      claude-opus-4-6:
+        inputTokens: 26
+        outputTokens: 20128
+        cacheReadInputTokens: 1060873
+        cacheCreationInputTokens: 51517
+        webSearchRequests: 0
+        costUSD: 1.35574775
+        contextWindow: 200000
+        maxOutputTokens: 32000
+      claude-haiku-4-5-20251001:
+        inputTokens: 74
+        outputTokens: 6012
+        cacheReadInputTokens: 940162
+        cacheCreationInputTokens: 66587
+        webSearchRequests: 0
+        costUSD: 0.20738394999999998
+        contextWindow: 200000
+        maxOutputTokens: 32000
+    cost_usd: 1.5631
+    duration_s: 382.48
+    exit_code: 0
+    session_id: 693ffac4-b27e-4572-acbf-7bf2f6fc5e0e
+  dev:
+    token_usage:
+      input: 37
+      cache_creation: 117522
+      cache_read: 2147974
+      output: 20792
+    model_usage:
+      claude-opus-4-6:
+        inputTokens: 37
+        outputTokens: 20792
+        cacheReadInputTokens: 2147974
+        cacheCreationInputTokens: 117522
+        webSearchRequests: 0
+        costUSD: 2.3284845000000005
+        contextWindow: 200000
+        maxOutputTokens: 32000
+      claude-haiku-4-5-20251001:
+        inputTokens: 41
+        outputTokens: 5222
+        cacheReadInputTokens: 567663
+        cacheCreationInputTokens: 58705
+        webSearchRequests: 0
+        costUSD: 0.15629855
+        contextWindow: 200000
+        maxOutputTokens: 32000
+    cost_usd: 2.4848
+    duration_s: 475.45
+    exit_code: 0
+    session_id: cc28b1dd-18e2-49c4-a411-e5eb11420acd
+  reviewer:
+    token_usage:
+      input: 327
+      cache_creation: 48579
+      cache_read: 273179
+      output: 5181
+    model_usage:
+      claude-opus-4-6:
+        inputTokens: 327
+        outputTokens: 5181
+        cacheReadInputTokens: 273179
+        cacheCreationInputTokens: 48579
+        webSearchRequests: 0
+        costUSD: 0.57136825
+        contextWindow: 200000
+        maxOutputTokens: 32000
+      claude-haiku-4-5-20251001:
+        inputTokens: 18
+        outputTokens: 2231
+        cacheReadInputTokens: 176390
+        cacheCreationInputTokens: 39568
+        webSearchRequests: 0
+        costUSD: 0.07827199999999998
+        contextWindow: 200000
+        maxOutputTokens: 32000
+    cost_usd: 0.6496
+    duration_s: 102.49
+    exit_code: 0
+    session_id: 35fbbe33-ed3c-4e9e-adc4-111eed0e59c1

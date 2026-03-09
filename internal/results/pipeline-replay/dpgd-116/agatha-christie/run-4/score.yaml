@@ -1,0 +1,78 @@
+scenario_id: dpgd-116
+theme: agatha-christie
+run_id: 4
+model: opus
+judge_version: v2
+total_caught: 5
+total_findings: 7
+weighted_caught: 25
+total_weight: 37
+score_pct: 67.6
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase identified that from_file_or_default swallows all errors via
+    unwrap_or_default(). The reviewer flagged silent token/unknown field handling
+    but not the blanket error swallowing on file load.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote tests for ''Display security (CWE-209)'' in exit_codes.rs.
+    Reviewer escalated as HIGH: ''CWE-209: ServerError and NotFound Display impls
+    pass raw server response bodies to CLI users''.'
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: "TEA wrote tests for 'header injection prevention (CWE-113)' in siem_client.rs.\
+    \ Dev implemented CR/LF stripping in with_token() and with_tenant(). Reviewer\
+    \ verified CWE-113 prevention. However, no phase flagged that tenant_id should\
+    \ use TenantId from axiathon-core instead of raw String \u2014 the type-safety\
+    \ aspect was missed, but the injection vector was caught."
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: "Reviewer marked '[VERIFIED] All workspace dependencies properly declared\
+    \ in root Cargo.toml' \u2014 opposite conclusion. The ground truth says 6 deps\
+    \ use direct version strings instead of workspace = true in the crate Cargo.toml,\
+    \ but the reviewer concluded this was correct."
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[MEDIUM] Unknown config fields silently ignored' and\
+    \ '[MEDIUM] Config silently swallows token/password fields without warning' \u2014\
+    \ the computed _has_sensitive_fields variable is discarded. Directly addresses\
+    \ the secret-left-on-disk concern."
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[MEDIUM] Vacuous test: subcommands_with_verbs_have_nested_help'\
+    \ with '!x || x is a tautology \u2014 this assertion can never fail'. Same category\
+    \ of vacuously true tautological assertion."
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[MEDIUM] Vacuous test: config_rejects_non_https_server_url_in_production'\
+    \ \u2014 'No assertion, no panic, no return. The test passes regardless.' Same\
+    \ category: test with no meaningful assertions creating false confidence."

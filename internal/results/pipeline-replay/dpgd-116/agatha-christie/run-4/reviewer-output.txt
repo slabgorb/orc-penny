@@ -1,0 +1,97 @@
+Good — confirmed no binary target. Now here is my full review.
+
+---
+
+# Story 6.1 Review: CLI Framework & Structure
+
+*Well now, this reminds me of the time young Mrs. Bantry had the most elaborate garden party planned but forgot to order the marquee. Everything else was perfectly arranged — the cucumber sandwiches, the champagne, the flower arrangements — but without the tent, no one could actually attend. Let me share what I've observed from my little inspection of St. Mary Mead's newest construction...*
+
+## Findings
+
+### HIGH — Blocking
+
+**[HIGH] No `main.rs` — the `axiathon` binary cannot be built** at `crates/axiathon-client/src/main.rs` (missing)
+
+The story explicitly lists `main.rs` as a key file to create: *"Binary entry point, tracing init, dispatch, exit codes."* AC-3 requires `main.rs` to catch errors and call `std::process::exit()`. The `Cargo.toml` has no `[[bin]]` section. The crate is library-only — `cargo build -p axiathon-client` produces no binary. This is the foundation the entire CLI depends on; without it, nothing from this story is user-runnable.
+
+**[HIGH] CWE-209: `ServerError` and `NotFound` Display impls pass raw server response bodies to CLI users** at `error.rs:23,29`
+
+```rust
+#[error("not found: {0}")]
+NotFound(String),
+#[error("server error: {0}")]
+ServerError(String),
+```
+
+`from_http_status()` at `error.rs:68-70` passes the HTTP response body directly into these variants. A server returning `"database connection pool exhausted on host db-prod-03.internal"` exposes internal infrastructure details. The `SECURITY` doc comment on the module says Display is "sanitized, no internals" — that's a lie. The test `cli_error_display_does_not_leak_server_internals` at `exit_codes.rs:144-154` is vacuous: it only asserts the output is non-empty, not that it's actually sanitized.
+
+### MEDIUM — Non-blocking but should fix
+
+**[MEDIUM] Vacuous test: `subcommands_with_verbs_have_nested_help`** at `cli_structure.rs:200-203`
+
+```rust
+assert!(
+    !nested.is_empty() || nested.is_empty(), // At minimum the command exists
+    "command '{cmd_name}' should have subcommands or be a leaf command"
+);
+```
+
+`!x || x` is a tautology — this assertion can never fail. The test claims to verify commands have nested subcommands but proves nothing. Either assert subcommands exist or remove the test.
+
+**[MEDIUM] Vacuous test: `config_rejects_non_https_server_url_in_production`** at `config_loading.rs:235-250`
+
+The `if let Ok(config)` branch contains an inner `if` with an empty body. No assertion, no panic, no return. The test passes regardless of whether `http://` URLs are accepted or rejected. It documents a "security concern" the implementation should address but doesn't enforce anything.
+
+**[MEDIUM] Config silently swallows `token`/`password` fields without warning** at `config.rs:72-74`
+
+```rust
+let _has_sensitive_fields =
+    table.contains_key("token") || table.contains_key("password");
+```
+
+The variable is computed but discarded (leading underscore). AC-8 says tokens must not be in config files. If a user accidentally puts a token in their config, they get zero feedback — no warning, no error. At minimum, emit a warning to stderr.
+
+**[MEDIUM] Unknown config fields silently ignored** at `config.rs:71-112`
+
+`from_table()` only reads `server` and `timeout`. A user who typos `servre = "https://..."` gets the default URL with no indication their setting was ignored. `toml::Table` doesn't enforce a schema. Consider warning on unknown keys.
+
+### LOW — Non-blocking
+
+**[LOW] `--format` uses `Option<String>` + `PossibleValuesParser` instead of `ValueEnum`** at `cli.rs:20-21`
+
+The `OutputFormat` enum in `output.rs` already has a `FromStr` impl. Using clap's `ValueEnum` derive would eliminate the string-based parsing and connect the CLI type directly to the enum, removing the need for the `PossibleValuesParser` workaround.
+
+**[LOW] Unused import warning in test** at `config_loading.rs:7`
+
+`use std::io::Write` is unused. Compiler warns about it. Clean it up.
+
+**[LOW] Duplicate shell-matching logic in `completion.rs`** at `completion.rs:39-49` vs `completion.rs:19-25`
+
+`CompletionShell` enum with `ValueEnum` derive handles shell parsing via clap, but `generate_completion()` re-implements shell matching with string parsing. These should be unified — `generate_completion` should accept `CompletionShell` or `Shell`, not `&str`.
+
+**[LOW] Test temp directories not cleaned up** at `config_loading.rs:276-280`
+
+The `tempdir()` helper creates directories under `/tmp` but never removes them. Consider using the `tempfile` crate or adding cleanup.
+
+## Verified Good
+
+- **[VERIFIED]** `#![forbid(unsafe_code)]` present in `lib.rs:2`
+- **[VERIFIED]** CWE-113 header injection prevention — `with_token()` and `with_tenant()` strip CR/LF at `client.rs:34-35,48`
+- **[VERIFIED]** Dependency rule — `axiathon-client` depends only on `axiathon-core`, no server-side crate imports
+- **[VERIFIED]** `#[non_exhaustive]` on `CliError` enum at `error.rs:16`
+- **[VERIFIED]** Exit code mapping is correct: 0/1/2/3/4 per AC-3
+- **[VERIFIED]** All workspace dependencies properly declared in root `Cargo.toml`
+- **[VERIFIED]** Shell completion generation works for all 4 shells (bash/zsh/fish/PowerShell)
+- **[VERIFIED]** Plural command names (`rules`, `alerts`) per architecture doc
+- **[VERIFIED]** All stub handlers return correct story references
+- **[VERIFIED]** 135 tests pass, clippy clean
+
+## Verdict
+
+**CHANGES_REQUESTED**
+
+Two HIGH findings block approval:
+1. **No `main.rs`** — the story cannot deliver a working binary without it. This is the entire point of Story 6.1.
+2. **CWE-209 information exposure** — server error details pass through to CLI users unsanitized, contradicting the security documentation on the module.
+
+The MEDIUM vacuous tests (tautological assertions) should also be fixed — tests that can never fail are worse than no tests because they create false confidence.

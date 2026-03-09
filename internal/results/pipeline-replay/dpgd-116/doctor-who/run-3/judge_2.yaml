@@ -1,0 +1,83 @@
+scenario_id: dpgd-116
+theme: doctor-who
+run_id: 3
+model: null
+judge_version: v2
+judge_pass: 2
+total_caught: 3
+total_findings: 7
+weighted_caught: 15
+total_weight: 37
+score_pct: 40.5
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No test or code addresses from_file_or_default swallowing all errors.
+    The config_loading tests exist but none test that parse/permission errors are
+    distinguished from NotFound.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged CWE-209 under '[HIGH] CWE-209: ServerError Display leaks\
+    \ internal details \u2014 error.rs:15-16' noting that eprintln!(\"Error: {err}\"\
+    ) in main.rs:17 uses Display directly, and that there's no architectural guardrail\
+    \ preventing future leakage. TEA also wrote security tests for CWE-209 error exposure.\
+    \ Same vulnerability class."
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[HIGH] Validation functions exist but are never called\
+    \ \u2014 client.rs:101-118' and '[HIGH] Silent header injection failure \u2014\
+    \ client.rs:63-77' noting tenant_id accepts any string and HeaderValue::from_str\
+    \ silently drops invalid headers. TEA also wrote header injection tests (CWE-113).\
+    \ However, the specific finding that SiemClient uses raw String instead of TenantId\
+    \ from axiathon-core was not called out \u2014 the pipeline focused on validation\
+    \ not being wired in rather than using the wrong type."
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: Reviewer noted a toml version mismatch but did not flag that 6 dependencies
+    use direct version strings instead of workspace = true. No test or review comment
+    addresses workspace dependency consistency.
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[MEDIUM] RawConfig silently ignores unknown TOML fields\
+    \ \u2014 config.rs:10-17' noting no #[serde(deny_unknown_fields)] and that typos\
+    \ are silently ignored. Also flagged '[MEDIUM] RawConfig.token field is read and\
+    \ silently discarded \u2014 config.rs:14-16' noting secrets remain in memory.\
+    \ Both relate to the config silently accepting unknown/unexpected fields."
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified the vacuously true assertion pattern (is_none() ||
+    ...) in any test. The reviewer verified config tests but did not flag this specific
+    assertion logic bug.
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified the test with zero assertions (let _ = config). No
+    reviewer or TEA comment addresses tests that only check for non-panic without
+    actual assertions.

@@ -1,0 +1,79 @@
+scenario_id: dpgd-116
+theme: vorkosigan-saga
+run_id: 1
+model: null
+judge_version: v2
+judge_pass: 2
+total_caught: 4
+total_findings: 7
+weighted_caught: 20
+total_weight: 37
+score_pct: 54.1
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase identified that from_file_or_default swallows all errors via
+    unwrap_or_default(). TEA tests cover config loading but not error discrimination.
+    Reviewer flagged missing deny_unknown_fields but not the blanket error swallowing.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: "TEA included 'CWE-209: Error display doesn't leak stack traces or auth\
+    \ internals' in security tests. Reviewer also flagged '[MEDIUM] ServerError Display\
+    \ leaks server response body (CWE-209)' at error.rs:18 \u2014 same vulnerability\
+    \ class."
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: "TEA wrote CRLF injection tests for tenant ID. Dev implemented CRLF sanitization\
+    \ in client.rs:22,29. Reviewer verified: 'CRLF header injection prevention \u2014\
+    \ client.rs:22,29 sanitize \\r and \\n from tokens and tenant IDs.' Same vulnerability\
+    \ class (CWE-113) addressed, though type-safe TenantId not adopted."
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase flagged that 6 dependencies use direct version strings instead
+    of workspace = true. The reviewer noted a toml version mismatch but not the workspace
+    inheritance pattern issue.
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[MEDIUM] Config silently accepts unknown fields \u2014\
+    \ no #[serde(deny_unknown_fields)]' on config.rs:7-28, noting 'A typo in the config\
+    \ file would be silently ignored.' This directly encompasses the token field being\
+    \ silently ignored."
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[LOW] Vacuous assertion in parse_query_command test'\
+    \ at cli_structure.rs:76 \u2014 'assert!(cli.is_ok() || cli.is_err(), ...) is\
+    \ a tautology. It always passes.' Same category of vacuous assertion, different\
+    \ instance."
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified the zero-assertion test that only checks non-panic
+    via 'let _ = config'. The reviewer found a vacuous assertion but not this distinct
+    issue of a test with no assertions at all.
