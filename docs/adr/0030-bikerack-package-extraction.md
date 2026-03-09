@@ -1,6 +1,6 @@
 # ADR-0030: BikeRack Standalone Package Extraction
 
-**Status:** Proposed
+**Status:** Proposed (Needs Revision — see ADR-0034)
 **Date:** 2026-02-24
 **Author:** architect (Vito Cornelius)
 **Supersedes:** [ADR-0026: Single Package Consolidation](0026-single-package-consolidation.md)

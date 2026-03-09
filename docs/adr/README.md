@@ -61,6 +61,14 @@ What becomes easier or more difficult because of this change?
 | [0024](./0024-bikerack-mode.md) | BikeRack Mode — Decoupled WheelHub Dashboard | Accepted | 2026-02-11 |
 | [0025](./0025-script-first-gate-extraction.md) | Script-First Gate Extraction | Accepted | 2026-02-12 |
 | [0026](./0026-single-package-consolidation.md) | Single Package Consolidation | Accepted | 2026-02-13 |
+| [0027](./0027-installation-architecture-rethink.md) | Installation Architecture Rethink | Superseded by 0028 | 2026-02-17 |
+| [0028](./0028-python-first-installation.md) | Python-First Installation | Accepted | 2026-02-22 |
+| [0029](./0029-context-gate-architecture.md) | Context Gate Architecture | Accepted | 2026-02-22 |
+| [0030](./0030-bikerack-package-extraction.md) | BikeRack Standalone Package Extraction | Needs Revision | 2026-02-24 |
+| [0031](./0031-session-feedback-system.md) | Session Feedback System | Accepted | 2026-02-25 |
+| [0032](./0032-stepped-workflow-switch-gate-output-tags.md) | Stepped Workflow Switch/Gate Output Tags | Accepted | 2026-02-26 |
+| [0033](./0033-multi-repo-worktree-safety.md) | Multi-Repo Worktree Safety | Accepted | 2026-02-28 |
+| [0034](./0034-post-migration-architecture.md) | Post-Migration Architecture — Python Runtime with React GUI | Accepted | 2026-03-09 |
 
 ## Creating a New ADR
 
