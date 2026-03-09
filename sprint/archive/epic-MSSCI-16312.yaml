@@ -3,7 +3,7 @@ type: epic
 title: Python WheelHub Migration
 description: Replace Node.js WheelHub server with Python FastAPI. Eliminates build pipeline, unifies runtime, removes Node.js dependency. See ADR-0022.
 priority: p0
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-16312
 stories:
@@ -37,16 +37,26 @@ stories:
     title: Port all 16 WebSocket channels to FastAPI
     points: 5
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-09'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-09'
     type: refactor
+    review_verdict: approved
   - id: 48-4
     jira: MSSCI-16316
     title: Cleanup — remove Node.js server, build scripts, update docs
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-09'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-09'
     type: chore
+    review_findings: Root package.json still exports deleted server paths
+    review_verdict: approved
+completed: '2026-03-09'
