@@ -1,0 +1,24 @@
+scenario_id: dpgd-116
+theme: x-files
+run_id: 4
+timestamp: '2026-03-09T06:23:05.403525+00:00'
+worktree_path: /tmp/pf-replay/dpgd-116-x-files-run-4
+phases:
+  tea:
+    token_usage:
+      input: 32
+      output: 24142
+    duration_s: 457.49
+    exit_code: 0
+  dev:
+    token_usage:
+      input: 33
+      output: 16534
+    duration_s: 356.33
+    exit_code: 0
+  reviewer:
+    token_usage:
+      input: 8
+      output: 5027
+    duration_s: 99.74
+    exit_code: 0

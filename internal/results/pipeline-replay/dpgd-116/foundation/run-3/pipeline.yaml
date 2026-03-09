@@ -1,0 +1,24 @@
+scenario_id: dpgd-116
+theme: foundation
+run_id: 3
+timestamp: '2026-03-09T01:07:48.833861+00:00'
+worktree_path: /tmp/pf-replay/dpgd-116-foundation-run-3
+phases:
+  tea:
+    token_usage:
+      input: 82
+      output: 22969
+    duration_s: 353.7
+    exit_code: 0
+  dev:
+    token_usage:
+      input: 60
+      output: 21821
+    duration_s: 452.81
+    exit_code: 0
+  reviewer:
+    token_usage:
+      input: 12
+      output: 5526
+    duration_s: 131.37
+    exit_code: 0

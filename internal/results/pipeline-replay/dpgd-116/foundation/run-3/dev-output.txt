@@ -1,0 +1,26 @@
+All 97 tests pass, clippy is clean. Here's the summary:
+
+## Dev Assessment
+
+**Implementation Complete:** Yes
+
+**Files Changed:**
+
+### Workspace config
+- `Cargo.toml` — added workspace deps (`clap_complete`, `comfy-table`, `csv`, `dirs`, `reqwest`, `toml`, `serial_test`); enabled `env` feature for clap; relaxed `unsafe_code` lint from `forbid` to `deny` at workspace level (lib.rs files retain `#![forbid(unsafe_code)]`)
+
+### axiathon-client crate
+- `crates/axiathon-client/Cargo.toml` — added runtime deps (`clap_complete`, `comfy-table`, `csv`, `dirs`, `reqwest`, `toml`) and dev-dep (`serial_test`)
+- `crates/axiathon-client/src/lib.rs` — re-exports all modules
+- `crates/axiathon-client/src/error.rs` — `CliError` enum with `#[non_exhaustive]`, exit code mapping (3=auth, 4=authz, 1=all others), sanitized Display messages
+- `crates/axiathon-client/src/output.rs` — `OutputFormat` enum, `OutputFormatter` (table via comfy-table, JSON with metadata, CSV via csv crate), `ResponseMetadata`
+- `crates/axiathon-client/src/config.rs` — `ClientConfig` with TOML loading, env var overrides, URL scheme validation, XDG default path
+- `crates/axiathon-client/src/client.rs` — `SiemClient` HTTP wrapper with header injection, CRLF/null-byte rejection, HTTP status→CliError mapping
+- `crates/axiathon-client/src/cli.rs` — `Cli` struct with Parser derive, `Commands` enum with all 12 command groups, global flags with `global = true`
+- `crates/axiathon-client/src/commands/` — `mod.rs`, `status.rs`, `config.rs`, `ingest.rs`, `alerts.rs`, `query.rs`, `rules.rs`, `tenant.rs`, `login.rs`, `completion.rs` (functional via clap_complete), `init.rs`
+
+### Test fixes (edition 2024 compatibility)
+- `crates/axiathon-client/tests/config_loading.rs` — wrapped `set_var`/`remove_var` in `unsafe` blocks, added `#[serial]` for env var test isolation
+
+**Tests:** 97/97 passing (GREEN)
+**Clippy:** Clean (0 warnings)

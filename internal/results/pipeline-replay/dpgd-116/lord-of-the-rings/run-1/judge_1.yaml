@@ -1,0 +1,74 @@
+scenario_id: dpgd-116
+theme: lord-of-the-rings
+run_id: 1
+judge_version: v2
+judge_pass: 1
+total_caught: 3
+total_findings: 7
+weighted_caught: 15
+total_weight: 37
+score_pct: 40.5
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase flagged that from_file_or_default uses unwrap_or_default() to
+    swallow all error types including parse/permission failures. The reviewer flagged
+    silent unknown fields but not the error-swallowing constructor.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: TEA wrote 2 tests for CWE-209 (error display does not leak server internals).
+    Dev implemented CWE-209 safe Display. Reviewer verified ServerError Display outputs
+    only 'server error occurred'. Same vulnerability class was identified and mitigated.
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: "TEA wrote 2 tests for CWE-113 header injection prevention via newline\
+    \ in tenant/token. Reviewer escalated to CRITICAL: 'with_token() and with_tenant()\
+    \ bypass header injection validation' \u2014 noting non-validating public methods\
+    \ are CWE-113 risks."
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase flagged that 6 dependencies use direct version strings instead
+    of workspace = true. TEA added workspace deps but did not enforce workspace =
+    true in the crate Cargo.toml.
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged [HIGH]: 'ConfigFile silently accepts unknown fields...\
+    \ The token field silently being ignored (line 22-23) compounds this \u2014 an\
+    \ operator who puts token = \"...\" in their config gets no warning that it's\
+    \ ignored.' Recommended #[serde(deny_unknown_fields)]."
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified the vacuously true assertion pattern (is_none() ||
+    ...) in any test. The TEA wrote the tests but did not flag the logical tautology.
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified the zero-assertion test that only checks non-panic
+    via 'let _ = config'. The TEA wrote config tests but did not flag this pattern.

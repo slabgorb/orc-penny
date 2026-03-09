@@ -1,0 +1,21 @@
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 introduces the entire CLI framework — all 10 ACs need test coverage.
+
+**Test Files:**
+| File | AC Coverage | Tests |
+|------|------------|-------|
+| `cli_structure_test.rs` | AC-1, AC-2, AC-5, AC-6 | 27 tests — command groups, plural naming, help rendering, global flags, derive macros |
+| `error_exit_code_test.rs` | AC-3 | 14 tests — exit code mapping (0/1/2/3/4), CliError variants, Display/Error traits, Send+Sync |
+| `output_format_test.rs` | AC-4 | 11 tests — table/json/csv formatting, JSON metadata, CSV escaping, ANSI color, empty data |
+| `siem_client_test.rs` | AC-7 | 14 tests — header injection, HTTP status mapping (401/403/404/429/5xx), connection errors |
+| `config_loading_test.rs` | AC-8 | 10 tests — TOML loading, env var overrides, precedence, default path, no-token-in-config |
+| `completion_test.rs` | AC-9 | 6 tests — bash/zsh/fish/powershell generation, command group inclusion |
+| `stub_handlers_test.rs` | AC-10 | 13 tests — each stub returns "not yet implemented" with correct story ID |
+| `security_test.rs` | Security | 11 tests — CWE-209 error exposure, CRLF header injection, null bytes, URL validation |
+
+**Tests Written:** 106 tests covering all 10 ACs + security
+**Status:** RED (all 8 test files fail to compile — modules `cli`, `error`, `output`, `client`, `config`, `commands` do not exist yet)
+
+**Handoff:** To Dev for implementation

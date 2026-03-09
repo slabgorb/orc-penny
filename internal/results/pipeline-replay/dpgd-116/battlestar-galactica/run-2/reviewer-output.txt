@@ -1,0 +1,90 @@
+I've read every file. Time for the verdict. Here is my adversarial review, with the clarity of someone who has nothing to lose.
+
+---
+
+# Story 6.1 Code Review — Laura Roslin, Reviewing with Dying Clarity
+
+*Billy, hand me the findings. Every one of them.*
+
+## Preflight Results
+
+- **Tests:** 100% pass (all 8 test files, ~100 tests)
+- **Clippy:** Clean, zero warnings
+- **Nightly fmt:** **FAILS** — formatting diffs in `config.rs:65` and `output.rs:27,64`
+
+---
+
+## Findings
+
+### [HIGH] Nightly `rustfmt` check fails — `config.rs`, `output.rs`
+
+Per the gotchas sidecar: "Always include `cargo +nightly fmt --all --check` in the preflight. If it fails, flag it before approval." Three formatting diffs exist:
+- `config.rs:68` — function signature formatting
+- `output.rs:29` — import ordering (`Table, ContentArrangement` should be `ContentArrangement, Table`)
+- `output.rs:67-68` — line length on `output.insert()` calls
+
+**This blocks approval per project rules.**
+
+### [HIGH] `RawConfig` silently ignores unknown TOML fields — `config.rs:8-12`
+
+`RawConfig` uses `#[derive(Deserialize)]` without `#[serde(deny_unknown_fields)]`. If an operator puts `tokn = "secret"` (typo for `token`) or any misspelled key in `cli.toml`, serde silently discards it. The test `config_does_not_deserialize_token_field` at `security_test.rs:84` *proves* this — it passes because unknown fields are silently eaten, not because the code intentionally rejects them. This is a configuration safety hazard: typos in config files produce no feedback.
+
+### [HIGH] `SiemClient::new()` bypasses header injection validation — `client.rs:16-23`
+
+`SiemClient::new()` is public and accepts arbitrary base URLs with no validation. Only `try_new()` validates. Similarly `set_token()` and `set_tenant()` bypass validation — only their `try_*` counterparts check for CRLF/null. Since `main.rs` doesn't currently call these (stubs), this is latent, but any future story that uses `SiemClient::new()` instead of `try_new()` will have a header injection hole. The unvalidated constructors/setters should either be `pub(crate)` or removed.
+
+### [MEDIUM] `with_env_overrides_from` silently ignores invalid timeout — `config.rs:68-85`
+
+This method is documented as "infallible — ignores bad timeout" and silently drops non-numeric or non-positive timeout values. An operator setting `AXIATHON_TIMEOUT=abc` gets no warning. The `try_with_env_overrides_from` variant validates, but `main.rs` doesn't use either yet, so there's no guarantee the validating version will be chosen. This should be documented more prominently or the infallible version should be removed.
+
+### [MEDIUM] `completion.rs` generates empty string for unknown shells — `completion.rs:14`
+
+`generate_completion_script()` returns `String::new()` for unrecognized shell names. This silent empty output to stdout could confuse operators. Should return an error or print a diagnostic to stderr.
+
+### [MEDIUM] Vacuous test — `config_test.rs:69-76`
+
+```rust
+assert!(result.is_ok() || result.is_err(), "nonexistent file should not panic");
+```
+This assertion is *always true*. A `Result` is always either `Ok` or `Err`. This test asserts nothing meaningful about error handling behavior. It should assert `result.is_err()` and verify the error message mentions the file path.
+
+### [MEDIUM] `main.rs:65` unreachable `_ => ...` arm
+
+The wildcard match arm `_ => Err(CliError::General("unknown command".into()))` is unreachable because all `Commands` variants are explicitly matched above. Clap already rejects unknown commands before parsing reaches this point. This dead code is misleading — it implies clap might pass through unknown commands, which it won't.
+
+### [LOW] `tenant` field uses raw `String` not `TenantId` newtype — `cli.rs:30, client.rs:11`
+
+Per the Rust rules: "Newtypes for IDs: `TenantId(String)` — prevents mixing ID types." The `--tenant` flag and `SiemClient.tenant_id` both use raw `String`. `axiathon-core` exports `TenantId`. This should use the validated newtype to prevent accidentally passing a server URL where a tenant ID is expected.
+
+### [LOW] `output.rs:67-70` uses `expect()` in production code
+
+The `JsonFormatter` and `CsvFormatter` use `.expect()` on serialization calls. Per Rust rules: "No `unwrap()` in production code — use `?` or `expect()` with actionable message." The messages are present but the `OutputFormatter` trait returns `String` not `Result`, so errors can't be propagated. The trait signature should return `Result<String, CliError>` to avoid panics on malformed input.
+
+### [LOW] `init` command does nothing useful — `main.rs:61-64`
+
+`axiathon init` just prints "Axiathon CLI initialized." without creating any config directory, writing any default config file, or checking prerequisites. AC-9 says completion should be "functional, not stub," and the same applies to `init`. Currently it's a stub disguised as functional.
+
+### [VERIFIED] Exit code mapping — correct at `error.rs:45-51`
+
+Auth → 3, Authz → 4, everything else → 1. Clap handles exit code 2 for usage errors. Matches AC-3.
+
+### [VERIFIED] `#![forbid(unsafe_code)]` present in both `lib.rs:2` and `main.rs:2`
+
+### [VERIFIED] Header injection prevention logic — `client.rs:87-94` checks `\r`, `\n`, `\0`
+
+### [VERIFIED] Command naming uses plural nouns — `Rules`, `Alerts` (not `Rule`, `Alert`)
+
+### [VERIFIED] All global flags use `global = true` — `cli.rs:18-43`
+
+---
+
+## Verdict: **CHANGES_REQUESTED**
+
+Two HIGH findings block approval:
+
+1. **Nightly fmt failure** — must be fixed per project gotchas
+2. **`RawConfig` missing `deny_unknown_fields`** — silent config errors are a safety hazard
+
+The `SiemClient::new()` validation bypass is also HIGH — the unvalidated public constructors/setters should be scoped down to `pub(crate)` or removed before this merges.
+
+Fix these three, re-run `cargo +nightly fmt --all`, and I'll look again. The rest is solid work — the test coverage is thoughtful, the security tests are genuine (not rubber-stamp), and the architecture follows the two-binary pattern correctly. But we don't ship with formatting failures and silent config holes. Not on my watch.

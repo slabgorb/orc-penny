@@ -1,0 +1,24 @@
+scenario_id: dpgd-116
+theme: blade-runner
+run_id: 4
+timestamp: '2026-03-09T07:48:22.360653+00:00'
+worktree_path: /tmp/pf-replay/dpgd-116-blade-runner-run-4
+phases:
+  tea:
+    token_usage:
+      input: 24
+      output: 25517
+    duration_s: 436.09
+    exit_code: 0
+  dev:
+    token_usage:
+      input: 19
+      output: 16016
+    duration_s: 331.25
+    exit_code: 0
+  reviewer:
+    token_usage:
+      input: 8
+      output: 4316
+    duration_s: 172.47
+    exit_code: 0

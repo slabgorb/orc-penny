@@ -1,0 +1,32 @@
+**109 of 110 tests passing.** Clippy clean.
+
+## Summary
+
+### Files Created (14 new files)
+- `crates/axiathon-client/src/error.rs` — `CliError` enum with exit code mapping (0/1/2/3/4)
+- `crates/axiathon-client/src/config.rs` — `ClientConfig` with TOML loading, env var overrides, XDG paths
+- `crates/axiathon-client/src/output.rs` — `OutputFormat` enum + `OutputFormatter` (table/JSON/CSV)
+- `crates/axiathon-client/src/client.rs` — `SiemClient` HTTP wrapper with header injection and status code mapping
+- `crates/axiathon-client/src/cli.rs` — Clap 4.x derive-based CLI with all command groups and global flags
+- `crates/axiathon-client/src/commands/mod.rs` — Command module re-exports
+- `crates/axiathon-client/src/commands/query.rs` — Stub (Story 5.5)
+- `crates/axiathon-client/src/commands/rules.rs` — Stub (Story 6.6)
+- `crates/axiathon-client/src/commands/alerts.rs` — Stub (Story 6.5)
+- `crates/axiathon-client/src/commands/ingest.rs` — Stub (Story 6.4)
+- `crates/axiathon-client/src/commands/config.rs` — Stub (Story 6.3)
+- `crates/axiathon-client/src/commands/status.rs` — Stub (Story 6.2)
+- `crates/axiathon-client/src/commands/tenant.rs` — Stub (Story 6.7)
+- `crates/axiathon-client/src/commands/login.rs` — Stub (Story 9.1)
+- `crates/axiathon-client/src/commands/completion.rs` — Functional shell completion (bash/zsh/fish/PowerShell)
+- `crates/axiathon-client/src/commands/init.rs` — Functional first-time setup
+
+### Files Modified (4)
+- `crates/axiathon-client/src/lib.rs` — Added module declarations and public re-exports
+- `crates/axiathon-client/src/main.rs` — Full CLI binary with clap parsing and command dispatch
+- `crates/axiathon-client/Cargo.toml` — Added `uuid` and `chrono` dependencies
+- `Cargo.toml` (workspace) — Added `env` feature to clap
+
+### Test Results
+- **109/110 passing** (99.1%)
+- **1 failing**: `help_does_not_show_server_commands` — contradicts `subcommand_help_documents_options_with_defaults` which requires `--server` in help output. The test checks `stdout.contains("server").not()` but the `--server` flag name inherently contains "server". Both tests cannot pass simultaneously. I prioritized the AC-specified `--server` flag name.
+- **Clippy**: clean (0 warnings)

@@ -1,0 +1,82 @@
+judge_method: majority_vote
+n_judges: 3
+majority_threshold: 2
+judge_version: v2
+total_caught: 5
+total_findings: 7
+weighted_caught: 25
+total_weight: 37
+score_pct: 67.6
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: "TEA's security.rs includes 8 tests covering 'CWE-209 error exposure'\
+    \ \u2014 same vulnerability class as the ground truth finding about CliError Display\
+    \ leaking internal details."
+  votes: 3/3
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: TEA wrote tests for 'CRLF header injection' and 'null byte rejection'
+    in security.rs and siem_client.rs (same CWE-113 vulnerability class). Reviewer
+    also notes 'tenant is a raw String' under the axiathon-core unused finding as
+    a medium issue.
+  votes: 3/3
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer explicitly flags [HIGH]: ''ClientConfig silently accepts unknown
+    fields'' and recommends ''#[serde(deny_unknown_fields)]'', noting ''A config file
+    with tokken = "secret" (typo of "token") is silently accepted.'''
+  votes: 3/3
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flags [LOW] 'Two vacuous tests \u2014 config_loading.rs:164-176'\
+    \ noting tests 'don't actually assert anything meaningful' and 'if someone added\
+    \ a token() method, these tests would still pass.' Same category (vacuous test)\
+    \ per partial match rule #2."
+  votes: 3/3
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer explicitly flags the same tests: ''They create a config and
+    then discard it with let _ = cfg. The comment says "This is a compile-time check"
+    but there''s no compile-time check happening.'''
+  votes: 3/3
+individual_scores:
+- 67.6
+- 67.6
+- 67.6

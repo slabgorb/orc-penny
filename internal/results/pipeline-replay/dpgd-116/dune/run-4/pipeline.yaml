@@ -1,0 +1,24 @@
+scenario_id: dpgd-116
+theme: dune
+run_id: 4
+timestamp: '2026-03-09T00:41:52.683782+00:00'
+worktree_path: /tmp/pf-replay/dpgd-116-dune-run-4
+phases:
+  tea:
+    token_usage:
+      input: 27
+      output: 23440
+    duration_s: 422.78
+    exit_code: 0
+  dev:
+    token_usage:
+      input: 27
+      output: 10982
+    duration_s: 254.86
+    exit_code: 0
+  reviewer:
+    token_usage:
+      input: 1393
+      output: 5815
+    duration_s: 223.51
+    exit_code: 0

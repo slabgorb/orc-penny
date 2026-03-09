@@ -1,0 +1,25 @@
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 delivers foundational CLI framework — all ACs require structural and behavioral validation.
+
+**Test Files:**
+| File | Tests | Coverage |
+|---|---|---|
+| `cli_framework_integration.rs` | 46 | AC-1 (command groups), AC-2 (help), AC-3 (exit codes), AC-5 (global flags), AC-6 (derive), AC-9 (completions), AC-10 (stubs) |
+| `output_format_integration.rs` | 15 | AC-4 (table/json/csv formatting, escaping, metadata) |
+| `siem_client_integration.rs` | 17 | AC-7 (construction, headers, HTTP→CliError mapping, security) |
+| `config_integration.rs` | 13 | AC-8 (TOML loading, env overrides, validation, token exclusion) |
+
+**Tests Written:** 91 tests covering all 10 ACs
+**Status:** RED (failing — modules `cli`, `error`, `output`, `client`, `config` don't exist yet)
+
+**Security tests included:**
+- Header injection via newlines in tenant ID and token (AC-7)
+- CWE-209: CliError Display must not leak connection strings or secrets (AC-3)
+- Server error body sanitization (AC-7)
+- Token must not be loadable from config file (AC-8, keychain-only)
+
+**Workspace changes:** Added `clap_complete`, `comfy-table`, `csv`, `dirs`, `keyring`, `reqwest`, `toml` to workspace dependencies. Updated `axiathon-client/Cargo.toml` with all Story 6.1 dependencies.
+
+**Handoff:** To Dev for implementation (GREEN phase)

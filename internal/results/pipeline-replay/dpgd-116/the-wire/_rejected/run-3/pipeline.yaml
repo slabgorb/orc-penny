@@ -1,0 +1,24 @@
+scenario_id: dpgd-116
+theme: the-wire
+run_id: 3
+timestamp: '2026-03-09T02:34:51.989348+00:00'
+worktree_path: /tmp/pf-replay/dpgd-116-the-wire-run-3
+phases:
+  tea:
+    token_usage:
+      input: 0
+      output: 0
+    duration_s: 2.07
+    exit_code: 1
+  dev:
+    token_usage:
+      input: 0
+      output: 0
+    duration_s: 2.02
+    exit_code: 1
+  reviewer:
+    token_usage:
+      input: 0
+      output: 0
+    duration_s: 2.13
+    exit_code: 1

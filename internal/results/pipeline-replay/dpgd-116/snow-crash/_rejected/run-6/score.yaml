@@ -1,0 +1,77 @@
+scenario_id: dpgd-116
+theme: snow-crash
+run_id: 6
+judge_version: v2
+total_caught: 5
+total_findings: 7
+weighted_caught: 23
+total_weight: 37
+score_pct: 62.2
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase flagged that from_file_or_default uses unwrap_or_default() which
+    swallows parse errors, permission failures, etc. TEA tested config loading but
+    not error discrimination. Reviewer did not mention this issue.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote security tests for CWE-209: ''CWE-209: Error messages don''t
+    leak stack traces or internal paths''. Dev implemented sanitize_message() to strip
+    paths. Same vulnerability class addressed, though the specific eprintln!("error:
+    {e}") leak via Io(transparent) was not flagged.'
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote tests for ''Header injection: CRLF in tenant ID, token, and
+    base URL are rejected'' (CWE-113). Dev implemented validate_no_crlf() in client.rs.
+    Same CWE class addressed, though the deeper issue of using raw String instead
+    of TenantId from axiathon-core was not flagged.'
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer flagged: ''[MEDIUM] clap_complete, comfy-table, csv, dirs, keyring,
+    reqwest, toml not declared at workspace level'' and listed it as a should-fix
+    item.'
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: 'No phase flagged that serde silently ignores unknown fields like token
+    in config. TEA tested that tokens come from keychain only, but this design is
+    what causes the silent ignore problem. No mention of #[serde(deny_unknown_fields)]
+    or warning about unknown config keys.'
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged vacuous tests in multiple locations: '[HIGH] Stub handlers\
+    \ have no dispatch wiring \u2014 tests are vacuous' and '[MEDIUM] Security tests\
+    \ for CRLF injection are weak \u2014 Ok branch is a no-op'. Same category of vacuously-true\
+    \ test detected, demonstrating awareness of the pattern."
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged the identical pattern in security.rs: 'if SiemClient::new()\
+    \ returns Ok... the test just does let _ = client; \u2014 it does NOT assert failure.'\
+    \ Same zero-assertion pattern (let _ = x;) caught in adjacent test file."

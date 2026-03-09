@@ -1,0 +1,28 @@
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 introduces the entire CLI framework — new crate, new modules, new public API.
+
+**Test Files:**
+| File | AC Coverage | Tests |
+|------|-------------|-------|
+| `tests/cli_structure.rs` | AC-1, AC-2, AC-6 | 11 tests — command groups, plural nouns, no server commands, help rendering, after_help examples, derive macros, nested subcommands |
+| `tests/exit_codes.rs` | AC-3 | 14 tests — exit code mapping for all CliError variants (0/1/2/3/4), Display impl, CWE-209 info leakage check |
+| `tests/output_format.rs` | AC-4 | 12 tests — format parsing (table/json/csv), default format, JSON metadata, CSV escaping (commas/quotes/newlines), empty data |
+| `tests/global_flags.rs` | AC-5 | 12 tests — -v repeatable, --quiet, --server with env var, --tenant, --config, --no-color, --format validation, defaults |
+| `tests/siem_client.rs` | AC-7 | 17 tests — header injection (tenant/auth), status code mapping (401→403→404→429→5xx), CWE-113 header injection prevention, timeout/connect error mapping |
+| `tests/config_loading.rs` | AC-8 | 12 tests — TOML loading, env var overrides, missing file defaults, token exclusion, invalid TOML error, timeout validation, XDG path |
+| `tests/shell_completion.rs` | AC-9 | 6 tests — bash/zsh/fish/PowerShell generation, subcommand inclusion |
+| `tests/stub_handlers.rs` | AC-10 | 10 tests — stub messages with story references for all 8 commands, NotImplemented variant check, exit code 1 |
+
+**Tests Written:** 94 tests covering all 10 ACs
+**Status:** RED (compilation failure — modules `cli`, `error`, `output`, `client`, `config`, `commands` don't exist yet)
+
+**Security tests included:**
+- CWE-113: Header injection via newlines in tenant ID and token
+- CWE-209: Error messages not leaking internal paths/stack traces
+- Config token exclusion (tokens must not be in config file)
+- Invalid TOML must error, not silently default
+- Timeout validation (negative/zero rejected)
+
+**Handoff:** To Dev for implementation (GREEN phase)

@@ -106,6 +106,16 @@ Workflow definitions live in `pennyfarthing/pennyfarthing-dist/workflows/*.yaml`
 | `pennyfarthing-dist/guides/` | Behavior guides and component docs |
 </info>
 
+<info>
+## Glossary
+
+| Term | Definition |
+|------|------------|
+| Peloton test | Repeatable benchmark scenario for a full agent team (TEA→Dev→Reviewer), sourced from real external review findings. Ground truth = what the pipeline actually missed. Run via `pf benchmark replay`. |
+| Pipeline replay | The harness (`pf benchmark replay run/score/compare`) that executes peloton tests against real code at a known commit. |
+| JobFair | Single-agent benchmarking — tests one role in isolation against a rubric. |
+</info>
+
 <context>
 ## Component Guides
 

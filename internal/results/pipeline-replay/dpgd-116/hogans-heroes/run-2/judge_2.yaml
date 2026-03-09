@@ -1,0 +1,79 @@
+scenario_id: dpgd-116
+theme: hogans-heroes
+run_id: 2
+judge_version: v2
+judge_pass: 2
+total_caught: 6
+total_findings: 7
+weighted_caught: 33
+total_weight: 37
+score_pct: 89.2
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer F3 flags: ''Config silently ignores missing file when explicitly
+    specified... std::fs::read_to_string(path) failure is swallowed with if let Ok(contents).
+    An explicitly-specified config path that doesn''t exist is almost certainly an
+    operator mistake that should surface as an error.'''
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: dev
+  evidence: Dev implemented CWE-209 safe Display ('CliError Display impls use generic
+    messages and do NOT echo inner String payloads'). TEA wrote tests in security.rs
+    for CWE-209 error exposure. Reviewer V2 verified it.
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: "TEA wrote header injection prevention tests in security.rs covering CRLF\
+    \ injection in tenant ID and auth headers. Dev implemented validate_header_value()\
+    \ rejecting \\r, \\n, \\0. However, the specific fix of using TenantId type instead\
+    \ of raw String was not flagged \u2014 only the injection vector was addressed."
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: Reviewer V7 states 'Workspace dependencies are declared centrally' as
+    verified-correct, but does not flag the 6 dependencies using direct version strings
+    instead of workspace = true. The pipeline concluded this area was correct when
+    it was not.
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer F4 explicitly flags: ''ConfigFile derives Deserialize without
+    #[serde(deny_unknown_fields)]. Writing token = "should-be-ignored" in the config
+    file is silently accepted... typos like servel_url instead of server_url are silently
+    ignored.'''
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer F7 flags vacuous test assertions including 'config_loading.rs:219-222:\
+    \ assert!(config.is_ok() || config.is_err()) \u2014 always true, asserts nothing\
+    \ meaningful'. Same category of vacuous assertion as the ground truth finding."
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: Reviewer F7 flags 'Vacuous test assertions' and 'tests that prove nothing
+    give false confidence.' While the specific let _ = config instance isn't named,
+    the reviewer identified the same class of issue (tests with no meaningful assertions)
+    in the same test files.

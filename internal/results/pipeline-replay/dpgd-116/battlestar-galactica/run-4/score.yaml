@@ -1,0 +1,75 @@
+scenario_id: dpgd-116
+theme: battlestar-galactica
+run_id: 2
+judge_version: v2
+total_caught: 2
+total_findings: 7
+weighted_caught: 10
+total_weight: 37
+score_pct: 27.0
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase identifies from_file_or_default swallowing all errors via unwrap_or_default.
+    TEA mentions 'config errors propagate' generically but no test specifically distinguishes
+    NotFound from parse/permission errors.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: "TEA wrote security.rs tests covering 'CWE-209: Error Display doesn't\
+    \ expose internal paths/tokens/passwords'. Dev implemented 'CWE-209 safe Display'.\
+    \ Reviewer verified 'CWE-209 mitigation \u2014 Display impl sanitizes internal\
+    \ details on error types'."
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote tests for ''CRLF header injection: Tenant ID and token reject
+    \r\n, \x00, \t'' in security.rs and siem_client.rs (15 tests including ''header
+    injection''). Dev implemented CRLF prevention via validate_header_value. Same
+    vulnerability class CWE-113, though raw String vs TenantId type safety was not
+    flagged.'
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: Reviewer flagged version mismatches (dirs 5 vs 6, toml 0.8 vs 0.9) but
+    did not flag the pattern of using direct version strings instead of workspace
+    = true in the crate Cargo.toml.
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: No phase flags that serde silently ignores unknown fields like token in
+    config, leaving secrets on disk without authentication. TEA mentions 'token safety'
+    in config_loading but this appears to be about Debug redaction, not unknown field
+    rejection.
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identifies the vacuously true assertion pattern (is_none() ||
+    ...) in any test.
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identifies the zero-assertion test that only checks for non-panic
+    via let _ = config.

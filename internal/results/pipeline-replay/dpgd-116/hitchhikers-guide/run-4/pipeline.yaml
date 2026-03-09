@@ -1,0 +1,24 @@
+scenario_id: dpgd-116
+theme: hitchhikers-guide
+run_id: 4
+timestamp: '2026-03-09T01:45:50.180863+00:00'
+worktree_path: /tmp/pf-replay/dpgd-116-hitchhikers-guide-run-4
+phases:
+  tea:
+    token_usage:
+      input: 665
+      output: 20971
+    duration_s: 358.53
+    exit_code: 0
+  dev:
+    token_usage:
+      input: 37
+      output: 16887
+    duration_s: 392.27
+    exit_code: 0
+  reviewer:
+    token_usage:
+      input: 983
+      output: 6759
+    duration_s: 226.34
+    exit_code: 0

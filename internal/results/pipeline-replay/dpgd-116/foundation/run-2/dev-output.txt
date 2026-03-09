@@ -1,0 +1,27 @@
+## Summary
+
+**All 105 tests GREEN. Clippy clean.**
+
+### Production files created (`crates/axiathon-client/src/`):
+
+| File | Purpose |
+|------|---------|
+| `lib.rs` | Module re-exports |
+| `error.rs` | `CliError` enum with `exit_code()` mapping (0-4) |
+| `cli.rs` | `Cli` (Parser) + `Commands` (Subcommand) — 12 command groups with global flags |
+| `client.rs` | `SiemClient` HTTP wrapper with header injection, status code mapping, CWE-113 sanitization |
+| `config.rs` | `ClientConfig` TOML loading with env/CLI overrides, URL validation |
+| `output.rs` | `OutputFormat` enum + `OutputFormatter` (Table/JSON/CSV) |
+| `commands/mod.rs` | Module re-exports |
+| `commands/{query,rules,alerts,ingest,config,status,tenant,login,init}.rs` | Stub handlers returning `NotImplemented` with story references |
+| `commands/completion.rs` | Shell completion generation via `clap_complete` |
+
+### Test file fixes (edition 2024 compatibility):
+- Wrapped `set_var`/`remove_var` in `unsafe {}` blocks (3 test files)
+- Added `#![allow(unsafe_code)]` to test files needing env manipulation
+- Added `CommandFactory` import to `cli_structure_integration.rs`
+- Fixed overly-broad singular noun check in `command_names_use_plural_nouns`
+
+### Build config changes:
+- `Cargo.toml` (workspace): Added `env` feature to clap
+- `crates/axiathon-client/Cargo.toml`: Added `uuid`/`chrono` deps; crate-level lint override for `unsafe_code = "deny"` (production code retains `#![forbid(unsafe_code)]` in lib.rs)

@@ -1,0 +1,73 @@
+Now I have a complete picture. Let me compile my findings.
+
+---
+
+# Story 6.1 CLI Framework & Structure — Adversarial Review
+
+*Reviewed with the clarity of someone who's out of time.*
+
+## Observations
+
+### `[CRITICAL]` Compilation failure in test suite at `tests/shell_completion.rs:76`
+
+The `invalid_shell_returns_error` test uses `std::panic::catch_unwind` with a `&mut Vec<u8>`, which is not `UnwindSafe`. **Tests do not compile.** This blocks the entire test suite from running to completion.
+
+### `[HIGH]` Edition mismatch: crate uses `edition = "2021"` while workspace uses `edition = "2024"` at `crates/axiathon-client/Cargo.toml:2`
+
+Every other crate in the workspace uses `edition.workspace = true` (inheriting 2024). This crate hardcodes 2021, breaking workspace consistency and missing 2024 edition features. The `rust.md` rules explicitly state `Edition 2024, MSRV 1.85+`.
+
+### `[HIGH]` `cargo +nightly fmt --all --check` fails with 563 lines of diff
+
+Per `gotchas.md`: "Always include `cargo +nightly fmt --all --check` in the preflight. Nightly rustfmt enforces import ordering that stable does not." The implementation has widespread import ordering and formatting violations. This is a blocking quality gate per project rules.
+
+### `[HIGH]` `apply_env_overrides` silently swallows invalid env var values at `config.rs:88-97`
+
+When `AXIATHON_API_URL` is set, it's accepted without any `validate_url()` call. A user could set `AXIATHON_API_URL=ftp://evil.com` and bypass the URL scheme validation that `from_toml_str` enforces. Similarly, `AXIATHON_TIMEOUT` silently ignores unparseable values AND skips `validate_timeout()` on parsed values — a timeout of `0` or `999999` from env var would be accepted despite being rejected from the config file.
+
+### `[HIGH]` No `main.rs` binary entry point exists
+
+The story explicitly requires creating `main.rs` as the binary entry point. The `Cargo.toml` has no `[[bin]]` section and no `src/main.rs`. There is no binary to run. AC-3 specifies `main.rs` catches errors and calls `std::process::exit()` — this entire flow is unimplemented. Without it, the `axiathon` binary cannot be built.
+
+### `[MEDIUM]` `generate_completion` silently returns empty output on invalid shell at `commands/completion.rs:10-11`
+
+When an invalid shell string is passed, the function silently returns without writing anything to the buffer. No error, no message to stderr. AC-9 says `axiathon completion <shell>` should generate completions. A typo like `axiathon completion bsh` would produce silent nothing. This should return a `CliError` variant so the caller can exit with code 1.
+
+### `[MEDIUM]` Workspace dependency version mismatches vs story guardrails
+
+The story specifies `dirs` 6, `toml` 0.9, and `reqwest` with `rustls-tls` feature. The workspace declares `dirs = "5"`, `toml = "0.8"`, and `reqwest` with only `json` (no `rustls-tls`). The `rustls-tls` omission means the binary defaults to OpenSSL (or no TLS), which contradicts the architecture decision for a hermetic build with vendored TLS.
+
+### `[MEDIUM]` `keyring` crate not added to workspace dependencies
+
+Story requires `keyring` 3 in workspace dependencies for OS keychain credential storage. It's completely absent. While the actual login flow is Story 9.1, the infrastructure (dependency declaration) was explicitly called out as Story 6.1 scope.
+
+### `[MEDIUM]` `default_headers` silently drops invalid header values at `client.rs:91-103`
+
+If `tenant` or `bearer` contain values that `HeaderValue::from_str` rejects, the code silently omits the header. This means a request could be sent without the tenant isolation header, potentially accessing wrong-tenant data. The `try_with_tenant`/`try_with_token` validators exist but `with_tenant`/`with_token` bypass them — and `default_headers` has no defense-in-depth logging for the silent drop.
+
+### `[MEDIUM]` Test env var manipulation is not thread-safe at `tests/config_loading.rs:76-78,94-96`
+
+`std::env::set_var` / `remove_var` in tests is unsound in Rust 2024 (these are `unsafe` in edition 2024). With `edition = "2021"` this compiles, but it's still a race condition — tests run in parallel and could interfere with each other's env vars. This explains why the crate uses 2021 instead of 2024 — to avoid the `unsafe` requirement — but this is hiding the real problem.
+
+### `[LOW]` `rules_stub_references_story` references "Story 6.5" but rules are Story 6.5 and alerts are also "Story 6.5" at `commands/rules.rs:4` and `commands/alerts.rs:4`
+
+Both `rules` and `alerts` stubs claim "Story 6.5". Per the epic, alerts are Story 6.5 but rules management doesn't have a single story assignment in the epic description. This should be verified for accuracy.
+
+### `[VERIFIED]` `#![forbid(unsafe_code)]` is present at `lib.rs:2`
+### `[VERIFIED]` `#[non_exhaustive]` on `CliError` enum at `error.rs:8`
+### `[VERIFIED]` CWE-209 mitigation — `Display` impl sanitizes internal details on error types
+### `[VERIFIED]` `SiemClient::Debug` redacts token (shows `has_auth: bool` instead)
+### `[VERIFIED]` CRLF/null-byte header injection prevention via `validate_header_value`
+### `[VERIFIED]` URL embedded credentials rejection via `try_new`
+### `[VERIFIED]` Clippy passes clean with `-D warnings`
+
+## Verdict: **CHANGES_REQUESTED**
+
+4 Critical/High issues block approval:
+
+1. **Tests don't compile** — `catch_unwind` with `&mut Vec<u8>` (CRITICAL)
+2. **Edition 2021 vs workspace 2024** — inconsistent, hides `set_var` unsafety (HIGH)
+3. **Nightly fmt check fails** — 563 lines of diff, blocked per gotchas.md (HIGH)
+4. **Env var overrides bypass validation** — `AXIATHON_API_URL` and `AXIATHON_TIMEOUT` skip `validate_url`/`validate_timeout` (HIGH)
+5. **No `main.rs` binary entry point** — the `axiathon` binary cannot be built (HIGH)
+
+Fix these five, then we can talk about the mediums. I don't have time to approve code that can't compile its own tests.

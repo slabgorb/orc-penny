@@ -1,0 +1,24 @@
+scenario_id: dpgd-116
+theme: lord-of-the-rings
+run_id: 2
+timestamp: '2026-03-09T01:56:08.590421+00:00'
+worktree_path: /tmp/pf-replay/dpgd-116-lord-of-the-rings-run-2
+phases:
+  tea:
+    token_usage:
+      input: 1157
+      output: 19441
+    duration_s: 341.52
+    exit_code: 0
+  dev:
+    token_usage:
+      input: 60
+      output: 38383
+    duration_s: 774.15
+    exit_code: 0
+  reviewer:
+    token_usage:
+      input: 11
+      output: 5507
+    duration_s: 114.06
+    exit_code: 0

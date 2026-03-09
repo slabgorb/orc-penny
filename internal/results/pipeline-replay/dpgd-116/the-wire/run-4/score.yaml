@@ -1,0 +1,75 @@
+scenario_id: dpgd-116
+theme: the-wire
+run_id: 4
+judge_version: v2
+total_caught: 5
+total_findings: 7
+weighted_caught: 26
+total_weight: 37
+score_pct: 70.3
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: true
+  caught_by: tea
+  evidence: 'TEA security_integration.rs (8 tests) explicitly covers ''Silent error
+    swallowing: Every HTTP error status and config parse failure must produce an error.''
+    This targets the same class of silent error swallowing that C1 describes.'
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: TEA wrote CWE-209 tests in exit_codes_integration.rs ('cli_error_display_server_error_does_not_leak_stack_trace').
+    Dev implemented sanitized Display with static messages. Reviewer also flagged
+    the Debug leak vector at error.rs:24.
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote 16 tests in siem_client_integration.rs covering ''Header injection:
+    CRLF in tenant ID and token must be rejected/sanitized.'' Dev implemented CRLF
+    prevention in client.rs:29,36. Same vulnerability class (CWE-113) caught, though
+    raw String vs TenantId type not specifically flagged.'
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: true
+  caught_by: reviewer
+  evidence: Reviewer flagged '[MEDIUM] Workspace dependency management incomplete'
+    noting 'Only clap is defined at workspace level. All others (clap_complete, comfy-table,
+    csv, dirs, reqwest, toml) are defined inline... This violates the workspace dependency
+    management pattern.'
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer flagged both ''[HIGH] Config silently accepts unknown fields''
+    recommending #[serde(deny_unknown_fields)] AND ''[HIGH] Config file token field
+    silently ignored'' noting users could believe their token is being used when it
+    isn''t.'
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified the vacuous assert!(config.server().is_none() || ...)
+    pattern. The TEA wrote config_integration.rs but the vacuously true assertion
+    was not flagged by any phase.
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified the zero-assertion test ('let _ = config;'). The TEA
+    wrote config tests but did not flag or prevent the assertion-free test pattern.

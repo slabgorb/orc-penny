@@ -1,0 +1,41 @@
+No session file exists. The assessment goes here in the conversation output.
+
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 delivers foundational CLI framework — all 10 ACs require test coverage.
+
+**Test Files:**
+| File | Tests | ACs Covered |
+|------|-------|-------------|
+| `cli_framework_integration.rs` | 30 | AC-1 (command groups), AC-2 (help rendering), AC-5 (global flags), AC-6 (clap derive) |
+| `error_handling_integration.rs` | 17 | AC-3 (exit codes 0/1/2/3/4), CWE-209 error exposure |
+| `output_format_integration.rs` | 17 | AC-4 (table/json/csv formatting, ResponseMetadata, escaping) |
+| `siem_client_integration.rs` | 16 | AC-7 (HTTP status mapping, header injection prevention) |
+| `config_integration.rs` | 11 | AC-8 (TOML loading, env var overrides, token-not-in-config) |
+| `shell_completion_integration.rs` | 6 | AC-9 (bash/zsh/fish/powershell generation) |
+| `stub_handlers_integration.rs` | 10 | AC-10 (stub messages, story refs), error conversion, dependency boundary |
+
+**Tests Written:** 107 tests covering all 10 ACs
+**Status:** RED (compilation failure — modules `cli`, `error`, `output`, `client`, `config`, `commands::completion` do not exist yet)
+
+**Security tests included:**
+- CWE-209: Error display does not leak internal paths/stack traces
+- Header injection: Newline rejection in tenant ID and token values
+- Config security: Tokens must not be stored in TOML files
+- Silent error swallowing: All error variants produce non-empty Display output
+
+**Expected public API the dev must implement:**
+- `axiathon_client::cli::{Cli, Commands}` — clap Parser/Subcommand
+- `axiathon_client::error::CliError` — with `exit_code()` method and variants: `Generic`, `NotFound`, `ServerError`, `ConnectionTimeout`, `ServerUnavailable`, `RateLimited`, `AuthenticationExpired`, `Unauthorized`, `Config`, `NotImplemented`
+- `axiathon_client::output::{OutputFormat, OutputFormatter, TableFormatter, JsonFormatter, CsvFormatter, ResponseMetadata}`
+- `axiathon_client::client::SiemClient` — with `new()`, `with_token()`, `with_tenant()`, `map_http_status()`
+- `axiathon_client::config::ClientConfig` — with `load()`, `default_path()`, `server_url()`, `timeout_secs()`
+- `axiathon_client::commands::completion::generate_completion()`
+- `From<AxiathonError> for CliError` conversion
+
+**Handoff:** To Dev for implementation (GREEN phase)
+
+### Delivery Findings
+
+- No upstream findings during test design.

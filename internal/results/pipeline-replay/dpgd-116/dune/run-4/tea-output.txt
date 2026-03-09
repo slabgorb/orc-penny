@@ -1,0 +1,30 @@
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 is a foundational feature story delivering the CLI binary, command structure, HTTP client, output formatting, config loading, and error handling.
+
+**Test Files:**
+| File | Tests | Coverage |
+|------|-------|----------|
+| `cli_structure.rs` | 10 | AC-1 (command groups), AC-2 (help rendering), AC-6 (clap derive) |
+| `exit_codes.rs` | 14 | AC-3 (exit code mapping 0/1/2/3/4, non-exhaustive enum, Display) |
+| `output_format.rs` | 15 | AC-4 (OutputFormat parsing, table/JSON/CSV formatting, escaping) |
+| `global_flags.rs` | 16 | AC-5 (--format, -v/-vv, --quiet, --tenant, --server, --config, --no-color) |
+| `siem_client.rs` | 15 | AC-7 (SiemClient construction, HTTP status mapping, header injection) |
+| `config_loading.rs` | 12 | AC-8 (TOML loading, env var overrides, token exclusion, XDG paths) |
+| `shell_completion.rs` | 6 | AC-9 (bash/zsh/fish/powershell generation, subcommand inclusion) |
+| `stub_handlers.rs` | 10 | AC-10 (stub message format, story references, exit code 1) |
+| `security.rs` | 11 | CWE-209 error exposure, header injection (CRLF), config validation |
+
+**Tests Written:** 109 tests covering all 10 ACs
+**Status:** RED (failing — all tests fail with `E0432: unresolved import` because modules `cli`, `error`, `output`, `client`, `config`, `commands` don't exist yet)
+
+**Modules the Dev must create:**
+- `axiathon_client::cli` — `Cli` struct with `#[derive(Parser)]`
+- `axiathon_client::error` — `CliError` enum with `exit_code()` method
+- `axiathon_client::output` — `OutputFormat` enum, `OutputFormatter` struct
+- `axiathon_client::client` — `SiemClient` with header injection and status mapping
+- `axiathon_client::config` — `ClientConfig` with TOML loading and env overrides
+- `axiathon_client::commands::{status,config,ingest,alerts,query,rules,tenant,login,completion}` — stub handlers and completion generation
+
+**Handoff:** To Dev for implementation

@@ -1,0 +1,20 @@
+All **111 tests pass** (37 + 11 + 12 + 13 + 11 + 5 + 14 + 8 = 111), zero failures. Clippy is clean.
+
+## Summary
+
+**Files created:**
+- `crates/axiathon-client/src/error.rs` — `CliError` enum with exit code mapping, CWE-209 path sanitization
+- `crates/axiathon-client/src/cli.rs` — `Cli` struct and `Commands` enum with clap 4.x derive macros, global flags, all 12 command groups
+- `crates/axiathon-client/src/client.rs` — `SiemClient` HTTP wrapper with header injection, CRLF validation, HTTP status-to-error mapping
+- `crates/axiathon-client/src/config.rs` — `ClientConfig` with TOML loading, env/CLI override chain, credential stripping, XDG paths
+- `crates/axiathon-client/src/output.rs` — `OutputFormat`/`OutputFormatter` with table (comfy-table), JSON (envelope with metadata), CSV (proper escaping)
+- `crates/axiathon-client/src/commands/mod.rs` — Command module re-exports
+- `crates/axiathon-client/src/commands/completion.rs` — `generate_completion()` using `clap_complete::generate()`
+
+**Files modified:**
+- `crates/axiathon-client/src/lib.rs` — Added module declarations
+- `crates/axiathon-client/Cargo.toml` — Added `chrono` and `uuid` dependencies
+- `Cargo.toml` (workspace) — Added `env` feature to clap
+
+**Tests:** 111/111 passing (GREEN)
+**Clippy:** Clean, zero warnings

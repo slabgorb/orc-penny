@@ -1,0 +1,73 @@
+scenario_id: dpgd-116
+theme: gilligans-island
+run_id: 3
+judge_version: v2
+judge_pass: 2
+total_caught: 4
+total_findings: 7
+weighted_caught: 23
+total_weight: 37
+score_pct: 62.2
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: true
+  caught_by: tea
+  evidence: TEA explicitly listed 'Config file not silently swallowing parse errors'
+    as key test paranoia and wrote tests in config_loading.rs covering 'missing/invalid
+    files'. Dev then implemented code to make those tests pass.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote 14 tests in security.rs including ''CWE-209 error exposure''.
+    Reviewer verified V5: ''Error Display does not leak sensitive data (CWE-209)''
+    with SECURITY comment present and generic error messages.'
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote tests for ''Header injection with CRLF in tenant/token values''
+    in security.rs and siem_client.rs. Reviewer additionally flagged F10: ''--tenant
+    uses raw String not TenantId newtype'' and verified V1 that HeaderValue::from_str()
+    rejects CRLF.'
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase mentioned workspace dependency consistency. The Cargo.toml changes
+    show direct version strings but nobody flagged the divergence from workspace declarations.
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: 'TEA explicitly listed ''Tokens not loadable from TOML config file (keychain
+    only)'' as test paranoia and wrote tests in security.rs (lines 154-171 per reviewer).
+    Reviewer verified V4 confirming RawConfig.token is parsed but never used. Reviewer
+    also flagged F6 recommending #[serde(deny_unknown_fields)].'
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified the vacuously true assertion pattern (None || true).
+    The reviewer examined test quality but did not flag this specific test logic flaw.
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified the zero-assertion test. The reviewer did not flag
+    tests that only check for non-panic without actual assertions.

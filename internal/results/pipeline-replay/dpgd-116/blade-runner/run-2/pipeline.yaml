@@ -1,0 +1,24 @@
+scenario_id: dpgd-116
+theme: blade-runner
+run_id: 2
+timestamp: '2026-03-09T07:07:24.826897+00:00'
+worktree_path: /tmp/pf-replay/dpgd-116-blade-runner-run-2
+phases:
+  tea:
+    token_usage:
+      input: 93
+      output: 27959
+    duration_s: 493.08
+    exit_code: 0
+  dev:
+    token_usage:
+      input: 42
+      output: 22107
+    duration_s: 493.54
+    exit_code: 0
+  reviewer:
+    token_usage:
+      input: 4364
+      output: 7007
+    duration_s: 230.9
+    exit_code: 0

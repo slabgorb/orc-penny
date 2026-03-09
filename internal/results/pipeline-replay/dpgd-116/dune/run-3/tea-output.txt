@@ -1,0 +1,29 @@
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 delivers the foundational CLI framework with 10 acceptance criteria requiring structural, behavioral, and security verification.
+
+**Test Files:**
+| File | Tests | Coverage |
+|------|-------|----------|
+| `cli_framework_test.rs` | 44 | AC-1 (command groups), AC-2 (help rendering), AC-5 (global flags), AC-6 (clap derive) |
+| `error_exit_codes_test.rs` | 19 | AC-3 (exit codes 0/1/2/3/4), CWE-209 error exposure |
+| `output_format_test.rs` | 19 | AC-4 (table/json/csv formatting, ResponseMetadata) |
+| `siem_client_test.rs` | 19 | AC-7 (HTTP wrapper, header injection, status code mapping) |
+| `config_loading_test.rs` | 16 | AC-8 (TOML loading, env var overrides, precedence) |
+| `shell_completion_test.rs` | 9 | AC-9 (bash/zsh/fish/powershell generation) |
+| `stub_handlers_test.rs` | 12 | AC-10 (stub messages with story references) |
+| `security_test.rs` | 16 | Token redaction, header injection, config validation, thread safety |
+
+**Tests Written:** 154 tests covering all 10 ACs
+**Status:** RED (compilation failure — implementation modules do not exist)
+
+**Security tests included:**
+- CWE-209: Error Display doesn't leak credentials, paths, or stack traces
+- Header injection: Tenant ID and token with `\r\n` rejected/sanitized
+- Token redaction: SiemClient Debug/Display never exposes bearer tokens
+- Config isolation: ClientConfig has no token field (tokens go in OS keychain)
+- Input validation: Null bytes in paths, invalid URLs, zero/extreme timeouts
+- Thread safety: Send + Sync bounds on CliError, SiemClient, ClientConfig
+
+**Handoff:** To Dev for implementation (GREEN phase)

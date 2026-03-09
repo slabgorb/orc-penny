@@ -1,0 +1,24 @@
+scenario_id: dpgd-116
+theme: control
+run_id: 2
+timestamp: '2026-03-09T06:22:26.395955+00:00'
+worktree_path: /tmp/pf-replay/dpgd-116-control-run-2
+phases:
+  tea:
+    token_usage:
+      input: 14
+      output: 15121
+    duration_s: 314.49
+    exit_code: 0
+  dev:
+    token_usage:
+      input: 33
+      output: 17431
+    duration_s: 392.65
+    exit_code: 0
+  reviewer:
+    token_usage:
+      input: 1500
+      output: 4673
+    duration_s: 166.92
+    exit_code: 0

@@ -1,0 +1,75 @@
+scenario_id: dpgd-116
+theme: hitchhikers-guide
+run_id: 3
+judge_version: v2
+judge_pass: 1
+total_caught: 3
+total_findings: 7
+weighted_caught: 15
+total_weight: 37
+score_pct: 40.5
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase flagged from_file_or_default swallowing all error types. The
+    reviewer flagged a different unwrap_or_default (response body reading) but never
+    addressed config file loading error discrimination between NotFound and parse/permission
+    errors.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: dev
+  evidence: "Dev implemented 'sanitized Display for CWE-209' in error.rs. Reviewer\
+    \ verified: '[VERIFIED] CWE-209 \u2014 ServerError Display is sanitized \u2014\
+    \ #[error(\"server returned an error\")] does not echo the stored body.' TEA also\
+    \ wrote security_test.rs covering CWE-209 error exposure."
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[MEDIUM] --tenant flag accepts raw String \u2014 no\
+    \ validation' noting 'TenantId::new() in axiathon-core validates UUID format,\
+    \ but the CLI never calls it.' This is the same core issue: SiemClient uses raw\
+    \ String instead of validated TenantId."
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase mentioned using workspace = true for dependencies. Dev added
+    dependencies with direct version strings and no phase flagged the workspace reference
+    gap.
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[HIGH] RawConfig silently accepts unknown TOML fields\
+    \ \u2014 lacks #[serde(deny_unknown_fields)]. A config file with api_rul = \"\
+    ...\" (typo) or tokenn = \"secret\" is silently accepted.'"
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified the vacuously true assertion pattern (is_none() ||
+    ...). The reviewer examined tests but did not flag this specific test logic issue.
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified tests with zero assertions. The reviewer examined
+    test quality but did not flag the 'let _ = config' pattern with no assert statements.
