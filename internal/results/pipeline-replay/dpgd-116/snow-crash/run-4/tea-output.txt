@@ -1,0 +1,32 @@
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 is a feature story with 10 acceptance criteria defining the CLI framework's public API surface.
+
+**Test Files:**
+| File | Tests | Coverage |
+|------|-------|----------|
+| `cli_structure.rs` | 30 | AC-1 (command groups), AC-2 (help), AC-5 (global flags), AC-6 (declarative) |
+| `exit_codes.rs` | 15 | AC-3 (exit codes 0/1/2/3/4), CliError Display security |
+| `output_format.rs` | 15 | AC-4 (table/json/csv formatting, edge cases) |
+| `siem_client.rs` | 14 | AC-7 (HTTP error mapping, CRLF injection, SSRF prevention) |
+| `config_loading.rs` | 14 | AC-8 (TOML loading, env var overrides, credential leak prevention) |
+| `shell_completion.rs` | 6 | AC-9 (bash/zsh/fish/powershell completions) |
+| `stub_handlers.rs` | 10 | AC-10 (stub handlers with story references) |
+| `security.rs` | 8 | CWE-209, non-exhaustive, dependency isolation |
+
+**Tests Written:** 112 tests covering all 10 ACs
+**Status:** RED (compile failure — modules `cli`, `error`, `output`, `client`, `config`, `commands` do not exist)
+
+**Security tests included:**
+- CWE-209: Server error Display must not echo raw internals
+- CWE-93: CRLF header injection in tenant ID and auth token
+- SSRF: Non-HTTP URL scheme rejection
+- Credential leak: Config file must not store/load tokens
+- Embedded credentials: Server URL must not contain user:password
+
+**Dependency changes:**
+- Added workspace deps: `reqwest`, `comfy-table`, `keyring`, `clap_complete`, `dirs`, `csv`, `toml`, `assert_cmd`, `predicates`, `tempfile`
+- Added binary target `axiathon` and production deps to `axiathon-client/Cargo.toml`
+
+**Handoff:** To Dev for implementation (GREEN phase)
