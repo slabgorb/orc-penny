@@ -34,3 +34,11 @@ When consolidating slash commands (e.g., `/set-theme` → `/theme set`): (1) rew
 <pattern name="command-vs-skill">
 Command files (`commands/*.md`) are the discoverable entry point — tab completion picks them up via `generate-slash-commands.js`. Skill files (`skills/*/skill.md`) hold the deep implementation details. Every user-facing slash command needs both: a command `.md` for discoverability and a skill `.md` for behavior.
 </pattern>
+
+<pattern name="benchmark-analyze">
+`pf benchmark analyze <scenario.yaml>` — cross-theme analysis of pipeline replay results.
+Sections: `--section tier|findings|dimensions|untested|all`. Supports `--json`.
+Theme dimensions live at `theme.dimensions` (nested) in theme YAML, not top-level.
+Scenario files reference their source project — use `--project-dir` to point at the correct repo (e.g., orc-ax for dpgd-116), `--output-dir` to store results elsewhere.
+Dimension hypothesis testing: score untested themes on signal dimensions, pick themes that confirm/deny or isolate individual axes.
+</pattern>
