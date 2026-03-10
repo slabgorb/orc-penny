@@ -340,6 +340,10 @@
     <div class="tier-checks" id="tier-checks"></div>
   </div>
   <div class="filter-group">
+    <span class="filter-label">Version</span>
+    <select id="version-filter"><option value="">all</option></select>
+  </div>
+  <div class="filter-group">
     <span class="filter-label">Color by</span>
     <select id="ocean-color">
       <option value="none">None</option>
@@ -471,6 +475,7 @@ let state = {
   oceanRole: 'avg',
   dimFilters: {},  // {dimName: selectedValue or ''}
   dimColor: 'none',
+  versionFilter: '',  // '' = all, or a specific version tag
   selectedTheme: null,
 };
 
@@ -537,7 +542,15 @@ function getFilteredThemes() {
     })
     .map(t => {
       // Filter runs by model
-      const filteredRuns = t.runs.filter(r => state.models.has(r.model || 'opus'));
+      const filteredRuns = t.runs.filter(r => {
+        if (!state.models.has(r.model || 'opus')) return false;
+        if (state.versionFilter) {
+          const fv = r.framework_version || {};
+          const tag = fv.tag || fv.commit || fv.source || 'unknown';
+          if (tag !== state.versionFilter) return false;
+        }
+        return true;
+      });
       if (filteredRuns.length === 0) return null;
       // Recompute stats for filtered runs
       const scores = filteredRuns.map(r => r.score_pct);
@@ -1139,6 +1152,26 @@ function buildFilters() {
         }
         renderAll();
       });
+  });
+
+  // Version filter — collect all versions from data
+  const allVersions = new Set();
+  Object.values(DATA.scenarios).forEach(s => {
+    Object.values(s.themes).forEach(t => {
+      t.runs.forEach(r => {
+        const fv = r.framework_version || {};
+        const tag = fv.tag || fv.commit || fv.source || 'unknown';
+        allVersions.add(tag);
+      });
+    });
+  });
+  const vf = d3.select('#version-filter');
+  Array.from(allVersions).sort().forEach(v => {
+    vf.append('option').attr('value', v).text(v);
+  });
+  vf.on('change', function() {
+    state.versionFilter = this.value;
+    renderAll();
   });
 
   // Tier checkboxes
