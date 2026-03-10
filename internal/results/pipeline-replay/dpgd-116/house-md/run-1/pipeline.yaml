@@ -22,3 +22,8 @@ phases:
       output: 5630
     duration_s: 124.39
     exit_code: 0
+framework_version:
+  commit: pre-edge-hunter
+  semver: 12.7.0
+  tag: baseline-pre-edge-hunter
+  agent_hashes: {}

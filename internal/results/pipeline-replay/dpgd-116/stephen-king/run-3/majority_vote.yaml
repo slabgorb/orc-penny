@@ -74,3 +74,8 @@ individual_scores:
 - 48.6
 - 27.0
 - 48.6
+framework_version:
+  commit: pre-edge-hunter
+  semver: 12.7.0
+  tag: baseline-pre-edge-hunter
+  agent_hashes: {}
