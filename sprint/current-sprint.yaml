@@ -116,3 +116,11 @@ standalone_stories:
     repos: pennyfarthing
     pr: 1319
     branch: feat/MSSCI-16331-startup-agent-autoinvoke
+  - id: MSSCI-16335
+    jira: MSSCI-16335
+    title: Add reviewer specialist subagents (silent-failure, test, comment, type-design, security, simplifier)
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1324
+    branch: feat/MSSCI-16335-reviewer-specialist-subagents
