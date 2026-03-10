@@ -124,3 +124,11 @@ standalone_stories:
     repos: pennyfarthing
     pr: 1324
     branch: feat/MSSCI-16335-reviewer-specialist-subagents
+  - id: MSSCI-16336
+    jira: MSSCI-16336
+    title: Upgrade pipeline replay benchmark to exercise full PF machinery
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1326
+    branch: feat/MSSCI-16336-pipeline-replay-pf-machinery
