@@ -107,3 +107,11 @@ standalone_stories:
     repos: pennyfarthing
     pr: 1318
     branch: feat/MSSCI-16323-plan-exit-reload
+  - id: MSSCI-16331
+    jira: MSSCI-16331
+    title: Add startup agent auto-invoke on SessionStart
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1319
+    branch: feat/MSSCI-16331-startup-agent-autoinvoke
