@@ -99,3 +99,11 @@ standalone_stories:
     repos: pennyfarthing
     pr: 1310
     branch: feat/MSSCI-16303-fix-persona-session-id
+  - id: MSSCI-16323
+    jira: MSSCI-16323
+    title: Plan mode agent reload hook for ExitPlanMode
+    points: 2
+    status: done
+    repos: pennyfarthing
+    pr: 1318
+    branch: feat/MSSCI-16323-plan-exit-reload
