@@ -24,17 +24,25 @@ stories:
     title: BMAD Simulator CLAUDE.md Template and Story File
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-10'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-10'
+    review_verdict: approved
   - id: 142-3
     jira: MSSCI-16327
     title: Pipeline Replay BMAD Adapter
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-10'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-10'
+    review_verdict: approved
   - id: 142-4
     jira: MSSCI-16328
     title: Context Parity Verification
