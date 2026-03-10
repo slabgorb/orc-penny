@@ -73,6 +73,9 @@ stories:
     title: Comparative Analysis Report
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-10'
     repos: orchestrator
     workflow: trivial
+    completed: '2026-03-10'
