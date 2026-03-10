@@ -1,0 +1,72 @@
+scenario_id: dpgd-116
+theme: bmad
+run_id: 5
+timestamp: '2026-03-10T14:23:27.531126+00:00'
+model_requested: opus
+models_used:
+- claude-haiku-4-5-20251001
+- claude-opus-4-6
+total_cost_usd: 3.4914
+worktree_path: /tmp/pf-replay/dpgd-116-bmad-run-5
+phases:
+  dev:
+    token_usage:
+      input: 35
+      cache_creation: 120761
+      cache_read: 2140392
+      output: 29306
+    model_usage:
+      claude-opus-4-6:
+        inputTokens: 35
+        outputTokens: 29306
+        cacheReadInputTokens: 2140392
+        cacheCreationInputTokens: 120761
+        webSearchRequests: 0
+        costUSD: 2.55777725
+        contextWindow: 200000
+        maxOutputTokens: 32000
+      claude-haiku-4-5-20251001:
+        inputTokens: 48
+        outputTokens: 5401
+        cacheReadInputTokens: 929304
+        cacheCreationInputTokens: 41141
+        webSearchRequests: 0
+        costUSD: 0.17140965000000002
+        contextWindow: 200000
+        maxOutputTokens: 32000
+    cost_usd: 2.7292
+    duration_s: 555.65
+    exit_code: 0
+    session_id: c04c8596-50c8-491b-bdc7-02120c2ce1d7
+  reviewer:
+    token_usage:
+      input: 6
+      cache_creation: 70677
+      cache_read: 119871
+      output: 4702
+    model_usage:
+      claude-haiku-4-5-20251001:
+        inputTokens: 46
+        outputTokens: 3186
+        cacheReadInputTokens: 275550
+        cacheCreationInputTokens: 79584
+        webSearchRequests: 0
+        costUSD: 0.143011
+        contextWindow: 200000
+        maxOutputTokens: 32000
+      claude-opus-4-6:
+        inputTokens: 6
+        outputTokens: 4702
+        cacheReadInputTokens: 119871
+        cacheCreationInputTokens: 70677
+        webSearchRequests: 0
+        costUSD: 0.61924675
+        contextWindow: 200000
+        maxOutputTokens: 32000
+    cost_usd: 0.7623
+    duration_s: 118.78
+    exit_code: 0
+    session_id: db1fc48f-f3a4-4743-a857-b0cc050fb13a
+framework_version:
+  commit: b7315c6e329e
+  source: BMAD-METHOD

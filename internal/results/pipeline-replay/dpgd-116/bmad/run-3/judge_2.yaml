@@ -1,0 +1,87 @@
+scenario_id: dpgd-116
+theme: bmad
+run_id: 3
+model: null
+judge_model: claude-sonnet-4-6
+judge_version: v2
+judge_pass: 2
+total_caught: 4
+total_findings: 7
+weighted_caught: 20
+total_weight: 37
+score_pct: 54.1
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: "No finding about from_file_or_default swallowing all error types \u2014\
+    \ neither TEA, Dev, nor Reviewer flagged this distinction between NotFound and\
+    \ other errors."
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'F6 flags CWE-209: ''Http(#[from] reqwest::Error) with #[error("HTTP error:
+    {0}")] passes reqwest''s error Display directly through... eprintln!("Error: {err}")
+    prints this unsanitized to the operator.'' Same vulnerability class (CWE-209 information
+    leakage via Display) as ground truth finding I1.'
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: 'F7 flags CWE-113 partial: ''client.rs:100-106: token and tenant_id are
+    passed directly to request.header()... User-supplied tenant IDs should be validated
+    before reaching the HTTP layer.'' F11 also flags: ''--tenant flag uses raw String,
+    not TenantId newtype.'' Same vulnerability class as I2.'
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: The reviewer noted toml version discrepancy (F15) but did not flag that
+    clap_complete, comfy-table, csv, dirs, reqwest, toml use direct version strings
+    instead of workspace = true. The Dev summary claims workspace deps were added
+    but the reviewer did not flag remaining direct version strings.
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "F9 explicitly flags: 'No deny_unknown_fields on ClientConfig \u2014 config.rs:18:\
+    \ ClientConfig accepts and silently ignores unknown TOML keys. A user who writes\
+    \ api_rul = \"...\" (typo) gets the default localhost:8080 with no error. Adding\
+    \ #[serde(deny_unknown_fields)] would catch config typos at load time.' This matches\
+    \ I4's concern about silently ignored fields."
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: The vacuous assertion finding about 'assert!(config.server().is_none()
+    || ...)' was not flagged. F1 flagged missing assert!() wrappers on matches!()
+    in client.rs, and F13 flagged a vacuous formatter test, but neither covers the
+    specific || true pattern in config tests described in I5.
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "F13 flags: 'formatter_for_returns_correct_type test is vacuous \u2014\
+    \ output.rs:255-259: Creates three formatters via formatter_for() and asserts\
+    \ nothing. The let _ = discards the result. This test only verifies no panic,\
+    \ not correctness.' Same category (test with zero assertions) as I6, though in\
+    \ a different file/test."
+framework_version:
+  commit: b7315c6e329e
+  source: BMAD-METHOD
