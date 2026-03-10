@@ -73,6 +73,7 @@ tmux.conf
 .direnv/
 .envrc
 .venv/
+__pycache__/
 
 # Pennyfarthing local state
 .pennyfarthing/.discovery-nudge-shown
