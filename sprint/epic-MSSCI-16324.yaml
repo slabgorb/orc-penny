@@ -60,9 +60,14 @@ stories:
     title: Baseline Comparison Runs
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-10'
     repos: orchestrator
     workflow: trivial
+    completed: '2026-03-10'
+    review_findings: 'APPROVED with scope reduction: dpgd-117 BMAD runs deferred (cost). dpgd-116 BMAD (n=5) sufficient for 142-6 analysis. Code quality verified: version tagging, backfill, dashboard, 31/31 tests green.'
+    review_verdict: approved
   - id: 142-6
     jira: MSSCI-16330
     title: Comparative Analysis Report
