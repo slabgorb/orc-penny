@@ -88,3 +88,4 @@ theme: bmad
 framework_version:
   commit: b7315c6e329e
   source: BMAD-METHOD
+  tag: bmad-6.0.4
