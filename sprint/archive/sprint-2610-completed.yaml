@@ -561,3 +561,8 @@ completed_stories:
     title: Remove legacy TypeScript — dead CLI, BMAD, Jira modules
     points: 3
     completed: '2026-03-09'
+  - id: 142-1
+    epic: ''
+    title: ADR and Comparison Methodology
+    points: 2
+    completed: '2026-03-10'
