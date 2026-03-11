@@ -132,3 +132,11 @@ standalone_stories:
     repos: pennyfarthing
     pr: 1326
     branch: feat/MSSCI-16336-pipeline-replay-pf-machinery
+  - id: MSSCI-16346
+    jira: MSSCI-16346
+    title: Add spec deviation tracking to agent session output
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1331
+    branch: feat/MSSCI-16346-spec-deviation-tracking
