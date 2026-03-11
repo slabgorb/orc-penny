@@ -561,3 +561,8 @@ completed_stories:
     title: Remove legacy TypeScript — dead CLI, BMAD, Jira modules
     points: 3
     completed: '2026-03-09'
+  - id: 142-1
+    epic: ''
+    title: Unified context resolution in load_scenario()
+    points: 2
+    completed: '2026-03-11'

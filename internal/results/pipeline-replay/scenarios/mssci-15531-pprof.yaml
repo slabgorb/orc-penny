@@ -29,6 +29,9 @@ repo:
   base_commit: d7e1810d1db81549a03fc3b9ad69597b07695339
   branch: feat/add-pprof-profiling
 
+roots:
+  repo: ../../../../../poller-orc/poller-cobra
+
 context:
   claude_md: CLAUDE.md
 
