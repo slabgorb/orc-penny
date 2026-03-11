@@ -34,9 +34,10 @@ stories:
     title: Worktree cleanliness verification
     points: 1
     priority: p1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-11'
     review_verdict: approved
   - id: 142-4
     title: Always capture stream-json events to disk
