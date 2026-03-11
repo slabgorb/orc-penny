@@ -1,0 +1,79 @@
+id: '142'
+type: epic
+title: Peloton Benchmark Simplification
+description: Make pipeline replay benchmarks reliable, self-documenting, and debuggable
+priority: p0
+status: in_progress
+repos: pennyfarthing
+stories:
+  - id: 142-1
+    title: Unified context resolution in load_scenario()
+    points: 2
+    priority: p0
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-11'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-03-11'
+    type: refactor
+    review_verdict: approved
+  - id: 142-2
+    title: Fix save_result() nesting bug
+    points: 1
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: bug
+  - id: 142-3
+    title: Worktree cleanliness verification
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+  - id: 142-4
+    title: Always capture stream-json events to disk
+    points: 3
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 142-5
+    title: Fix framework_version reliability
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: bug
+  - id: 142-6
+    title: Event parsing and trace/explain commands
+    points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 142-7
+    title: Run index with backfill
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+  - id: 142-8
+    title: Events-first storage model
+    points: 3
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: refactor
+  - id: 142-9
+    title: LLM-narrated trace
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial

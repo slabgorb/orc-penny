@@ -18,6 +18,9 @@ repo:
   base_commit: 243f79ef441ca9585a074d334e077593c1850258
   branch: MSSCI-10836-client-test
 
+roots:
+  repo: ../../../../../poller-orc/poller-cobra
+
 context:
   # No pennyfarthing context docs — pre-framework PR
   claude_md: CLAUDE.md
