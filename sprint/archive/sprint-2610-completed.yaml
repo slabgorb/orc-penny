@@ -571,3 +571,8 @@ completed_stories:
     title: Fix save_result() nesting bug
     points: 1
     completed: '2026-03-11'
+  - id: 142-3
+    epic: ''
+    title: Worktree cleanliness verification
+    points: 1
+    completed: '2026-03-11'

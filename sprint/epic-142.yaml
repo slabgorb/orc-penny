@@ -37,6 +37,7 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: trivial
+    review_verdict: approved
   - id: 142-4
     title: Always capture stream-json events to disk
     points: 3
