@@ -1,0 +1,30 @@
+has_events: true
+phases:
+  tea:
+    has_events: true
+    tool_counts:
+      Agent: 1
+      Glob: 3
+      Bash: 29
+      Read: 19
+      ToolSearch: 1
+      TodoWrite: 6
+      Edit: 6
+      Write: 15
+    files_touched: []
+  dev:
+    has_events: true
+    tool_counts:
+      TodoWrite: 5
+      Read: 16
+      Write: 5
+      Edit: 10
+      Bash: 6
+    files_touched: []
+  reviewer:
+    has_events: true
+    tool_counts:
+      Read: 23
+      Bash: 5
+      Edit: 2
+    files_touched: []

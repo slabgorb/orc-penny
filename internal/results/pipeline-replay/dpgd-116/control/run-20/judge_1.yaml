@@ -1,0 +1,77 @@
+scenario_id: dpgd-116
+theme: null
+run_id: 20
+model: null
+judge_model: claude-sonnet-4-6
+judge_version: v2
+judge_pass: 1
+total_caught: 2
+total_findings: 7
+weighted_caught: 10
+total_weight: 37
+score_pct: 27.0
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No mention of distinguishing NotFound from other error types in from_file_or_default.
+    The pipeline addressed CWE-209 and CWE-113 but did not flag or fix the swallow-all-errors
+    pattern in config loading.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: dev
+  evidence: "Dev phase explicitly states: 'CWE-209: Manual Display impl returns generic\
+    \ messages \u2014 no file paths, stack traces, or internal names leak' and 'Sanitized\
+    \ Display (CWE-209)' in error.rs."
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: 'TEA created security.rs with 7 tests covering ''header injection'' and
+    the pipeline output notes ''CWE-113: CRLF stripped from header values via sanitize_header_value()''.
+    The SiemClient raw String finding was addressed via sanitization rather than TenantId
+    type, but the header injection risk class was caught.'
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No mention of workspace = true vs direct version strings in any phase.
+    The pipeline did not flag version drift risk for clap_complete, comfy-table, csv,
+    dirs, reqwest, or toml.
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: "Dev phase explicitly states 'No token/secret fields in ClientConfig'\
+    \ \u2014 but this is the opposite conclusion from the ground truth. The finding\
+    \ is that a token field IS silently ignored by serde, leaving secrets on disk.\
+    \ The pipeline removed the token field rather than detecting/warning about unknown\
+    \ fields with #[serde(deny_unknown_fields)]."
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No mention of a vacuously true assertion using || true pattern in any
+    phase output.
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No mention of a test with zero assertions (let _ = config) in any phase
+    output.

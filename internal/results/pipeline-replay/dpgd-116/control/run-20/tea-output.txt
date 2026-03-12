@@ -1,0 +1,27 @@
+## TEA RED Phase Complete — Story 6.1
+
+**117 tests** across 7 test files, covering all 10 acceptance criteria + security:
+
+| Test File | Tests | Fail | Pass | ACs |
+|-----------|-------|------|------|-----|
+| `cli_commands.rs` | 36 | 27 | 9 | AC-1, AC-2, AC-5, AC-6, AC-10 |
+| `error_exit_codes.rs` | 14 | 4 | 10 | AC-3 |
+| `output_formatting.rs` | 18 | 12 | 6 | AC-4 |
+| `siem_client.rs` | 18 | 10 | 8 | AC-7 |
+| `config_loading.rs` | 13 | 11 | 2 | AC-8 |
+| `shell_completion.rs` | 11 | 6 | 5 | AC-9 |
+| `security.rs` | 7 | 5 | 2 | CWE-209, header injection |
+| **Total** | **117** | **75** | **42** | |
+
+**RED state confirmed:** 75 tests fail on assertions (not compilation/imports). 42 pass on structural checks (type existence, trait bounds, compilation).
+
+**Stubs created** in `src/` — minimal compilable modules with incomplete implementations. Tests fail because:
+- `Commands` enum has no real command variants (only hidden `Placeholder`)
+- `CliError::exit_code()` always returns 1 (wrong for auth=3, authz=4, usage=2)
+- `OutputFormatter` implementations return empty strings
+- `SiemClient::default_headers()` returns empty vec (no header injection)
+- `SiemClient::map_status_code()` always returns `General` (wrong for 401/403/404/429/5xx)
+- `ClientConfig::load()` ignores the file path (returns defaults)
+- Shell completions don't include subcommand names
+
+**Handoff:** Ready for Dev to implement GREEN phase.
