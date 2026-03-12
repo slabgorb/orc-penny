@@ -1,6 +1,6 @@
 # ADR-0017: Relay Mode (Automatic Agent Handoff)
 
-**Status:** Accepted
+**Status:** Deprecated
 **Date:** 2026-01-28
 **Author:** Architect (Naomi Nagata)
 

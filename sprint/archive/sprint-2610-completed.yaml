@@ -617,6 +617,11 @@ completed_stories:
     title: Create native subagent definitions for TEA and Reviewer in pennyfarthing-dist
     points: 3
     completed: '2026-03-12'
+  - id: 143-3
+    epic: ''
+    title: Create native subagent definitions for remaining 7 agents in pennyfarthing-dist
+    points: 3
+    completed: '2026-03-12'
   - id: 143-5
     epic: ''
     title: Define handoff document contract format

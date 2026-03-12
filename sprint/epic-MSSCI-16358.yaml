@@ -44,10 +44,14 @@ stories:
     title: Create native subagent definitions for remaining 7 agents in pennyfarthing-dist
     points: 3
     priority: p0
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-12'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-12'
     type: feature
+    review_verdict: approved
   - id: 143-4
     jira: MSSCI-16362
     title: Adapt pf prime for subagent-compatible context output
