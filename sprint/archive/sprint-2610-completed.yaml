@@ -20,6 +20,7 @@ completed_epics:
   - MSSCI-16213
   - MSSCI-16312
   - '49'
+  - MSSCI-16348
 completed_stories:
   - id: 110-1
     epic: '110'
@@ -605,4 +606,9 @@ completed_stories:
     epic: ''
     title: LLM-narrated trace
     points: 2
+    completed: '2026-03-12'
+  - id: 143-1
+    epic: ''
+    title: Create native subagent definition for Dev in pennyfarthing-dist
+    points: 3
     completed: '2026-03-12'

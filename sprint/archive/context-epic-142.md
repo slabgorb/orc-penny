@@ -1,112 +1,84 @@
-# Epic 142: BMAD vs Pennyfarthing Pipeline Comparison
+# Epic 142: Peloton Benchmark Simplification
 
 ## Overview
 
-Run identical Peloton benchmark scenarios through both BMAD and Pennyfarthing dev pipelines, scored by the same judge against the same ground truth, to produce statistically rigorous comparative data for framework adoption decisions. Management approved BMAD as the agent framework, but the team is discovering limitations in BMAD's dev loop. This epic provides the quantitative evidence needed to evaluate both frameworks fairly.
+Make pipeline replay benchmarks reliable, self-documenting, and debuggable so we can confidently iterate on agent definitions and measure whether changes help. The epic fixes three blocking problems: cross-repo scenario resolution failures, double-nested run directories corrupting results, and the complete loss of agent reasoning traces after each run.
 
-**Priority:** P1
-**Repo:** pennyfarthing (adapter code), orchestrator (ADR, runs, report)
-**Stories:** 6 (12 points)
+**Priority:** P0
+**Repo:** pennyfarthing
+**Stories:** 9 (18 points)
 
 ## Planning Documents
 
 | Document | Relevant Sections |
 |----------|-------------------|
-| **BMAD Comparison PRD** (`sprint/planning/bmad-comparison-prd.md`) | Problem statement, success criteria, functional requirements FR-1 through FR-5, technical architecture, phase mapping, context parity analysis |
-| **BMAD Comparison Epics** (`sprint/planning/bmad-comparison-epics.md`) | Story breakdown, acceptance criteria, FR coverage map |
-| **BMAD Integration Guide** (`sprint/planning/bmad-integration.md`) | BMAD-PF handoff model, artifact compatibility, workflow overlap |
-| **ADR-0013: Stepped Workflow Support** (`docs/adr/0013-bmad-workflow-import.md`) | BMAD architecture overview, BMAD workflow migration patterns, stepped vs phased workflow design |
+| **Peloton Simplification PRD** (`sprint/planning/peloton-simplification-prd.md`) | Full PRD — stories, technical design, verification plan |
+| **Peloton Guide** (`pennyfarthing-dist/guides/peloton.md`) | Scenario YAML schema, "How a Run Works" (needs updating) |
 
 ## Background
 
-### The Problem
+### Current State
 
-Management selected BMAD as the team's agent framework. Engineers are encountering limitations in BMAD's dev loop but lack quantitative evidence to justify adopting Pennyfarthing instead. Anecdotal feedback isn't sufficient for a framework adoption decision — the team needs defensible, reproducible, head-to-head data.
+The pipeline replay system (`pf benchmark replay`) runs TDD pipelines (TEA -> Dev -> Reviewer) against real code at known commits, then scores output against ground-truth findings from external reviews. We have 152+ runs across 4 scenarios (`dpgd-116`, `dpgd-117`, `mssci-10836`, `pprof-cobra-15`), but only `dpgd-116` and `dpgd-117` actually work — the other two fail with `KeyError` because `load_scenario()` hardcodes `ctx["epic"]` and `ctx["story"]` while those scenarios use `context: {claude_md: CLAUDE.md}`.
 
-### The Approach
+### Problems
 
-Pennyfarthing already has Peloton — a benchmark replay infrastructure that runs scenarios against real code at known commits and scores results against ground truth. This epic extends Peloton to support a BMAD pipeline variant, enabling apples-to-apples comparison. Both pipelines run the same scenarios, scored by the same judge, against the same ground truth findings.
+1. **Cross-repo context resolution is broken.** `load_scenario()` assumes all scenarios live in the orchestrator's sprint/context structure. Scenarios referencing external repos (poller-cobra) with their own CLAUDE.md cannot resolve paths. This blocks mssci-10836 and pprof-cobra-15 scenarios entirely, and will block Epic 47's PM/Architect benchmarks.
 
-### Key Fairness Decisions
+2. **Double-nested run directories.** Duplicated path logic between `_compute_run_dir()` and `save_result()` with subtly different conditional branches produces `run-N/run-N/` nesting. A cleanup extension exists but the root cause persists.
 
-- **Context parity:** The axiathon story context docs were created from BMAD's create-story flow. Combining PF's epic + story context gives equivalent input to BMAD's story file. The variable under test is agent instructions and workflow, not context preparation.
-- **Phase asymmetry:** BMAD uses a 2-phase loop (Dev with embedded TDD -> Reviewer). PF uses a 3-phase loop (TEA -> Dev -> Reviewer). This is a legitimate architectural difference documented as a known asymmetry, not a flaw.
-- **Same model:** Both pipelines use Opus for all phases to control for model capability differences.
+3. **Agent reasoning is discarded.** `run_phase()` splits into two paths: `--verbose` uses `stream-json` (prints to terminal but discards events), non-verbose uses `json` (captures only final result). Neither path persists the agent's reasoning text, tool decisions, or file reads.
 
-### BMAD Source Files
+### Why Now
 
-The BMAD simulator uses verbatim content from `/Users/keithavery/Projects/BMAD-METHOD/`:
-- `src/bmm/agents/dev.agent.yaml` — "Amelia" persona (Senior Software Engineer)
-- `src/bmm/workflows/4-implementation/dev-story/instructions.xml` — 10-step Red-Green-Refactor workflow
-- `src/bmm/workflows/4-implementation/dev-story/checklist.md` — Definition of Done
-- `src/bmm/workflows/4-implementation/code-review/instructions.xml` — 5-step adversarial review
-- `src/bmm/workflows/4-implementation/code-review/checklist.md` — Review checklist
+Recent agent definition changes showed no measurable effect on scores. Without event traces, we can't distinguish "agents ignored the changes" from "changes didn't matter." Epic 47 (PM/Architect benchmarks) will hit the same cross-repo wall.
 
 ## Technical Architecture
 
-### CLAUDE.md Construction
-
-The BMAD simulator builds a CLAUDE.md by injecting BMAD source files verbatim — no PF wrappers, personas, sidecars, or workflow engine context:
+### Component Structure
 
 ```
-BMAD Dev CLAUDE.md:
-  1. "Amelia" persona from dev.agent.yaml
-  2. instructions.xml (10-step workflow, unmodified)
-  3. checklist.md (Definition of Done, unmodified)
-  4. Story file content (from scenario context)
-  5. project-context.md (target project coding standards)
-
-BMAD Reviewer CLAUDE.md:
-  1. code-review/instructions.xml (5-step adversarial review)
-  2. code-review/checklist.md (review checklist)
+pf/benchmark/
+├── pipeline_replay.py    # Core: Scenario, load_scenario, run_phase, run_pipeline, save_result
+├── cli.py                # Click commands: replay run/score/compare/judge/trace/explain
+├── events.py             # NEW: Event parsing, trace correlation (Story 142-6)
+└── bmad_adapter.py       # BMAD framework adapter (untouched)
 ```
 
-### Harness Integration
+### Key Files
+
+| File | Role | Stories |
+|------|------|---------|
+| `pennyfarthing-dist/src/pf/benchmark/pipeline_replay.py` | Core pipeline logic | 142-1, 142-2, 142-3, 142-4, 142-5 |
+| `pennyfarthing-dist/src/pf/benchmark/cli.py` | CLI commands | 142-2, 142-6, 142-7 |
+| `pennyfarthing-dist/src/pf/benchmark/events.py` | Event parsing (new) | 142-6 |
+| `internal/results/pipeline-replay/scenarios/*.yaml` | Scenario definitions | 142-1 |
+
+### Data Flow
 
 ```
-pf benchmark replay run scenarios/dpgd-116.yaml --pipeline bmad
-                                                 ^^^^^^^^^^^
-                                                 Swaps CLAUDE.md builder
-                                                 Sets phases to [dev, reviewer]
-                                                 Stores results under bmad/run-N/
+Scenario YAML → load_scenario() [142-1: unified context resolution]
+  → create_worktree() + setup_worktree_pf_context()
+  → verify_worktree() [142-3: cleanliness check]
+  → run_phase() per phase [142-4: always stream-json, capture events]
+    → {role}-events.jsonl written to run_dir
+  → save_result() [142-2: single compute_run_dir(), 142-5: framework_version]
+  → update_run_index() [142-7: index.yaml]
+
+Post-hoc: events.jsonl → parse_phase_events() [142-6]
+  → trace / explain / narrate commands
 ```
 
-### Worktree Setup (BMAD Runs)
+### Key Interfaces
 
-1. Create BMAD-format story file at `implementation_artifacts/{story_key}.md`
-2. Create `project-context.md` from target project coding standards
-3. Pass `story_path` in prompt so BMAD's step 1 skips sprint-status lookup
-
-### Key Files (New)
-
-| File | Purpose |
-|------|---------|
-| `docs/adr/0035-bmad-comparison-methodology.md` | Methodology ADR with context diff audit |
-| BMAD CLAUDE.md template (location TBD in pennyfarthing) | Static template for BMAD dev/reviewer agents |
-| Pipeline adapter module (location TBD in pennyfarthing) | `--pipeline bmad` handler in replay harness |
-| Comparison report (location TBD in orchestrator) | Statistical analysis with detection heatmap |
-
-### Story Dependency Chain
-
-```
-142-1 (ADR + methodology)
-  |
-  v
-142-2 (BMAD simulator templates) ---> 142-3 (Pipeline replay adapter)
-                                          |
-                                          v
-                                       142-4 (Context parity verification)
-                                          |
-                                          v
-                                       142-5 (Baseline runs) ---> 142-6 (Comparison report)
-```
+- **`compute_run_dir(output_base, scenario_id, tag, run_id) -> Path`** — single path source of truth (142-2)
+- **`buffer_stream_events(input_stream, output_path, verbose_callback)`** — testable event capture (142-4)
+- **`parse_phase_events(path) -> dict`** — event parsing for analysis (142-6)
+- **`verify_worktree(worktree_path, scenario)`** — pre-execution gate (142-3)
 
 ## Cross-Epic Dependencies
 
-**Depends on:**
-- Existing Peloton replay infrastructure (`pf benchmark replay`) — provides the harness being extended
-- Existing axiathon scenarios (DPGD-116, DPGD-117) — provide ground truth and scenario definitions
-- BMAD-METHOD repo at `/Users/keithavery/Projects/BMAD-METHOD/` — source of BMAD instructions
+**Depends on:** None
 
 **Depended on by:**
-- None currently — this is a standalone comparison effort that produces a report for management decision-making
+- Epic 47 (PM/Architect Benchmarks) — needs unified context resolution (142-1)
