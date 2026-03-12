@@ -1,0 +1,75 @@
+scenario_id: dpgd-116
+theme: dune
+run_id: 4
+judge_version: v2
+total_caught: 5
+total_findings: 7
+weighted_caught: 23
+total_weight: 37
+score_pct: 62.2
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase flagged from_file_or_default swallowing all errors. The reviewer
+    focused on the expect() panic in with_env_overrides_from() but never examined
+    the unwrap_or_default() pattern that silently discards parse/permission errors.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote security.rs tests for CWE-209 error exposure. Dev implemented
+    sanitized Display for ServerError. Reviewer verified: ''CliError::Display for
+    ServerError discards the inner message and outputs generic text. Internal IPs,
+    passwords, and connection strings never reach stderr.'''
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: TEA wrote siem_client.rs tests for 'header injection (CRLF)' and security.rs
+    tests for CWE-113. Dev implemented CRLF sanitization via .replace(['\r', '\n'],
+    ""). Same vulnerability class (CWE-113) addressed, though via sanitization rather
+    than using TenantId type.
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: true
+  caught_by: dev
+  evidence: 'Reviewer verified: ''All new deps (clap_complete, comfy-table, csv, dirs,
+    keyring, reqwest, toml) declared at workspace level in root Cargo.toml and referenced
+    via { workspace = true } in crate.'''
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer flagged [MEDIUM]: ''RawConfig silently accepts unknown fields...
+    An operator who puts token = "secret123" in their config file gets zero feedback
+    that the field is ignored.'' Recommended adding #[serde(deny_unknown_fields)].'
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged [LOW]: 'assert!(true) in crate_forbids_unsafe_code()\
+    \ \u2014 This assertion always passes... It's documentation dressed as a test.'\
+    \ Same category of vacuous assertion, different instance."
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified the test with zero assertions (let _ = config; with
+    no assert). The reviewer's vacuous assertion finding was about assert!(true),
+    not about missing assertions entirely.

@@ -1,0 +1,27 @@
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 is a foundational feature story delivering the CLI framework — every AC requires behavioral verification.
+
+**Test Files:**
+| File | Tests | Covers |
+|------|-------|--------|
+| `test_cli_structure.rs` | 18 | AC-1 (command groups), AC-2 (help rendering), AC-5 (global flags), AC-6 (clap derive) |
+| `test_error_exit_codes.rs` | 13 | AC-3 (exit codes 0/1/2/3/4, CliError mapping) |
+| `test_output_format.rs` | 12 | AC-4 (OutputFormatter table/json/csv, escaping, no-color) |
+| `test_siem_client.rs` | 14 | AC-7 (SiemClient headers, HTTP→CliError mapping, security) |
+| `test_config.rs` | 11 | AC-8 (TOML loading, env overrides, token exclusion, validation) |
+| `test_completion.rs` | 6 | AC-9 (bash/zsh/fish/powershell completion generation) |
+| `test_stub_handlers.rs` | 10 | AC-10 (stub handlers return NotImplemented with story refs) |
+
+**Tests Written:** 84 tests covering all 10 ACs
+**Status:** RED (fails to compile — modules `cli`, `error`, `output`, `client`, `config`, `commands` don't exist yet)
+
+**Security tests included:**
+- CRLF header injection in tenant ID and token (AC-7)
+- Token must NOT be loaded from config file (AC-8)
+- Error Display must not leak server internals — CWE-209 (AC-3)
+- Silent error swallowing prevention for all non-2xx HTTP responses (AC-7)
+- CSV injection vectors via proper escaping (AC-4)
+
+**Handoff:** To Dev for implementation (GREEN phase)

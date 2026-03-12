@@ -1,0 +1,28 @@
+*Well, that was delicious.* All the tests are in place and beautifully failing. Here's the damage report:
+
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 creates the entire CLI framework — foundational crate with 10 acceptance criteria requiring comprehensive test coverage.
+
+**Test Files:**
+| File | Tests | Coverage |
+|------|-------|----------|
+| `tests/cli_framework.rs` | 30 | AC-1 (command groups), AC-2 (help), AC-5 (global flags), AC-6 (clap derive), security (injection) |
+| `tests/output_formatting.rs` | 21 | AC-4 (table/json/csv formatting, metadata, escaping, no-color) |
+| `tests/siem_client.rs` | 17 | AC-7 (HTTP wrapper, header injection, status code mapping, security) |
+| `tests/error_exit_codes.rs` | 15 | AC-3 (exit codes 1/3/4, Display, std::error::Error, CWE-209) |
+| `tests/config_loading.rs` | 14 | AC-8 (TOML loading, env overrides, validation, token security) |
+| `tests/stub_commands.rs` | 10 | AC-10 (stub handlers, story references, exit code 1) |
+| `tests/shell_completion.rs` | 6 | AC-9 (bash/zsh/fish/powershell generation, subcommand coverage) |
+
+**Tests Written:** 113 tests covering all 10 ACs
+**Status:** RED (compilation failures — modules `cli`, `error`, `output`, `client`, `config`, `commands` don't exist yet)
+
+**Security tests included:**
+- Header injection via CRLF in token/tenant values
+- CWE-209 error message information leakage
+- Token storage in config file prevention
+- Input validation (server URL newlines, non-UUID tenant)
+
+**Handoff:** To Dev for implementation

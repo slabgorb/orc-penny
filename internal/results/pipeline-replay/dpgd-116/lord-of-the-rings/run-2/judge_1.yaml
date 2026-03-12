@@ -1,0 +1,75 @@
+scenario_id: dpgd-116
+theme: lord-of-the-rings
+run_id: 2
+judge_version: v2
+judge_pass: 1
+total_caught: 5
+total_findings: 7
+weighted_caught: 23
+total_weight: 37
+score_pct: 62.2
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase flagged that from_file_or_default swallows all errors including
+    parse/permission failures. Config tests focus on loading valid TOML and env var
+    overrides, not error type discrimination.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer flagged HIGH: ''ServerError variant leaks internal message via
+    Display'' and noted CWE-209 risk if anyone changes #[error("server error")] to
+    #[error("server error: {0}")]. TEA also wrote security tests for CWE-209 error
+    information exposure.'
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: TEA wrote header injection tests for CRLF in tenant ID (CWE-113). Dev
+    implemented CRLF and null byte sanitization in client.rs:37,44. Same vulnerability
+    class addressed though type-safety aspect (using TenantId) was not flagged.
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer flagged MEDIUM: ''clap_complete, comfy-table, csv, dirs, keyring,
+    and toml are all specified inline rather than through [workspace.dependencies]
+    as required by the architecture.'''
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged HIGH: 'RawConfig silently ignores unknown fields \u2014\
+    \ including token... A user who mistakenly puts their token in the config file\
+    \ gets no feedback... Should use #[serde(deny_unknown_fields)]'"
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged MEDIUM: 'config_warns_or_rejects_non_https_url test\
+    \ is vacuous... assert!(config.is_ok() || config.is_err()) is a tautology \u2014\
+    \ it can never fail.' Same category of vacuous assertion, different instance."
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified the test with zero assertions (let _ = config with
+    no assert). The reviewer found other test quality issues but not this specific
+    zero-assertion pattern.

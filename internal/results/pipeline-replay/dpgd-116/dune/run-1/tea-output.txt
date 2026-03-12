@@ -1,0 +1,28 @@
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 is the foundational CLI framework — every subsequent CLI story depends on this structure.
+
+**Test Files:**
+| File | Tests | Coverage |
+|------|-------|----------|
+| `tests/cli_structure.rs` | 22 | AC-1 (command groups), AC-2 (help rendering), AC-5 (global flags), AC-6 (derive macros) |
+| `tests/exit_codes.rs` | 12 | AC-3 (exit codes 0/1/3/4, Display, non_exhaustive) |
+| `tests/output_format.rs` | 10 | AC-4 (table/json/csv formatting, escaping, metadata) |
+| `tests/siem_client.rs` | 12 | AC-7 (header injection, HTTP status→CliError mapping, connection errors) |
+| `tests/config_loading.rs` | 9 | AC-8 (TOML loading, env var overrides, XDG paths, no token storage) |
+| `tests/shell_completion.rs` | 5 | AC-9 (bash/zsh/fish/powershell generation) |
+| `tests/stub_handlers.rs` | 10 | AC-10 (stub handlers return NotImplemented with story refs) |
+| `tests/security.rs` | 8 | CRLF header injection, CWE-209 error exposure, config validation |
+
+**Tests Written:** 88 tests covering all 10 ACs
+**Status:** RED (failing — all tests fail with unresolved import errors)
+
+**Key test design decisions:**
+- Tests import from `axiathon_client::cli`, `::error`, `::output`, `::client`, `::config`, `::commands` — defining the public module API the Dev must implement
+- SiemClient tests use `wiremock` for HTTP interaction testing
+- Security tests verify CRLF injection prevention, null byte rejection, and credential-in-URL blocking
+- Output format tests verify CSV escaping per RFC 4180
+- Config tests verify token isolation (keychain, not config file)
+
+**Handoff:** To Dev for implementation (GREEN phase)

@@ -1,0 +1,29 @@
+scenario_id: dpgd-116
+theme: snow-crash
+run_id: 4
+timestamp: '2026-03-08T23:34:23.000305+00:00'
+worktree_path: /tmp/pf-replay/dpgd-116-snow-crash-run-4
+phases:
+  tea:
+    token_usage:
+      input: 670
+      output: 20474
+    duration_s: 366.4
+    exit_code: 0
+  dev:
+    token_usage:
+      input: 23
+      output: 12457
+    duration_s: 229.87
+    exit_code: 0
+  reviewer:
+    token_usage:
+      input: 936
+      output: 5980
+    duration_s: 178.74
+    exit_code: 0
+framework_version:
+  commit: pre-edge-hunter
+  semver: 12.7.0
+  tag: baseline-pre-edge-hunter
+  agent_hashes: {}

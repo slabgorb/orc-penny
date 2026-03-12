@@ -1,0 +1,107 @@
+154 tests pass. Now I have all the evidence for my review.
+
+---
+
+# Review: Story 6.1 — CLI Framework & Structure
+
+*I have walked the Golden Path through ten thousand years of code reviews. I have seen where every flaw leads. Here is what my prescient eyes have found.*
+
+---
+
+## Findings
+
+### `[CRITICAL]` F1 — Missing `main.rs` binary entry point
+
+**No `main.rs` exists.** The story specification (CLAUDE.md) explicitly requires `main.rs` as "Binary entry point, tracing init, dispatch, exit codes." Without it, the `axiathon` binary cannot be built. The crate compiles only as a library.
+
+- No `[[bin]]` target in `crates/axiathon-client/Cargo.toml`
+- No command dispatcher (`match cli.command { ... }`)
+- No tracing initialization
+- No credential loading from keychain before entering Tokio runtime
+- No `std::process::exit(err.exit_code())` error handling
+
+AC-1 through AC-10 all assume a runnable binary exists. This is the single most critical gap.
+
+### `[HIGH]` F2 — Missing `logout` command handler module
+
+`cli.rs:79` declares `Commands::Logout(LogoutArgs)`, but no `commands/logout.rs` module exists, and `commands/mod.rs` does not export one. When a future `main.rs` dispatches `Commands::Logout`, it will fail to compile. AC-1 explicitly lists `logout` as a required command group. AC-10 requires stub handlers for all unimplemented commands — logout is missing.
+
+### `[HIGH]` F3 — `stub_handlers_test.rs` omits logout, creating false coverage
+
+The stub handler test at `tests/stub_handlers_test.rs:130-150` iterates over 8 handlers but does not include logout. The `stub_errors_have_exit_code_1` test collects all stub function pointers in a Vec but logout is absent. This hides Finding F2 — the test suite gives a false sense of completeness.
+
+### `[HIGH]` F4 — `ServerError` Display leaks raw response body (CWE-209)
+
+At `error.rs:22`: `#[error("server error ({0})")]` where field 0 is the status code and field 1 is the body. But the `thiserror` `#[error]` format only includes `{0}` (the status code), **not** `{1}` (the body). This means the body is stored but not displayed — which is actually *correct* for CWE-209. However, the body is still accessible via `CliError::ServerError(code, body)` pattern matching, and the `security_test.rs:30-42` test only asserts the Display output is under 500 chars, not that the body is excluded. If anyone later changes the format string to include `{1}`, the body (potentially containing stack traces) would leak. This is a **latent vulnerability** — not actively exploitable but one format string change away.
+
+**Recommendation:** Add `/// **SECURITY:** Body stored for logging only, never shown to users` comment on the variant, per rust.md rules.
+
+### `[MEDIUM]` F5 — Edition mismatch: crate uses `2021`, workspace declares `2024`
+
+`Cargo.toml` (workspace) sets `edition = "2024"` at line 6. But `crates/axiathon-client/Cargo.toml:2` specifies `edition = "2021"`. This means the crate doesn't inherit the workspace edition and uses an older edition. This won't cause build failures but it's inconsistent — the crate should use `edition.workspace = true` to inherit `2024`.
+
+### `[MEDIUM]` F6 — `cargo +nightly fmt --all --check` fails
+
+Per the gotchas sidecar, nightly fmt must pass before approval. Three files have formatting violations:
+- `commands/completion.rs:24` — long line needs wrapping
+- `output.rs:76` — long `.expect()` chain needs wrapping
+- `output.rs:86-87` — long chain needs wrapping
+
+### `[MEDIUM]` F7 — `output.rs` uses `expect()` in production code
+
+At `output.rs:76,81,82,85,86,87`: Six `expect()` calls in `format_as_json` and `format_as_csv`. Per `rust.md`: "No `unwrap()` in production code — use `?` or `expect()` with actionable message." The `expect()` calls have messages, but they're in production code that could theoretically fail (e.g., CSV write to a Vec — practically impossible, but the rule says use `?`). The `format_table` method returns `String`, not `Result`, so propagating errors would require an API change. This is borderline — the panics are truly unreachable for in-memory writers, but the coding rules are strict.
+
+### `[MEDIUM]` F8 — `from_file_with_env` silently swallows file errors
+
+At `config.rs:68`: `Self::from_file(&path).unwrap_or_default()` — if the config file has a parse error (not just missing), the error is silently swallowed and defaults are used. This means a typo in `cli.toml` will silently be ignored. A missing file falling back to defaults is reasonable, but a corrupt file should error. The current behavior could cause operator confusion: they edit their config, make a typo, and wonder why their changes aren't taking effect.
+
+### `[MEDIUM]` F9 — HTTPS bypass via URL containing "localhost" substring
+
+At `config.rs:101-104`: The HTTPS check uses `api_url.contains("localhost")`. This would allow URLs like `http://evil.com/localhost` or `http://localhost.evil.com` to bypass the HTTPS requirement. Should use proper URL parsing to extract the hostname, or at minimum check with a more restrictive pattern.
+
+### `[LOW]` F10 — `env::set_var` / `env::remove_var` in tests are unsound in parallel
+
+Multiple test files (`cli_framework_test.rs:351,363`, `config_loading_test.rs:124,140,152`) call `std::env::set_var` and `std::env::remove_var`. Since Rust 1.83, these are marked `unsafe` in edition 2024 because they are unsound when called concurrently. The crate uses edition 2021 (see F5), so it compiles, but if the edition is fixed to 2024 per the workspace, these will become compile errors.
+
+### `[LOW]` F11 — JSON metadata test is overly permissive
+
+At `output_format_test.rs:121-124`: `parsed.get("request_id").is_some() || parsed.get("metadata").is_some()` — accepts two different structures when only one (metadata object) is correct. The subsequent test at line 137 expects `metadata`, so this OR is redundant and misleading.
+
+### `[VERIFIED]` V1 — Header injection prevention is correct at `client.rs:31,38`
+### `[VERIFIED]` V2 — Token redaction in Debug at `client.rs:93`
+### `[VERIFIED]` V3 — Token isolation from config at `config.rs:24-28`
+### `[VERIFIED]` V4 — Exit code mapping is complete and correct at `error.rs:46-52`
+### `[VERIFIED]` V5 — Shell completion generation is functional at `commands/completion.rs`
+### `[VERIFIED]` V6 — Clap derive macros used correctly (AC-6)
+### `[VERIFIED]` V7 — All global flags work with `global = true` (AC-5)
+### `[VERIFIED]` V8 — Unknown config fields handled via `serde(flatten)` (AC-8)
+
+---
+
+## Summary
+
+| Severity | Count | Blocks? |
+|----------|-------|---------|
+| CRITICAL | 1 | YES |
+| HIGH | 3 | YES |
+| MEDIUM | 5 | NO |
+| LOW | 2 | NO |
+| VERIFIED | 8 | — |
+
+---
+
+## Verdict: **CHANGES_REQUESTED**
+
+The crate's library components are well-built — the SiemClient, config loading, output formatting, error handling, and clap framework are all correct and well-tested (154 tests pass). The security posture is strong: header injection prevention, token redaction, credential isolation, and CWE-209 protections are all verified.
+
+However, **no binary can be produced**. Without `main.rs`, the `axiathon` command does not exist. The missing `logout` handler is a secondary gap that will cause a compile error when the dispatcher is written. These are not quality issues — they are incompleteness issues.
+
+### Required Before Approval
+
+1. **Create `src/main.rs`** — with tracing init, config loading, keychain credential loading (before Tokio), command dispatch, and `process::exit(err.exit_code())`
+2. **Create `src/commands/logout.rs`** — stub returning `CliError::NotImplemented("Story 9.1")`
+3. **Add `pub mod logout;`** to `commands/mod.rs`
+4. **Add logout to `stub_handlers_test.rs`** — both the individual test and the exit code Vec
+5. **Fix edition** — change to `edition.workspace = true` or intentionally use 2021 (document why)
+6. **Fix nightly fmt** — three long lines need wrapping
+7. **Fix `from_file_with_env`** — distinguish missing file (use defaults) from corrupt file (error)

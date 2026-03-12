@@ -1,0 +1,402 @@
+id: '136'
+type: epic
+title: Post-install reliability — fix consumer-facing bugs from Python-first migration
+description: Five root causes account for 18 of 30 open issues across pennyfarthing and orc-penny. Fix PATH resolution, WheelHub monorepo assumptions, init/doctor prefix filtering, TUI color constants, and TUI data pipeline.
+priority: p1
+status: done
+repos: pennyfarthing
+jira: MSSCI-15839
+stories:
+  - id: 136-1
+    jira: MSSCI-15840
+    title: Unified pf discovery — fix PATH resolution in hooks, launchers, and setup
+    points: 5
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-28'
+    workflow: tdd
+    completed: '2026-02-28'
+    type: bug
+    review_verdict: approved
+  - id: 136-2
+    jira: MSSCI-15842
+    title: WheelHub pip-install support — remove monorepo path assumptions
+    points: 3
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-28'
+    workflow: tdd
+    completed: '2026-02-28'
+    type: bug
+    review_findings: _ensure_wheelhub returns (None,None,False) but gui/tui callers use port=None
+    review_verdict: approved
+  - id: 136-3
+    jira: MSSCI-15843
+    title: Fix init/doctor prefix filtering for Python dist layout
+    points: 2
+    priority: p2
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-28'
+    workflow: trivial
+    completed: '2026-02-28'
+    type: bug
+    review_verdict: approved
+  - id: 136-4
+    jira: MSSCI-15844
+    title: Extract shared TUI color thresholds and contrast constants
+    points: 2
+    priority: p2
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-28'
+    workflow: trivial
+    completed: '2026-02-28'
+    type: bug
+    review_verdict: approved
+  - id: 136-5
+    jira: MSSCI-15845
+    title: Fix TUI data pipeline — context, sprint, and debug panel fallbacks
+    points: 3
+    priority: p2
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-02-28'
+    workflow: tdd
+    completed: '2026-02-28'
+    type: bug
+    review_verdict: approved
+  - id: 136-6
+    jira: MSSCI-15938
+    title: WheelHub crashes on pipx install — findMonorepoRoot uses __dirname instead of project root
+    points: 2
+    priority: p1
+    status: done
+    workflow: tdd
+    completed: '2026-03-02'
+    type: bug
+  - id: 136-7
+    jira: MSSCI-15939
+    title: WheelHub cannot resolve pennyfarthing-dist in distributed projects
+    points: 2
+    priority: p1
+    status: done
+    workflow: tdd
+    completed: '2026-03-02'
+    type: bug
+  - id: 136-8
+    jira: MSSCI-15940
+    title: pf launch fails — bikerack entry.js path wrong when installed via uv tool
+    points: 2
+    priority: p1
+    status: done
+    workflow: tdd
+    completed: '2026-03-02'
+    type: bug
+  - id: 136-9
+    jira: MSSCI-15941
+    title: context.py not found in npm-installed projects — missing search path
+    points: 2
+    priority: p1
+    status: done
+    workflow: tdd
+    completed: '2026-03-02'
+    type: bug
+  - id: 136-10
+    jira: MSSCI-15942
+    title: WheelHub not launched on initial startup
+    points: 2
+    priority: p1
+    status: done
+    workflow: tdd
+    completed: '2026-03-02'
+    type: bug
+  - id: 136-11
+    jira: MSSCI-15943
+    title: doctor --fix and update fail to restore missing .claude/commands/ and .claude/skills/
+    points: 2
+    priority: p1
+    status: done
+    workflow: tdd
+    completed: '2026-03-02'
+    type: bug
+  - id: 136-12
+    jira: MSSCI-15944
+    title: pf CLI missing setup command — users try CLI before discovering skill
+    points: 1
+    priority: p2
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-02T21:11:59Z'
+    workflow: trivial
+    completed: '2026-03-03'
+    review_verdict: approved
+  - id: 136-13
+    jira: MSSCI-15945
+    title: run-pf.sh should prefer global pf over broken local venv
+    points: 1
+    priority: p2
+    status: done
+    workflow: trivial
+    completed: '2026-03-02'
+    type: bug
+  - id: 136-14
+    jira: MSSCI-15946
+    title: SM sprint status omits completed stories
+    points: 1
+    priority: p2
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-02'
+    workflow: trivial
+    completed: '2026-03-02'
+    type: bug
+    review_verdict: approved
+  - id: 136-15
+    jira: MSSCI-15947
+    title: Sprint status undercounts completed points — ignores archived epics
+    points: 2
+    priority: p2
+    status: done
+    workflow: tdd
+    completed: '2026-03-02'
+    type: bug
+    review_verdict: approved
+  - id: 136-16
+    jira: MSSCI-15948
+    title: Phase name vs agent name confusion in handoff session file
+    points: 1
+    priority: p2
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-03'
+    workflow: trivial
+    completed: '2026-03-03'
+    type: bug
+    review_verdict: approved
+  - id: 136-17
+    jira: MSSCI-15949
+    title: Setup workflow step-06 missing wheelhub/bikerack/tui justfile recipes
+    points: 1
+    priority: p2
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-03'
+    workflow: trivial
+    completed: '2026-03-03'
+    type: bug
+    review_verdict: approved
+  - id: 136-18
+    jira: MSSCI-15950
+    title: Add In Review status for stories
+    points: 2
+    priority: p2
+    status: done
+    workflow: tdd
+    completed: '2026-03-04'
+  - id: 136-19
+    jira: MSSCI-16048
+    title: Integrate Context7 API for automated skill documentation updates
+    points: 3
+    priority: p2
+    status: done
+    assigned_to: Josh Magady
+    workflow: tdd
+    completed: '2026-03-03'
+  - id: 136-20
+    jira: MSSCI-16049
+    title: Integrate Perplexity MCP for agent research tasks
+    points: 3
+    priority: p2
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-04'
+    workflow: tdd
+    completed: '2026-03-04'
+    review_verdict: approved
+  - id: 136-21
+    jira: MSSCI-16050
+    title: Unified Research Tools section in agent-coordination guide
+    points: 2
+    priority: p2
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-04'
+    workflow: tdd
+    completed: '2026-03-04'
+    review_verdict: approved
+  - id: 136-22
+    jira: MSSCI-16060
+    title: tmux-dev WheelHub launch crashes script — pipefail propagates non-zero exit
+    description: |-
+      ## Problem
+      The tmux-dev script uses `set -euo pipefail` and calls `pf launch wheelhub` in a pipeline: `WH_PORT=$(cd "$DIR" && pf launch wheelhub 2>/dev/null | tail -1)`. When wheelhub returns non-zero, pipefail propagates the exit code through the pipeline, set -e kills the script silently with exit 2. No session is created, no error is shown.
+
+      ## Root Cause
+      `pf launch wheelhub` can return non-zero in consumer projects (pf-2, co-1, etc.) when the WheelHub process encounters startup issues. The script treats WheelHub as optional (has a 'Warning: WheelHub failed to start' fallback) but pipefail makes it fatal.
+
+      ## Acceptance Criteria
+      - [ ] WheelHub launch failure does not kill tmux-dev script
+      - [ ] Script continues to create tmux session even without WheelHub
+      - [ ] Warning message is shown when WheelHub fails to start
+      - [ ] tmux-dev works from fresh terminal, inside tmux, and via `just tmux`
+
+      ## Key Files
+      - `pennyfarthing/pennyfarthing-dist/templates/tmux-dev.template` (source of truth)
+      - `tmux-dev` in each consumer project (copied by pf init)
+
+      ## Fix
+      Wrap the WheelHub launch so pipefail cannot propagate: `WH_PORT=$(cd "$DIR" && pf launch wheelhub 2>/dev/null | tail -1) || true` or capture exit code separately.
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-03'
+    workflow: tdd
+    completed: '2026-03-03'
+    review_verdict: approved
+  - id: 136-23
+    jira: MSSCI-16061
+    title: TUI connects to wrong WheelHub — kill port-scanning fallback and enforce project-scoped discovery
+    description: |-
+      ## Problem
+      TUI launched in project pf-2 connects to pf-1's WheelHub on port 2898. It then displays pf-1's agent persona, story ID, sprint data, and audit log. The TUI has a port-scanning fallback that tries the default port range (2898-2907) when no local .bikerack-port file exists or WheelHub isn't running for the current project.
+
+      ## Root Cause
+      TUI discovery scans the default port range and connects to the first responding WheelHub regardless of which project owns it. There is no project identity verification in the connection handshake.
+
+      ## Acceptance Criteria
+      - [ ] TUI reads ONLY $PROJECT_DIR/.bikerack-port for discovery — no port scanning
+      - [ ] If port file missing, TUI starts its own WheelHub (or errors clearly)
+      - [ ] If port file exists but WheelHub is dead, TUI starts a new one
+      - [ ] TUI never connects to another project's WheelHub
+      - [ ] Two projects running simultaneously show correct project data in each TUI
+
+      ## Key Files
+      - `pennyfarthing/pennyfarthing-dist/src/pf/bikerack/launcher.py` — TUI launcher, WheelHub discovery
+      - `pennyfarthing/pennyfarthing-dist/src/pf/bikerack/tui_app.py` — TUI connection logic
+      - `pennyfarthing/packages/core/src/server/entry.ts` — WheelHub port file writing
+
+      ## Approach
+      1. Audit TUI connection code for port-scanning fallback
+      2. Remove fallback, enforce port-file-only discovery
+      3. Add project root validation after connecting (use 136-24 health endpoint if available)
+      4. Test with two simultaneous projects
+    points: 3
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-03'
+    workflow: tdd
+    completed: '2026-03-03'
+    review_verdict: approved
+  - id: 136-24
+    jira: MSSCI-16062
+    title: Add project identity to WheelHub /health endpoint for cross-project verification
+    description: |-
+      ## Problem
+      WheelHub's /health endpoint returns `{status: 'ok'}` with no project identity. There is no way for a client (TUI, GUI, OTEL sender) to verify it's connected to the correct project's WheelHub instance.
+
+      ## Root Cause
+      Health endpoint was designed for liveness only, not identity.
+
+      ## Acceptance Criteria
+      - [ ] GET /health returns `{status: 'ok', project: '/absolute/path/to/project'}`
+      - [ ] Project path is the resolved WHEELHUB_PROJECT_DIR or cwd
+      - [ ] TUI can use this to verify connection identity (defense in depth for 136-23)
+      - [ ] Existing health checks continue to work (backward compatible)
+
+      ## Key Files
+      - `pennyfarthing/packages/core/src/server/entry.ts` — health endpoint
+      - `pennyfarthing/packages/core/src/server/routes/` — API routes
+
+      ## Approach
+      1. Add project_dir to health endpoint response
+      2. Source from WHEELHUB_PROJECT_DIR env var (already set by Python launcher)
+      3. Fallback to process.cwd() if env var not set
+    points: 2
+    priority: p1
+    status: done
+    workflow: tdd
+    completed: '2026-03-03'
+  - id: 136-25
+    jira: MSSCI-16063
+    title: justfile.pf claude recipe uses stale WheelHub launch — sync pf init templates to consumer projects
+    description: |-
+      ## Problem
+      Consumer projects (pf-2, co-1, co-2, co-3) have a stale claude recipe in .pennyfarthing/justfile.pf. The old recipe calls `just pf launch wheelhub` in a pipeline with `set -euo pipefail`, which crashes with exit 2 when WheelHub returns non-zero. The template was updated to read .bikerack-port directly, but consumer copies weren't synced.
+
+      ## Root Cause
+      `pf init` copies justfile.pf from the template, but consumers don't re-run `pf init` regularly. The template diverged from deployed copies.
+
+      ## Acceptance Criteria
+      - [ ] `pf init` updates justfile.pf in consumer projects
+      - [ ] Claude recipe reads .bikerack-port directly (no subprocess pipeline)
+      - [ ] `just claude` works in pf-2, co-1, co-2, co-3
+      - [ ] Consider: pf init should warn when justfile.pf is stale
+
+      ## Key Files
+      - `pennyfarthing/pennyfarthing-dist/templates/justfile.pf.template` (source of truth)
+      - `.pennyfarthing/justfile.pf` in each consumer project
+
+      ## Fix
+      Run `pf init` in each consumer project, or manually sync the claude recipe. Long term: add staleness detection to `pf init` or `pf doctor`.
+    points: 1
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-03'
+    workflow: tdd
+    completed: '2026-03-03'
+    review_verdict: approved
+  - id: 136-26
+    jira: MSSCI-16108
+    title: Remove stale npm/uv-era references from setup workflows and docs
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-03'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-03-03'
+    type: chore
+    review_verdict: approved
+  - id: 136-27
+    jira: MSSCI-16109
+    title: 'Fix auto-load-sm hook skill name: sm should be pf-sm'
+    points: 1
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-03'
+    workflow: trivial
+    completed: '2026-03-03'
+    type: bug
+    review_verdict: approved
+  - id: 136-28
+    jira: MSSCI-16110
+    title: Fix pf sprint story add --repos flag not persisting repos field
+    points: 1
+    priority: p2
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-03'
+    workflow: trivial
+    completed: '2026-03-03'
+    type: bug
+    review_verdict: approved
+  - id: 136-29
+    jira: MSSCI-16111
+    title: Implement pf release dry-run command
+    points: 3
+    priority: p2
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-03'
+    workflow: tdd
+    completed: '2026-03-03'
+    review_verdict: approved
+completed: '2026-03-01'

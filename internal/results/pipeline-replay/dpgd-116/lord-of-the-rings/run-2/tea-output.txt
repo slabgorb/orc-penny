@@ -1,0 +1,32 @@
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 delivers the entire CLI framework — binary, command structure, error handling, output formatting, HTTP client wrapper, config loading, shell completions, and stub handlers. Every acceptance criterion requires test coverage.
+
+**Test Files:**
+| File | Tests | Covers |
+|------|-------|--------|
+| `tests/cli_structure.rs` | 16 | AC-1 (command groups), AC-2 (help rendering), AC-5 (global flags), AC-6 (derive macros) |
+| `tests/error_exit_codes.rs` | 13 | AC-3 (exit codes 0/1/2/3/4, CliError enum) |
+| `tests/output_format.rs` | 11 | AC-4 (table/json/csv formatting, escaping, no-color) |
+| `tests/siem_client.rs` | 11 | AC-7 (SiemClient construction, HTTP status mapping, header injection) |
+| `tests/config_loading.rs` | 11 | AC-8 (TOML loading, env var overrides, validation, XDG paths) |
+| `tests/shell_completion.rs` | 6 | AC-9 (bash/zsh/fish/powershell generation, determinism) |
+| `tests/stub_handlers.rs` | 5 | AC-10 (stub messages, story references, exit code 1) |
+| `tests/security.rs` | 11 | Security (CRLF injection, error exposure, null bytes, URL validation) |
+
+**Tests Written:** 84 tests covering all 10 ACs
+**Status:** RED (failing to compile — all modules unresolved)
+
+**Security tests cover:**
+- CWE-209: Error information exposure (no stack traces, no user existence leaks)
+- Header injection: CRLF in tenant ID and auth token
+- Null byte injection in headers
+- Config validation at trust boundaries (javascript: URLs, excessive length, negative timeout)
+- Silent error swallowing prevention (all variants produce non-empty Display)
+
+**Handoff:** To Dev for implementation
+
+### Delivery Findings
+
+- No upstream findings during test design.

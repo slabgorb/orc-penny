@@ -1,0 +1,88 @@
+judge_method: majority_vote
+n_judges: 3
+majority_threshold: 2
+model: null
+judge_version: v2
+total_caught: 5
+total_findings: 7
+weighted_caught: 25
+total_weight: 37
+score_pct: 67.6
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer F5 flags exactly this: ''CliError::Config Display exposes inner
+    string... {0} interpolation exposes the raw inner string... can include filesystem
+    paths. This violates that contract.'' TEA also wrote CWE-209 security tests, and
+    dev implemented generic ''server error'' Display for ServerError, but Config variant
+    was missed until review.'
+  votes: 3/3
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: "TEA wrote header injection tests in security.rs and siem_client.rs covering\
+    \ CWE-113. Dev implemented prevention via HeaderValue::from_str validation. Reviewer\
+    \ flagged F4 noting the protection is implicit. However, no phase flags the use\
+    \ of raw String instead of TenantId from axiathon-core \u2014 the mitigation approach\
+    \ differs but the vulnerability class (CWE-113) was identified and addressed."
+  votes: 3/3
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer F8: ''ConfigFile silently ignores unknown fields... A user adding
+    token = "secret" to their config gets no warning that the token field is ignored.
+    Consider adding #[serde(deny_unknown_fields)] or at minimum logging a warning.''
+    Exact match.'
+  votes: 3/3
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer F2 flags a vacuous tautological assertion: 'assert!(result.is_err()\
+    \ || result.is_ok()) \u2014 This is a tautology... The test always passes regardless\
+    \ of behavior.' Same category of vacuously true test, different instance than\
+    \ ground truth's is_none() || true pattern."
+  votes: 3/3
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer F7: ''URL validation test asserts nothing... reads server_url()
+    into _url and drops it. There''s no assertion... It silently passes whether validation
+    works or not.'' Same category as ground truth''s ''let _ = config'' zero-assertion
+    pattern.'
+  votes: 3/3
+individual_scores:
+- 67.6
+- 67.6
+- 67.6

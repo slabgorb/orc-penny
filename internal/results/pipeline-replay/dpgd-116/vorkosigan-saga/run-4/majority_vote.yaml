@@ -1,0 +1,82 @@
+judge_method: majority_vote
+n_judges: 3
+majority_threshold: 2
+model: opus
+judge_version: v2
+total_caught: 4
+total_findings: 7
+weighted_caught: 20
+total_weight: 37
+score_pct: 54.1
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: 'TEA explicitly included CWE-209 tests in exit_code_tests.rs: ''CWE-209:
+    Auth/server error messages don''t leak tokens or stack traces''. Same vulnerability
+    class.'
+  votes: 3/3
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[MEDIUM] Silent header drop on malformed values \u2014\
+    \ client.rs:58-68' and '[MEDIUM] Header injection tests are vacuous (CWE-113)'.\
+    \ Same CWE-113 vulnerability class, though the specific fix of using TenantId\
+    \ type from axiathon-core was not mentioned."
+  votes: 3/3
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[MEDIUM] Header injection tests are vacuous (CWE-113)\
+    \ \u2014 assert nothing' in siem_client_tests.rs. Same category of vacuous test\
+    \ (assertion that always passes), different test file. Per partial match rule\
+    \ #2, pipeline demonstrated detection capability for vacuous tests."
+  votes: 3/3
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer flagged vacuous tests that ''assert nothing'' and ''give false
+    confidence'' in siem_client_tests.rs. Same category (test with no meaningful assertions),
+    adjacent location. Per partial match rule #2, pipeline demonstrated awareness
+    of zero-assertion test patterns.'
+  votes: 3/3
+individual_scores:
+- 54.1
+- 54.1
+- 54.1

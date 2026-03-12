@@ -1,0 +1,76 @@
+scenario_id: dpgd-116
+theme: mash
+run_id: 4
+judge_version: v2
+judge_pass: 1
+total_caught: 4
+total_findings: 7
+weighted_caught: 23
+total_weight: 37
+score_pct: 62.2
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer finding #2 flags the identical pattern \u2014 silent error swallowing\
+    \ via unwrap_or in SiemClient::get() (client.rs:90). Same vulnerability class\
+    \ (silent error swallowing with unwrap_or_default/unwrap_or), different instance\
+    \ (client vs config)."
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote security.rs tests for CWE-209: ''no token leaks in Display/Debug''.
+    Same vulnerability class (CWE-209 information exposure) demonstrated awareness,
+    though tests focus on credential leaks rather than OS error detail leaks via Io(transparent).'
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: TEA wrote siem_client.rs tests for 'Authorization/X-Tenant-ID header injection'
+    and security.rs tests for 'CRLF header injection prevention'. Dev implemented
+    sanitize_header_value stripping \r and \n. Mitigates CWE-113 via sanitization
+    rather than type safety.
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase flagged the use of direct version strings instead of workspace
+    = true for the 6 dependencies.
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: "Reviewer finding #10 explicitly marks this as VERIFIED correct: 'tokens\
+    \ in the TOML file are silently ignored.' This is the opposite conclusion \u2014\
+    \ the ground truth says silent ignoring is the problem (user thinks they're authenticated).\
+    \ Rule #4 applies."
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer finding #5 flags a vacuous test (piped_output_defaults_to_json)
+    where the assertion body never executes. Same category (vacuous/always-true test
+    assertion) in a different test file, per partial match rule #2.'
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified a test with zero assertions that only verifies non-panic.
+    The reviewer's vacuous test finding (#5) is about a conditional that never executes,
+    a distinct pattern from 'let _ = config' with no assertions at all.

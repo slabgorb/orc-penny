@@ -1,0 +1,94 @@
+I've now read every file. Time to deliver the verdict.
+
+---
+
+# Adversarial Code Review: Story 6.1 — CLI Framework & Structure
+
+*I've been watching this code since before the first commit was pushed. Every line tells a story, and some of those stories have... inconvenient truths.*
+
+## Preflight Results
+
+- **Tests:** 119 passed, 0 failed
+- **Clippy:** Clean (0 warnings)
+- **Nightly fmt:** **FAILS** — formatting diffs in `config.rs` and `cli_structure.rs`
+
+---
+
+## Findings
+
+### [HIGH] F-1: Nightly `rustfmt` check fails — `config.rs:53`, `cli_structure.rs:8`
+
+Per `gotchas.md`: "Always include `cargo +nightly fmt --all --check` in the preflight. Nightly rustfmt enforces import ordering that stable does not." The nightly fmt check fails with diffs in two files. This is a blocking quality gate.
+
+### [HIGH] F-2: Missing `logout` and `tui` command variants — `cli.rs:46-77`
+
+AC-1 explicitly requires: "`axiathon --help` must show all command groups: `query`, `rules`, `alerts`, `ingest`, `config`, `status`, `tenant`, `login`/`logout`, `tui`, `completion`, `init`." The `Commands` enum has no `Logout` variant and no `Tui` variant. The test `cli_help_contains_all_command_groups` at `cli_structure.rs:249` also omits `logout` and `tui` from its expected list — the test and implementation agree with each other but both violate the AC.
+
+### [HIGH] F-3: `--server` flag missing `env = "AXIATHON_SERVER"` — `cli.rs:28`
+
+AC-5 states: "`--server` supports `AXIATHON_SERVER` env var." The clap field is `pub server: Option<String>` with no `env = "AXIATHON_SERVER"` attribute. There is no test for this behavior. The test file `global_flags.rs:10` even documents it in the header comment but never tests it.
+
+### [HIGH] F-4: `SiemClient::default_headers()` silently drops invalid headers — `client.rs:48-62`
+
+When `HeaderValue::from_str()` fails (e.g., non-ASCII token after CRLF stripping), the header is silently omitted. A user who set a token would believe they're authenticated, but their request goes out unauthenticated. This is a silent security failure. The `if let Ok(hv)` pattern swallows the error with no logging, no warning, no error return.
+
+### [MEDIUM] F-5: `CliError` Display discards inner context — `error.rs:11-12, 18-19`
+
+`AuthenticationExpired(String)` displays as `"authentication expired"` — the inner `String` is silently dropped. Same for `ServerError(String)` which displays as `"server error"`. The CWE-209 security doc comment says Display is "for user-facing output only," but the inner string (which contains `"authentication expired"` or `"server error"` — not secrets) is useful diagnostic info being thrown away. Meanwhile, `NotFound`, `RateLimited`, `ConnectionTimeout`, `ServerUnavailable`, and `ConfigError` all include `{0}`. This inconsistency means some status code mappings lose their context.
+
+### [MEDIUM] F-6: `#[non_exhaustive]` missing on `CliError` and `Commands` — `error.rs:9`, `cli.rs:46`
+
+Project Rust rules state: "`#[non_exhaustive]` on enums that will grow — forces callers to handle future variants." Both `CliError` and `Commands` will grow with every subsequent story. Missing this means downstream match arms won't get a compiler warning when new variants are added.
+
+### [MEDIUM] F-7: Workspace dependency version mismatches — `Cargo.toml:46,51`
+
+Story spec says `dirs` 6 and `toml` 0.9. Workspace `Cargo.toml` declares `dirs = "5"` and `toml = "0.8"`. These are minor version differences and the current versions likely work, but they diverge from the specification. Should be documented or aligned.
+
+### [MEDIUM] F-8: No `main.rs` — binary entry point missing
+
+The story spec lists `main.rs` as a key file to create: "Binary entry point, tracing init, dispatch, exit codes." Without it, the `axiathon` binary cannot be built. The `Cargo.toml` doesn't declare a `[[bin]]` target either. AC-3 requires `main.rs` to catch errors and call `std::process::exit()` with the proper exit code.
+
+### [MEDIUM] F-9: Six `expect()` calls in production code — `output.rs:108,139,159,162,164,165`
+
+Project Rust rules say: "No `unwrap()` in production code — use `?` or `expect()` with actionable message." The rules allow `expect()` with an actionable message, and the messages here are descriptive. However, the `timestamp_now()` function's `.expect("system clock before UNIX epoch")` will panic if the system clock is set before 1970 — a real-world edge case on misconfigured embedded systems. The CSV/JSON expects are writing to a `Vec<u8>`, so they genuinely cannot fail, making them acceptable.
+
+### [MEDIUM] F-10: `SiemClient::new("")` accepts empty base URL — `client.rs:13-19`
+
+An empty base URL is nonsensical and will cause all API calls to fail with confusing errors. The test `siem_client_base_url_empty_rejected` at `siem_client.rs:249-259` explicitly checks for this but uses a weak assertion that accepts empty strings. There's no validation in the constructor.
+
+### [LOW] F-11: `tenant` field is raw `String`, not `TenantId` newtype — `cli.rs:32`
+
+Project Rust rules mandate newtypes for IDs: "`TenantId(String)` — prevents mixing ID types." The `--tenant` flag accepts a raw `String`. The `axiathon-core` crate already defines `TenantId`. This creates a gap where any string can be used as a tenant identifier without validation.
+
+### [LOW] F-12: `CompletionArgs.shell` is `String` not `Shell` enum — `completion.rs:11`
+
+Using a raw `String` for the shell argument means invalid values are only caught at runtime in `generate_completion()`. Clap's `ValueEnum` derive on `Shell` would give compile-time exhaustiveness and automatic `--help` listing of valid shells.
+
+### [LOW] F-13: `InitArgs` has no stub handler — `init.rs`
+
+All other command modules (except `completion`) have a `handle_stub()` function. `InitArgs` is defined as an empty struct with no handler at all. AC-1 says `init` should be "functional, not stub," but nothing is functional here — it's less than a stub.
+
+### [VERIFIED] V-1: `#![forbid(unsafe_code)]` present — `lib.rs:2`
+### [VERIFIED] V-2: `deny_unknown_fields` on `ClientConfig` — `config.rs:8` — rejects token/password fields in TOML
+### [VERIFIED] V-3: CWE-113 CRLF injection prevention — `client.rs:23,30` — strips `\r\n` from tokens and tenant IDs
+### [VERIFIED] V-4: CWE-209 error Display does not leak JWTs — `error.rs` security doc comment + stripped Display impls
+### [VERIFIED] V-5: `thiserror` derive for structured errors — `error.rs:9`
+### [VERIFIED] V-6: Exit code mapping correct for auth (3) and authz (4) — `error.rs:42-43`
+### [VERIFIED] V-7: No server-side crate imports — `Cargo.toml` depends only on `axiathon-core`
+### [VERIFIED] V-8: Plural command names enforced — tests reject singular `rule`/`alert`
+### [VERIFIED] V-9: Config validation rejects empty URL and zero timeout — `config.rs:89-98`
+
+---
+
+## Verdict: **CHANGES_REQUESTED**
+
+Four High-severity findings block approval:
+
+1. **F-1:** Nightly fmt fails — mechanical fix, 2 minutes
+2. **F-2:** Missing `Logout` and `Tui` command variants per AC-1
+3. **F-3:** `--server` flag missing `AXIATHON_SERVER` env var support per AC-5
+4. **F-4:** Silent header drop in `default_headers()` is a security-relevant silent failure
+
+The Medium findings (F-5 through F-10) should also be addressed, particularly F-8 (missing `main.rs`) which means the binary literally cannot be built yet, and F-6 (`#[non_exhaustive]`) which is a project-level rule.
+
+*The truth is out there. But it's not in this PR yet.*

@@ -1,0 +1,77 @@
+---
+
+# Review: Story 6.1 — CLI Framework & Structure
+
+*The weight of command is not in giving orders, but in checking every bolt on the ship before it leaves dock. I have learned that lesson the hard way, more than once.*
+
+## Preflight Results
+
+- `cargo test -p axiathon-client`: **82 tests pass, 0 fail**
+- `cargo clippy -p axiathon-client -- -D warnings`: **clean**
+- `cargo +nightly fmt --all --check`: **FAILS** (3 diffs in `client.rs`)
+
+---
+
+## Findings
+
+### `[HIGH]` main.rs is a non-functional placeholder — `crates/axiathon-client/src/main.rs:1-8`
+
+The binary entry point is a stub that prints "not yet implemented" and exits 1. It does not parse CLI args, does not initialize tracing, does not dispatch to command handlers, does not use `CliError::exit_code()`. The entire command dispatch pipeline — the *core purpose* of Story 6.1 — is unimplemented. All ACs (1-10) are only exercised through library-level unit tests, never through the actual binary. An operator running `./axiathon status` gets "not yet implemented" regardless of command. This blocks every AC.
+
+### `[HIGH]` Nightly rustfmt check fails — `crates/axiathon-client/src/client.rs:98,137,176`
+
+Per `gotchas.md`: "Always include `cargo +nightly fmt --all --check` in the preflight. If it fails, flag it before approval." Three formatting diffs exist in `client.rs` on long `format!()` lines inside match arms. Must fix before merge.
+
+### `[HIGH]` Missing `tui` command group — AC-1 violation — `crates/axiathon-client/src/cli.rs:48-106`
+
+AC-1 explicitly requires: "axiathon --help must show all command groups: query, rules, alerts, ingest, config, status, tenant, login/logout, **tui**, completion, init." The `Commands` enum has no `Tui` variant. The test `help_renders_all_command_groups` also omits checking for "tui", masking the gap.
+
+### `[HIGH]` Edition mismatch: `edition = "2021"` vs workspace `"2024"` — `crates/axiathon-client/Cargo.toml:2`
+
+The crate hardcodes `edition = "2021"` while the workspace specifies `edition = "2024"`. Project rules mandate Edition 2024, MSRV 1.85+. This causes different language semantics (e.g., `gen` keyword reservation, lifetime capture rules in `impl Trait`) and breaks consistency with other workspace crates.
+
+### `[MEDIUM]` Header injection tests are vacuous (CWE-113) — `tests/siem_client_tests.rs:294-313`
+
+`siem_client_rejects_tenant_with_crlf` and `siem_client_rejects_token_with_crlf` wrap calls in `catch_unwind` but **assert nothing**. If the function doesn't panic, the test passes without verifying the CRLF was rejected or sanitized. These tests give false confidence. The actual `build_headers()` silently drops invalid values — which means a CRLF-tainted tenant ID causes silent authentication bypass (no `X-Tenant-ID` sent, no error raised).
+
+### `[MEDIUM]` Silent header drop on malformed values — `crates/axiathon-client/src/client.rs:58-68`
+
+`build_headers()` uses `if let Ok(val) = HeaderValue::from_str(...)` and silently skips the header if the value is invalid. This means a malformed token or tenant ID causes silent failure — the request goes out without auth/tenant headers, likely returning a confusing 401/403 instead of a clear "invalid tenant ID" error.
+
+### `[MEDIUM]` CSV formatter silently swallows write errors — `crates/axiathon-client/src/output.rs:95-99`
+
+All three CSV write operations use `.ok()`, discarding any `Err`. If writing fails (e.g., encoding issue), the formatter returns empty or partial output with no indication of failure. Should propagate errors or at minimum log.
+
+### `[MEDIUM]` `Completion` shell argument is raw `String` — `crates/axiathon-client/src/cli.rs:97`
+
+AC-9 specifies bash/zsh/fish/PowerShell. The `shell` field accepts any string; `generate_completions` returns an empty string for unknown shells with no error. Should use `clap_complete::Shell` or a custom enum with `ValueEnum` for compile-time validation and user-facing error messages.
+
+### `[LOW]` `toml` version: workspace has `0.8`, story spec says `0.9` — `Cargo.toml:58`
+
+Minor version discrepancy. The `0.8` version works but doesn't match the planning document. Not blocking.
+
+### `[LOW]` `init` overwrites existing config without warning — `crates/axiathon-client/src/commands/init.rs:21`
+
+`std::fs::write` overwrites any existing `cli.toml` silently. For a first-time setup command, this should either check for existing config and prompt/warn, or use `OpenOptions` with `create_new`.
+
+### `[VERIFIED]` `#![forbid(unsafe_code)]` present in both `lib.rs:2` and `main.rs:3`
+### `[VERIFIED]` `CliError` exit code mapping correct: 0=success, 1=error, 2=usage, 3=auth, 4=authz
+### `[VERIFIED]` `#[non_exhaustive]` on `CliError` enum — future-proofing correct
+### `[VERIFIED]` Token not loaded from config file — `RawConfig` captures `token` in `_extra` flattened map, never exposed
+### `[VERIFIED]` `OutputFormatter` trait with Table/JSON/CSV implementations functional; JSON includes `ResponseMetadata`
+### `[VERIFIED]` Config env var precedence correct: `AXIATHON_API_URL` overrides file, `AXIATHON_SERVER` works in default
+### `[VERIFIED]` Plural noun command names enforced: `rules` not `rule`, `alerts` not `alert`
+### `[VERIFIED]` All 8 stub handlers return distinct `CliError::NotImplemented` with story references
+
+---
+
+## Verdict: **CHANGES_REQUESTED**
+
+Four HIGH-severity findings block this PR:
+
+1. **main.rs is a stub** — the binary doesn't dispatch commands, making the entire CLI non-functional
+2. **Nightly fmt fails** — mandatory per gotchas.md
+3. **Missing `tui` command** — explicit AC-1 requirement
+4. **Edition 2021 vs 2024 mismatch** — project-wide consistency violation
+
+The library code is well-structured and the test suite is thorough for what it covers. But a CLI framework story that delivers a non-functional binary is not ready to ship. Fix the four HIGHs and the vacuous CRLF tests, and this is close to approval.

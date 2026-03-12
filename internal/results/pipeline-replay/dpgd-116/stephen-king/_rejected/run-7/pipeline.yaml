@@ -1,0 +1,29 @@
+scenario_id: dpgd-116
+theme: stephen-king
+run_id: 7
+timestamp: '2026-03-09T02:43:29.853714+00:00'
+worktree_path: /tmp/pf-replay/dpgd-116-stephen-king-run-7
+phases:
+  tea:
+    token_usage:
+      input: 0
+      output: 0
+    duration_s: 2.02
+    exit_code: 1
+  dev:
+    token_usage:
+      input: 0
+      output: 0
+    duration_s: 1.8
+    exit_code: 1
+  reviewer:
+    token_usage:
+      input: 0
+      output: 0
+    duration_s: 2.13
+    exit_code: 1
+framework_version:
+  commit: pre-edge-hunter
+  semver: 12.7.0
+  tag: baseline-pre-edge-hunter
+  agent_hashes: {}

@@ -1,0 +1,115 @@
+All tests pass, clippy clean. Now let me do the adversarial review.
+
+---
+
+# Story 6.1 Review: CLI Framework & Structure
+
+**OFF WITH THEIR HEADS!** Let me examine this code with the scrutiny it deserves. The preflight passes? Charming. Now let me find what the preflight *didn't* catch.
+
+---
+
+## Observations
+
+### [CRITICAL] Missing `main.rs` — binary cannot be built (AC-1, AC-3)
+
+There is no `crates/axiathon-client/src/main.rs`. The story explicitly requires producing the `axiathon` binary. Without `main.rs`:
+- No binary entry point exists
+- Exit code mapping (AC-3) via `std::process::exit()` is unimplemented
+- No command dispatch — the `Commands` enum is parsed but never routed to handlers
+- No tracing initialization
+- The `Cargo.toml` declares no `[[bin]]` section either
+
+This is the **most critical** gap. The crate compiles as a library only. The entire purpose of Story 6.1 — "creates the foundational CLI binary" — is unfulfilled.
+
+### [HIGH] `generate_completions` panics on invalid shell at `commands/completion.rs:15`
+
+```rust
+other => panic!("unsupported shell: {other}"),
+```
+
+Production code must not `panic!`. The Rust rules explicitly say: "No `unwrap()` in production code — use `?` or `expect()` with actionable message." A `panic!` is worse than `unwrap()`. This should return `Result<String, CliError>` with `CliError::Generic` or a new variant. The test at `shell_completion.rs:53` catches this with `catch_unwind`, which papers over the problem rather than testing proper error handling.
+
+### [HIGH] `CliError` does not derive `thiserror::Error` at `error.rs:7`
+
+The Rust coding rules mandate: "Use `thiserror` for error enums." The `CliError` enum manually implements `Display` and `std::error::Error`. While functionally equivalent, this violates the project convention and loses `#[from]` conversion support that `thiserror` provides. The `thiserror` dependency is declared in `Cargo.toml` but unused.
+
+### [HIGH] `RawConfig` silently ignores unknown TOML fields at `config.rs:9`
+
+`RawConfig` uses `#[derive(Deserialize)]` without `#[serde(deny_unknown_fields)]`. Any typo in the config file (e.g., `apii_url` instead of `api_url`) is silently ignored and falls back to defaults. An operator could think they've configured the server URL but actually be hitting localhost. This is a configuration safety issue — silent misconfiguration in a security tool.
+
+### [HIGH] `init.rs` is empty — AC-10 says `init` should be functional, not a stub at `commands/init.rs:1`
+
+The story scope section explicitly states: "Shell completion generation (functional, not stub)" and "`axiathon init` first-time setup (functional, not stub)." The `init.rs` file contains only a comment — no `handle()` function, no implementation. This is a direct AC violation.
+
+### [MEDIUM] `SiemClient` header injection prevention is silent-fail at `client.rs:24-29`
+
+When a token contains `\r\n`, `with_token` silently sets `self.token = None`. This means a malicious or corrupted token is silently dropped, and the user gets an authentication error with no indication of why. Should return an error or at least log a warning. Same issue at `with_tenant` line 35-39.
+
+### [MEDIUM] `output.rs:96` uses `expect()` in production code — five instances
+
+```rust
+serde_json::to_string_pretty(&output).expect("JSON serialization should not fail")
+```
+
+Lines 96, 101, 103, 105, 106-107 all use `.expect()` which can panic. The Rust rules say use `?` or `expect()` with actionable message. While these are theoretically infallible, `format_table` returns `String` not `Result`, so errors can't propagate. The method signature should be `Result<String, CliError>` to handle edge cases properly.
+
+### [MEDIUM] `CompletionArgs.shell` is a raw `String` at `cli.rs:149`
+
+AC-9 specifies `bash/zsh/fish/powershell` shells. The shell argument should use a validated enum type (via `clap::ValueEnum`) rather than accepting any string and panicking later in `generate_completions`. This would give proper clap error messages (exit code 2) instead of panics.
+
+### [MEDIUM] `--server` flag does not honor `AXIATHON_SERVER` env var at `cli.rs:26`
+
+AC-5 explicitly states: "`--server` supports `AXIATHON_SERVER` env var." The clap definition is missing `env = "AXIATHON_SERVER"`. This means the env var override documented in the AC is not implemented.
+
+### [MEDIUM] `exit_code()` returns `u32` but `std::process::exit()` takes `i32` at `error.rs:24`
+
+The return type `u32` will require a cast when used with `std::process::exit(code as i32)`, which is a potential narrowing conversion. Should be `i32` to match the standard library API.
+
+### [MEDIUM] `tenant` field in `cli.rs:30` uses raw `String` instead of `TenantId` newtype
+
+The Rust coding rules mandate newtypes for IDs: "TenantId(String) — prevents mixing ID types." The `--tenant` flag accepts any string. While clap integration with newtypes requires a `FromStr` impl, at minimum the parsed value should be converted to `TenantId` before use.
+
+### [LOW] `toml` version mismatch — workspace declares `0.8`, story spec says `0.9` at `Cargo.toml:58`
+
+The workspace `Cargo.toml` declares `toml = "0.8"` but the story Technical Guardrails specify `toml 0.9`. This is a minor version discrepancy. Verify `0.9` is available or document why `0.8` was chosen.
+
+### [LOW] Missing `logout` command — AC-1 requires it at `cli.rs:41`
+
+AC-1 says: "axiathon --help must show all command groups: ... `login`/`logout` ..." The `Commands` enum has `Login` but no `Logout` variant. While login implementation is Story 9.1, the stub should exist per AC-1.
+
+### [LOW] Missing `tui` command — AC-1 requires it at `cli.rs:41`
+
+AC-1 lists `tui` as a required command group in help output. The `Commands` enum has no `Tui` variant. Even as a stub, it should be present per the acceptance criteria.
+
+### [LOW] No `after_help` usage examples on any command at `cli.rs`
+
+AC-2 specifies: "include `after_help` usage examples for each command group." None of the `#[derive(Parser)]` structs include `#[command(after_help = "...")]` attributes.
+
+### [VERIFIED] `#![forbid(unsafe_code)]` present at `lib.rs:2`
+### [VERIFIED] Dependency graph correct — only `axiathon-core` imported, no server-side crates
+### [VERIFIED] Header injection tests exist and verify CWE-113 mitigation
+### [VERIFIED] Token not exposed via `ClientConfig::token()` — returns `None` always
+### [VERIFIED] All workspace dependencies properly declared in root `Cargo.toml`
+### [VERIFIED] CSV escaping tested for commas, quotes, and newlines
+
+---
+
+## Data Flow Trace
+
+Traced: user passes `--tenant "evil\r\nX-Inject: pwned"` → parsed as raw `String` in `cli.rs` → passed to `SiemClient::with_tenant()` → newline detected → tenant silently set to `None` → request sent without tenant header → server returns 403 or wrong-tenant data → user gets opaque "unauthorized" error. **Silent failure path confirmed.**
+
+## Verdict
+
+**CHANGES_REQUESTED**
+
+*"Off with their heads!"* — The Queen of Hearts
+
+Three **Critical/High** blockers prevent approval:
+
+1. **No `main.rs`** — the binary literally cannot be built. This is the primary deliverable of Story 6.1.
+2. **`init` command is empty** — story scope explicitly says "functional, not stub."
+3. **`generate_completions` panics** on invalid input in production code — violates Rust safety rules.
+4. **`CliError` doesn't use `thiserror`** — violates project conventions while declaring the dependency.
+5. **`RawConfig` silently ignores unknown fields** — operator misconfig goes undetected.
+
+The *King of Hearts whispers:* "Consider, my dear... the library structure is sound, the test coverage is respectable, and the security mitigations for header injection are present. Fix the blockers and this will be a proper CLI framework."

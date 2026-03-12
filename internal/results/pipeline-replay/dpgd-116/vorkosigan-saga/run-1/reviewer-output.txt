@@ -1,0 +1,105 @@
+Good. I have now reviewed all code thoroughly. Here is my adversarial review.
+
+---
+
+# Story 6.1: CLI Framework & Structure — Code Review
+
+*The weight of command is not in giving orders, but in knowing which ones you'll have to live with. I've reviewed this code the way I'd review a battle plan — looking for the gaps that will get people killed.*
+
+## Observations
+
+### `[HIGH]` Nightly fmt check fails — at `cli.rs`, `client.rs`, `config.rs`, multiple test files
+
+`cargo +nightly fmt --all --check` produces extensive diffs across `cli.rs`, `client.rs`, `config.rs`, and most test files. Per the reviewer gotchas, nightly rustfmt enforces import ordering that stable does not. This **must** be fixed before approval. Run `cargo +nightly fmt --all`.
+
+### `[HIGH]` No `main.rs` — binary cannot be built (AC violation)
+
+The story spec requires the `axiathon-client` crate to produce the `axiathon` binary. There is no `main.rs` and no `[[bin]]` section in `Cargo.toml`. The crate is a library only. This means:
+- `axiathon` binary does not exist
+- Exit code mapping via `std::process::exit()` is not wired up
+- AC-3 (exit codes from the binary) cannot be verified end-to-end
+- AC-9 says completion to stdout, instructions to stderr — no binary to verify this
+
+### `[HIGH]` Edition mismatch: crate uses `edition = "2021"`, workspace mandates `edition = "2024"`
+
+`crates/axiathon-client/Cargo.toml` line 3 sets `edition = "2021"`. The workspace at `Cargo.toml` line 6 declares `edition = "2024"`. The crate should use `edition.workspace = true` like the other workspace fields. This is a build hygiene issue — edition 2024 changes affect `use` syntax and other semantics.
+
+### `[MEDIUM]` `ServerError` Display leaks server response body (CWE-209)
+
+`error.rs:18` — `#[error("server returned error {0}: {1}")]` for `ServerError(u16, String)` embeds the raw HTTP response body into the error message. The `/// **SECURITY:** Display impls are for internal logging only` doc comment is present, but `client.rs:86-88` captures `response.text().await.unwrap_or_default()` and passes it straight through. If the server returns stack traces, database errors, or internal paths in its 5xx body, these leak to the operator via stderr. The body should be truncated or omitted in Display.
+
+### `[MEDIUM]` `unwrap_or_default()` on response body read — silent failure
+
+`client.rs:86` and `client.rs:90` — `response.text().await.unwrap_or_default()` silently swallows body-read failures. If the body read fails, the error loses its diagnostic information. Should log (even at debug level) when body read fails.
+
+### `[MEDIUM]` `expect()` calls in production code (`output.rs`)
+
+`output.rs` lines 80, 86, 89, 91, 92, 93 all use `.expect()`. The project Rust rules (`.claude/rules/rust.md`) say "No `unwrap()` in production code — use `?` or `expect()` with actionable message." These *do* have messages, so they technically comply, but writing to a `Vec<u8>` can't actually fail, and JSON serialization of simple types shouldn't fail — so the `expect()` calls are defensible. However, `format_table` returns `String` not `Result`, meaning these panics are truly unrecoverable. Consider whether `format_table` should return `Result<String, CliError>`.
+
+### `[MEDIUM]` Config silently accepts unknown fields — no `#[serde(deny_unknown_fields)]`
+
+`config.rs:7-28` — `ConfigFile`, `ServerConfig`, and `OutputConfig` all deserialize without `deny_unknown_fields`. A typo in the config file (e.g., `timout = 30` instead of `timeout = 30`) would be silently ignored, leading operators to wonder why their setting isn't taking effect.
+
+### `[MEDIUM]` Workspace `toml` version mismatch: spec says `0.9`, workspace has `0.8`
+
+The story spec says `toml 0.9` should be added to workspace dependencies. `Cargo.toml:49` has `toml = "0.8"`. While `0.8` works, this contradicts the spec.
+
+### `[MEDIUM]` `keyring` dependency missing from workspace — credential loading not stubbed
+
+The story spec lists `keyring 3` as a key dependency. It's not in `Cargo.toml` (workspace or crate). The story says token loading from OS keychain should happen before Tokio runtime. While the actual keyring *implementation* is Story 9.1, the dependency and load-point stub should be established here per AC-8 ("Tokens in OS keychain").
+
+### `[LOW]` `config.rs:69` — negative timeout cast: `timeout as u64` after checking `> 0`
+
+The check is `if timeout > 0` on an `i64`, then casts to `u64`. This is safe because negative values are filtered, but the pattern is fragile — a future refactor removing the guard would introduce a silent wrap-around. Consider using `u64::try_from(timeout).ok()`.
+
+### `[LOW]` Config env var test has parallel-safety issue
+
+`config_loading.rs:116-118` — `set_var`/`remove_var` on `AXIATHON_API_URL` is not thread-safe when tests run in parallel. Rust 1.85+ may warn about this. Consider using a serial test harness or environment isolation.
+
+### `[LOW]` `OutputFormatter` is a struct, not a trait — AC-4 mismatch
+
+AC-4 and the story spec call for an `OutputFormatter` **trait** with Table/JSON/CSV implementations. The current code has a struct with match-dispatching. This works but doesn't allow downstream extension or testing with mocks. Minor divergence from spec.
+
+### `[LOW]` Vacuous assertion in `parse_query_command` test
+
+`cli_structure.rs:76` — `assert!(cli.is_ok() || cli.is_err(), ...)` is a tautology. It always passes. The comment says "it should parse without panicking" but the assertion adds no value. Should be `assert!(cli.is_ok(), ...)`.
+
+### `[LOW]` Unused imports in test files
+
+`stub_handlers.rs:5` imports `Commands` but doesn't use it. `config_loading.rs:5` imports `std::io::Write` but doesn't use it. Compiler already warns about these.
+
+### `[VERIFIED]` CRLF header injection prevention — `client.rs:22,29` sanitize `\r` and `\n` from tokens and tenant IDs. Tests cover this at `siem_client.rs:237-257`.
+
+### `[VERIFIED]` Token not stored in config — `config.rs:108-111` returns `None`, `config.rs:73` comment documents intentional ignore. Test at `config_loading.rs:162-182` verifies.
+
+### `[VERIFIED]` `#[non_exhaustive]` on `CliError` — `error.rs:3`.
+
+### `[VERIFIED]` `#![forbid(unsafe_code)]` — `lib.rs:2`.
+
+### `[VERIFIED]` Non-localhost HTTP URL rejection — `config.rs:80-88`.
+
+### `[VERIFIED]` All stub handlers return `CliError::NotImplemented` with story references — tested in `stub_handlers.rs`.
+
+### `[VERIFIED]` All 4 shell completion formats generate non-empty output — tested in `shell_completion.rs`.
+
+---
+
+## Summary
+
+| Severity | Count | Blocking? |
+|----------|-------|-----------|
+| HIGH     | 3     | YES       |
+| MEDIUM   | 5     | No        |
+| LOW      | 5     | No        |
+| VERIFIED | 6     | —         |
+
+The three HIGH findings are blocking:
+1. **Nightly fmt fails** — CI will reject this.
+2. **No `main.rs`** — the binary doesn't exist; the core deliverable of "an `axiathon` binary" is missing.
+3. **Edition mismatch** — crate diverges from workspace standard.
+
+---
+
+## Verdict: **CHANGES_REQUESTED**
+
+The missing `main.rs` is the critical gap. This story's primary deliverable is the `axiathon` CLI binary, and without a binary entry point, exit code wiring, and the dispatch loop, the framework is incomplete. The nightly fmt failures and edition mismatch are mechanical fixes. Address all three HIGHs; the MEDIUMs should be addressed but are not individually blocking.

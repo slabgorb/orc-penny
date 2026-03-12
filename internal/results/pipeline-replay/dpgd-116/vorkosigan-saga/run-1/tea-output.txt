@@ -1,0 +1,26 @@
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 introduces the CLI framework — all public API surface needs test coverage.
+
+**Test Files:**
+| File | Tests | Coverage |
+|------|-------|----------|
+| `tests/cli_structure.rs` | 36 | AC-1 (command groups), AC-2 (help rendering), AC-5 (global flags), AC-6 (derive macros) |
+| `tests/exit_codes.rs` | 14 | AC-3 (exit codes 0/1/2/3/4), error display security |
+| `tests/output_format.rs` | 12 | AC-4 (table/json/csv formatting, escaping, ANSI safety) |
+| `tests/siem_client.rs` | 15 | AC-7 (HTTP headers, status code mapping, CRLF injection) |
+| `tests/config_loading.rs` | 12 | AC-8 (TOML loading, env var overrides, token exclusion) |
+| `tests/shell_completion.rs` | 7 | AC-9 (bash/zsh/fish/powershell generation) |
+| `tests/stub_handlers.rs` | 11 | AC-10 (not-yet-implemented messages with story refs) |
+
+**Tests Written:** 107 tests covering all 10 ACs
+**Status:** RED (fails to compile — modules `cli`, `error`, `client`, `output`, `config`, `commands` do not exist)
+
+**Security tests included:**
+- CWE-209: Error display doesn't leak stack traces or auth internals
+- Header injection: CRLF in token/tenant ID rejected
+- Credential safety: Tokens excluded from config file serialization, help text clean
+- ANSI injection: JSON/CSV output contains no escape sequences
+
+**Handoff:** To Dev for implementation

@@ -1,0 +1,34 @@
+No session file exists. Here's the TEA Assessment summary:
+
+## TEA Assessment
+
+*"I have spent 7.5 million years computing the tests for the Answer. The Answer is 42... failing tests."*
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 delivers foundational CLI framework — every AC requires behavioral verification.
+
+**Test Files:**
+| File | Tests | Covers |
+|------|-------|--------|
+| `tests/cli_structure.rs` | 12 | AC-1 (command groups), AC-2 (help rendering), AC-6 (clap derive) |
+| `tests/cli_error.rs` | 14 | AC-3 (exit codes 0/1/2/3/4, CliError variants) |
+| `tests/output_format.rs` | 13 | AC-4 (table/json/csv formatting, metadata, escaping) |
+| `tests/global_flags.rs` | 20 | AC-5 (--format, -v/-vv, --quiet, --server, --tenant, --config, --no-color, env vars) |
+| `tests/siem_client.rs` | 17 | AC-7 (SiemClient construction, header injection, HTTP status mapping) |
+| `tests/config_loading.rs` | 13 | AC-8 (TOML parsing, defaults, env var overrides, XDG paths) |
+| `tests/shell_completion.rs` | 6 | AC-9 (bash/zsh/fish/powershell generation, subcommand coverage) |
+| `tests/stub_handlers.rs` | 10 | AC-10 (story references, exit code 1 for stubs) |
+| `tests/security.rs` | 13 | CWE-209, header injection via CRLF, silent error swallowing, config validation, credential exclusion |
+
+**Tests Written:** 118 tests covering all 10 ACs
+**Status:** RED (all tests fail — compilation errors because modules `cli`, `error`, `output`, `client`, `config`, `commands` don't exist yet)
+
+**Cargo.toml Changes:**
+- Added workspace deps: `reqwest`, `comfy-table`, `clap_complete`, `dirs`, `csv`, `toml`, `assert_cmd`, `predicates`, `tempfile`
+- Updated `axiathon-client/Cargo.toml` with production deps and `[[bin]]` target for `axiathon`
+
+**Handoff:** To Dev for implementation (GREEN phase)
+
+### Delivery Findings
+
+- No upstream findings during test design.

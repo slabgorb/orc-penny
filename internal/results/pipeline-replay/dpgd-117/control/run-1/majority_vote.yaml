@@ -1,0 +1,106 @@
+judge_method: majority_vote
+n_judges: 3
+majority_threshold: 2
+model: null
+judge_version: v2
+total_caught: 0
+total_findings: 10
+weighted_caught: 0
+total_weight: 52
+score_pct: 0.0
+findings:
+- finding_id: I1
+  title: Dependencies inline instead of workspace level
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I2
+  title: 'FieldErrorCode missing #[non_exhaustive]'
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: "Reviewer finding [LOW]: '#[non_exhaustive] missing on public enums \u2014\
+    \ lib.rs:271-276' \u2014 mentions public structs without #[non_exhaustive] and\
+    \ references the rust.md rule. While this flags structs rather than FieldErrorCode\
+    \ specifically, it demonstrates awareness of the missing #[non_exhaustive] pattern\
+    \ on public types."
+  votes: 1/3
+- finding_id: I3
+  title: Hardcoded trace_id 'none'
+  weight: 5
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I4
+  title: Zero structured logging
+  weight: 5
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: "Reviewer finding [HIGH]: 'No structured logging / tracing anywhere \u2014\
+    \ lib.rs (entire file)' \u2014 explicitly states 'There is zero tracing instrumentation\
+    \ in the server \u2014 no #[instrument], no tracing::info!(), no span creation.'"
+  votes: 1/3
+- finding_id: I5
+  title: Security comment claims tracing that doesn't exist
+  weight: 3
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I6
+  title: Non-ASCII tenant header silently treated as missing
+  weight: 8
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I7
+  title: "CWE-209 test gap \u2014 no body assertion"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I8
+  title: CORS preflight test doesn't verify CORS headers
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I9
+  title: "Wrong log levels \u2014 error! for 4xx client errors"
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I10
+  title: CORS allows Any origin/method/header (CWE-942)
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+individual_scores:
+- 19.2
+- 0.0
+- 0.0
+framework_version:
+  commit: pre-edge-hunter
+  semver: 12.7.0
+  tag: baseline-pre-edge-hunter
+  agent_hashes: {}

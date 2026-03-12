@@ -1,0 +1,21 @@
+All clean — zero warnings from clippy.
+
+## Summary
+
+All **94 tests pass** and **clippy reports zero warnings**. Here are the files created/modified:
+
+**Modified:**
+- `crates/axiathon-client/Cargo.toml` — added `uuid` and `chrono` workspace deps
+- `crates/axiathon-client/src/lib.rs` — added module declarations
+
+**Created:**
+- `src/cli.rs` — `Cli` (Parser) + `Commands` (Subcommand) with all 12 command groups, global flags, nested subcommands, after_help examples
+- `src/error.rs` — `CliError` enum with exit code mapping (0/1/3/4) and `from_http_status()`
+- `src/client.rs` — `SiemClient` wrapping `reqwest::Client` with header injection, token/tenant management, HTTP error mapping
+- `src/config.rs` — `ClientConfig` with TOML loading, env var overrides, XDG default path, validation
+- `src/output.rs` — `OutputFormat` enum, `OutputFormatter` with Table/JSON/CSV, `ResponseMetadata`
+- `src/main.rs` — binary entry point dispatching commands
+- `src/commands/mod.rs` — module re-exports
+- `src/commands/completion.rs` — functional shell completion via `clap_complete`
+- `src/commands/init.rs` — functional first-time setup
+- `src/commands/{status,config,ingest,alerts,query,rules,tenant,login}.rs` — stubs with `STUB_STORY` constants

@@ -1,0 +1,34 @@
+Alright, Stringer Bell here. Let me lay out what we've got — Robert's Rules, proper methodology.
+
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 is foundational CLI framework — every module needs tests.
+
+**Test Files:**
+
+| File | Tests | Coverage |
+|------|-------|----------|
+| `tests/cli_structure.rs` | 20 | AC-1 (command groups), AC-2 (help rendering), AC-6 (clap derive) |
+| `tests/exit_codes.rs` | 14 | AC-3 (exit codes 0-4 via `CliError::exit_code()`) |
+| `tests/output_format.rs` | 10 | AC-4 (`OutputFormatter` trait, table/JSON/CSV, escaping) |
+| `tests/global_flags.rs` | 14 | AC-5 (`--format`, `-v`/`-vv`, `--quiet`, `--server`, `--tenant`, `--config`, `--no-color`, global=true) |
+| `tests/siem_client.rs` | 14 | AC-7 (`SiemClient` construction, HTTP status mapping, header injection, URL normalization) |
+| `tests/config_loading.rs` | 10 | AC-8 (TOML parsing, env overrides, precedence, missing file fallback, validation) |
+| `tests/shell_completion.rs` | 10 | AC-9 (bash/zsh/fish/powershell generation, subcommand coverage) |
+| `tests/stub_handlers.rs` | 10 | AC-10 (NotImplemented errors with story references) |
+| `tests/security.rs` | 8 | CWE-209 error exposure, header injection (CRLF/null/control chars), config token exclusion |
+
+**Tests Written:** ~110 tests covering all 10 ACs
+**Status:** RED (failing — compilation errors on missing modules: `cli`, `error`, `client`, `config`, `output`, `commands::completion`)
+
+**Modules the Dev must create:**
+- `src/cli.rs` — `Cli` (Parser), `Commands` (Subcommand)
+- `src/error.rs` — `CliError` enum with `exit_code()` method
+- `src/client.rs` — `SiemClient` with `map_status_code()`, `validate_header_value()`
+- `src/config.rs` — `ClientConfig` with TOML deserialization, `from_file()`, env overrides
+- `src/output.rs` — `OutputFormat` enum, `OutputFormatter` trait
+- `src/commands/completion.rs` — `generate_completions()` function
+- `src/main.rs` — binary entry point
+
+**Handoff:** To Dev for implementation (GREEN phase).

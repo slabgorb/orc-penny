@@ -1,0 +1,77 @@
+scenario_id: dpgd-116
+theme: battlestar-galactica
+run_id: 1
+model: null
+judge_version: v2
+judge_pass: 2
+total_caught: 4
+total_findings: 7
+weighted_caught: 18
+total_weight: 37
+score_pct: 48.6
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase mentions from_file_or_default swallowing all errors. Config tests
+    cover loading/precedence/defaults but not error discrimination between NotFound
+    vs parse/permission failures.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: "Reviewer examined CWE-209 but concluded '[VERIFIED] CWE-209 is handled\
+    \ correctly \u2014 Display doesn't leak internals' by checking ServerError variant\
+    \ only. The Io(#[error(transparent)]) variant that leaks OS details was not flagged.\
+    \ Opposite conclusion per rule 4."
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: dev
+  evidence: Dev implemented is_safe_header_value() rejecting CRLF/null in client.rs
+    for both tenant_id and token. TEA wrote header injection tests in security.rs:49-93.
+    Reviewer verified CWE-113 prevention. Same vulnerability class (CWE-113) addressed
+    via runtime checks, though not via TenantId type.
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[MEDIUM] wiremock not declared as workspace dependency'\
+    \ \u2014 same category of direct version strings instead of workspace = true,\
+    \ though only one dep flagged vs the six in ground truth."
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[HIGH] RawConfig silently ignores unknown fields' and\
+    \ recommended #[serde(deny_unknown_fields)], noting 'typos like api_rul or tmeout\
+    \ are silently ignored' \u2014 directly matches the ground truth finding."
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[MEDIUM] #[non_exhaustive] test is vacuous \u2014 exit_codes.rs:175-192'\
+    \ identifying the vacuous test pattern. Different test file than ground truth\
+    \ but same category of vacuous assertion (rule 2)."
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase flagged the zero-assertion test where 'let _ = config;' has no
+    assert_eq! checks. The reviewer's vacuous-test finding covers a different pattern
+    (assertion that's always true vs no assertion at all).

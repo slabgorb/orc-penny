@@ -1,0 +1,54 @@
+All 102 tests pass, clippy clean, but nightly fmt **fails**. I've now read every file. Time to deliver my verdict.
+
+---
+
+# Review: Story 6.1 — CLI Framework & Structure
+
+*"I have survived your predecessors, and I will survive you. But only because I understand cause and effect."*
+
+## Observations
+
+### Blocking
+
+**1. [HIGH] `cargo +nightly fmt --all --check` fails** — `cli.rs`, `client.rs`, `config.rs`, `main.rs`, and multiple test files have formatting drift from nightly rustfmt. Per `gotchas.md`: *"Always include `cargo +nightly fmt --all --check` in the preflight. Nightly rustfmt enforces import ordering that stable does not."* This must be fixed before merge.
+
+**2. [HIGH] `init` command is a stub despite scope requiring it to be functional** — The story scope explicitly states: *"axiathon init first-time setup (functional, not stub)"*. Yet `commands/init.rs` returns `Err(CliError::NotImplemented("Story 6.1 init"))`. Shell completion is correctly functional; `init` was missed. This is a scope violation.
+
+### Non-blocking
+
+**3. [MEDIUM] Vacuous assertion in `siem_client_requires_base_url`** at `tests/siem_client.rs:218` — `assert!(client.base_url().is_empty() || true, ...)` is always true regardless of actual behavior. The `|| true` nullifies the check entirely. This test proves nothing.
+
+**4. [MEDIUM] Empty `api_url` passes config validation** at `config.rs:103` — The guard `if !api_url.is_empty() && !starts_with(...)` means `api_url = ""` in TOML is silently accepted. An empty base URL would produce requests to bare paths like `/api/v1/status`, which would fail in confusing ways at runtime.
+
+**5. [MEDIUM] Shell completion missing stderr installation instructions** — AC-9 states: *"Script to stdout, installation instructions to stderr."* The script goes to stdout correctly, but no installation instructions are printed to stderr. `main.rs:33-35` just does `print!("{script}")` with no `eprintln!` guidance.
+
+**6. [MEDIUM] `--tenant` flag uses raw `String` instead of `TenantId` newtype** at `cli.rs:34` — Per `rust.md`: *"Newtypes for IDs: TenantId(String)"*. The tenant flag is `Option<String>`, and it flows as a raw string into `SiemClient`. While the CRLF injection guard provides some protection, the validated newtype from `axiathon-core` should be used at the CLI boundary.
+
+**7. [LOW] Unused imports produce compiler warnings** — `stub_handlers.rs:6` imports `Cli` (unused), `security.rs:9` imports `header` (unused). These show warnings during `cargo test`.
+
+**8. [LOW] `tracing` dependency declared but never used** — `Cargo.toml` lists `tracing = { workspace = true }` but no source file imports or uses it. No tracing initialization in `main.rs`. Dead dependency.
+
+### Verified Good
+
+**9. [VERIFIED] CWE-113 header injection prevention** — `client.rs:105-112` validates both tenant ID and auth token for CRLF characters before header injection. Tests confirm rejection at `security.rs:51-89`.
+
+**10. [VERIFIED] CWE-209 error information exposure** — `error.rs:27` `ServerError` Display only formats `{0}` (status code u16), not `{1}` (response body). The body is captured for internal use but never shown to operators via `eprintln!("{e}")` in `main.rs:16`.
+
+**11. [VERIFIED] Token excluded from config** — `config.rs:18` uses `IgnoredToken` transparent type that deserializes but is never stored in `ClientConfig`. Test at `config_loading.rs:136-157` confirms the token value doesn't appear in Debug output.
+
+**12. [VERIFIED] Forward compatibility** — `RawConfig` does NOT use `deny_unknown_fields`, and test `config_unknown_keys_are_ignored` confirms future config keys won't break existing clients.
+
+**13. [VERIFIED] Exit code mapping** — All variants correctly map: auth→3, authz→4, all others→1. Clap handles exit code 2 for usage errors. Full coverage in `exit_codes.rs`.
+
+**14. [VERIFIED] `#![forbid(unsafe_code)]`** — Present on both `lib.rs:2` and `main.rs:2`.
+
+---
+
+## Verdict: **CHANGES_REQUESTED**
+
+Two HIGH findings block approval:
+
+1. **Run `cargo +nightly fmt --all`** to fix formatting across all files
+2. **Implement functional `init` command** or explicitly document in the PR why init was deferred (with a follow-up ticket reference)
+
+The MEDIUM findings (vacuous assertion, empty URL validation, missing stderr instructions, raw String tenant) should be addressed but don't individually block merge.

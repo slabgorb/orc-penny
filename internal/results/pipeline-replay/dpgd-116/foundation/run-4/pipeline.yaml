@@ -1,0 +1,29 @@
+scenario_id: dpgd-116
+theme: foundation
+run_id: 4
+timestamp: '2026-03-09T01:24:17.358669+00:00'
+worktree_path: /tmp/pf-replay/dpgd-116-foundation-run-4
+phases:
+  tea:
+    token_usage:
+      input: 86
+      output: 19579
+    duration_s: 289.1
+    exit_code: 0
+  dev:
+    token_usage:
+      input: 52
+      output: 19731
+    duration_s: 427.69
+    exit_code: 0
+  reviewer:
+    token_usage:
+      input: 13
+      output: 5153
+    duration_s: 107.81
+    exit_code: 0
+framework_version:
+  commit: pre-edge-hunter
+  semver: 12.7.0
+  tag: baseline-pre-edge-hunter
+  agent_hashes: {}

@@ -1,0 +1,29 @@
+scenario_id: dpgd-116
+theme: x-files
+run_id: 1
+timestamp: '2026-03-09T05:27:38.222400+00:00'
+worktree_path: /tmp/pf-replay/dpgd-116-x-files-run-1
+phases:
+  tea:
+    token_usage:
+      input: 97
+      output: 22894
+    duration_s: 350.88
+    exit_code: 0
+  dev:
+    token_usage:
+      input: 50
+      output: 34270
+    duration_s: 711.32
+    exit_code: 0
+  reviewer:
+    token_usage:
+      input: 1428
+      output: 6333
+    duration_s: 151.17
+    exit_code: 0
+framework_version:
+  commit: pre-edge-hunter
+  semver: 12.7.0
+  tag: baseline-pre-edge-hunter
+  agent_hashes: {}

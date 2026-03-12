@@ -1,0 +1,82 @@
+scenario_id: dpgd-116
+theme: agatha-christie
+run_id: 3
+model: null
+judge_version: v2
+judge_pass: 2
+total_caught: 3
+total_findings: 7
+weighted_caught: 15
+total_weight: 37
+score_pct: 40.5
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: The reviewer flagged `.ok()` swallowing errors in main.rs (LOW) and silent
+    header dropping, but never identified the from_file_or_default pattern that swallows
+    parse/permission errors by using unwrap_or_default. The config tests don't test
+    for distinguishing NotFound from parse errors.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: "TEA wrote CWE-209 tests: 'Error Display must not leak internal IPs, ports,\
+    \ or file paths'. Reviewer verified: 'ServerError Display says \"server error:\
+    \ please try again later\" \u2014 does not expose the inner string... Security\
+    \ comment is present. Tested.' However the ground truth is about stderr leaking\
+    \ via eprintln, which was not specifically flagged. The pipeline demonstrated\
+    \ awareness of CWE-209 as a risk class."
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged [MEDIUM]: '--tenant accepts raw String instead of validated\
+    \ TenantId at cli.rs:29' \u2014 'accepting garbage at the CLI level (empty strings,\
+    \ whitespace) and propagating it to SiemClient as an unvalidated &str means invalid\
+    \ tenant IDs reach the HTTP layer.' Same vulnerability class (raw String vs validated\
+    \ TenantId)."
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: The reviewer flagged the edition mismatch in Cargo.toml but never mentioned
+    that 6 dependencies use direct version strings instead of workspace = true. No
+    test or review comment addresses workspace dependency consistency.
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged [MEDIUM]: 'Config silently accepts unknown fields at\
+    \ config.rs:8-15 \u2014 RawConfig uses default serde::Deserialize which silently\
+    \ ignores unknown TOML keys... Consider #[serde(deny_unknown_fields)]'. This directly\
+    \ matches the ground truth about token field being silently ignored."
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified the vacuously true assertion pattern (is_none() ||
+    ...). The TEA tests were written but the specific vacuous assertion was not flagged
+    by any phase.
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified the test with zero assertions (let _ = config). No
+    reviewer or TEA comment addresses tests that only check for non-panic without
+    actual assertions on default config values.

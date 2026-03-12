@@ -1,0 +1,41 @@
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 establishes the entire CLI framework — foundational types, command structure, output formatting, HTTP client, config loading, and shell completions all need test coverage.
+
+**Test Files:**
+| File | ACs Covered | Tests |
+|------|-------------|-------|
+| `tests/cli_commands.rs` | AC-1, AC-2, AC-5, AC-6, AC-10 | 33 |
+| `tests/error_handling.rs` | AC-3 | 16 |
+| `tests/output_formatting.rs` | AC-4 | 13 |
+| `tests/siem_client.rs` | AC-7 | 16 |
+| `tests/config_loading.rs` | AC-8 | 13 |
+| `tests/completion.rs` | AC-9 | 7 |
+| `tests/security.rs` | Security | 8 |
+| **Total** | **All 10 ACs** | **106 tests** |
+
+**Tests Written:** 106 tests covering all 10 ACs
+**Status:** RED (failing — all tests fail to compile because `axiathon_client` modules don't exist yet)
+
+**Key types the dev must create:**
+- `cli::Cli`, `cli::Commands`, `cli::GlobalFlags` — clap derive structs
+- `error::CliError` — error enum with `exit_code()` method
+- `output::OutputFormat`, `output::OutputFormatter` — formatting types
+- `client::SiemClient` — HTTP wrapper with header injection and status mapping
+- `config::ClientConfig` — TOML config with env var overrides
+- `commands::completion::{generate_completion, CompletionArgs, Shell}` — shell completions
+- `commands::{query,rules,alerts,ingest,config,status,tenant,login}::handle_*` — stub handlers
+
+**Security tests cover:**
+- CWE-209: server error Display doesn't leak internal stack traces
+- Header injection: tenant/token with `\r\n` must be rejected
+- CSV injection: values starting with `=` are quoted
+- Config tokens: NOT loaded from file (keychain only), `AXIATHON_API_TOKEN` env var for CI
+- HTTP credential leakage: warn on HTTP (non-HTTPS) with auth token
+
+**Handoff:** To Dev for implementation (GREEN phase)
+
+## Delivery Findings
+
+- No upstream findings during test design.

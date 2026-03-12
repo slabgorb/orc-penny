@@ -8,10 +8,9 @@ sprint:
   status: active
   number: 2610
 epics:
-  - MSSCI-15839
-  - MSSCI-16073
-  - MSSCI-16090
-  - MSSCI-16095
+  - MSSCI-16293
+  - '142'
+  - '143'
 stories: []
 standalone_stories:
   - id: MSSCI-16066
@@ -22,3 +21,131 @@ standalone_stories:
     repos: pennyfarthing
     pr: 1238
     branch: feat/MSSCI-16066-remove-isgui-relay
+  - id: MSSCI-16146
+    jira: MSSCI-16146
+    title: Wire pf validate into CI + add document type validators
+    points: 5
+    status: done
+    repos: pennyfarthing
+    pr: 1260
+    branch: feat/MSSCI-16146-pf-validate-ci-doc-validators
+  - id: MSSCI-16164
+    jira: MSSCI-16164
+    title: Homebrew tap + shell installer
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1268
+    branch: feat/MSSCI-16164-homebrew-tap-shell-installer
+  - id: MSSCI-16187
+    jira: MSSCI-16187
+    title: Rewrite onboarding docs with three user journeys and brew-first install
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1276
+    branch: feat/MSSCI-16187-rewrite-onboarding-docs
+  - id: MSSCI-16200
+    jira: MSSCI-16200
+    title: Model story statuses on Jira lifecycle — add in_review support
+    points: 5
+    status: done
+    repos: pennyfarthing
+    pr: 1281
+    branch: feat/MSSCI-16200-add-in-review-status
+  - id: MSSCI-16204
+    jira: MSSCI-16204
+    title: Consumer gate extensions via config + gate files
+    points: 2
+    status: done
+    repos: pennyfarthing
+    pr: 1283
+    branch: feat/MSSCI-16204-gate-extensions
+  - id: MSSCI-16205
+    jira: MSSCI-16205
+    title: Configurable PR title format via repos.yaml
+    points: 2
+    status: done
+    repos: pennyfarthing
+    pr: 1284
+    branch: feat/MSSCI-16205-pr-title-format
+  - id: MSSCI-16209
+    jira: MSSCI-16209
+    title: Add tests for core API routes (settings through welcome)
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1288
+    branch: feat/MSSCI-16209-add-tests-core-api-routes
+  - id: MSSCI-16233
+    jira: MSSCI-16233
+    title: Rebuild WheelHub bundle with in_review status mapping
+    points: 1
+    status: done
+    repos: pennyfarthing
+    pr: 1296
+    branch: feat/MSSCI-16233-wheelhub-in-review-bundle
+  - id: MSSCI-16302
+    jira: MSSCI-16302
+    title: Add judge versioning and partial-match rubric
+    points: 2
+    status: done
+    repos: pennyfarthing
+    pr: 1309
+    branch: feat/MSSCI-16302-judge-versioning
+  - id: MSSCI-16303
+    jira: MSSCI-16303
+    title: Fix persona tracking — eliminate CYCLIST_SESSION_ID, set SESSION_ID before WheelHub spawn
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1310
+    branch: feat/MSSCI-16303-fix-persona-session-id
+  - id: MSSCI-16323
+    jira: MSSCI-16323
+    title: Plan mode agent reload hook for ExitPlanMode
+    points: 2
+    status: done
+    repos: pennyfarthing
+    pr: 1318
+    branch: feat/MSSCI-16323-plan-exit-reload
+  - id: MSSCI-16331
+    jira: MSSCI-16331
+    title: Add startup agent auto-invoke on SessionStart
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1319
+    branch: feat/MSSCI-16331-startup-agent-autoinvoke
+  - id: MSSCI-16335
+    jira: MSSCI-16335
+    title: Add reviewer specialist subagents (silent-failure, test, comment, type-design, security, simplifier)
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1324
+    branch: feat/MSSCI-16335-reviewer-specialist-subagents
+  - id: MSSCI-16336
+    jira: MSSCI-16336
+    title: Upgrade pipeline replay benchmark to exercise full PF machinery
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1326
+    branch: feat/MSSCI-16336-pipeline-replay-pf-machinery
+  - id: MSSCI-16346
+    jira: MSSCI-16346
+    title: Add spec deviation tracking to agent session output
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1331
+    branch: feat/MSSCI-16346-spec-deviation-tracking
+  - id: MSSCI-16347
+    jira: MSSCI-16347
+    title: Implement stacked PR depends_on field and Graphite health check
+    points: 3
+    status: in_progress
+    repos: pennyfarthing
+    branch: feat/MSSCI-16347-stacked-pr-depends-on
+    review_verdict: approved

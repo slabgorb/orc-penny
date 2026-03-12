@@ -1,0 +1,80 @@
+scenario_id: dpgd-116
+theme: princess-bride
+run_id: 4
+judge_version: v2
+judge_pass: 1
+total_caught: 6
+total_findings: 7
+weighted_caught: 28
+total_weight: 37
+score_pct: 75.7
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase addressed from_file_or_default swallowing all error types. The
+    config tests and reviewer comments focus on unknown fields and env overrides,
+    but never flag the unwrap_or_default pattern that silently discards parse/permission
+    errors.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote 17 tests in cli_security.rs explicitly targeting ''CWE-209
+    (error info exposure)''. However, the reviewer then incorrectly verified: ''[VERIFIED]
+    CliError::Display does not leak tokens or internal details at error.rs:36-52'',
+    reaching the opposite conclusion about the Io(transparent) variant. Credit to
+    TEA for targeting the vulnerability class.'
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer's Data Flow Trace: 'Cli.tenant is Option<String> not Option<TenantId>\
+    \ \u2014 no newtype validation at the CLI boundary.' Identified the exact type-safety\
+    \ gap, though dismissed it as 'acceptable for Story 6.1'. TEA also wrote header\
+    \ injection tests in cli_siem_client.rs and cli_security.rs."
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer observation 9: ''Several dependencies (clap_complete, comfy-table,
+    csv, dirs, reqwest, toml) are declared directly in the crate instead of in [workspace.dependencies]
+    as the story guardrails specify.'''
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer observation 6: ''RawConfig lacks #[serde(deny_unknown_fields)].
+    A typo like sever_url instead of server_url in cli.toml will be silently ignored,
+    and the default http://localhost:8080 will be used instead.'''
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer observation 1 flagged the same class of vacuous assertion: 'assert!(cli.is_err()\
+    \ || cli.is_ok()) which is a tautology \u2014 it is true for every Result regardless\
+    \ of what happened. These 8 tests would pass even if the commands didn't exist.'\
+    \ Same vulnerability category (vacuous assertions with always-true OR), different\
+    \ test file."
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer observation 1 flagged the same class: tests that ''verify nothing''
+    and ''pass for the wrong reason.'' Same category of zero-effective-assertion tests,
+    identified in adjacent test file (cli_structure.rs vs cli_config.rs).'

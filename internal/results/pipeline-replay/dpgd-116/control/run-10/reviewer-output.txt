@@ -1,0 +1,96 @@
+Now I have everything I need. Here is my adversarial review.
+
+---
+
+# Story 6.1 Review: CLI Framework & Structure
+
+## Review Checklist
+
+### Data Flow Traced
+User input → `Cli::parse()` → `Commands` match → stub handler → `CliError::NotImplemented` → `eprintln!` to stderr → `exit(exit_code)`. Clean path verified.
+
+### Wiring Checked
+All 10 commands in `Commands` enum are wired to handlers in `main.rs:12-23`. All handlers exist in `commands/`.
+
+### Patterns Noted
+Builder pattern on `SiemClient` with validated/unvalidated variants — good. Error sanitization via `sanitize()` — good. `#[allow(dead_code)]` on HTTP client field — expected for stubs.
+
+---
+
+## Findings
+
+### [CRITICAL] Missing `tui` and `logout` command groups — AC-1 violation at `cli.rs:52-93`
+
+AC-1 explicitly requires: `query`, `rules`, `alerts`, `ingest`, `config`, `status`, `tenant`, `login`/`logout`, **`tui`**, `completion`, `init`. The `Commands` enum has only 10 variants — `Tui` and `Logout` are completely absent. No handler files exist for them either. This is a spec compliance failure.
+
+### [HIGH] Nightly `rustfmt` violations — 4 diffs across `config.rs`, `error.rs`, `output.rs`
+
+Per gotchas.md: "Always include `cargo +nightly fmt --all --check` in the preflight. If it fails, flag it before approval." Nightly fmt produces diffs in 3 source files (line wrapping and match arm formatting). Will fail CI.
+
+### [HIGH] Clippy warning: unused variable at `cli_framework_integration.rs:279`
+
+```
+let result = Cli::try_parse_from(["axiathon", "-v", "status", "--help"]);
+```
+Should be `let _result`. Clippy warnings are errors per project rules (`cargo clippy -- -D warnings`).
+
+### [HIGH] `expect()` calls in `output.rs:89,94-100` — panics in production code
+
+The Rust coding rules say: "No `unwrap()` in production code — use `?` or `expect()` with actionable message." The rules allow `expect()` with actionable messages, and these do have messages. **However**, CSV/JSON serialization writing to a `Vec<u8>` in-memory buffer will not fail under normal conditions, so these `expect()` calls are technically safe (infallible operations). Downgrading this to **[MEDIUM]** — the risk is theoretical, but the pattern is inconsistent with using `Result` returns elsewhere.
+
+### [MEDIUM] Hardcoded UUID and timestamp in JSON metadata at `output.rs:104-119`
+
+Every JSON response gets `request_id: "00000000-0000-4000-8000-000000000000"` and `timestamp: "1970-01-01T00:00:00Z"`. AC-4 requires `ResponseMetadata (request_id, timestamp, api_version)`. The values are structurally present but semantically useless — every invocation produces identical metadata. The `uuid` crate is available via `axiathon-core`. This should use real values.
+
+### [MEDIUM] `with_tenant()` and `with_token()` bypass header injection validation at `client.rs:37-46`
+
+The validated variants (`with_tenant_validated`, `with_token_validated`) check for CRLF. But the unvalidated `with_tenant()` and `with_token()` accept any string including `\r\n`. Both are public. A careless caller using the unvalidated methods creates a header injection vulnerability (CWE-113). Either remove the unvalidated methods or make them `pub(crate)` and document the risk.
+
+### [MEDIUM] `sanitize()` keyword blocklist is easily bypassed at `error.rs:60`
+
+Checks for `"://"`, `"password"`, `"secret"` — a server that returns `"postgres_pwd=foo"` or `"conn_string=..."` or base64-encoded credentials would pass through. Allowlist-based sanitization (only permit known-safe patterns) would be more robust. Not critical for stubs, but worth noting for when real HTTP calls are added.
+
+### [MEDIUM] Config silently accepts unknown fields (TOML deserialization default)
+
+`ConfigFile` deserializes with serde defaults, which ignores unknown keys. A typo like `sever = { url = "..." }` instead of `server` silently falls back to defaults with no warning. Consider `#[serde(deny_unknown_fields)]` to catch operator mistakes.
+
+### [LOW] Config `from_file_with_env` doesn't read env vars itself at `config.rs:36-39`
+
+The method takes `api_url: Option<&str>` and `timeout: Option<&str>` as parameters rather than reading `AXIATHON_API_URL` / `AXIATHON_TIMEOUT` from the environment. The caller must do this. Tests pass synthetic values rather than testing real env var integration. The wiring between CLI and config loading is untested.
+
+### [LOW] `#[non_exhaustive]` missing on `CliError` enum at `error.rs:10`
+
+Per Rust coding rules: "`#[non_exhaustive]` on enums that will grow." `CliError` will absolutely grow as more stories add error cases. Missing this annotation means downstream matchers can omit wildcard arms.
+
+### [VERIFIED] Header injection prevention works — `client.rs:49-76`
+### [VERIFIED] Error message sanitization prevents CWE-209 — `error.rs:56-66`
+### [VERIFIED] `#![forbid(unsafe_code)]` on all crate roots — `lib.rs:2`, `main.rs:2`
+### [VERIFIED] Exit code mapping matches spec (0/1/2/3/4) — `error.rs:33-39`
+### [VERIFIED] Dependency isolation — no server-side crate imports
+### [VERIFIED] Plural noun convention (`rules`, `alerts`) — `cli.rs:60,64`
+
+---
+
+## Summary
+
+| Severity | Count | Blocks? |
+|----------|-------|---------|
+| Critical | 1 | YES |
+| High | 2 | YES |
+| Medium | 5 | No |
+| Low | 2 | No |
+| Verified | 6 | — |
+
+---
+
+## Verdict: **CHANGES_REQUESTED**
+
+### Blocking issues that must be resolved:
+1. **Add `Tui` and `Logout` commands** to `Commands` enum with stub handlers (AC-1 compliance)
+2. **Run `cargo +nightly fmt --all`** to fix formatting violations
+3. **Fix clippy warning** — `let result` → `let _result` in test
+
+### Strongly recommended (non-blocking):
+4. Remove or restrict unvalidated `with_tenant()`/`with_token()` to prevent header injection bypass
+5. Use real UUID/timestamp in JSON metadata
+6. Add `#[non_exhaustive]` to `CliError`

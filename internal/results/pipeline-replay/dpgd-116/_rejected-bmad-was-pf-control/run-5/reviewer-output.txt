@@ -1,0 +1,153 @@
+39 tests pass, clippy clean. Now I have everything I need for the review.
+
+---
+
+# Code Review Findings — Story 6.1: CLI Framework & Structure
+
+**Story:** `6-1-cli-framework-structure.md`
+**Files Reviewed:** 20 (17 new + 3 modified)
+**Build:** Clean. **Tests:** 39 pass, 0 fail. **Clippy:** Clean.
+
+---
+
+## CRITICAL Issues
+
+### [CRITICAL] CWE-113: Silent header injection via tenant ID — `client.rs:50-51`
+
+`SiemClient::default_headers()` silently drops invalid `X-Tenant-ID` values via `if let Ok(val)`. An attacker-controlled tenant string containing `\r\n` sequences (CRLF) will be silently ignored instead of rejected. While `HeaderValue::from_str` does reject CRLF, the *silent failure mode* is the problem: the request proceeds **without** a tenant header, potentially hitting a default/system tenant or bypassing tenant isolation.
+
+**Fix:** Return `CliError` when `HeaderValue::from_str` fails, rather than silently omitting the header. Same applies to the auth token at line 55.
+
+```rust
+// BAD: silent drop
+if let Ok(val) = HeaderValue::from_str(tenant) {
+    headers.insert("X-Tenant-ID", val);
+}
+
+// GOOD: fail loud
+let val = HeaderValue::from_str(tenant)
+    .map_err(|_| CliError::Config(format!("invalid tenant ID: contains illegal characters")))?;
+headers.insert("X-Tenant-ID", val);
+```
+
+### [CRITICAL] CWE-209: Server error body leaked verbatim to stderr — `client.rs:150-157`
+
+`handle_response` passes the raw HTTP response body directly into `CliError::Unauthorized(body)`, `CliError::NotFound(body)`, `CliError::ServerError(body)`, and `CliError::Other(...)`. These are printed to stderr in `main.rs:28` via `eprintln!("Error: {err}")`. A server-side stack trace, internal path, database connection string, or debug dump will be printed to the operator's terminal.
+
+The `error.rs` doc comment correctly says "Display output is for operator stderr only. Do not expose internal details in user-facing messages" — but the code does exactly that by passing server bodies through.
+
+**Fix:** Truncate or sanitize the body, or log the full body at `debug!` level and show only the HTTP status to the user.
+
+---
+
+## HIGH Issues
+
+### [HIGH] Config silently ignores unknown TOML fields — `config.rs:55`
+
+`ClientConfig` uses `#[serde(default)]` but does **not** use `#[serde(deny_unknown_fields)]`. A user who typos `server_url` as `server_uri` or `default_tennant` gets no warning — the typo is silently ignored and the default is used. This is a common source of "why isn't my config working" frustration and can mask security-relevant misconfiguration.
+
+**Fix:** Add `#[serde(deny_unknown_fields)]` to `ClientConfig`.
+
+### [HIGH] `tenant` CLI flag accepts raw `String`, not validated `TenantId` — `cli.rs:44`
+
+The Rust coding rules (`.claude/rules/rust.md`) mandate "Newtypes for IDs: `TenantId(String)` — prevents mixing ID types." The `--tenant` flag is `Option<String>`, and this raw string flows directly into `SiemClient::default_headers()`. No validation, no newtype.
+
+**Fix:** Introduce a `TenantId` newtype with validated constructor at this trust boundary, or at minimum validate format before constructing the header.
+
+### [HIGH] `unwrap_or_default()` in production code — `client.rs:150`
+
+```rust
+let body = response.text().await.unwrap_or_default();
+```
+
+This swallows the error from reading the response body. If the body read fails (e.g., connection dropped mid-response), we get an empty string and a misleading error message like `"HTTP 500: "`. The Rust rules say no `unwrap()` in production — `unwrap_or_default()` is equally silent.
+
+**Fix:** Log the failure at `warn!` level before defaulting.
+
+### [HIGH] `AXIATHON_API_URL` env var name inconsistency — `config.rs:66` vs `cli.rs:47`
+
+The `--server` CLI flag reads from `env = "AXIATHON_SERVER"` (line 47 of cli.rs), but `ClientConfig::load()` reads from `AXIATHON_API_URL` (line 66 of config.rs). Two different env vars for the same concept. One will silently shadow the other depending on call order, and the user has no way to know which takes precedence without reading source code.
+
+**Fix:** Standardize on one env var name. Document precedence.
+
+---
+
+## MEDIUM Issues
+
+### [MEDIUM] `load_token()` called but result discarded — `main.rs:18`
+
+```rust
+let _token = axiathon_client::config::ClientConfig::load_token();
+```
+
+The underscore-prefixed `_token` is never used. The comment says "load token in sync context BEFORE async runtime to avoid keyring deadlocks" — but the loaded token is thrown away. The `SiemClient` will need to call `load_token()` again later, potentially inside the async runtime, defeating the purpose.
+
+**Fix:** Store the token and thread it into the command dispatch / `SiemClient` construction.
+
+### [MEDIUM] No test for `AXIATHON_TIMEOUT` parse failure — `config.rs:69-73`
+
+When `AXIATHON_TIMEOUT` is set to a non-numeric value like `"fast"`, the parse silently fails and the timeout stays at the TOML/default value. No warning, no error. There's also no test covering this path.
+
+**Fix:** At minimum, add a `tracing::warn!` when parse fails. Add a test.
+
+### [MEDIUM] `CsvFormatter::format_json_value` ignores the CSV format contract — `output.rs:147-151`
+
+`CsvFormatter::format_json_value` returns `serde_json::to_string(value)` — which is JSON output from a CSV formatter. This is semantically wrong. If a caller asks for CSV format and passes a JSON value, they get JSON back.
+
+**Fix:** Either remove the method from the CSV path (return an error like "CSV format not supported for raw JSON values") or implement actual CSV serialization of the JSON value.
+
+### [MEDIUM] `init_config` creates file with default `http://` URL — `config.rs:117`
+
+The default config written to disk contains `server_url = "http://localhost:8080"`. An operator who runs `axiathon init` on a production machine gets a plaintext HTTP default. While this is acceptable for local dev, the init output gives no security warning about using HTTPS in production.
+
+### [MEDIUM] Missing `#[non_exhaustive]` on `Commands` enum — `cli.rs:79`
+
+The Rust rules state "#[non_exhaustive] on enums that will grow." `Commands` will absolutely grow (epic 4 TUI, future commands). Missing the annotation.
+
+### [MEDIUM] `OutputFormat` missing `#[non_exhaustive]` — `output.rs:11`
+
+Same issue. Future formats (YAML, NDJSON) are likely.
+
+---
+
+## LOW Issues
+
+### [LOW] `tempfile` dev-dependency not in workspace — `Cargo.toml:32`
+
+`tempfile = "3"` is declared directly in the crate's `Cargo.toml` instead of via `workspace = true`. All other deps use workspace declarations. Inconsistent.
+
+### [LOW] No test for `init_config` idempotency — `config.rs:115`
+
+The `init_config` function checks `if !path.exists()` but there's no test that calling it twice doesn't overwrite the first file. This is important because users may customize the config then accidentally run `axiathon init` again.
+
+### [LOW] `create_formatter` uses `Uuid::new_v4()` for `request_id` — `output.rs:162`
+
+The Rust rules specify "UUID v7 for time-ordered IDs." While this is a client-generated request ID (not an event/alert ID), using v7 would give chronological ordering for debugging. Minor inconsistency with project conventions.
+
+### [LOW] Subcommand help tests are assertion-free — `cli.rs:173-257`
+
+Tests like `subcommand_help_renders_query` only call `render_help()` and discard the result. They verify "no panic" but don't assert content. A command could render with wrong/missing description and the test would pass. The `cli_help_renders_all_commands` test does check content, so these are partially redundant.
+
+### [LOW] `implementation_artifacts/` untracked directory in git status
+
+The git status shows `?? implementation_artifacts/` as an untracked directory. This appears to be a build/output artifact that should either be gitignored or committed.
+
+---
+
+## Summary
+
+| Severity | Count |
+|----------|-------|
+| CRITICAL | 2 |
+| HIGH | 4 |
+| MEDIUM | 6 |
+| LOW | 5 |
+| **Total** | **17** |
+
+The two CRITICAL findings (silent header injection failure mode, server error body leakage) are security issues that must be addressed before merge. The HIGH findings around env var inconsistency, `_token` discard, and missing type validation represent correctness and maintainability risks.
+
+---
+
+## Verdict: **CHANGES_REQUESTED**
+
+The CRITICAL security findings (CWE-113 silent tenant header drop, CWE-209 server body leakage) and the HIGH env var name conflict must be fixed before approval. The code is well-structured and the test coverage is solid for a framework story, but these issues would create real problems in production.

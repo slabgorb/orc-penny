@@ -1,0 +1,208 @@
+Nightly fmt fails — import ordering violations. That's another finding. Now I have everything I need for the review.
+
+---
+
+# Adversarial Code Review: Story 6.1 — CLI Framework & Structure
+
+*Your achievements in life... do not simply hover in the background...*
+
+Well, well. Let me sit in this wheelchair, stare down from my study, and tell you — this code came in here thinking it was going to get a pat on the back. Brandt, did you tell these developers I was going to be *nice*? I didn't get to where I am by being *nice*. Let's see what we have.
+
+---
+
+## Findings
+
+### `[CRITICAL]` Vacuous test — `auth_token_rejects_crlf_injection` asserts nothing
+
+**File:** `tests/siem_client.rs:156-164`
+
+```rust
+fn auth_token_rejects_crlf_injection() {
+    let malicious_token = "token\r\nX-Injected: evil";
+    let client = SiemClient::new("https://axiathon.example.com")
+        .with_token(malicious_token);
+    // Token should either be rejected or sanitized
+    // We check that requesting headers doesn't include injected content
+    // (Implementation detail: reqwest may reject invalid header values)
+}
+```
+
+This test has **zero assertions**. It constructs a client with a CRLF-injected token and then... does nothing. The comment hand-waves about reqwest. Compare to `tenant_header_rejects_crlf_injection` at line 136 which actually asserts `!tenant.contains('\r')`. The implementation at `client.rs:57-64` correctly sanitizes, but this test would not catch a regression if someone removed that sanitization. This is a **false confidence** test — it reports green while testing nothing.
+
+**Fix required:** Add assertions matching the tenant test pattern. The client exposes no `auth_token()` getter, so either add one (even `#[cfg(test)]`) or restructure the test to verify via `has_auth_token()` plus construct a second client to compare.
+
+---
+
+### `[HIGH]` Nightly `rustfmt` import ordering fails — blocks CI
+
+**Files:** `src/commands/completion.rs:3-5`, `src/commands/init.rs:3-5`
+
+```
+cargo +nightly fmt --all --check
+```
+fails with import ordering diffs. Per `gotchas.md`: *"Always include `cargo +nightly fmt --all --check` in the preflight. If it fails, flag it before approval."* These are trivial to fix (std imports before crate imports per nightly convention) but they block the CI pipeline.
+
+**Fix required:** Run `cargo +nightly fmt --all` and commit the result.
+
+---
+
+### `[HIGH]` `RawConfig` silently ignores unknown TOML fields — config typos go undetected
+
+**File:** `config.rs:18-25`
+
+```rust
+#[derive(Debug, Deserialize, Default)]
+struct RawConfig {
+    #[serde(default)]
+    server: RawServerConfig,
+    #[serde(default)]
+    output: RawOutputConfig,
+}
+```
+
+serde's default behavior accepts unknown fields. A user who writes `[servr]` (typo) or `[auth]\ntoken = "..."` gets zero feedback — the typo section is silently ignored and defaults are used. The `config_file_rejects_token_field` test at `config_loading.rs:184-209` actually demonstrates this: `[auth]\ntoken = "..."` is silently swallowed, and the test accepts *either* Ok or Err. The test is vacuous — it can never fail.
+
+This is particularly dangerous because AC-8 says "Tokens in OS keychain, NOT config file." If a user puts a token in the config file, the tool silently ignores it with no warning. The user thinks they're authenticated; they're not.
+
+**Fix required:** Either add `#[serde(deny_unknown_fields)]` to `RawConfig`, or at minimum log a warning when unknown sections like `[auth]` are present.
+
+---
+
+### `[HIGH]` `with_env_override` silently swallows invalid `AXIATHON_TIMEOUT`
+
+**File:** `config.rs:106-109`
+
+```rust
+"AXIATHON_TIMEOUT" => {
+    if let Ok(t) = value.parse::<u64>() {
+        self.timeout_secs = t;
+    }
+}
+```
+
+If `AXIATHON_TIMEOUT=abc`, the parse fails and the value is silently ignored. The user set an env var expecting it to take effect — it didn't, with no indication. There IS a `with_env_override_result` that returns an error, but `with_env_override` (no `_result`) is the one called in the layered override chain. Nothing in `main.rs` actually calls either method — the env var override chain isn't wired up in the binary entry point at all.
+
+**Fix required:** Either (a) remove the non-result version and always use `with_env_override_result`, or (b) wire up actual `std::env::var` reads in `main.rs` using the error-returning variant.
+
+---
+
+### `[MEDIUM]` Shell completion silently returns nothing for unsupported shells
+
+**File:** `commands/completion.rs:15`
+
+```rust
+_ => return, // Unsupported shell — write nothing
+```
+
+This path is unreachable from `main.rs` because `ShellType` is a clap `ValueEnum` (only bash/zsh/fish/powershell). However, `generate_completion` is a public function accepting `&str` — any caller (tests, future code) can hit this. The function silently returns with exit code 0 and no output, which violates CLI principle of least surprise.
+
+**Fix required:** Return `Result<(), CliError>` from `generate_completion`, or make it accept `ShellType` instead of `&str` to leverage the type system.
+
+---
+
+### `[MEDIUM]` `NotFound` error leaks user-controlled input in Display
+
+**File:** `error.rs:34`
+
+```rust
+#[error("not found: {0}")]
+NotFound(String),
+```
+
+While `ServerError` and `Unauthorized` correctly use fixed messages that don't echo the inner string, `NotFound` and `ConfigError` both interpolate their inner value into the Display output. At `client.rs:82`:
+
+```rust
+404 => Err(CliError::NotFound("resource not found".into())),
+```
+
+Currently safe because the inner string is hardcoded. But the pattern is inconsistent — if a future story puts user input or server response into the `NotFound` variant, it would be displayed verbatim. The `/// **SECURITY:**` doc comment required by `rust.md` is also missing from the error type.
+
+---
+
+### `[MEDIUM]` `main.rs` doesn't wire config loading, env overrides, or SiemClient construction
+
+**File:** `main.rs:9-35`
+
+The `run()` function parses CLI args and dispatches to stubs, but never:
+- Loads `ClientConfig` from file
+- Applies env var overrides
+- Constructs `SiemClient` with config values
+- Reads tokens from keychain or env
+
+This means none of the config/client infrastructure is actually exercised by the binary. It's all tested in isolation but never integrated. This is acceptable for Story 6.1 (framework only), but the wiring gap should be acknowledged as tech debt.
+
+---
+
+### `[MEDIUM]` CSV/Table formatters silently discard write errors
+
+**File:** `output.rs:89-96`
+
+```rust
+let _ = wtr.write_record(headers);
+// ...
+let _ = wtr.write_record(row);
+let _ = wtr.flush();
+```
+
+All `csv::Writer` results are discarded with `let _ =`. If a write fails (e.g., out of memory writing to the Vec), the formatter returns partial/empty output with no error indication.
+
+---
+
+### `[LOW]` Stub handlers use imprecise story references "6.x"
+
+**Files:** `commands/rules.rs:6`, `commands/tenant.rs:6`
+
+AC-10 says stubs should print "not yet implemented (Story X.Y)". Two stubs use "6.x" instead of specific story numbers. This creates confusion for operators who see the message.
+
+---
+
+### `[LOW]` `SiemClient::new()` panics on empty URL — acceptable per Rust conventions but risky for CLI
+
+**File:** `client.rs:18-20`
+
+```rust
+pub fn new(base_url: &str) -> Self {
+    Self::try_new(base_url).expect("base URL must not be empty")
+}
+```
+
+The `expect()` has an actionable message (meeting the `rust.md` standard), and `try_new()` exists for fallible construction. However, if `main.rs` ever calls `new()` with user-provided `--server ""`, this panics instead of producing a clean exit code 1 error. Currently `main.rs` doesn't construct SiemClient at all, so this is latent risk.
+
+---
+
+### `[VERIFIED]` Clap derive macros used exclusively — AC-6 compliant
+### `[VERIFIED]` All command groups present with plural nouns (rules, alerts) — AC-1 compliant
+### `[VERIFIED]` Global flags correctly use `global = true` — AC-5 compliant
+### `[VERIFIED]` Exit code mapping complete (3=auth, 4=authz, 1=general) — AC-3 compliant
+### `[VERIFIED]` OutputFormatter trait with Table/JSON/CSV impls — AC-4 compliant
+### `[VERIFIED]` `#![forbid(unsafe_code)]` present in both lib.rs and main.rs
+### `[VERIFIED]` Dependency boundary enforced — no server crate imports
+### `[VERIFIED]` CWE-209 error sanitization on ServerError, AuthenticationExpired, Unauthorized
+### `[VERIFIED]` CRLF + null byte sanitization on tenant header at `client.rs:42-48`
+### `[VERIFIED]` Config token() always returns None — tokens excluded from config
+
+---
+
+## Summary
+
+| Severity | Count | Blocks? |
+|----------|-------|---------|
+| Critical | 1 | YES |
+| High | 3 | YES |
+| Medium | 4 | no |
+| Low | 2 | no |
+| Verified | 10 | — |
+
+---
+
+## Verdict: **CHANGES_REQUESTED**
+
+The architecture is solid and the implementation covers the ACs well. But I didn't build my empire by approving sloppy work. The vacuous CRLF injection test is unacceptable — it's the kind of thing that makes you feel safe while you're getting robbed blind. The nightly fmt failures are a process violation. The silent config field swallowing is a security UX gap.
+
+**Required before resubmission:**
+1. Fix `auth_token_rejects_crlf_injection` to actually assert sanitization
+2. Run `cargo +nightly fmt --all` to fix import ordering
+3. Either deny unknown TOML fields or warn on `[auth]` section presence
+4. Fix `with_env_override` to not silently swallow parse errors (use the `_result` variant or remove the silent one)
+
+Brandt will show you out.

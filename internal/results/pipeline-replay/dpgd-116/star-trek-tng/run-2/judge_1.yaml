@@ -1,0 +1,80 @@
+scenario_id: dpgd-116
+theme: star-trek-tng
+run_id: 2
+judge_version: v2
+judge_pass: 1
+total_caught: 3
+total_findings: 7
+weighted_caught: 15
+total_weight: 37
+score_pct: 40.5
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase flagged that from_file_or_default swallows all errors including
+    parse/permission failures. TEA config tests cover loading and env overrides but
+    none test that parse errors are surfaced distinctly from NotFound.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: dev
+  evidence: 'Dev implemented InternalDetail wrapper: ''CliError::ServerError and Config
+    wrap an InternalDetail type that suppresses sensitive info in Display (CWE-209)''.
+    TEA wrote 9 security tests covering ''CWE-209 error exposure''. Reviewer verified
+    ''CliError::Display does not leak InternalDetail strings to user-facing output''.
+    However, the stderr eprintln path in main.rs was not wired up (main.rs is a dead
+    stub), so the mitigation is incomplete in practice.'
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: dev
+  evidence: 'Dev implemented CRLF stripping: ''SiemClient strips CR/LF from tenant
+    IDs and rejects tokens with CR/LF (header injection prevention)''. TEA wrote header
+    injection tests in cli_siem_client.rs and cli_security.rs. Same CWE-113 vulnerability
+    class addressed, though via sanitization rather than the ground truth''s preferred
+    TenantId type safety approach.'
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: "Reviewer explicitly stated '[VERIFIED] All workspace dependencies properly\
+    \ declared; axiathon-core is the only internal dep' \u2014 examined the exact\
+    \ issue and concluded it was correct, opposite of ground truth which identifies\
+    \ 6 deps using direct versions instead of workspace = true."
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[MEDIUM] RawConfig silently ignores unknown fields\
+    \ \u2014 config.rs:7-15' and specifically recommended '#[serde(deny_unknown_fields)]'.\
+    \ Directly matches the ground truth about config token field being silently ignored."
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified the vacuously true assertion pattern (is_none() ||
+    ... always true). The TEA phase likely wrote the vacuous test, and the reviewer
+    did not flag it.
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified the zero-assertion test pattern (let _ = config with
+    no assert). The TEA phase likely wrote the assertion-free test, and the reviewer
+    did not flag it.

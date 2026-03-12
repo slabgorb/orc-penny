@@ -1,0 +1,73 @@
+# AC Manifest: dpgd-116
+# Acceptance criteria a PM should write for a story implementing changes
+# in this codebase. Scenario-aware, defect-blind.
+
+scenario_id: dpgd-116
+manifest_type: acceptance_criteria
+version: 1
+
+acceptance_criteria:
+  - id: AC-1
+    text: >
+      Configuration loading distinguishes between "file not found" (use defaults)
+      and "file exists but cannot be parsed or accessed" (surface error).
+    related_findings: [C1]
+
+  - id: AC-2
+    text: >
+      Error messages displayed to users or written to stderr do not leak
+      internal implementation details such as file paths, type names, or
+      stack traces (CWE-209 compliance).
+    related_findings: [I1]
+
+  - id: AC-3
+    text: >
+      Tenant identifiers and other external inputs used in HTTP headers are
+      validated or wrapped in typed newtypes that prevent injection of control
+      characters (CWE-113 compliance).
+    related_findings: [I2]
+
+  - id: AC-4
+    text: >
+      All workspace-internal dependencies use workspace references (e.g.,
+      workspace = true) rather than pinned version strings to maintain
+      lockfile consistency.
+    related_findings: [I3]
+
+  - id: AC-5
+    text: >
+      Configuration deserialization either rejects unknown fields or emits a
+      warning when unrecognized fields (especially credential-like fields)
+      are present in config files.
+    related_findings: [I4]
+
+  - id: AC-6
+    text: >
+      All test assertions verify meaningful properties — no vacuously true
+      assertions (e.g., is_none || arbitrary_condition) and no tests with
+      zero assertions that only check for non-panic.
+    related_findings: [I5, I6]
+
+  - id: AC-7
+    text: >
+      Error handling in critical paths (config loading, HTTP client setup)
+      uses typed error variants rather than catch-all handlers that convert
+      all failures to a single default response.
+    related_findings: [C1]
+
+  - id: AC-8
+    text: >
+      Security-sensitive operations (header construction, credential handling,
+      error display) have dedicated test coverage exercising both valid and
+      malicious inputs.
+    related_findings: [I1, I2, I4]
+
+# Coverage verification:
+# C1  → AC-1, AC-7
+# I1  → AC-2, AC-8
+# I2  → AC-3, AC-8
+# I3  → AC-4
+# I4  → AC-5, AC-8
+# I5  → AC-6
+# I6  → AC-6
+# All 7 findings covered. Every finding maps to at least one AC.

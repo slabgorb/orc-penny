@@ -1,0 +1,28 @@
+All **127 tests GREEN**, zero clippy warnings.
+
+## Summary
+
+### Files Created/Modified
+
+**New files** (all under `crates/axiathon-client/src/`):
+- `error.rs` — `CliError` enum with 11 variants mapping to exit codes 0-4
+- `config.rs` — `ClientConfig` with TOML loading, env var overrides (`AXIATHON_API_URL`, `AXIATHON_TIMEOUT`, `AXIATHON_SERVER`, `AXIATHON_API_TOKEN`), XDG default path
+- `client.rs` — `SiemClient` wrapping `reqwest::Client` with header injection (`Authorization`, `X-Tenant-ID`) and HTTP status-to-error mapping
+- `output.rs` — `OutputFormatter` trait with `TableFormatter` (comfy-table), `JsonFormatter` (with metadata), `CsvFormatter` (csv crate)
+- `cli.rs` — Clap 4.x derive-only `Cli` struct with all global flags and `Commands` enum (11 variants)
+- `commands/mod.rs` — Re-exports all command modules
+- `commands/query.rs`, `rules.rs`, `alerts.rs`, `ingest.rs`, `config.rs`, `status.rs`, `tenant.rs`, `login.rs` — Stub handlers returning `NotImplemented` with story references
+- `commands/completion.rs` — Functional shell completion generation (bash/zsh/fish/powershell)
+- `commands/init.rs` — Functional first-time setup
+
+**Modified files:**
+- `lib.rs` — Added public module exports
+- `Cargo.toml` — Added `chrono`, `uuid` deps; set `edition = "2021"` (see finding below)
+
+### Test Results
+- **127/127 tests passing** across 7 test files
+- **0 clippy warnings**
+- Tests must run with `--test-threads=1` due to env var race conditions in config tests
+
+### Delivery Finding
+- **Gap** (non-blocking): Config tests use `std::env::set_var` without `unsafe` blocks, which is required in edition 2024. Crate edition downgraded to 2021 to accommodate. Affects `crates/axiathon-client/Cargo.toml` (edition field should be reconciled with workspace standard). *Found by Dev during implementation.*

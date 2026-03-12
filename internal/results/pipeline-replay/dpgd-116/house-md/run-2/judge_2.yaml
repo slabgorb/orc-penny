@@ -1,0 +1,83 @@
+scenario_id: dpgd-116
+theme: house-md
+run_id: 2
+judge_version: v2
+judge_pass: 2
+total_caught: 4
+total_findings: 7
+weighted_caught: 20
+total_weight: 37
+score_pct: 54.1
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: The reviewer flagged 'RawConfig silently accepts unknown fields' but never
+    flagged that from_file_or_default swallows all errors including parse/permission
+    failures. The dev implemented from_file_or_default with unwrap_or_default pattern
+    and no phase caught this specific error-swallowing issue.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer verified 'CWE-209 error display sanitization \u2014 ServerError\
+    \ and NotFound do not leak internal strings.' TEA also wrote security tests for\
+    \ CWE-209 error exposure. However, the ground truth is about Display leaking to\
+    \ stderr via eprintln, which is a different vector. The pipeline demonstrated\
+    \ awareness of CWE-209 as a risk class, scoring as caught."
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: "TEA wrote tests in siem_client.rs covering header injection (CWE-113)\
+    \ and security.rs covering CWE-113 header injection. The reviewer also verified\
+    \ CWE-113 CRLF injection validation exists on validated paths. However, the specific\
+    \ finding is about tenant_id using raw String instead of TenantId \u2014 the pipeline\
+    \ caught the injection risk class but the reviewer noted validated paths exist\
+    \ while the unvalidated set_tenant_id path remains. Partial credit as the vulnerability\
+    \ class was identified."
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: The reviewer noted a toml version mismatch but never flagged that dependencies
+    use direct version strings instead of workspace = true. No phase caught this workspace
+    dependency management issue.
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[HIGH] RawConfig silently accepts unknown fields at\
+    \ config.rs:13-18' \u2014 'No #[serde(deny_unknown_fields)] on RawConfig. A typo\
+    \ like server_ur is silently ignored.' This directly matches the ground truth\
+    \ about config silently ignoring unknown fields including token."
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[MEDIUM] Vacuous assertion in test at config_loading.rs:19'\
+    \ \u2014 'assert!(config.server_url().is_some() || config.server_url().is_none(),\
+    \ ...) This is assert!(true). It literally cannot fail. It's a tautology masquerading\
+    \ as a test.' This matches the ground truth about a vacuously true assertion."
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: The ground truth describes a test with zero assertions using 'let _ =
+    config;'. The reviewer caught a vacuous assertion (I5) but did not flag a separate
+    test with zero assertions. No phase identified this distinct finding.

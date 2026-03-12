@@ -1,0 +1,32 @@
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 delivers the foundational CLI framework — every module needs test coverage before implementation.
+
+**Test Files:**
+| File | Tests | Coverage |
+|------|-------|----------|
+| `cli_framework_integration.rs` | 43 | AC-1 (command groups), AC-2 (help), AC-5 (global flags), AC-6 (derive macros) |
+| `error_exit_codes.rs` | 15 | AC-3 (exit codes 0/1/2/3/4, CliError variants, non_exhaustive) |
+| `output_formatting.rs` | 12 | AC-4 (table/json/csv, CSV escaping, no_color, ResponseMetadata) |
+| `siem_client.rs` | 16 | AC-7 (HTTP wrapper, header injection, status code mapping 401/403/404/429/5xx) |
+| `config_loading.rs` | 12 | AC-8 (TOML loading, env var overrides, precedence, validation) |
+| `shell_completion.rs` | 7 | AC-9 (bash/zsh/fish/powershell generation, command coverage) |
+| `stub_handlers.rs` | 10 | AC-10 (NotImplemented errors with story references) |
+| `security.rs` | 11 | CWE-209 error exposure, CWE-113 header injection, config token leakage |
+
+**Tests Written:** 126 tests covering all 10 ACs
+**Status:** RED (compilation failures — modules `cli`, `error`, `client`, `config`, `output`, `commands` don't exist yet)
+
+**Handoff:** To Dev for implementation. The tests define the public API contract:
+- `axiathon_client::cli::{Cli, Commands}` — clap derive structs
+- `axiathon_client::error::CliError` — error enum with `exit_code()` method
+- `axiathon_client::client::SiemClient` — HTTP wrapper with builder pattern
+- `axiathon_client::config::ClientConfig` — TOML config with env overrides
+- `axiathon_client::output::{OutputFormat, OutputFormatter, ResponseMetadata}` — formatting
+- `axiathon_client::commands::{query, rules, alerts, ...}::handle()` — stub handlers
+- `axiathon_client::commands::completion::generate_completion()` — shell completions
+
+## Delivery Findings
+
+- No upstream findings during test design.

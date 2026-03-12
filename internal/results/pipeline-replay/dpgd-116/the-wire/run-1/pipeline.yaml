@@ -1,0 +1,29 @@
+scenario_id: dpgd-116
+theme: the-wire
+run_id: 1
+timestamp: '2026-03-09T04:14:22.437619+00:00'
+worktree_path: /tmp/pf-replay/dpgd-116-the-wire-run-1
+phases:
+  tea:
+    token_usage:
+      input: 709
+      output: 20382
+    duration_s: 398.04
+    exit_code: 0
+  dev:
+    token_usage:
+      input: 46
+      output: 33370
+    duration_s: 643.69
+    exit_code: 0
+  reviewer:
+    token_usage:
+      input: 11
+      output: 6445
+    duration_s: 124.63
+    exit_code: 0
+framework_version:
+  commit: pre-edge-hunter
+  semver: 12.7.0
+  tag: baseline-pre-edge-hunter
+  agent_hashes: {}

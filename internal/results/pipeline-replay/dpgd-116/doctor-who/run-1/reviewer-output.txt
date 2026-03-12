@@ -1,0 +1,105 @@
+Right then. I've read every single file, run the tests, run clippy, and run nightly fmt. Time to deliver the verdict. Donna Noble doesn't do rubber stamps, sunshine.
+
+---
+
+# Story 6.1: CLI Framework & Structure — Adversarial Review
+
+## Observations
+
+### [HIGH] CWE-209: `ServerError` inner string exposed via Debug, not sanitized — `error.rs:9`
+
+The `ServerError(String)` variant uses `#[error("server error")]` for `Display` (good — static string), but the inner `String` is fully accessible via `Debug` (`{err:?}`). In `map_status_code` at `client.rs:54`, the raw HTTP status code is stored: `format!("server returned {status}")`. While this specific case is benign, nothing prevents future code from storing sensitive server response bodies in this variant. The test at `error_exit_codes_test.rs:173` passes only because `Display` hides it — but any log line using `{:?}` will leak the inner string. **Mitigation:** Consider making `ServerError` a unit struct or adding a `/// SECURITY` doc comment warning future contributors not to store response bodies.
+
+**Severity: Medium** (downgraded from High since Display is safe today, but the pattern is fragile)
+
+### [MEDIUM] Missing `main.rs` — no binary entry point exists
+
+There is no `main.rs` in `crates/axiathon-client/src/`. The `Cargo.toml` has no `[[bin]]` section either. AC-3 requires exit code handling in `main.rs` with `std::process::exit()`. AC-10 requires stubs to print messages and exit. Without a binary entry point, none of the end-to-end exit code behavior is actually wired up. The tests validate the library API in isolation, but the actual `axiathon` binary cannot be built.
+
+### [MEDIUM] `CompletionArgs.shell` is `String` instead of `clap_complete::Shell` — `cli.rs:157`
+
+The `CompletionArgs` struct uses `pub shell: String` rather than `clap_complete::Shell`. This means clap won't validate shell names at parse time — invalid shells are accepted by the CLI parser and only rejected later in `generate_completion()`. Using `Shell` directly would give users proper error messages and tab completion for the shell argument itself.
+
+### [MEDIUM] `with_env_override` silently ignores invalid timeout — `config.rs:71`
+
+When `AXIATHON_TIMEOUT` is set to a non-numeric value, the `parse::<u64>()` failure is silently ignored and the previous value retained. This is documented by the test at `config_loading_test.rs:131`, but it contradicts the strict validation in `from_raw()` which rejects zero/negative/too-large timeouts. An env var like `AXIATHON_TIMEOUT=0` or `AXIATHON_TIMEOUT=999999` would bypass all validation and be silently ignored rather than flagged. The env override path should apply the same validation as the TOML path.
+
+### [MEDIUM] `with_env_override` doesn't validate URL scheme — `config.rs:69`
+
+When `AXIATHON_API_URL` is set via env var, it directly assigns the value without validating `http://`/`https://` scheme. The TOML loader at `config.rs:107` validates this, but `with_env_override` bypasses it. An env var like `AXIATHON_API_URL=ftp://evil.com` would be accepted.
+
+### [MEDIUM] No `deny_unknown_fields` on `RawConfig` — `config.rs:13`
+
+The `RawConfig` struct uses `#[derive(Deserialize, Default)]` without `#[serde(deny_unknown_fields)]`. This means typos like `api_ur1 = "..."` or `timeot = 30` are silently ignored, and the user gets default values with no warning. This is a common source of operator frustration.
+
+### [MEDIUM] `tenant.rs` stub references wrong story — `commands/tenant.rs`
+
+The tenant stub returns `CliError::NotImplemented("Story 6.6".into())`. According to the epic doc, tenant management is not Story 6.6 (which is about rules). The test `tenant_stub_references_story` at `stub_handlers_test.rs` just checks it contains a story reference but doesn't verify the *correct* story number.
+
+### [LOW] `toml` version mismatch between story spec and workspace — `Cargo.toml:54`
+
+The story spec calls for `toml` 0.9, but the workspace declares `toml = "0.8"`. This is minor but documents a spec/implementation divergence.
+
+### [LOW] `reqwest` missing `rustls-tls` feature — `Cargo.toml:53`
+
+The story spec and architecture doc require `reqwest` with `rustls-tls` feature. The workspace only declares `features = ["json"]`. This means `reqwest` will use the default TLS backend (likely `native-tls`/OpenSSL) instead of the specified `rustls`. Not a blocker but diverges from the architecture decision.
+
+### [LOW] Nightly `rustfmt` check shows formatting diff — `client.rs:68`
+
+The `validate_tenant_id` method has a multi-line conditional that nightly fmt wants to collapse. Per the gotchas doc: "Always include `cargo +nightly fmt --all --check` in the preflight. If it fails, flag it before approval."
+
+### [VERIFIED] Header injection prevention (CWE-113) — `client.rs:60-80`
+
+Token and tenant ID validation properly reject CRLF and null bytes. The `SiemClient::new()` constructor silently drops invalid tenant IDs via `filter()`. Token validation is a separate explicit check. Both paths are tested.
+
+### [VERIFIED] Token not exposed in Debug — `client.rs:11-18`
+
+Custom `Debug` impl shows `has_token: true/false` instead of the actual token value. Test confirms at `siem_client_test.rs:188`.
+
+### [VERIFIED] `#[non_exhaustive]` on `CliError` — `error.rs:7`
+
+Properly applied, preventing downstream exhaustive matching.
+
+### [VERIFIED] `#![forbid(unsafe_code)]` — `lib.rs:2`
+
+Present as required.
+
+### [VERIFIED] Output formatting trait design — `output.rs`
+
+`OutputFormatter` trait is object-safe, JSON includes metadata with `request_id`/`timestamp`/`api_version`, CSV uses the `csv` crate for proper RFC 4180 escaping. All tested.
+
+### [VERIFIED] Plural noun command naming — `cli.rs:47-48`
+
+`Rules`, `Alerts` as required by architecture doc. Tests verify singular forms are rejected.
+
+### [VERIFIED] Global flags with `global = true` — `cli.rs:11-36`
+
+All seven global flags properly marked. Tests verify they work both before and after subcommands.
+
+### [VERIFIED] Config file does not store tokens — `config.rs:46-48`
+
+`has_token_from_file()` always returns `false`. The `token` field in `RawConfig` has `#[allow(dead_code)]` and is never exposed. Test confirms.
+
+---
+
+## Summary
+
+| Severity | Count | Blocks? |
+|----------|-------|---------|
+| High | 0 | — |
+| Medium | 5 | No |
+| Low | 3 | No |
+| Verified Good | 7 | — |
+
+## Verdict: **APPROVED_WITH_FINDINGS**
+
+The implementation is solid for a foundation story. Security fundamentals (header injection prevention, token handling, unsafe code prohibition) are done right. The code compiles, all tests pass, and clippy is clean.
+
+The five Medium findings should be addressed before the next story builds on this foundation:
+1. The missing `main.rs` is the most significant — without it, there's no actual binary
+2. The env var override bypass of URL/timeout validation creates an inconsistent trust boundary
+3. The silent unknown fields in config will bite operators
+4. The `CompletionArgs` should use the `Shell` type directly
+5. The tenant stub story reference needs correction
+
+None are blockers for merge, but I'd want items 1 and 2 tracked as follow-up work items before Story 6.2 starts building on this.

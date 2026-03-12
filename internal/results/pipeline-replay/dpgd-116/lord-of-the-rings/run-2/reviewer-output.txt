@@ -1,0 +1,98 @@
+Now I have everything I need. Let me deliver my review.
+
+---
+
+# Story 6.1: CLI Framework & Structure — Adversarial Review
+
+*The Voice speaks. Listen carefully.*
+
+## Observations
+
+### [HIGH] `RawConfig` silently ignores unknown fields — including `token` at `config.rs:5-9`
+
+`RawConfig` uses `serde::Deserialize` with default behavior which **silently drops unknown fields**. This means `token = "my-secret"` in the config file is silently consumed without warning. The test `config_file_does_not_store_tokens` at `security.rs:245-263` merely checks `has_token_from_file()` returns false — but that flag is hardcoded to `false` at `config.rs:116`. The config *does* accept and silently ignore a `token` field. A user who mistakenly puts their token in the config file gets no feedback that it's being ignored and their secret is sitting in a plaintext file. The `RawConfig` struct should use `#[serde(deny_unknown_fields)]` to catch this, or at minimum detect and warn when a `token` field is present.
+
+### [HIGH] `ServerError` variant leaks internal message via Display at `error.rs:8-9`
+
+The `CliError::ServerError(String)` variant has `#[error("server error")]` which is safe — the inner string is NOT displayed. **However**, this creates a discrepancy: `map_http_status` at `client.rs:60` stores `format!("server returned {code}")` in the inner String, but that string is never surfaced via Display. This means the inner detail is only accessible via Debug formatting. While this is currently *safe* from CWE-209, it's fragile — if anyone later changes the error format to `#[error("server error: {0}")]` to "fix" the apparent dead data, they'll leak HTTP status codes. The pattern is confusing and should either drop the inner string entirely or document why it exists.
+
+### [HIGH] No `main.rs` — binary entry point is missing
+
+The story specifies `main.rs` as a key file to create. There is no `main.rs` in the crate. The `Cargo.toml` at line 1 defines a package but no `[[bin]]` target. Without `main.rs`, there is no `axiathon` binary — which is the entire deliverable of Story 6.1. The `Completion` and `Init` commands in `cli.rs` are plain enum variants with no arguments, meaning `axiathon completion <shell>` cannot work since there's no shell argument on the enum. The `Completion` variant should take a `Shell` argument.
+
+### [HIGH] `Completion` command missing shell argument at `cli.rs:70`
+
+AC-9 requires `axiathon completion <shell>` where shell is one of bash/zsh/fish/powershell. The `Commands::Completion` variant is a unit variant with no argument. There is no way for a user to specify which shell they want completions for. The `generate_completion` function in `completion.rs` accepts a `Shell` parameter, but nothing connects it to the CLI argument parsing.
+
+### [MEDIUM] `edition = "2018"` in `Cargo.toml` contradicts workspace `edition = "2024"` at `Cargo.toml:2`
+
+The workspace specifies `edition.workspace = true` should be used, which would give edition 2024. Instead, the crate overrides with `edition = "2018"`. This is almost certainly wrong — the workspace defines `edition = "2024"` in `[workspace.package]`. The crate should use `edition.workspace = true` instead of hardcoding `edition = "2018"`.
+
+### [MEDIUM] `bare_trait_objects = "allow"` lint override at `Cargo.toml:30`
+
+This allows `dyn Trait` without the `dyn` keyword, which is the 2015 edition syntax. Combined with edition 2018, this suggests the code was written targeting an older edition. In edition 2024, bare trait objects are a hard error. This lint override should be removed and all trait objects should use `dyn`.
+
+### [MEDIUM] `toml = "0.8"` instead of spec'd `"0.9"` at `Cargo.toml:21`
+
+The story Technical Guardrails specify `toml 0.9`. The Cargo.toml uses `0.8`. Not a workspace dependency either — `clap_complete`, `comfy-table`, `csv`, `dirs`, `keyring`, and `toml` are all specified inline rather than through `[workspace.dependencies]` as required by the architecture.
+
+### [MEDIUM] Missing `keyring` dependency at `Cargo.toml`
+
+AC-8 requires credential storage via the `keyring` crate. It's listed as a key dependency but is not present in `Cargo.toml`. The story requires loading tokens from OS keychain at CLI startup.
+
+### [MEDIUM] `OutputFormatter` uses `impl dyn` anti-pattern at `output.rs:27-35`
+
+`impl dyn OutputFormatter` is an unusual and non-idiomatic Rust pattern. This should be a free function or an associated function on a concrete type. The `bare_trait_objects = "allow"` lint in Cargo.toml was likely added to make this compile on older editions.
+
+### [MEDIUM] `expect()` calls in CSV/JSON formatters at `output.rs:86,95-101`
+
+The Rust coding rules say "No `unwrap()` in production code — use `?` or `expect()` with actionable message." The `expect()` calls here have messages, which technically satisfies the rule, but `format_table` returns `String` not `Result`, so there's no way to propagate errors. If the CSV writer fails (e.g., on invalid UTF-8), this panics in production. The trait method should return `Result<String, CliError>`.
+
+### [MEDIUM] `config_warns_or_rejects_non_https_url` test is vacuous at `security.rs:185`
+
+The assertion `assert!(config.is_ok() || config.is_err())` is a tautology — it can never fail. This test documents nothing and verifies nothing. Either non-HTTPS should be rejected (assert `is_err()`) or accepted with a warning (assert `is_ok()` and check for warning).
+
+### [MEDIUM] `SiemClient._http` field is unused (prefixed with `_`) at `client.rs:8`
+
+The HTTP client field is named `_http` indicating it's intentionally unused. But this IS the HTTP client — it's the core of `SiemClient`. The field should be named `http` or `client` and actually used in request methods. Currently `SiemClient` cannot make any HTTP requests.
+
+### [LOW] Nightly `rustfmt` check fails — import ordering issues
+
+Per the gotchas file, `cargo +nightly fmt --all --check` must pass. It currently fails with import ordering diffs in `cli.rs` and `client.rs`. Nightly rustfmt sorts external crate imports before internal crate imports.
+
+### [LOW] `init.rs` stub references "Story 6.1-init" but AC says init should be functional
+
+AC-9 says shell completion should be functional (not stub). AC context says init should be functional too: "Shell completion generation (functional, not stub)" and "`axiathon init` first-time setup (functional, not stub)". The `init.rs` is currently a stub.
+
+### [VERIFIED] Header injection (CWE-113) — sanitization present at `client.rs:37,44`
+
+CRLF and null byte characters are stripped before header value construction. `HeaderValue::from_str` provides additional validation. Injection test coverage is adequate.
+
+### [VERIFIED] Exit code mapping complete — all documented codes covered at `error.rs:36-43`
+
+0=success (implicit), 1=general error, 3=auth, 4=authz. Code 2 handled by clap automatically.
+
+### [VERIFIED] `#![forbid(unsafe_code)]` present at `lib.rs:2`
+
+---
+
+## Summary
+
+| Severity | Count |
+|----------|-------|
+| Critical | 0 |
+| High     | 4 |
+| Medium   | 7 |
+| Low      | 2 |
+| Verified | 3 |
+
+## Verdict: **CHANGES_REQUESTED**
+
+Four High-severity findings block approval:
+
+1. **No `main.rs`** — the binary cannot be built, which is the primary deliverable
+2. **`Completion` enum variant has no shell argument** — AC-9 cannot be satisfied
+3. **Unknown config fields silently ignored** — `token` in config file creates a security-adjacent UX trap
+4. **`ServerError` inner string pattern is fragile** — one-line change from "safe" to "CWE-209 violation"
+
+The Medium findings (wrong edition, missing `keyring`, inline instead of workspace deps, vacuous test, `impl dyn` anti-pattern) further indicate this implementation needs another pass. The foundation is reasonable — the clap structure, error types, and header sanitization are sound — but the missing binary entry point and incomplete command wiring prevent this from being a shippable CLI framework.

@@ -1,0 +1,152 @@
+I have now read every source file and every test file. Let me compile my findings.
+
+---
+
+# Code Review: Story 6.1 — CLI Framework & Structure
+
+**Reviewer:** Professor James Moriarty
+**Verdict:** CHANGES_REQUESTED
+
+*"The web may be spun with care, but I've found the threads that will unravel it."*
+
+---
+
+## Findings
+
+### [HIGH] Missing `logout` and `tui` commands — AC-1 violation at `cli.rs:52-74`
+
+AC-1 explicitly requires: *"axiathon --help must show all command groups: query, rules, alerts, ingest, config, status, tenant, **login/logout**, **tui**, completion, init."*
+
+The `Commands` enum has no `Logout` variant and no `Tui` variant. The `help_renders_without_panic_top_level` test at `cli_structure.rs:102-110` conveniently omits checking for `"logout"` and `"tui"` — the test was written to match the implementation rather than the AC. This is a spec violation that the test suite was shaped to hide.
+
+---
+
+### [HIGH] `table_no_color_omits_ansi_escape_codes` test is vacuous — `output_format.rs:139-148`
+
+```rust
+fn table_no_color_omits_ansi_escape_codes() {
+    let formatter = TableFormatter::new(false); // no_color = true means no ANSI
+```
+
+The comment says "no_color = true" but the code passes `false`. The test passes because in a test context there's no TTY, so comfy-table doesn't emit ANSI regardless. This test proves nothing about the `--no-color` flag actually working. It's a false-pass — the assertion would pass even if the `no_color` field were completely ignored.
+
+---
+
+### [HIGH] Several dependencies bypass workspace declarations — `Cargo.toml:15-20,25`
+
+The workspace `Cargo.toml` does not declare `clap_complete`, `comfy-table`, `csv`, `dirs`, `keyring`, `reqwest`, or `toml` as workspace dependencies. The client crate specifies them as direct version strings:
+
+```toml
+clap_complete = "4"
+comfy-table = "7"
+csv = "1"
+dirs = "6"
+keyring = { version = "3", ... }
+reqwest = { version = "0.12", ... }
+toml = "0.8"
+```
+
+The story explicitly requires: *"Add to [workspace.dependencies]: reqwest 0.12, comfy-table 7, keyring 3, clap_complete 4, dirs 6, csv 1, toml 0.9."* This violates the workspace dependency management pattern and the story's own technical guardrails.
+
+---
+
+### [MEDIUM] `ServerError` and `Unauthorized` leak raw server response bodies — CWE-209 at `error.rs:8-9,29` and `client.rs:67-69`
+
+```rust
+#[error("server error: {0}")]
+ServerError(String),
+#[error("access denied: {0}")]
+Unauthorized(String),
+```
+
+`map_http_status` at `client.rs:69` passes the HTTP response body directly into these variants. If the server returns a verbose error (stack trace, SQL error, internal path), it flows straight through `Display` to the operator's terminal. The `/// **SECURITY:** Display impls are user-facing` comment on `error.rs:1` contradicts the actual behavior. The security test at `security.rs:17-28` only checks hardcoded test strings — it doesn't verify that server-originated content is sanitized.
+
+---
+
+### [MEDIUM] `with_overrides` silently ignores config file parameter — `config.rs:76-90`
+
+```rust
+pub fn with_overrides(
+    cli_url: Option<&str>,
+    env_url: Option<&str>,
+    _config_file: Option<&Path>,  // ← ignored
+) -> Self {
+```
+
+The `_config_file` parameter is accepted but never used. The documented precedence chain is "CLI flags > env vars > config file > defaults" but the config file step is a no-op. This is either dead code or an incomplete implementation that silently drops the user's config file. No test covers this gap.
+
+---
+
+### [MEDIUM] `#[non_exhaustive]` missing from `CliError` — `error.rs:7`
+
+The project's Rust coding rules state: *"#[non_exhaustive] on enums that will grow."* `CliError` will absolutely grow as Stories 6.2-6.7, 5.5, and 9.1 add real implementations. Without `#[non_exhaustive]`, downstream `match` arms won't be forced to handle future variants, risking silent breakage.
+
+---
+
+### [MEDIUM] `expect()` calls in production output path — `output.rs:73,90-95`
+
+```rust
+serde_json::to_string_pretty(&output).expect("JSON serialization should not fail")
+wtr.write_record(headers).expect("CSV header write should not fail")
+```
+
+The Rust rules say "No `unwrap()` in production code — use `?` or `expect()` with actionable message." While `expect()` is technically allowed, these are in the `OutputFormatter::format` method which returns `String` (not `Result`). If the trait signature allowed `Result`, these could propagate errors instead of panicking. The trait design forces panics.
+
+---
+
+### [MEDIUM] Nightly `rustfmt` check fails — `client.rs`, `output.rs`, `cli_structure.rs`
+
+Per the gotchas sidecar: *"Always include cargo +nightly fmt --all --check in the preflight. Nightly rustfmt enforces import ordering that stable does not."*
+
+Three files have import ordering and line-break differences that nightly fmt would fix. This should have been caught before review.
+
+---
+
+### [LOW] `InitArgs` is an empty stub with no handler — `init.rs:1-4`
+
+AC-9 says completion should be "functional, not stub." The story scope says the same for `init`: *"axiathon init first-time setup (functional, not stub)."* But `InitArgs` is just an empty struct with no `handle_stub()` or any handler at all. It can't even report "not yet implemented" like the other stubs.
+
+---
+
+### [LOW] `tenant` flag uses raw `String` instead of `TenantId` — `cli.rs:30-31`
+
+```rust
+pub tenant: Option<String>,
+```
+
+The project has a validated `TenantId` newtype in `axiathon-core`. Using raw `String` here means the trust boundary validation is deferred to wherever the value is eventually used, with no guarantee it happens. This is a type-safety gap per the project's "Newtypes for IDs" rule. (Acknowledged: clap parsing makes this somewhat awkward, but the conversion should happen immediately after parse.)
+
+---
+
+### [LOW] Test header claims "28 tests" but file has 29 — `cli_structure.rs:9`
+
+The file header says "28 tests" but there are 29 `#[test]` functions. Stale count per the bash rules: *"Every test file header that claims a count must match the actual TAP plan."*
+
+---
+
+### [VERIFIED] `forbid(unsafe_code)` present in both `lib.rs:2` and `main.rs:1`
+### [VERIFIED] Header injection prevention for `\r\n` in tenant ID and token at `client.rs:43,51`
+### [VERIFIED] Token intentionally excluded from config file at `config.rs:15,100-103`
+### [VERIFIED] Exit code mapping covers all CliError variants at `error.rs:42-48`
+### [VERIFIED] Shell completion generation is functional at `completion.rs:33-39`
+
+---
+
+## Summary
+
+| Severity | Count | Blocks? |
+|----------|-------|---------|
+| Critical | 0 | — |
+| High | 3 | YES |
+| Medium | 5 | NO |
+| Low | 3 | NO |
+
+**Verdict: CHANGES_REQUESTED**
+
+Three High-severity issues must be resolved before approval:
+
+1. **Add `Logout` and `Tui` command variants** to satisfy AC-1, and update the help test to verify their presence.
+2. **Fix the `no_color` test** to actually pass `true` and verify the flag works, or restructure to test with a TTY mock.
+3. **Move all CLI-specific dependencies to `[workspace.dependencies]`** per the story's technical guardrails and the project's workspace dependency pattern.
+
+The Medium findings (CWE-209 body leakage, ignored `_config_file`, missing `#[non_exhaustive]`, `expect()` in formatters, nightly fmt) should also be addressed but are not individually blocking.

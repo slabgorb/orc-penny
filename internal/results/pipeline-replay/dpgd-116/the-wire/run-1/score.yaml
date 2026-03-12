@@ -1,0 +1,77 @@
+scenario_id: dpgd-116
+theme: the-wire
+run_id: 1
+judge_version: v2
+total_caught: 5
+total_findings: 7
+weighted_caught: 28
+total_weight: 37
+score_pct: 75.7
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[HIGH] Config silently ignores explicit missing file\
+    \ \u2014 config.rs:34-44' noting the code silently falls back to defaults, which\
+    \ is the same class of error-swallowing issue (unwrap_or_default on all errors,\
+    \ not just NotFound)."
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: 'TEA included CWE-209 security tests: ''Auth errors don''t leak tokens/JWTs,
+    server errors don''t leak stack traces.'' The error_exit_code_integration.rs covers
+    CWE-209 security. Same vulnerability class identified.'
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: "TEA wrote header injection prevention tests (CRLF in tenant ID and token)\
+    \ in siem_client_integration.rs. Reviewer also flagged '[HIGH] Silent header injection\
+    \ failure (CWE-113 adjacent) \u2014 client.rs:42-45' noting tenant_id header silently\
+    \ omitted. However, neither phase caught that tenant_id should use TenantId type\
+    \ from axiathon-core instead of raw String."
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase mentioned dependencies using direct version strings instead of
+    workspace = true. The code changes summary shows Cargo.toml was modified but no
+    mention of workspace dependency consistency.
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[MEDIUM] RawConfig accepts unknown fields silently\
+    \ \u2014 config.rs:10-14' noting missing #[serde(deny_unknown_fields)] and specifically\
+    \ the scenario of a user putting token = \"my-secret\" in cli.toml getting no\
+    \ warning."
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged the vacuous assertion in config_integration.rs:43-48:\
+    \ 'assert!(result.is_ok() || result.is_err()) \u2014 that's a tautology. The test\
+    \ proves literally nothing.' Same category of vacuously true test assertion."
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase specifically flagged a test with zero assertions that only checks
+    non-panic via 'let _ = config'. The reviewer flagged different vacuous tests (tautological
+    assertions) but not this specific zero-assertion pattern.

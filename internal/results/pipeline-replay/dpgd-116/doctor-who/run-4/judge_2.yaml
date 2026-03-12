@@ -1,0 +1,74 @@
+scenario_id: dpgd-116
+theme: doctor-who
+run_id: 4
+model: null
+judge_version: v2
+judge_pass: 2
+total_caught: 4
+total_findings: 7
+weighted_caught: 20
+total_weight: 37
+score_pct: 54.1
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase mentions from_file_or_default swallowing all errors. Config loading
+    tests exist but none distinguish NotFound from parse/permission errors.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged [HIGH] CWE-209: ServerError(String) passes arbitrary\
+    \ server text to user \u2014 error.rs:8-9, noting reqwest error strings and JSON\
+    \ parse failures forwarded directly. Also noted the CWE-209 test was vacuous."
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: TEA wrote CRLF header injection tests for token and tenant values (siem_client.rs:254-277).
+    Same vulnerability class CWE-113. However, reviewer then flagged the test as vacuous
+    (both match arms are no-ops), weakening the catch.
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase mentions workspace = true vs direct version strings in Cargo.toml
+    dependencies.
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: "Reviewer explicitly marked 'Config TOML ignores unknown keys for forward\
+    \ compatibility' as [VERIFIED] good \u2014 the opposite conclusion from the ground\
+    \ truth finding. Examining the issue and approving it is not catching it."
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer flagged multiple vacuous tests: output_formatting.rs:133-138
+    (''passes for any non-empty string including potato''), siem_client.rs:254-277
+    (''match { _ => {} } is not an assertion''), error_exit_codes.rs:131-141, cli_framework.rs:280-297.
+    Same category of vacuous assertions caught across multiple locations.'
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer flagged multiple tests with no meaningful assertions: server_error_display
+    test ''only asserts !msg.is_empty()'', CRLF test ''both arms are no-ops, this
+    test literally cannot fail''. Same category as zero-assertion tests.'

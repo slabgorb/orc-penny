@@ -1,0 +1,79 @@
+scenario_id: dpgd-116
+theme: game-of-thrones
+run_id: 1
+judge_version: v2
+judge_pass: 2
+total_caught: 3
+total_findings: 7
+weighted_caught: 18
+total_weight: 37
+score_pct: 48.6
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: true
+  caught_by: tea
+  evidence: TEA wrote separate tests for 'missing file graceful handling' and 'malformed
+    TOML rejection' in config_loading.rs, which requires the implementation to distinguish
+    NotFound (acceptable fallback) from parse errors (must reject). Dev implemented
+    this and all 107 tests pass green.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote tests/security.rs with 9 tests including explicit ''CWE-209
+    error exposure'' test. Reviewer also flagged observation #3: ''ServerError Display
+    leaks raw server response body (CWE-209)'' as a MEDIUM issue still present, confirming
+    the vulnerability class was identified.'
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer observation #9: ''--tenant flag accepts raw String instead of
+    TenantId... Per project rules: Newtypes for IDs: TenantId(String). The --tenant
+    flag is Option<String>, and SiemClient::new() takes Option<String> for tenant.
+    This should use TenantId from axiathon-core.'''
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: 'Reviewer #5 flagged toml version mismatch with spec but did not identify
+    the broader issue of 6 dependencies using direct version strings instead of workspace
+    = true. The workspace dependency pattern was never flagged.'
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: "Reviewer observation #12 explicitly examined the token field and concluded\
+    \ 'VERIFIED: Config token field is accepted but never exposed... Tokens stay in\
+    \ the OS keychain. Correct design.' This is the opposite conclusion \u2014 the\
+    \ ground truth says silent ignoring leaves a secret on disk and gives false authentication\
+    \ confidence. Reviewer #4 flagged deny_unknown_fields but token is a known field,\
+    \ so that wouldn't catch it."
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified the vacuously true assertion pattern (is_none() ||
+    ... always passes). The reviewer's test analysis did not flag this specific test
+    logic flaw.
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified the zero-assertion test that only checks for non-panic.
+    The reviewer did not flag this test quality issue.
