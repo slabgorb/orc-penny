@@ -1,0 +1,29 @@
+You ready for this? Let me show you what it means to really *test*, man.
+
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 is a foundational CLI framework story with 10 acceptance criteria — every one needs verification.
+
+**Test Files:**
+| File | Tests | Coverage |
+|------|-------|---------|
+| `cli_structure_integration.rs` | 19 | AC-1 (command groups), AC-2 (help), AC-5 (global flags), AC-6 (clap derive) |
+| `error_exit_code_integration.rs` | 22 | AC-3 (exit codes 0/1/2/3/4), CliError variants, Send+Sync, Display safety |
+| `output_format_integration.rs` | 17 | AC-4 (table/json/csv), ResponseMetadata, CSV escaping, no-color mode |
+| `siem_client_integration.rs` | 16 | AC-7 (HTTP wrapper, header injection, status code mapping, URL validation) |
+| `config_loading_integration.rs` | 14 | AC-8 (TOML loading, env var override, precedence, validation, token safety) |
+| `completion_and_stubs_integration.rs` | 19 | AC-9 (bash/zsh/fish/powershell), AC-10 (stub messages with story refs) |
+| `security_integration.rs` | 8 | CWE-209 (error exposure), CWE-113 (header injection), dependency boundary |
+
+**Tests Written:** 115 tests covering all 10 ACs
+**Status:** RED (47 compilation errors — source modules are empty stubs)
+
+**Security tests included:**
+- CWE-209: Server error display doesn't leak stack traces, paths, or credentials
+- CWE-113: Tenant ID and auth token with CRLF injection rejected/sanitized
+- Config rejects URLs with embedded credentials
+- Config rejects non-HTTPS to non-localhost servers
+- Auth token not leaked in error Display output
+
+**Handoff:** To Dev for implementation (GREEN phase)

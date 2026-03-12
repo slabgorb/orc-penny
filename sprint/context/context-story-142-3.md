@@ -1,82 +1,32 @@
 ---
 parent: context-epic-142.md
-workflow: tdd
+workflow: trivial
 ---
 
-# Story 142-3: Pipeline Replay BMAD Adapter
+# Story 142-3: Worktree cleanliness verification
 
 ## Business Context
 
-This story wires the BMAD templates (built in 142-2) into the Peloton pipeline replay harness so that `pf benchmark replay run --pipeline bmad` actually works. Without this adapter, the BMAD templates exist but can't be executed through the benchmark infrastructure.
-
-This is the critical integration point — it connects the BMAD simulator to the existing replay harness, enabling head-to-head comparison runs.
+No validation that a worktree is clean after context setup. Crashed runs can leave orphaned files that contaminate next runs. This adds a gate between setup and phase execution.
 
 ## Technical Guardrails
 
-### Architecture (from ADR-0035)
+**Key files:** `pipeline_replay.py` — new `verify_worktree()` after line 372, call in `run_pipeline()` after `setup_worktree_pf_context()` before OTEL collector.
 
-The adapter integrates with the existing `pf benchmark replay` infrastructure. Key integration points:
+**Use `git status --porcelain`** (not `git diff HEAD`) to catch untracked files. Allowed: `.pennyfarthing`, `.claude/settings.json`, `.session/`, `sprint/context/` (pf-context only). Use `raise RuntimeError(...)` not `sys.exit()` — `finally` block needs to run.
 
-1. **`--pipeline bmad` flag** — new CLI option on `pf benchmark replay run` that selects the BMAD adapter
-2. **CLAUDE.md builder swap** — when `--pipeline bmad`, the harness calls `build_bmad_dev_claude_md()` and `build_bmad_reviewer_claude_md()` instead of PF's normal agent definitions
-3. **Phase mapping** — BMAD uses 2 phases (dev, reviewer) vs PF's 3 phases (TEA, dev, reviewer). The adapter must configure the phase list accordingly.
-4. **Story file injection** — calls `translate_story_file()` to convert scenario context to BMAD format, writes to `implementation_artifacts/{story_key}.md`
-5. **Result storage** — stores results under `bmad/run-N/` with `pipeline.yaml` metadata including `pipeline: bmad`
-
-### Existing Infrastructure
-
-| File | Purpose |
-|------|---------|
-| `pennyfarthing-dist/src/pf/benchmark/pipeline_replay.py` | Existing pipeline replay harness |
-| `pennyfarthing-dist/src/pf/benchmark/bmad_adapter.py` | BMAD templates (from 142-2) — `BmadConfig`, `build_bmad_dev_claude_md`, `build_bmad_reviewer_claude_md`, `translate_story_file` |
-| `pennyfarthing-dist/src/pf/benchmark/cli.py` | CLI commands for `pf benchmark replay` |
-
-### BMAD Source Location
-
-**Repository:** `/Users/keithavery/Projects/BMAD-METHOD/`
-**Pinned commit:** `b7315c6e329eb72dc464f4e540bb67cdd22a9749`
-
-The `BmadConfig(bmad_root=Path("/Users/keithavery/Projects/BMAD-METHOD"))` validates required files exist at construction.
-
-### Worktree Setup (from ADR-0035)
-
-For BMAD runs, the adapter must:
-1. Create BMAD-format story file at `implementation_artifacts/{story_key}.md`
-2. Create `project-context.md` from target project coding standards
-3. Pass `story_path` directly in the prompt so BMAD's step 1 skips sprint-status lookup
-4. NOT create `_bmad/` directory, `sprint-status.yaml`, or `config.yaml`
+**Critical pitfall:** If verify raises before OTEL collector starts, `collector.stop()` in `finally` crashes with NameError. Fix: `collector = None` before try, guard with `if collector:`.
 
 ## Scope Boundaries
 
-**In scope:**
-- `--pipeline bmad` CLI option on `pf benchmark replay run`
-- BMAD pipeline adapter that swaps CLAUDE.md builder and phase configuration
-- Worktree setup for BMAD runs (story file + project-context.md)
-- Result storage under `bmad/run-N/` with pipeline metadata
-- Tests verifying adapter integration
-
-**Out of scope:**
-- BMAD template construction (done in 142-2)
-- Context parity verification (142-4)
-- Actually running comparison benchmarks (142-5)
-- Comparative analysis report (142-6)
+**In scope:** `verify_worktree()` checking files + HEAD commit, call site in `run_pipeline()`
+**Out of scope:** Worktree lifecycle management
 
 ## AC Context
 
-### AC1: --pipeline CLI Option
-
-The `pf benchmark replay run` command accepts `--pipeline bmad` (default: `default`). When set to `bmad`, the harness uses the BMAD adapter for CLAUDE.md construction and phase configuration.
-
-**Testable:** CLI accepts `--pipeline` flag. `bmad` value routes to BMAD adapter. Invalid values raise an error.
-
-### AC2: BMAD Pipeline Adapter
-
-The adapter configures the replay harness for BMAD execution: 2-phase pipeline (dev, reviewer), BMAD CLAUDE.md builders, BMAD story file translation, and result storage under `bmad/run-N/`.
-
-**Testable:** Adapter produces correct phase list, calls correct CLAUDE.md builders, stores results in correct directory structure with `pipeline: bmad` metadata.
-
-### AC3: Worktree Setup
-
-The adapter creates the BMAD-specific files in the worktree: translated story file and project-context.md. The `story_path` is passed in the prompt.
-
-**Testable:** Story file written to correct path. project-context.md created. story_path provided. No BMAD infrastructure files created.
+| AC | Detail |
+|----|--------|
+| Validates expected files only | Unexpected files in `git status --porcelain` → RuntimeError |
+| HEAD matches base_commit | `git rev-parse HEAD` == `scenario.base_commit` |
+| Called before phases | Order: setup → verify → OTEL → phases |
+| Clear error message | Lists unexpected files, expected vs actual commit |

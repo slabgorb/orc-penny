@@ -1,0 +1,98 @@
+scenario_id: dpgd-116
+theme: agatha-christie
+run_id: 2
+timestamp: '2026-03-09T17:23:01.769761+00:00'
+model_requested: opus
+models_used:
+- claude-haiku-4-5-20251001
+- claude-opus-4-6
+total_cost_usd: 5.5136
+worktree_path: /tmp/pf-replay/dpgd-116-agatha-christie-run-2
+phases:
+  tea:
+    token_usage:
+      input: 1165
+      cache_creation: 63346
+      cache_read: 1511923
+      output: 26400
+    model_usage:
+      claude-opus-4-6:
+        inputTokens: 1165
+        outputTokens: 26400
+        cacheReadInputTokens: 1511923
+        cacheCreationInputTokens: 63346
+        webSearchRequests: 0
+        costUSD: 1.8176990000000006
+        contextWindow: 200000
+        maxOutputTokens: 32000
+      claude-haiku-4-5-20251001:
+        inputTokens: 52
+        outputTokens: 4812
+        cacheReadInputTokens: 337529
+        cacheCreationInputTokens: 36465
+        webSearchRequests: 0
+        costUSD: 0.10344615000000001
+        contextWindow: 200000
+        maxOutputTokens: 32000
+    cost_usd: 1.9211
+    duration_s: 445.12
+    exit_code: 0
+    session_id: eb97f74a-6f84-4708-b62c-eb3d916ae1b2
+  dev:
+    token_usage:
+      input: 46
+      cache_creation: 120624
+      cache_read: 2662513
+      output: 17100
+    model_usage:
+      claude-opus-4-6:
+        inputTokens: 46
+        outputTokens: 17100
+        cacheReadInputTokens: 2662513
+        cacheCreationInputTokens: 120624
+        webSearchRequests: 0
+        costUSD: 2.5128865
+        contextWindow: 200000
+        maxOutputTokens: 32000
+      claude-haiku-4-5-20251001:
+        inputTokens: 60
+        outputTokens: 5858
+        cacheReadInputTokens: 471324
+        cacheCreationInputTokens: 64792
+        webSearchRequests: 0
+        costUSD: 0.1574724
+        contextWindow: 200000
+        maxOutputTokens: 32000
+    cost_usd: 2.6704
+    duration_s: 393.53
+    exit_code: 0
+    session_id: 2d266c4a-9ec9-4123-a6b0-82f2e4e5ed20
+  reviewer:
+    token_usage:
+      input: 1314
+      cache_creation: 77450
+      cache_read: 357964
+      output: 7371
+    model_usage:
+      claude-opus-4-6:
+        inputTokens: 1314
+        outputTokens: 7371
+        cacheReadInputTokens: 357964
+        cacheCreationInputTokens: 77450
+        webSearchRequests: 0
+        costUSD: 0.8538895
+        contextWindow: 200000
+        maxOutputTokens: 32000
+      claude-haiku-4-5-20251001:
+        inputTokens: 18
+        outputTokens: 2014
+        cacheReadInputTokens: 159558
+        cacheCreationInputTokens: 33757
+        webSearchRequests: 0
+        costUSD: 0.06824005
+        contextWindow: 200000
+        maxOutputTokens: 32000
+    cost_usd: 0.9221
+    duration_s: 178.56
+    exit_code: 0
+    session_id: a564bc97-488a-4b47-ac0f-3a8826dc1fd6

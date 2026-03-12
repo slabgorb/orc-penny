@@ -1,0 +1,76 @@
+scenario_id: dpgd-116
+theme: blade-runner
+run_id: 3
+model: null
+judge_version: v2
+judge_pass: 2
+total_caught: 4
+total_findings: 7
+weighted_caught: 20
+total_weight: 37
+score_pct: 54.1
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase flagged from_file_or_default swallowing all errors. Config loading
+    was tested but the error-swallowing pattern was not identified.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: TEA wrote security_test.rs covering CWE-209, demonstrating awareness of
+    the information exposure vulnerability class. Tests listed as covering 'CWE-209,
+    CRLF header injection, silent error prevention'.
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer finding #4: ''--tenant accepts raw String instead of validated
+    TenantId newtype. cli.rs:32 declares pub tenant: Option<String>. Similarly, SiemClient.tenant
+    at client.rs:11 stores Option<String> instead of Option<TenantId>.'''
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase identified that 6 dependencies use direct version strings instead
+    of workspace = true.
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: "Reviewer finding #17 explicitly verified as correct: '[VERIFIED] Config\
+    \ file does not store tokens \u2014 no token field in ClientConfig.' This is the\
+    \ opposite conclusion \u2014 the reviewer saw the code and concluded the behavior\
+    \ was fine, missing the risk of silently ignored unknown fields leaving secrets\
+    \ on disk."
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer flagged multiple vacuous test patterns including findings #9
+    (let _ = config with no assertion), #10 (assert!(true)), and #13 (accepts any
+    outcome). Same category of vacuous/always-passing tests demonstrates detection
+    capability.'
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer finding #9: 'config_test.rs:132-150 \u2014 the test loads a\
+    \ config then does let _ = config. It never actually asserts that no token value\
+    \ was loaded... the test proves nothing because it has no assertion.'"

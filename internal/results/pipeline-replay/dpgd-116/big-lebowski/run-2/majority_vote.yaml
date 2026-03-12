@@ -1,0 +1,86 @@
+judge_method: majority_vote
+n_judges: 3
+majority_threshold: 2
+model: opus
+judge_version: v2
+total_caught: 5
+total_findings: 7
+weighted_caught: 25
+total_weight: 37
+score_pct: 67.6
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote security tests for ''CWE-209: Error messages don''t leak stack
+    traces, DB details, or user existence''. Reviewer further flagged ''[MEDIUM] NotFound
+    error leaks user-controlled input in Display'' noting inconsistent sanitization
+    on NotFound and ConfigError variants. Same vulnerability class addressed.'
+  votes: 3/3
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: TEA wrote tests for 'CRLF header injection prevention on tenant ID and
+    auth token' and 'Null byte injection in headers'. Dev implemented sanitization
+    at client.rs:42-48. Same vulnerability class (CWE-113 header injection) addressed,
+    though the type-safety fix (using TenantId instead of String) was not flagged.
+  votes: 3/3
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[HIGH] RawConfig silently ignores unknown TOML fields\
+    \ \u2014 config typos go undetected' and explicitly called out the token-in-config\
+    \ scenario: 'If a user puts a token in the config file, the tool silently ignores\
+    \ it with no warning. The user thinks they're authenticated; they're not.' Required\
+    \ fix: deny_unknown_fields or warn on [auth] section."
+  votes: 3/3
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer identified vacuous test patterns: the config_file_rejects_token_field\
+    \ test 'accepts either Ok or Err. The test is vacuous \u2014 it can never fail.'\
+    \ Same category (vacuous assertion that always passes) in adjacent test location."
+  votes: 3/3
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[CRITICAL] Vacuous test \u2014 auth_token_rejects_crlf_injection\
+    \ asserts nothing' \u2014 'This test has zero assertions. It constructs a client\
+    \ with a CRLF-injected token and then... does nothing.' Same category (test with\
+    \ zero assertions, only checks non-panic) in adjacent location."
+  votes: 3/3
+individual_scores:
+- 67.6
+- 67.6
+- 67.6

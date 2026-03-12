@@ -1,0 +1,96 @@
+Now I have all the data I need. Let me check one more thing — does `--server` support `AXIATHON_SERVER` env var as required by AC-5?
+
+Looking at `cli.rs:23`, the `--server` flag has no `env = "AXIATHON_SERVER"` attribute. AC-5 says "--server supports AXIATHON_SERVER env var."
+
+Also checking: does `from_file_with_env` actually read env vars, or does the caller need to pass them?
+
+The `from_file_with_env` method takes `Option<&str>` parameters — it doesn't read env vars itself. The caller would need to read `std::env::var("AXIATHON_API_URL")` and pass the value. But `main.rs` never calls config loading at all. The config infrastructure exists but isn't wired in `main.rs`. That's acceptable for a stub framework — but worth noting.
+
+Let me check one more thing about the `NotFound` error potentially leaking the full URL:
+
+Looking at `client.rs:74`: `Err(CliError::NotFound(url))` — this puts the full URL (including `base_url`) in the error. The `error.rs:14` Display for NotFound is `#[error("resource not found: {0}")]`. This leaks the full server URL to the operator on a 404. Not a security issue per se (operator knows the server), but it's worth noting.
+
+Let me check the `init` command — AC-9 says completion is functional, and the init command should do first-time setup:
+
+Looking at `main.rs:24-27`: `Init` just prints "Initializing Axiathon CLI configuration..." to stderr and returns Ok. It doesn't actually create the config directory or a default config file. The story says "axiathon init first-time setup (functional, not stub)."
+
+---
+
+# Story 6.1 CLI Framework — Adversarial Review
+
+*In the Lord Regent's experience, it's the things you don't check that kill you.*
+
+## Observations
+
+### [HIGH] `cargo +nightly fmt --all --check` fails — `cli.rs`, `completion.rs` at `crates/axiathon-client/src/cli.rs:1` and `crates/axiathon-client/src/commands/completion.rs:1`
+
+Nightly rustfmt enforces import ordering that stable does not. The gotchas doc explicitly states: "Always include `cargo +nightly fmt --all --check` in the preflight. If it fails, flag it before approval." Two files have import ordering violations. **This must be fixed before merge.**
+
+### [HIGH] `axiathon init` is a no-op stub despite story scope requiring it functional — `crates/axiathon-client/src/main.rs:24-27`
+
+The story scope says: "axiathon init first-time setup (**functional, not stub**)". Currently it just prints a message to stderr and returns Ok(()). It doesn't create `~/.config/axiathon/cli.toml`, doesn't create the config directory, doesn't do any actual initialization. This is explicitly called out in the scope as needing to be functional, unlike the other stubs.
+
+### [MEDIUM] `--server` flag missing `env = "AXIATHON_SERVER"` — `crates/axiathon-client/src/cli.rs:23`
+
+AC-5 states: "`--server` supports `AXIATHON_SERVER` env var." Clap supports this directly via `#[arg(env = "AXIATHON_SERVER")]`. The flag is defined without env var support. The config module supports `AXIATHON_API_URL` for the file-based config, but the global flag itself doesn't read the env var.
+
+### [MEDIUM] `ConfigFile` silently ignores unknown fields — `crates/axiathon-client/src/config.rs:4-12`
+
+`ConfigFile` deserializes with serde defaults, meaning unknown/typo'd fields like `srver_url` are silently ignored. This is a common source of operator confusion. Consider `#[serde(deny_unknown_fields)]` to fail fast on typos. Without it, a misspelled field silently falls through to defaults.
+
+### [MEDIUM] Config env var timeout override doesn't validate zero — `crates/axiathon-client/src/config.rs:65-70`
+
+The env var timeout path parses the string to u64 but doesn't check for zero. The file-based path checks `t == 0` at line 53, but the env var path at line 69 sets `config.timeout = t` without the same check. A `AXIATHON_TIMEOUT=0` env var would produce a config with zero timeout that only fails if `validate()` is called separately.
+
+### [MEDIUM] `OutputFormatter` trait methods silently swallow serialization errors with `unwrap_or_default()` — `crates/axiathon-client/src/output.rs:64,99,111,120,123,138,142-143`
+
+Multiple `unwrap_or_default()` calls on serde serialization and CSV writing. If serialization fails (e.g., map keys that aren't strings), the operator gets empty output with no indication of failure. These should at minimum log a warning via `tracing::warn!` or return a `Result`.
+
+### [MEDIUM] `SiemClient` has only a `get()` method — `crates/axiathon-client/src/client.rs:42`
+
+The story is a framework story and subsequent stories will need POST, PUT, DELETE for rules/alerts/ingest management. The client wrapper only implements GET. While technically "future stories will add these," the framework story should probably at least have the method signatures stubbed to validate the HTTP wrapper design works for mutations (different error handling for request bodies, etc.).
+
+### [LOW] `table_formatter_no_color_has_no_ansi` test passes `false` (not `true`) for `no_color` — `crates/axiathon-client/tests/output_format.rs:101`
+
+`TableFormatter::new(false)` means `no_color = false`, i.e., color IS enabled. The test name says "no_color_has_no_ansi" but constructs the formatter with color enabled. The test passes because comfy_table's `force_no_tty()` suppresses ANSI in non-TTY contexts (test env), but the test is testing the wrong thing — it's not actually testing the `--no-color` flag behavior. Should be `TableFormatter::new(true)`.
+
+### [LOW] `stub_story_references_are_specific` test only checks 4 of 7 stub commands — `crates/axiathon-client/tests/stub_handlers.rs:41-46`
+
+The test checks status(6.2), config(6.3), ingest(6.4), alerts(6.5) but doesn't verify query(5.5), rules(6.6), tenant(6.7). The test constructs errors directly rather than exercising the actual dispatch in `main.rs`, so it's not truly verifying the stub wiring.
+
+### [LOW] `keyring` crate is in dependencies but never used — `crates/axiathon-client/Cargo.toml:19`
+
+The `keyring` crate is listed as a dependency but no code references it. The story says credential loading happens "before entering Tokio runtime," but the `ClientConfig::token()` method always returns `None`. The unused dependency adds to compile time and attack surface.
+
+### [VERIFIED] Header injection prevention (CWE-113) correctly validates `\r`, `\n`, `\0` in both token and tenant_id at `client.rs:10-17`
+
+### [VERIFIED] CWE-209 error sanitization — `ServerError` Display is generic "server error: request failed", does not pass through the inner String. Auth errors use generic messages.
+
+### [VERIFIED] Exit code mapping matches specification: 1=general, 3=auth, 4=authz at `error.rs:34-40`
+
+### [VERIFIED] `#![forbid(unsafe_code)]` present on both `main.rs:1` and `lib.rs:2`
+
+### [VERIFIED] Config token field from TOML is correctly ignored — parsed but never loaded into `ClientConfig`
+
+### [VERIFIED] All command groups use plural nouns per architecture doc (rules, alerts, not rule, alert)
+
+### [VERIFIED] Clap derive macros only — no imperative command building anywhere
+
+## Summary
+
+| Severity | Count |
+|----------|-------|
+| Critical | 0 |
+| High     | 2 |
+| Medium   | 4 |
+| Low      | 3 |
+| Verified | 7 |
+
+## Verdict: **CHANGES_REQUESTED**
+
+Two High findings block approval:
+
+1. **Nightly fmt check fails** — per project gotchas, this must pass before approval.
+2. **`axiathon init` is a no-op** — the story scope explicitly requires it functional, not stub. At minimum it should create the config directory and a default `cli.toml`.
+
+The Medium findings (missing `AXIATHON_SERVER` env var support, silent unknown fields, inconsistent zero-timeout validation, silent serialization failures) are worth addressing but don't individually block — though collectively they represent several operator-facing quality gaps.

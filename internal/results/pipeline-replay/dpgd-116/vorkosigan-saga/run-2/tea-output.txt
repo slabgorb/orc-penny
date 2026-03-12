@@ -1,0 +1,29 @@
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 is the foundational CLI framework — every module needs test coverage.
+
+**Test Files:**
+| File | Tests | Coverage |
+|------|-------|----------|
+| `tests/cli_structure.rs` | 16 | AC-1 (command groups), AC-2 (help rendering), AC-5 (global flags), AC-6 (clap derive) |
+| `tests/exit_codes.rs` | 14 | AC-3 (CliError::exit_code() mapping 0/1/2/3/4) |
+| `tests/output_format.rs` | 14 | AC-4 (OutputFormatter: table/json/csv formatting, escaping, metadata) |
+| `tests/siem_client.rs` | 11 | AC-7 (header injection, HTTP status→CliError mapping: 401/403/404/429/5xx) |
+| `tests/config_loading.rs` | 10 | AC-8 (TOML loading, env var overrides, precedence, token exclusion) |
+| `tests/completion.rs` | 5 | AC-9 (bash/zsh/fish/PowerShell completion generation) |
+| `tests/stub_handlers.rs` | 3 | AC-10 (stub error messages with story references) |
+| `tests/security.rs` | 10 | CWE-209 error exposure, CWE-113 header injection, config validation |
+
+**Tests Written:** 83 tests covering all 10 ACs
+**Status:** RED (fails to compile — modules `cli`, `error`, `output`, `client`, `config`, `commands` don't exist yet)
+
+**Key contracts defined for Dev:**
+- `axiathon_client::cli::Cli` — clap `Parser` with `Commands` `Subcommand` enum
+- `axiathon_client::error::CliError` — enum with `exit_code()` method, variants: `ServerError`, `AuthenticationExpired`, `Unauthorized`, `NotFound`, `ConnectionTimeout`, `ServerUnavailable`, `RateLimited`, `Config`, `NotImplemented`
+- `axiathon_client::output` — `OutputFormatter` trait, `TableFormatter`, `JsonFormatter`, `CsvFormatter`, `OutputFormat` enum
+- `axiathon_client::client::SiemClient` — `new(url, token, tenant)`, `get(path)` with header injection
+- `axiathon_client::config::ClientConfig` — `from_file()`, `from_file_with_env()`, `apply_cli_overrides()`, `validate()`, `default_path()`
+- `axiathon_client::commands::completion::generate_completion()` — wraps `clap_complete::generate()`
+
+**Handoff:** To Dev for implementation (GREEN phase).
