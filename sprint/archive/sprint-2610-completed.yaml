@@ -596,3 +596,13 @@ completed_stories:
     title: Run index with backfill
     points: 2
     completed: '2026-03-11'
+  - id: 142-8
+    epic: ''
+    title: Events-first storage model
+    points: 3
+    completed: '2026-03-12'
+  - id: 142-9
+    epic: ''
+    title: LLM-narrated trace
+    points: 2
+    completed: '2026-03-12'
