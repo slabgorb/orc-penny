@@ -1,0 +1,10 @@
+name: "Native Subagent Migration"
+description: |
+  Migrate all Pennyfarthing agent personas from in-conversation persona switching
+  to native Claude Code subagents (.claude/agents/*.md), giving each agent an
+  isolated context window with role-specific tool restrictions.
+status: planning
+blocked_by:
+total_points: 46
+epics:
+  - '143'
