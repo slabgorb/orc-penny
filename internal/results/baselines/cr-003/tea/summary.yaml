@@ -1,0 +1,73 @@
+# control:tea on cr-003 (re-judged v2)
+agent:
+  theme: control
+  character: Test Engineer (baseline control)
+  effective_role: tea
+  source_role: tea
+  spec: control:tea
+  cross_role: false
+scenario:
+  name: cr-003
+  category: code-review
+  difficulty: medium
+statistics:
+  n: 10
+  mean: 77.51
+  std_dev: 5.98
+  min: 66.55
+  max: 86.43
+  scores:
+  - 81.61
+  - 69.1
+  - 74.73
+  - 77.23
+  - 86.43
+  - 75.77
+  - 66.55
+  - 83.55
+  - 82.3
+  - 77.86
+  ci_95:
+  - 73.81
+  - 81.22
+detection_profile:
+  f1_serde_bypass: 10/10
+  debug_secret_leak: 10/10
+  display_panic: 10/10
+  timing_side_channel: 10/10
+  clone_proliferation: 10/10
+  source_ip_spoofable: 10/10
+  unbounded_metadata: 10/10
+  missing_test_coverage: 10/10
+  non_exhaustive_error: 9/10
+  stringly_typed_event: 3/10
+efficiency:
+  avg_input_tokens: 2
+  avg_output_tokens: 891
+  tokens_per_point: 11.52
+observations:
+- F1 detection 10/10 -- ceiling-bound
+- DEBUG_SECRET_LEAK 10/10 -- highest secondary detection
+- STRINGLY_TYPED_EVENT 3/10 -- lowest detection
+- Score range 19.88 points (66.55-86.43)
+- 'Detection breadth: 10/10 finding types detected at least once'
+metadata:
+  created_at: '2026-03-07T13:49:35.053173Z'
+  pennyfarthing_version: 1.0.0
+  model: sonnet
+  execution_method: claude-p
+  judge_model: sonnet
+  judge_method: claude-p
+  judge_rubric: v2-no-persona
+  rejudged: true
+runs:
+- run_1.json
+- run_2.json
+- run_3.json
+- run_4.json
+- run_5.json
+- run_6.json
+- run_7.json
+- run_8.json
+- run_9.json
+- run_10.json

@@ -1,0 +1,72 @@
+# the-expanse:dev on cr-003
+agent:
+  theme: the-expanse
+  character: Naomi Nagata
+  effective_role: dev
+  source_role: dev
+  spec: the-expanse:dev
+  cross_role: false
+  ocean: O:5 C:5 E:3 A:4 N:3
+scenario:
+  name: cr-003
+  category: code-review
+  difficulty: medium
+statistics:
+  n: 10
+  mean: 78.83
+  std_dev: 4.67
+  min: 67.99
+  max: 85.11
+  scores:
+  - 79.93
+  - 78.06
+  - 80.36
+  - 77.98
+  - 67.99
+  - 74.23
+  - 84.23
+  - 81.18
+  - 85.11
+  - 79.21
+  ci_95:
+  - 75.94
+  - 81.72
+detection_profile:
+  f1_serde_bypass: 10/10
+  debug_secret_leak: 10/10
+  display_panic: 10/10
+  timing_side_channel: 10/10
+  clone_proliferation: 10/10
+  source_ip_spoofable: 10/10
+  unbounded_metadata: 8/10
+  missing_test_coverage: 7/10
+  non_exhaustive_error: 6/10
+  stringly_typed_event: 3/10
+efficiency:
+  avg_input_tokens: 2
+  avg_output_tokens: 803
+  tokens_per_point: 10.22
+observations:
+- F1 detection 10/10 -- ceiling-bound
+- DEBUG_SECRET_LEAK 10/10 -- highest secondary detection
+- STRINGLY_TYPED_EVENT 3/10 -- lowest detection
+- Score range 17.12 points (67.99-85.11)
+- 'Detection breadth: 10/10 finding types detected at least once'
+metadata:
+  created_at: '2026-03-07T13:00:31.263510Z'
+  pennyfarthing_version: 1.0.0
+  model: sonnet
+  execution_method: claude-p
+  judge_model: sonnet
+  judge_method: claude-p
+runs:
+- run_1.json
+- run_2.json
+- run_3.json
+- run_4.json
+- run_5.json
+- run_6.json
+- run_7.json
+- run_8.json
+- run_9.json
+- run_10.json
