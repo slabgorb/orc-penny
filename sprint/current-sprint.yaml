@@ -144,7 +144,8 @@ standalone_stories:
     jira: MSSCI-16347
     title: Implement stacked PR depends_on field and Graphite health check
     points: 3
-    status: in_progress
+    status: done
     repos: pennyfarthing
     branch: feat/MSSCI-16347-stacked-pr-depends-on
     review_verdict: approved
+    completed: '2026-03-12'
