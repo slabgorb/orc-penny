@@ -140,3 +140,10 @@ standalone_stories:
     repos: pennyfarthing
     pr: 1331
     branch: feat/MSSCI-16346-spec-deviation-tracking
+  - id: MSSCI-16347
+    jira: MSSCI-16347
+    title: Implement stacked PR depends_on field and Graphite health check
+    points: 3
+    status: in_progress
+    repos: pennyfarthing
+    branch: feat/MSSCI-16347-stacked-pr-depends-on
