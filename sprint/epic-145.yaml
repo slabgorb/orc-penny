@@ -1,0 +1,57 @@
+id: '145'
+type: epic
+title: Demo Artifact Generator — Core Pipeline
+description: Collection → classification → generation → assembly pipeline for auto-generating presentation-ready demo artifacts from completed stories.
+priority: p0
+status: backlog
+repos: pennyfarthing
+stories:
+  - id: 145-1
+    title: Signal collector — gather ACs, PR diff, commits, session, review findings
+    points: 3
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 145-2
+    title: Story type classifier — rule-based type detection and format mapping
+    points: 2
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 145-3
+    title: Content generator — Claude ELI5 translation from signals
+    points: 3
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 145-4
+    title: Demo script generator — step-by-step presenter walkthrough
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 145-5
+    title: PPTX assembler — build slide deck from generated content
+    points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 145-6
+    title: Mermaid diagram generation for backend stories
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+  - id: 145-7
+    title: DemoOrchestrator — pipeline entry point and output writer
+    points: 2
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
