@@ -62,10 +62,14 @@ stories:
     title: Define handoff document contract format
     points: 2
     priority: p0
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-12'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-12'
     type: feature
+    review_verdict: approved
   - id: 143-6
     jira: MSSCI-16364
     title: SM spawns single subagent via Agent tool
