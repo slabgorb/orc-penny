@@ -1,0 +1,91 @@
+judge_method: majority_vote
+n_judges: 3
+majority_threshold: 2
+model: opus
+judge_version: v2
+total_caught: 4
+total_findings: 7
+weighted_caught: 20
+total_weight: 37
+score_pct: 54.1
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged M3: 'CWE-209: Server error details leaked to stderr'\
+    \ \u2014 same vulnerability class (CWE-209 information exposure via Display impl\
+    \ to stderr), noting error messages leak internal details contrary to stated security\
+    \ policy."
+  votes: 3/3
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged M1: 'CWE-113: No validation on tenant ID passed as HTTP\
+    \ header' \u2014 'The tenant_id field is Option<String> \u2014 per rust.md conventions,\
+    \ this should be a validated TenantId newtype with constructor validation.'"
+  votes: 3/3
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged M2: 'Config silently ignores unknown fields (typos swallowed)'\
+    \ \u2014 'A user who writes timout_seconds = 30... gets the default 60s with zero\
+    \ warning. Should use #[serde(deny_unknown_fields)].' This directly matches the\
+    \ ground truth finding about serde silently ignoring unknown fields including\
+    \ token."
+  votes: 3/3
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged L1: 'Vacuous completion tests' \u2014 same category\
+    \ (vacuously true/no-assertion tests) in an adjacent location. The ground truth\
+    \ specifies a different test with 'is_none() || true' but the pipeline demonstrated\
+    \ awareness of vacuous test issues."
+  votes: 2/3
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: 'Reviewer flagged L1: ''Both tests construct a CompletionArgs struct and
+    assert the field they just set equals what they set it to. These test nothing...
+    pure noise.'' This matches the ground truth finding of a test with zero meaningful
+    assertions (only checks non-panic).'
+  votes: 1/3
+individual_scores:
+- 40.5
+- 67.6
+- 54.1
+theme: bmad
+framework_version:
+  commit: b7315c6e329e
+  source: BMAD-METHOD
+  tag: bmad-6.0.4

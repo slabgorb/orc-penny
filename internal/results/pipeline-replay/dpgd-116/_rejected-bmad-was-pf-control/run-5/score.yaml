@@ -1,0 +1,79 @@
+scenario_id: dpgd-116
+theme: bmad
+run_id: 5
+model: opus
+judge_version: v2
+total_caught: 4
+total_findings: 7
+weighted_caught: 20
+total_weight: 37
+score_pct: 54.1
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No mention of from_file_or_default swallowing all error types. The pipeline
+    did not distinguish NotFound from other errors in config loading.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer flagged CWE-209 server error body leakage: ''handle_response
+    passes the raw HTTP response body directly into CliError variants...printed to
+    stderr via eprintln''. Same vulnerability class (CWE-209 information exposure
+    via error output).'
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged: 'tenant CLI flag accepts raw String, not validated\
+    \ TenantId \u2014 The --tenant flag is Option<String>...No validation, no newtype.'\
+    \ Also flagged CWE-113 silent header injection via tenant ID at client.rs:50-51."
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: The pipeline noted that workspace added several deps but the reviewer
+    flagged only tempfile as not using workspace = true. The six direct-version deps
+    (clap_complete, comfy-table, csv, dirs, reqwest, toml) were not identified as
+    needing workspace = true.
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer explicitly flagged: 'Config silently ignores unknown TOML fields\
+    \ \u2014 ClientConfig uses #[serde(default)] but does not use #[serde(deny_unknown_fields)].\
+    \ A user who typos a field gets no warning.' Fix suggested: Add #[serde(deny_unknown_fields)]."
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No mention of a vacuously true test with assert!(config.server().is_none()
+    || ...) pattern anywhere in the pipeline output.
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged: 'Subcommand help tests are assertion-free \u2014 Tests\
+    \ like subcommand_help_renders_query only call render_help() and discard the result.\
+    \ They verify no panic but don't assert content.' Same category: tests with no\
+    \ meaningful assertions."
+framework_version:
+  commit: b7315c6e329e
+  source: BMAD-METHOD
+  tag: bmad-6.0.4

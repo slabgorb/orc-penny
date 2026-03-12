@@ -20,6 +20,7 @@ completed_epics:
   - MSSCI-16213
   - MSSCI-16312
   - '49'
+  - MSSCI-16348
 completed_stories:
   - id: 110-1
     epic: '110'
@@ -571,3 +572,78 @@ completed_stories:
     title: Fix save_result() nesting bug
     points: 1
     completed: '2026-03-11'
+  - id: 142-3
+    epic: ''
+    title: Worktree cleanliness verification
+    points: 1
+    completed: '2026-03-11'
+  - id: 142-4
+    epic: ''
+    title: Always capture stream-json events to disk
+    points: 3
+    completed: '2026-03-11'
+  - id: 142-5
+    epic: ''
+    title: Fix framework_version reliability
+    points: 1
+    completed: '2026-03-11'
+  - id: 142-6
+    epic: ''
+    title: Event parsing and trace/explain commands
+    points: 3
+    completed: '2026-03-11'
+  - id: 142-7
+    epic: ''
+    title: Run index with backfill
+    points: 2
+    completed: '2026-03-11'
+  - id: 142-8
+    epic: ''
+    title: Events-first storage model
+    points: 3
+    completed: '2026-03-12'
+  - id: 142-9
+    epic: ''
+    title: LLM-narrated trace
+    points: 2
+    completed: '2026-03-12'
+  - id: 143-1
+    epic: ''
+    title: Create native subagent definition for Dev in pennyfarthing-dist
+    points: 3
+    completed: '2026-03-12'
+  - id: 143-2
+    epic: ''
+    title: Create native subagent definitions for TEA and Reviewer in pennyfarthing-dist
+    points: 3
+    completed: '2026-03-12'
+  - id: 143-3
+    epic: ''
+    title: Create native subagent definitions for remaining 7 agents in pennyfarthing-dist
+    points: 3
+    completed: '2026-03-12'
+  - id: 143-4
+    epic: ''
+    title: Adapt pf prime for subagent-compatible context output
+    points: 5
+    completed: '2026-03-12'
+  - id: 143-5
+    epic: ''
+    title: Define handoff document contract format
+    points: 2
+    completed: '2026-03-12'
+  - id: 143-6
+    epic: ''
+    title: SM spawns single subagent via Agent tool
+    points: 3
+    completed: '2026-03-12'
+  - id: 143-7
+    epic: ''
+    title: SM reads handoff documents and chains phases
+    points: 3
+    completed: '2026-03-12'
+  - id: 143-11
+    epic: ''
+    title: Update PF activation skills for native subagents
+    points: 3
+    completed: '2026-03-12'

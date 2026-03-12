@@ -1,0 +1,72 @@
+# discworld:dev on cr-003
+agent:
+  theme: discworld
+  character: Ponder Stibbons
+  effective_role: dev
+  source_role: dev
+  spec: discworld:dev
+  cross_role: false
+  ocean: O:5 C:5 E:2 A:3 N:3
+scenario:
+  name: cr-003
+  category: code-review
+  difficulty: medium
+statistics:
+  n: 10
+  mean: 80.69
+  std_dev: 6.8
+  min: 68.1
+  max: 89.73
+  scores:
+  - 84.86
+  - 88.48
+  - 86.11
+  - 72.74
+  - 75.11
+  - 89.73
+  - 83.93
+  - 68.1
+  - 77.61
+  - 80.23
+  ci_95:
+  - 76.48
+  - 84.9
+detection_profile:
+  f1_serde_bypass: 10/10
+  debug_secret_leak: 10/10
+  display_panic: 10/10
+  timing_side_channel: 10/10
+  clone_proliferation: 10/10
+  source_ip_spoofable: 8/10
+  unbounded_metadata: 8/10
+  missing_test_coverage: 7/10
+  non_exhaustive_error: 6/10
+  stringly_typed_event: 1/10
+efficiency:
+  avg_input_tokens: 2
+  avg_output_tokens: 882
+  tokens_per_point: 10.96
+observations:
+- F1 detection 10/10 -- ceiling-bound
+- DEBUG_SECRET_LEAK 10/10 -- highest secondary detection
+- STRINGLY_TYPED_EVENT 1/10 -- lowest detection
+- Score range 21.63 points (68.1-89.73)
+- 'Detection breadth: 10/10 finding types detected at least once'
+metadata:
+  created_at: '2026-03-07T13:03:36.346751Z'
+  pennyfarthing_version: 1.0.0
+  model: sonnet
+  execution_method: claude-p
+  judge_model: sonnet
+  judge_method: claude-p
+runs:
+- run_1.json
+- run_2.json
+- run_3.json
+- run_4.json
+- run_5.json
+- run_6.json
+- run_7.json
+- run_8.json
+- run_9.json
+- run_10.json

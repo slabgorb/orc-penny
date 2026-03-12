@@ -28,6 +28,7 @@ repos:
       - justfile
     never_edit:
       - node_modules/**
+      - .claude/agents/**
       - .pennyfarthing/agents/**
       - .pennyfarthing/commands/**
       - .pennyfarthing/guides/**
@@ -38,6 +39,7 @@ repos:
       - .pennyfarthing/templates/**
       - .pennyfarthing/output-styles/**
     symlinks:
+      .claude/agents: pennyfarthing/pennyfarthing-dist/agents
       .pennyfarthing/agents: pennyfarthing/pennyfarthing-dist/agents
       .pennyfarthing/commands: pennyfarthing/pennyfarthing-dist/commands
       .pennyfarthing/guides: pennyfarthing/pennyfarthing-dist/guides

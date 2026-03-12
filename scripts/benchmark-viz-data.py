@@ -180,6 +180,11 @@ def extract_scenario(scenario_dir: Path, themes_dir: Path = None) -> dict:
                 or "opus"
             )
 
+            # Framework version metadata
+            fw_version = score.get("framework_version")
+            if not fw_version and pipeline_meta:
+                fw_version = pipeline_meta.get("framework_version")
+
             run_entry = {
                 "run_id": run_num,
                 "model": run_model,
@@ -192,6 +197,7 @@ def extract_scenario(scenario_dir: Path, themes_dir: Path = None) -> dict:
                 "caught_by_phase": caught_by_phase,
                 "score_source": score_source,
                 "judge_version": score.get("judge_version", "v1"),
+                "framework_version": fw_version,
             }
             if score_source == "majority_vote":
                 run_entry["n_judges"] = score.get("n_judges", 1)
@@ -234,8 +240,35 @@ def extract_scenario(scenario_dir: Path, themes_dir: Path = None) -> dict:
             for phase, total in phase_totals.items():
                 phase_pct[phase] = round(total / total_catches * 100, 1)
 
+        # Detect pipeline type from phases in pipeline.yaml
+        pipeline_type = "pf"
+        if theme_name == "bmad":
+            pipeline_type = "bmad"
+        else:
+            # Check first run's pipeline.yaml for phase count
+            first_run_dir = sorted(
+                d for d in theme_dir.iterdir()
+                if d.is_dir() and d.name.startswith("run-")
+            )[0] if runs else None
+            if first_run_dir:
+                pm = load_yaml(first_run_dir / "pipeline.yaml")
+                if pm and "phases" in pm:
+                    phases = list(pm["phases"].keys())
+                    if len(phases) == 2 and "tea" not in phases:
+                        pipeline_type = "bmad"
+
+        # Collect distinct framework versions across runs
+        fw_versions = set()
+        for r in runs:
+            fv = r.get("framework_version")
+            if fv:
+                tag = fv.get("tag") or fv.get("commit") or fv.get("source")
+                if tag:
+                    fw_versions.add(tag)
+
         themes_data[theme_name] = {
             "meta": meta,
+            "pipeline": pipeline_type,
             "runs": runs,
             "stats": {
                 "n": n,
@@ -244,6 +277,7 @@ def extract_scenario(scenario_dir: Path, themes_dir: Path = None) -> dict:
                 "min": round(min(scores), 1),
                 "max": round(max(scores), 1),
             },
+            "framework_versions": sorted(fw_versions),
             "finding_catch_rates": finding_catch_rates,
             "phase_attribution": phase_pct,
         }

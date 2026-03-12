@@ -1,0 +1,72 @@
+# the-expanse:tea on cr-003
+agent:
+  theme: the-expanse
+  character: Amos Burton
+  effective_role: tea
+  source_role: tea
+  spec: the-expanse:tea
+  cross_role: false
+  ocean: O:2 C:4 E:2 A:3 N:1
+scenario:
+  name: cr-003
+  category: code-review
+  difficulty: medium
+statistics:
+  n: 10
+  mean: 82.85
+  std_dev: 4.65
+  min: 74.24
+  max: 93.35
+  scores:
+  - 82.11
+  - 84.86
+  - 74.24
+  - 82.48
+  - 83.86
+  - 93.35
+  - 83.86
+  - 77.86
+  - 82.48
+  - 83.36
+  ci_95:
+  - 79.96
+  - 85.73
+detection_profile:
+  f1_serde_bypass: 10/10
+  debug_secret_leak: 10/10
+  display_panic: 10/10
+  timing_side_channel: 10/10
+  clone_proliferation: 10/10
+  source_ip_spoofable: 10/10
+  unbounded_metadata: 9/10
+  missing_test_coverage: 9/10
+  non_exhaustive_error: 5/10
+  stringly_typed_event: 0/10
+efficiency:
+  avg_input_tokens: 2
+  avg_output_tokens: 838
+  tokens_per_point: 10.14
+observations:
+- F1 detection 10/10 -- ceiling-bound
+- DEBUG_SECRET_LEAK 10/10 -- highest secondary detection
+- STRINGLY_TYPED_EVENT 0/10 -- lowest detection
+- Score range 19.11 points (74.24-93.35)
+- 'Detection breadth: 9/10 finding types detected at least once'
+metadata:
+  created_at: '2026-03-07T13:20:00.706009Z'
+  pennyfarthing_version: 1.0.0
+  model: sonnet
+  execution_method: claude-p
+  judge_model: sonnet
+  judge_method: claude-p
+runs:
+- run_1.json
+- run_2.json
+- run_3.json
+- run_4.json
+- run_5.json
+- run_6.json
+- run_7.json
+- run_8.json
+- run_9.json
+- run_10.json

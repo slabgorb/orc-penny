@@ -80,3 +80,24 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+  - id: 47-9
+    title: Tag benchmark OTEL in native subagent pipeline
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 47-10
+    title: Cleanup OTELFileCollector forwarding post-143
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 47-11
+    title: Subagent transition visualization in benchmark panel
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd

@@ -24,3 +24,7 @@ Create stubs that compile but throw `Error('not implemented')`. Tests fail on as
 <pattern name="test-categories">
 Variable resolution: single source, priority chain, standard vars, unresolved tracking, edge cases (type coercion, null, empty).
 </pattern>
+
+<pattern name="gate-admonition">
+Frame all mandatory steps as blocking admonitions, never suggestions. Use "Do not proceed with [next action] until [condition]" — not "you MUST", "please check", or "you should". Models treat suggestions as optional under pressure; admonitions define a precondition that blocks progression.
+</pattern>

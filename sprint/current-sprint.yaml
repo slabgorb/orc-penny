@@ -9,7 +9,7 @@ sprint:
   number: 2610
 epics:
   - MSSCI-16293
-  - '142'
+  - MSSCI-16358
 stories: []
 standalone_stories:
   - id: MSSCI-16066
@@ -116,3 +116,36 @@ standalone_stories:
     repos: pennyfarthing
     pr: 1319
     branch: feat/MSSCI-16331-startup-agent-autoinvoke
+  - id: MSSCI-16335
+    jira: MSSCI-16335
+    title: Add reviewer specialist subagents (silent-failure, test, comment, type-design, security, simplifier)
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1324
+    branch: feat/MSSCI-16335-reviewer-specialist-subagents
+  - id: MSSCI-16336
+    jira: MSSCI-16336
+    title: Upgrade pipeline replay benchmark to exercise full PF machinery
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1326
+    branch: feat/MSSCI-16336-pipeline-replay-pf-machinery
+  - id: MSSCI-16346
+    jira: MSSCI-16346
+    title: Add spec deviation tracking to agent session output
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1331
+    branch: feat/MSSCI-16346-spec-deviation-tracking
+  - id: MSSCI-16347
+    jira: MSSCI-16347
+    title: Implement stacked PR depends_on field and Graphite health check
+    points: 3
+    status: done
+    repos: pennyfarthing
+    branch: feat/MSSCI-16347-stacked-pr-depends-on
+    review_verdict: approved
+    completed: '2026-03-12'
