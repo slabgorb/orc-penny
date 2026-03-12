@@ -612,3 +612,8 @@ completed_stories:
     title: Create native subagent definition for Dev in pennyfarthing-dist
     points: 3
     completed: '2026-03-12'
+  - id: 143-2
+    epic: ''
+    title: Create native subagent definitions for TEA and Reviewer in pennyfarthing-dist
+    points: 3
+    completed: '2026-03-12'
