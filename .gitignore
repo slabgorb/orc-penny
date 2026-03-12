@@ -85,3 +85,9 @@ __pycache__/
 .pennyfarthing/bin/
 # tmux runtime cache files
 # Local tmux config (copied from sample)
+
+# Claude Code session artifacts
+.claude/scheduled_tasks.lock
+
+# Symlinked scenario repos
+axiathon
