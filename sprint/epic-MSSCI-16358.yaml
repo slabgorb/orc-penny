@@ -57,12 +57,14 @@ stories:
     title: Adapt pf prime for subagent-compatible context output
     points: 5
     priority: p0
-    status: in_progress
+    status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-03-12'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-12'
     type: feature
+    review_verdict: approved
   - id: 143-5
     jira: MSSCI-16363
     title: Define handoff document contract format
@@ -81,10 +83,14 @@ stories:
     title: SM spawns single subagent via Agent tool
     points: 3
     priority: p0
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-12'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-12'
     type: feature
+    review_verdict: approved
   - id: 143-7
     jira: MSSCI-16365
     title: SM reads handoff documents and chains phases

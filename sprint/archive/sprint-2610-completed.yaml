@@ -622,8 +622,18 @@ completed_stories:
     title: Create native subagent definitions for remaining 7 agents in pennyfarthing-dist
     points: 3
     completed: '2026-03-12'
+  - id: 143-4
+    epic: ''
+    title: Adapt pf prime for subagent-compatible context output
+    points: 5
+    completed: '2026-03-12'
   - id: 143-5
     epic: ''
     title: Define handoff document contract format
     points: 2
+    completed: '2026-03-12'
+  - id: 143-6
+    epic: ''
+    title: SM spawns single subagent via Agent tool
+    points: 3
     completed: '2026-03-12'
