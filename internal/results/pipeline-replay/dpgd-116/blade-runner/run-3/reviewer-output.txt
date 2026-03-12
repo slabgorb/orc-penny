@@ -1,0 +1,82 @@
+I've now read every source and test file, run the preflight, and traced data flows. Here is my review.
+
+---
+
+# Story 6.1 Review — J.F. Sebastian
+
+*Kaiser and Bear have been through every line. Here's what we found.*
+
+## Findings
+
+### Blocking Issues
+
+**1. [HIGH] Nightly `rustfmt` check fails — 5 source files + 2 test files have formatting diffs**
+Multiple files in `src/cli.rs`, `src/client.rs`, `src/output.rs`, and `tests/siem_client_test.rs` have nightly fmt violations (import grouping, line wrapping). Per `gotchas.md`: *"Always include `cargo +nightly fmt --all --check` in the preflight. If it fails, flag it before approval."* This must be fixed before merge.
+
+**2. [HIGH] `main.rs` is a dead stub — does not wire up `Cli::parse()` or dispatch commands**
+`main.rs:5-7` just prints "not yet implemented" and exits. The binary doesn't actually parse CLI args, dispatch to command handlers, load config, construct `SiemClient`, or map `CliError` to exit codes. AC-1 requires `axiathon --help` to show all command groups, AC-3 requires exit code mapping, AC-8 requires config loading, AC-9 requires `axiathon completion <shell>` to work. None of these work in the actual binary. The lib.rs wiring exists for tests, but the binary itself is non-functional. This is the single biggest gap — the main entry point doesn't exercise the framework at all.
+
+**3. [HIGH] JSON output missing `ResponseMetadata` (AC-4 violation)**
+AC-4 explicitly requires: *"JSON includes `ResponseMetadata` (request_id, timestamp, api_version)."* The `format_as_json` at `output.rs:73-96` only emits `{"data": [...]}` — no `request_id`, `timestamp`, or `api_version` wrapper. The test at `output_format_test.rs:53-70` only checks for the `data` field and doesn't assert the metadata fields exist, masking this gap.
+
+**4. [HIGH] `--tenant` accepts raw `String` instead of validated `TenantId` newtype**
+`cli.rs:32` declares `pub tenant: Option<String>`. Per the Rust coding rules: *"Newtypes for IDs: `TenantId(String)` ... prevents mixing ID types."* The `axiathon-core` crate already provides `TenantId`. Using raw strings defeats the type safety the architecture mandates. Similarly, `SiemClient.tenant` at `client.rs:11` stores `Option<String>` instead of `Option<TenantId>`.
+
+### Non-Blocking Issues
+
+**5. [MEDIUM] `toml` workspace version is `0.8`, story spec says `0.9`**
+`Cargo.toml:58` declares `toml = "0.8"`. The story guardrails specify `toml 0.9`. This may be intentional (0.9 not yet released), but should be documented.
+
+**6. [MEDIUM] `CliError` missing `#[non_exhaustive]` attribute**
+Per Rust coding rules: *"`#[non_exhaustive]` on enums that will grow."* `CliError` at `error.rs:5` will certainly grow as stories 6.2-6.7 add variants. External tests use exhaustive `match` without `_` arms, which will break when variants are added.
+
+**7. [MEDIUM] `SiemClient` only implements `get()` — no `post()`, `put()`, `delete()`**
+The `SiemClient` at `client.rs:51` only has a `get` method. Stories 6.3-6.6 will need mutation endpoints. While stubs only need GET, the AC-7 description says "SiemClient wraps reqwest::Client" implying a fuller wrapper. This is acceptable for the stub scope but the single-method API should be documented as intentionally minimal.
+
+**8. [MEDIUM] `OutputFormatter` is a concrete struct, not a trait (AC-4 says "OutputFormatter trait")**
+AC-4 and the story context specify an `OutputFormatter` *trait* with Table/JSON/CSV *implementations*. The code at `output.rs:38-40` implements it as a struct with match-dispatched methods. This works but diverges from the specified design pattern for extensibility.
+
+**9. [MEDIUM] `config_does_not_contain_token_field` test is vacuous**
+`config_test.rs:132-150` — the test loads a config with `token` and `api_token` keys, then does `let _ = config;`. It never actually asserts that no token value was loaded. Since `ClientConfig` uses `#[serde(default)]` (not `#[serde(deny_unknown_fields)]`), unknown keys are silently ignored, which is correct — but the test proves nothing because it has no assertion.
+
+**10. [MEDIUM] `client_does_not_import_server_types` test is `assert!(true)` — vacuous**
+`security_test.rs:148-157` contains `assert!(true, ...)`. This test will never fail regardless of actual dependencies. The comment says "documentation-as-test" but it's not a test at all.
+
+**11. [MEDIUM] `auth_token_rejects_crlf_injection` test doesn't assert sanitization**
+`security_test.rs:82-92` — creates a client with a CRLF-injected token but only does `let _ = client;`. Unlike the tenant test (line 65-78), which properly asserts no CRLF via `client.tenant()`, the token test has no assertion because there's no `client.token()` accessor. The sanitization IS implemented (client.rs:28) but is untested.
+
+**12. [LOW] Error variant reuse — CSV/JSON formatting errors map to `CliError::Config`**
+`output.rs:95,105,108,112,114` — formatting failures use `CliError::Config(...)`. These aren't config errors; they're serialization/output errors. A dedicated variant (e.g., `CliError::Output(String)`) would be more accurate for error categorization and log triage.
+
+**13. [LOW] `quiet_and_verbose_conflict_handled` test accepts any outcome**
+`global_flags_test.rs:117-127` — both parse success and parse error are accepted. This doesn't verify a defined behavior, just that the code doesn't panic.
+
+### Verified Good
+
+**14. [VERIFIED]** CRLF header injection defense implemented at `client.rs:28,36` — strips `\r\n` from both token and tenant before storage.
+
+**15. [VERIFIED]** Exit code mapping is correct: 1=error, 3=auth, 4=authz at `error.rs:37-49`. Well tested.
+
+**16. [VERIFIED]** `#![forbid(unsafe_code)]` present in both `main.rs:3` and `lib.rs:2`.
+
+**17. [VERIFIED]** Config file does not store tokens — no token field in `ClientConfig`. Keychain requirement documented.
+
+**18. [VERIFIED]** Dependency isolation — `Cargo.toml` only depends on `axiathon-core`, no server crates.
+
+**19. [VERIFIED]** Shell completions are functional (not stubs) and tested for all 4 shells.
+
+**20. [VERIFIED]** All stub handlers return `CliError::NotImplemented("Story X.Y")` with correct story references.
+
+**21. [VERIFIED]** `SiemClient` HTTP status mapping covers 401/403/404/429/5xx/connect/timeout with wiremock-backed integration tests.
+
+---
+
+## Verdict: **CHANGES_REQUESTED**
+
+Three HIGH findings block approval:
+
+1. **Nightly fmt failures** — quick fix, run `cargo +nightly fmt --all`
+2. **`main.rs` doesn't wire up the CLI** — the binary is non-functional. `Cli::parse()`, config loading, command dispatch, and exit code mapping must be implemented in `main.rs` for the acceptance criteria to be met.
+3. **JSON `ResponseMetadata` missing** — AC-4 explicitly requires `request_id`, `timestamp`, `api_version` in JSON output.
+
+The `TenantId` type safety issue (finding #4) is also HIGH but could arguably be deferred to the story that implements full command handlers, since the current scope is stubs. I'd accept a `// TODO: use TenantId newtype` comment if the team agrees to address it in 6.2.

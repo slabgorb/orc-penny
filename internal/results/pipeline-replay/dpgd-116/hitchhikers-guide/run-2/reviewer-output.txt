@@ -1,0 +1,101 @@
+Now I have a comprehensive picture. Let me compile my findings.
+
+---
+
+# Story 6.1 Code Review — Adversarial Review Report
+
+*Arthur Dent adjusts his dressing gown, takes a sip of tea, and peers suspiciously at the code.*
+
+"Right. So they've built me a CLI. Let me just... check if it'll actually work when the universe is being demolished."
+
+---
+
+## Observations
+
+### [HIGH] Failing test: `siem_client_handles_trailing_slash_in_server_url` — `siem_client.rs:186`
+
+The test at line 186-194 asserts `!url.contains("//api")` but the URL produced is `https://api.example.com/api/v1/status` — which contains `//` as part of the scheme `https://`. The `url()` method at `client.rs:54-58` correctly strips the trailing slash and leading slash, producing the right URL. The **test assertion is wrong** — it matches `//` inside `https://`, not a double-path-separator. This is a confirmed test failure (visible in test output). The implementation is correct; the test is buggy.
+
+### [HIGH] `ClientConfig` silently accepts unknown fields (CWE-209 / config safety) — `config.rs:11`
+
+The `ClientConfig` struct uses `#[derive(Deserialize)]` without `#[serde(deny_unknown_fields)]`. The test at `config_loading.rs:179-194` (`config_does_not_store_token_field`) demonstrates this: it parses TOML containing `token = "super-secret-token"` and it **silently succeeds**, ignoring the token field. This means:
+1. An operator who accidentally puts `token = "my-secret"` in their config file gets **no warning** that it's being ignored and their token isn't being used.
+2. Typos in field names (e.g., `server-url` instead of `server_url`) are silently ignored instead of flagged.
+
+Add `#[serde(deny_unknown_fields)]` to `ClientConfig`.
+
+### [HIGH] Nightly `rustfmt` check fails — `siem_client.rs`, `stub_handlers.rs`
+
+Per gotchas.md: "Always include `cargo +nightly fmt --all --check` in the preflight. Nightly rustfmt enforces import ordering that stable does not." The nightly fmt check produces diffs in at least two test files. This must be fixed before approval.
+
+### [MEDIUM] `ServerError` variant leaks arbitrary server response body — `error.rs:27`
+
+`CliError::ServerError(u16, String)` with `#[error("server error ({0}): {1}")]` includes the raw server response body in the error display. The SECURITY doc comment says "Do not include stack traces, token values, or full system paths" but the server's response body could contain any of those. The `map_http_status` at `client.rs:83` passes the raw body directly. This should be truncated or sanitized.
+
+### [MEDIUM] `OutputFormatter` trait not implemented by `JsonFormatter` or `CsvFormatter` — `output.rs`
+
+`JsonFormatter` has `format_json(&self, data: &serde_json::Value)` and `CsvFormatter` has `format_csv(&self, headers, rows)` — but neither implements the `OutputFormatter` trait. The trait defines `format_table(&self, headers, rows)`. AC-4 requires a unified `OutputFormatter` trait, but `JsonFormatter` and `CsvFormatter` use their own bespoke methods instead. This is an incomplete implementation of the architectural pattern.
+
+### [MEDIUM] `chrono_now()` produces a Unix timestamp, not ISO 8601 — `output.rs:85-91`
+
+The comment says "Simple ISO 8601 timestamp without chrono dependency" but the output is `"1709900000Z"` — a bare epoch integer with `Z` appended. ISO 8601 requires format like `2024-03-08T12:00:00Z`. The JSON `metadata.timestamp` field will contain semantically incorrect data that will confuse consumers expecting ISO 8601.
+
+### [MEDIUM] `build_request` uses `.expect()` on user-controlled input — `client.rs:63,73`
+
+`method.parse().expect("valid HTTP method")` at line 63 will panic if an invalid HTTP method string is passed. Per Rust coding rules: "No `unwrap()` in production code — use `?` or `expect()` with actionable message." While this is `expect` with a message, the method parameter comes from internal dispatch (currently safe), but the function is `pub` and could be called with arbitrary strings. This should return `Result`.
+
+### [MEDIUM] `tenant` field is raw `String`, not `TenantId` newtype — `cli.rs:28`, `client.rs:18`
+
+Per Rust coding rules: "Newtypes for IDs: `TenantId(String)` — prevents mixing ID types." The `--tenant` flag is `Option<String>` and `SiemClient.tenant` is `Option<String>`. The `axiathon-core` crate provides `TenantId`. Using raw strings here defeats the type safety the architecture requires.
+
+### [MEDIUM] `dirs` crate version mismatch — `Cargo.toml:55` vs story spec
+
+The workspace declares `dirs = "5"` but the story spec says `dirs 6`. Minor, but could cause API differences if the story relies on dirs 6 features.
+
+### [MEDIUM] `toml` crate version mismatch — `Cargo.toml:57` vs story spec
+
+The workspace declares `toml = "0.8"` but the story spec says `toml 0.9`.
+
+### [LOW] Missing command module files — story specifies 10 command files, only 2 exist
+
+The story spec lists files for each command group (`commands/query.rs`, `commands/rules.rs`, etc.). Only `commands/mod.rs` and `commands/completion.rs` exist. The stub dispatch works via the centralized `execute_stub` function, which is fine architecturally, but doesn't match the file layout specified in the story.
+
+### [LOW] `tui` stub references no story in `execute_stub` — `commands/mod.rs:18`
+
+The `tui` case falls through to the `other` branch (`other => other`), so the error message is just "not yet implemented: tui" without a story reference. All other stubs have explicit story references.
+
+### [LOW] Env var tests are not thread-safe — `config_loading.rs:103-148`, `global_flags.rs:146-158`
+
+Tests use `std::env::set_var` / `remove_var` which are process-global. When run in parallel (the default for `cargo test`), these can interfere with each other. This is a known Rust testing footgun. The tests should use `serial_test` or `temp_env` crate for isolation.
+
+### [VERIFIED] `#![forbid(unsafe_code)]` present in both `main.rs:2` and `lib.rs:2`.
+
+### [VERIFIED] Header injection prevention via `sanitize_header_value` at `client.rs:6-11` — truncates at first CR/LF.
+
+### [VERIFIED] Exit codes correctly mapped: 3 for auth, 4 for authz, 1 for all others at `error.rs:46-52`.
+
+### [VERIFIED] `conflicts_with = "quiet"` on verbose flag at `cli.rs:15` enforces mutual exclusivity.
+
+### [VERIFIED] Shell completions generate valid output for all four shells (bash/zsh/fish/PowerShell).
+
+---
+
+## Summary
+
+| Severity | Count | Blocks? |
+|----------|-------|---------|
+| HIGH     | 3     | YES     |
+| MEDIUM   | 6     | NO      |
+| LOW      | 3     | NO      |
+| VERIFIED | 4     | —       |
+
+**Three HIGH issues block approval:**
+1. A test is actively failing (`siem_client_handles_trailing_slash_in_server_url`)
+2. `ClientConfig` silently swallows unknown fields including tokens
+3. Nightly `rustfmt` check fails
+
+---
+
+## Verdict: **CHANGES_REQUESTED**
+
+Fix the three HIGH issues before re-review. The MEDIUM issues (especially `ServerError` body leakage, broken ISO 8601 timestamp, and `OutputFormatter` trait not being implemented by JSON/CSV formatters) should also be addressed but are not blockers.

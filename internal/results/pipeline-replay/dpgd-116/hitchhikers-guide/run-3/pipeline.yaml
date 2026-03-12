@@ -1,0 +1,29 @@
+scenario_id: dpgd-116
+theme: hitchhikers-guide
+run_id: 3
+timestamp: '2026-03-09T01:28:03.326602+00:00'
+worktree_path: /tmp/pf-replay/dpgd-116-hitchhikers-guide-run-3
+phases:
+  tea:
+    token_usage:
+      input: 13
+      output: 23304
+    duration_s: 400.13
+    exit_code: 0
+  dev:
+    token_usage:
+      input: 47
+      output: 25633
+    duration_s: 480.97
+    exit_code: 0
+  reviewer:
+    token_usage:
+      input: 109
+      output: 6350
+    duration_s: 141.94
+    exit_code: 0
+framework_version:
+  commit: pre-edge-hunter
+  semver: 12.7.0
+  tag: baseline-pre-edge-hunter
+  agent_hashes: {}

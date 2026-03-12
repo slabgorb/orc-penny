@@ -1,0 +1,78 @@
+scenario_id: dpgd-116
+theme: firefly
+run_id: 6
+judge_version: v2
+judge_pass: 1
+total_caught: 3
+total_findings: 7
+weighted_caught: 18
+total_weight: 37
+score_pct: 48.6
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged [MEDIUM] 'from_file_or_default swallows parse errors\
+    \ silently' \u2014 config.rs:77-79 unwrap_or_default() means malformed TOML silently\
+    \ falls back to defaults. Recommends returning error for parse failures while\
+    \ only defaulting for file not found."
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: dev
+  evidence: "Dev implemented sanitized Display on CliError \u2014 ServerError shows\
+    \ generic message, not inner string. Reviewer verified CWE-209 mitigation. Security\
+    \ tests confirm internal IPs/ports not leaked. However, reviewer also flagged\
+    \ NotFound variant as potentially leaking inner string, showing awareness of the\
+    \ class."
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: "TEA wrote header injection tests (CRLF rejection via HeaderValue::from_str),\
+    \ and reviewer verified CWE-113 mitigation. However, the specific finding is that\
+    \ tenant_id uses raw String instead of validated TenantId from axiathon-core \u2014\
+    \ this type-safety gap was never flagged. The pipeline addressed CRLF injection\
+    \ but not the use of raw String bypassing the type-safe tenant isolation system."
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: The Dev phase added 6 dependencies with direct version strings. Neither
+    TEA, Dev, nor Reviewer flagged that these should use workspace = true despite
+    being declared in [workspace.dependencies].
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged [MEDIUM] 'RawConfig silently ignores unknown fields'\
+    \ \u2014 notes that without #[serde(deny_unknown_fields)], operator typos like\
+    \ 'servre_url' are silently ignored. Specifically mentions token fields being\
+    \ silently dropped. Recommends deny_unknown_fields with an allow-list."
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified the vacuously true assertion pattern (is_none() ||
+    ...) in any test. The pipeline did not flag this test quality issue.
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified the zero-assertion test (let _ = config). The pipeline
+    did not flag this test quality issue.

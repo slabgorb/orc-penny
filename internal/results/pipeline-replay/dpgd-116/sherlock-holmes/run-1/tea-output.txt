@@ -1,0 +1,41 @@
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 is a full feature story establishing the CLI framework — every AC demands behavioral verification.
+
+**Test Files:**
+| File | Tests | Coverage |
+|------|-------|----------|
+| `cli_structure_test.rs` | 30 | AC-1 (command groups), AC-2 (help rendering), AC-5 (global flags), AC-6 (clap derive) |
+| `exit_codes_test.rs` | 14 | AC-3 (exit codes 0/1/2/3/4, CliError mapping) |
+| `output_format_test.rs` | 19 | AC-4 (table/json/csv, metadata, escaping, edge cases) |
+| `siem_client_test.rs` | 17 | AC-7 (HTTP headers, status code mapping, injection prevention) |
+| `config_test.rs` | 12 | AC-8 (TOML loading, env overrides, credential exclusion) |
+| `completion_test.rs` | 10 | AC-9 (bash/zsh/fish/powershell generation) |
+| `stub_handlers_test.rs` | 9 | AC-10 (story references in stub messages) |
+| `security_test.rs` | 18 | CWE-209, CWE-113, CWE-522, silent error prevention |
+
+**Tests Written:** 129 tests covering all 10 ACs
+**Status:** RED (failing — compilation errors, modules don't exist yet)
+
+**Security tests included:**
+- Header injection (CRLF in tenant ID, auth token, base URL)
+- Error information exposure (stack traces, DB URLs, credentials in error messages)
+- Credential storage (tokens must NOT load from config files)
+- Config validation (negative/zero/extreme timeouts, invalid URLs)
+- Silent error swallowing (all error variants have nonzero exit codes)
+
+**What Dev must create:**
+- `src/cli.rs` — `Cli` (Parser), `Commands` (Subcommand) 
+- `src/error.rs` — `CliError` enum with `exit_code()`, `from_http_status()`
+- `src/output.rs` — `OutputFormat`, `OutputFormatter` with `format_table()`
+- `src/client.rs` — `SiemClient` with builder pattern
+- `src/config.rs` — `ClientConfig` with `from_file()`, `from_file_with_env()`, `default_path()`
+- `src/commands/completion.rs` — `generate_completions()`
+- All command stub modules
+
+**Handoff:** To Dev for implementation (GREEN phase)
+
+## Delivery Findings
+
+- No upstream findings during test design.

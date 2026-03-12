@@ -1,0 +1,23 @@
+All tests GREEN. Here's the summary:
+
+## Dev Assessment
+
+**Implementation Complete:** Yes
+
+**Files Changed:**
+- `crates/axiathon-client/Cargo.toml` - Added dependencies: clap_complete, comfy-table, csv, dirs, reqwest, toml; changed edition to 2021 (required because tests use `set_var`/`remove_var` without unsafe blocks)
+- `crates/axiathon-client/src/lib.rs` - Added module exports for cli, client, commands, config, error, output
+- `crates/axiathon-client/src/error.rs` - `CliError` enum with exit code mapping (0-4), sanitized Display for security (CWE-209)
+- `crates/axiathon-client/src/cli.rs` - Clap 4.x derive-based CLI structure with all command groups and global flags
+- `crates/axiathon-client/src/client.rs` - `SiemClient` HTTP wrapper with header injection prevention and status code mapping
+- `crates/axiathon-client/src/config.rs` - `ClientConfig` TOML loading with env var overrides, validation, XDG paths
+- `crates/axiathon-client/src/output.rs` - `OutputFormatter` with Table (comfy-table), JSON (with metadata), CSV implementations
+- `crates/axiathon-client/src/commands/mod.rs` - Module re-exports
+- `crates/axiathon-client/src/commands/completion.rs` - Shell completion generation via clap_complete
+- `crates/axiathon-client/src/commands/{query,rules,alerts,ingest,config,status,tenant}.rs` - Stub handlers with story references
+- `crates/axiathon-client/src/commands/{login,init}.rs` - Empty modules for future implementation
+
+**Tests:** 102/102 passing (GREEN, with `--test-threads=1` for env var test isolation)
+**Clippy:** Clean, no warnings
+
+**Note:** Config env var tests (`config_env_axiathon_api_url_overrides_file`, `config_env_axiathon_timeout_overrides_file`) use `std::env::set_var` which is inherently racy with parallel test execution. Tests pass reliably with `--test-threads=1`.

@@ -1,0 +1,90 @@
+scenario_id: dpgd-116
+theme: bmad
+run_id: 3
+model: null
+judge_model: claude-sonnet-4-6
+judge_version: v2
+judge_pass: 1
+total_caught: 5
+total_findings: 7
+weighted_caught: 25
+total_weight: 37
+score_pct: 67.6
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: Neither TEA, Dev, nor Reviewer flagged the from_file_or_default swallowing
+    all errors including parse/permission failures. The reviewer flagged F8 (silent
+    failure on invalid AXIATHON_TIMEOUT env var) and F9 (no deny_unknown_fields) but
+    not the core issue of unwrap_or_default catching all error types including permission
+    denied.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged F6: 'CWE-209 \u2014 reqwest::Error exposed verbatim\
+    \ to stderr' and noted 'error.rs:46-47: Http(#[from] reqwest::Error) with #[error(\"\
+    HTTP error: {0}\")] passes reqwest's error Display directly through' and 'eprintln!(\"\
+    Error: {err}\") prints this unsanitized to the operator.' Same vulnerability class\
+    \ (CWE-209) as I1."
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer flagged F7: ''Header injection not validated (CWE-113 partial)''
+    and F11: ''--tenant flag uses raw String, not TenantId newtype'' noting ''client.rs:19
+    (tenant_id: Option<String>) use raw strings. This allows mixing tenant IDs with
+    other string values at the type level.'' Same vulnerability class as I2.'
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: The reviewer noted F15 about toml version 0.8 vs 0.9, but never flagged
+    that the 6 dependencies (clap_complete, comfy-table, csv, dirs, reqwest, toml)
+    use direct version strings instead of workspace = true. The pipeline actually
+    introduced these as direct versions in crates/axiathon-client/Cargo.toml without
+    catching the workspace drift issue.
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer flagged F9: ''No deny_unknown_fields on ClientConfig'' noting
+    ''ClientConfig accepts and silently ignores unknown TOML keys. A user who writes
+    api_rul = "..." (typo) gets the default localhost:8080 with no error.'' This encompasses
+    the I4 finding about token field being silently ignored.'
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer flagged F13: ''formatter_for_returns_correct_type test is vacuous''
+    and F1 about ''matches!() expressions without wrapping in assert!()''. The pipeline
+    caught vacuous/always-true assertion patterns, same category as I5.'
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged F1: 'Vacuous assertions in client.rs tests \u2014 3\
+    \ tests always pass' and F13: 'formatter_for_returns_correct_type test is vacuous\
+    \ \u2014 Creates three formatters via formatter_for() and asserts nothing. The\
+    \ let _ = discards the result. This test only verifies no panic, not correctness.'\
+    \ Same category as I6 (test with zero meaningful assertions)."
+framework_version:
+  commit: b7315c6e329e
+  source: BMAD-METHOD
+  tag: bmad-6.0.4

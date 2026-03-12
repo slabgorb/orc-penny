@@ -1,0 +1,82 @@
+id: '142'
+type: epic
+title: BMAD vs Pennyfarthing Pipeline Comparison
+description: Run identical Peloton scenarios through both BMAD and Pennyfarthing dev pipelines, scored by the same judge, to produce statistically rigorous comparative analysis for framework adoption decisions.
+priority: p1
+status: done
+repos: pennyfarthing
+jira: MSSCI-16324
+stories:
+  - id: 142-1
+    jira: MSSCI-16325
+    title: ADR and Comparison Methodology
+    points: 2
+    priority: p0
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-10'
+    repos: orchestrator
+    workflow: trivial
+    completed: '2026-03-10'
+    review_verdict: approved
+  - id: 142-2
+    jira: MSSCI-16326
+    title: BMAD Simulator CLAUDE.md Template and Story File
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-10'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-10'
+    review_verdict: approved
+  - id: 142-3
+    jira: MSSCI-16327
+    title: Pipeline Replay BMAD Adapter
+    points: 3
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-10'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-10'
+    review_verdict: approved
+  - id: 142-4
+    jira: MSSCI-16328
+    title: Context Parity Verification
+    points: 1
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-10'
+    repos: orchestrator
+    workflow: trivial
+    completed: '2026-03-10'
+    review_verdict: approved
+  - id: 142-5
+    jira: MSSCI-16329
+    title: Baseline Comparison Runs
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-10'
+    repos: orchestrator
+    workflow: trivial
+    completed: '2026-03-10'
+    review_findings: 'APPROVED with scope reduction: dpgd-117 BMAD runs deferred (cost). dpgd-116 BMAD (n=5) sufficient for 142-6 analysis. Code quality verified: version tagging, backfill, dashboard, 31/31 tests green.'
+    review_verdict: approved
+  - id: 142-6
+    jira: MSSCI-16330
+    title: Comparative Analysis Report
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-10'
+    repos: orchestrator
+    workflow: trivial
+    completed: '2026-03-10'
+completed: '2026-03-11'

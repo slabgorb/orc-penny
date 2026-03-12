@@ -1,0 +1,176 @@
+Now I have enough data. Let me verify one more critical finding — the CWE-209 test is actually a false-pass:
+
+The test at `security.rs:20-29` asserts `!display.contains("/var/lib")`, but the `CliError::ServerError` Display impl is `#[error("server error")]` — which means the inner string is **NOT** shown in Display. But wait — let me re-read thiserror behavior. `#[error("server error")]` ignores the inner `String` field entirely. So Display shows "server error" not the internal details. The test passes but for the right reason.
+
+However, `CliError::Config(String)` uses `#[error("configuration error: {0}")]` which DOES expose the inner string. This could leak filesystem paths. Let me check if there's a test for that... No, there isn't.
+
+And `CliError::NotFound(String)` uses `#[error("resource not found")]` — safe, inner string not exposed.
+
+Here's my complete review:
+
+---
+
+# Adversarial Code Review — Story 6.1: CLI Framework & Structure
+
+*Reviewer: J.F. Sebastian, with Kaiser and Bear*
+
+*Ah, my friends... Let me look at every detail of this creation. Every gene must be in place.*
+
+## Preflight Status
+
+- **Tests:** 126 pass, 0 fail
+- **Clippy:** Clean (`-D warnings`)
+- **Nightly fmt:** **FAILS** (358 lines of diff)
+
+---
+
+## Findings
+
+### [HIGH] F1: Nightly `cargo fmt` check fails — `client.rs:3`, `config.rs:55`, `main.rs:3`, + test files
+
+358 lines of formatting diff. Import ordering (nightly enforces `AUTHORIZATION` before `HeaderMap`), line-wrapping on method chains, and array formatting all differ from nightly expectations.
+
+Per `gotchas.md`: *"Always include `cargo +nightly fmt --all --check` in the preflight. If it fails, flag it before approval."*
+
+**Blocks merge.**
+
+---
+
+### [HIGH] F2: Vacuous symlink assertion — `security.rs:185-188`
+
+```rust
+assert!(
+    result.is_err() || result.is_ok(),
+    "Symlinked config must not panic"
+);
+```
+
+This is a **tautology** — `Result` is always `Ok` or `Err`. The test always passes regardless of behavior. It provides **zero coverage** of symlink safety. Either assert specific behavior (reject symlink, or parse and fail on invalid TOML) or remove the test entirely.
+
+---
+
+### [MEDIUM] F3: `OutputFormatter::format_json` uses `expect()` — `output.rs:78`
+
+```rust
+serde_json::to_string_pretty(&envelope).expect("JSON serialization cannot fail")
+```
+
+Per project rules: *"No `unwrap()` in production code — use `?` or `expect()` with actionable message."* The `expect()` message is not actionable. While technically safe for `serde_json::Value` + `ResponseMetadata`, the `format_csv` method at lines 84-89 has **four** `expect()` calls with equally non-actionable messages (`"CSV header write"`, `"CSV row write"`, `"CSV flush"`, `"CSV inner"`). These should return `Result<String, CliError>` instead.
+
+---
+
+### [MEDIUM] F4: CWE-113 header injection prevention is implicit, not documented — `client.rs:54-65`
+
+Header injection is blocked by `HeaderValue::from_str()` rejecting control characters. The security tests at `security.rs:49-101` pass because of this **side effect**, but there's no comment in `client.rs` explaining why this is safe. A future refactor (e.g., using `HeaderValue::from_bytes()` or switching HTTP libraries) could silently remove this protection.
+
+Add a `// SAFETY: HeaderValue::from_str rejects CRLF, preventing CWE-113` comment at line 56.
+
+---
+
+### [MEDIUM] F5: `CliError::Config` Display exposes inner string — `error.rs:30-31`
+
+```rust
+#[error("configuration error: {0}")]
+Config(String),
+```
+
+The `{0}` interpolation exposes the raw inner string. At `config.rs:53`, that inner string is `format!("{e}")` from `std::io::Error`, which can include filesystem paths. Example: `"configuration error: No such file or directory (os error 2)"`. While `ServerError` correctly uses `#[error("server error")]` (hiding internals), `Config` does not.
+
+The error type's doc comment says *"Display output is sanitized for end users. Never expose paths, tokens, or stack traces."* This violates that contract.
+
+---
+
+### [MEDIUM] F6: `SiemClient` timeout config value is dead code — `config.rs:89-91` + `client.rs:22`
+
+`ClientConfig` stores `timeout` (line 13) and provides a getter (line 89-91), but `SiemClient::new()` never reads or applies it. The `reqwest::Client::new()` at `client.rs:22` uses default timeout (no timeout). Config says `timeout = 30` but requests can hang indefinitely.
+
+---
+
+### [MEDIUM] F7: URL validation test asserts nothing — `security.rs:209-215`
+
+```rust
+let result = ClientConfig::from_file(file.path());
+if let Ok(config) = result {
+    let _url = config.server_url();
+}
+```
+
+This test does nothing if the config loads successfully — it reads `server_url()` into `_url` and drops it. There's no assertion that `"not-a-url"` is rejected. It silently passes whether validation works or not.
+
+---
+
+### [LOW] F8: `ConfigFile` silently ignores unknown fields — `config.rs:29-47`
+
+`#[derive(Deserialize)]` with serde defaults accepts any extra fields. A user adding `[server]\ntoken = "secret"` to their config gets no warning that the `token` field is ignored. While `has_token_from_file()` always returns `false` (good), the user gets no feedback that their config contains unrecognized fields.
+
+Consider adding `#[serde(deny_unknown_fields)]` or at minimum logging a warning.
+
+---
+
+### [LOW] F9: `with_env_override` silently drops invalid timeout values — `config.rs:112-115`
+
+```rust
+if let Ok(t) = value.parse::<u64>() {
+    self.timeout = t;
+}
+```
+
+If `AXIATHON_TIMEOUT=abc`, the override is silently ignored and the previous value is kept. Same pattern in `with_cli_override` at line 127. Users get no feedback that their env var was malformed.
+
+---
+
+### [VERIFIED] V1: Exit code mapping is complete and correct — `error.rs:43-57`
+
+All variants map to correct codes: auth→3, authz→4, all others→1. Match is exhaustive. Tests at `error_exit_codes.rs` comprehensively verify.
+
+### [VERIFIED] V2: Command structure uses plural nouns per architecture doc — `cli.rs:54-90`
+
+`Rules`, `Alerts` (plural). `Query`, `Tenant` (singular per spec). All 12 command groups present.
+
+### [VERIFIED] V3: Global flags use `global = true` correctly — `cli.rs:15-49`
+
+All 7 global flags (`format`, `verbose`, `quiet`, `server`, `tenant`, `config`, `no_color`) are correctly marked global. `-v` uses `Count` action for repeatable verbosity.
+
+### [VERIFIED] V4: SiemClient HTTP status mapping is exhaustive — `client.rs:84-98`
+
+401→AuthenticationExpired, 403→Unauthorized, 404→NotFound, 429→RateLimited, 5xx→ServerError, connect error→ServerUnavailable, timeout→ConnectionTimeout. All tested via wiremock.
+
+### [VERIFIED] V5: `#![forbid(unsafe_code)]` on both lib.rs and main.rs
+
+`lib.rs:2` and `main.rs:1`. Correct.
+
+### [VERIFIED] V6: Tokens are never stored in config — `config.rs:101-104`
+
+`has_token_from_file()` hardcoded to `false`. `ConfigFile` struct has no token field. Test at `security.rs:148-170` confirms.
+
+---
+
+## Summary
+
+| Severity | Count | Blocks? |
+|----------|-------|---------|
+| Critical | 0 | — |
+| High | 2 | YES |
+| Medium | 5 | No |
+| Low | 2 | No |
+| Verified | 6 | — |
+
+**Blocking issues:**
+1. **F1:** Nightly fmt fails (358 lines of diff)
+2. **F2:** Vacuous symlink test (tautological assertion provides zero coverage)
+
+---
+
+## Verdict: **CHANGES_REQUESTED**
+
+The architecture is sound. Command structure, exit codes, error types, and HTTP status mapping are all well-designed and well-tested. But the formatting violations block merge per project rules, and the vacuous symlink test is a test quality issue that undermines confidence in the security test suite.
+
+**Required before re-review:**
+1. Run `cargo +nightly fmt --all` to fix formatting
+2. Fix or remove the symlink test tautology (`result.is_err() || result.is_ok()`)
+
+**Recommended (non-blocking):**
+3. Add `// SAFETY` comment on header injection prevention in `client.rs`
+4. Make `Config` error Display stop leaking raw filesystem paths
+5. Fix the URL validation test to actually assert something
+6. Return `Result` from `format_json`/`format_csv` instead of `expect()`

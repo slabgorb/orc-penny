@@ -1,0 +1,76 @@
+scenario_id: dpgd-116
+theme: game-of-thrones
+run_id: 2
+judge_version: v2
+judge_pass: 1
+total_caught: 5
+total_findings: 7
+weighted_caught: 26
+total_weight: 37
+score_pct: 70.3
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: true
+  caught_by: tea
+  evidence: TEA security.rs includes 'silent error swallowing prevention' test and
+    config_loading.rs includes 'invalid TOML rejection' test. Same error-swallowing
+    category per partial match rule 2, though the specific from_file_or_default wrapper
+    was not isolated.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: TEA security.rs explicitly tests 'CWE-209 error info exposure (no stack
+    traces, tokens, sensitive values in Display)'. Dev implemented sanitized Display.
+    Same vulnerability class (CWE-209) per partial match rule 1, though the Io(#[error(transparent)])
+    passthrough was missed.
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[MEDIUM] tenant field uses raw String instead of TenantId\
+    \ newtype' \u2014 exact match. TEA also tested header injection via CR/LF in tenant\
+    \ ID, and Dev implemented CR/LF stripping, but the type-safety gap was explicitly\
+    \ called out by reviewer."
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: true
+  caught_by: reviewer
+  evidence: Reviewer flagged '[MEDIUM] Workspace dependencies not used for several
+    crates' noting clap_complete, comfy-table, csv, dirs, toml declared directly instead
+    of workspace = true.
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer flagged ''[MEDIUM] Config ConfigFile silently accepts unknown
+    fields'' with the exact token example: ''If a user puts token = "secret" in the
+    config file, it''s silently ignored without warning.'' Recommends #[serde(deny_unknown_fields)].'
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified the vacuously true assertion pattern (is_none() ||
+    ... always true). TEA wrote the test containing the issue; neither Dev nor Reviewer
+    flagged it.
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified the zero-assertion test with 'let _ = config'. TEA
+    wrote the test containing the issue; neither Dev nor Reviewer flagged it.

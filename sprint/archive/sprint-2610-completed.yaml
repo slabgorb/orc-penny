@@ -14,6 +14,12 @@ completed_epics:
   - MSSCI-16073
   - MSSCI-16127
   - MSSCI-16210
+  - MSSCI-16211
+  - MSSCI-16214
+  - MSSCI-16212
+  - MSSCI-16213
+  - MSSCI-16312
+  - '49'
 completed_stories:
   - id: 110-1
     epic: '110'
@@ -495,3 +501,108 @@ completed_stories:
     title: Populate difficulty profiles from baseline data
     points: 2
     completed: '2026-03-06'
+  - id: 47-1
+    epic: ''
+    title: Cascade attribution on dpgd-116 existing results
+    points: 2
+    completed: '2026-03-08'
+  - id: 43-3
+    epic: MSSCI-16211
+    title: 'Pilot: Add red herrings to order-service scenario'
+    points: 3
+    completed: '2026-03-08'
+  - id: 44-4
+    epic: MSSCI-16214
+    title: Multi-judge test on high-variance scenarios
+    points: 2
+    completed: '2026-03-08'
+  - id: 45-3
+    epic: MSSCI-16212
+    title: Create gold standards for 5 high-variance scenarios
+    points: 3
+    completed: '2026-03-08'
+  - id: 46-3
+    epic: MSSCI-16213
+    title: Update schema.yaml with new fields documentation
+    points: 1
+    completed: '2026-03-08'
+  - id: 47-2
+    epic: ''
+    title: Write concern manifest and AC manifest for dpgd-116
+    points: 2
+    completed: '2026-03-08'
+  - id: 48-1
+    epic: ''
+    title: FastAPI skeleton + OTLP receiver + launcher switch
+    points: 3
+    completed: '2026-03-09'
+  - id: 48-2
+    epic: ''
+    title: Port core API routes to FastAPI (data proxy + state + analysis)
+    points: 3
+    completed: '2026-03-09'
+  - id: 48-3
+    epic: ''
+    title: Port all 16 WebSocket channels to FastAPI
+    points: 5
+    completed: '2026-03-09'
+  - id: 48-4
+    epic: ''
+    title: Cleanup — remove Node.js server, build scripts, update docs
+    points: 2
+    completed: '2026-03-09'
+  - id: 49-1
+    epic: ''
+    title: TirePump removal — finish React cleanup and stale references
+    points: 2
+    completed: '2026-03-09'
+  - id: 49-2
+    epic: ''
+    title: Remove legacy TypeScript — dead CLI, BMAD, Jira modules
+    points: 3
+    completed: '2026-03-09'
+  - id: 142-1
+    epic: ''
+    title: Unified context resolution in load_scenario()
+    points: 2
+    completed: '2026-03-11'
+  - id: 142-2
+    epic: ''
+    title: Fix save_result() nesting bug
+    points: 1
+    completed: '2026-03-11'
+  - id: 142-3
+    epic: ''
+    title: Worktree cleanliness verification
+    points: 1
+    completed: '2026-03-11'
+  - id: 142-4
+    epic: ''
+    title: Always capture stream-json events to disk
+    points: 3
+    completed: '2026-03-11'
+  - id: 142-5
+    epic: ''
+    title: Fix framework_version reliability
+    points: 1
+    completed: '2026-03-11'
+  - id: 142-6
+    epic: ''
+    title: Event parsing and trace/explain commands
+    points: 3
+    completed: '2026-03-11'
+  - id: 142-7
+    epic: ''
+    title: Run index with backfill
+    points: 2
+    completed: '2026-03-11'
+  - id: 142-8
+    epic: ''
+    title: Events-first storage model
+    points: 3
+    completed: '2026-03-12'
+  - id: 142-9
+    epic: ''
+    title: LLM-narrated trace
+    points: 2
+    completed: '2026-03-12'

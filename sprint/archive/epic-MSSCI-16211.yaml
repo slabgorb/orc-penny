@@ -1,0 +1,41 @@
+id: '43'
+type: epic
+title: False Positive Traps (Red Herrings)
+priority: p1
+status: done
+repos: pennyfarthing
+jira: MSSCI-16211
+stories:
+  - id: 43-1
+    jira: MSSCI-16222
+    title: Add red_herrings schema to scenarios
+    points: 2
+    priority: p0
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-06'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-06'
+    review_verdict: approved
+  - id: 43-2
+    jira: MSSCI-16223
+    title: Update judge for red herring detection
+    points: 2
+    priority: p0
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-06'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-06'
+    review_verdict: approved
+  - id: 43-3
+    jira: MSSCI-16224
+    title: 'Pilot: Add red herrings to order-service scenario'
+    points: 3
+    priority: p1
+    status: canceled
+    repos: pennyfarthing
+    workflow: tdd
+completed: '2026-03-08'

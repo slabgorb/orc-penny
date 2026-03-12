@@ -1,0 +1,79 @@
+---
+
+# Story 6.1 Code Review — Proposition Joe's Assessment
+
+*"Look, I ain't out here to rain on nobody's parade. But if the product ain't right, ain't nobody buying. And right now, we got some product issues."*
+
+Slim Charles ran the preflight — tests pass, clippy clean. Good. But that's table stakes. Here's what I found when I opened the package.
+
+---
+
+## Observations
+
+### [HIGH] Missing `logout` and `tui` commands — AC-1 violation at `cli.rs:46-86`
+
+AC-1 explicitly requires: *"`axiathon --help` must show all command groups: query, rules, alerts, ingest, config, status, tenant, **login/logout**, **tui**, completion, init."* The `Commands` enum has no `Logout` or `Tui` variants. The help text won't show them. The test in `cli_structure.rs:202-216` (`cli_has_all_expected_subcommands`) doesn't check for `logout` or `tui` either — meaning the test validates the wrong expectation.
+
+### [HIGH] Nightly fmt check fails — `stub_handlers.rs`
+
+Per `gotchas.md`: *"Always include `cargo +nightly fmt --all --check` in the preflight. Nightly rustfmt enforces import ordering that stable does not. If it fails, flag it before approval."* The check shows formatting diffs in `stub_handlers.rs` (long `assert!` lines need wrapping). This blocks approval.
+
+### [MEDIUM] `toml` version 0.8 vs spec's 0.9; workspace dependency violations at `Cargo.toml:15-20,25`
+
+Story spec says to add `toml 0.9` to `[workspace.dependencies]`. The crate declares `toml = "0.8"` directly. Additionally, `clap_complete`, `comfy-table`, `keyring`, `dirs`, `csv`, and `reqwest` are all specified directly in the crate Cargo.toml rather than as workspace dependencies. The story spec explicitly says to add these to workspace deps. This violates the project's workspace dependency management pattern.
+
+### [MEDIUM] No `after_help` usage examples on any command — AC-2 violation
+
+AC-2 says: *"include `after_help` usage examples for each command group."* None of the command structs (`QueryArgs`, `RulesArgs`, etc.) have `#[command(after_help = "...")]`. The help text will render without examples.
+
+### [MEDIUM] `--tenant` accepts raw `String`, not `TenantId` newtype at `cli.rs:33`
+
+The Rust rules say: *"Newtypes for IDs: `TenantId(String)` — prevents mixing ID types."* The `--tenant` flag and `SiemClient.tenant_id` are both `Option<String>`. `axiathon-core` has `TenantId` available. The tenant value flows unchecked from CLI flag through config into HTTP headers.
+
+### [MEDIUM] CRLF injection validation at request time, not construction at `client.rs:17-28` vs `client.rs:33-46`
+
+`SiemClient::new()` accepts any string. Validation for header injection (CWE-113) only occurs inside `get()`. When `post()`, `put()`, `delete()` methods are added later, each must duplicate this check or it becomes an injection vector. Validate-on-construction is the safer pattern per the project's "validated constructors at trust boundaries" rule.
+
+### [MEDIUM] Unknown config fields silently ignored at `config.rs:12-13`
+
+`RawConfig` uses `#[serde(default)]` without `#[serde(deny_unknown_fields)]`. A typo like `sever_url` instead of `server_url` silently falls back to defaults. Operators could run against the wrong server for hours. The test `config_file_with_unknown_fields_does_not_panic` validates non-panic but doesn't assert on the behavior.
+
+### [MEDIUM] `format_json` fabricates `request_id` client-side at `output.rs:73`
+
+`uuid::Uuid::new_v4()` generates a random request_id that has no correlation to any server-side request. This will confuse operators trying to correlate CLI output with server logs. The `request_id` should come from the API response, not be invented.
+
+### [LOW] `main.rs` is still `todo!()` at `main.rs:4-6`
+
+The binary panics on execution. All implementation code is in `lib.rs`/modules and is only exercised through tests. This is acceptable for TDD RED→GREEN, but the story can't be considered complete until `main.rs` dispatches commands.
+
+### [LOW] `init` handler gives no user feedback at `init.rs:6-26`
+
+On success, `handle()` returns `Ok(())` silently. Operators running `axiathon init` get no confirmation of what was created or where. A message like "Created ~/.config/axiathon/cli.toml" would be appropriate.
+
+### [LOW] Token briefly loaded into memory from config file at `config.rs:18-21`
+
+`RawConfig` deserializes the `token` field into `Option<String>` (so it's in memory), then discards it. While the final `ClientConfig` correctly returns `None` from `token()`, the secret briefly exists in process memory. Consider `#[serde(skip)]` or `#[serde(skip_deserializing)]` on the token field instead.
+
+### [VERIFIED] Exit code mapping — all variants tested with correct values
+### [VERIFIED] CWE-209 — `ServerError` Display does not leak the second field
+### [VERIFIED] Header injection tests present and correct for CRLF in both tenant and token
+### [VERIFIED] Shell completion generation functional for all four shells
+### [VERIFIED] Stub handlers return correct story references
+### [VERIFIED] `#![forbid(unsafe_code)]` present on both `main.rs` and `lib.rs`
+### [VERIFIED] CSV escaping handles commas and embedded quotes correctly
+
+---
+
+## Verdict: **CHANGES_REQUESTED**
+
+*"The product got potential, no doubt. But I can't move it with these problems. Two things gotta happen before I sign off:"*
+
+**Must fix (blocking):**
+1. Add `Logout` and `Tui` command variants (AC-1 requirement)
+2. Fix nightly fmt formatting in `stub_handlers.rs`
+
+**Should fix (strong recommendation):**
+3. Move dependencies to workspace declarations per story spec
+4. Add `after_help` examples per AC-2
+5. Move CRLF validation to `SiemClient::new()` (validate at construction)
+6. Consider `#[serde(deny_unknown_fields)]` or at least warn on unknown config fields

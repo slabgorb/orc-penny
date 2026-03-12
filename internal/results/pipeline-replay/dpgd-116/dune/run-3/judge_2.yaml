@@ -1,0 +1,79 @@
+scenario_id: dpgd-116
+theme: dune
+run_id: 3
+judge_version: v2
+judge_pass: 2
+total_caught: 4
+total_findings: 7
+weighted_caught: 23
+total_weight: 37
+score_pct: 62.2
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer F8: \"from_file_with_env silently swallows file errors \u2014\
+    \ Self::from_file(&path).unwrap_or_default() \u2014 if the config file has a parse\
+    \ error (not just missing), the error is silently swallowed.\" Listed as required\
+    \ fix #7: \"Fix from_file_with_env \u2014 distinguish missing file (use defaults)\
+    \ from corrupt file (error).\""
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote security tests for "CWE-209: Error Display doesn''t leak credentials,
+    paths, or stack traces" in error_exit_codes_test.rs and security_test.rs. Reviewer
+    F4 also flagged ServerError Display and CWE-209 risk. Same vulnerability class
+    addressed.'
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote header injection tests: "Header injection: Tenant ID and token
+    with \r\n rejected/sanitized" in siem_client_test.rs. Dev implemented prevention
+    at client.rs:31,38. Reviewer verified V1. Same CWE-113 class, though raw String
+    vs TenantId type-safety gap not explicitly flagged.'
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: Reviewer flagged edition mismatch (F5) but never mentioned the 6 dependencies
+    using direct version strings instead of workspace = true.
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: "Reviewer V8 marked \"Unknown config fields handled via serde(flatten)\"\
+    \ as VERIFIED/correct. This is the opposite conclusion \u2014 the ground truth\
+    \ says silently ignoring unknown fields like 'token' is dangerous. Pipeline examined\
+    \ the exact mechanism and approved it."
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer F11 flagged the same category of overly permissive OR in test\
+    \ assertions: \"parsed.get(\"request_id\").is_some() || parsed.get(\"metadata\"\
+    ).is_some() \u2014 accepts two different structures when only one is correct.\
+    \ The OR is redundant and misleading.\" Same pattern of vacuous/overly-permissive\
+    \ OR in assertions, adjacent location."
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase flagged any test as having zero assertions or only checking non-panic
+    behavior.

@@ -1,0 +1,114 @@
+I've now read every file. Here is my adversarial review.
+
+---
+
+# Code Review Findings — Story 6.1: CLI Framework & Structure
+
+**Story:** `6-1-cli-framework-structure.md`
+**Files Reviewed:** 19 source files across `crates/axiathon-client/`
+
+---
+
+## CRITICAL
+
+**[CRITICAL] F1: Vacuous assertions in `client.rs` tests — 3 tests always pass**
+`client.rs:201-202`, `208-209`, `215-216` — The `map_status_code` tests for 404, 429, and 500 use bare `matches!()` expressions **without wrapping in `assert!()`**. `matches!` returns a `bool` which is silently discarded. These tests pass regardless of what error variant is returned.
+
+```rust
+// Line 201-202 — ALWAYS PASSES
+matches!(err, CliError::NotFound(_));
+// Should be:
+assert!(matches!(err, CliError::NotFound(_)));
+```
+
+This affects `map_status_code_404_is_not_found`, `map_status_code_429_is_rate_limited`, and `map_status_code_500_is_server_error`.
+
+**[CRITICAL] F2: AC-8 config file structure does not match specification**
+AC-8 specifies `[api]` section with `url` and `timeout_seconds`, and `[defaults]` section with `output_format` and `default_tenant`. The implementation uses flat keys (`api_url`, `timeout_secs`, `tenant_id`, `default_format`). Any config file written per the spec's documented format will silently ignore all keys (serde default behavior), producing a default config with no error. This is a spec divergence that will break downstream stories expecting the documented TOML structure.
+
+**[CRITICAL] F3: AC-7 default timeout is 30s, spec says 60s**
+`config.rs:15` sets `DEFAULT_TIMEOUT_SECS = 30`. AC-7 explicitly states "configurable timeout (default 60s)". Story Dev Notes exit code table also references 60s. This is a spec violation.
+
+---
+
+## HIGH
+
+**[HIGH] F4: `main.rs` skips config loading, tracing init, and SiemClient construction**
+Story Task 1.4 requires main.rs to: initialize tracing subscriber (verbosity from `-v`), load config, build `SiemClient`, then dispatch. The actual `main.rs` does none of this — it parses args and directly dispatches to command handlers. This means global flags `--verbose`, `--quiet`, `--server`, `--config`, `--tenant` are parsed but **never used**.
+
+**[HIGH] F5: Missing `keyring` dependency — no OS keychain integration**
+AC-7 requires "the client injects `Authorization: Bearer <token>` from OS keychain". The story's workspace dependencies list `keyring = { version = "3", ... }`. Neither the workspace `Cargo.toml` nor the crate `Cargo.toml` includes `keyring`. There is zero keychain code. Token is only settable via `with_token()` builder method with no caller.
+
+**[HIGH] F6: CWE-209 — `reqwest::Error` exposed verbatim to stderr**
+`error.rs:46-47`: `Http(#[from] reqwest::Error)` with `#[error("HTTP error: {0}")]` passes reqwest's error `Display` directly through. reqwest errors can include full URLs (with query parameters, potentially tokens in URLs), redirect chains, and TLS negotiation details. In `main.rs:19`, `eprintln!("Error: {err}")` prints this unsanitized to the operator. The SECURITY doc comment on the enum warns against this but the code does it anyway.
+
+**[HIGH] F7: Header injection not validated (CWE-113 partial)**
+`client.rs:100-106`: `token` and `tenant_id` are passed directly to `request.header()`. While reqwest validates header values and will return an error on `\r\n`, the error is a panic in debug builds and an opaque `InvalidHeaderValue` in release. User-supplied tenant IDs (from `--tenant` flag or env var) should be validated before reaching the HTTP layer. A newline in `AXIATHON_TENANT_ID` env var would cause a confusing runtime error.
+
+**[HIGH] F8: Silent failure on invalid `AXIATHON_TIMEOUT` env var**
+`config.rs:83-84`: If `AXIATHON_TIMEOUT` is set to a non-numeric value (e.g., `"30s"` or `"fast"`), the parse failure is silently swallowed and the default is used. The user gets no feedback that their env var was ignored. This should at minimum log a warning, or return `CliError::Config`.
+
+---
+
+## MEDIUM
+
+**[MEDIUM] F9: No `deny_unknown_fields` on `ClientConfig`**
+`config.rs:18`: `ClientConfig` accepts and silently ignores unknown TOML keys. A user who writes `api_rul = "..."` (typo) gets the default `localhost:8080` with no error. Adding `#[serde(deny_unknown_fields)]` would catch config typos at load time.
+
+**[MEDIUM] F10: `client.rs:135` hardcodes timeout_secs as 30**
+`map_reqwest_error` returns `CliError::ConnectionTimeout { timeout_secs: 30 }` regardless of the actual configured timeout. The error message will lie if the user configured a different timeout.
+
+**[MEDIUM] F11: `--tenant` flag uses raw `String`, not `TenantId` newtype**
+Per `rust.md` rules: "Newtypes for IDs: `TenantId(String)`". Both `cli.rs:47` (`pub tenant: Option<String>`) and `client.rs:19` (`tenant_id: Option<String>`) use raw strings. This allows mixing tenant IDs with other string values at the type level.
+
+**[MEDIUM] F12: `--config` flag is `Option<String>`, story specifies `Option<PathBuf>`**
+`cli.rs:54`: Story Task 2.1 code sample shows `pub config: Option<PathBuf>`. Implementation uses `Option<String>`. This loses `PathBuf`'s path-specific behavior and won't compose well with `ClientConfig::load_with_overrides` which expects `&Path`.
+
+**[MEDIUM] F13: `formatter_for_returns_correct_type` test is vacuous**
+`output.rs:255-259`: Creates three formatters via `formatter_for()` and asserts nothing. The `let _ =` discards the result. This test only verifies no panic, not correctness.
+
+**[MEDIUM] F14: No env var override tests for config**
+Story Task 7.5 requires "Write unit test: load from file, env var override, default fallback". The config test module has file loading and default tests but zero env var override tests. `apply_env_overrides()` is untested.
+
+**[MEDIUM] F15: `toml` version 0.8, story specifies 0.9**
+Workspace `Cargo.toml:49` uses `toml = "0.8"`. Story Dev Notes specify `toml = "0.9"` (TOML 1.1.0 spec). Minor, but a stated deviation.
+
+---
+
+## LOW
+
+**[LOW] F16: `init.rs` does not prompt for server URL**
+Story Task 9.1 says "Prompt for server URL (default: http://localhost:8080)". The implementation writes a default config without prompting. Acceptable for a framework story but diverges from spec.
+
+**[LOW] F17: `init.rs` function signatures use `&PathBuf` instead of `&Path`**
+`init.rs:41` (`create_config_dir`) and `init.rs:50` (`write_default_config`) take `&PathBuf`. Idiomatic Rust uses `&Path`. `clippy::ptr_arg` should flag this.
+
+**[LOW] F18: Missing integration test directory**
+Story crate layout specifies `tests/cli_parsing.rs`, `tests/output_format.rs`, `tests/config_loading.rs`. None exist. All tests are inline unit tests.
+
+**[LOW] F19: `ResponseMetadata` uses UUID v4, project convention is UUID v7**
+`output.rs:42`: `Uuid::new_v4()` for `request_id`. Per `rust.md`: "UUID v7 for time-ordered IDs". Request IDs benefit from time-ordering for log correlation.
+
+**[LOW] F20: Story Dev Agent Record is empty**
+The story file's Dev Agent Record section (Agent Model, Debug Log, Completion Notes, File List) is completely empty. No record of what was done, which files were changed, or which agent performed the work.
+
+---
+
+## Summary
+
+| Severity | Count |
+|----------|-------|
+| CRITICAL | 3 |
+| HIGH | 5 |
+| MEDIUM | 7 |
+| LOW | 5 |
+| **Total** | **20** |
+
+## Verdict: **CHANGES_REQUESTED**
+
+The three critical findings must be fixed before merge:
+1. **F1** — 3 tests are no-ops (missing `assert!`)
+2. **F2** — Config structure diverges from spec (flat vs sectioned TOML) creating integration risk
+3. **F3** — Default timeout contradicts spec (30s vs 60s)
+
+The high-severity findings (F4-F8) represent missing functionality (no config loading in main, no keyring), security concerns (error exposure, header injection), and silent failures that will cause real operator confusion. These should be addressed in this story or explicitly deferred with story references.

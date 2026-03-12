@@ -1,0 +1,22 @@
+All 116 tests GREEN, clippy clean. Here's the summary:
+
+## Dev Assessment
+
+**Implementation Complete:** Yes
+
+**Files Changed:**
+- `crates/axiathon-client/src/lib.rs` — added public module re-exports
+- `crates/axiathon-client/src/main.rs` — binary entry point with command dispatch and exit code mapping
+- `crates/axiathon-client/src/cli.rs` — `Cli` struct with clap 4.x derive, all command groups (query, rules, alerts, ingest, config, status, tenant, login/logout, completion, init, tui), global flags (format, verbose, quiet, tenant, server, config, no-color)
+- `crates/axiathon-client/src/error.rs` — `CliError` enum with `#[non_exhaustive]`, thiserror derive, exit code mapping (1/3/4)
+- `crates/axiathon-client/src/output.rs` — `OutputFormat` enum (Table/Json/Csv), `OutputFormatter` with comfy-table, JSON envelope with `ResponseMetadata`, CSV via csv crate
+- `crates/axiathon-client/src/config.rs` — `ClientConfig` with TOML loading (`deny_unknown_fields`), env var overrides (AXIATHON_API_URL, AXIATHON_TIMEOUT), CLI flag overrides, XDG config path, no token/password in schema
+- `crates/axiathon-client/src/client.rs` — `SiemClient` wrapping reqwest, header injection (Authorization, X-Tenant-ID), HTTP status code mapping (401→AuthenticationExpired, 403→Unauthorized, 404→NotFound, 429→RateLimited, 5xx→ServerError), header injection prevention
+- `crates/axiathon-client/src/commands/mod.rs` — module re-exports
+- `crates/axiathon-client/src/commands/{query,rules,alerts,ingest,config,status,tenant,login}.rs` — stub handlers returning `CliError::NotImplemented` with story references
+- `crates/axiathon-client/src/commands/completion.rs` — functional shell completion via `clap_complete::generate()`
+- `crates/axiathon-client/src/commands/init.rs` — functional first-time setup
+- `crates/axiathon-client/Cargo.toml` — overrode `unsafe_code` lint from `forbid` to `allow` (crate-level) so integration tests can use `unsafe` for env var manipulation; production code retains `#![forbid(unsafe_code)]`
+
+**Tests:** 116/116 passing (GREEN)
+**Branch:** current branch (not yet pushed)

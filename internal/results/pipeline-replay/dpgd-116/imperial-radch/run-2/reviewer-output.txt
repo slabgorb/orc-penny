@@ -1,0 +1,99 @@
+Good. I have now read every file. Here is my review.
+
+---
+
+# Story 6.1 Review: CLI Framework & Structure
+
+*I have survived longer than the empires that built me. I have seen elegant architectures collapse from a single overlooked flaw. Let me tell you what I see.*
+
+## Review Findings
+
+### CRITICAL / HIGH
+
+**1. [HIGH] Tests fail to compile — `global_flags.rs:160` has type error**
+at `crates/axiathon-client/tests/global_flags.rs:160-162`
+
+`arg.get_env()` returns `Option<&OsStr>`, not an iterator. The test calls `.collect()` on `&OsStr`, which doesn't implement `Iterator`. This means **the test suite does not pass** — the `global_flags` test file fails to compile entirely, meaning 18 tests in that file are silently untested.
+
+```
+error[E0599]: `&std::ffi::OsStr` is not an iterator
+```
+
+This is blocking. Tests that don't compile aren't tests at all.
+
+**2. [HIGH] No `main.rs` — the binary entry point is missing**
+The story spec explicitly requires `crates/axiathon-client/src/main.rs` as the binary entry point with tracing init, dispatch, and exit code handling via `std::process::exit()`. The `Cargo.toml` has no `[[bin]]` section. Without `main.rs`, there is no `axiathon` binary — the core deliverable of this story doesn't exist. The crate is a library only.
+
+**3. [HIGH] `logout` command is missing from AC-1**
+AC-1 explicitly requires: "login/logout" command groups. The `Commands` enum has `Login` but no `Logout` variant. The `--help` output will not show `logout` as required.
+
+### MEDIUM
+
+**4. [MEDIUM] `RawConfig` silently ignores unknown fields — no `deny_unknown_fields`**
+at `crates/axiathon-client/src/config.rs:17`
+
+Typos in config files (e.g., `servr_url` instead of `server_url`) will be silently ignored and fall back to defaults. Operators will not be warned. This is a classic configuration footgun. Should use `#[serde(deny_unknown_fields)]` on `RawConfig`.
+
+**5. [MEDIUM] `toml` version mismatch: workspace declares `0.8`, story spec requires `0.9`**
+at `Cargo.toml:49`
+
+The story's Technical Guardrails specify `toml = "0.9"`. The workspace declares `toml = "0.8"`. This is a spec deviation.
+
+**6. [MEDIUM] JSON formatter does not include `ResponseMetadata` in output**
+at `crates/axiathon-client/src/output.rs:92-111`
+
+AC-4 requires: "JSON includes `ResponseMetadata` (request_id, timestamp, api_version)." The `JsonFormatter::format()` produces `{"data": [...]}` but never includes the `ResponseMetadata`. The struct exists but is never wired into the formatter output. Tests only verify the struct serializes, not that it appears in formatter output.
+
+**7. [MEDIUM] No TTY auto-detection for default output format**
+AC-4 requires: "Table default for TTY, JSON for piped output." The story guardrails specify using `std::io::IsTerminal`. There is no TTY detection anywhere in the codebase — the default is always `Table` regardless of whether stdout is a terminal or pipe.
+
+**8. [MEDIUM] `sanitize_header_value` strips CRLF but doesn't reject — allows partial injection**
+at `crates/axiathon-client/src/client.rs:26-36`
+
+The sanitizer silently strips `\r\n` from header values. If an attacker passes `"malicious\r\nX-Injected: true"`, the result is `"maliciousX-Injected: true"` — sanitized, but the token is now mangled into gibberish rather than being rejected outright. Consider rejecting values that contain CRLF rather than silently mangling them, so operators get an error instead of mysterious auth failures.
+
+**9. [MEDIUM] CSV/Table formatters silently swallow errors with `.ok()`**
+at `crates/axiathon-client/src/output.rs:126-131`
+
+`wtr.write_record(headers).ok()` and `wtr.write_record(row).ok()` discard write errors silently. If a write fails (e.g., row column mismatch), the output is silently incomplete. This violates the "no silent failures" principle.
+
+### LOW
+
+**10. [LOW] `Completion` variant uses inline struct instead of `CompletionArgs` like other commands**
+at `crates/axiathon-client/src/cli.rs:80-83`
+
+All other command groups use the `XxxArgs` pattern (`QueryArgs`, `RulesArgs`, etc.) but `Completion` is an inline struct with `shell: String`. This breaks the consistency pattern and means the shell argument isn't validated at parse time — `clap_complete::Shell` could be used as the type directly for parse-time validation.
+
+**11. [LOW] `rules` stub references Story 6.6 — should likely be 6.6 or wherever rules are actually scoped**
+at `crates/axiathon-client/src/commands/rules.rs:7`
+
+The epic doc doesn't have a Story 6.6; rules management seems to span multiple stories. Minor but may cause confusion.
+
+### VERIFIED
+
+- [VERIFIED] `#![forbid(unsafe_code)]` present in `lib.rs`
+- [VERIFIED] `#[non_exhaustive]` on `CliError` enum
+- [VERIFIED] Clippy passes clean
+- [VERIFIED] All global flags use `global = true`
+- [VERIFIED] Header injection prevention exists (CWE-113 mitigation)
+- [VERIFIED] Token not exposed in `Debug` impl of `SiemClient`
+- [VERIFIED] `token()` method always returns `None` on `ClientConfig` (security)
+- [VERIFIED] Workspace dependencies properly declared
+- [VERIFIED] Plural `rules`/`alerts` naming per architecture doc
+- [VERIFIED] Shell completion generation is functional, not a stub
+- [VERIFIED] `thiserror` used for error enum per Rust coding rules
+- [VERIFIED] No server-side crate imports in `axiathon-client`
+
+---
+
+## Verdict: **CHANGES_REQUESTED**
+
+Three HIGH findings block approval:
+
+1. **Tests don't compile** — `global_flags.rs` has a type error, so 18 tests are not running
+2. **No `main.rs`** — the `axiathon` binary doesn't exist; the crate is library-only
+3. **Missing `logout` command** per AC-1
+
+The foundation is solid — good security patterns (header injection prevention, token redaction in Debug, no tokens in config), clean clippy, proper use of derive macros. But a CLI story without a binary entry point, tests that don't compile, and a missing required command group cannot pass.
+
+I have watched foundations be laid before. The stone is good quality. But three blocks are missing from load-bearing positions. Fix those, and this ancient station will consider approval.

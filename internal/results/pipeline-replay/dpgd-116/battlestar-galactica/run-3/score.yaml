@@ -1,0 +1,77 @@
+scenario_id: dpgd-116
+theme: battlestar-galactica
+run_id: 1
+judge_version: v2
+total_caught: 4
+total_findings: 7
+weighted_caught: 18
+total_weight: 37
+score_pct: 48.6
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase flagged that from_file_or_default swallows all errors (parse,
+    permission, etc.) via unwrap_or_default(). TEA tested config loading but not error
+    discrimination. Reviewer focused on unknown fields, not error swallowing.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: "Reviewer explicitly examined CWE-209 on ServerError and concluded '[VERIFIED]\
+    \ CWE-209 is handled correctly \u2014 Display doesn't leak internals.' But the\
+    \ ground truth issue is about Io(#[error(transparent)]) forwarding full OS error\
+    \ details through eprintln. Opposite conclusion rule applies \u2014 pipeline examined\
+    \ the risk class and reached the wrong conclusion."
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: TEA wrote header injection tests in siem_client.rs and security.rs. Dev
+    implemented is_safe_header_value() rejecting CRLF. Reviewer verified CWE-113 prevention
+    at client.rs:99-102. Same vulnerability class (CWE-113) was identified and mitigated,
+    though via runtime check rather than type-safe TenantId.
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[MEDIUM] wiremock not declared as workspace dependency'\
+    \ \u2014 same category (direct version strings instead of workspace = true), different\
+    \ instance. Demonstrates awareness of the workspace dependency pattern."
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[HIGH] RawConfig silently ignores unknown fields' \u2014\
+    \ directly matches the ground truth. Recommends '#[serde(deny_unknown_fields)]'\
+    \ and warns about typos becoming invisible bugs and token being silently ignored."
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[MEDIUM] #[non_exhaustive] test is vacuous \u2014 exit_codes.rs:175-192'\
+    \ \u2014 same category (vacuous/always-true test assertion), different test file.\
+    \ Per partial match rule 2, pipeline demonstrated detection capability for vacuously\
+    \ true tests."
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified the zero-assertion test where 'let _ = config;' has
+    no assert_eq! checks. TEA designed config_loading tests but didn't flag this pattern.
+    Reviewer didn't mention it.

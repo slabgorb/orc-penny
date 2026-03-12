@@ -1,0 +1,77 @@
+scenario_id: dpgd-116
+theme: hitchhikers-guide
+run_id: 1
+judge_version: v2
+judge_pass: 1
+total_caught: 5
+total_findings: 7
+weighted_caught: 25
+total_weight: 37
+score_pct: 67.6
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase flagged that from_file_or_default swallows all error types (parse,
+    permission, I/O) via unwrap_or_default. TEA tests include 'missing/invalid file
+    handling' but no test verifies that parse errors propagate rather than silently
+    defaulting. Reviewer flagged unknown fields (I4) but not error-swallowing.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: 'TEA specified ''CWE-209: ServerError Display must not leak internal paths/stack
+    traces'' as a security test. Dev implemented ServerError Display hiding raw response
+    body. Reviewer further flagged the stored body as a latent CWE-209 risk. Same
+    vulnerability class addressed across all three phases.'
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote ''CWE-113: CRLF injection in tenant ID and auth token headers''
+    tests in siem_client.rs. Dev implemented CRLF stripping: ''SiemClient strips \r\n
+    from tokens/tenant IDs to prevent header injection (CWE-113)''. Same vulnerability
+    class (CWE-113) addressed, though via sanitization rather than using validated
+    TenantId type.'
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase mentioned workspace dependency management. The code changes show
+    direct version strings in Cargo.toml but no phase flagged this as an issue.
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: Reviewer flagged '[HIGH] Config silently accepts unknown fields' and recommended
+    '#[serde(deny_unknown_fields)]' to RawConfig, explicitly noting the danger of
+    a user putting 'token = secret' in config and getting no feedback.
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: Reviewer flagged '[MEDIUM] is_ok() || is_err() is always true' as a vacuous
+    assertion that 'asserts literally nothing'. Same category of vacuously true test
+    assertion, per partial match rule 2.
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[MEDIUM] CRLF injection tests are vacuous' noting 'Empty\
+    \ if body = no assertion = vacuous test' \u2014 same category of test with zero\
+    \ meaningful assertions, per partial match rule 2."

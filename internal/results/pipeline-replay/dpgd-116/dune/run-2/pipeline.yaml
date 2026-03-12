@@ -1,0 +1,29 @@
+scenario_id: dpgd-116
+theme: dune
+run_id: 2
+timestamp: '2026-03-09T00:07:21.849650+00:00'
+worktree_path: /tmp/pf-replay/dpgd-116-dune-run-2
+phases:
+  tea:
+    token_usage:
+      input: 94
+      output: 24560
+    duration_s: 359.62
+    exit_code: 0
+  dev:
+    token_usage:
+      input: 28
+      output: 14488
+    duration_s: 306.22
+    exit_code: 0
+  reviewer:
+    token_usage:
+      input: 14
+      output: 5847
+    duration_s: 247.3
+    exit_code: 0
+framework_version:
+  commit: pre-edge-hunter
+  semver: 12.7.0
+  tag: baseline-pre-edge-hunter
+  agent_hashes: {}

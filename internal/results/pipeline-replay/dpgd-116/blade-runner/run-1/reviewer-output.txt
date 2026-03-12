@@ -1,0 +1,113 @@
+Good — `RawConfig` is private, and there's no `deny_unknown_fields`. Let me also check for the `main.rs` exit code handling.
+
+Now I have everything I need. Let me compile the review.
+
+---
+
+# Story 6.1 CLI Framework & Structure — Adversarial Review
+
+*Reviewer: J.F. Sebastian, with Kaiser and Bear*
+
+## Preflight
+
+- `cargo check -p axiathon-client`: PASS
+- `cargo clippy -p axiathon-client -- -D warnings`: PASS
+- `cargo +nightly fmt --all --check`: **FAIL** — formatting diffs in `tests/siem_client.rs`
+- `cargo test -p axiathon-client`: **FAIL** — `help_does_not_show_server_commands` (1 failure, 27 pass)
+
+---
+
+## Findings
+
+### `[CRITICAL]` 1. main.rs does not use CliError/exit_code — errors bypass the exit code contract at `main.rs:8-23`
+
+`main()` dispatches commands but never calls `CliError::exit_code()`. The entire `CliError` exit-code mapping infrastructure (AC-3) is dead code from `main`'s perspective. Stub commands call `std::process::exit(1)` directly, which happens to work, but when real command handlers return `Result<(), CliError>`, there is no error-handling bridge. The `main` function's return type is `()`, not `Result`, and there's no `match` on errors with `process::exit(err.exit_code())`. **Exit codes 3 and 4 can never be produced by the binary** — the `CliError::exit_code()` method exists but is never called from the binary entry point. This violates AC-3.
+
+### `[HIGH]` 2. Missing `tui` and `logout` commands — AC-1 violation at `cli.rs:49-87`
+
+AC-1 explicitly requires: `query`, `rules`, `alerts`, `ingest`, `config`, `status`, `tenant`, `login`/`logout`, `tui`, `completion`, `init`. The `Commands` enum is missing both `Tui` and `Logout` variants. The `tui` command is the TUI entry point (Epic 4 depends on it), and `logout` is paired with `login` per AC-1.
+
+### `[HIGH]` 3. `help_does_not_show_server_commands` test fails — `--server` flag triggers false positive at `tests/cli_structure.rs:31-38`
+
+The test asserts that `stdout` does not contain "server", but the `--server` global flag appears in help output. The test is testing the wrong thing — it should check that no `server` *subcommand* exists, not that the word "server" is absent. This test fails on every run.
+
+### `[HIGH]` 4. Config silently accepts unknown fields — potential misconfiguration at `config.rs:10-15`
+
+`RawConfig` uses `#[derive(Deserialize)]` without `#[serde(deny_unknown_fields)]`. A config file with `sever_url = "..."` (typo) would silently fall through to defaults. Operators would never know their config was ignored. This also means a `token = "secret"` field is silently ignored rather than warned about — the test at `config_loading.rs:146-166` even acknowledges this ambiguity but doesn't enforce either behavior.
+
+### `[HIGH]` 5. Nightly fmt check fails — `tests/siem_client.rs`
+
+The `cargo +nightly fmt --all --check` fails with formatting diffs in `siem_client.rs`. Per project gotchas, nightly fmt must pass before approval.
+
+### `[MEDIUM]` 6. `SiemClient::new` uses `expect()` — panics on build failure at `client.rs:50`
+
+`reqwest::Client::builder().build().expect(...)` will panic if TLS backend initialization fails (e.g., missing root certs in stripped containers). This should return a `Result<Self, CliError>` instead of panicking.
+
+### `[MEDIUM]` 7. `SiemClient` header error is deferred, not fail-fast at `client.rs:12-13,22-44`
+
+When a tenant ID or token contains invalid characters, the error is stored in `header_error: Option<String>` and only surfaces on the first `.get()` call. This is surprising behavior — if I construct a client with invalid credentials, I expect an immediate error, not a deferred one. The pattern also means that if someone only uses `SiemClient` for construction and never calls `.get()`, the error is silently lost.
+
+### `[MEDIUM]` 8. `NotFound` variant leaks the full internal URL at `client.rs:84` and `error.rs:19`
+
+`CliError::NotFound(url)` stores the full constructed URL including the base server address. While `Display` shows `"resource not found"`, the inner string is still accessible via `Debug` and could leak in logs. The `ServerError` display is properly sanitized (generic message), but `NotFound` stores sensitive URL data in its payload.
+
+### `[MEDIUM]` 9. `tenant` flag accepts raw `String`, not `TenantId` newtype at `cli.rs:30-31`
+
+Per the project's Rust rules, IDs should use newtypes: `TenantId(String)`. The `--tenant` flag is `Option<String>`, bypassing the validated constructor pattern. This means unvalidated tenant IDs flow through the system.
+
+### `[MEDIUM]` 10. JSON metadata uses random `request_id` — not from actual API response at `output.rs:94`
+
+`format_json` generates a random UUID v4 as `request_id`. AC-4 says JSON should include `ResponseMetadata` — this implies metadata from the actual API response, not a fabricated client-side UUID. The current implementation misleads operators into thinking the request_id correlates to a server request.
+
+### `[LOW]` 11. `OutputFormat::auto_detect` is defined but never called at `output.rs:17-25`
+
+The auto-detect logic exists but nothing in `main.rs` or the CLI uses `std::io::IsTerminal` to call it. The `--format` flag has a hardcoded default of `table` regardless of TTY status. AC-4 requires "Table default for TTY, JSON for piped output."
+
+### `[LOW]` 12. Stub commands reference wrong story for `rules` at `commands/rules.rs:16`
+
+The stub message says "Story 6.6" but per the epic context, rules management doesn't map to Story 6.6. The story reference should be verified against the epic's story list.
+
+### `[LOW]` 13. `timeout_secs` not wired to `SiemClient` at `config.rs:38` and `client.rs:47`
+
+`ClientConfig` stores `timeout_secs` but `SiemClient` never reads it — the `reqwest::Client` is built without a timeout. The config value is effectively dead.
+
+### `[VERIFIED]` 14. `#![forbid(unsafe_code)]` present in both `main.rs:2` and `lib.rs:2`
+
+### `[VERIFIED]` 15. No server-side crate imports — dependency rule respected in `Cargo.toml:13`
+
+Only `axiathon-core` is imported from the workspace. No storage, detection, ingestion, or query crate references.
+
+### `[VERIFIED]` 16. CWE-209 protection — `CliError::Display` does not leak `ServerError` internal string at `error.rs:9`
+
+`ServerError(String)` displays as `"server error occurred"`, not the inner string. Good.
+
+### `[VERIFIED]` 17. CWE-113 header injection protection — `HeaderValue::from_str` validates at `client.rs:25,37`
+
+reqwest's `HeaderValue::from_str` rejects CRLF injection. The test suite validates this.
+
+### `[VERIFIED]` 18. Shell completion sends script to stdout, instructions to stderr at `commands/completion.rs:18-41`
+
+Correctly separates output per AC-9.
+
+---
+
+## Summary
+
+| Severity | Count |
+|----------|-------|
+| Critical | 1 |
+| High | 4 |
+| Medium | 5 |
+| Low | 3 |
+| Verified | 5 |
+
+## Verdict: **CHANGES_REQUESTED**
+
+The critical finding (#1) means exit codes 3/4 are unreachable from the binary — the entire `CliError::exit_code()` contract is dead code. Combined with 4 high-severity issues (missing commands per AC-1, a failing test, silent config acceptance, and failing nightly fmt), this needs another pass before approval.
+
+**Minimum for re-review:**
+1. Wire `CliError::exit_code()` into `main.rs` (make command handlers return `Result`)
+2. Add `tui` and `logout` command stubs
+3. Fix the `help_does_not_show_server_commands` test
+4. Run `cargo +nightly fmt --all` to fix formatting
+5. Add `#[serde(deny_unknown_fields)]` to `RawConfig` (or at minimum warn on `token` field)

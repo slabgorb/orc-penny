@@ -1,0 +1,103 @@
+I now have a complete picture. Here is my adversarial review.
+
+---
+
+# Story 6.1 Review: CLI Framework & Structure
+
+*Right, I've had my tea. Now let me tell you — this code is like a house with lovely rooms but no front door, no hallway, and no stairs connecting the floors. Let me explain what I found.*
+
+## Findings
+
+### Blocking Issues
+
+**1. [CRITICAL] No `main.rs` binary entry point — the `axiathon` binary cannot be built** at `crates/axiathon-client/src/` (missing file)
+
+The story requires "Crate: `crates/axiathon-client/` producing binary `axiathon`". There is no `main.rs` and no `[[bin]]` section in `Cargo.toml`. This crate is a library only. `cargo build -p axiathon-client` produces no executable. Every single AC is predicated on being able to *run* `axiathon` — and you can't.
+
+**2. [CRITICAL] No command dispatch logic — handlers are orphaned functions** at `crates/axiathon-client/src/` (missing wiring)
+
+The `Commands` enum exists, handler functions exist, but there is zero code that matches on `Commands::Status(_)` and calls `handle_status()`. Even if `main.rs` existed, there's no dispatch match arm. The handlers are dead code in a real binary context. This means AC-3 (exit codes from commands), AC-9 (shell completion via CLI), and AC-10 (stubs print "not yet implemented") are all unverifiable end-to-end.
+
+**3. [HIGH] `cargo +nightly fmt --all --check` fails** at `crates/axiathon-client/src/cli.rs:4` and `tests/cli_commands.rs:6`
+
+Per `gotchas.md`: "Always include `cargo +nightly fmt --all --check` in the preflight. Nightly rustfmt enforces import ordering that stable does not. If it fails, flag it before approval." Import ordering violations in `cli.rs` (rules before status/tenant) and `cli_commands.rs` (import order and array formatting). This is a known gotcha and a blocking gate.
+
+**4. [HIGH] AC-1 missing `tui` and `logout` command groups** at `crates/axiathon-client/src/cli.rs:49-86`
+
+AC-1 states: "`axiathon --help` must show all command groups: query, rules, alerts, ingest, config, status, tenant, **login/logout**, **tui**, completion, init." The `Commands` enum has no `Tui` variant and no `Logout` variant. The help text test at `tests/cli_commands.rs:87-96` conveniently omits checking for "tui" and "logout". This is a spec gap that will be caught the moment someone tries to run `axiathon tui` or `axiathon logout`.
+
+**5. [HIGH] `init` command is not functional — it's an empty struct with no handler** at `crates/axiathon-client/src/commands/init.rs:1-4`
+
+The story explicitly says: "Shell completion generation (functional, not stub)" and "axiathon init first-time setup (functional, not stub)". Completion has a `generate_completion()` function. Init has... nothing. Just `pub struct InitArgs;`. No `handle_init()` function. The scope section says init should be functional, but it's less than a stub — it's a type definition with no behavior.
+
+### Significant Issues
+
+**6. [MEDIUM] CWE-209: `ServerError` variant passes through raw internal details** at `crates/axiathon-client/src/error.rs:9-10`
+
+`CliError::ServerError(String)` uses `#[error("server error: {0}")]` — it passes through the raw string directly to the user. The comment says "**SECURITY:** Display impl is user-facing only — sanitize before showing to users", but the actual impl does zero sanitization. If the server returns `"panic at /opt/axiathon/src/db/pool.rs:142: connection pool exhausted"`, that's exactly what the user sees. The security test at `tests/error_exit_codes.rs:91-100` is vacuous — it only checks `!display.is_empty()` which proves nothing about sanitization.
+
+**7. [MEDIUM] Config silently accepts unknown fields — no `#[serde(deny_unknown_fields)]`** at `crates/axiathon-client/src/config.rs:10-17`
+
+`RawConfig` deserializes without `deny_unknown_fields`. A typo like `api_ulr = "..."` instead of `api_url` would be silently ignored, and the user would get the default `http://localhost:8080` with no warning. This is the classic "config works on dev, fails silently in prod" bug.
+
+**8. [MEDIUM] `with_env_overrides_from` silently ignores invalid AXIATHON_TIMEOUT values** at `crates/axiathon-client/src/config.rs:82-86`
+
+```rust
+"AXIATHON_TIMEOUT" => {
+    if let Ok(t) = value.parse::<u64>() {
+        self.timeout_secs = t;
+    }
+}
+```
+
+If `AXIATHON_TIMEOUT=abc`, it silently falls through. If `AXIATHON_TIMEOUT=0`, it accepts a zero timeout (bypassing the TOML validation that rejects zero). This is inconsistent: TOML `timeout = 0` fails validation, but `AXIATHON_TIMEOUT=0` succeeds silently.
+
+**9. [MEDIUM] 6 `expect()` calls in production code** at `crates/axiathon-client/src/output.rs:95-108`
+
+Project rule says: "No `unwrap()` in production code — use `?` or `expect()` with actionable message." The `expect()` messages ("JSON serialization should not fail", "CSV header write should not fail", etc.) are explanations, not actionable messages. These are technically compliant but fragile — `csv::Writer::write_record` *can* fail on IO errors. The `format_table` method returns `String` not `Result<String>`, so it can't propagate errors. This is a design constraint that forces `expect()`.
+
+**10. [MEDIUM] `chrono_free_iso8601` date algorithm has no correctness tests** at `crates/axiathon-client/src/output.rs:113-141`
+
+The Howardhinnant date algorithm is correctly transcribed, but zero tests validate its output. No test checks that epoch 0 = `1970-01-01T00:00:00Z`, or that leap year boundaries work. The JSON metadata tests only check the `timestamp` field *exists*, not that it's correct. Meanwhile, the workspace already has `chrono` as a dependency — the comment says "without pulling in chrono" but chrono is in `Cargo.toml` line 41. This optimization saves nothing.
+
+**11. [MEDIUM] `SiemClient::with_tenant` and `with_token` bypass injection validation** at `crates/axiathon-client/src/client.rs:44-53`
+
+There are two APIs: `with_tenant()` (unchecked) and `with_tenant_validated()` (checked). Nothing prevents callers from using the unchecked version. If `main.rs` (when it exists) calls `with_tenant()` instead of `with_tenant_validated()`, header injection is possible. The validated wrappers clone `self`, which is unnecessarily expensive for a builder pattern.
+
+**12. [MEDIUM] `completion::generate_completion` returns empty string for unknown shell instead of error** at `crates/axiathon-client/src/commands/completion.rs:19`
+
+If someone passes an invalid shell name, `generate_completion()` returns `String::new()` — no error. The caller has no way to distinguish "valid shell with empty completions" from "unrecognized shell". This should return `Result<String, CliError>`.
+
+### Verified Good
+
+- **[VERIFIED]** Clap declarative derive macros correctly used (AC-6) at `cli.rs:12-14`
+- **[VERIFIED]** Exit code mapping is correct (AC-3) at `error.rs:45-51`
+- **[VERIFIED]** Config loading with env overrides works (AC-8) at `config.rs:44-90`
+- **[VERIFIED]** Header injection prevention exists (CWE-113) at `client.rs:110-117`
+- **[VERIFIED]** Token never exposed from config file at `config.rs:101-104`
+- **[VERIFIED]** HTTP status code mapping is complete (AC-7) at `error.rs:54-63`
+- **[VERIFIED]** `#![forbid(unsafe_code)]` is present at `lib.rs:2`
+- **[VERIFIED]** Shell completion generation works for all 4 shells at `completion.rs:13-26`
+- **[VERIFIED]** Global flags use `global = true` for postfix support (AC-5) at `cli.rs:17-42`
+- **[VERIFIED]** Clippy passes clean with `-D warnings`
+
+## Summary
+
+| Severity | Count | Details |
+|----------|-------|---------|
+| Critical | 2 | No binary (no main.rs), no command dispatch |
+| High | 3 | Nightly fmt fails, missing tui/logout commands, init not functional |
+| Medium | 7 | CWE-209 passthrough, silent config issues, untested date algo, etc. |
+| Verified | 10 | Core patterns, security checks, trait compliance |
+
+## Verdict: **CHANGES_REQUESTED**
+
+The component implementations (config, output, error, client, command args) are solid in isolation. Tests are well-structured and cover the right scenarios. But the critical gap is the missing `main.rs` — without a binary entry point and command dispatch, this is a collection of well-tested library modules that cannot actually be used as a CLI tool.
+
+**Required before approval:**
+1. Add `main.rs` with CLI dispatch, error handling, exit code mapping, and `std::process::exit()`
+2. Add `[[bin]]` to `Cargo.toml` or make `main.rs` the default binary
+3. Fix `cargo +nightly fmt --all --check` violations
+4. Add `Tui` and `Logout` variants to `Commands` enum per AC-1
+5. Implement `handle_init()` as a functional command (not stub)
+6. Wire validated header injection APIs so unchecked versions aren't reachable from dispatch

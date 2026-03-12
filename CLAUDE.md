@@ -74,20 +74,21 @@ Workflow definitions live in `pennyfarthing/pennyfarthing-dist/workflows/*.yaml`
 
 **Subagents** (Task tool): `sm-setup`, `sm-finish`, `sm-file-summary`, `testing-runner`, `reviewer-preflight`, `tandem-backseat`
 
-**Handoff:** Agent writes assessment → `pf.sh handoff resolve-gate` → `complete-phase` → `marker` → next agent activates.
+**Handoff:** Agent writes assessment → `pf handoff resolve-gate` → `complete-phase` → `marker` → next agent activates.
 </info>
 
 <info>
 ## Framework Structure (`pennyfarthing/`)
 
+**Architecture:** Python runtime + React GUI. Python owns CLI, server (WheelHub/FastAPI), hooks, and all business logic. TypeScript/React is GUI-only. See ADR-0034.
+
 | Directory | Purpose |
 |-----------|---------|
 | `pennyfarthing-dist/` | Published package (source of truth) — agents, commands, guides, skills, personas, workflows, scripts |
-| `pennyfarthing-dist/pf/` | Python CLI package (hooks, jira, sprint, story, prime) |
-| `packages/core/` | `@pennyfarthing/core` — CLI, WheelHub server, API routes, shared utilities |
-| `packages/cyclist/` | BikeRack GUI (React 19, Tailwind v4, dockview) — browser UI over core |
-| `packages/electron/` | Electron shell (legacy, minimal use) |
-| `packages/benchmark/` | Persona benchmarking (JobFair) |
+| `pennyfarthing-dist/src/pf/` | Python package — CLI, WheelHub server (FastAPI), hooks, jira, sprint, workflow, prime |
+| `pennyfarthing-dist/src/pf/wheelhub/` | Python FastAPI server (OTLP, WebSocket, API routes) — replaces old Node.js server |
+| `packages/core/` | `@pennyfarthing/core` — React GUI components, workflow engine, shared utilities |
+| `packages/cyclist/` | React entry points (minimal — 3 files) |
 | `packages/themes-*/` | Theme packages (comedy, literary, mythology-fantasy, prestige-tv, realistic, scifi, superheroes) |
 
 **Display modes:** BikeRack panels render in three contexts:
@@ -104,6 +105,16 @@ Workflow definitions live in `pennyfarthing/pennyfarthing-dist/workflows/*.yaml`
 | `.pennyfarthing/repos.yaml` | Repo topology — ownership, symlinks, branch strategy, never-edit zones |
 | `.session/{story-id}-session.md` | Active work context |
 | `pennyfarthing-dist/guides/` | Behavior guides and component docs |
+</info>
+
+<info>
+## Glossary
+
+| Term | Definition |
+|------|------------|
+| Peloton test | Repeatable benchmark scenario for a full agent team (TEA→Dev→Reviewer), sourced from real external review findings. Ground truth = what the pipeline actually missed. Run via `pf benchmark replay`. |
+| Pipeline replay | The harness (`pf benchmark replay run/score/compare`) that executes peloton tests against real code at a known commit. |
+| JobFair | Single-agent benchmarking — tests one role in isolation against a rubric. |
 </info>
 
 <context>

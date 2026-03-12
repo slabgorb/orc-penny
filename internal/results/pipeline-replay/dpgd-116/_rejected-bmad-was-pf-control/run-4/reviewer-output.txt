@@ -1,0 +1,181 @@
+I've now read every implementation file. Here is my adversarial review.
+
+---
+
+## Code Review: Story 6.1 — CLI Framework & Structure
+
+### CRITICAL Issues
+
+**[CRITICAL] Vacuous `matches!` assertions — 7 tests assert nothing** (`cli.rs:257-281`, `client.rs:262,273,284`)
+
+The `matches!()` macro returns a `bool`, but it's used as a bare expression without `assert!()`. These tests *always pass* regardless of what variant is returned:
+
+```rust
+// cli.rs:258 — discards the bool, test always passes
+matches!(cli.command, Commands::Completion { shell: Shell::Bash });
+
+// client.rs:262 — same pattern, never asserts
+matches!(err, CliError::NotFound(_));
+```
+
+Affected tests: `completion_command_accepts_{bash,zsh,fish,powershell}`, `check_status_maps_{404,429,500}_to_*`. All 7 are vacuous.
+
+---
+
+**[CRITICAL] `main.rs` never loads config, never builds `SiemClient`, never wires global flags**
+
+The story's Task 1.4 requires main to load config, build `SiemClient`, and pass context to command handlers. Current `main.rs` parses CLI args but ignores `--server`, `--tenant`, `--config`, and `--format` entirely. They are dead flags that do nothing.
+
+---
+
+**[CRITICAL] AC-1 violated: `logout` is not a top-level command**
+
+AC-1 lists `login` / `logout` as separate commands. The implementation nests `Logout` under `Login`, requiring `axiathon login logout` instead of `axiathon logout`. The help text `axiathon login login` (line 127 after_help) also reads awkwardly.
+
+---
+
+### HIGH Issues
+
+**[HIGH] Config structure doesn't match story spec (AC-8)**
+
+Story specifies nested TOML sections `[api]` with `url`/`timeout_seconds` and `[defaults]` with `output_format`/`default_tenant`. Implementation uses a flat structure (`server_url`, `timeout_secs`, `default_format`). Config files written to the documented format will be silently ignored due to `#[serde(default)]`.
+
+---
+
+**[HIGH] Default server URL mismatch: `localhost:3000` vs story's `localhost:8080`**
+
+`config.rs:11` uses `http://localhost:3000`. Story spec and AC-8 consistently say `http://localhost:8080`. The `init.rs` template also uses `3000`.
+
+---
+
+**[HIGH] Default timeout mismatch: 30s vs story's 60s**
+
+`config.rs:14` defaults to 30s. Story AC-8 says `timeout_seconds: 60`.
+
+---
+
+**[HIGH] `#[serde(default)]` without `#[serde(deny_unknown_fields)]` silently swallows typos**
+
+`ClientConfig` at `config.rs:21` will silently ignore misspelled keys like `servr_url` and use defaults. Combined with the flat-vs-nested mismatch above, this is a config reliability hazard.
+
+---
+
+**[HIGH] `AXIATHON_TIMEOUT` parse failure silently ignored** (`config.rs:84-87`)
+
+If `AXIATHON_TIMEOUT=abc`, the invalid value is silently discarded. This should either warn or error, per the "fail fast" principle.
+
+---
+
+**[HIGH] `toml` version mismatch: workspace has `0.8`, story requires `0.9`**
+
+`Cargo.toml` workspace line 50: `toml = "0.8"`. Story explicitly calls out upgrading to `0.9` for TOML 1.1.0 support.
+
+---
+
+**[HIGH] `keyring` dependency unused** (`crates/axiathon-client/Cargo.toml:20`)
+
+Listed as a dependency but never imported. Adds unnecessary native library compilation (platform keychain bindings). Missing `crypto-rust` feature specified in the story.
+
+---
+
+**[HIGH] Story reference mismatches in stub handlers**
+
+| Command | Story says | Code says |
+|---------|-----------|-----------|
+| `rules` | "3.4/6.5" | "6.6" |
+| `tenant` | "11.1" | "6.7" |
+
+---
+
+### MEDIUM Issues
+
+**[MEDIUM] CWE-209: `General` error variant leaks internal details**
+
+`CliError::General(String)` is displayed directly to stderr (`error.rs:12`). In `client.rs:170`, reqwest errors (which may contain internal URLs, DNS hostnames, or connection details) are passed through verbatim via `format!("HTTP request failed: {err}")`.
+
+---
+
+**[MEDIUM] `clap` in crate Cargo.toml doesn't use workspace dependency**
+
+`crates/axiathon-client/Cargo.toml:15` specifies `clap = { version = "4", features = ["derive", "env"] }` directly instead of using `workspace = true` with additional features. This bypasses workspace version pinning.
+
+---
+
+**[MEDIUM] `axiathon-core` dependency listed but never used**
+
+`Cargo.toml:13` lists `axiathon-core = { path = "../axiathon-core" }` but no code imports from it. Dead dependency.
+
+---
+
+**[MEDIUM] `--config` flag is `Option<String>` instead of `Option<PathBuf>`**
+
+`cli.rs:52` declares the config path as `String`. Story spec says `Option<PathBuf>`. Also, the value is never passed to `ClientConfig::load()`.
+
+---
+
+**[MEDIUM] No env var test for `AXIATHON_API_URL` / `AXIATHON_SERVER` / `AXIATHON_TIMEOUT`**
+
+`config.rs` tests cover file loading and defaults but never test the env var override path (Task 7.5 requires this).
+
+---
+
+**[MEDIUM] `AXIATHON_SERVER` silently overrides `AXIATHON_API_URL`**
+
+`config.rs:77-83`: If both env vars are set, `AXIATHON_SERVER` wins with no warning. The precedence between these two env vars is undocumented.
+
+---
+
+### LOW Issues
+
+**[LOW] `render_value` ignores `self.format` field**
+
+`output.rs:81-88`: `render_value` always outputs JSON regardless of the `OutputFormat` setting.
+
+---
+
+**[LOW] No test for `OutputFormat::detect_default()`**
+
+The TTY auto-detection logic at `output.rs:20-26` is untested.
+
+---
+
+**[LOW] `write_default_config` takes `&PathBuf` instead of `&Path`**
+
+`init.rs:62`: Clippy lint `needless_pass_by_value` is active in workspace. Should be `&Path`.
+
+---
+
+**[LOW] Missing `Validate` and `Export` subcommands for config**
+
+Story AC-2/Task 3.7 specifies `Validate` and `Export` for config, but implementation has `Get`, `Set`, `Reset` instead.
+
+---
+
+**[LOW] Missing `Watch` and `Sources` subcommands for ingest**
+
+Story Task 3.6 specifies `Watch` and `Sources`, implementation has `Status`, `Start`, `Stop`, `List`.
+
+---
+
+**[LOW] Missing `Export` subcommand for alerts with `OutputFormat` and `--last` flag**
+
+Story Task 3.5 specifies `Export { format: Option<OutputFormat>, last: Option<String> }`.
+
+---
+
+## Summary
+
+| Severity | Count |
+|----------|-------|
+| CRITICAL | 3 |
+| HIGH | 7 |
+| MEDIUM | 5 |
+| LOW | 5 |
+
+The most urgent issues are the **7 vacuous test assertions** (tests that never fail), the **missing config/client wiring in main**, and the **`logout` not being a top-level command**. The config structure, defaults, and TOML version also diverge significantly from the story spec.
+
+---
+
+## Verdict: **CHANGES_REQUESTED**
+
+The 3 critical and 7 high findings must be addressed before this can pass review. The vacuous `matches!` assertions are especially dangerous — they create a false sense of test coverage while asserting nothing.

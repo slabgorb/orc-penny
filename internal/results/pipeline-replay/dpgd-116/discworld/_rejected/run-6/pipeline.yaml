@@ -1,0 +1,29 @@
+scenario_id: dpgd-116
+theme: discworld
+run_id: 6
+timestamp: '2026-03-09T02:38:07.708545+00:00'
+worktree_path: /tmp/pf-replay/dpgd-116-discworld-run-6
+phases:
+  tea:
+    token_usage:
+      input: 0
+      output: 0
+    duration_s: 3.33
+    exit_code: 1
+  dev:
+    token_usage:
+      input: 0
+      output: 0
+    duration_s: 1.78
+    exit_code: 1
+  reviewer:
+    token_usage:
+      input: 0
+      output: 0
+    duration_s: 2.43
+    exit_code: 1
+framework_version:
+  commit: pre-edge-hunter
+  semver: 12.7.0
+  tag: baseline-pre-edge-hunter
+  agent_hashes: {}

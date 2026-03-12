@@ -1,0 +1,31 @@
+All **112 tests pass** and **clippy is clean** (the one warning is in test code we don't own).
+
+## Summary
+
+**Tests:** 112/112 passing (GREEN) across 8 test suites
+
+**Files created (17):**
+
+| File | Purpose |
+|------|---------|
+| `src/error.rs` | `CliError` enum with `#[non_exhaustive]`, `exit_code()`, secure Display |
+| `src/cli.rs` | `Cli` struct (clap derive), `Commands` enum with all 12 command groups |
+| `src/client.rs` | `SiemClient` HTTP wrapper with header injection prevention, HTTP status mapping |
+| `src/config.rs` | `ClientConfig` with TOML loading, env/CLI overrides, credential stripping |
+| `src/output.rs` | `OutputFormat` enum, `OutputFormatter` with table/JSON/CSV rendering |
+| `src/main.rs` | Binary entry point with error-to-exit-code mapping |
+| `src/commands/mod.rs` | Module re-exports |
+| `src/commands/query.rs` | QueryArgs + stub (Story 5.5) |
+| `src/commands/rules.rs` | RulesArgs + stub (Story 6.6) |
+| `src/commands/alerts.rs` | AlertsArgs + stub (Story 6.5) |
+| `src/commands/ingest.rs` | IngestArgs + stub (Story 6.4) |
+| `src/commands/config.rs` | ConfigArgs + stub (Story 6.3) |
+| `src/commands/status.rs` | StatusArgs + stub (Story 6.2) |
+| `src/commands/tenant.rs` | TenantArgs + stub (Story 6.7) |
+| `src/commands/login.rs` | LoginArgs + stub (Story 9.1) |
+| `src/commands/completion.rs` | Shell completion generation (bash/zsh/fish/PowerShell) |
+| `src/commands/init.rs` | First-time config initialization |
+
+**Files modified (2):**
+- `src/lib.rs` — Added module declarations
+- `Cargo.toml` — Added `uuid` and `chrono` dependencies

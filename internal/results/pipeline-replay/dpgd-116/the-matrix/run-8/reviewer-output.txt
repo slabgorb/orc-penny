@@ -1,0 +1,168 @@
+There it is. Test pollution confirmed. The `config_env_axiathon_timeout_overrides_file` test sets `AXIATHON_TIMEOUT=120` and the `config_env_axiathon_api_url_overrides_file` sets `AXIATHON_API_URL`, and when tests run in parallel, these env vars leak into `config_rejects_zero_timeout` and `config_rejects_invalid_server_url`, overriding the file values and making them pass validation they shouldn't.
+
+Now I have everything I need. Here is my verdict.
+
+---
+
+# Adversarial Code Review: Story 6.1 — CLI Framework & Structure
+
+*"Causality, Neo. Everything begins with choice... and every effect has its cause. Let me trace those causes for you."*
+
+---
+
+## MANDATORY CHECKLIST
+
+- [x] Find at least 5 observations
+- [x] Trace data flow end-to-end
+- [x] Check wiring (UI → backend accessibility)
+- [x] Identify patterns (good and bad, with file:line)
+- [x] Verify error handling
+- [x] Security analysis
+- [x] Hard questions (null/empty/huge/race conditions)
+- [x] Make judgment
+
+---
+
+## FINDINGS
+
+### `[CRITICAL]` F1 — Nightly rustfmt violations across 4+ files
+
+`cargo +nightly fmt --all --check` fails. Import ordering violations in `cli.rs:3`, `completion.rs:4-5`, `config.rs:3-4`. Per gotchas.md, nightly fmt must pass before approval. This will fail CI post-merge.
+
+**Blocks PR: YES**
+
+---
+
+### `[HIGH]` F2 — Test environment pollution causes flaky failures
+
+`config_loading.rs:83-85` sets `AXIATHON_API_URL` and `config_loading.rs:100-101` sets `AXIATHON_TIMEOUT` via `std::env::set_var` / `remove_var`. When tests run in parallel (default), these env vars leak into other tests:
+
+- `config_rejects_zero_timeout` (line 149) — FAILS because `AXIATHON_TIMEOUT=120` overrides the `timeout = 0` in the TOML file, making validation pass.
+- `config_rejects_invalid_server_url` (line 159) — FAILS because `AXIATHON_API_URL` overrides `"not-a-url"`, making validation pass.
+
+This is a **race condition** producing non-deterministic test results. `std::env::set_var` is process-global and unsound in multi-threaded contexts (it's `unsafe` since Rust 1.66). The test suite is flaky — it passes sometimes and fails sometimes depending on thread scheduling.
+
+**Blocks PR: YES**
+
+---
+
+### `[HIGH]` F3 — No `main.rs` binary entry point
+
+AC-3 requires: *"main.rs catches errors and calls `std::process::exit()`."* No `main.rs` exists. No `[[bin]]` target in `Cargo.toml`. The `axiathon` binary cannot be built or run. The story requires producing a binary named `axiathon` — this is a library-only crate.
+
+The entire command dispatch pipeline (parse → load config → create SiemClient → execute handler → format output → exit) has no entry point.
+
+**Blocks PR: YES**
+
+---
+
+### `[HIGH]` F4 — SiemClient has no HTTP methods
+
+`client.rs:6-11`: All fields except `base_url` are prefixed with `_` (unused). There are no `get()`, `post()`, or any request methods. AC-7 requires SiemClient to "wrap reqwest::Client, inject X-Tenant-ID and Authorization: Bearer headers." The wrapper stores these values but never uses them. No handler can make an HTTP call.
+
+**Blocks PR: YES**
+
+---
+
+### `[HIGH]` F5 — `keyring` dependency absent from Cargo.toml
+
+The story mandates OS keychain via `keyring` crate for credential storage. `Cargo.toml` (line 8-21) does not list `keyring` as a dependency. No credential loading code exists. The `token()` method at `config.rs:90-92` always returns `None`.
+
+**Blocks PR: YES**
+
+---
+
+### `[MEDIUM]` F6 — `toml` version mismatch: 0.8 vs spec's 0.9
+
+`Cargo.toml:20` declares `toml = "0.8"`. The story spec says `toml` 0.9. This is a minor version discrepancy but should match the architecture decision.
+
+---
+
+### `[MEDIUM]` F7 — Incomplete stub story references
+
+`rules.rs:7` and `tenant.rs:7`: `NotImplemented("Story 6.")` — truncated story numbers. Rules should reference the specific story (there is no "Story 6." — it should be a concrete story ID). Tests at `stub_handlers.rs:39,69` assert against `"6."` which matches this truncated string, so tests pass vacuously.
+
+---
+
+### `[MEDIUM]` F8 — `output.rs:73,79,80,84,85,86` use `expect()` (panics in production)
+
+Per `rust.md`: *"No unwrap() in production code — use ? or expect() with actionable message."* While `expect()` with messages is allowed, these are write-to-`Vec<u8>` operations that cannot actually fail, so it's acceptable. However, `format_as_json` at line 73 uses `expect("JSON serialization should not fail")` — if a future `Serialize` impl for data objects fails, this panics the CLI process instead of returning an error. Should propagate with `?`.
+
+---
+
+### `[MEDIUM]` F9 — JSON metadata missing `request_id` and `timestamp`
+
+AC-4 specifies: *"JSON includes ResponseMetadata (request_id, timestamp, api_version)."* The `ResponseMeta` struct at `output.rs:26-28` only has `api_version`. No `request_id` or `timestamp` fields. The test at `output_format.rs:72-75` accepts `meta` OR `metadata` OR `request_id`, masking this gap.
+
+---
+
+### `[MEDIUM]` F10 — Config silently ignores unknown fields
+
+`config.rs:9`: `RawConfig` uses `#[derive(Deserialize, Default)]` with no `#[serde(deny_unknown_fields)]`. If a user has a typo like `servar_url` instead of `server_url`, it's silently ignored and defaults are used. This is a common source of operator confusion.
+
+---
+
+### `[LOW]` F11 — `edition = "2021"` vs spec's "2024"
+
+`Cargo.toml:2` specifies `edition = "2021"`. The `rust.md` rules say *"Edition 2024, MSRV 1.85+."* This should match the workspace standard.
+
+---
+
+### `[LOW]` F12 — `init.rs` and `login.rs` are empty modules
+
+`init.rs` and `login.rs` contain only doc comments — no `handle_stub()` function. AC-9 says init should be "functional, not stub" and AC-10 requires stub handlers for unimplemented commands. `init` has no handler at all.
+
+---
+
+### `[VERIFIED]` V1 — `#![forbid(unsafe_code)]` enforced at `lib.rs:2`
+
+### `[VERIFIED]` V2 — Header injection prevention: `\r`, `\n`, `\0` checked at `client.rs:25-37`
+
+### `[VERIFIED]` V3 — CWE-209: `CliError` Display sanitizes internal details (uses generic messages, inner strings not exposed for `Internal`, `ServerError`, `NotFound`)
+
+### `[VERIFIED]` V4 — Exit codes correctly mapped: 3=auth, 4=authz, 1=all others at `error.rs:48-60`
+
+### `[VERIFIED]` V5 — `#[non_exhaustive]` on `CliError` enum at `error.rs:13`
+
+### `[VERIFIED]` V6 — Clap derive macros only, no imperative building (all `#[derive(Parser)]` / `#[derive(Subcommand)]`)
+
+### `[VERIFIED]` V7 — Shell completions functional for all 4 shells (bash/zsh/fish/powershell)
+
+### `[VERIFIED]` V8 — Global flags all use `global = true` at `cli.rs:12-37`
+
+### `[VERIFIED]` V9 — Token excluded from config file deserialization at `config.rs:12`
+
+---
+
+## DATA FLOW TRACE
+
+**Scenario:** `axiathon rules list --server https://api.example.com --tenant acme`
+
+| Step | Expected | Actual |
+|------|----------|--------|
+| 1. Binary invoked | `main.rs` dispatches | **No main.rs exists** |
+| 2. Args parsed | Clap derive parsing | Works (library-level) |
+| 3. Config loaded | TOML + env vars | Works but flaky with env vars |
+| 4. Token loaded | keyring → env fallback | **Not implemented** |
+| 5. SiemClient created | With auth + tenant headers | Created but **no HTTP methods** |
+| 6. Handler called | `rules::handle_stub()` | Returns `NotImplemented` (correct for stub) |
+| 7. Output formatted | table/json/csv | Works |
+| 8. Exit code set | `process::exit()` | **No main.rs to call exit** |
+
+**Result:** Data flow is broken at steps 1, 4, 5, and 8. The framework is a library, not an executable CLI.
+
+---
+
+## VERDICT: **CHANGES_REQUESTED**
+
+Five blocking issues (1 Critical, 4 High) must be resolved:
+
+1. **Fix nightly fmt** — run `cargo +nightly fmt --all`
+2. **Fix test isolation** — use `serial_test` crate or `temp_env` to avoid env var races. `std::env::set_var` in multi-threaded tests is unsound.
+3. **Create `main.rs`** with command dispatch, config loading, error handling, and `process::exit()`
+4. **Add HTTP methods to SiemClient** — at minimum stub `get<T>()` / `post<T>()` that inject headers
+5. **Implement credential loading** — add `keyring` dependency and startup token loading with env var fallback
+
+The library components (clap structure, error types, output formatters, security validations) are solid. But without an entry point, the framework is inert. Operators cannot run `axiathon`. This is half-built.
+
+*"Choice is an illusion created between those with power and those without. Right now, this code has no power — because it has no main."*

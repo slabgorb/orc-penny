@@ -1,0 +1,27 @@
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 delivers the foundational CLI framework — all acceptance criteria require behavioral verification.
+
+**Test Files:**
+| File | Tests | ACs Covered |
+|------|-------|-------------|
+| `tests/cli_commands.rs` | 20 | AC-1, AC-2, AC-5, AC-6 |
+| `tests/exit_codes.rs` | 13 | AC-3 |
+| `tests/output_format.rs` | 12 | AC-4 |
+| `tests/siem_client.rs` | 18 | AC-7 |
+| `tests/config_loading.rs` | 10 | AC-8 |
+| `tests/shell_completion.rs` | 7 | AC-9 |
+| `tests/stub_handlers.rs` | 6 | AC-10 |
+| `tests/security.rs` | 9 | Security |
+| **Total** | **95 tests** | **All 10 ACs + Security** |
+
+**Status:** RED (all 8 test files fail to compile — unresolved imports for `cli`, `error`, `client`, `config`, `output`, `commands` modules)
+
+**Security coverage:**
+- CWE-209: Error display must not expose internal server details, paths, or credential info
+- Header injection: CRLF and null byte injection via tenant ID and auth token
+- Config validation: Rejects non-HTTP URLs, zero timeouts, token storage in config files
+- Silent error swallowing: All error variants must produce non-zero exit codes
+
+**Handoff:** To Dev for implementation (GREEN phase). Dev needs to create modules: `cli.rs`, `error.rs`, `client.rs`, `config.rs`, `output.rs`, `commands/*.rs` in `crates/axiathon-client/src/`.

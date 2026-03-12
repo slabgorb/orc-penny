@@ -1,0 +1,27 @@
+*Exhales a perfect smoke ring.* "Now I know EXACTLY who you are."
+
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 is a feature story delivering the entire CLI framework — no existing coverage.
+
+**Test Files:**
+| File | Tests | Covers |
+|------|-------|--------|
+| `cli_commands_test.rs` | 30 | AC-1 (command groups), AC-2 (help), AC-5 (global flags), AC-6 (derive), AC-10 (stubs) |
+| `error_exit_codes_test.rs` | 14 | AC-3 (exit codes 0/1/2/3/4), security (CWE-209) |
+| `output_format_test.rs` | 15 | AC-4 (table/json/csv formatting, metadata) |
+| `siem_client_test.rs` | 16 | AC-7 (headers, HTTP error mapping), security (CRLF injection) |
+| `config_loading_test.rs` | 10 | AC-8 (TOML loading, env vars, precedence) |
+| `completion_test.rs` | 6 | AC-9 (bash/zsh/fish/powershell) |
+
+**Tests Written:** 91 tests covering all 10 ACs
+**Status:** RED (compilation fails — modules `cli`, `error`, `output`, `client`, `config` don't exist yet)
+
+**Security coverage:**
+- CWE-209: Error messages must not leak stack traces or credentials
+- CRLF header injection in tenant ID and auth token
+- Silent error swallowing (5xx must propagate, not return Ok)
+- Config file must not store tokens (keyring only)
+
+**Handoff:** To Dev for implementation (GREEN phase)

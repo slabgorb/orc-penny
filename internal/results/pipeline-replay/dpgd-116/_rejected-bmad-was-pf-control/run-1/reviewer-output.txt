@@ -1,0 +1,80 @@
+I've now read every implementation file, test file, and configuration file. Here is my adversarial review.
+
+---
+
+# Code Review: Story 6.1 — CLI Framework & Structure
+
+## Findings
+
+### HIGH Severity
+
+**[HIGH] H1 — TOML injection in `config.rs:save()` via unescaped string interpolation**
+`config.rs:107-115` — The `save()` method manually constructs TOML with `format!("url = \"{}\"\n", self.api.url)`. If `url` contains a double-quote (e.g., a malformed or adversarial server URL), this produces corrupt/invalid TOML. The same applies to `output_format` and `default_tenant`. The `ClientConfig` derives `Deserialize` but not `Serialize` — use `toml::to_string()` instead of hand-rolled string building, or at minimum escape the values.
+
+**[HIGH] H2 — `SiemClient` constructed but discarded; all command handlers lack client access**
+`main.rs:55-60` — The client is built as `_client` (note the underscore) and never passed to any command handler. Every handler receives only its CLI args, not the client. This means: (a) the client is uselessly constructed (and can fail) even for local-only commands like `init` and `completion`, and (b) when future stories implement real API calls, they'll need a significant refactor of the dispatch. The client should either be lazily constructed or passed to handlers that need it.
+
+**[HIGH] H3 — Unused compile-time dependencies: `axiathon-core`, `keyring`, `tokio`**
+`Cargo.toml:13,20,26` — Three dependencies are declared but never used:
+- `axiathon-core`: no imports anywhere in the crate
+- `keyring`: deferred to Story 9.1 but pulled in now (brings native keychain C bindings)
+- `tokio`: listed but the entire binary is synchronous (no `#[tokio::main]`, no `.await` in `main.rs`)
+
+These increase compile time, binary size, and attack surface for zero benefit. Remove until actually needed.
+
+### MEDIUM Severity
+
+**[MEDIUM] M1 — CWE-113: No validation on tenant ID passed as HTTP header**
+`client.rs:136` — The tenant ID from `--tenant` flag or config is injected directly as `X-Tenant-ID` header value. reqwest rejects bare `\r\n` in header values at runtime, but does not reject all forms of header smuggling (e.g., CRLF in some encodings). The `tenant_id` field is `Option<String>` — per `rust.md` conventions, this should be a validated `TenantId` newtype with constructor validation.
+
+**[MEDIUM] M2 — Config silently ignores unknown fields (typos swallowed)**
+`config.rs:10-17` — All config structs use `#[serde(default)]` without `#[serde(deny_unknown_fields)]`. A user who writes `timout_seconds = 30` instead of `timeout_seconds` gets the default 60s with zero warning. For a SIEM tool where misconfiguration can mean missed alerts, this is a real operational risk.
+
+**[MEDIUM] M3 — CWE-209: Server error details leaked to stderr**
+`client.rs:146` — `format!("failed to parse response: {e}")` passes the full reqwest deserialization error to `CliError::ServerError`, which is then printed verbatim to stderr in `main.rs:22`. The reqwest error can contain response body fragments, internal URLs, and server implementation details. Similarly, `client.rs:169` passes `e.to_string()` for generic reqwest errors. The `error.rs` doc comment says "Display impl is for stderr user messages only — do not leak internal details" but this is violated.
+
+**[MEDIUM] M4 — `expect()` calls in production code path (`output.rs`)**
+`output.rs:121,124,126,129,131` — The `CsvFormatter::format_csv` method uses 5 `.expect()` calls. While writing to a `Vec<u8>` is unlikely to fail, the `rust.md` rules state "No `unwrap()` in production code — use `?` or `expect()` with actionable message." These could be converted to return `Result` from `format_csv`, or at minimum the trait signature should accommodate fallibility.
+
+**[MEDIUM] M5 — JSON error fallback produces potentially invalid JSON**
+`output.rs:92,95` — The error fallback `format!("{{\"error\": \"{e}\"}}")` does not escape `e`. If the serde error message contains `"` or `\`, the output is malformed JSON. This breaks the contract that `--format json` always produces valid JSON.
+
+### LOW Severity
+
+**[LOW] L1 — Vacuous completion tests**
+`commands/completion.rs:46-55` — Both tests construct a `CompletionArgs` struct and assert the field they just set equals what they set it to. These test nothing about clap parsing, shell detection, or actual completion script generation. The integration tests in `cli_parsing.rs:189-192` do test parsing at least, making these unit tests pure noise.
+
+**[LOW] L2 — `ResponseMetadata::request_id` length check is not a UUID validation**
+`output.rs:239` and `tests/output_format.rs:172-173` — Tests assert `request_id.len() == 36` and `contains('-')` as a proxy for UUID validity. This would pass for any 36-character string with a dash. Use `uuid::Uuid::parse_str()` for actual validation.
+
+**[LOW] L3 — `init_tracing` quiet mode skips subscriber entirely**
+`main.rs:28-29` — When `--quiet` is set, no tracing subscriber is initialized. This means `tracing::error!()` calls are silently dropped. Even in quiet mode, errors should still be capturable (e.g., via `RUST_LOG` env override). Consider always installing the subscriber but setting the filter to `off` when quiet.
+
+**[LOW] L4 — Env var override tests explicitly skipped**
+`tests/config_loading.rs:79-83` — The note explains env var tests are skipped due to `forbid(unsafe_code)` in Rust 2024. This is a legitimate constraint, but leaves the `AXIATHON_API_URL` and `AXIATHON_TIMEOUT` override paths untested. Consider a separate integration test binary or a helper process to verify env var behavior.
+
+**[LOW] L5 — `OutputFormat` stored as `Option<String>` in config, not the enum**
+`config.rs:44` — `DefaultsConfig::output_format` is `Option<String>` while the CLI uses `OutputFormat` enum. There's no validation that a config file value like `output_format = "yaml"` is caught. The string is never actually consumed to override the CLI default in the current code, so this is latent but will bite when it's wired up.
+
+---
+
+## Summary
+
+| Severity | Count |
+|----------|-------|
+| HIGH     | 3     |
+| MEDIUM   | 5     |
+| LOW      | 5     |
+
+**Key themes:**
+1. Manual TOML serialization is fragile — use `toml::to_string()` with `Serialize` derive
+2. Unused dependencies inflating build and attack surface
+3. The client is built but never wired to handlers — dead code path that can fail
+4. Missing input validation on values injected into HTTP headers
+5. Error messages leak internal details contrary to the stated security policy
+
+## Verdict
+
+**CHANGES_REQUESTED**
+
+H1 (TOML injection), H2 (dead client construction blocking local commands), and H3 (unused deps) should be fixed before merge. M1-M3 are strongly recommended. The remaining items can be addressed in follow-up stories but should be tracked.

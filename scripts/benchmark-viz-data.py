@@ -7,6 +7,7 @@ Usage: python3 scripts/benchmark-viz-data.py
 Output: internal/results/benchmark-viz-data.json
 """
 
+import argparse
 import json
 import math
 import os
@@ -35,6 +36,15 @@ THEMES_DIR = ROOT / "pennyfarthing" / "pennyfarthing-dist" / "personas" / "theme
 OUTPUT_FILE = ROOT / "internal" / "results" / "benchmark-viz-data.json"
 HTML_FILE = ROOT / "internal" / "results" / "benchmark-dashboard.html"
 
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Extract benchmark data for visualization dashboard")
+    parser.add_argument("--results-dir", type=Path, default=RESULTS_DIR, help="Pipeline replay results directory")
+    parser.add_argument("--themes-dir", type=Path, default=THEMES_DIR, help="Theme YAML directory")
+    parser.add_argument("--html-file", type=Path, default=HTML_FILE, help="Dashboard HTML file to embed data into")
+    parser.add_argument("--json-output", type=Path, default=OUTPUT_FILE, help="Output JSON file path")
+    return parser.parse_args()
+
 # Map result directory names to theme YAML file names
 THEME_FILE_MAP = {
     "the-west-wing": "west-wing",
@@ -51,10 +61,11 @@ def load_yaml(path: Path):
         return None
 
 
-def extract_theme_metadata(theme_dir_name: str) -> dict:
+def extract_theme_metadata(theme_dir_name: str, themes_dir: Path = None) -> dict:
     """Extract metadata from a theme YAML file."""
+    tdir = themes_dir or THEMES_DIR
     file_name = THEME_FILE_MAP.get(theme_dir_name, theme_dir_name)
-    theme_path = THEMES_DIR / f"{file_name}.yaml"
+    theme_path = tdir / f"{file_name}.yaml"
     data = load_yaml(theme_path)
     if not data:
         return {
@@ -98,7 +109,7 @@ def extract_theme_metadata(theme_dir_name: str) -> dict:
     }
 
 
-def extract_scenario(scenario_dir: Path) -> dict:
+def extract_scenario(scenario_dir: Path, themes_dir: Path = None) -> dict:
     """Extract all data for a single scenario."""
     scenario_id = scenario_dir.name
     print(f"Processing scenario: {scenario_id}")
@@ -114,15 +125,22 @@ def extract_scenario(scenario_dir: Path) -> dict:
         print(f"  Theme: {theme_name}")
 
         # Get theme metadata
-        meta = extract_theme_metadata(theme_name)
+        meta = extract_theme_metadata(theme_name, themes_dir=themes_dir)
 
         runs = []
         for run_dir in sorted(theme_dir.iterdir()):
             if not run_dir.is_dir() or not run_dir.name.startswith("run-"):
                 continue
 
+            # Prefer majority_vote.yaml when available
+            mv_path = run_dir / "majority_vote.yaml"
             score_path = run_dir / "score.yaml"
-            score = load_yaml(score_path)
+            if mv_path.exists():
+                score = load_yaml(mv_path)
+                score_source = "majority_vote"
+            else:
+                score = load_yaml(score_path)
+                score_source = "score"
             if not score:
                 continue
 
@@ -154,8 +172,22 @@ def extract_scenario(scenario_dir: Path) -> dict:
                 if caught and caught_by in caught_by_phase:
                     caught_by_phase[caught_by] += 1
 
-            runs.append({
+            # Determine model: check score, then pipeline.yaml, default "opus"
+            pipeline_meta = load_yaml(run_dir / "pipeline.yaml")
+            run_model = (
+                score.get("model")
+                or (pipeline_meta.get("model") if pipeline_meta else None)
+                or "opus"
+            )
+
+            # Framework version metadata
+            fw_version = score.get("framework_version")
+            if not fw_version and pipeline_meta:
+                fw_version = pipeline_meta.get("framework_version")
+
+            run_entry = {
                 "run_id": run_num,
+                "model": run_model,
                 "score_pct": score.get("score_pct", 0),
                 "weighted_caught": score.get("weighted_caught", 0),
                 "total_caught": score.get("total_caught", 0),
@@ -163,7 +195,13 @@ def extract_scenario(scenario_dir: Path) -> dict:
                 "total_weight": score.get("total_weight", 0),
                 "findings": findings_detail,
                 "caught_by_phase": caught_by_phase,
-            })
+                "score_source": score_source,
+                "judge_version": score.get("judge_version", "v1"),
+                "framework_version": fw_version,
+            }
+            if score_source == "majority_vote":
+                run_entry["n_judges"] = score.get("n_judges", 1)
+            runs.append(run_entry)
 
         if not runs:
             continue
@@ -202,8 +240,35 @@ def extract_scenario(scenario_dir: Path) -> dict:
             for phase, total in phase_totals.items():
                 phase_pct[phase] = round(total / total_catches * 100, 1)
 
+        # Detect pipeline type from phases in pipeline.yaml
+        pipeline_type = "pf"
+        if theme_name == "bmad":
+            pipeline_type = "bmad"
+        else:
+            # Check first run's pipeline.yaml for phase count
+            first_run_dir = sorted(
+                d for d in theme_dir.iterdir()
+                if d.is_dir() and d.name.startswith("run-")
+            )[0] if runs else None
+            if first_run_dir:
+                pm = load_yaml(first_run_dir / "pipeline.yaml")
+                if pm and "phases" in pm:
+                    phases = list(pm["phases"].keys())
+                    if len(phases) == 2 and "tea" not in phases:
+                        pipeline_type = "bmad"
+
+        # Collect distinct framework versions across runs
+        fw_versions = set()
+        for r in runs:
+            fv = r.get("framework_version")
+            if fv:
+                tag = fv.get("tag") or fv.get("commit") or fv.get("source")
+                if tag:
+                    fw_versions.add(tag)
+
         themes_data[theme_name] = {
             "meta": meta,
+            "pipeline": pipeline_type,
             "runs": runs,
             "stats": {
                 "n": n,
@@ -212,6 +277,7 @@ def extract_scenario(scenario_dir: Path) -> dict:
                 "min": round(min(scores), 1),
                 "max": round(max(scores), 1),
             },
+            "framework_versions": sorted(fw_versions),
             "finding_catch_rates": finding_catch_rates,
             "phase_attribution": phase_pct,
         }
@@ -225,14 +291,20 @@ def extract_scenario(scenario_dir: Path) -> dict:
 
 
 def main():
-    print(f"Results dir: {RESULTS_DIR}")
-    print(f"Themes dir: {THEMES_DIR}")
+    args = parse_args()
+    results_dir = args.results_dir
+    themes_dir = args.themes_dir
+    output_file = args.json_output
+    html_file = args.html_file
+
+    print(f"Results dir: {results_dir}")
+    print(f"Themes dir: {themes_dir}")
 
     scenarios = {}
-    for scenario_dir in sorted(RESULTS_DIR.iterdir()):
+    for scenario_dir in sorted(results_dir.iterdir()):
         if not scenario_dir.is_dir():
             continue
-        scenario = extract_scenario(scenario_dir)
+        scenario = extract_scenario(scenario_dir, themes_dir=themes_dir)
         if scenario["themes"]:
             # Fix total_weight from ground truth
             if scenario["ground_truth"]:
@@ -246,19 +318,19 @@ def main():
         "scenarios": scenarios,
     }
 
-    OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
-    with open(OUTPUT_FILE, "w") as f:
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+    with open(output_file, "w") as f:
         json.dump(output, f, indent=2)
 
-    print(f"\nWrote {OUTPUT_FILE}")
+    print(f"\nWrote {output_file}")
     print(f"Scenarios: {list(scenarios.keys())}")
     for sid, s in scenarios.items():
         print(f"  {sid}: {len(s['themes'])} themes, {len(s['ground_truth'])} findings")
 
     # Embed JSON into HTML file as fallback for file:// protocol
-    if HTML_FILE.exists():
+    if html_file.exists():
         import re
-        html = HTML_FILE.read_text()
+        html = html_file.read_text()
         json_str = json.dumps(output)
         # Find and replace the EMBEDDED_DATA assignment inside the try block
         marker_start = "EMBEDDED_DATA = "
@@ -291,8 +363,8 @@ def main():
                     # Placeholder word - semicolon search is fine
                     pass
                 new_html = html[:val_start] + json_str + ";" + html[semi_idx+1:]
-                HTML_FILE.write_text(new_html)
-                print(f"Embedded data into {HTML_FILE}")
+                html_file.write_text(new_html)
+                print(f"Embedded data into {html_file}")
 
 
 if __name__ == "__main__":

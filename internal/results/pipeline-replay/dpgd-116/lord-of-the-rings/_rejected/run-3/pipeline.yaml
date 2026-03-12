@@ -1,0 +1,29 @@
+scenario_id: dpgd-116
+theme: lord-of-the-rings
+run_id: 3
+timestamp: '2026-03-09T02:17:24.992687+00:00'
+worktree_path: /tmp/pf-replay/dpgd-116-lord-of-the-rings-run-3
+phases:
+  tea:
+    token_usage:
+      input: 26
+      output: 20606
+    duration_s: 363.53
+    exit_code: 0
+  dev:
+    token_usage:
+      input: 59
+      output: 24531
+    duration_s: 520.52
+    exit_code: 0
+  reviewer:
+    token_usage:
+      input: 2
+      output: 359
+    duration_s: 12.87
+    exit_code: 1
+framework_version:
+  commit: pre-edge-hunter
+  semver: 12.7.0
+  tag: baseline-pre-edge-hunter
+  agent_hashes: {}

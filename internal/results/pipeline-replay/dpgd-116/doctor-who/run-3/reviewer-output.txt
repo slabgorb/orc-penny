@@ -1,0 +1,140 @@
+Right. I've read every file. Time for the Donna Noble honest-to-goodness review. Here we go.
+
+---
+
+# Code Review: Story 6.1 — CLI Framework & Structure
+
+*Reviewed by: Donna Noble (with Grandad Wilf keeping score)*
+
+---
+
+## Findings
+
+### `[HIGH]` CWE-209: ServerError Display leaks internal details — `error.rs:15-16`
+
+```rust
+#[error("server returned an error (HTTP {0})")]
+ServerError(u16, String),
+```
+
+The `Display` impl (via `thiserror`) only shows `"server returned an error (HTTP 500)"` — the second field (`String`) is **not** included in the display format. Good so far. BUT the `CliError::Internal(String)` variant at line 12-13 has `#[error("internal error")]` — the string payload is silently discarded. This is **safe** but means debugging is impossible: `Internal("connection pool exhausted")` displays as just `"internal error"`. Same for `NotFound`, `ConfigError`. 
+
+However, the **real problem** is in `main.rs:17`: `eprintln!("Error: {err}")` — this uses `Display`. If someone later adds `{0}` to the `Internal` format string for debugging purposes, it would immediately leak internals to stderr. The security comment says "Display impl sanitizes before user-facing output" but there's no architectural guardrail preventing future leakage — it's just convention.
+
+**Verdict**: Borderline. Current code is safe, but the `ServerError` variant's second field is only accessible via `Debug` (e.g., logging), not Display. The test at `security.rs:14-27` passes because the string ISN'T in Display. This is actually correct design, but it should be documented more clearly that the second field is intentionally for logging only. **Downgrade to MEDIUM.**
+
+### `[HIGH]` Validation functions exist but are never called — `client.rs:101-118`
+
+`SiemClient::validate_tenant_id()` and `SiemClient::validate_token()` are defined and tested, but **never actually called** anywhere in production code. The `with_token()` method at line 36 and `with_tenant()` at line 42 accept values without validation. The `default_headers()` method at line 63 relies on `HeaderValue::from_str()` silently dropping invalid headers (the `if let Ok(val)` pattern at lines 66 and 72).
+
+This means:
+1. A tenant ID with `\r\n` is accepted by `with_tenant()` but silently dropped in `default_headers()` — **silent failure**, no error reported to the operator.
+2. The security tests at `security.rs:58-85` test the validation functions in isolation but don't verify they're wired into the actual flow.
+
+### `[HIGH]` Silent header injection failure — `client.rs:63-77`
+
+```rust
+if let Ok(val) = HeaderValue::from_str(tenant.as_str()) {
+    headers.insert("X-Tenant-ID", val);
+}
+```
+
+If `HeaderValue::from_str` fails (malicious input, non-ASCII), the header is **silently omitted**. The request goes to the server without the tenant header. The operator gets no error, no warning — the request may succeed against the wrong tenant or fail with a confusing error. This is a silent failure bug.
+
+### `[MEDIUM]` `RawConfig` silently ignores unknown TOML fields — `config.rs:10-17`
+
+No `#[serde(deny_unknown_fields)]` on `RawConfig`. A user who types `api_irl = "..."` (typo) gets no error — the typo is silently ignored, and defaults are used. This is a common footgun in config loading.
+
+### `[MEDIUM]` `toml` version mismatch — `Cargo.toml` workspace declares `toml = "0.8"`, story spec says `toml 0.9`
+
+The workspace `Cargo.toml:50` has `toml = "0.8"`. The story technical guardrails say: "Add to [workspace.dependencies]: toml 0.9." Not a functional bug, but doesn't match the spec.
+
+### `[MEDIUM]` `OutputFormatter` is a struct, not a trait — `output.rs:32`
+
+AC-4 specifies: "OutputFormatter **trait** with Table (comfy-table), JSON, CSV implementations." The implementation uses a struct with match-based dispatch instead. This prevents third-party output format extensions and doesn't match the architecture spec.
+
+### `[MEDIUM]` `init` command is a no-op stub disguised as functional — `main.rs:39-42`, `init.rs`
+
+AC-9 says init should be "functional, not stub." The current implementation just prints `"Axiathon CLI initialized."` without actually doing anything — no config directory creation, no config file generation, no first-time setup. It's a stub pretending to be functional.
+
+### `[MEDIUM]` `RawConfig.token` field is read and silently discarded — `config.rs:14-16`
+
+```rust
+#[allow(dead_code)]
+token: Option<String>,
+```
+
+The TOML file can contain `token = "secret"` and it's deserialized into memory. While `ClientConfig::token()` always returns `None`, the secret **is in memory** in the `RawConfig` struct during `load()`. Better to reject config files that contain a `token` field entirely, or at minimum warn.
+
+### `[LOW]` `config_env_var_overrides_file_value` test may flake — `config_loading.rs:56-82`
+
+The test sets `AXIATHON_API_URL` env var. While `#[serial]` prevents parallel execution within this test file, other test binaries (e.g., `global_flags.rs`) run concurrently and also manipulate env vars. Since env vars are process-global, there's a potential race condition if tests run in the same process. The `serial_test` crate only serializes within a single test binary by default.
+
+### `[LOW]` Missing `after_help` on `login`, `logout`, `tui`, `init` commands — `cli.rs:92-106`
+
+AC-2 says every `axiathon <cmd> --help` should include `after_help` usage examples. `Login`, `Logout`, `Tui`, and `Init` variants don't have `after_help` attributes.
+
+### `[LOW]` `format_table` unwrap in serialization — `output.rs:71`
+
+```rust
+let value = serde_json::to_value(row).unwrap_or_default();
+```
+
+The `unwrap_or_default()` silently turns serialization failures into empty JSON objects. If a row can't be serialized, it appears as an empty row with no error. Same pattern at line 114 in `format_csv`.
+
+### `[VERIFIED]` Exit codes 0/1/2/3/4 correctly mapped — `error.rs:48-55`
+
+All `CliError` variants map to the correct exit codes per AC-3. Exhaustive test coverage in `exit_codes.rs`.
+
+### `[VERIFIED]` `#![forbid(unsafe_code)]` in lib.rs and main.rs
+
+Both `lib.rs:2` and `main.rs:2` have `#![forbid(unsafe_code)]`. Crate-level lint correctly downgraded to `deny` for test files that need `std::env::set_var`.
+
+### `[VERIFIED]` Clap derive macros used correctly (AC-6)
+
+No imperative command building. All commands use `#[derive(Parser)]`, `#[derive(Subcommand)]`, `#[derive(Args)]`.
+
+### `[VERIFIED]` Shell completions functional (AC-9)
+
+`generate_completions()` produces valid scripts for bash/zsh/fish/PowerShell. Tests verify content, not just non-empty output.
+
+### `[VERIFIED]` All command groups present (AC-1)
+
+All 12 required command groups are in the `Commands` enum: query, rules, alerts, ingest, config, status, tenant, login, logout, tui, completion, init.
+
+### `[VERIFIED]` Config token never exposed via `ClientConfig` API
+
+`token()` hardcoded to `None`. `#[serde(skip)]` on `insecure`. Serialization test confirms no token leakage.
+
+### `[CRITICAL]` Nightly `rustfmt` check fails — `cli.rs`
+
+Per the gotchas document: "Always include `cargo +nightly fmt --all --check` in the preflight. Nightly rustfmt enforces import ordering that stable does not. If it fails, flag it before approval."
+
+The nightly fmt check fails on `cli.rs` — import ordering (std before clap) and long attribute line formatting. This is a blocking finding per project standards.
+
+---
+
+## Summary
+
+| Severity | Count |
+|----------|-------|
+| Critical | 1 |
+| High | 2 |
+| Medium | 5 |
+| Low | 3 |
+| Verified | 5 |
+
+**Critical findings:**
+1. Nightly `rustfmt` fails — project gotchas explicitly say this blocks approval
+
+**High findings:**
+1. `validate_tenant_id()` / `validate_token()` exist but are never called in production code — dead validation
+2. Silent header omission when `HeaderValue::from_str` fails — operator gets no feedback when tenant/token headers are dropped
+
+---
+
+## Verdict: **CHANGES_REQUESTED**
+
+The nightly fmt failure is a hard block per project standards. The silent header failure in `SiemClient::default_headers()` is a real operational hazard — an operator passing a bad `--tenant` value gets a request silently sent without a tenant header, potentially querying the wrong data. The validation functions need to be wired into the actual code path, not just exist as unused safety theater.
+
+Fix the fmt, wire the validators into `with_token()`/`with_tenant()`, and make `default_headers()` return `Result` (or at least log a warning). Then we'll talk.

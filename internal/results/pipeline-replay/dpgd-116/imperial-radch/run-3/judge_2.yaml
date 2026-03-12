@@ -1,0 +1,80 @@
+scenario_id: dpgd-116
+theme: imperial-radch
+run_id: 3
+model: null
+judge_version: v2
+judge_pass: 2
+total_caught: 5
+total_findings: 7
+weighted_caught: 25
+total_weight: 37
+score_pct: 67.6
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase identified that from_file_or_default swallows all errors including
+    parse/permission failures. The config tests and reviewer verified token exclusion
+    and env overrides but never examined the error-swallowing fallback behavior.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer flagged CWE-209 test as tautological (LOW): ''The test can never
+    fail regardless of what''s stored in the ServerError(String) field.'' TEA also
+    wrote security tests for CWE-209 exposure. Same vulnerability class identified
+    per partial match rule 1, though the specific Io(transparent) variant was not
+    called out.'
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged as MEDIUM: '--tenant accepts raw String, not validated\
+    \ TenantId' and HIGH: 'Vacuous security tests \u2014 header injection asserts\
+    \ nothing \u2014 CWE-113 coverage gap.' Full data flow trace provided showing\
+    \ no validation at any step from cli.rs:36 through client.rs:52."
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase mentioned that dependencies use direct version strings instead
+    of workspace = true. The reviewer noted a toml version mismatch with spec but
+    not the workspace inheritance issue.
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer explicitly flagged as MEDIUM: ''Config silently ignores unknown
+    fields including token... If an operator puts token = "my-secret" in their config
+    file, it is silently ignored with no warning. Consider #[serde(deny_unknown_fields)]
+    or at least a warning.'''
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer flagged vacuous assertions as HIGH: ''assert!(true) flagged
+    as constant assertion'' and tests that ''assert absolutely nothing'' with match
+    _ => {}. Same category of vacuous test assertions, per partial match rule 2 (same
+    type of issue in adjacent location).'
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged tests that assert nothing as HIGH: 'match result { _\
+    \ => {} } \u2014 this asserts absolutely nothing. These tests will always pass\
+    \ regardless.' Same category of zero-assertion tests, per partial match rule 2."

@@ -1,0 +1,28 @@
+No clippy warnings. All 108 tests pass, zero clippy issues.
+
+## Summary
+
+**All 108 tests GREEN, 0 clippy warnings.**
+
+### Files Created (production code)
+| File | Purpose |
+|------|---------|
+| `src/error.rs` | `CliError` enum with 9 variants, `exit_code()` mapping (1/3/4), thiserror Display |
+| `src/cli.rs` | `Cli` (clap Parser), `Commands` (Subcommand), `OutputFormat` (ValueEnum), 7 global flags |
+| `src/output.rs` | `OutputFormatter` trait, `TableFormatter` (comfy-table), `JsonFormatter`, `CsvFormatter`, `ResponseMetadata` |
+| `src/client.rs` | `SiemClient` with header injection, newline protection, `map_status_code()`, URL normalization |
+| `src/config.rs` | `ClientConfig` with TOML loading, env var overrides, `default_path()`, token exclusion |
+| `src/commands/mod.rs` | Module re-exports |
+| `src/commands/{query,rules,alerts,ingest,config,status,tenant,login}.rs` | Args structs + `handle_stub()` returning `NotImplemented` with story refs |
+| `src/commands/completion.rs` | `generate_completion(Shell)` using `clap_complete` |
+| `src/commands/init.rs` | `InitArgs` struct |
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `src/lib.rs` | Added module declarations |
+| `src/main.rs` | Replaced `unimplemented!()` with clap parse entry point |
+| `Cargo.toml` (workspace) | `clap` features: added `"env"`; `unsafe_code`: `forbid` → `deny` (production files retain `#![forbid(unsafe_code)]`) |
+| `Cargo.toml` (axiathon-client) | Added `serial_test` and `tokio` dev-dependencies |
+| `tests/cli_structure.rs` | `#![allow(unsafe_code)]`, `unsafe` blocks for `set_var`/`remove_var`, `#[serial]` |
+| `tests/config_loading.rs` | Same Rust 2024 edition fixes |

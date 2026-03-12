@@ -1,0 +1,79 @@
+scenario_id: dpgd-116
+theme: lord-of-the-rings
+run_id: 1
+model: null
+judge_version: v2
+judge_pass: 2
+total_caught: 2
+total_findings: 7
+weighted_caught: 10
+total_weight: 37
+score_pct: 27.0
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase flagged from_file_or_default swallowing all errors. The reviewer
+    flagged unwrap_or_default on HTTP response body (client.rs:79) which is a different
+    location and different concern. The config error-swallowing issue was never mentioned.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: "TEA wrote CWE-209 tests and the reviewer explicitly verified '[VERIFIED]\
+    \ Security comment on CliError Display: error.rs:3 \u2014 no token/path leakage.'\
+    \ The reviewer examined the exact code and concluded it was correct, but the ground\
+    \ truth says Io(#[error(transparent)]) forwards full OS error details. Opposite\
+    \ conclusion per rule 4."
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote tests for ''Header injection: Tenant ID and auth token with
+    \r\n are rejected/sanitized.'' Dev implemented assert!() checks at client.rs:26-28,39-41.
+    Reviewer verified. The CWE-113 header injection risk was directly addressed, though
+    the type-safety recommendation (using TenantId from axiathon-core) was not adopted.'
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase mentioned that 6 dependencies use direct version strings instead
+    of workspace = true. The code changes summary shows Cargo.toml was modified but
+    the reviewer did not flag workspace dependency inconsistency.
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[MEDIUM] RawConfig accepts unknown TOML fields silently\
+    \ \u2014 config.rs:6-11. No #[serde(deny_unknown_fields)] on RawConfig. A typo\
+    \ like api_rul = \"...\" is silently ignored.' This directly encompasses the token\
+    \ field silent-ignore finding."
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified the vacuously true assertion pattern (is_none() ||
+    ... always true). The TEA wrote the tests and all 94 passed, meaning the vacuous
+    assertion was created by the pipeline itself, not caught.
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified the zero-assertion test that only checks for non-panic.
+    The TEA wrote these tests without meaningful assertions, and no subsequent phase
+    flagged the issue.

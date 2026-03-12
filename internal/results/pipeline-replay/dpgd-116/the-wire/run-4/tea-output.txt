@@ -1,0 +1,28 @@
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 introduces the entire CLI framework — foundational crate with multiple public API surfaces requiring validation.
+
+**Test Files:**
+| File | Tests | Coverage |
+|------|-------|----------|
+| `cli_framework_integration.rs` | 30 | AC-1 (command groups), AC-2 (help rendering), AC-5 (global flags), AC-6 (clap derive) |
+| `exit_codes_integration.rs` | 18 | AC-3 (exit codes 0/1/2/3/4), CliError trait bounds, Display sanitization |
+| `output_format_integration.rs` | 14 | AC-4 (table/json/csv formatting, escaping, metadata) |
+| `siem_client_integration.rs` | 16 | AC-7 (HTTP status mapping, header injection, CRLF prevention) |
+| `config_integration.rs` | 11 | AC-8 (TOML loading, env var overrides, token isolation) |
+| `completion_integration.rs` | 6 | AC-9 (bash/zsh/fish/PowerShell generation) |
+| `stub_handlers_integration.rs` | 12 | AC-10 (NotImplemented with story references) |
+| `security_integration.rs` | 8 | CWE-209, silent error swallowing, URL validation |
+
+**Tests Written:** 115 tests covering all 10 ACs
+**Status:** RED (failing — compilation errors due to missing modules: `cli`, `error`, `output`, `client`, `config`, `commands::completion`)
+
+**Security tests cover:**
+- CWE-209: Server error Display must not leak stack traces or internal paths
+- Header injection: CRLF in tenant ID and token must be rejected/sanitized
+- Silent error swallowing: Every HTTP error status and config parse failure must produce an error
+- Token isolation: Config file must not store tokens (keychain/env only)
+- URL protocol validation: javascript: protocol rejection
+
+**Handoff:** To Dev for implementation (GREEN phase). The Dev needs to create modules `cli`, `error`, `output`, `client`, `config`, and `commands::completion` exporting the types referenced in these tests.

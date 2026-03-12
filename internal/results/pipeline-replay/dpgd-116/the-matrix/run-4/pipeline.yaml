@@ -1,0 +1,29 @@
+scenario_id: dpgd-116
+theme: the-matrix
+run_id: 4
+timestamp: '2026-03-08T23:45:58.573810+00:00'
+worktree_path: /tmp/pf-replay/dpgd-116-the-matrix-run-4
+phases:
+  tea:
+    token_usage:
+      input: 96
+      output: 19596
+    duration_s: 305.9
+    exit_code: 0
+  dev:
+    token_usage:
+      input: 39
+      output: 13628
+    duration_s: 333.24
+    exit_code: 0
+  reviewer:
+    token_usage:
+      input: 851
+      output: 5931
+    duration_s: 217.73
+    exit_code: 0
+framework_version:
+  commit: pre-edge-hunter
+  semver: 12.7.0
+  tag: baseline-pre-edge-hunter
+  agent_hashes: {}

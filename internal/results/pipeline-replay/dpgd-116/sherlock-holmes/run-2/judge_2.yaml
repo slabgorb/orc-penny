@@ -1,0 +1,78 @@
+scenario_id: dpgd-116
+theme: sherlock-holmes
+run_id: 2
+judge_version: v2
+judge_pass: 2
+total_caught: 4
+total_findings: 7
+weighted_caught: 20
+total_weight: 37
+score_pct: 54.1
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase flagged from_file_or_default swallowing all errors via unwrap_or_default().
+    Config tests exist but don't test distinguishing NotFound from parse/permission
+    errors.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: TEA explicitly listed 'CWE-209 error information exposure (stack traces,
+    token values in error messages)' as a security test. Reviewer also verified ServerError
+    Display hides inner details. Same vulnerability class addressed.
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: "TEA wrote 'Header injection via newlines in tenant ID and bearer token\
+    \ (CWE-113)' tests. Reviewer flagged '[MEDIUM] with_tenant silently sanitizes\
+    \ vs with_token rejects \u2014 inconsistent CWE-113 handling at client.rs:48-68'.\
+    \ Same vulnerability class (CWE-113) caught, though type-safety angle (using TenantId\
+    \ from axiathon-core) was not explicitly flagged."
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase flagged that 6 dependencies use direct version strings instead
+    of workspace = true. TEA added workspace dependencies but the dev implemented
+    with direct versions and reviewer did not catch the drift risk.
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[MEDIUM] Config silently ignores unknown fields \u2014\
+    \ config.rs:11' noting lack of #[serde(deny_unknown_fields)] and that typos are\
+    \ silently ignored. Also flagged '[HIGH] has_token_from_config is never set to\
+    \ true' showing tokens in config produce zero warnings."
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[HIGH] has_token_from_config is never set to true'\
+    \ and explicitly noted 'The test at config_loading_tests.rs:146 passes vacuously\
+    \ \u2014 it asserts !c.has_token_from_config() which is trivially true because\
+    \ the field is hardcoded false.' Same category of vacuously true test caught."
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase flagged a test with zero assertions using 'let _ = config;'.
+    The reviewer identified other test quality issues but not this specific zero-assertion
+    test.

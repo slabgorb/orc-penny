@@ -1,0 +1,30 @@
+Excellent. The evidence has been filed, the traps set. Now let me write the TEA Assessment.
+
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 delivers the foundational CLI binary with 10 acceptance criteria requiring structural, behavioral, and security validation.
+
+**Test Files:**
+| File | Tests | Coverage |
+|------|-------|----------|
+| `tests/cli_structure.rs` | 28 | AC-1 (command groups), AC-2 (help rendering), AC-5 (global flags), AC-6 (clap derive) |
+| `tests/error_exit_codes.rs` | 14 | AC-3 (exit codes 0/1/2/3/4), CliError Display, Send+Sync bounds |
+| `tests/output_format.rs` | 16 | AC-4 (table/JSON/CSV formatting, metadata, escaping, unicode, empty data) |
+| `tests/siem_client.rs` | 16 | AC-7 (HTTP status mapping, header construction, injection prevention) |
+| `tests/config_loading.rs` | 14 | AC-8 (TOML loading, env overrides, validation, precedence, no token in config) |
+| `tests/shell_completion.rs` | 8 | AC-9 (bash/zsh/fish/powershell generation, binary name presence) |
+| `tests/stub_handlers.rs` | 9 | AC-10 (NotImplemented errors with story references) |
+| `tests/security.rs` | 11 | CWE-209 error exposure, header injection, unsafe_code, error trait bounds |
+
+**Tests Written:** 116 tests covering all 10 ACs
+**Status:** RED (failing to compile — modules `cli`, `error`, `output`, `client`, `config`, `commands` do not exist yet)
+
+**Security tests included:**
+- Header injection via `\r\n` in tenant ID and auth token
+- CWE-209: Server errors, auth errors, config errors don't expose internals
+- Token not stored in config file (keychain only)
+- Config validation (empty URLs, negative/zero timeouts, invalid TOML)
+- `#![forbid(unsafe_code)]` enforcement documented
+
+**Handoff:** To Dev for implementation (GREEN phase)

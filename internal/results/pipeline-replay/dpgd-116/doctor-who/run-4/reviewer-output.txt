@@ -1,0 +1,150 @@
+Right. I've now read every single file, verified compilation, and run the checks. Let me deliver the verdict. And let me be very clear — I'm not here to be nice about it.
+
+---
+
+# Adversarial Code Review: Story 6.1 — CLI Framework & Structure
+
+**Reviewer:** Donna Noble (with Wilfred Mott on lookout duty)
+**Verdict:** **CHANGES_REQUESTED**
+
+---
+
+## Findings
+
+### `[CRITICAL]` Timestamp format is NOT ISO 8601/RFC 3339 — `output.rs:119-124`
+
+The `chrono_now()` function produces `"1741564800Z"` — raw epoch seconds with a Z suffix. This is **not** a valid RFC 3339 timestamp. AC-4 specifies `ResponseMetadata` with a `timestamp` field, and any consuming system expecting `"2026-03-09T12:00:00Z"` will choke on this. The comment on line 118 even says "Returns an ISO 8601 timestamp string" — the comment is a lie.
+
+The test at `output_formatting.rs:133-138` only checks `!meta.timestamp.is_empty()` — a vacuous assertion that passes for any non-empty string, including `"potato"`.
+
+**Fix:** Use `chrono::Utc::now().to_rfc3339()` (chrono is already a workspace dependency) or format `SystemTime` properly.
+
+---
+
+### `[CRITICAL]` Workspace lint safety override — `Cargo.toml:37-44` vs root `Cargo.toml:81-82`
+
+The workspace root sets `unsafe_code = "forbid"` (line 82). The `axiathon-client` crate **overrides this** to `unsafe_code = "warn"` (line 44) and does NOT use `lints.workspace = true`. The comment on line 34 explains this is to allow `unsafe { std::env::set_var }` in tests.
+
+This is a **security architecture violation**. The `forbid` at workspace level exists as a hard safety guarantee. Downgrading it to `warn` in the crate's `[lints.rust]` means production code in this crate can now use `unsafe` and only get a warning. The `#![forbid(unsafe_code)]` in `lib.rs` and `main.rs` provides protection for production code, but the crate-level lint override weakens the safety net unnecessarily.
+
+**Fix:** Use `lints.workspace = true` and annotate only the specific test functions with `#[allow(unsafe_code)]` using `#[cfg(test)]` scoping, or move the env var tests into a separate test binary that has its own lint config.
+
+---
+
+### `[HIGH]` Tests accept both pass AND fail — false-pass risk — `cli_framework.rs:280-297, 299-317`
+
+Two security tests use the pattern `if let Ok(cli) = result { ... }` without asserting whether the result SHOULD be `Ok` or `Err`. This means:
+
+- `server_url_rejects_newlines` (line 280): If clap accepts `"https://example.com\r\nX-Injected: true"` and the validator doesn't fire, the test **silently passes** because the `if let Ok` branch does the assertion, but if clap rejects it, the test also passes with no assertion at all. The test proves nothing definitively.
+
+- `tenant_flag_rejects_non_uuid` (line 299): Same pattern — `if let Ok(cli) = result { assert UUID valid }`. If clap rejects the XSS payload, the test passes without verifying WHY it was rejected.
+
+**Fix:** These tests must assert a specific outcome:
+```rust
+assert!(result.is_err(), "clap must reject CRLF in --server");
+```
+
+---
+
+### `[HIGH]` `siem_client_rejects_token_with_crlf` test is vacuous — `siem_client.rs:254-277`
+
+The CRLF header injection test has:
+```rust
+match result {
+    Err(_) => {} // good, rejected
+    Ok(_) => {
+        // If it succeeded, verify no injection occurred
+        // (wiremock would not match the injected header)
+    }
+}
+```
+
+Both arms are no-ops. This test literally cannot fail. A `match { _ => {} }` is not an assertion. The wiremock mock on line 258-262 responds 200 to any GET, so even if the CRLF token passes through, the response succeeds and the `Ok` arm does nothing.
+
+**Fix:** Assert `result.is_err()` — reqwest's `HeaderValue::from_str` rejects CRLF, so this should always error. Or if you want to verify it defensively, at minimum assert something in the `Ok` arm.
+
+---
+
+### `[HIGH]` CWE-209: `ServerError(String)` passes arbitrary server text to user — `error.rs:8-9`
+
+The `Display` impl for `ServerError` is `#[error("server error: {0}")]` — it forwards whatever string is inside directly to the user. In `client.rs:73`, reqwest error `.to_string()` is passed in, which can include internal URLs, DNS resolution details, connection specifics. At `client.rs:83`, raw JSON parse failure details are forwarded. The SECURITY comment on line 3-4 says "Do not expose internal server details" but the implementation does exactly that.
+
+**Fix:** Sanitize the error message before storing in `ServerError`, or at minimum don't forward raw reqwest error strings. Map to generic user-facing messages.
+
+---
+
+### `[HIGH]` 27 nightly `rustfmt` violations
+
+Per the reviewer gotchas checklist: "Always include `cargo +nightly fmt --all --check` in the preflight." There are 27 formatting diffs, including import ordering in `client.rs:1` (`AUTHORIZATION` should come before `HeaderMap` alphabetically). This blocks merge per project standards.
+
+**Fix:** Run `cargo +nightly fmt --all`.
+
+---
+
+### `[MEDIUM]` `_format` field stored but never read — `output.rs:63`
+
+`OutputFormatter` stores `_format: OutputFormat` with an underscore prefix to suppress the unused-field warning. This is dead code. The caller must already know which format to use (calling `format_table`, `format_json`, or `format_csv` explicitly). Either remove the field or use it to dispatch formatting via a single `format()` method.
+
+---
+
+### `[MEDIUM]` No TTY detection for default format — violates AC-4
+
+AC-4 says "Table default for TTY, JSON for piped output." The story spec says to use `std::io::IsTerminal`. There is no TTY detection anywhere in the codebase. `cli.format` is `Option<String>` with no default fallback logic. When `--format` is omitted, nothing decides between table and JSON.
+
+**Fix:** This is explicitly called out in the technical guardrails as a requirement for this story. Add TTY detection logic.
+
+---
+
+### `[MEDIUM]` `server_error_display_does_not_leak_internals` test is vacuous — `error_exit_codes.rs:131-141`
+
+This test creates a `ServerError` with internal path info (`"/var/lib/pg"`) and then only asserts `!msg.is_empty()`. It does NOT verify that the internal path is sanitized. The test name promises leak prevention but the assertion doesn't check for it. This gives false confidence.
+
+---
+
+### `[MEDIUM]` AC-1: Missing `logout` and `tui` commands
+
+AC-1 specifies: "axiathon --help must show all command groups: query, rules, alerts, ingest, config, status, tenant, **login/logout**, **tui**, completion, init." The `Commands` enum has no `Logout` or `Tui` variant. `logout` is presumably part of Story 9.1, but AC-1 says the stub should be present in this framework story.
+
+---
+
+### `[LOW]` `keyring` declared in workspace deps but unused in code
+
+`keyring = { version = "3", features = ["apple-native", "windows-native", "sync-secret-service"] }` is in the workspace `Cargo.toml` but not listed in the client crate's `[dependencies]`. This is fine (workspace deps are declarations, not includes), but the keyring integration described in the technical guardrails is completely absent from this story. This is acceptable IF the scope boundary is clear (Story 9.1), but the spec says "Load token at CLI startup" which implies this story.
+
+---
+
+### `[LOW]` `EnvGuard` uses `unsafe { std::env::set_var }` without `#[test]` serial enforcement — `config_loading.rs:259`
+
+These env var tests are NOT marked `#[serial]` and nothing prevents cargo from running them in parallel. Two tests modifying the same env var concurrently is UB in Rust 2024. The `unsafe` blocks have a safety comment claiming "run serially" but nothing enforces this (no `serial_test` crate, no mutex).
+
+---
+
+### Verified Good
+
+- `[VERIFIED]` Clap derive macros used exclusively (AC-6) — no imperative `App::new()` anywhere
+- `[VERIFIED]` Exit code mapping is correct: 1=general, 3=auth, 4=authz (AC-3)
+- `[VERIFIED]` `#![forbid(unsafe_code)]` present in both `lib.rs:2` and `main.rs:2`
+- `[VERIFIED]` All stub handlers reference correct story numbers — verified each one
+- `[VERIFIED]` CSV escaping delegates to the `csv` crate properly — commas, quotes, newlines all handled
+- `[VERIFIED]` Config TOML ignores unknown keys for forward compatibility
+- `[VERIFIED]` `validate_no_newlines` and `validate_uuid` validators exist on relevant CLI fields
+- `[VERIFIED]` Shell completions generate for all four shells and include all subcommands
+- `[VERIFIED]` `SiemClient` strips trailing slash from base URL (line 24)
+- `[VERIFIED]` Error type is `#[non_exhaustive]` — future-proof for new variants
+
+---
+
+## Summary
+
+| Severity | Count | Blocks? |
+|----------|-------|---------|
+| Critical | 2     | YES     |
+| High     | 4     | YES     |
+| Medium   | 4     | No      |
+| Low      | 2     | No      |
+
+## Verdict: **CHANGES_REQUESTED**
+
+Listen, I know you lot are clever. The structure is good, the clap setup is clean, the test coverage hits the right areas. But you've got a timestamp function that lies about what it produces, a workspace safety override that punches a hole in `unsafe` protection, four tests that literally cannot fail, and nightly fmt violations. That's not ready for production. 
+
+Fix the 2 Critical and 4 High issues. The Medium findings should be addressed but won't block a re-review. Run `cargo +nightly fmt --all` before resubmitting. When in doubt, I reject. And right now, I'm not in doubt — this needs work.
