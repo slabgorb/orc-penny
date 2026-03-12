@@ -122,7 +122,9 @@ stories:
     title: Full TDD cycle end-to-end validation
     points: 5
     priority: p0
-    status: backlog
+    status: in_progress
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-12'
     repos: pennyfarthing
     workflow: tdd
     type: feature
