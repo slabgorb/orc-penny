@@ -652,3 +652,8 @@ completed_stories:
     title: Update PF activation skills for native subagents
     points: 3
     completed: '2026-03-12'
+  - id: 143-9
+    epic: ''
+    title: Full TDD cycle end-to-end validation
+    points: 5
+    completed: '2026-03-12'
