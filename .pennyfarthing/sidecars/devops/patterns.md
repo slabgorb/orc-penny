@@ -69,11 +69,8 @@ BikeRack is the integration layer between Claude Code, WheelHub (Node server), a
 </pattern>
 
 <pattern name="wheelhub-bundle-rebuild">
-WheelHub bundle rebuild procedure:
-1. `cd pennyfarthing/packages/core && pnpm run build:tsc`
-2. `cd pennyfarthing && npx esbuild packages/core/dist/server/entry.js --bundle --format=esm --platform=node --outfile=/tmp/wheelhub.mjs`
-3. Patch CJS shim: replace default esbuild Proxy shim with `createRequire` import (see gotchas)
-4. Copy to `pennyfarthing-dist/src/pf/_dist/server/wheelhub.mjs`
-5. `pipx install --force pennyfarthing/` to update pip package
-6. `pf init` in consumer projects to update local copy
+WheelHub bundle rebuild: `cd pennyfarthing && ./scripts/build-wheelhub.sh [--install]`
+Prereq: `cd packages/core && pnpm run build:tsc` (if source changed).
+The script handles esbuild, CJS shim patching, validation, and copy to pennyfarthing-dist.
+`--install` flag also runs `pipx install --force`. Then `pf init` in consumer projects.
 </pattern>

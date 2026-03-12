@@ -1,0 +1,118 @@
+Now I have everything I need for a thorough review. Let me compile my findings.
+
+---
+
+# Story 6.1 CLI Framework & Structure — Adversarial Code Review
+
+*The Cigarette Smoking Man leans back, exhales slowly, and begins...*
+
+I've been reviewing code since before most of these frameworks existed. Let me tell you what I found lurking in the shadows.
+
+---
+
+## Findings
+
+### [HIGH] Header injection via silent failure — `client.rs:62-67`
+
+When `HeaderValue::from_str` fails (e.g., token contains invalid characters), the code silently drops the header via `if let Ok(hv)`. This means a malformed token results in an **unauthenticated request being sent silently** — no error, no warning, no indication to the user that their request went out without auth. An attacker who can influence the token value (e.g., via env var manipulation) could cause the CLI to make unauthenticated requests against the API without the operator knowing.
+
+The same pattern applies to the tenant header at lines 69-72. Silent header drops are a security-relevant failure mode that MUST produce an error.
+
+### [HIGH] `CliError::Config` Display leaks internal details — `error.rs:38`
+
+The `Config` variant uses `#[error("configuration error")]` but the inner `String` (which contains raw error messages like filesystem paths, TOML parse errors with file contents) is **not shown in Display**. However, in `config.rs:34`, raw `std::io::Error` messages are interpolated into the string (e.g., `"cannot read config: Permission denied"`) and in `config.rs:36`, raw TOML parse errors go in. While the Display only shows "configuration error", the **`main.rs:15` prints `{e}` (Display)** — so only "configuration error" reaches the user. This means **config errors give NO actionable information** to the operator. The operator sees "configuration error" with no path, no detail, no remediation. This is a usability bug that will generate support tickets.
+
+The doc comment says "**SECURITY:** Display impl must not leak internal details" but the Config variant goes too far — it hides ALL detail including the operator's own local file paths, which are not secrets.
+
+### [MEDIUM] `#[serde(default)]` silently accepts unknown fields — `config.rs:11`
+
+The `ClientConfig` struct uses `#[serde(default)]` which means unknown fields like `token = "secret"`, `password = "hunter2"` are silently accepted. The test `config_with_unknown_fields_is_accepted` explicitly blesses this behavior for "forward compatibility." However, there is no `#[serde(deny_unknown_fields)]` option and no warning logged. If an operator accidentally puts `token = "..."` in the config (the test at `config_loading.rs:186-218` shows this scenario), the token is silently ignored. A warning should be emitted when security-sensitive fields like `token` or `password` appear in the config file.
+
+### [MEDIUM] JSON timestamp format is non-standard — `output.rs:98`
+
+```rust
+"timestamp": format!("{:?}", std::time::SystemTime::now()),
+```
+
+This uses `Debug` formatting of `SystemTime`, which produces something like `SystemTime { tv_sec: ..., tv_nsec: ... }` — not ISO 8601 / RFC 3339. AC-4 says JSON includes `ResponseMetadata` with `timestamp`. The timestamp field is effectively unusable for any consumer parsing the JSON output. Should use `chrono` (already a workspace dependency) to produce ISO 8601.
+
+### [MEDIUM] `OutputFormatter` uses `expect()` in production paths — `output.rs:107,114,121-123`
+
+Multiple `.expect()` calls in `format_as_json` and `format_as_csv`:
+- `expect("JSON serialization should not fail")` at line 107
+- `expect("write CSV header")` at line 114
+- `expect("write CSV row")` at line 118
+- Three more expects at lines 121-123
+
+Per the Rust coding rules: "No `unwrap()` in production code — use `?` or `expect()` with actionable message." The rule allows `expect()` but these are in formatting paths that could be called with arbitrary user data. If the CSV writer fails (e.g., on I/O error to the Vec — unlikely but possible under memory pressure), the process panics instead of returning a clean error. `format_table` should return `Result<String, CliError>`.
+
+### [MEDIUM] `build_request` uses `expect()` for method parsing — `client.rs:58`
+
+```rust
+let method = method.parse::<reqwest::Method>().expect("valid HTTP method");
+```
+
+This panics on invalid method strings. Since `build_request` takes `&str`, any caller typo like `"GEET"` will panic the entire process. Should return `Result`.
+
+### [MEDIUM] `build_request` uses another `expect()` — `client.rs:80`
+
+```rust
+.build().expect("request build should not fail")
+```
+
+If `reqwest` request building fails (e.g., invalid URL), this panics. Should propagate the error.
+
+### [LOW] `Logout` reuses `login::execute_stub()` — `main.rs:30`
+
+Both `Login` and `Logout` dispatch to `login::execute_stub()`. The stub message says "not yet implemented (Story 9.1)" which is correct for both, but the user gets the same message for both commands. Minor, but `Logout` should have its own stub or the shared stub should not be login-specific.
+
+### [LOW] Nightly `rustfmt` check fails — `cli.rs`
+
+`cargo +nightly fmt --all --check` shows formatting diffs in `cli.rs` for the `#[command(after_help = ...)]` attributes. Per the gotchas file: "Always include `cargo +nightly fmt --all --check` in the preflight. If it fails, flag it before approval."
+
+### [LOW] `CompletionShell` duplicates `clap_complete::Shell` — `cli.rs:104-111` and `main.rs:35-42`
+
+A custom `CompletionShell` enum is defined and then manually mapped to `clap_complete::Shell` in `main.rs`. The `clap_complete::Shell` type already implements `ValueEnum`, so this intermediate type adds needless mapping code. Could use `clap_complete::Shell` directly in the `Completion` variant.
+
+### [VERIFIED] `#[non_exhaustive]` on `CliError` — `error.rs:9`
+
+Confirmed present. Future variants won't break downstream consumers.
+
+### [VERIFIED] `#![forbid(unsafe_code)]` — `lib.rs:2` and `main.rs:2`
+
+Both the library and binary crate forbid unsafe code. Correctly enforced.
+
+### [VERIFIED] No server-side crate dependencies — `Cargo.toml`
+
+`axiathon-client` depends only on `axiathon-core`. Architecture boundary is maintained.
+
+### [VERIFIED] Token never loaded from config file — `config.rs:16,48-49`
+
+`_token` field has `#[serde(skip)]` and is explicitly set to `None` after loading. Defense in depth.
+
+### [VERIFIED] Exit code mapping correct — `error.rs:48-54`
+
+Auth -> 3, Authz -> 4, everything else -> 1. Matches AC-3 spec.
+
+---
+
+## Summary
+
+| Severity | Count | Blocks? |
+|----------|-------|---------|
+| HIGH     | 2     | YES     |
+| MEDIUM   | 4     | NO      |
+| LOW      | 3     | NO      |
+| VERIFIED | 5     | —       |
+
+---
+
+## Verdict: **CHANGES_REQUESTED**
+
+Two HIGH findings block approval:
+
+1. **Silent header drops in `SiemClient::build_request`** — when `HeaderValue::from_str` rejects a token or tenant ID, the request silently goes out unauthenticated. This is a security-relevant silent failure. The method must return `Result<reqwest::Request, CliError>` and propagate header construction failures.
+
+2. **`CliError::Config` Display hides all detail** — operators will see "configuration error" with zero context about what went wrong or where. The inner string should be included in Display (these are local client-side errors, not server-leaked internals). Alternatively, add a separate user-facing message field.
+
+The nightly fmt failure should also be fixed before merge, per project gotchas.

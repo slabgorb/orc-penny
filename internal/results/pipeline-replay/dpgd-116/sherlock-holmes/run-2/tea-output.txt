@@ -1,0 +1,39 @@
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 is a foundational feature story establishing the entire CLI framework — tests are essential for every acceptance criterion.
+
+**Test Files:**
+- `crates/axiathon-client/tests/cli_framework_tests.rs` — 38 tests covering AC-1 (command groups), AC-2 (help rendering), AC-5 (global flags), AC-6 (clap derive)
+- `crates/axiathon-client/tests/error_exit_code_tests.rs` — 16 tests covering AC-3 (exit codes 0/1/2/3/4, CliError enum, CWE-209 error exposure)
+- `crates/axiathon-client/tests/output_format_tests.rs` — 19 tests covering AC-4 (OutputFormatter trait, Table/JSON/CSV, escaping, metadata)
+- `crates/axiathon-client/tests/siem_client_tests.rs` — 16 tests covering AC-7 (SiemClient, HTTP status mapping, header injection, token leakage in Debug)
+- `crates/axiathon-client/tests/config_loading_tests.rs` — 14 tests covering AC-8 (TOML loading, env var overrides, validation, token-in-config rejection)
+- `crates/axiathon-client/tests/completion_stub_tests.rs` — 17 tests covering AC-9 (shell completion for bash/zsh/fish/PowerShell) and AC-10 (stub handlers for all unimplemented commands)
+
+**Tests Written:** 120 tests covering all 10 ACs
+**Status:** RED (failing — all 6 test files fail to compile because `axiathon_client` modules do not yet exist)
+
+**Security tests included:**
+- Header injection via newlines in tenant ID and bearer token (CWE-113)
+- Token leakage in Debug output
+- CWE-209 error information exposure (stack traces, token values in error messages)
+- Token-in-config-file rejection (tokens belong in OS keychain)
+- Config path safety (/dev/null as config)
+- Help text information leakage
+
+**Handoff:** To Dev for implementation
+
+### Delivery Findings
+
+- **Gap** (non-blocking): Workspace `Cargo.toml` did not include `reqwest`, `comfy-table`, `keyring`, `clap_complete`, `dirs`, `csv`, or `toml` — added as part of test setup.
+  Affects `Cargo.toml` and `crates/axiathon-client/Cargo.toml` (dependencies needed for Story 6.1).
+  *Found by TEA during test design.*
+
+- **Conflict** (non-blocking): Story spec says `toml = "0.9"` but latest available is `0.8.x`. Used `0.8` instead.
+  Affects `Cargo.toml` (workspace dependency version).
+  *Found by TEA during test design.*
+
+- **Gap** (non-blocking): Edition 2024 makes `std::env::set_var`/`remove_var` unsafe. Env var override tests use builder pattern (`with_api_url`, `with_timeout`) instead of real env vars. Dev should ensure `ClientConfig::from_env_and_defaults()` reads `AXIATHON_API_URL` and `AXIATHON_TIMEOUT` from the environment internally.
+  Affects `crates/axiathon-client/src/config.rs` (env var reading must happen inside safe implementation code).
+  *Found by TEA during test design.*

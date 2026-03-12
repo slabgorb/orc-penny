@@ -8,6 +8,10 @@
 #   ui_layer:        Rendering context (react | cli | none)
 #   components_path: Where UI components live (optional, for repos with ui_layer)
 
+# PR title format template. Placeholders: {jira_key}, {type}, {scope}, {title}
+# Default: "{jira_key} - {type}({scope}): {title}"
+pr_title_format: "{jira_key} - {type}({scope}): {title}"
+
 repos:
   orchestrator:
     path: .
@@ -72,6 +76,11 @@ repos:
     symlinks: {}
     ui_layer: react
     components_path: packages/cyclist/src/components
+
+gates:
+  extensions:
+    dev-exit:
+      - pf-init-impact
 
 # Architecture notes:
 # - Unlike other orchestrators (conductor, siemulator) which have api/ui subrepos,

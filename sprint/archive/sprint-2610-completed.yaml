@@ -11,6 +11,15 @@ completed_epics:
   - MSSCI-15839
   - MSSCI-16090
   - MSSCI-16095
+  - MSSCI-16073
+  - MSSCI-16127
+  - MSSCI-16210
+  - MSSCI-16211
+  - MSSCI-16214
+  - MSSCI-16212
+  - MSSCI-16213
+  - MSSCI-16312
+  - '49'
 completed_stories:
   - id: 110-1
     epic: '110'
@@ -247,3 +256,353 @@ completed_stories:
     title: File-Overlap Independence Check
     points: 1
     completed: '2026-03-04'
+  - id: 138-1
+    epic: MSSCI-16073
+    title: Create simplify-reuse subagent definition
+    points: 1
+    completed: '2026-03-03'
+  - id: 138-2
+    epic: MSSCI-16073
+    title: Create simplify-quality subagent definition
+    points: 1
+    completed: '2026-03-03'
+  - id: 138-3
+    epic: MSSCI-16073
+    title: Create simplify-efficiency subagent definition
+    points: 1
+    completed: '2026-03-04'
+  - id: 138-4
+    epic: MSSCI-16073
+    title: Extend TEA verify phase to spawn and aggregate simplify teammates
+    points: 2
+    completed: '2026-03-04'
+  - id: 138-5
+    epic: MSSCI-16073
+    title: Add simplify team block to tdd and tdd-tandem workflow YAMLs
+    points: 1
+    completed: '2026-03-04'
+  - id: 138-6
+    epic: MSSCI-16073
+    title: Update TEA assessment template with simplify report section
+    points: 1
+    completed: '2026-03-04'
+  - id: 138-7
+    epic: MSSCI-16073
+    title: Define SIMPLIFY_RESULT structured finding format
+    points: 1
+    completed: '2026-03-04'
+  - id: 141-1
+    epic: MSSCI-16127
+    title: Hoist Shared UI Dependencies to Monorepo Root
+    points: 2
+    completed: '2026-03-03'
+  - id: 141-2
+    epic: MSSCI-16127
+    title: Unify Dependency Version Drift
+    points: 1
+    completed: '2026-03-04'
+  - id: 141-3
+    epic: MSSCI-16127
+    title: Audit Unexported Hooks — Export or Delete
+    points: 3
+    completed: '2026-03-04'
+  - id: 141-4
+    epic: MSSCI-16127
+    title: Remove Deprecated Bikerack Shim and Stale References
+    points: 1
+    completed: '2026-03-04'
+  - id: 141-8
+    epic: MSSCI-16127
+    title: Convert Throw to Result Objects in Scripts and Generators
+    points: 3
+    completed: '2026-03-04'
+  - id: 141-11
+    epic: MSSCI-16127
+    title: Type OTLP Receiver Payloads Properly
+    points: 2
+    completed: '2026-03-04'
+  - id: 141-12
+    epic: MSSCI-16127
+    title: Remove as-any from UI Components
+    points: 2
+    completed: '2026-03-04'
+  - id: 141-13
+    epic: MSSCI-16127
+    title: Fix Jira story transition — claim stories as In Progress during setup
+    points: 1
+    completed: '2026-03-04'
+  - id: 141-14
+    epic: MSSCI-16127
+    title: Improve agent handoff command documentation and examples
+    points: 2
+    completed: '2026-03-04'
+  - id: 141-15
+    epic: MSSCI-16127
+    title: Delete Dead Shell/Python Scripts That Duplicate pf CLI
+    points: 1
+    completed: '2026-03-04'
+  - id: 141-16
+    epic: MSSCI-16127
+    title: Add --json Output to pf CLI for GUI Consumption
+    points: 3
+    completed: '2026-03-04'
+  - id: 141-17
+    epic: MSSCI-16127
+    title: Replace TypeScript File Parsers with pf CLI Subprocess Calls
+    points: 8
+    completed: '2026-03-04'
+  - id: 141-18
+    epic: MSSCI-16127
+    title: Replace TypeScript Workflow Engine with pf CLI Delegation
+    points: 5
+    completed: '2026-03-05'
+  - id: 141-19
+    epic: MSSCI-16127
+    title: MERGED into 141-17
+    points: 0
+    completed: '2026-03-04'
+  - id: 141-20
+    epic: MSSCI-16127
+    title: Consolidate Agent Validation — Port Shell Checks to pf validate
+    points: 3
+    completed: '2026-03-04'
+  - id: 141-21
+    epic: MSSCI-16127
+    title: Extract Hardcoded Values and Relocate Misplaced Business Logic
+    points: 2
+    completed: '2026-03-05'
+  - id: 141-23
+    epic: MSSCI-16127
+    title: Add actionable fix instructions to all validators that can halt agents
+    points: 3
+    completed: '2026-03-04'
+  - id: 141-25
+    epic: MSSCI-16127
+    title: Support Project-Level Workflow Definitions
+    points: 3
+    completed: '2026-03-04'
+  - id: MSSCI-16066
+    epic: ''
+    title: Remove is_gui gating from relay mode handoff
+    points: 2
+    completed: ''
+  - id: MSSCI-16146
+    epic: ''
+    title: Wire pf validate into CI + add document type validators
+    points: 5
+    completed: ''
+  - id: MSSCI-16164
+    epic: ''
+    title: Homebrew tap + shell installer
+    points: 3
+    completed: ''
+  - id: 141-10
+    epic: ''
+    title: Convert Throw to Result Objects in Cyclist File-Browser
+    points: 2
+    completed: '2026-03-05'
+  - id: 141-9
+    epic: ''
+    title: Convert Throw to Result Objects in CLI Utils
+    points: 3
+    completed: '2026-03-05'
+  - id: 141-5
+    epic: ''
+    title: Add Tests for Core API Routes (agent-load through dependencies)
+    points: 5
+    completed: '2026-03-05'
+  - id: 141-26
+    epic: ''
+    title: Wire output_style config to prime activation
+    points: 2
+    completed: '2026-03-05'
+  - id: 44-1
+    epic: ''
+    title: Add --multi-judge flag to /solo command
+    points: 3
+    completed: '2026-03-05'
+  - id: 141-6
+    epic: MSSCI-16127
+    title: Add Tests for Core API Routes (evaluation through portrait)
+    points: 5
+    completed: "2026-03-05"
+  - id: 141-7
+    epic: MSSCI-16127
+    title: Add Tests for Core API Routes (settings through welcome)
+    points: 3
+    completed: '2026-03-05'
+  - id: 141-22
+    epic: MSSCI-16127
+    title: Add pf serve — Persistent Python Server with WheelHub Reverse Proxy
+    points: 5
+    completed: '2026-03-04'
+  - id: 141-24
+    epic: MSSCI-16127
+    title: Wire pf serve into WheelHub lifecycle
+    points: 3
+    completed: '2026-03-05'
+  - id: 44-2
+    epic: ''
+    title: Implement Krippendorff Alpha calculation
+    points: 3
+    completed: '2026-03-06'
+  - id: 44-3
+    epic: ''
+    title: Update finalize-run for multi-judge storage
+    points: 2
+    completed: '2026-03-06'
+  - id: 46-1
+    epic: ''
+    title: Add difficulty_profile schema to scenarios
+    points: 2
+    completed: '2026-03-06'
+  - id: 42-1
+    epic: ''
+    title: Create rubric-anchors.md with behavioral scales
+    points: 3
+    completed: '2026-03-06'
+  - id: 42-2
+    epic: ''
+    title: Reference anchors in judge prompts
+    points: 2
+    completed: '2026-03-06'
+  - id: 42-3
+    epic: ''
+    title: 'Variance test: measure CV reduction'
+    points: 1
+    completed: '2026-03-06'
+  - id: 43-1
+    epic: ''
+    title: Add red_herrings schema to scenarios
+    points: 2
+    completed: '2026-03-06'
+  - id: 43-2
+    epic: ''
+    title: Update judge for red herring detection
+    points: 2
+    completed: '2026-03-06'
+  - id: 45-1
+    epic: ''
+    title: Add gold_standard schema to scenarios
+    points: 2
+    completed: '2026-03-06'
+  - id: 45-2
+    epic: ''
+    title: Update judge to use gold standard as calibration
+    points: 2
+    completed: '2026-03-06'
+  - id: 45-4
+    epic: ''
+    title: 'Variance comparison: with/without gold standard'
+    points: 1
+    completed: '2026-03-06'
+  - id: 46-2
+    epic: ''
+    title: Populate difficulty profiles from baseline data
+    points: 2
+    completed: '2026-03-06'
+  - id: 47-1
+    epic: ''
+    title: Cascade attribution on dpgd-116 existing results
+    points: 2
+    completed: '2026-03-08'
+  - id: 43-3
+    epic: MSSCI-16211
+    title: 'Pilot: Add red herrings to order-service scenario'
+    points: 3
+    completed: '2026-03-08'
+  - id: 44-4
+    epic: MSSCI-16214
+    title: Multi-judge test on high-variance scenarios
+    points: 2
+    completed: '2026-03-08'
+  - id: 45-3
+    epic: MSSCI-16212
+    title: Create gold standards for 5 high-variance scenarios
+    points: 3
+    completed: '2026-03-08'
+  - id: 46-3
+    epic: MSSCI-16213
+    title: Update schema.yaml with new fields documentation
+    points: 1
+    completed: '2026-03-08'
+  - id: 47-2
+    epic: ''
+    title: Write concern manifest and AC manifest for dpgd-116
+    points: 2
+    completed: '2026-03-08'
+  - id: 48-1
+    epic: ''
+    title: FastAPI skeleton + OTLP receiver + launcher switch
+    points: 3
+    completed: '2026-03-09'
+  - id: 48-2
+    epic: ''
+    title: Port core API routes to FastAPI (data proxy + state + analysis)
+    points: 3
+    completed: '2026-03-09'
+  - id: 48-3
+    epic: ''
+    title: Port all 16 WebSocket channels to FastAPI
+    points: 5
+    completed: '2026-03-09'
+  - id: 48-4
+    epic: ''
+    title: Cleanup — remove Node.js server, build scripts, update docs
+    points: 2
+    completed: '2026-03-09'
+  - id: 49-1
+    epic: ''
+    title: TirePump removal — finish React cleanup and stale references
+    points: 2
+    completed: '2026-03-09'
+  - id: 49-2
+    epic: ''
+    title: Remove legacy TypeScript — dead CLI, BMAD, Jira modules
+    points: 3
+    completed: '2026-03-09'
+  - id: 142-1
+    epic: ''
+    title: Unified context resolution in load_scenario()
+    points: 2
+    completed: '2026-03-11'
+  - id: 142-2
+    epic: ''
+    title: Fix save_result() nesting bug
+    points: 1
+    completed: '2026-03-11'
+  - id: 142-3
+    epic: ''
+    title: Worktree cleanliness verification
+    points: 1
+    completed: '2026-03-11'
+  - id: 142-4
+    epic: ''
+    title: Always capture stream-json events to disk
+    points: 3
+    completed: '2026-03-11'
+  - id: 142-5
+    epic: ''
+    title: Fix framework_version reliability
+    points: 1
+    completed: '2026-03-11'
+  - id: 142-6
+    epic: ''
+    title: Event parsing and trace/explain commands
+    points: 3
+    completed: '2026-03-11'
+  - id: 142-7
+    epic: ''
+    title: Run index with backfill
+    points: 2
+    completed: '2026-03-11'
+  - id: 142-8
+    epic: ''
+    title: Events-first storage model
+    points: 3
+    completed: '2026-03-12'
+  - id: 142-9
+    epic: ''
+    title: LLM-narrated trace
+    points: 2
+    completed: '2026-03-12'

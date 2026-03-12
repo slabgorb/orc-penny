@@ -1,0 +1,95 @@
+# Concern Manifest: dpgd-116
+# What a well-informed PM/Architect should flag when reviewing this codebase
+# Scenario-aware, defect-blind — these are concerns a strategic role would
+# raise from the codebase overview without seeing seeded defects.
+
+scenario_id: dpgd-116
+manifest_type: concern
+version: 1
+
+concerns:
+  - area: error-handling
+    description: >
+      How does the service handle configuration loading failures? Silent
+      error swallowing in config parsers can mask permission errors, corrupt
+      files, or missing required fields — leading to runtime surprises with
+      default values substituted for real config.
+    related_findings: [C1]
+    priority: high
+
+  - area: error-message-exposure
+    description: >
+      Do error messages exposed to end users or logged to stderr leak
+      internal implementation details? Stack traces, file paths, or internal
+      type names in user-facing errors violate CWE-209 and aid attackers.
+    related_findings: [I1]
+    priority: high
+
+  - area: input-type-safety
+    description: >
+      Are external identifiers (tenant IDs, API keys, resource names) typed
+      or validated before use in security-sensitive contexts like HTTP headers?
+      Raw strings used directly in headers risk injection attacks (CWE-113).
+    related_findings: [I2]
+    priority: high
+
+  - area: config-field-validation
+    description: >
+      Does the configuration deserializer reject or warn on unknown fields?
+      Silently accepting unrecognized fields (like credentials) means secrets
+      can sit on disk without the application ever using or protecting them.
+    related_findings: [I4]
+    priority: high
+
+  - area: dependency-management
+    description: >
+      Are workspace dependencies declared consistently using workspace
+      references rather than pinned version strings? Inconsistent dependency
+      declarations cause version drift across a monorepo and break lockfile
+      determinism.
+    related_findings: [I3]
+    priority: medium
+
+  - area: test-assertion-quality
+    description: >
+      Do tests actually assert meaningful properties, or do some tests pass
+      vacuously? Assertions structured as "is_none || true" or tests with
+      zero assertions only verify non-panic, not correctness.
+    related_findings: [I5, I6]
+    priority: high
+
+  - area: error-granularity
+    description: >
+      Does the error handling distinguish between expected failures (file not
+      found) and unexpected failures (permission denied, parse error)? Catch-all
+      error handlers that treat all failures identically hide serious issues
+      behind benign defaults.
+    related_findings: [C1]
+    priority: medium
+
+  - area: security-surface-audit
+    description: >
+      Has the service's attack surface been catalogued? For a SIEM client
+      handling tenant data, relevant CWEs include information exposure (209),
+      header injection (113), and improper input validation (20). A security
+      review should map the attack surface before implementation begins.
+    related_findings: [I1, I2, I4]
+    priority: high
+
+  - area: config-secret-lifecycle
+    description: >
+      How are secrets handled in configuration? If config files can contain
+      tokens or credentials, the application should either consume them
+      securely or reject them explicitly — never silently ignore them while
+      leaving them on disk.
+    related_findings: [I4]
+    priority: high
+
+  - area: test-coverage-gaps
+    description: >
+      Are there areas of the codebase where tests exist but don't exercise
+      meaningful failure paths? Config loading, error formatting, and header
+      construction are high-risk areas that need tests with genuine assertions
+      covering both happy and unhappy paths.
+    related_findings: [I5, I6, C1]
+    priority: medium

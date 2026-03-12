@@ -28,6 +28,17 @@ Prerequisites: Node 18+, [pnpm](https://pnpm.io/) 9+, Python 3.11+, [just](https
 
 This workspace contains two git repos. The orchestrator (`orc-penny/`) is trunk-based on `main` — sprint files, sessions, docs. The framework (`pennyfarthing/`) uses gitflow on `develop` — source code, packages, tests. Orchestrator commits stay here; framework commits go into `pennyfarthing/`.
 
+## Benchmark Dashboard
+
+Pipeline replay benchmark results with interactive D3.js visualization:
+
+```bash
+python3 scripts/benchmark-viz-data.py   # regenerate data
+open internal/results/benchmark-dashboard.html
+```
+
+Or serve it: `cd internal/results && python3 -m http.server 8765` then visit `http://localhost:8765/benchmark-dashboard.html`
+
 ## Learn more
 
 - `/guided-tour` — interactive walkthrough inside Claude Code

@@ -1,0 +1,27 @@
+*Magnificent. As Head Six would say — "All of this has happened before, and all of it will happen again." But not the bugs. Not if Gaius Baltar has anything to say about it.*
+
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 establishes the entire CLI framework — every AC requires behavioral verification.
+
+**Test Files:**
+| File | Tests | Coverage |
+|------|-------|----------|
+| `tests/cli_structure.rs` | 30 | AC-1 (command groups), AC-2 (help rendering), AC-5 (global flags), AC-6 (clap derive) |
+| `tests/exit_codes.rs` | 20 | AC-3 (exit code mapping 0/1/2/3/4, CliError variants, non_exhaustive) |
+| `tests/output_format.rs` | 13 | AC-4 (OutputFormat enum, Table/JSON/CSV formatters, ResponseMetadata) |
+| `tests/siem_client.rs` | 14 | AC-7 (SiemClient construction, HTTP status mapping, header injection, connection errors) |
+| `tests/config_loading.rs` | 11 | AC-8 (TOML loading, env var overrides, precedence, default path, token exclusion) |
+| `tests/shell_completion.rs` | 5 | AC-9 (bash/zsh/fish/powershell generation, command coverage) |
+| `tests/stub_handlers.rs` | 14 | AC-10 (stub handlers return NotImplemented with correct story refs) |
+| `tests/security.rs` | 11 | Security: CWE-209 error exposure, header injection, config URL validation, unsafe_code check |
+
+**Tests Written:** 118 tests covering all 10 ACs
+**Status:** RED (failing — all tests produce compilation errors due to missing modules: `cli`, `error`, `output`, `client`, `config`, `commands`)
+
+**Handoff:** To Dev for implementation.
+
+## Delivery Findings
+
+- No upstream findings during test design.

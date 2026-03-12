@@ -1,0 +1,27 @@
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 is a feature story delivering the CLI framework with 10 acceptance criteria
+
+**Test Files:**
+| File | Tests | Coverage |
+|------|-------|----------|
+| `tests/cli_structure.rs` | 18 | AC-1 (command groups), AC-2 (help rendering), AC-5 (global flags), AC-6 (derive macros) |
+| `tests/error_exit_codes.rs` | 15 | AC-3 (exit codes 0/1/2/3/4), CWE-209 security |
+| `tests/output_format.rs` | 16 | AC-4 (OutputFormatter, table/json/csv, metadata, escaping) |
+| `tests/siem_client.rs` | 14 | AC-7 (header injection, HTTP status mapping, security) |
+| `tests/config_loading.rs` | 10 | AC-8 (TOML loading, env overrides, validation, token security) |
+| `tests/shell_completion.rs` | 8 | AC-9 (bash/zsh/fish/powershell generation) |
+| `tests/stub_handlers.rs` | 14 | AC-10 (stub messages, exit codes, functional commands) |
+
+**Tests Written:** 95 tests covering all 10 ACs
+**Status:** RED (failing — all test files fail with `unresolved import` errors because production modules don't exist)
+
+**Security tests included:**
+- CWE-209: Error Display doesn't leak stack traces or tokens
+- Header injection: Tenant ID and token with `\r\n` rejected
+- Silent error swallowing: All non-2xx HTTP codes produce errors
+- Config token leakage: Token field in config file rejected/ignored
+- URL validation: Non-HTTP schemes rejected
+
+**Handoff:** To Dev for implementation (GREEN phase)

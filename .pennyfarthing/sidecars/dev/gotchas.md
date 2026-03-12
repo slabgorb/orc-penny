@@ -48,6 +48,10 @@ Only leaf elements scroll. Parents use `overflow: hidden`. `.message-panel-conte
 `node --test dist/**/*.test.js` in `packages/core` can hang for 3+ minutes on `server.test.js` (tries real HTTP connections on port 3000). Pipe-to-grep also hangs because of buffering. Use `> /tmp/file 2>&1` redirect instead of pipes. Run individual test files when debugging: `node --test dist/path/to/specific.test.js`.
 </gotcha>
 
+<gotcha name="all-tests-all-languages">
+"Run all tests" means ALL languages: `pnpm test` (TypeScript/Node) AND `python3 -m pytest` (Python). Always run both. Python tests live at `pennyfarthing-dist/src/pf/tests/`.
+</gotcha>
+
 <gotcha name="stale-tests-bikerack">
 `packages/bikerack/` never existed. Tests referencing it (bikerack-extraction, data-source, websocket-otlp-extraction) are dead. `packages/shared/` was absorbed into core (Story 98-16). Tandem portraits (`cyclist-tandem.png`) were never generated. Skill registry has 22 skills not 23.
 </gotcha>

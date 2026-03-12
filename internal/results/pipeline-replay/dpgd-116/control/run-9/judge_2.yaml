@@ -1,0 +1,76 @@
+scenario_id: dpgd-116
+theme: control
+run_id: 2
+judge_version: v2
+judge_pass: 2
+total_caught: 4
+total_findings: 7
+weighted_caught: 20
+total_weight: 37
+score_pct: 54.1
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase flagged from_file_or_default swallowing all errors via unwrap_or_default().
+    Reviewer F7/F8 address silent ignoring of unknown fields and unparseable env vars,
+    but not the catch-all error swallowing in from_file_or_default.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: TEA wrote CWE-209 tests in security.rs ('Error messages not leaking internal
+    paths'). Dev implemented 'CWE-209 safe Display'. Reviewer verified V3. Same vulnerability
+    class addressed, though the transparent Io variant leak was not specifically called
+    out.
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: TEA wrote 'Header injection via newlines in token/tenant ID (CWE-113)'
+    tests in siem_client.rs. Reviewer verified V2 'CWE-113 header injection prevention
+    is correct.' Same vulnerability class (CWE-113) caught, though the type-safety
+    fix (using TenantId instead of raw String) was not flagged.
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: Reviewer F9 notes toml version mismatch (0.8 vs 0.9) but does not flag
+    the broader pattern of 6 dependencies using direct version strings instead of
+    workspace = true.
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer F7: ''RawConfig silently ignores unknown fields including typos...
+    Consider #[serde(deny_unknown_fields)] for fail-fast behavior.'' This directly
+    covers the token field being silently ignored.'
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer F10 flags a vacuous test: 'siem_client_validates_server_url_scheme...\
+    \ only checks that https and http are accepted \u2014 it never verifies non-http\
+    \ schemes are rejected. This is a vacuous test that proves nothing about validation.'\
+    \ Same category (vacuous test) detected, different instance."
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase flagged the zero-assertion test pattern (let _ = config with
+    no assert). The reviewer did not identify this specific test quality issue.

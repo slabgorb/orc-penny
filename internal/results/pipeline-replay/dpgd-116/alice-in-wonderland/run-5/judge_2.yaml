@@ -1,0 +1,79 @@
+scenario_id: dpgd-116
+theme: alice-in-wonderland
+run_id: 5
+model: null
+judge_model: claude-sonnet-4-6
+judge_version: v2
+judge_pass: 2
+total_caught: 4
+total_findings: 7
+weighted_caught: 20
+total_weight: 37
+score_pct: 54.1
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: Neither TEA tests, Dev implementation, nor Reviewer flagged the from_file_or_default
+    swallowing all error types. The reviewer noted config loading but did not identify
+    the NotFound vs other errors distinction.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: 'TEA explicitly listed ''CWE-209: Error messages must not leak stack traces
+    or credentials'' as security coverage, and wrote error_exit_codes_test.rs tests
+    for this. Reviewer also verified: ''ServerMessage Display impl returns opaque
+    server error string. Test at error_exit_codes_test.rs:139-149 confirms raw stack
+    traces don''t leak.'''
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: TEA explicitly listed 'CRLF header injection in tenant ID and auth token'
+    as security coverage in siem_client_test.rs. Reviewer also flagged '[LOW] --tenant
+    accepts raw String, not TenantId newtype' and '[VERIFIED] CRLF header injection
+    prevention works'. The type-safety concern (using String vs TenantId) was flagged
+    by reviewer.
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase flagged that 6 dependencies (clap_complete, comfy-table, csv,
+    dirs, reqwest, toml) use direct version strings instead of workspace = true.
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer explicitly flagged '[HIGH] RawConfig silently ignores unknown\
+    \ fields \u2014 config typos will slip through' and noted the token silent-drop\
+    \ security concern, recommending #[serde(deny_unknown_fields)]."
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged '[LOW] client_config_handles_missing_file_gracefully\
+    \ test is vacuous' noting 'assert!(result.is_ok() || result.is_err()) \u2014 This\
+    \ assertion is always true \u2014 it passes regardless of the result.'"
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase flagged a test with zero assertions (let _ = config with no assert_eq!
+    checks). The reviewer flagged a different vacuous test (I5) but not the specific
+    zero-assertion test for default config.

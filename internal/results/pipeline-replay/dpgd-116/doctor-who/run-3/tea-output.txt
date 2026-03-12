@@ -1,0 +1,44 @@
+*Oh, what fun that was, dear.* Here's my delightful report on all the chaos I've prepared.
+
+---
+
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 is a core framework story with 10 acceptance criteria covering CLI structure, error handling, HTTP client, config, completions, and output formatting. Every one needs test coverage.
+
+**Test Files:**
+
+| File | Tests | ACs Covered | Description |
+|------|-------|-------------|-------------|
+| `cli_structure.rs` | 23 | AC-1, AC-2, AC-6 | Command groups in help, subcommand parsing, help rendering, clap derive verification |
+| `exit_codes.rs` | 14 | AC-3 | CliError::exit_code() mapping: 0=success, 1=error, 2=usage, 3=auth, 4=authz |
+| `output_formatting.rs` | 13 | AC-4 | OutputFormatter trait, Table/JSON/CSV output, ResponseMetadata, no-color support |
+| `global_flags.rs` | 16 | AC-5 | --format, -v (repeatable), --quiet, --server (with AXIATHON_SERVER env), --tenant, --config, --no-color |
+| `siem_client.rs` | 14 | AC-7 | SiemClient construction, X-Tenant-ID/Authorization headers, HTTP status code mapping |
+| `config_loading.rs` | 10 | AC-8 | TOML loading, env var overrides, default path, validation, token exclusion |
+| `shell_completion.rs` | 6 | AC-9 | bash/zsh/fish/PowerShell generation, subcommand inclusion, static (not async) |
+| `stub_handlers.rs` | 9 | AC-10 | "not yet implemented" messages with story references, exit code 1 |
+| `security.rs` | 11 | Security | CWE-209 error exposure, header injection (CWE-113), credential leakage, URL validation |
+
+**Tests Written:** 116 tests covering all 10 ACs
+**Status:** RED (failing — all tests fail to compile because implementation modules don't exist)
+
+**What the Dev needs to create:**
+- `src/main.rs` — binary entry point
+- `src/cli.rs` — `Cli` (Parser) and `Commands` (Subcommand) structs
+- `src/error.rs` — `CliError` enum with `exit_code()` method
+- `src/output.rs` — `OutputFormatter`, `Format`, `ResponseMetadata`
+- `src/client.rs` — `SiemClient` with header injection and status mapping
+- `src/config.rs` — `ClientConfig` with TOML loading
+- `src/commands/*.rs` — stub handlers for all command groups
+- Re-export all public types from `src/lib.rs`
+
+**Security tests specifically verify:**
+- Server error messages don't leak internals (CWE-209)
+- Header values reject newlines (CWE-113 HTTP response splitting)
+- Tokens never appear in error Display/Debug output
+- Config files cannot store tokens (keychain only)
+- URLs with embedded credentials are rejected
+
+**Handoff:** To Dev for implementation (GREEN phase)

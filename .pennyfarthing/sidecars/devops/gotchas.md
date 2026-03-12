@@ -41,12 +41,7 @@ Server code (`plugin-loader.ts`) must NOT import from the barrel `../index.js`. 
 </gotcha>
 
 <gotcha name="wheelhub-bundle-rebuild" severity="high">
-After rebuilding wheelhub.mjs with esbuild, you MUST patch the CJS shim for Node 24 ESM compat. Replace the default `typeof require` Proxy shim with:
-```js
-import { createRequire as __createRequire } from "node:module";
-var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : __createRequire(import.meta.url))(0);
-```
-Without this, bundled CJS deps fail with "Dynamic require of X is not supported" on Node 24.
+NEVER rebuild wheelhub.mjs manually. Use `scripts/build-wheelhub.sh` which auto-patches the CJS shim for Node 24 ESM compat. The script bundles with esbuild, patches the Proxy shim → createRequire, validates, and copies to pennyfarthing-dist. Use `--install` flag to also update the pip package. Then `pf init` in consumer projects to propagate.
 </gotcha>
 
 <gotcha name="wheelhub-project-dir-env" severity="info">

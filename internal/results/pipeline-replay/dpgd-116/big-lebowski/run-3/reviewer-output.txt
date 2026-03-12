@@ -1,0 +1,122 @@
+Good — `--server` is hidden but functional. Now I have everything I need for the review.
+
+---
+
+# Adversarial Code Review: Story 6.1 — CLI Framework & Structure
+
+*Your "achievements" in life, they don't amount to a lot, do they, Lebowski? I've seen the code. The whole sorry, shabby edifice.*
+
+*Brandt, show them the findings.*
+
+---
+
+## Review Findings
+
+### 1. `[HIGH]` Flaky test suite — env var race condition in config tests at `tests/config_loading.rs:62-106`
+
+**Confirmed by running tests 5 times: `config_loads_from_toml_file` fails intermittently.** The test at line 33 asserts `timeout_secs() == 30`, but `config_env_axiathon_timeout_overrides_file` (line 86) sets `AXIATHON_TIMEOUT=60` in the process environment. Rust test threads run in parallel within the same process, sharing env vars. When the timing aligns, the first test reads the env var set by the second and gets 60 instead of 30.
+
+Same race exists for `AXIATHON_API_URL` between tests at lines 62 and 19.
+
+**Fix:** Use `#[serial]` from the `serial_test` crate, or use `std::sync::Mutex` to serialize env-mutating tests, or restructure to avoid `set_var`/`remove_var` entirely.
+
+**This is a blocking CI reliability issue.**
+
+### 2. `[HIGH]` Silent header injection failure — `client.rs:14-26`
+
+`SiemClient::new()` silently drops headers when `HeaderValue::from_str()` fails:
+
+```rust
+if let Ok(val) = HeaderValue::from_str(tid) {
+    headers.insert("X-Tenant-ID", val);
+}
+```
+
+If a tenant ID or token contains invalid characters (control chars, etc.), the header is silently omitted. The client appears to construct successfully but sends requests without authentication or tenant context. This is a security-sensitive silent failure — the caller has no way to know headers were dropped.
+
+The header injection *tests* at `siem_client.rs:202-225` are **vacuous**: they construct a `SiemClient` and immediately discard it (`let _ = result;`). They don't assert anything — not that the header was rejected, not that construction failed. These tests pass for any implementation, including one that happily injects CRLF.
+
+**Fix:** `new()` should return `Result<Self, CliError>` and propagate header validation errors. Tests should assert actual behavior.
+
+### 3. `[HIGH]` `ConfigFile` silently ignores unknown fields — `config.rs:6-16`
+
+The `ConfigFile` and `ServerConfig` structs use `#[derive(Deserialize)]` without `#[serde(deny_unknown_fields)]`. A user who writes `tokken = "secret"` (typo) or `token = "secret"` in their config file gets zero feedback — the field is silently ignored.
+
+The test `config_does_not_store_or_expose_tokens` at `config_loading.rs:113` specifically sets `token = "should-be-ignored"` and asserts it's not exposed. But it doesn't assert that a **warning** was emitted about the unknown field. An operator who accidentally puts credentials in the config file would never know they're being ignored vs. consumed.
+
+**Fix:** Add `#[serde(deny_unknown_fields)]` to `ConfigFile` and `ServerConfig`. Operators putting `token = "..."` in the config should get an explicit error telling them to use the keychain.
+
+### 4. `[MEDIUM]` `--format` is `Option<String>` instead of `Option<OutputFormat>` — `cli.rs:18-19`
+
+The `--format` flag accepts any string at the clap parsing level. The `OutputFormat` type has a proper `FromStr` impl, but it's not wired into the clap definition. If a user passes `--format xml`, clap accepts it; the error only surfaces later (if ever) when `format_table()` is called. Since all commands are stubs, this validation gap is invisible now but will bite when real handlers are implemented.
+
+**Fix:** Change to `#[arg(long, global = true, value_parser = clap::value_parser!(OutputFormat))]` or `Option<OutputFormat>`.
+
+### 5. `[MEDIUM]` JSON metadata tests are vacuous — `output_format.rs:73-118`
+
+The `json_formatter_includes_request_id` test asserts:
+```rust
+parsed.get("request_id").is_some() || parsed.get("meta").is_some()
+```
+
+The implementation puts `request_id` inside `meta`. This assertion passes as long as `meta` exists — it doesn't verify `request_id` is *inside* `meta`. If someone accidentally moves `request_id` to the top level and removes `meta`, the test still passes. The `||` logic defeats the purpose of the assertion.
+
+Similarly for `timestamp` and `api_version` tests.
+
+**Fix:** Assert the specific path: `parsed["meta"]["request_id"].is_string()`.
+
+### 6. `[MEDIUM]` `toml` version mismatch with story spec — `Cargo.toml:26`
+
+The story specifies `toml = "0.9"` in the Technical Guardrails. The implementation uses `toml = "0.8"`. The story also specifies `edition = "2024"` and the workspace uses `edition = "2024"`, but the crate's `Cargo.toml` says `edition = "2021"` (line 2). These are inconsistencies with the spec.
+
+### 7. `[MEDIUM]` New dependencies not declared in workspace `[workspace.dependencies]` — `Cargo.toml`
+
+The story Technical Guardrails say to add `reqwest`, `comfy-table`, `keyring`, `clap_complete`, `dirs`, `csv`, `toml` to `[workspace.dependencies]`. None of these were added to the workspace `Cargo.toml`. Instead they're declared directly in the crate's `Cargo.toml` with inline versions (`clap_complete = "4"`, `comfy-table = "7"`, etc.). This violates the workspace dependency management pattern — if another crate later needs `reqwest`, it'll have to declare its own version, risking version skew.
+
+### 8. `[MEDIUM]` `timeout_secs` is parsed from config but never used — `config.rs:49-54` and `client.rs:28-31`
+
+`ClientConfig` loads and validates `timeout_secs`, but `SiemClient::new()` doesn't accept a timeout parameter. The `reqwest::Client` is built with default timeout (none). The `ConnectionTimeout` error variant exists but only triggers on the OS-level connect timeout, not on an application-level request timeout. The config value is dead code.
+
+### 9. `[LOW]` AC-1 requires `tui` and `logout` commands — `cli.rs:46-68`
+
+AC-1 states: *"`axiathon --help` must show all command groups: `query`, `rules`, `alerts`, `ingest`, `config`, `status`, `tenant`, `login`/`logout`, `tui`, `completion`, `init`."* The `Commands` enum has no `Tui` or `Logout` variant. The help output test at `cli_structure.rs:84-99` does not check for `tui` or `logout`.
+
+### 10. `[LOW]` `--server` is hidden in help output — `cli.rs:30`
+
+The `--server` flag has `hide = true`, making it invisible in `--help`. AC-5 lists `--server` as a global flag that operators should see. Hidden flags are fine for internals, but this is a documented operator-facing flag. Operators discovering the CLI won't know it exists unless they read docs.
+
+### 11. `[VERIFIED]` `#![forbid(unsafe_code)]` present in both `main.rs:2` and `lib.rs:2`
+
+### 12. `[VERIFIED]` Exit code mapping is correct — 0/1/3/4 all properly tested and implemented at `error.rs:37-44`
+
+### 13. `[VERIFIED]` Error Display messages don't leak tokens or stack traces — tested at `exit_codes.rs:102-129`
+
+### 14. `[VERIFIED]` Clippy passes clean with `-D warnings`
+
+### 15. `[VERIFIED]` Shell completion is functional (not stub) and generates scripts for all 4 shells
+
+### 16. `[VERIFIED]` Binary integration tests confirm real exit codes, stderr routing, and help output
+
+---
+
+## Summary
+
+| Severity | Count | Blocks? |
+|----------|-------|---------|
+| HIGH | 3 | YES |
+| MEDIUM | 5 | No |
+| LOW | 2 | No |
+| VERIFIED | 6 | — |
+
+**Blocking issues:**
+1. **Flaky tests** — env var race condition causes intermittent CI failures (confirmed)
+2. **Silent header failure** — `SiemClient` silently drops auth/tenant headers on invalid input; tests are vacuous
+3. **Unknown config fields silently ignored** — operator typos and accidental secret placement go unnoticed
+
+---
+
+## Verdict: **CHANGES_REQUESTED**
+
+*Are you surprised at my assessment, Lebowski? You thought I'd just rubber-stamp this? Like I rubber-stamp everything? I achieved things in code review. And the code is not bowling, Dude. There are rules.*
+
+*Brandt will show you out.*

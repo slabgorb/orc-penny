@@ -1,0 +1,140 @@
+Good — token field is silently ignored. But let me verify whether `RawConfig` with `#[derive(Deserialize, Default)]` silently ignores ALL unknown fields (it does by default in serde). Let me check if `#[serde(deny_unknown_fields)]` is present.
+
+The `RawConfig` does NOT have `#[serde(deny_unknown_fields)]`. This means a config with `token = "my-secret"` silently loads and the token is discarded. That's arguably correct behavior per the AC, but it means operators could think their token is being used when it isn't. I'll flag it.
+
+Now I have everything I need. Here is my review.
+
+---
+
+# Adversarial Code Review — Story 6.1: CLI Framework & Structure
+
+**Reviewer:** Leto II, The God Emperor  
+**Verdict:** CHANGES_REQUESTED
+
+*I have walked the Golden Path of every line in this crate. The spice of quality flows... but impurities remain.*
+
+---
+
+## Preflight Results
+
+| Check | Result |
+|-------|--------|
+| `cargo test -p axiathon-client` | **PASS** (99/99) |
+| `cargo clippy -p axiathon-client -- -D warnings` | **PASS** |
+| `cargo +nightly fmt --all --check` | **FAIL** (424 lines of diff) |
+
+---
+
+## Findings
+
+### `[HIGH]` Nightly rustfmt violations — CI blocker
+**Files:** `config.rs`, `error.rs`, `output.rs`, and multiple test files  
+**424 lines of formatting diff** from `cargo +nightly fmt --all --check`. Per `gotchas.md`: *"Always include `cargo +nightly fmt --all --check` in the preflight. Nightly rustfmt enforces import ordering that stable does not. If it fails, flag it before approval."*
+
+This is a gating failure. Run `cargo +nightly fmt --all` to fix.
+
+---
+
+### `[HIGH]` `with_env_overrides_from()` panics on invalid input — `config.rs:93`
+```rust
+self.timeout_secs = t.parse::<u64>().expect("AXIATHON_TIMEOUT must be a valid positive integer");
+```
+The `expect()` panics if `AXIATHON_TIMEOUT` is set to a non-numeric value (e.g. `"30s"` or `"abc"`). Per `rust.md`: *"No `unwrap()` in production code — use `?` or `expect()` with actionable message."* The `expect()` has an actionable message, so it technically complies, but this is user-facing input from an environment variable — a trust boundary. A panic crashing the CLI with a backtrace on bad env input is poor UX and arguably violates the spirit of the rule. The test `client_config_rejects_invalid_timeout_env_var` validates via `catch_unwind`, which is a code smell — tests shouldn't need to catch panics from production APIs.
+
+**Recommendation:** Return `Result` from `with_env_overrides_from()` instead of panicking. Map the parse failure to `CliError::ConfigError`.
+
+---
+
+### `[MEDIUM]` `RawConfig` silently accepts unknown fields — `config.rs:10-15`
+```rust
+#[derive(Deserialize, Default)]
+struct RawConfig {
+    api_url: Option<String>,
+    timeout: Option<i64>,
+}
+```
+No `#[serde(deny_unknown_fields)]`. An operator who puts `token = "secret123"` in their config file gets zero feedback that the field is ignored. Worse, if they put `server_url` instead of `api_url` (a plausible typo), they silently get defaults. This is the exact "silent failure" pattern flagged in security tests but not actually prevented here.
+
+**Recommendation:** Add `#[serde(deny_unknown_fields)]` to `RawConfig`. This forces operators to fix typos and prevents the false security of thinking a `token` field in config is being used.
+
+---
+
+### `[MEDIUM]` `generate_completion()` silently returns empty on unknown shell — `completion.rs:15`
+```rust
+_ => return String::new(),
+```
+An unsupported shell name produces empty output with no error. The caller has no way to distinguish "empty completion script" from "unsupported shell". This should return a `Result<String, CliError>` so the CLI can print a helpful error ("unsupported shell 'nushell', supported: bash, zsh, fish, powershell").
+
+---
+
+### `[MEDIUM]` `exit_code()` returns `u32` but `std::process::exit()` takes `i32` — `error.rs:40`
+```rust
+pub fn exit_code(&self) -> u32 { ... }
+```
+`main.rs` will need `std::process::exit(err.exit_code() as i32)` — an unchecked cast. While values 0-4 are safe, the type mismatch is a latent bug waiting for someone to add exit code 128+. Should be `i32` to match the `process::exit()` API.
+
+---
+
+### `[MEDIUM]` `init` handler is a stub, but AC says it should be functional — `init.rs:7`
+AC-9 states: *"Shell completion generation (functional, not stub)"* and the scope says *"`axiathon init` first-time setup (functional, not stub)"*. The `handle_init()` function returns `NotImplemented("Story 6.1 init")` — it's a stub of itself. Either implement basic init (create config dir, write default `cli.toml`) or update the story scope.
+
+---
+
+### `[LOW]` `assert!(true)` in `crate_forbids_unsafe_code()` — `security.rs:211`
+```rust
+assert!(true, "unsafe code is forbidden at the crate level");
+```
+This assertion always passes. The `#![forbid(unsafe_code)]` enforcement is real (compile-time), but this test adds no runtime value. It's documentation dressed as a test. Replace with a comment or remove entirely.
+
+---
+
+### `[LOW]` `CliError` doesn't use `thiserror` — `error.rs`
+Per `rust.md`: *"Use `thiserror` for error enums."* The `CliError` enum has a manual `impl Display` and `impl std::error::Error`. The `thiserror` crate is already in workspace dependencies. Using `#[derive(thiserror::Error)]` would be more consistent with project conventions and reduce boilerplate.
+
+---
+
+### `[VERIFIED]` All 12 command groups present with correct plural naming
+`cli.rs` defines `Query`, `Rules`, `Alerts`, `Ingest`, `Config`, `Status`, `Tenant`, `Login`, `Logout`, `Tui`, `Completion`, `Init`. Plural nouns used correctly. No `server` command in client binary.
+
+### `[VERIFIED]` All global flags defined with `global = true`
+`--format`, `-v`/`--verbose`, `--quiet`, `--tenant`, `--server`, `--config`, `--no-color` — all marked `global = true` in clap derive.
+
+### `[VERIFIED]` CWE-209 error sanitization
+`CliError::Display` for `ServerError` discards the inner message and outputs generic text. Internal IPs, passwords, and connection strings never reach stderr.
+
+### `[VERIFIED]` Header injection prevention (CWE-113)
+`SiemClient` sanitizes CRLF from URL, tenant ID, and token via `.replace(['\r', '\n'], "")` before header construction. `HeaderValue::from_str()` provides additional validation.
+
+### `[VERIFIED]` Exit codes correct
+3 for `AuthenticationExpired`, 4 for `Unauthorized`, 1 for all others. `#[non_exhaustive]` on `CliError` forces wildcard matching.
+
+### `[VERIFIED]` Output formatting complete
+Table (comfy-table UTF8_FULL), JSON (metadata envelope with timestamp, api_version), CSV (RFC 4180 compliant via `csv` crate). All three tested with edge cases.
+
+### `[VERIFIED]` Config token exclusion
+`ClientConfig::token()` always returns `None`. `RawConfig` has no token field. Tokens must come from OS keychain.
+
+### `[VERIFIED]` Workspace dependency management
+All new deps (`clap_complete`, `comfy-table`, `csv`, `dirs`, `keyring`, `reqwest`, `toml`) declared at workspace level in root `Cargo.toml` and referenced via `{ workspace = true }` in crate.
+
+---
+
+## Summary
+
+| Severity | Count | Blocking? |
+|----------|-------|-----------|
+| HIGH | 2 | YES |
+| MEDIUM | 3 | NO |
+| LOW | 2 | NO |
+| VERIFIED | 7 | — |
+
+## Verdict: **CHANGES_REQUESTED**
+
+Two blocking issues must be resolved:
+
+1. **Run `cargo +nightly fmt --all`** to fix formatting violations
+2. **Replace the `expect()` panic in `with_env_overrides_from()`** with a `Result` return — environment variables are a trust boundary
+
+The MEDIUM findings (deny_unknown_fields, completion error handling, exit_code type, init stub) should be addressed but are not blockers.
+
+*The Golden Path demands precision. Fix these, and the Imperium shall approve your offering.*

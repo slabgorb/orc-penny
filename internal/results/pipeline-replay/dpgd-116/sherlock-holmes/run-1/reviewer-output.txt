@@ -1,0 +1,128 @@
+---
+
+*Ah, how delightfully incomplete. The architect has drawn a beautiful blueprint but forgotten to install the front door. Allow me to catalogue the vulnerabilities in this web of deception.*
+
+---
+
+# Adversarial Code Review — Story 6.1: CLI Framework & Structure
+
+## Findings
+
+### `[CRITICAL]` No binary entry point — `main.rs` is missing
+**`crates/axiathon-client/src/main.rs` — FILE DOES NOT EXIST**
+
+The story requires producing the `axiathon` binary. There is no `main.rs`, no `[[bin]]` section in Cargo.toml, and therefore **no binary artifact**. The crate compiles only as a library. An operator cannot run `axiathon status` or any command. This violates AC-1 through AC-10 collectively — without a binary, the CLI does not exist.
+
+### `[CRITICAL]` Missing 9 of 10 command handler modules
+**`crates/axiathon-client/src/commands/mod.rs:3` — only exports `completion`**
+
+AC-10 requires stub handlers for `query`, `rules`, `alerts`, `ingest`, `config`, `status`, `tenant`, `login`/`logout`, `tui`, and `init`. Only `completion` exists. The remaining 9 command modules listed in the story's "Key Files to Create" section are absent:
+- `commands/query.rs`, `commands/rules.rs`, `commands/alerts.rs`, `commands/ingest.rs`, `commands/config.rs`, `commands/status.rs`, `commands/tenant.rs`, `commands/login.rs`, `commands/init.rs`
+
+Without these, even if `main.rs` existed, command dispatch would have no handlers to call.
+
+### `[CRITICAL]` Stub handler tests are vacuous — test the error type, not actual dispatch
+**`crates/axiathon-client/tests/stub_handlers_test.rs:11-13`**
+
+Every "stub handler test" manually constructs `CliError::NotImplemented("status (Story 6.2)".into())` and checks the Display output. This tests the **error type**, not the **stub handler**. A real stub handler test would:
+1. Parse `["axiathon", "status"]` 
+2. Dispatch to the status handler
+3. Verify it returns `CliError::NotImplemented` with the correct story reference
+
+As written, these tests pass even if no handler exists (which is exactly the case). This is a textbook vacuous test — it asserts nothing about the system under test.
+
+### `[HIGH]` `cargo fmt --check` fails — formatting violations in production code
+**`crates/axiathon-client/src/config.rs:54,56,74`**
+
+Stable `cargo fmt` reports diff violations. Per the reviewer gotchas in CLAUDE.md, formatting must pass before approval. The nightly warnings about `group_imports` and `trailing_comma` are informational, but the stable reformatting diffs are blocking.
+
+### `[HIGH]` `SiemClient` is a dead struct — no `reqwest::Client`, no HTTP methods
+**`crates/axiathon-client/src/client.rs`**
+
+`SiemClient` is declared as wrapping an HTTP client per AC-7, but it contains no `reqwest::Client` field, no `get()`/`post()` methods, no header injection logic, and no actual HTTP functionality. It's a struct with three `String`/`Option<String>` fields and builder methods. The `reqwest` dependency is listed in Cargo.toml but never used in production code.
+
+AC-7 states: "SiemClient wraps reqwest::Client. Injects X-Tenant-ID and Authorization: Bearer headers." The current implementation wraps nothing.
+
+### `[HIGH]` `keyring` dependency missing from crate Cargo.toml
+**`crates/axiathon-client/Cargo.toml`**
+
+`keyring = "3"` is declared in the workspace root but NOT in `axiathon-client/Cargo.toml`. AC-8 requires credential storage via OS keychain. Without the dependency, token retrieval from the keychain cannot be implemented. The guardrails state: "Load token at CLI startup in sync context BEFORE entering Tokio runtime."
+
+### `[MEDIUM]` `OutputFormatter` uses `.expect()` in production code — violates project rules
+**`crates/axiathon-client/src/output.rs:65,70-71,73-75`**
+
+The Rust coding rules at `.claude/rules/rust.md` state: "No `unwrap()` in production code — use `?` or `expect()` with actionable message." While `expect()` is technically allowed with an actionable message, the messages here ("CSV write headers", "CSV write row", "CSV flush", "CSV finalize", "CSV is valid UTF-8", "JSON serialization cannot fail") are assertions, not actionable messages. More importantly, `format_as_csv` chains 5 `.expect()` calls — if any fails, the operator gets a panic instead of a graceful error. These should propagate errors via `Result`.
+
+### `[MEDIUM]` Silent CRLF sanitization masks configuration errors
+**`crates/axiathon-client/src/client.rs:32-41`**
+
+`with_token()` silently strips `\r\n` from tokens. If an operator's token file has a trailing newline (common with `echo "token" > file`), it works fine. But if the token contains embedded CRLF from a misconfiguration, the caller receives no warning that their token was modified. Better: return `Result<Self, CliError>` or log a warning when sanitization actually modifies the input.
+
+### `[MEDIUM]` Hand-rolled URL validation is permissive
+**`crates/axiathon-client/src/config.rs:112-124`**
+
+`validate_url()` only checks for `http://` or `https://` prefix and non-empty authority. It accepts `http://!@#$%^&*()`, `http://a`, and other clearly invalid URLs. The `reqwest` crate (already a dependency) has `Url::parse()` that provides proper validation. Using it would be one line: `reqwest::Url::parse(url).map_err(...)`.
+
+### `[MEDIUM]` `CliError` doesn't derive `thiserror::Error` — violates project rules
+**`crates/axiathon-client/src/error.rs:12`**
+
+The Rust coding rules state: "Use `thiserror` for error enums." `CliError` manually implements `Display` and `std::error::Error` instead of using `#[derive(thiserror::Error)]`. The `thiserror` dependency is in Cargo.toml but unused.
+
+### `[LOW]` `SiemClient` uses raw `String` for tenant_id instead of `TenantId` newtype
+**`crates/axiathon-client/src/client.rs:6`**
+
+The Rust coding rules mandate "Newtypes for IDs: `TenantId(String)`." `axiathon-core` exports `TenantId`, and `axiathon-core` is a dependency. Using `Option<String>` for tenant_id defeats the newtype pattern.
+
+### `[LOW]` `OutputFormatter` is not a trait — contradicts AC-4
+**`crates/axiathon-client/src/output.rs:15`**
+
+AC-4 specifies: "The `OutputFormatter` trait provides consistent formatting across all command groups." The implementation is a struct, not a trait. This prevents alternative formatter implementations and contradicts the acceptance criteria.
+
+### `[VERIFIED]` Security — CWE-209 error exposure correctly prevented
+`CliError::from_http_status()` replaces 5xx messages with generic "server error" at `error.rs:51`. Display impl at `error.rs:61` shows only "server error" for `ServerError` regardless of stored message. Good.
+
+### `[VERIFIED]` Security — CWE-113 CRLF injection prevented
+`sanitize_header_value()` at `client.rs:11-13` strips CR and LF from all header-injectable values. Applied to base_url, tenant_id, and token.
+
+### `[VERIFIED]` Clap derive macros used correctly (AC-6)
+All command parsing uses `#[derive(Parser)]` and `#[derive(Subcommand)]` — no imperative command building.
+
+### `[VERIFIED]` `#![forbid(unsafe_code)]` enforced at `lib.rs:2`
+
+### `[VERIFIED]` All 109 tests pass, clippy is clean
+
+---
+
+## Data Flow Trace
+
+Input: `axiathon --tenant acme --format json status`
+
+1. Clap parses args into `Cli { tenant: Some("acme"), format: Json, command: Status }` — **works**
+2. `main()` would match on `Commands::Status` and dispatch — **BLOCKED: no main.rs**
+3. Handler would create `SiemClient::new(config.server_url()).with_tenant("acme")` — **BLOCKED: no handler**
+4. `SiemClient` would call `GET /api/v1/status` with `X-Tenant-ID: acme` header — **BLOCKED: SiemClient has no HTTP methods**
+5. Response would be formatted via `OutputFormatter::new(Json).format_table()` — **works if data reaches it**
+
+**Result:** The parsing layer works. Everything after parsing is missing.
+
+---
+
+## Verdict: **CHANGES_REQUESTED**
+
+### Blocking Issues (3 Critical, 3 High)
+1. **No `main.rs`** — the binary doesn't exist
+2. **No command handler stubs** — 9 of 10 command modules missing
+3. **Stub handler tests are vacuous** — test the error type, not command dispatch
+4. **`cargo fmt` fails** — formatting violations in `config.rs`
+5. **`SiemClient` has no HTTP functionality** — `reqwest` unused, no actual client behavior
+6. **`keyring` dependency missing** from crate Cargo.toml
+
+### Non-Blocking Issues (4 Medium, 2 Low)
+7. Multiple `.expect()` calls in `output.rs` — should be `Result`-propagated
+8. Silent CRLF sanitization — should warn or error
+9. Hand-rolled URL validation — use `reqwest::Url::parse()`
+10. `CliError` doesn't use `thiserror` derive despite project rules
+11. Raw `String` for tenant_id instead of `TenantId` newtype
+12. `OutputFormatter` is a struct, not a trait per AC-4
+
+*"The game's afoot, and I'm afraid your pawn never left the first rank."*

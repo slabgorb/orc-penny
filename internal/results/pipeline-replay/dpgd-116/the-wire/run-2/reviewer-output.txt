@@ -1,0 +1,103 @@
+Good. I now have a complete picture. Here is my adversarial review.
+
+---
+
+# Story 6.1 Review — Proposition Joe's Assessment
+
+*"I got a proposition for you, but this product got some quality issues we need to discuss before it goes to market."*
+
+## Preflight Status
+
+- Tests: **88 passing**, 0 failing
+- Clippy: **Clean** (no warnings)
+- Nightly fmt: **FAIL** — 2 formatting diffs in `tests/siem_client.rs:106` and `tests/siem_client.rs:122`
+
+---
+
+## Findings
+
+### [HIGH] F1 — Nightly `rustfmt` check fails — `tests/siem_client.rs:106,122`
+
+Per gotchas.md: "Always include `cargo +nightly fmt --all --check` in the preflight. If it fails, flag it before approval." Two lines in `siem_client.rs` have multi-line chains that nightly wants reformatted to single lines. This blocks approval.
+
+### [HIGH] F2 — `main.rs` is a dead stub that doesn't dispatch commands — `main.rs:4-6`
+
+The binary entry point prints "not yet implemented" and exits 1 for ALL commands, including `completion` and `init` which AC-9 and the story spec say should be **functional, not stubs**. The `Cli` struct is never parsed in `main.rs`. There is no `tokio::main`, no command dispatch, no config loading, no error-to-exit-code mapping. The entire runtime wiring is missing. This means:
+- `axiathon completion bash` doesn't generate completions — it just prints "not yet implemented"
+- `axiathon init` doesn't do anything
+- Exit codes 0/2/3/4 are never exercised from the binary
+- `--help` doesn't even work from the binary (clap is never invoked)
+
+The tests pass only because they test library code (`axiathon_client::*`) directly, never the actual binary. This is a critical gap between "library compiles" and "binary works."
+
+### [HIGH] F3 — `with_token()` and `with_tenant()` panic on invalid input instead of returning `Result` — `client.rs:32,39`
+
+Both methods call `.expect("invalid token value")` on validation failure. In production, a user-supplied malicious tenant ID would **crash the process with a panic** instead of producing a clean error message and exit code 1. The Rust rules say "No `unwrap()` in production code — use `?` or `expect()` with actionable message." While `expect` has a message, panicking on user input is still wrong — these should return `Result<Self, CliError>`.
+
+### [MEDIUM] F4 — `ClientConfig` silently ignores unknown TOML fields — `config.rs:13-20`
+
+`#[derive(Deserialize)]` without `#[serde(deny_unknown_fields)]` means a config file with `token = "s3cret"` parses successfully and silently ignores the field. The test `client_config_does_not_store_tokens` at `config_loading.rs:177` even documents this as expected behavior, but it's a security concern: users who put tokens in the config file will think they're stored securely when they're just silently dropped. A warning on unknown fields would be better. The test comment says "should be ignored or cause a warning" but no warning is emitted.
+
+### [MEDIUM] F5 — `OutputFormat` not `#[non_exhaustive]` — `output.rs:4-9`
+
+Per the Rust rules: "`#[non_exhaustive]` on enums that will grow." `OutputFormat` may gain variants (YAML, NDJSON). It's currently not marked non-exhaustive. The `CliError` enum correctly uses it, but `OutputFormat` doesn't.
+
+### [MEDIUM] F6 — JSON output metadata incomplete per AC-4 — `output.rs:73-79`
+
+AC-4 requires JSON to include `ResponseMetadata` with `request_id`, `timestamp`, and `api_version`. The implementation only includes `api_version` and `count`. Missing `request_id` and `timestamp`. The test at `output_format.rs:63` only checks for `meta` OR `metadata` key existence — it doesn't verify the required fields are present.
+
+### [MEDIUM] F7 — Missing command module files per story spec — `commands/`
+
+The story spec lists 10 command modules under `commands/` (query.rs, rules.rs, alerts.rs, ingest.rs, config.rs, status.rs, tenant.rs, login.rs, completion.rs, init.rs). Only `completion.rs` and `mod.rs` exist. The stub handler tests at `stub_handlers.rs` test `CliError::NotImplemented` directly rather than testing actual stub handler functions. This means there are no actual handler functions to dispatch to from main.
+
+### [MEDIUM] F8 — `validate_header_value` rejects TAB (0x09) which is valid in HTTP headers — `client.rs:72`
+
+RFC 7230 allows HTAB (0x09) in header field values. The comment says "Control characters including \r, \n, \0, \t" but rejecting TAB is overly strict. While conservative, this could reject legitimate tokens containing tabs from certain auth systems.
+
+### [LOW] F9 — Workspace `toml` version mismatch — `Cargo.toml:50`
+
+The story spec says `toml` 0.9, but the workspace declares `toml = "0.8"`. Not a functional issue (0.8 works fine), but a spec deviation.
+
+### [LOW] F10 — `--server` flag is hidden (`hide = true`) — `cli.rs:24`
+
+AC-5 says `--server` supports `AXIATHON_SERVER` env var, but the flag is hidden from help output. Users won't discover it via `--help`. This seems intentional but isn't documented in the story.
+
+### [VERIFIED] V1 — `#![forbid(unsafe_code)]` present in both `lib.rs:2` and `main.rs:2`
+
+### [VERIFIED] V2 — Header injection prevention works correctly — `client.rs:70-80`
+
+CRLF, null bytes, and control characters are properly rejected. Tests cover all cases.
+
+### [VERIFIED] V3 — CWE-209 error sanitization — `error.rs:52-57`
+
+`ServerMessage::Display` deliberately writes "server error" instead of echoing raw server response bodies. Tests verify no connection strings, paths, or stack traces leak.
+
+### [VERIFIED] V4 — Exit code mapping correct for all variants — `error.rs:79-85`
+
+0/1/3/4 mapping matches AC-3 spec. Comprehensive test coverage.
+
+### [VERIFIED] V5 — No server-side crate imports in dependency graph — `Cargo.toml`
+
+`axiathon-client` depends only on `axiathon-core` plus workspace deps. Clean separation.
+
+---
+
+## Verdict: **CHANGES_REQUESTED**
+
+*"See, the thing is, the product looks good on the shelf, but when you open the box, ain't nothing inside that works."*
+
+### Blocking issues (must fix):
+
+1. **F1** — Fix nightly fmt violations (trivial)
+2. **F2** — Wire up `main.rs` to parse CLI, dispatch commands, map errors to exit codes. `completion` and `init` must be functional per spec. Stubs must print the AC-10 message and exit 1.
+3. **F3** — Change `with_token()`/`with_tenant()` to return `Result` instead of panicking on user input
+
+### Should fix:
+
+4. **F6** — Add `request_id` and `timestamp` to JSON metadata per AC-4
+5. **F7** — Create stub command handler files with proper dispatch
+
+### Consider:
+
+6. **F4** — At minimum, log a warning when unknown fields are present in config
+7. **F5** — Add `#[non_exhaustive]` to `OutputFormat`

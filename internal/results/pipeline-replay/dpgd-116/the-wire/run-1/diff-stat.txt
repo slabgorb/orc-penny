@@ -1,0 +1,6 @@
+ CLAUDE.md                                          | 315 ++++++++++++++++++---
+ Cargo.toml                                         |   4 +-
+ crates/axiathon-client/src/lib.rs                  |   7 +
+ .../tests/cli_structure_integration.rs             |   8 +-
+ crates/axiathon-client/tests/config_integration.rs |  21 +-
+ 5 files changed, 307 insertions(+), 48 deletions(-)

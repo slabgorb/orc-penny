@@ -1,0 +1,32 @@
+Now let me write the session file assessment.
+
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 establishes the entire CLI framework — foundational code with 10 acceptance criteria requiring comprehensive test coverage.
+
+**Test Files:**
+| File | AC Coverage | Tests |
+|------|-------------|-------|
+| `tests/cli_structure.rs` | AC-1, AC-2, AC-5, AC-6 | 27 tests — command groups, help rendering, global flags, declarative clap |
+| `tests/exit_codes.rs` | AC-3 | 14 tests — CliError exit code mapping (0/1/2/3/4), security (CWE-209 error exposure) |
+| `tests/output_format.rs` | AC-4 | 11 tests — OutputFormat parsing, table/JSON/CSV formatting, no-color, CSV escaping |
+| `tests/siem_client.rs` | AC-7 | 12 tests — header injection, HTTP status code mapping (401→403→404→429→5xx), connection failure, header injection prevention |
+| `tests/config_loading.rs` | AC-8 | 8 tests — TOML loading, env var overrides, missing file defaults, token exclusion, validation |
+| `tests/shell_completion.rs` | AC-9 | 5 tests — bash/zsh/fish/PowerShell generation, command coverage |
+| `tests/stub_handlers.rs` | AC-10 | 10 tests — story references in stub messages, exit code 1 |
+| `tests/binary_integration.rs` | AC-1/3/5/9 | 11 tests — end-to-end binary behavior via assert_cmd |
+
+**Tests Written:** 98 tests covering all 10 ACs
+**Status:** RED (failing — 7 test files fail to compile, 1 file has 5 runtime failures)
+
+**Security tests included:**
+- CWE-209: Error messages don't leak tokens, JWT prefixes, stack traces, or file paths
+- Header injection: Newlines in tenant ID and token values
+- Config security: Tokens in config file are ignored (keychain only)
+
+**Handoff:** To Dev for implementation
+
+### Delivery Findings
+
+- No upstream findings during test design.

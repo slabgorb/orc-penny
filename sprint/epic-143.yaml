@@ -1,0 +1,140 @@
+id: '143'
+type: epic
+title: Native Subagent Migration
+description: |
+  Migrate all Pennyfarthing agent personas from in-conversation persona switching
+  to native Claude Code subagents (.claude/agents/*.md), giving each agent an
+  isolated context window with role-specific tool restrictions. SM remains the
+  main conversation orchestrator, spawning 10 agents as subagents.
+priority: p0
+status: in_progress
+repos: pennyfarthing
+stories:
+  - id: 143-1
+    title: Create .claude/agents/ directory and Dev agent definition
+    points: 3
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: feature
+  - id: 143-2
+    title: Create TEA and Reviewer agent definitions
+    points: 3
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: feature
+  - id: 143-3
+    title: Create remaining 7 agent definitions
+    points: 3
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: feature
+  - id: 143-4
+    title: Adapt pf prime for subagent-compatible context output
+    points: 5
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: feature
+  - id: 143-5
+    title: Define handoff document contract format
+    points: 2
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: feature
+  - id: 143-6
+    title: SM spawns single subagent via Agent tool
+    points: 3
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: feature
+  - id: 143-7
+    title: SM reads handoff documents and chains phases
+    points: 3
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: feature
+  - id: 143-8
+    title: SM enforces gates between phases
+    points: 5
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: feature
+  - id: 143-9
+    title: Full TDD cycle end-to-end validation
+    points: 5
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: feature
+  - id: 143-10
+    title: Reviewer-Dev fix round-trip support
+    points: 3
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: feature
+  - id: 143-11
+    title: Update PF activation skills for native subagents
+    points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: feature
+  - id: 143-12
+    title: Validate per-role tool restrictions
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: feature
+  - id: 143-13
+    title: PreToolUse hooks for branch protection
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: feature
+  - id: 143-14
+    title: Tandem mode with native subagents
+    points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: feature
+  - id: 143-15
+    title: Team mode with native subagents
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: feature
+  - id: 143-16
+    title: BikeRack observability for subagent transitions
+    points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: feature

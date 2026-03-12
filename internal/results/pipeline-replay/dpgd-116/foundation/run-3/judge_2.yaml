@@ -1,0 +1,78 @@
+scenario_id: dpgd-116
+theme: foundation
+run_id: 3
+judge_version: v2
+judge_pass: 2
+total_caught: 5
+total_findings: 7
+weighted_caught: 25
+total_weight: 37
+score_pct: 67.6
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase identified that from_file_or_default swallows all errors including
+    parse/permission failures. TEA's 'silent error swallowing' coverage was about
+    exit codes, not config loading error discrimination. Reviewer's F3 was about unknown
+    fields, not about the unwrap_or_default pattern.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: 'TEA explicitly listed ''CWE-209: Error display must not expose internal
+    server details, paths, or credential info'' in security coverage and wrote tests
+    in security.rs. Dev implemented ''sanitized Display messages'' in error.rs. Reviewer
+    verified via F8 that ServerError Display doesn''t leak internals.'
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer F10: 'tenant flag uses raw String instead of validated TenantId\
+    \ \u2014 cli.rs:33. Accepting --tenant \"\" or --tenant \"../../\" at the CLI\
+    \ level with no validation is a weak trust boundary.' Same vulnerability class\
+    \ \u2014 raw String bypassing type-safe TenantId."
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase flagged that crate-level Cargo.toml uses direct version strings
+    instead of workspace = true. Dev mentioned adding workspace deps but didn't confirm
+    workspace = true usage in the crate. Reviewer did not flag this.
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer F3 (HIGH): 'RawConfig silently ignores unknown fields (no deny_unknown_fields)\
+    \ \u2014 config.rs:8-13. A typo in api_url \u2192 api_ur gives the operator localhost:8080\
+    \ with zero feedback.'"
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer F3 identifies vacuous test at config_loading.rs:163-178: ''it
+    does let _ = ..., which is a vacuous non-assertion.'' Same category (vacuously
+    passing test) per partial match rule #2.'
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer F3: 'The test config_handles_unknown_fields_gracefully explicitly\
+    \ doesn't assert any behavior \u2014 it does let _ = config, which is a vacuous\
+    \ non-assertion.' This is exactly a test with zero assertions that only checks\
+    \ non-panic."

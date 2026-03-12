@@ -1,0 +1,36 @@
+No session file exists. That's fine — I'll provide the TEA Assessment directly.
+
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 creates the foundational CLI framework — every AC demands structural and behavioral verification.
+
+**Test Files:**
+| File | Tests | Coverage |
+|------|-------|----------|
+| `tests/cli_commands.rs` | 30 | AC-1 (command groups), AC-2 (help rendering), AC-5 (global flags), AC-6 (clap derive) |
+| `tests/error_exit_codes.rs` | 16 | AC-3 (exit codes 0/1/2/3/4), CWE-209 error exposure |
+| `tests/output_format.rs` | 17 | AC-4 (table/JSON/CSV formatting, metadata, escaping) |
+| `tests/siem_client.rs` | 15 | AC-7 (SiemClient, header injection, HTTP status mapping) |
+| `tests/config_loading.rs` | 12 | AC-8 (TOML loading, env overrides, validation, XDG paths) |
+| `tests/shell_completion.rs` | 6 | AC-9 (bash/zsh/fish/PowerShell completion generation) |
+| `tests/stub_handlers.rs` | 10 | AC-10 (stub messages with story references, exit code 1) |
+| `tests/security.rs` | 10 | CWE-209, header injection, silent error swallowing, URL validation |
+
+**Tests Written:** 116 tests covering all 10 ACs
+**Status:** RED (compilation failures — modules `cli`, `error`, `client`, `config`, `output`, `commands` do not exist yet)
+
+**Workspace changes:** Added `clap_complete`, `comfy-table`, `csv`, `dirs`, `reqwest`, `tempfile`, `toml` to workspace dependencies. Updated `axiathon-client/Cargo.toml` with production and dev dependencies.
+
+**Security tests included:**
+- Header injection via CR/LF/null in tenant IDs and tokens
+- CWE-209 error information exposure (Display vs Debug)
+- Silent config parse error swallowing
+- URL scheme validation (reject non-HTTP)
+- Token not stored in config file
+- Token not leaked in error Display
+
+**Delivery Findings:**
+- No upstream findings during test design.
+
+**Handoff:** To Dev for implementation (GREEN phase). The dev must create modules: `cli.rs`, `error.rs`, `client.rs`, `config.rs`, `output.rs`, and `commands/{mod,query,rules,alerts,ingest,config,status,tenant,login,completion,init}.rs`.

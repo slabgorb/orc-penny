@@ -35,3 +35,7 @@ fs.writeFileSync(path, stringifyYaml(existing));
 <pattern name="electron-storage">
 Use `path` option for per-project storage: `windowStateKeeper({ path: join(projectDir, '.pennyfarthing') })`.
 </pattern>
+
+<pattern name="benchmark-cli">
+Benchmark CLI at `pennyfarthing-dist/src/pf/benchmark/cli.py`. When adding commands: filter extra keys from `majority_vote.yaml` findings (has `votes` etc not in `FindingScore`). Use `.get()` with defaults for `scenario_id`/`run_id` — not all score files have them. Theme dimensions: `data['theme']['dimensions']` not `data['dimensions']`.
+</pattern>

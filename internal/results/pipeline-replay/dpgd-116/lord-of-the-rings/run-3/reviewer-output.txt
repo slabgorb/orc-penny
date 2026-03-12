@@ -1,0 +1,96 @@
+Good. Now I have all the facts. Let me note: **Rust `assert!` is NOT stripped in release builds** — only `debug_assert!` is. So the header injection finding from my subagent is incorrect. Let me issue the final verdict.
+
+---
+
+# Adversarial Code Review — Story 6.1: CLI Framework & Structure
+
+*The White Wizard has examined every line. Here is the judgment.*
+
+---
+
+## BLOCKING ISSUES
+
+### [HIGH] Nightly rustfmt violations — 301 lines of diff
+`cargo +nightly fmt --all --check` fails across multiple files. Per `gotchas.md`: *"Always include cargo +nightly fmt --all --check in the preflight. If it fails, flag it before approval."*
+
+**Files:** `src/commands/init.rs`, `src/main.rs`, `tests/cli_structure.rs`, and others.
+
+### [HIGH] Unused imports cause warnings in tests
+Two unused imports generate compiler warnings. With `-D warnings` in CI, these will fail the test build:
+- `[HIGH] unused import: CommandFactory` at `tests/global_flags.rs`
+- `[HIGH] unused import: std::io::Write` at `tests/config_loading.rs`
+
+### [HIGH] `run_init()` panics instead of returning Result — `commands/init.rs:4,6`
+Two `expect()` calls in production code paths. If `parent()` returns `None` or `create_dir_all()` fails (permissions, disk full), the CLI panics with a stack trace instead of a clean error message and exit code 1. Per `rust.md`: *"No unwrap() in production code — use ? or expect() with actionable message."* The function signature should be `fn run_init() -> Result<(), CliError>`.
+
+### [HIGH] Missing `[[bin]]` section in Cargo.toml — `Cargo.toml:4`
+Package name is `axiathon-client` but AC-1 requires the binary to be named `axiathon`. Without `[[bin]] name = "axiathon"`, the binary installs as `axiathon-client`. The clap metadata says `axiathon` but the actual executable doesn't match.
+
+---
+
+## MEDIUM ISSUES
+
+### [MEDIUM] `RawConfig` accepts unknown TOML fields silently — `config.rs:6-11`
+No `#[serde(deny_unknown_fields)]` on `RawConfig`. A typo like `api_rul = "..."` is silently ignored, and the user gets the default with no warning. This is a classic misconfiguration footgun.
+
+### [MEDIUM] `--format` flag is `String` not `OutputFormat` — `cli.rs:10`
+The format field is typed as `String` rather than `OutputFormat`. This means clap won't validate the value at parse time — invalid formats like `--format xml` are accepted by clap and fail silently later (or not at all, since no handler currently reads it). Should use `#[arg(value_parser)]` with `OutputFormat`.
+
+### [MEDIUM] `unwrap_or_default()` on error response body — `client.rs:79`
+When the HTTP error response body can't be decoded, this silently returns `""`. The resulting error message loses diagnostic information. Should propagate the decode failure.
+
+### [MEDIUM] No URL validation in config — `config.rs:66-70`
+`api_url = "not-a-url"` or `api_url = "file:///etc/passwd"` loads successfully. Fails at request time with a cryptic error. Validation at load time would catch this early.
+
+### [MEDIUM] `output.rs:85-98` — Multiple `expect()` in CSV/JSON formatting
+While these are unlikely to fail in practice (writing to `Vec<u8>`, serializing well-known types), they are technically panic vectors in production code. The `expect()` messages are good, but `Result` propagation would be cleaner.
+
+---
+
+## VERIFIED GOOD
+
+- `[VERIFIED]` Header injection prevention uses `assert!()` (NOT `debug_assert!`) — survives release builds. Correct defense at `client.rs:26-28,39-41`.
+- `[VERIFIED]` Exit code mapping correct: 3=auth, 4=authz, 1=other at `error.rs:37-43`.
+- `[VERIFIED]` `#![forbid(unsafe_code)]` in both `lib.rs:1` and `main.rs:1`.
+- `[VERIFIED]` Security comment on CliError Display: `error.rs:3` — no token/path leakage.
+- `[VERIFIED]` No token field in config — `config.rs:10` comment documents the decision.
+- `[VERIFIED]` Shell completions functional — `completion.rs` uses `clap_complete::generate()` correctly.
+- `[VERIFIED]` All 94 tests pass. Test names are descriptive and document intent.
+- `[VERIFIED]` Config precedence (CLI > env > file > defaults) correctly implemented and tested.
+- `[VERIFIED]` Clap derive macros only — no imperative command building (AC-6).
+- `[VERIFIED]` Trailing slash normalization on base URL at `client.rs:14`.
+- `[VERIFIED]` HTTP status mapping covers 401/403/404/429/5xx at `error.rs:46-54`.
+
+---
+
+## DATA FLOW TRACE
+
+Input: `axiathon --tenant abc123 rules list`
+1. `main.rs:6` — clap parses into `Cli { tenant: Some("abc123"), command: Rules(...) }`
+2. `main.rs:38-41` — matches `Commands::Rules(_)`, returns `CliError::NotImplemented`
+3. `main.rs:9` — prints `"error: not yet implemented (rules (Story 6.6))"` to stderr
+4. `main.rs:10` — exits with code 1 via `exit_code()`
+
+No token leakage. Error goes to stderr, clean exit code.
+
+---
+
+## HARD QUESTIONS
+
+- **Null bytes in token?** — `assert!` only checks `\n`/`\r`. Null bytes pass through but are rejected by reqwest's header validation (HTTP spec forbids them). Acceptable.
+- **Giant config file?** — No size limit, but user controls `~/.config/`. Low risk.
+- **Race on config dir creation?** — `create_dir_all` is idempotent. Safe.
+- **`--format` with future commands?** — Currently unused (all stubs). The `OutputFormatter` is fully tested. Integration deferred to Stories 6.2+. Acceptable for a framework story.
+
+---
+
+## VERDICT: **CHANGES_REQUESTED**
+
+Four HIGH-severity blocking issues must be fixed before approval:
+
+1. **Run `cargo +nightly fmt --all`** and commit the result
+2. **Remove unused imports** from `tests/global_flags.rs` and `tests/config_loading.rs`
+3. **Change `run_init()` to return `Result<(), CliError>`** — replace `expect()` with `?` and proper error mapping
+4. **Add `[[bin]] name = "axiathon"` to `Cargo.toml`** so the binary name matches the UX contract
+
+The MEDIUM issues (deny_unknown_fields, format type, URL validation) should be addressed but do not block merge.

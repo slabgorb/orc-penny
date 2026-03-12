@@ -1,0 +1,120 @@
+Right. Now I've got the full picture. Let me give this the Donna Noble treatment.
+
+---
+
+# ADVERSARIAL CODE REVIEW — Story 6.1: CLI Framework & Structure
+
+*Oi, listen here sunshine. I've been through every single file and I am NOT impressed. Let me tell you what's wrong with this, because apparently nobody else will.*
+
+---
+
+## Observations
+
+### `[CRITICAL]` Missing `main.rs` — binary cannot be produced
+The story spec says `main.rs` is the "Binary entry point, tracing init, dispatch, exit codes." There is no `main.rs`. No `[[bin]]` section in `Cargo.toml`. The `axiathon` binary literally does not exist. The crate compiles as a library only. **AC-3 (exit codes via `std::process::exit()` in main) is untestable. AC-1 (commands actually dispatching) is unverified.**
+
+This isn't a polish thing — this is the *entire point of the story*.
+
+At `crates/axiathon-client/Cargo.toml` — missing `[[bin]]` section.
+At `crates/axiathon-client/src/main.rs` — file does not exist.
+
+### `[CRITICAL]` No `logout` or `tui` command handlers — `Commands` enum variants have no dispatch targets
+`cli.rs:75` defines `Logout` and `cli.rs:78` defines `Tui` as bare enum variants. `commands/mod.rs` has no `logout` or `tui` module. AC-1 requires both commands. AC-10 requires stub handlers. When `main.rs` eventually dispatches these, there's nothing to call. The `Commands` enum includes variants that have zero backing code.
+
+At `crates/axiathon-client/src/commands/mod.rs` — missing `pub mod logout;` and `pub mod tui;`.
+
+### `[HIGH]` Incomplete command structures — Rules, Alerts, Ingest, Config, Status, Tenant lack Args structs
+`cli.rs:50-69`: These are bare enum variants (`Rules`, `Alerts`, etc.) with no associated `Args` structs and no `Subcommand` enums. Compare to `Query(QueryArgs)` which has a proper args struct. Per AC-2, `axiathon rules --help` must "show detailed help text, document all options with defaults, and include after_help usage examples for each command group." Bare variants can't hold subcommands or options.
+
+At `crates/axiathon-client/src/cli.rs:50-69`.
+
+### `[HIGH]` Config not validated on load — HTTPS bypass
+`config.rs:27-33`: `from_file()` returns a `ClientConfig` without calling `validate()`. A config file with `api_url = "http://insecure.local"` loads successfully. The `validate()` method exists at line 54 but is never called automatically. The security test at `security.rs:94-111` only passes because it explicitly calls `validate()` — which means the test is testing a function, not the actual load path.
+
+At `crates/axiathon-client/src/config.rs:27-33`.
+
+### `[HIGH]` Silent header construction failures — CWE-113 adjacent
+`client.rs:46-55`: If `HeaderValue::from_str()` fails (control characters in tenant ID or token), the header is silently dropped. No error, no warning, no log. The user's auth token gets thrown on the floor and they get a mysterious 401 from the server with no clue why. The security tests at `security.rs:58-87` use `if let Some(val)` which means both "injection rejected" and "header never set" look identical — the test structure is misleading.
+
+At `crates/axiathon-client/src/client.rs:42-59`.
+
+### `[HIGH]` `CliError::Config` and `CliError::Internal` expose caller-provided strings in Display
+`error.rs:32`: `Config(String)` has `#[error("configuration error")]` — the inner string is NOT exposed in Display. Good.
+`error.rs:34`: `Internal(String)` has `#[error("{0}")]` — the inner string IS directly exposed. The security comment says "Display impls are sanitized for user output. Internal details are never exposed." That's a lie for `Internal`. The stub handlers pass user-visible messages through `Internal`, so it works today, but it's a footgun. Anyone who puts a stack trace or internal detail in `Internal(msg)` will expose it to the user.
+
+At `crates/axiathon-client/src/error.rs:34-35`.
+
+### `[MEDIUM]` Workspace dependency versions don't match spec
+The story spec says: `reqwest` 0.12 (correct), `comfy-table` 7 (correct), `dirs` **6** — but `Cargo.toml` has `dirs = "5"`. Spec says `toml` **0.9** — but `Cargo.toml` has `toml = "0.8"`. Spec also requires `keyring` 3 — it's entirely missing from workspace deps and crate deps.
+
+At `Cargo.toml` workspace dependencies section.
+
+### `[MEDIUM]` `output.rs:72` uses `expect()` in production code
+The Rust coding rules say "No `unwrap()` in production code — use `?` or `expect()` with actionable message." While `expect()` is technically allowed, `output.rs` has FIVE `expect()` calls (lines 72, 88, 89, 92-94) in formatter code. The CSV formatter has four of them. These will panic on write errors to a `Vec<u8>`, which shouldn't fail in practice, but this violates the spirit of the rule. The messages are also not actionable — "CSV header write should not fail" tells the user nothing useful.
+
+At `crates/axiathon-client/src/output.rs:72,88,89,92-94`.
+
+### `[MEDIUM]` `config.rs:72` silently swallows invalid timeout env vars
+`AXIATHON_TIMEOUT=banana` will be silently ignored. No warning, no error. The user thinks they set a timeout but the default is used instead. Same pattern as the header injection silent failure — a theme of silent swallowing across the codebase.
+
+At `crates/axiathon-client/src/config.rs:71-74`.
+
+### `[MEDIUM]` JSON `request_id` is fabricated, not correlated
+`output.rs:62`: `Uuid::new_v4()` generates a random request ID that doesn't correspond to any HTTP request. AC-4 says "JSON includes ResponseMetadata (request_id, timestamp, api_version)." The intent is to correlate with server-side logs — a made-up UUID defeats that purpose entirely.
+
+At `crates/axiathon-client/src/output.rs:62`.
+
+### `[MEDIUM]` `completion.rs:12` returns empty string for unknown shell — no error
+`completion.rs:12`: Unknown shell returns `String::new()` instead of a `Result::Err`. `completion.rs:18` also uses `unwrap_or_default()` which silently swallows UTF-8 errors. AC-9 says completions go to stdout — an empty stdout with no stderr message is a terrible UX.
+
+At `crates/axiathon-client/src/commands/completion.rs:12,18`.
+
+### `[MEDIUM]` Nightly `rustfmt` check fails
+Per the gotchas sidecar: "Always include `cargo +nightly fmt --all --check` in the preflight." It fails — `cli.rs` has long `#[command(after_help = ...)]` lines that nightly wants to wrap. This must be fixed before merge.
+
+At `crates/axiathon-client/src/cli.rs:45,53,57,61,65`.
+
+### `[LOW]` Test `exit_code_success_is_zero` is vacuous
+`cli_error.rs:14-18`: `assert_eq!(0i32, 0, "success exit code should be 0")`. This asserts that zero equals zero. It tests nothing. It doesn't verify any code path.
+
+At `crates/axiathon-client/tests/cli_error.rs:14-18`.
+
+### `[LOW]` `siem_client.rs` tests use `#[tokio::test]` for synchronous functions
+`siem_client.rs:42-105`: The `map_http_status` tests are all `#[tokio::test] async fn` but the function is synchronous. Unnecessary async runtime overhead.
+
+At `crates/axiathon-client/tests/siem_client.rs:42-105`.
+
+### `[LOW]` `config.rs:37` fallback to `.config` when `dirs::config_dir()` returns `None`
+`ClientConfig::default_path()` falls back to `PathBuf::from(".config")` — a relative path. If `dirs::config_dir()` fails (unlikely but possible in some container environments), the config file goes to `.config/axiathon/cli.toml` relative to CWD, which is unpredictable.
+
+At `crates/axiathon-client/src/config.rs:37`.
+
+### `[VERIFIED]` Clap derive macros used throughout — AC-6 compliant
+### `[VERIFIED]` Exit codes correctly mapped: 3=auth, 4=authz, 1=all others — AC-3 partial compliance
+### `[VERIFIED]` `#![forbid(unsafe_code)]` in `lib.rs` — safety rule met
+### `[VERIFIED]` `#[non_exhaustive]` on `CliError` — extensibility rule met
+### `[VERIFIED]` Shell completions generate valid output for all four shells — AC-9 compliant
+
+---
+
+## Summary
+
+| Severity | Count | Blocks? |
+|----------|-------|---------|
+| CRITICAL | 2     | YES     |
+| HIGH     | 4     | YES     |
+| MEDIUM   | 5     | NO      |
+| LOW      | 3     | NO      |
+| VERIFIED | 5     | —       |
+
+---
+
+## Verdict: **CHANGES_REQUESTED**
+
+Listen, I'm not being mean for the sake of it. But you've delivered a library crate with no binary entry point. That's like turning up to a temp job and forgetting your hands. The `Commands` enum has variants with no dispatch target. The config loads insecure URLs without blinking. Headers fail silently. The nightly fmt check fails.
+
+The bones are decent — the error types are well-structured, the output formatters work, the tests are thorough for what they cover. But the framework is **incomplete**. There's no `main.rs`, no command dispatch, no `logout`/`tui` stubs, and multiple silent-failure patterns that will bite operators in production.
+
+Fix the CRITICALs and HIGHs. Then we'll talk.
+
+*— Donna Noble, most important woman in the universe, and I'm not signing off on this.*

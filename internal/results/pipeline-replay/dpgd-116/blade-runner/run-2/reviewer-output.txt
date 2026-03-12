@@ -1,0 +1,167 @@
+Good. The negative timeout test passes because TOML deserialization into `u64` naturally rejects `-1` — the `Err(_)` branch is taken. That concern is actually a false alarm.
+
+Now I have a complete picture. Here is the review.
+
+---
+
+# Story 6.1: CLI Framework & Structure — Adversarial Code Review
+
+**Reviewer:** J.F. Sebastian, with Kaiser and Bear  
+**Scope:** All files in `crates/axiathon-client/` (src + tests)
+
+---
+
+## Mandatory Review Checklist
+
+- [x] Find at least 5 observations
+- [x] Trace data flow (CLI parse → dispatch → SiemClient → output)
+- [x] Wiring check (UI → backend connections)
+- [x] Identify patterns (good and bad)
+- [x] Verify error handling
+- [x] Security analysis
+- [x] Hard questions
+- [x] Make judgment
+
+---
+
+## Findings
+
+### `[HIGH]` F1: Nightly rustfmt fails — blocks merge per gotchas.md
+
+`cargo +nightly fmt --all --check` produces diffs in three files:
+
+- `src/main.rs:4-5` — import ordering (crate-local before external)
+- `src/output.rs:113-115` — line length (chained `.expect()` needs wrapping)
+- `tests/cli_structure.rs:12` — import ordering
+
+Per `gotchas.md`: *"Always include `cargo +nightly fmt --all --check` in the preflight. If it fails, flag it before approval."* This is a blocking pre-condition.
+
+### `[HIGH]` F2: `axiathon init` is a stub — story scope says "functional, not stub"
+
+At `cli.rs:140-143`:
+```rust
+Commands::Init => {
+    eprintln!("axiathon: first-time setup not yet implemented");
+    Err(CliError::NotImplemented("init (Story 6.1)".into()))
+}
+```
+
+The story context explicitly states: *"axiathon init first-time setup (functional, not stub)"* under Scope Boundaries > In scope. The `init.rs` file is a single comment line. This is incomplete work.
+
+### `[HIGH]` F3: Config env var tests have parallel execution race conditions
+
+In `config_loading.rs`, tests `config_env_axiathon_api_url_overrides_file` (line 110) and `config_cli_override_takes_highest_precedence` (line 168) both set `AXIATHON_API_URL`. Integration tests within the same file run in parallel by default. Additionally, `apply_env()` in `config.rs:117-132` reads both `AXIATHON_API_URL` and `AXIATHON_SERVER` — so `config_env_axiathon_server_overrides_api_url` (which sets `AXIATHON_SERVER`) could interfere if its `apply_env()` call overlaps with another test's.
+
+This will cause flaky failures on CI. Needs `#[serial_test::serial]` or `--test-threads=1` enforcement.
+
+### `[MEDIUM]` F4: `generate_completion` panics on user input — `completion.rs:14-15`
+
+```rust
+let shell: Shell = shell
+    .parse()
+    .unwrap_or_else(|_| panic!("unsupported shell: {shell}"));
+```
+
+User-supplied shell name goes directly to `panic!()`. The `main.rs` caller receives this as an unrecoverable crash with a raw panic message rather than a clean `CliError`. Should return `Result<String, CliError>` instead of panicking. The test at `shell_completion.rs:97` uses `catch_unwind` to handle this, which is a code smell — it means the tests know the API is broken.
+
+### `[MEDIUM]` F5: `ServerError` Display leaks server response body — CWE-209 risk
+
+At `error.rs:23`:
+```rust
+#[error("server error ({0}): {1}")]
+ServerError(u16, String),
+```
+
+The body from `client.rs:116` (`response.text().await.unwrap_or_default()`) is passed directly into the Display output. If the server returns stack traces, internal paths, or database details in 5xx responses, they get printed to stderr. The exit_codes.rs security test at line 89 only checks for "127.0.0.1" and "localhost:" — it doesn't check for arbitrary server-leaked info.
+
+### `[MEDIUM]` F6: Header injection defense is implicit, not explicit — `client.rs:85-90`
+
+The tenant and token values are passed directly to `req.header()` without validation. Defense against CRLF injection (CWE-113) relies entirely on reqwest's `HeaderValue` parsing. The tests at `siem_client.rs:287-316` verify the request fails but don't assert *why* it fails — it could be the connection to `localhost:9999` refusing, not the header being rejected. These tests connect to `localhost:9999` rather than using wiremock, so they conflate connection failure with header validation.
+
+### `[MEDIUM]` F7: JSON response parse failure maps to `CliError::Generic` — `client.rs:108`
+
+When a 2xx response has invalid JSON, it becomes `Generic("response parse error: ...")`. Operators can't distinguish parse failures from other generic errors. No test covers the path where a 200 response has invalid/malformed JSON body.
+
+### `[MEDIUM]` F8: `timeout = 0` in config is silently accepted
+
+While `timeout = -1` is correctly rejected (TOML/serde rejects deserializing negative into `u64`), `timeout = 0` passes through `from_raw()` at `config.rs:108` without validation. A zero-second timeout would cause every request to fail immediately. No test covers this edge case.
+
+### `[LOW]` F9: `config.rs:48` — `default_config_path()` falls back to `.config` on broken HOME
+
+```rust
+dirs::config_dir()
+    .unwrap_or_else(|| PathBuf::from(".config"))
+```
+
+If `$HOME` is unset (container environments), this falls back to a relative path `.config` which is relative to CWD — potentially creating config files in unexpected locations. Should this warn or error instead?
+
+### `[LOW]` F10: `stub_handlers.rs` tests construct `CliError` manually instead of testing dispatch
+
+Tests at lines 16-77 construct `CliError::NotImplemented(...)` manually with hardcoded strings, then assert the message. If `cli.rs:125` changes the story reference (e.g., "Story 5.5" → "Story 5.6"), these tests would still pass because they construct their own errors. The dispatch tests at lines 109-183 properly test the real wiring — the manual construction tests are redundant and fragile.
+
+### `[VERIFIED]` V1: Exit code mapping is exhaustive and correct
+
+`exit_codes.rs` tests all variants, distinguishes auth (3) from authz (4), and verifies the valid range. `CliError` is `#[non_exhaustive]` per Rust coding rules.
+
+### `[VERIFIED]` V2: Token never loaded from TOML file
+
+`RawConfig` has `token: Option<String>` with `#[allow(dead_code)]`, and `from_raw()` at `config.rs:113` hardcodes `api_token: None`. Test at `config_loading.rs:216-237` confirms this. Security contract is met.
+
+### `[VERIFIED]` V3: Output formatters produce valid structured data
+
+JSON output is parseable with valid metadata envelope. CSV escapes commas, quotes, and newlines correctly. Table renders via comfy-table. All tested.
+
+### `[VERIFIED]` V4: All 12 command groups present and parseable
+
+`cli_structure.rs` verifies query, rules (plural), alerts (plural), ingest, config, status, tenant, login, logout, tui, completion, init. Also confirms `server` command is absent from client binary.
+
+### `[VERIFIED]` V5: `#![forbid(unsafe_code)]` on both `lib.rs` and `main.rs`
+
+Production code properly forbids unsafe. `Cargo.toml` downgrades to `deny` at crate level only for test code that needs `set_var`.
+
+### `[VERIFIED]` V6: Global flags all have `global = true`
+
+`cli.rs:21-46` — all seven global flags (`format`, `verbose`, `quiet`, `tenant`, `server`, `config`, `no_color`) are `global = true`. Test at `cli_structure.rs:296-303` confirms they work after subcommand.
+
+---
+
+## Data Flow Trace
+
+**Scenario:** `axiathon --format json --server https://api.example.com status`
+
+1. `main.rs:9` — `Cli::parse()` via clap derive
+2. `cli.rs:19-49` — Global flags populated (format=json, server=Some("https://..."))
+3. `cli.rs:123` — `dispatch()` called
+4. `cli.rs:130` — `Commands::Status` matched → returns `NotImplemented`
+5. `main.rs:13` — Error printed to stderr
+6. `main.rs:14` — `exit(1)` called
+
+**Gap:** Global flags `server` and `format` are parsed but never wired into config loading or formatter selection within `dispatch()`. This is acceptable for stubs but means the full pipeline (parse → config → client → format → output) has no integration test.
+
+---
+
+## Verdict
+
+**CHANGES_REQUESTED**
+
+### Blocking Issues (3)
+
+| # | Severity | Summary |
+|---|----------|---------|
+| F1 | HIGH | Nightly `rustfmt` fails — import ordering and line length |
+| F2 | HIGH | `axiathon init` is a stub but story requires functional |
+| F3 | HIGH | Config env var tests race in parallel execution |
+
+### Required Fixes
+
+1. **F1:** Run `cargo +nightly fmt --all` to fix formatting
+2. **F2:** Either implement a minimal `init` (create config dir + skeleton `cli.toml`) or downgrade the AC to say init is a stub with a documented rationale
+3. **F3:** Add `serial_test` to dev-dependencies and `#[serial]` on all env-var-mutating tests, OR restructure tests to use unique env var names per test
+4. **F4:** Change `generate_completion()` to return `Result<String, CliError>` instead of panicking on invalid shell input
+
+### Recommended (non-blocking)
+
+5. **F5:** Truncate or sanitize server response body in `ServerError` Display
+6. **F6:** Add explicit CRLF check in `SiemRequest::get()` before calling `req.header()`, or use wiremock in the header injection tests instead of `localhost:9999`
+7. **F7:** Add a `ResponseParseError` variant to `CliError`
+8. **F8:** Validate `timeout > 0` in `from_raw()`
