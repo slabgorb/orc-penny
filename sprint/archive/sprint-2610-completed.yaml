@@ -637,3 +637,8 @@ completed_stories:
     title: SM spawns single subagent via Agent tool
     points: 3
     completed: '2026-03-12'
+  - id: 143-7
+    epic: ''
+    title: SM reads handoff documents and chains phases
+    points: 3
+    completed: '2026-03-12'
