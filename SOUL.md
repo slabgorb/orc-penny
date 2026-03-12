@@ -59,3 +59,8 @@ Scripts survive handoffs and context clearing; markdown doesn't — if agents ke
 ## 12. Measure the Pipeline, Not the Anecdote
 "This feels better" is not data — identical scenarios, same judge, same ground truth, multiple runs.
 </principle>
+
+<principle name="excellence-over-optimization">
+## 13. Excellence Over Optimization
+Don't optimize for cost, tokens, or speed until a concrete bottleneck forces it. Consistency and spec fidelity are worth extra agent phases, extra gates, and extra human-in-loop prompts. Premature optimization of the pipeline trades correctness for savings nobody asked for.
+</principle>

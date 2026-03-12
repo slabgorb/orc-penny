@@ -1,0 +1,71 @@
+id: '144'
+type: epic
+title: Specification Fidelity Gates
+description: 'Enforce spec fidelity end-to-end: structured deviation documentation, AC accountability with operator approval, Architect spec alignment phases, and modernized TDD workflow.'
+priority: p0
+status: backlog
+repos: pennyfarthing
+stories:
+  - id: 144-1
+    title: Deviation format spec and gate validation upgrade
+    points: 3
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 144-2
+    title: Update TEA and Dev agent definitions for deviation logging
+    points: 2
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+  - id: 144-3
+    title: Create AC-completion gate
+    points: 3
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 144-4
+    title: Add simplify toggle to repos.yaml
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+  - id: 144-5
+    title: Add Assumptions section to story context schema
+    points: 1
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+  - id: 144-6
+    title: Create Architect spec-check phase and gate
+    points: 3
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 144-7
+    title: Create Architect spec-reconcile phase and gate
+    points: 3
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 144-8
+    title: Remove tandem workflows
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+  - id: 144-9
+    title: Update TDD workflow with new phases and gates
+    points: 2
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial

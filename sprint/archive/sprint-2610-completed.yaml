@@ -642,6 +642,11 @@ completed_stories:
     title: SM reads handoff documents and chains phases
     points: 3
     completed: '2026-03-12'
+  - id: 143-8
+    epic: ''
+    title: SM enforces gates between phases
+    points: 5
+    completed: '2026-03-12'
   - id: 143-11
     epic: ''
     title: Update PF activation skills for native subagents
