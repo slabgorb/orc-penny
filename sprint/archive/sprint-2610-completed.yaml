@@ -662,3 +662,8 @@ completed_stories:
     title: Reviewer-Dev fix round-trip support
     points: 3
     completed: '2026-03-12'
+  - id: 144-1
+    epic: ''
+    title: Deviation format spec and gate validation upgrade
+    points: 3
+    completed: '2026-03-12'

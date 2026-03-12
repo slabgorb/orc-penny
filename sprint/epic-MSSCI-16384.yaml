@@ -5,15 +5,21 @@ description: 'Enforce spec fidelity end-to-end: structured deviation documentati
 priority: p0
 status: backlog
 repos: pennyfarthing
+jira: MSSCI-16384
 stories:
   - id: 144-1
+    jira: MSSCI-16385
     title: Deviation format spec and gate validation upgrade
     points: 3
     priority: p0
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-12'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-12'
   - id: 144-2
+    jira: MSSCI-16386
     title: Update TEA and Dev agent definitions for deviation logging
     points: 2
     priority: p0
@@ -21,6 +27,7 @@ stories:
     repos: pennyfarthing
     workflow: trivial
   - id: 144-3
+    jira: MSSCI-16387
     title: Create AC-completion gate
     points: 3
     priority: p0
@@ -28,6 +35,7 @@ stories:
     repos: pennyfarthing
     workflow: tdd
   - id: 144-4
+    jira: MSSCI-16388
     title: Add simplify toggle to repos.yaml
     points: 1
     priority: p1
@@ -35,6 +43,7 @@ stories:
     repos: pennyfarthing
     workflow: trivial
   - id: 144-5
+    jira: MSSCI-16389
     title: Add Assumptions section to story context schema
     points: 1
     priority: p0
@@ -42,6 +51,7 @@ stories:
     repos: pennyfarthing
     workflow: trivial
   - id: 144-6
+    jira: MSSCI-16390
     title: Create Architect spec-check phase and gate
     points: 3
     priority: p0
@@ -49,6 +59,7 @@ stories:
     repos: pennyfarthing
     workflow: tdd
   - id: 144-7
+    jira: MSSCI-16391
     title: Create Architect spec-reconcile phase and gate
     points: 3
     priority: p0
@@ -56,6 +67,7 @@ stories:
     repos: pennyfarthing
     workflow: tdd
   - id: 144-8
+    jira: MSSCI-16392
     title: Remove tandem workflows
     points: 1
     priority: p1
@@ -63,6 +75,7 @@ stories:
     repos: pennyfarthing
     workflow: trivial
   - id: 144-9
+    jira: MSSCI-16393
     title: Update TDD workflow with new phases and gates
     points: 2
     priority: p0
