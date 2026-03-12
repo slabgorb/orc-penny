@@ -136,10 +136,14 @@ stories:
     title: Update PF activation skills for native subagents
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-12'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-12'
     type: feature
+    review_verdict: approved
   - id: 143-12
     jira: MSSCI-16370
     title: Validate per-role tool restrictions
