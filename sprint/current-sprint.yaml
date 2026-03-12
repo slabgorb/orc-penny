@@ -9,7 +9,6 @@ sprint:
   number: 2610
 epics:
   - MSSCI-16293
-  - MSSCI-16324
 stories: []
 standalone_stories:
   - id: MSSCI-16066
@@ -147,3 +146,4 @@ standalone_stories:
     status: in_progress
     repos: pennyfarthing
     branch: feat/MSSCI-16347-stacked-pr-depends-on
+    review_verdict: approved

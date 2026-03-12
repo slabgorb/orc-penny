@@ -20,6 +20,7 @@ completed_epics:
   - MSSCI-16213
   - MSSCI-16312
   - '49'
+  - MSSCI-16324
 completed_stories:
   - id: 110-1
     epic: '110'
@@ -584,5 +585,10 @@ completed_stories:
   - id: 142-5
     epic: ''
     title: Baseline Comparison Runs
+    points: 2
+    completed: '2026-03-10'
+  - id: 142-6
+    epic: MSSCI-16324
+    title: Comparative Analysis Report
     points: 2
     completed: '2026-03-10'
