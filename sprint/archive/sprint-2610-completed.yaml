@@ -687,3 +687,8 @@ completed_stories:
     title: Add simplify toggle to repos.yaml
     points: 1
     completed: '2026-03-13'
+  - id: 144-5
+    epic: ''
+    title: Add Assumptions section to story context schema
+    points: 1
+    completed: '2026-03-13'
