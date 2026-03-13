@@ -80,21 +80,21 @@ Workflow definitions live in `pennyfarthing/pennyfarthing-dist/workflows/*.yaml`
 <info>
 ## Framework Structure (`pennyfarthing/`)
 
-**Architecture:** Python runtime + React GUI. Python owns CLI, server (WheelHub/FastAPI), hooks, and all business logic. TypeScript/React is GUI-only. See ADR-0034.
+**Architecture:** Python runtime + React GUI. Python owns CLI, server (Frame/FastAPI), hooks, and all business logic. TypeScript/React is GUI-only. See ADR-0034.
 
 | Directory | Purpose |
 |-----------|---------|
 | `pennyfarthing-dist/` | Published package (source of truth) — agents, commands, guides, skills, personas, workflows, scripts |
-| `pennyfarthing-dist/src/pf/` | Python package — CLI, WheelHub server (FastAPI), hooks, jira, sprint, workflow, prime |
-| `pennyfarthing-dist/src/pf/wheelhub/` | Python FastAPI server (OTLP, WebSocket, API routes) — replaces old Node.js server |
+| `pennyfarthing-dist/src/pf/` | Python package — CLI, Frame server (FastAPI), hooks, jira, sprint, workflow, prime |
+| `pennyfarthing-dist/src/pf/frame/` | Python FastAPI server (OTLP, WebSocket, API routes) — replaces old Node.js server |
 | `packages/core/` | `@pennyfarthing/core` — React GUI components, workflow engine, shared utilities |
 | `packages/cyclist/` | React entry points (minimal — 3 files) |
 | `packages/themes-*/` | Theme packages (comedy, literary, mythology-fantasy, prestige-tv, realistic, scifi, superheroes) |
 
-**Display modes:** BikeRack panels render in three contexts:
-- **TUI** — `pf bikerack start` launches panels alongside Claude Code CLI in the terminal
-- **GUI** — BikeRack browser UI with full dockview panel layout
-- **IDE** — VS Code / Cursor sidebar panels via WheelHub API
+**Display modes:** TUI panels render in three contexts:
+- **TUI** — `pf frame start` launches panels alongside Claude Code CLI in the terminal
+- **GUI** — Browser UI with full dockview panel layout
+- **IDE** — VS Code / Cursor sidebar panels via Frame API
 
 **Key files:**
 

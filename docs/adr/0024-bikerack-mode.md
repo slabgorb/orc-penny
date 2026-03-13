@@ -1,3 +1,5 @@
+> **Note (2026-03):** WheelHub has been renamed to Frame, BikeRack to TUI. See current code for updated names.
+
 # ADR-0024: BikeRack Mode — Decoupled WheelHub Dashboard for CLI-First Development
 
 ## Status: Accepted

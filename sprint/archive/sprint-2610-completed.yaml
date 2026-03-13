@@ -835,3 +835,8 @@ completed_stories:
     title: "Hook into story_finish pipeline — auto-trigger on completion"
     points: 2
     completed: '2026-03-13'
+  - id: 148-2
+    epic: ''
+    title: Portrait pane does not follow agent choice
+    points: 2
+    completed: '2026-03-13'

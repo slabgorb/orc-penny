@@ -1,3 +1,5 @@
+> **Note (2026-03):** WheelHub has been renamed to Frame, BikeRack to TUI. See current code for updated names.
+
 # ADR-0004: Wheelhub Background Agent Coordination
 
 **Status:** Accepted
