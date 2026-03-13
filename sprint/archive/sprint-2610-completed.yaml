@@ -608,72 +608,86 @@ completed_stories:
     points: 2
     completed: '2026-03-12'
   - id: 143-1
-    epic: ''
+    epic: MSSCI-16358
+    jira: MSSCI-16359
     title: Create native subagent definition for Dev in pennyfarthing-dist
     points: 3
     completed: '2026-03-12'
   - id: 143-2
-    epic: ''
+    epic: MSSCI-16358
+    jira: MSSCI-16360
     title: Create native subagent definitions for TEA and Reviewer in pennyfarthing-dist
     points: 3
     completed: '2026-03-12'
   - id: 143-3
-    epic: ''
+    epic: MSSCI-16358
+    jira: MSSCI-16361
     title: Create native subagent definitions for remaining 7 agents in pennyfarthing-dist
     points: 3
     completed: '2026-03-12'
   - id: 143-4
-    epic: ''
+    epic: MSSCI-16358
+    jira: MSSCI-16362
     title: Adapt pf prime for subagent-compatible context output
     points: 5
     completed: '2026-03-12'
   - id: 143-5
-    epic: ''
+    epic: MSSCI-16358
+    jira: MSSCI-16363
     title: Define handoff document contract format
     points: 2
     completed: '2026-03-12'
   - id: 143-6
-    epic: ''
+    epic: MSSCI-16358
+    jira: MSSCI-16364
     title: SM spawns single subagent via Agent tool
     points: 3
     completed: '2026-03-12'
   - id: 143-7
-    epic: ''
+    epic: MSSCI-16358
+    jira: MSSCI-16365
     title: SM reads handoff documents and chains phases
     points: 3
     completed: '2026-03-12'
   - id: 143-8
-    epic: ''
+    epic: MSSCI-16358
+    jira: MSSCI-16366
     title: SM enforces gates between phases
     points: 5
     completed: '2026-03-12'
   - id: 143-11
-    epic: ''
+    epic: MSSCI-16358
+    jira: MSSCI-16369
     title: Update PF activation skills for native subagents
     points: 3
     completed: '2026-03-12'
   - id: 143-9
-    epic: ''
+    epic: MSSCI-16358
+    jira: MSSCI-16367
     title: Full TDD cycle end-to-end validation
     points: 5
     completed: '2026-03-12'
   - id: 143-10
-    epic: ''
+    epic: MSSCI-16358
+    jira: MSSCI-16368
     title: Reviewer-Dev fix round-trip support
     points: 3
     completed: '2026-03-12'
   - id: 144-1
-    epic: ''
+    epic: MSSCI-16348
+    jira: MSSCI-16386
     title: Deviation format spec and gate validation upgrade
     points: 3
     completed: '2026-03-12'
   - id: 144-2
-    epic: ''
+    epic: MSSCI-16348
+    jira: MSSCI-16387
     title: Update TEA and Dev agent definitions for deviation logging
     points: 2
     completed: '2026-03-12'
   - id: 143-12
-    epic: ''
+    epic: MSSCI-16358
+    jira: MSSCI-16370
     title: Validate per-role tool restrictions
     points: 2
     completed: '2026-03-12'
