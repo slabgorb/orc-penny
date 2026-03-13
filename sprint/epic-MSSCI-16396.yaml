@@ -50,30 +50,34 @@ stories:
     title: Demo script generator — step-by-step presenter walkthrough
     points: 2
     priority: p1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-13'
   - id: 145-5
     jira: MSSCI-16401
     title: PPTX assembler — build slide deck from generated content
     points: 3
     priority: p1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-13'
   - id: 145-6
     jira: MSSCI-16402
     title: Mermaid diagram generation for backend stories
     points: 2
     priority: p1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-13'
   - id: 145-7
     jira: MSSCI-16403
     title: DemoOrchestrator — pipeline entry point and output writer
     points: 2
     priority: p0
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-13'

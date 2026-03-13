@@ -10,9 +10,9 @@ sprint:
 epics:
   - MSSCI-16293
   - MSSCI-16396
-  - '146'
-  - '142'
-  - MSSCI-16394
+  - MSSCI-16405
+  - MSSCI-16348
+  - MSSCI-16411
 stories: []
 standalone_stories:
   - id: MSSCI-16066

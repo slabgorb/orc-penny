@@ -4,16 +4,19 @@ title: Configuration Gap Closure
 priority: p0
 status: backlog
 repos: pennyfarthing
-jira: MSSCI-16394
+jira: MSSCI-16411
 stories:
   - id: 147-1
+    jira: MSSCI-16412
     title: Add Jira config to DEFAULTS and TUI settings panel
     points: 1
     priority: p0
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-13'
   - id: 147-2
+    jira: MSSCI-16413
     title: Promote saddle_mode to explicit SettingSpec
     points: 1
     priority: p0
@@ -21,13 +24,15 @@ stories:
     repos: pennyfarthing
     workflow: trivial
   - id: 147-3
-    title: Unhide colorPreset with Select widget
+    jira: MSSCI-16414
+    title: Remove colorPreset from settings — unused dead config
     points: 1
     priority: p1
     status: backlog
     repos: pennyfarthing
     workflow: trivial
   - id: 147-4
+    jira: MSSCI-16415
     title: Create RepoFieldSpec registry in repos_meta.py
     points: 2
     priority: p0
@@ -35,6 +40,7 @@ stories:
     repos: pennyfarthing
     workflow: tdd
   - id: 147-5
+    jira: MSSCI-16416
     title: Create ReposPanel with per-repo collapsible sections
     points: 3
     priority: p0
@@ -42,6 +48,7 @@ stories:
     repos: pennyfarthing
     workflow: tdd
   - id: 147-6
+    jira: MSSCI-16417
     title: Add set_repo_field writer to git/repos.py
     points: 2
     priority: p1
@@ -49,6 +56,7 @@ stories:
     repos: pennyfarthing
     workflow: tdd
   - id: 147-7
+    jira: MSSCI-16418
     title: Add repos API endpoints to WheelHub
     points: 1
     priority: p1
@@ -56,9 +64,18 @@ stories:
     repos: pennyfarthing
     workflow: trivial
   - id: 147-8
+    jira: MSSCI-16419
     title: Add write-time validators to settings and repo writers
     points: 2
     priority: p2
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+  - id: 147-9
+    jira: MSSCI-16420
+    title: Add --jira flag to pf sprint story update command
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial

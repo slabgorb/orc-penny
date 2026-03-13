@@ -5,15 +5,20 @@ description: CLI, skill, hook integration, and configuration for the demo artifa
 priority: p1
 status: backlog
 repos: pennyfarthing
+jira: MSSCI-16405
 stories:
   - id: 146-1
+    jira: MSSCI-16406
     title: pf demo generate CLI command + dry-run
     points: 2
     priority: p0
-    status: backlog
+    status: in_progress
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-13'
     repos: pennyfarthing
     workflow: tdd
   - id: 146-2
+    jira: MSSCI-16407
     title: /pf-demo skill wrapper
     points: 1
     priority: p1
@@ -21,6 +26,7 @@ stories:
     repos: pennyfarthing
     workflow: trivial
   - id: 146-3
+    jira: MSSCI-16408
     title: Hook into story_finish pipeline — auto-trigger on completion
     points: 2
     priority: p0
@@ -28,6 +34,7 @@ stories:
     repos: pennyfarthing
     workflow: tdd
   - id: 146-4
+    jira: MSSCI-16409
     title: demo.yaml configuration — branding, format prefs, classification rules
     points: 2
     priority: p1
@@ -35,6 +42,7 @@ stories:
     repos: pennyfarthing
     workflow: trivial
   - id: 146-5
+    jira: MSSCI-16410
     title: Playwright screenshot capture for UI stories
     points: 3
     priority: p2
