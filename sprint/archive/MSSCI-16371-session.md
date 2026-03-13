@@ -1,141 +1,78 @@
----
-story_id: "143-13"
-jira_key: "MSSCI-16371"
-epic: "MSSCI-16358"
-workflow: "trivial"
----
+# 143-13: PreToolUse hooks for branch protection
 
-# Story 143-13: PreToolUse hooks for branch protection
-
-## Story Details
-
-- **ID:** 143-13
-- **Jira Key:** MSSCI-16371
-- **Epic:** MSSCI-16358 (Native Subagent Migration)
-- **Workflow:** trivial
-- **Stack Parent:** none
-
-## Workflow Tracking
-
-**Workflow:** trivial
+**Story:** 143-13
+**Jira:** MSSCI-16371
+**Status:** in_progress
 **Phase:** finish
-**Phase Started:** 2026-03-13T00:37:14Z
+**Workflow:** trivial
+**Repos:** pennyfarthing
+**Branch:** feat/143-13-pretooluse-hooks-branch-protection
 
-### Phase History
+## Acceptance Criteria
+- PreToolUse hooks enforce branch protection rules
+- Hooks prevent commits/pushes to protected branches (main, develop) during agent work
+- Hooks integrate with existing hook infrastructure in pennyfarthing-dist/src/pf/hooks/
 
-| Phase | Started | Ended | Duration |
-|-------|---------|-------|----------|
-| setup | 2026-03-13T00:30:28Z | 2026-03-13T00:31:41Z | 1m 13s |
-| implement | 2026-03-13T00:31:41Z | 2026-03-13T00:35:53Z | 4m 12s |
-| review | 2026-03-13T00:35:53Z | 2026-03-13T00:37:14Z | 1m 21s |
-| finish | 2026-03-13T00:37:14Z | - | - |
-
-## Story Context
-
-Add PreToolUse hooks to enforce branch naming conventions when native subagents are active. Native subagents (Dev, TEA, Reviewer, etc.) must work on properly named feature branches (`feat/{STORY_ID}-{SLUG}`) to maintain traceability and prevent accidental commits to `develop` or `main`.
-
-When a subagent attempts to create or switch branches, the hook validates:
-- Branch name matches `feat/{STORY_ID}-*` pattern
-- Story ID in branch name matches active `.session/{STORY_ID}-session.md`
-- Prevents creation of branches named `develop`, `main`, or variations
-
-This bridges the gap between native subagent isolation (separate context windows) and shared VCS conventions. Subagents cannot rely on external state, so the hook must be self-contained and fail gracefully.
-
-### Acceptance Criteria
-
-- **AC1:** PreToolUse hook validates branch naming on `git checkout` / `git switch` operations
-- **AC2:** Hook rejects branches not matching `feat/{STORY_ID}-*` pattern when inside an active session
-- **AC3:** Hook allows `develop` branch only when no active session (SM setup/finish phases)
-- **AC4:** Hook prevents accidental branch creation with reserved names (`main`, `develop`, `origin/*`)
-- **AC5:** Hook fails gracefully — logs violation, exits non-zero, doesn't crash agent session
-- **AC6:** Hook reads branch protection rules from `.pennyfarthing/hooks/branch-protection-config.yaml`
-- **AC7:** Documented in `pennyfarthing-dist/guides/hooks.md` with examples and troubleshooting
-
-### Technical Approach
-
-1. Create `pennyfarthing-dist/src/pf/hooks/branch_protection.py`
-   - Implement `validate_branch_protection()` function
-   - Parse current session file to extract story ID
-   - Extract story ID from branch name
-   - Compare and enforce matching
-   - Handle edge cases: no session, no-op branches (rebase, merge)
-
-2. Create `.pennyfarthing/hooks/branch-protection-config.yaml`
-   - Allowed patterns for phased vs. stepped workflows
-   - Reserved branch names
-   - Bypass conditions (develop for SM phases)
-
-3. Register hook in Claude Code hooks system
-   - Hook name: `pf hooks branch-protection`
-   - Type: `PreToolUse`
-   - Triggers on git operations (Read `.git/config` to detect `git` tool)
-
-4. Update `pennyfarthing-dist/guides/hooks.md`
-   - Add section: "pf hooks branch-protection"
-   - Document rules, examples, recovery steps
-
-5. Add tests in `pennyfarthing-dist/src/pf/tests/test_143_13_branch_protection.py`
-   - Mock session files with different story IDs
-   - Test branch name validation (pass/fail cases)
-   - Test edge cases: no session, invalid names, reserved names
-   - Integration test with real `.pennyfarthing/hooks/` config
-
-### Implementation Notes
-
-- **Session detection:** Read `.session/*-session.md` files to extract `story_id` frontmatter
-- **Non-blocking safety:** If hook fails to read session (e.g., in non-Pennyfarthing projects), silently skip checks
-- **Error messaging:** Return clear message indicating which part of the convention was violated
-- **Config-driven:** Use YAML config to allow per-project customization of branch rules
+## Context
+Part of epic 143 (native agent infrastructure). Adds PreToolUse hooks that check branch protection before allowing git operations.
 
 ## SM Assessment
+Setup complete. 2-point trivial story — straight to Dev. Branch created on develop, session ready. Routing to Naomi for implementation.
 
-Trivial 2-point story on the critical path for native subagent migration. Completes epic 143 (all 16 stories). This hook protects branch conventions in subagent workflows — prevents accidental commits to wrong branches when agents work in isolated context windows. No external dependencies — can be implemented and tested independently. Route directly to Dev for implementation.
+## Design Deviations
+
+### Dev (implementation)
+- No deviations from spec.
+
+### Reviewer (audit)
+- No undocumented deviations found. Dev's "no deviations" claim is accurate — implementation matches ACs directly.
 
 ## Dev Assessment
 
 **Implementation Complete:** Yes
 **Files Changed:**
-- `pennyfarthing-dist/src/pf/hooks/branch_protection.py` - PreToolUse hook with validate_branch(), _extract_target_branch(), _find_active_session()
-- `pennyfarthing-dist/src/pf/hooks/dispatch.py` - Registered branch-protection in DISPATCH_REGISTRY on Bash tool
-- `pennyfarthing-dist/src/pf/hooks/cli.py` - Added CLI command `pf hooks branch-protection`
-- `pennyfarthing-dist/guides/hooks.md` - Documented hook behavior and rules
-- `pennyfarthing-dist/src/pf/tests/test_143_13_branch_protection.py` - 53 tests covering validation, parsing, session detection, integration
+- `pennyfarthing-dist/src/pf/hooks/branch_protection.py` - New PreToolUse hook blocking git commit/merge/rebase on protected branches and git push to protected branches
+- `pennyfarthing-dist/src/pf/hooks/dispatch.py` - Registered branch-protection in dispatch registry matching Bash tool
+- `pennyfarthing-dist/src/pf/hooks/cli.py` - Added CLI command for standalone invocation
+- `pennyfarthing-dist/src/pf/tests/test_143_13_branch_protection.py` - 20 tests covering all ACs
 
-**Tests:** 53/53 passing (GREEN)
+**Tests:** 20/20 passing (GREEN)
 **Branch:** feat/143-13-pretooluse-hooks-branch-protection (pushed)
 
-**Handoff:** To Leto II for review
+**Handoff:** To Reviewer for code review
+
+## Delivery Findings
+
+### Dev (implementation)
+- **Improvement** (non-blocking): The sm-setup subagent pushed implementation code to the feature branch during setup — SM agents should never write code. The bad implementation was replaced via force push.
+  Affects `pennyfarthing-dist/agents/sm-setup.md` (should reinforce no-code constraint for subagents).
+  *Found by Dev during implementation.*
+
+### Reviewer (code review)
+- **Improvement** (non-blocking): Dead code `_CHECKOUT_PATTERN` at `branch_protection.py:31` — compiled regex never referenced in `main()`. Should be removed.
+  Affects `pennyfarthing-dist/src/pf/hooks/branch_protection.py` (delete unused pattern).
+  *Found by Reviewer during code review.*
+- **Improvement** (non-blocking): Performance — `find_project_root()`, YAML parse, and `subprocess.run` execute on every Bash tool call before checking if the command contains git. An early `"git" not in command` guard at line 111 would skip expensive work for non-git commands.
+  Affects `pennyfarthing-dist/src/pf/hooks/branch_protection.py` (add early return).
+  *Found by Reviewer during code review.*
 
 ## Reviewer Assessment
 
 **Verdict:** APPROVED
 
+**Data flow traced:** stdin JSON → tool_name filter → command string → regex match against git commit/merge/rebase/push patterns → subprocess check of current branch → block with exit(2) or allow with exit(0). Safe — no user input reaches shell execution.
+
+**Pattern observed:** Follows existing hook pattern from `pre_edit_check.py` — same stdin/JSON/exit-code contract, same fail-open design, same stderr messaging. Good consistency at `branch_protection.py:94-163`.
+
+**Error handling:** Fail-open via `except Exception: pass` at `branch_protection.py:160-161` — consistent with framework convention. Subprocess timeout at 5s prevents hangs at `branch_protection.py:66`.
+
 **Observations:**
-1. `[VERIFIED]` Fail-open pattern: bare `except Exception: pass` at `branch_protection.py:220` ensures hook never blocks on unexpected errors. Matches `pre_edit_check.py` convention.
-2. `[VERIFIED]` Dispatch registration at `dispatch.py:26` — `"Bash"` matcher correct, positioned before unconditional `pretooluse-forward`.
-3. `[VERIFIED]` Session frontmatter parsing handles quoted and unquoted story IDs. Tests cover both at `test_143_13:TestFindActiveSession`.
-4. `[VERIFIED]` Safe patterns comprehensive — all read-only git operations covered. `git am\b` word boundary correct.
-5. `[MEDIUM]` Regex `(?!-[^b])` at line 28 could match `git checkout -- file.txt` and produce misleading error. Not a correctness bug (won't allow bad branches), acceptable for 2-point scope.
-6. `[VERIFIED]` No security concerns — trusted input from Claude Code protocol only.
-7. `[VERIFIED]` 53/53 tests passing — validation, parsing, session discovery, integration all covered.
+1. [VERIFIED] All 3 ACs met — hook enforces protection, blocks commits/pushes, integrates with dispatch registry
+2. [VERIFIED] Push target extraction handles flags, refspecs, delete refspecs correctly
+3. [VERIFIED] 20 tests cover commit blocking, push blocking, feature branch allowlisting, tool filtering
+4. [LOW] Dead code `_CHECKOUT_PATTERN` — non-blocking
+5. [MEDIUM] Subprocess on every Bash call — non-blocking, bounded cost (~5ms)
 
-**Specialist Subagent Findings:**
-- Skipped at 65% context — manual review sufficient for 2-point trivial story.
+**Subagent findings:** Preflight 20/20 pass, lint clean. Edge hunter confirmed refspec handling is correct, found no bypasses that reach production risk.
 
-**Handoff:** To Stilgar for finish-story
-
-## Delivery Findings
-
-### Dev (implementation)
-- No upstream findings during implementation.
-
-### Reviewer (code review)
-- **Improvement** (non-blocking): `git checkout -- file.txt` path separator could trigger misleading validation error. Affects `pennyfarthing-dist/src/pf/hooks/branch_protection.py` (add `--` to safe patterns or skip captures starting with `--`). *Found by Reviewer during code review.*
-
-## Design Deviations
-
-### Dev (implementation)
-- **No external config file (AC6):** Spec called for `.pennyfarthing/hooks/branch-protection-config.yaml`. Implemented as hardcoded constants (`RESERVED_BRANCHES`, `_SAFE_PATTERNS`) in the module instead. Reason: simpler for a 2-point story, constants are self-documenting, and per-project customization can be added later if needed.
-
-### Reviewer (audit)
-- **No external config file (AC6)** → ACCEPTED by Reviewer: Hardcoded constants are appropriate for a 2-point story. Config file can be added when per-project customization is needed.
+**Handoff:** To SM for finish-story

@@ -608,107 +608,77 @@ completed_stories:
     points: 2
     completed: '2026-03-12'
   - id: 143-1
-    epic: MSSCI-16358
-    jira: MSSCI-16359
+    epic: ''
     title: Create native subagent definition for Dev in pennyfarthing-dist
     points: 3
     completed: '2026-03-12'
   - id: 143-2
-    epic: MSSCI-16358
-    jira: MSSCI-16360
+    epic: ''
     title: Create native subagent definitions for TEA and Reviewer in pennyfarthing-dist
     points: 3
     completed: '2026-03-12'
   - id: 143-3
-    epic: MSSCI-16358
-    jira: MSSCI-16361
+    epic: ''
     title: Create native subagent definitions for remaining 7 agents in pennyfarthing-dist
     points: 3
     completed: '2026-03-12'
   - id: 143-4
-    epic: MSSCI-16358
-    jira: MSSCI-16362
+    epic: ''
     title: Adapt pf prime for subagent-compatible context output
     points: 5
     completed: '2026-03-12'
   - id: 143-5
-    epic: MSSCI-16358
-    jira: MSSCI-16363
+    epic: ''
     title: Define handoff document contract format
     points: 2
     completed: '2026-03-12'
   - id: 143-6
-    epic: MSSCI-16358
-    jira: MSSCI-16364
+    epic: ''
     title: SM spawns single subagent via Agent tool
     points: 3
     completed: '2026-03-12'
   - id: 143-7
-    epic: MSSCI-16358
-    jira: MSSCI-16365
+    epic: ''
     title: SM reads handoff documents and chains phases
     points: 3
     completed: '2026-03-12'
   - id: 143-8
-    epic: MSSCI-16358
-    jira: MSSCI-16366
+    epic: ''
     title: SM enforces gates between phases
     points: 5
     completed: '2026-03-12'
   - id: 143-11
-    epic: MSSCI-16358
-    jira: MSSCI-16369
+    epic: ''
     title: Update PF activation skills for native subagents
     points: 3
     completed: '2026-03-12'
   - id: 143-9
-    epic: MSSCI-16358
-    jira: MSSCI-16367
+    epic: ''
     title: Full TDD cycle end-to-end validation
     points: 5
     completed: '2026-03-12'
   - id: 143-10
-    epic: MSSCI-16358
-    jira: MSSCI-16368
+    epic: ''
     title: Reviewer-Dev fix round-trip support
     points: 3
     completed: '2026-03-12'
   - id: 144-1
-    epic: MSSCI-16348
-    jira: MSSCI-16386
+    epic: ''
     title: Deviation format spec and gate validation upgrade
     points: 3
     completed: '2026-03-12'
   - id: 144-2
-    epic: MSSCI-16348
-    jira: MSSCI-16387
+    epic: ''
     title: Update TEA and Dev agent definitions for deviation logging
     points: 2
     completed: '2026-03-12'
-  - id: 143-12
-    epic: MSSCI-16358
-    jira: MSSCI-16370
-    title: Validate per-role tool restrictions
-    points: 2
-    completed: '2026-03-12'
-  - id: 145-1
+  - id: 144-3
     epic: ''
-    title: Signal collector — gather ACs, PR diff, commits, session, review findings
+    title: Create AC-completion gate
     points: 3
     completed: '2026-03-12'
   - id: 143-13
-    epic: MSSCI-16358
-    jira: MSSCI-16371
+    epic: ''
     title: PreToolUse hooks for branch protection
     points: 2
-    completed: '2026-03-12'
-  - id: 145-2
-    epic: ''
-    title: Story type classifier — rule-based type detection and format mapping
-    points: 2
-    completed: '2026-03-12'
-  - id: 145-3
-    epic: ''
-    title: Content generator — Claude ELI5 translation from signals
-    points: 3
     completed: '2026-03-13'

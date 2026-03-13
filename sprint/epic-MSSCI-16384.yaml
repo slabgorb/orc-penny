@@ -35,9 +35,13 @@ stories:
     title: Create AC-completion gate
     points: 3
     priority: p0
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-12'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-12'
+    review_verdict: approved
   - id: 144-4
     jira: MSSCI-16388
     title: Add simplify toggle to repos.yaml
