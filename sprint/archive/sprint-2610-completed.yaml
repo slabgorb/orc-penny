@@ -707,3 +707,8 @@ completed_stories:
     title: Story type classifier — rule-based type detection and format mapping
     points: 2
     completed: '2026-03-12'
+  - id: 145-3
+    epic: ''
+    title: Content generator — Claude ELI5 translation from signals
+    points: 3
+    completed: '2026-03-13'
