@@ -124,9 +124,11 @@ stories:
     title: Wire saddle_command consumption in relay hook and agent behavior guide
     points: 2
     priority: p0
-    status: backlog
+    status: in_progress
+    started: '2026-03-13'
     repos: pennyfarthing
     workflow: tdd
+    branch: feat/144-11-saddle-command-relay-hook
   - id: 144-12
     title: Wire saddle_command consumption in relay hook and agent behavior guide
     points: 2
