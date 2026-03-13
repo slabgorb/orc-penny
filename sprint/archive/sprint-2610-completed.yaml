@@ -708,3 +708,8 @@ completed_stories:
     title: Team mode with native subagents
     points: 2
     completed: '2026-03-13'
+  - id: 143-17
+    epic: ''
+    title: Saddle — tmux-based interactive agent workspace
+    points: 5
+    completed: '2026-03-13'
