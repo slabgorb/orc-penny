@@ -23,9 +23,13 @@ stories:
     title: Update TEA and Dev agent definitions for deviation logging
     points: 2
     priority: p0
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-12'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-12'
+    review_verdict: approved
   - id: 144-3
     jira: MSSCI-16387
     title: Create AC-completion gate

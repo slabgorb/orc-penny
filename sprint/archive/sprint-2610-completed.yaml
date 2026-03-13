@@ -667,3 +667,8 @@ completed_stories:
     title: Deviation format spec and gate validation upgrade
     points: 3
     completed: '2026-03-12'
+  - id: 144-2
+    epic: ''
+    title: Update TEA and Dev agent definitions for deviation logging
+    points: 2
+    completed: '2026-03-12'
