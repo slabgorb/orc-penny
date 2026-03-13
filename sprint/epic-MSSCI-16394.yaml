@@ -1,0 +1,64 @@
+id: '147'
+type: epic
+title: Configuration Gap Closure
+priority: p0
+status: backlog
+repos: pennyfarthing
+jira: MSSCI-16394
+stories:
+  - id: 147-1
+    title: Add Jira config to DEFAULTS and TUI settings panel
+    points: 1
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+  - id: 147-2
+    title: Promote saddle_mode to explicit SettingSpec
+    points: 1
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+  - id: 147-3
+    title: Unhide colorPreset with Select widget
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+  - id: 147-4
+    title: Create RepoFieldSpec registry in repos_meta.py
+    points: 2
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 147-5
+    title: Create ReposPanel with per-repo collapsible sections
+    points: 3
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 147-6
+    title: Add set_repo_field writer to git/repos.py
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 147-7
+    title: Add repos API endpoints to WheelHub
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+  - id: 147-8
+    title: Add write-time validators to settings and repo writers
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
