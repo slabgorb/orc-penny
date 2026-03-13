@@ -22,6 +22,7 @@ completed_epics:
   - '49'
   - MSSCI-16348
   - MSSCI-16358
+  - MSSCI-16384
 completed_stories:
   - id: 110-1
     epic: '110'
@@ -746,5 +747,10 @@ completed_stories:
   - id: 143-12
     epic: MSSCI-16358
     title: Validate per-role tool restrictions
+    points: 2
+    completed: '2026-03-13'
+  - id: 144-9
+    epic: ''
+    title: Update TDD workflow with new phases and gates
     points: 2
     completed: '2026-03-13'

@@ -3,7 +3,7 @@ type: epic
 title: Specification Fidelity Gates
 description: 'Enforce spec fidelity end-to-end: structured deviation documentation, AC accountability with operator approval, Architect spec alignment phases, and modernized TDD workflow.'
 priority: p0
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-16384
 stories:
@@ -106,9 +106,13 @@ stories:
     title: Update TDD workflow with new phases and gates
     points: 2
     priority: p0
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-13'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-13'
+    review_verdict: approved
   - id: 144-10
     title: Fix spec-check gate naming discrepancy in 144-9 context doc
     points: 1
@@ -134,3 +138,4 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+completed: '2026-03-13'
