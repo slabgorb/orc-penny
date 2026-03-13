@@ -713,3 +713,23 @@ completed_stories:
     title: Saddle — tmux-based interactive agent workspace
     points: 5
     completed: '2026-03-13'
+  - id: 144-6
+    epic: ''
+    title: Create Architect spec-check phase and gate
+    points: 3
+    completed: '2026-03-13'
+  - id: 144-7
+    epic: ''
+    title: Create Architect spec-reconcile phase and gate
+    points: 3
+    completed: '2026-03-13'
+  - id: 144-10
+    epic: ''
+    title: Fix spec-check gate naming discrepancy in 144-9 context doc
+    points: 1
+    completed: '2026-03-13'
+  - id: 144-8
+    epic: ''
+    title: Remove tandem workflows
+    points: 1
+    completed: '2026-03-13'

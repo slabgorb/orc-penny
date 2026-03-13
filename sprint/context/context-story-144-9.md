@@ -43,7 +43,7 @@ SM (setup) → Architect (spec-check) → TEA (red) → Dev (green) → TEA (ver
 | Phase | Agent | Exit Gate(s) |
 |-------|-------|--------------|
 | setup | sm | `sm-setup-exit` (existing) |
-| spec-check | architect | `spec-check-pass` (new, from 144-6) |
+| spec-check | architect | `spec-check` (new, from 144-6) |
 | red | tea | `tests-fail` (existing) + `deviations-logged` (existing, now wired) |
 | green | dev | `dev-exit` (existing) + `deviations-logged` (existing) + `ac-completion` (new, from 144-3) |
 | verify | tea | `quality-pass` (existing) |
@@ -60,7 +60,7 @@ The existing `entry_gate` on the red phase (`tea-context` gate) and the `entry_g
 **In scope:**
 - Modify `pennyfarthing-dist/workflows/tdd.yaml` to add spec-check and reconcile phases with their agents, inputs, outputs, and gates
 - Wire all previously unwired gates (`deviations-logged`, `deviations-audited`) into their correct phases
-- Add new gate references for `spec-check-pass`, `ac-completion`, and `spec-reconcile-pass`
+- Add new gate references for `spec-check`, `ac-completion`, and `spec-reconcile-pass`
 - Bump version from `"1.0.0"` to `"2.0.0"`
 - Verify `pf workflow show tdd` displays all 8 phases correctly after the edit
 
@@ -81,9 +81,9 @@ The YAML `phases:` array must have exactly 8 entries in this sequence. The workf
 - spec-check inputs: `[session_file, story_context]`; outputs: `[spec_check_findings]`
 - reconcile inputs: `[approval, spec_check_findings]`; outputs: `[deviation_manifest, archived_session, story_summary]`
 
-**AC: spec-check phase references `spec-check-pass` gate**
+**AC: spec-check phase references `spec-check` gate**
 
-The exit gate on the spec-check phase must reference `spec-check-pass`. The gate is advisory (passes even with broken assumptions found, fails only if story context is missing or Assumptions section absent — that logic is in the gate file itself). The workflow just wires it.
+The exit gate on the spec-check phase must reference `spec-check`. The gate is advisory (passes even with broken assumptions found, fails only if story context is missing or Assumptions section absent — that logic is in the gate file itself). The workflow just wires it.
 
 Expected YAML shape:
 ```yaml
@@ -92,8 +92,8 @@ Expected YAML shape:
   input: [session_file, story_context]
   output: [spec_check_findings]
   gate:
-    file: gates/spec-check-pass
-    type: spec_check_pass
+    file: gates/spec-check
+    type: spec_check
     condition: Story context with Assumptions section validated before RED phase
 ```
 
@@ -125,7 +125,7 @@ After editing, run `pf workflow show tdd` and confirm all 8 phase names appear w
 
 - Assumes 144-1 delivers the upgraded `deviations-logged` gate at `pennyfarthing-dist/gates/deviations-logged.md` with 6-field format validation (wiring it into red and green phases here will invoke the upgraded validator, not the old existence-check version)
 - Assumes 144-3 delivers the `ac-completion` gate at `pennyfarthing-dist/gates/ac-completion.md` as a standalone composable gate before this story begins
-- Assumes 144-6 delivers the `spec-check-pass` gate at `pennyfarthing-dist/gates/spec-check-pass.md` before this story begins
+- Assumes 144-6 delivers the `spec-check` gate at `pennyfarthing-dist/gates/spec-check.md` before this story begins
 - Assumes 144-7 delivers the `spec-reconcile-pass` gate at `pennyfarthing-dist/gates/spec-reconcile-pass.md` before this story begins
 - Assumes 144-8 has deleted `tdd-tandem.yaml`, `review-tandem.yaml`, and `bdd-tandem.yaml` — tdd.yaml is the only active TDD workflow and editing it is a clean operation with no tandem entanglements
 - Assumes all new gate files exist at `pennyfarthing-dist/gates/` before this story wires them into the workflow — this story does not create gate files, only references them

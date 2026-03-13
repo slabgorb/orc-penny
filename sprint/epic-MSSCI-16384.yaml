@@ -71,25 +71,36 @@ stories:
     title: Create Architect spec-check phase and gate
     points: 3
     priority: p0
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-13'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-13'
+    review_verdict: approved
   - id: 144-7
     jira: MSSCI-16391
     title: Create Architect spec-reconcile phase and gate
     points: 3
     priority: p0
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-13'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-13'
   - id: 144-8
     jira: MSSCI-16392
     title: Remove tandem workflows
     points: 1
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-13'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-13'
+    review_verdict: approved
   - id: 144-9
     jira: MSSCI-16393
     title: Update TDD workflow with new phases and gates
@@ -98,3 +109,14 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: trivial
+  - id: 144-10
+    title: Fix spec-check gate naming discrepancy in 144-9 context doc
+    points: 1
+    priority: p1
+    status: done
+    started: '2026-03-13'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-03-13'
+    branch: feat/144-10-fix-spec-check-gate-naming
+    review_verdict: approved
