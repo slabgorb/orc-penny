@@ -691,3 +691,8 @@ completed_stories:
     title: Validate per-role tool restrictions
     points: 2
     completed: '2026-03-12'
+  - id: 145-1
+    epic: ''
+    title: Signal collector — gather ACs, PR diff, commits, session, review findings
+    points: 3
+    completed: '2026-03-12'

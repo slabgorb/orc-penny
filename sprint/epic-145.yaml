@@ -10,10 +10,13 @@ stories:
     title: Signal collector — gather ACs, PR diff, commits, session, review findings
     points: 3
     priority: p0
-    status: in_progress
+    status: done
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-12'
     branch: feat/145-1-signal-collector
+    review_findings: extract_file_extensions adds spurious extensions for extensionless files (Dockerfile, Makefile). Simplify phase regression.
+    review_verdict: approved
   - id: 145-2
     title: Story type classifier — rule-based type detection and format mapping
     points: 2
