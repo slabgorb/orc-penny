@@ -51,13 +51,15 @@ stories:
     title: Audit log pane not recording OTEL traces via WebSocket
     points: 3
     priority: p0
-    status: in_progress
+    status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-03-13'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-13'
     type: bug
     branch: feat/148-5-audit-log-otel-websocket
+    review_verdict: approved
   - id: 148-6
     jira: MSSCI-16427
     title: Debug pane not receiving signals from WebSocket
