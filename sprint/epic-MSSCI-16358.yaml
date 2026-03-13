@@ -227,7 +227,9 @@ stories:
     description: 'Wire the Saddle core module (143-17) into the actual workflow so agents run in a visible tmux pane instead of backgrounded. Three integration points: (1) pf saddle CLI group with start/stop/status commands, (2) SM agent-launch logic uses saddle instead of Agent tool, (3) relay-mode handoff markers trigger saddle start instead of emitting /pf-{agent} skill. Also implement saddle_mode in handoff marker.py (currently mocked in 143-17 tests but not built).'
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-13'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
@@ -237,3 +239,5 @@ stories:
       - handoff marker.py reads saddle_mode from config and generates saddle-based commands
       - Existing non-saddle flow continues to work when saddle_mode is disabled
       - Saddle mode toggle added to BikeRack TUI settings panel
+    completed: '2026-03-13'
+    review_verdict: approved
