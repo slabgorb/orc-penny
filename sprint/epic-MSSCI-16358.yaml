@@ -164,6 +164,7 @@ stories:
     repos: pennyfarthing
     workflow: trivial
     type: feature
+    review_verdict: approved
   - id: 143-13
     jira: MSSCI-16371
     title: PreToolUse hooks for branch protection
