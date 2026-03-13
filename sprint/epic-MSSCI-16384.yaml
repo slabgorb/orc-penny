@@ -47,9 +47,13 @@ stories:
     title: Add simplify toggle to repos.yaml
     points: 1
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-13'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-13'
+    review_verdict: approved
   - id: 144-5
     jira: MSSCI-16389
     title: Add Assumptions section to story context schema
