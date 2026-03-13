@@ -85,9 +85,13 @@ stories:
     repos: pennyfarthing
     workflow: trivial
   - id: 147-10
+    jira: MSSCI-16429
     title: Summon agent into saddle from running session — pf saddle summon
     points: 2
     priority: p1
-    status: backlog
+    status: in_progress
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-13'
     repos: pennyfarthing
     workflow: tdd
+    branch: feat/147-10-saddle-summon-agent
