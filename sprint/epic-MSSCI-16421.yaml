@@ -1,0 +1,74 @@
+id: '148'
+type: epic
+title: TUI-tmux Fixer
+description: Fixes and improvements for TUI tmux pane management, discoverability, and reliability.
+priority: p1
+status: backlog
+repos: pennyfarthing
+jira: MSSCI-16421
+stories:
+  - id: 148-1
+    jira: MSSCI-16422
+    title: Extend tmux for pane discoverability
+    points: 3
+    priority: p0
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-13'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-13'
+    branch: feat/148-1-tmux-pane-discoverability
+    review_verdict: approved
+  - id: 148-2
+    jira: MSSCI-16423
+    title: Portrait pane does not follow agent choice
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 148-3
+    jira: MSSCI-16424
+    title: Portrait pane shows description instead of random catchphrase
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 148-4
+    jira: MSSCI-16425
+    title: Git pane should allow collapsing dirty trees
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 148-5
+    jira: MSSCI-16426
+    title: Audit log pane not recording OTEL traces via WebSocket
+    points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 148-6
+    jira: MSSCI-16427
+    title: Debug pane not receiving signals from WebSocket
+    points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 148-7
+    jira: MSSCI-16428
+    title: Settings page rework for new settings
+    points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
