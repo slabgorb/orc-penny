@@ -815,3 +815,8 @@ completed_stories:
     title: Audit log pane not recording OTEL traces via WebSocket
     points: 3
     completed: '2026-03-13'
+  - id: 146-2
+    epic: ''
+    title: /pf-demo skill wrapper
+    points: 1
+    completed: '2026-03-13'

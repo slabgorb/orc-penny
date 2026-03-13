@@ -24,9 +24,14 @@ stories:
     title: /pf-demo skill wrapper
     points: 1
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-13'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-13'
+    review_findings: Wrong output paths (docs/demos/ vs sprint/demos/), wrong file names (script.md/summary.md/diagram.mmd vs narrative.md/demo-script.md/metadata.yaml), stray </output> tag
+    review_verdict: approved
   - id: 146-3
     jira: MSSCI-16408
     title: Hook into story_finish pipeline — auto-trigger on completion
