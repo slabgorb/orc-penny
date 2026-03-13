@@ -830,3 +830,8 @@ completed_stories:
     title: Remove colorPreset from settings — unused dead config
     points: 1
     completed: '2026-03-13'
+  - id: 147-4
+    epic: ''
+    title: Create RepoFieldSpec registry in repos_meta.py
+    points: 2
+    completed: '2026-03-13'
