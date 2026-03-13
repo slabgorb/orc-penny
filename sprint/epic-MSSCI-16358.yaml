@@ -171,16 +171,20 @@ stories:
     title: PreToolUse hooks for branch protection
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-13'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-12'
     type: feature
+    review_verdict: approved
   - id: 143-14
     jira: MSSCI-16372
     title: Tandem mode with native subagents
     points: 3
     priority: p1
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     type: feature
@@ -189,7 +193,7 @@ stories:
     title: Team mode with native subagents
     points: 2
     priority: p2
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     type: feature

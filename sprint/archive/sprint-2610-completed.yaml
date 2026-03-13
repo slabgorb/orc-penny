@@ -696,3 +696,9 @@ completed_stories:
     title: Signal collector — gather ACs, PR diff, commits, session, review findings
     points: 3
     completed: '2026-03-12'
+  - id: 143-13
+    epic: MSSCI-16358
+    jira: MSSCI-16371
+    title: PreToolUse hooks for branch protection
+    points: 2
+    completed: '2026-03-12'
