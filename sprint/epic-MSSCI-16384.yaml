@@ -120,3 +120,17 @@ stories:
     completed: '2026-03-13'
     branch: feat/144-10-fix-spec-check-gate-naming
     review_verdict: approved
+  - id: 144-11
+    title: Wire saddle_command consumption in relay hook and agent behavior guide
+    points: 2
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 144-12
+    title: Wire saddle_command consumption in relay hook and agent behavior guide
+    points: 2
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
