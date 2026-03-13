@@ -21,6 +21,7 @@ completed_epics:
   - MSSCI-16312
   - '49'
   - MSSCI-16348
+  - MSSCI-16358
 completed_stories:
   - id: 110-1
     epic: '110'
@@ -691,4 +692,19 @@ completed_stories:
     epic: ''
     title: Add Assumptions section to story context schema
     points: 1
+    completed: '2026-03-13'
+  - id: 143-16
+    epic: ''
+    title: BikeRack observability for subagent transitions
+    points: 3
+    completed: '2026-03-13'
+  - id: 143-14
+    epic: MSSCI-16358
+    title: Tandem mode with native subagents
+    points: 3
+    completed: '2026-03-13'
+  - id: 143-15
+    epic: MSSCI-16358
+    title: Team mode with native subagents
+    points: 2
     completed: '2026-03-13'

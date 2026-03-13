@@ -9,7 +9,7 @@ description: |
   projects access them via .claude/agents/ symlink. SM remains the main
   conversation orchestrator, spawning 10 agents as subagents.
 priority: p0
-status: in_progress
+status: done
 repos: pennyfarthing
 jira: MSSCI-16358
 stories:
@@ -201,7 +201,13 @@ stories:
     title: BikeRack observability for subagent transitions
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-13'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-13'
     type: feature
+    branch: feat/143-16-bikerack-observability-subagent-transitions
+    review_verdict: approved
+completed: '2026-03-13'

@@ -9,7 +9,6 @@ sprint:
   number: 2610
 epics:
   - MSSCI-16293
-  - MSSCI-16358
   - MSSCI-16384
   - MSSCI-16396
   - '146'
