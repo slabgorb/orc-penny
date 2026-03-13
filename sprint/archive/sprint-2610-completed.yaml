@@ -765,6 +765,11 @@ completed_stories:
     title: Promote saddle_mode to explicit SettingSpec
     points: 1
     completed: '2026-03-13'
+  - id: 146-1
+    epic: ''
+    title: pf demo generate CLI command + dry-run
+    points: 2
+    completed: '2026-03-13'
   - id: 145-1
     epic: MSSCI-16396
     title: Signal collector — gather ACs, PR diff, commits, session, review findings

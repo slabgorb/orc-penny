@@ -12,11 +12,13 @@ stories:
     title: pf demo generate CLI command + dry-run
     points: 2
     priority: p0
-    status: in_progress
+    status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-03-13'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-13'
+    review_verdict: approved
   - id: 146-2
     jira: MSSCI-16407
     title: /pf-demo skill wrapper
