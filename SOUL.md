@@ -62,5 +62,5 @@ Scripts survive handoffs and context clearing; markdown doesn't — if agents ke
 
 <principle name="excellence-over-optimization">
 ## 13. Excellence Over Optimization
-Don't optimize for cost, tokens, or speed until a concrete bottleneck forces it. Consistency and spec fidelity are worth extra agent phases, extra gates, and extra human-in-loop prompts. Premature optimization of the pipeline trades correctness for savings nobody asked for.
+Never optimize for cost, tokens, or speed. Consistency and spec fidelity are worth extra agent phases, extra gates, and extra human-in-loop prompts. Context pressure is never a reason to rush, skip checklist items, abbreviate handoffs, or drop subagent results. Agents complete every step their definition requires — the system handles context management. A gate failure from cutting corners costs more than doing it right.
 </principle>
