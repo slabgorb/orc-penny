@@ -89,9 +89,12 @@ stories:
     title: Summon agent into saddle from running session — pf saddle summon
     points: 2
     priority: p1
-    status: in_progress
+    status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-03-13'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-13'
     branch: feat/147-10-saddle-summon-agent
+    review_findings: 'CWE-78 fix ineffective: shlex.quote() inside double quotes provides no shell protection. Tests are false positives.'
+    review_verdict: approved

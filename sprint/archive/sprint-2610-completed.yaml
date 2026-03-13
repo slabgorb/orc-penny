@@ -820,3 +820,8 @@ completed_stories:
     title: /pf-demo skill wrapper
     points: 1
     completed: '2026-03-13'
+  - id: 147-10
+    epic: ''
+    title: Summon agent into saddle from running session — pf saddle summon
+    points: 2
+    completed: '2026-03-13'
