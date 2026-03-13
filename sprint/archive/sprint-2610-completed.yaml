@@ -702,3 +702,8 @@ completed_stories:
     title: PreToolUse hooks for branch protection
     points: 2
     completed: '2026-03-12'
+  - id: 145-2
+    epic: ''
+    title: Story type classifier — rule-based type detection and format mapping
+    points: 2
+    completed: '2026-03-12'
