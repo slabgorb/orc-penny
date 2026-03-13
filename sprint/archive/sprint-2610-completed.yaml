@@ -800,3 +800,8 @@ completed_stories:
     title: Mermaid diagram generation for backend stories
     points: 2
     completed: '2026-03-13'
+  - id: 146-4
+    epic: ''
+    title: demo.yaml configuration — branding, format prefs, classification rules
+    points: 2
+    completed: '2026-03-13'

@@ -40,11 +40,14 @@ stories:
     title: demo.yaml configuration — branding, format prefs, classification rules
     points: 2
     priority: p1
-    status: in_progress
+    status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-03-13'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-13'
+    review_findings: Orchestrator never passes config_path — classification rules are dead config. Classifier needs input validation hardening (empty patterns, invalid regex, type checks).
+    review_verdict: approved
   - id: 146-5
     jira: MSSCI-16410
     title: Playwright screenshot capture for UI stories
