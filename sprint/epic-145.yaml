@@ -3,16 +3,17 @@ type: epic
 title: Demo Artifact Generator — Core Pipeline
 description: Collection → classification → generation → assembly pipeline for auto-generating presentation-ready demo artifacts from completed stories.
 priority: p0
-status: backlog
+status: in_progress
 repos: pennyfarthing
 stories:
   - id: 145-1
     title: Signal collector — gather ACs, PR diff, commits, session, review findings
     points: 3
     priority: p0
-    status: backlog
+    status: in_progress
     repos: pennyfarthing
     workflow: tdd
+    branch: feat/145-1-signal-collector
   - id: 145-2
     title: Story type classifier — rule-based type detection and format mapping
     points: 2
