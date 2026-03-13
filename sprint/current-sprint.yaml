@@ -159,4 +159,12 @@ standalone_stories:
     repos: pennyfarthing
     pr: 1393
     branch: feat/MSSCI-16432-architect-spec-check
+  - id: MSSCI-16440
+    jira: MSSCI-16440
+    title: Update Jira label from pennyfarthing to product-pennyfarthing
+    points: 2
+    status: done
+    repos: pennyfarthing
+    pr: 1395
+    branch: feat/MSSCI-16440-jira-label-update
     completed: '2026-03-13'
