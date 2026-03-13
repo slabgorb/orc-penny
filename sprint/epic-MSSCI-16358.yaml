@@ -235,3 +235,4 @@ stories:
       - Relay-mode auto-advances through saddle pane instead of skill invocation
       - handoff marker.py reads saddle_mode from config and generates saddle-based commands
       - Existing non-saddle flow continues to work when saddle_mode is disabled
+      - Saddle mode toggle added to BikeRack TUI settings panel
