@@ -45,7 +45,9 @@ stories:
     title: Create RepoFieldSpec registry in repos_meta.py
     points: 2
     priority: p0
-    status: backlog
+    status: in_progress
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-13'
     repos: pennyfarthing
     workflow: tdd
   - id: 147-5
