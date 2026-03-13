@@ -23,6 +23,7 @@ completed_epics:
   - MSSCI-16348
   - MSSCI-16358
   - MSSCI-16384
+  - MSSCI-16396
 completed_stories:
   - id: 110-1
     epic: '110'
@@ -758,4 +759,39 @@ completed_stories:
     epic: ''
     title: Add Jira config to DEFAULTS and TUI settings panel
     points: 1
+    completed: '2026-03-13'
+  - id: 147-2
+    epic: ''
+    title: Promote saddle_mode to explicit SettingSpec
+    points: 1
+    completed: '2026-03-13'
+  - id: 145-1
+    epic: MSSCI-16396
+    title: Signal collector — gather ACs, PR diff, commits, session, review findings
+    points: 3
+    completed: '2026-03-12'
+  - id: 145-2
+    epic: MSSCI-16396
+    title: Story type classifier — rule-based type detection and format mapping
+    points: 2
+    completed: '2026-03-12'
+  - id: 145-3
+    epic: MSSCI-16396
+    title: Content generator — Claude ELI5 translation from signals
+    points: 3
+    completed: '2026-03-13'
+  - id: 145-4
+    epic: MSSCI-16396
+    title: Demo script generator — step-by-step presenter walkthrough
+    points: 2
+    completed: '2026-03-13'
+  - id: 145-5
+    epic: MSSCI-16396
+    title: PPTX assembler — build slide deck from generated content
+    points: 3
+    completed: '2026-03-13'
+  - id: 145-6
+    epic: MSSCI-16396
+    title: Mermaid diagram generation for backend stories
+    points: 2
     completed: '2026-03-13'

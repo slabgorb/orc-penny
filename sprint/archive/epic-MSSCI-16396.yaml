@@ -3,7 +3,7 @@ type: epic
 title: Demo Artifact Generator — Core Pipeline
 description: Collection → classification → generation → assembly pipeline for auto-generating presentation-ready demo artifacts from completed stories.
 priority: p0
-status: in_progress
+status: done
 repos: pennyfarthing
 jira: MSSCI-16396
 stories:
@@ -81,3 +81,4 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     completed: '2026-03-13'
+completed: '2026-03-13'

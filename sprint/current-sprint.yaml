@@ -9,9 +9,7 @@ sprint:
   number: 2610
 epics:
   - MSSCI-16293
-  - MSSCI-16396
   - MSSCI-16405
-  - MSSCI-16348
   - MSSCI-16411
 stories: []
 standalone_stories:

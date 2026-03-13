@@ -20,12 +20,14 @@ stories:
     title: Promote saddle_mode to explicit SettingSpec
     points: 1
     priority: p0
-    status: in_progress
+    status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-03-13'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-13'
     branch: feat/147-2-promote-saddle-mode-setting-spec
+    review_verdict: approved
   - id: 147-3
     jira: MSSCI-16414
     title: Remove colorPreset from settings — unused dead config

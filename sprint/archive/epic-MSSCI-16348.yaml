@@ -41,80 +41,61 @@ stories:
     status: done
     repos: pennyfarthing
     workflow: trivial
-    completed: '2026-03-11'
-    review_verdict: approved
+    completed: '2026-03-12'
   - id: 142-4
     jira: MSSCI-16352
     title: Always capture stream-json events to disk
     points: 3
     priority: p0
     status: done
-    assigned_to: keith.avery@1898andco.io
-    started: '2026-03-11'
     repos: pennyfarthing
     workflow: tdd
-    completed: '2026-03-11'
-    review_verdict: approved
+    completed: '2026-03-12'
   - id: 142-5
     jira: MSSCI-16353
     title: Fix framework_version reliability
     points: 1
     priority: p1
     status: done
-    assigned_to: keith.avery@1898andco.io
-    started: '2026-03-11'
     repos: pennyfarthing
     workflow: trivial
-    completed: '2026-03-11'
+    completed: '2026-03-12'
     type: bug
-    review_verdict: approved
   - id: 142-6
     jira: MSSCI-16354
     title: Event parsing and trace/explain commands
     points: 3
     priority: p1
     status: done
-    assigned_to: keith.avery@1898andco.io
-    started: '2026-03-11'
     repos: pennyfarthing
     workflow: tdd
-    completed: '2026-03-11'
-    review_verdict: approved
+    completed: '2026-03-12'
   - id: 142-7
     jira: MSSCI-16355
     title: Run index with backfill
     points: 2
     priority: p2
     status: done
-    assigned_to: keith.avery@1898andco.io
-    started: '2026-03-11'
     repos: pennyfarthing
     workflow: trivial
-    completed: '2026-03-11'
-    review_verdict: approved
+    completed: '2026-03-12'
   - id: 142-8
     jira: MSSCI-16356
     title: Events-first storage model
     points: 3
     priority: p2
     status: done
-    assigned_to: keith.avery@1898andco.io
-    started: '2026-03-12'
     repos: pennyfarthing
     workflow: tdd
     completed: '2026-03-12'
     type: refactor
-    review_verdict: approved
   - id: 142-9
     jira: MSSCI-16357
     title: LLM-narrated trace
     points: 2
     priority: p3
     status: done
-    assigned_to: keith.avery@1898andco.io
-    started: '2026-03-12'
     repos: pennyfarthing
-    workflow: tdd
+    workflow: trivial
     completed: '2026-03-12'
-    review_verdict: approved
-completed: '2026-03-12'
+completed: '2026-03-13'
