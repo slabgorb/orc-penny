@@ -183,7 +183,7 @@ stories:
     title: Tandem mode with native subagents
     points: 3
     priority: p1
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     type: feature
@@ -192,7 +192,7 @@ stories:
     title: Team mode with native subagents
     points: 2
     priority: p2
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     type: feature
@@ -209,5 +209,36 @@ stories:
     completed: '2026-03-13'
     type: feature
     branch: feat/143-16-bikerack-observability-subagent-transitions
+    review_verdict: approved
+  - id: 143-17
+    jira: MSSCI-16404
+    title: Saddle — tmux-based interactive agent workspace
+    points: 5
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-13'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-13'
+    branch: feat/143-17-saddle-tmux-interactive-agent-workspace
+  - id: 143-18
+    title: Saddle wiring — CLI commands, SM integration, relay-mode hook
+    description: 'Wire the Saddle core module (143-17) into the actual workflow so agents run in a visible tmux pane instead of backgrounded. Three integration points: (1) pf saddle CLI group with start/stop/status commands, (2) SM agent-launch logic uses saddle instead of Agent tool, (3) relay-mode handoff markers trigger saddle start instead of emitting /pf-{agent} skill. Also implement saddle_mode in handoff marker.py (currently mocked in 143-17 tests but not built).'
+    points: 3
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-13'
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria:
+      - pf saddle start <agent> launches agent in saddle pane, pf saddle stop interrupts, pf saddle status reports state
+      - SM handoff logic calls saddle start instead of emitting /pf-{agent} marker when saddle_mode is enabled
+      - Relay-mode auto-advances through saddle pane instead of skill invocation
+      - handoff marker.py reads saddle_mode from config and generates saddle-based commands
+      - Existing non-saddle flow continues to work when saddle_mode is disabled
+      - Saddle mode toggle added to BikeRack TUI settings panel
+    completed: '2026-03-13'
     review_verdict: approved
 completed: '2026-03-13'

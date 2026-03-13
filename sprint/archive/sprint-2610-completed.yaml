@@ -738,3 +738,13 @@ completed_stories:
     title: Saddle wiring — CLI commands, SM integration, relay-mode hook
     points: 3
     completed: '2026-03-13'
+  - id: 145-7
+    epic: ''
+    title: DemoOrchestrator — pipeline entry point and output writer
+    points: 2
+    completed: '2026-03-13'
+  - id: 143-12
+    epic: MSSCI-16358
+    title: Validate per-role tool restrictions
+    points: 2
+    completed: '2026-03-13'
