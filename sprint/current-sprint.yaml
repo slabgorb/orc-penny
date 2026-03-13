@@ -151,3 +151,12 @@ standalone_stories:
     branch: feat/MSSCI-16347-stacked-pr-depends-on
     review_verdict: approved
     completed: '2026-03-12'
+  - id: MSSCI-16432
+    jira: MSSCI-16432
+    title: Enhance Architect spec-check with mismatch taxonomy
+    points: 2
+    status: done
+    repos: pennyfarthing
+    pr: 1393
+    branch: feat/MSSCI-16432-architect-spec-check
+    completed: '2026-03-13'
