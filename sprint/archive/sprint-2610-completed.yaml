@@ -754,3 +754,8 @@ completed_stories:
     title: Update TDD workflow with new phases and gates
     points: 2
     completed: '2026-03-13'
+  - id: 147-1
+    epic: ''
+    title: Add Jira config to DEFAULTS and TUI settings panel
+    points: 1
+    completed: '2026-03-13'
