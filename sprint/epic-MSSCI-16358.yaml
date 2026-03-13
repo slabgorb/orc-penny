@@ -215,9 +215,9 @@ stories:
     title: Saddle — tmux-based interactive agent workspace
     points: 5
     priority: p1
-    status: in_progress
+    status: in_review
+    assigned_to: keith.avery@1898andco.io
     started: '2026-03-13'
     repos: pennyfarthing
     workflow: tdd
     branch: feat/143-17-saddle-tmux-interactive-agent-workspace
-    assigned_to: keith.avery@1898andco.io
