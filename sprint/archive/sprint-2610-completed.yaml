@@ -830,3 +830,8 @@ completed_stories:
     title: Remove colorPreset from settings — unused dead config
     points: 1
     completed: '2026-03-13'
+  - id: 146-3
+    epic: ''
+    title: "Hook into story_finish pipeline — auto-trigger on completion"
+    points: 2
+    completed: '2026-03-13'

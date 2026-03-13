@@ -1,6 +1,6 @@
 id: '146'
 type: epic
-title: Demo Artifact Generator — Integration & Config
+title: "Demo Artifact Generator — Integration & Config"
 description: CLI, skill, hook integration, and configuration for the demo artifact generator.
 priority: p1
 status: backlog
@@ -34,15 +34,19 @@ stories:
     review_verdict: approved
   - id: 146-3
     jira: MSSCI-16408
-    title: Hook into story_finish pipeline — auto-trigger on completion
+    title: "Hook into story_finish pipeline — auto-trigger on completion"
     points: 2
     priority: p0
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-13'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-13'
+    branch: feat/146-3-hook-story-finish-demo-artifact
   - id: 146-4
     jira: MSSCI-16409
-    title: demo.yaml configuration — branding, format prefs, classification rules
+    title: "demo.yaml configuration — branding, format prefs, classification rules"
     points: 2
     priority: p1
     status: done
@@ -51,7 +55,7 @@ stories:
     repos: pennyfarthing
     workflow: trivial
     completed: '2026-03-13'
-    review_findings: Orchestrator never passes config_path — classification rules are dead config. Classifier needs input validation hardening (empty patterns, invalid regex, type checks).
+    review_findings: "Orchestrator never passes config_path — classification rules are dead config. Classifier needs input validation hardening (empty patterns, invalid regex, type checks)."
     review_verdict: approved
   - id: 146-5
     jira: MSSCI-16410
