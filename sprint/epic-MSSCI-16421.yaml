@@ -89,6 +89,7 @@ stories:
     repos: pennyfarthing
     workflow: tdd
   - id: 148-8
+    jira: MSSCI-16442
     title: Peloton mode — spawn team panes and run TDD workflow through tmux
     points: 5
     priority: p0

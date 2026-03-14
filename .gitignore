@@ -91,3 +91,7 @@ __pycache__/
 
 # Symlinked scenario repos
 axiathon
+# Frame server runtime files
+.frame-port
+frame-pid
+tui-pid

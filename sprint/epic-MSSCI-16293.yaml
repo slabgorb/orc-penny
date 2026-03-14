@@ -81,6 +81,7 @@ stories:
     repos: pennyfarthing
     workflow: tdd
   - id: 47-9
+    jira: MSSCI-16446
     title: Tag benchmark OTEL in native subagent pipeline
     points: 2
     priority: p1
@@ -88,6 +89,7 @@ stories:
     repos: pennyfarthing
     workflow: tdd
   - id: 47-10
+    jira: MSSCI-16447
     title: Cleanup OTELFileCollector forwarding post-143
     points: 1
     priority: p1
@@ -95,6 +97,7 @@ stories:
     repos: pennyfarthing
     workflow: tdd
   - id: 47-11
+    jira: MSSCI-16448
     title: Subagent transition visualization in benchmark panel
     points: 2
     priority: p1
