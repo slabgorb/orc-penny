@@ -142,7 +142,10 @@ stories:
     title: Fix tmux nesting — detect existing session instead of spawning nested
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-14'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-14'
     type: bug

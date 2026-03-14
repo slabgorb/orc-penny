@@ -880,3 +880,8 @@ completed_stories:
     title: Peloton team mode integration — wire activate_next to TeamCreate
     points: 3
     completed: '2026-03-14'
+  - id: 148-13
+    epic: ''
+    title: Fix tmux nesting — detect existing session instead of spawning nested
+    points: 2
+    completed: '2026-03-14'
