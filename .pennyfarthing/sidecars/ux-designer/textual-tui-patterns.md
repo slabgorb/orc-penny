@@ -1,10 +1,10 @@
-# Textual TUI Patterns for BikeRack
+# Textual TUI Patterns for TUI
 
 ## Reference: Textual Widget Gallery Patterns
 
-### High-Value Widgets for BikeRack
+### High-Value Widgets for TUI
 
-| Widget | Pattern | BikeRack Application |
+| Widget | Pattern | TUI Application |
 |--------|---------|---------------------|
 | **DataTable** | Row/col/cell cursors, sorting, arrow key nav | Story drill-through — selectable story list |
 | **Tree** | Expandable hierarchical nodes, Enter to select | Epic → story → detail navigation |
@@ -44,7 +44,7 @@
 - Click tab or keyboard shortcut
 - Content switches without layout reflow
 - Active tab has underline indicator
-- Current BikeRack already does this but hand-rolled
+- Current TUI already does this but hand-rolled
 
 ### Layout Patterns
 
@@ -184,7 +184,7 @@ with Horizontal():
 
 **Pattern:** Add persona portrait image next to agent info text.
 
-**Asset pipeline:** Already exists — `portrait-resolver.ts` finds `portraits/{theme}/small/{slug}.png`. Need a Python equivalent or HTTP fetch from WheelHub `/api/portrait`.
+**Asset pipeline:** Already exists — `portrait-resolver.ts` finds `portraits/{theme}/small/{slug}.png`. Need a Python equivalent or HTTP fetch from Frame `/api/portrait`.
 
 **Implementation:**
 1. Add `textual-image` to `[tui]` optional deps

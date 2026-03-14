@@ -3,7 +3,7 @@
 ## Environment
 - Kitty + tmux 3.5a + Claude Code
 - Dedicated socket: `tmux -L pf` with project-specific `tmux.conf`
-- Layout: top pane (Claude Code), bottom pane (TUI/BikeRack)
+- Layout: top pane (Claude Code), bottom pane (TUI)
 
 ## Key Fixes Applied
 

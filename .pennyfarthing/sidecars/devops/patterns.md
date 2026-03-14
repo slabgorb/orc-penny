@@ -22,7 +22,6 @@ Consumer projects install pennyfarthing via `pf init <target-dir>`. This copies 
 Consumer orchestrator repos in ~/Projects:
 - **co-1**, **co-2**, **co-3** — all use pennyfarthing in orchestrator mode
 - Install method: `pf init` (Python CLI copies content dirs)
-- WheelHub is self-contained (`wheelhub.mjs` ~1.8MB, fully bundled) — NO npm install needed
 - Portraits centralized to `~/.local/share/pennyfarthing/portraits/` (symlinked per project)
 - `pf init` auto-cleans: stale npm deps from package.json, old symlinks, duplicate settings, preferences.yaml
 - `@pennyfarthing/core` npm dep and node_modules/@pennyfarthing are legacy — cleaned by pf init
@@ -41,36 +40,23 @@ Portraits live in `~/.local/share/pennyfarthing/portraits/` (XDG_DATA_HOME).
 Shell wrapper → `find-root.sh` → set PYTHONPATH (dogfooding or node_modules) → `python3 -m pennyfarthing_scripts.<module>`. Don't use relative `../../..` traversal.
 </pattern>
 
-<pattern name="bikerack-architecture">
-BikeRack is the integration layer between Claude Code, WheelHub (Node server), and the TUI/GUI.
+<pattern name="frame-architecture">
+Frame is the Python FastAPI server that connects Claude Code, the TUI, and the GUI.
 
 **Components:**
-- **WheelHub** — Node Express server (`wheelhub.mjs`), serves dashboard + receives OTEL on same HTTP port
+- **Frame** — Python FastAPI server (`pf frame start`), serves API + WebSocket + OTEL ingestion
 - **OTEL** — Claude Code sends spans/logs/metrics to `http://localhost:{port}/v1/*`
-- **TUI** — Python terminal UI, connects to WheelHub via HTTP/WS
-- **GUI** — React browser UI (Cyclist/dockview), connects to WheelHub
+- **TUI** — Python Textual terminal UI, connects to Frame via WebSocket
+- **GUI** — React browser UI (Cyclist/dockview), connects to Frame
 
-**Port/PID files** (project root, gitignored):
-- `.bikerack-port` — HTTP port (default 2898, range 2898-2907), dot-prefixed
-- `bikerack-pid` — WheelHub Node process PID, no dot prefix
-- `bikerack-tui-pid` — TUI process PID, no dot prefix
-- OTEL endpoint = same port as dashboard (no separate OTEL port)
+**Port/PID files** (project root, dot-prefixed, gitignored):
+- `.frame-port` — HTTP port
+- `.frame-pid` — Frame server process PID
 
-**Startup chain:**
-1. `just wheelhub` → checks running, stops if needed, starts WheelHub, writes `bikerack.port` + `bikerack.pid`
-2. `just claude` → reads `bikerack.port`, sets OTEL env vars, execs claude
-3. `just tui` / `just gui` → reads `bikerack.port`, connects to WheelHub
+**Startup:** `pf frame start` handles everything (port selection, PID file, OTEL endpoint).
 
 **Key files:**
-- Node entry: `pennyfarthing/packages/core/src/server/entry.ts` (PORT_FILE const, findAvailablePort)
-- Python launcher: `pennyfarthing/pennyfarthing-dist/src/pf/bikerack/launcher.py` (write_port_file, write_pid_file)
+- Python server: `pennyfarthing/pennyfarthing-dist/src/pf/frame/` (FastAPI routes, WebSocket, OTEL)
 - Justfile: `.pennyfarthing/justfile.pf` (distributed recipes, source at pennyfarthing-dist)
 - Health check: `GET /health` → `{status: 'ok'}`
-</pattern>
-
-<pattern name="wheelhub-bundle-rebuild">
-WheelHub bundle rebuild: `cd pennyfarthing && ./scripts/build-wheelhub.sh [--install]`
-Prereq: `cd packages/core && pnpm run build:tsc` (if source changed).
-The script handles esbuild, CJS shim patching, validation, and copy to pennyfarthing-dist.
-`--install` flag also runs `pipx install --force`. Then `pf init` in consumer projects.
 </pattern>

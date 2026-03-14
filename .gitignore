@@ -44,10 +44,10 @@ pennyfarthing/
 *-pid
 *-port
 .pennyfarthing/*.json
-.wheelhub-*
+.frame-*
 
 # Debug screenshots
-bikerack-*.png
+frame-*.png
 
 # Playwright MCP artifacts
 .playwright-mcp/
