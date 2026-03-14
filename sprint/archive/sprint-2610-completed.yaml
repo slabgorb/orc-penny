@@ -860,3 +860,13 @@ completed_stories:
     title: Peloton mode — spawn team panes and run TDD workflow through tmux
     points: 5
     completed: '2026-03-14'
+  - id: 148-9
+    epic: ''
+    title: Peloton live mode — persistent tmux panes for team mode agents
+    points: 3
+    completed: '2026-03-14'
+  - id: 148-3
+    epic: ''
+    title: Portrait pane shows description instead of random catchphrase
+    points: 2
+    completed: '2026-03-14'
