@@ -93,3 +93,10 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     review_verdict: approved
+  - id: 148-9
+    title: Peloton live mode — persistent tmux panes for team mode agents
+    points: 3
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
