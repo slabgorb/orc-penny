@@ -57,9 +57,12 @@ stories:
     title: Create ReposPanel with per-repo collapsible sections
     points: 3
     priority: p0
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-14'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-14'
   - id: 147-6
     jira: MSSCI-16417
     title: Add set_repo_field writer to git/repos.py
