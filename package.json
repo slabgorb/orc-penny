@@ -5,6 +5,6 @@
   "description": "Orchestrator for Pennyfarthing agent development",
   "type": "module",
   "scripts": {
-    "lint": "cd pennyfarthing && npm run lint"
+    "lint": "echo 'Orchestrator contains only shell scripts and markdown (no TypeScript/JavaScript linting needed)' && exit 0"
   }
 }

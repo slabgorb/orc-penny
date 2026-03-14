@@ -7,6 +7,19 @@ if ! command -v tmux &>/dev/null; then
   exit 1
 fi
 
+# Guard against nested tmux (tmux inside tmux)
+if [[ -n "${TMUX:-}" ]] && [[ "${PF_ALLOW_NESTED:-}" != "1" ]]; then
+  CURRENT_SOCKET="$(basename "$(echo "$TMUX" | cut -d, -f1)")"
+  if [[ "$CURRENT_SOCKET" == "pf" ]]; then
+    echo "Error: Already in a Pennyfarthing tmux session — use the existing panes." >&2
+  else
+    echo "Error: Already inside tmux (socket: $CURRENT_SOCKET)." >&2
+    echo "Detach first (Ctrl+b d), then run: just start" >&2
+  fi
+  echo "Override with: PF_ALLOW_NESTED=1 just start" >&2
+  exit 1
+fi
+
 # Pennyfarthing Development - tmux launcher
 #
 # Usage: ./tmux-dev [layout] [split] [directory]
