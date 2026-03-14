@@ -855,3 +855,8 @@ completed_stories:
     title: Create ReposPanel with per-repo collapsible sections
     points: 3
     completed: '2026-03-14'
+  - id: 148-8
+    epic: ''
+    title: Peloton mode — spawn team panes and run TDD workflow through tmux
+    points: 5
+    completed: '2026-03-14'

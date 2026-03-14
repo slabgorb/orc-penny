@@ -92,3 +92,4 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    review_verdict: approved
