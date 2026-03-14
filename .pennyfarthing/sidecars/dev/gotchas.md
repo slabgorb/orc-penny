@@ -52,6 +52,6 @@ Only leaf elements scroll. Parents use `overflow: hidden`. `.message-panel-conte
 "Run all tests" means ALL languages: `pnpm test` (TypeScript/Node) AND `python3 -m pytest` (Python). Always run both. Python tests live at `pennyfarthing-dist/src/pf/tests/`.
 </gotcha>
 
-<gotcha name="stale-tests-bikerack">
-`packages/bikerack/` never existed. Tests referencing it (bikerack-extraction, data-source, websocket-otlp-extraction) are dead. `packages/shared/` was absorbed into core (Story 98-16). Tandem portraits (`cyclist-tandem.png`) were never generated. Skill registry has 22 skills not 23.
+<gotcha name="stale-tests">
+Tests referencing non-existent packages (bikerack-extraction, data-source, websocket-otlp-extraction) are dead. `packages/shared/` was absorbed into core (Story 98-16). Tandem portraits (`cyclist-tandem.png`) were never generated. Skill registry has 22 skills not 23.
 </gotcha>
