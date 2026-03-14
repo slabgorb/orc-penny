@@ -69,6 +69,8 @@ stories:
     points: 2
     priority: p1
     status: backlog
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-14'
     repos: pennyfarthing
     workflow: tdd
   - id: 147-7

@@ -92,23 +92,40 @@ stories:
     title: Peloton mode — spawn team panes and run TDD workflow through tmux
     points: 5
     priority: p0
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-14'
     review_verdict: approved
   - id: 148-9
+    jira: MSSCI-16449
     title: Peloton live mode — persistent tmux panes for team mode agents
     points: 3
     priority: p0
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-14'
     review_verdict: approved
   - id: 148-10
+    jira: MSSCI-16450
     title: Unify peloton pane management with tmux registry
     description: Peloton live.py maintains its own peloton-state.json and pane_orchestrator.py calls _run_tmux directly, bypassing the tmux registry and panes API. Unify both to register panes in the tmux registry so pf tmux read/send/list works natively with peloton panes. Also fix the timing issue where send_keys fires before direnv finishes loading in new panes.
     points: 2
     priority: p1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-14'
+  - id: 148-11
+    jira: MSSCI-16451
+    title: Peloton live mode uses team mode instead of claude -p
+    description: Peloton live mode currently launches agents via claude -p (non-interactive one-shot) in tmux panes. This means agents cannot ask for tool approvals, interact with users, or run the full phased workflow with gates. Replace with Claude Code native Agent Teams — SM acts as team lead in the main session, spawns TEA/Dev/Architect/Reviewer as teammates via TeamCreate/SendMessage. No tmux panes needed for agent coordination.
+    points: 3
+    priority: p0
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-14'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-14'

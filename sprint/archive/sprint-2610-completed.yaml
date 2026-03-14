@@ -870,3 +870,8 @@ completed_stories:
     title: Portrait pane shows description instead of random catchphrase
     points: 2
     completed: '2026-03-14'
+  - id: 148-11
+    epic: ''
+    title: Peloton live mode uses team mode instead of claude -p
+    points: 3
+    completed: '2026-03-14'
