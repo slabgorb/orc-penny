@@ -890,3 +890,13 @@ completed_stories:
     title: Peloton pane layout — CLI/TUI stacked top-bottom, peloton panes in right split
     points: 2
     completed: '2026-03-15'
+  - id: 148-18
+    epic: ''
+    title: Peloton tmux session leak — agent panes not cleaned up on shutdown
+    points: 2
+    completed: '2026-03-15'
+  - id: 148-16
+    epic: ''
+    title: Disable CLI statusbar for subagents — saves screen space in peloton
+    points: 1
+    completed: '2026-03-15'
