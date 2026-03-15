@@ -111,3 +111,12 @@ stories:
     branch: feat/147-10-saddle-summon-agent
     review_findings: 'CWE-78 fix ineffective: shlex.quote() inside double quotes provides no shell protection. Tests are false positives.'
     review_verdict: approved
+  - id: 147-11
+    title: Jira integration should be optional — hobby projects don't use Jira
+    description: "Bug reported from sidequest (hobby project, no Jira). pf sprint story finish rejects non-Jira story IDs like E1-13 ('Invalid story ID format') and silently skips the YAML status update. Stories get archived but status stays in_progress instead of done. Root cause: finish flow assumes Jira is present. The system should gracefully handle projects without Jira — skip Jira transitions, but still update YAML status and archive correctly. Reported symptoms: (1) 'Invalid story ID format: E1-13' warning, (2) YAML statuses not flipped to done after finish, (3) stories archived but sprint YAML out of sync."
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug

@@ -7,22 +7,9 @@ if ! command -v tmux &>/dev/null; then
   exit 1
 fi
 
-# Guard against nested tmux (tmux inside tmux)
-if [[ -n "${TMUX:-}" ]] && [[ "${PF_ALLOW_NESTED:-}" != "1" ]]; then
-  CURRENT_SOCKET="$(basename "$(echo "$TMUX" | cut -d, -f1)")"
-  if [[ "$CURRENT_SOCKET" == "pf" ]]; then
-    echo "Error: Already in a Pennyfarthing tmux session — use the existing panes." >&2
-  else
-    echo "Error: Already inside tmux (socket: $CURRENT_SOCKET)." >&2
-    echo "Detach first (Ctrl+b d), then run: just start" >&2
-  fi
-  echo "Override with: PF_ALLOW_NESTED=1 just start" >&2
-  exit 1
-fi
-
-# Pennyfarthing Development - tmux launcher
+# Pennyfarthing session launcher — Claude Code + TUI in tmux
 #
-# Usage: ./tmux-dev [layout] [split] [directory]
+# Usage: ./start-session [layout] [split] [directory]
 #   layout:    bottom (default), top, right, left
 #   split:     TUI pane size as percentage, e.g. 33 (default: 50 for top/bottom, 35 for right/left)
 #   directory: defaults to current working directory
@@ -65,14 +52,9 @@ case "$LAYOUT" in
   left)       CONF_SUFFIX="left" ;;
   right)      CONF_SUFFIX="right" ;;
 esac
-CONF=""
-if [[ -f "$SCRIPT_DIR/tmux.conf.${CONF_SUFFIX}" ]]; then
-  CONF="$SCRIPT_DIR/tmux.conf.${CONF_SUFFIX}"
-elif [[ -f "$SCRIPT_DIR/tmux.conf.${CONF_SUFFIX}-sample" ]]; then
-  CONF="$SCRIPT_DIR/tmux.conf.${CONF_SUFFIX}-sample"
-fi
-if [[ -z "$CONF" ]]; then
-  echo "Error: no tmux config found for layout '${LAYOUT}' (looked for tmux.conf.${CONF_SUFFIX})" >&2
+CONF="$SCRIPT_DIR/tmux.conf.${CONF_SUFFIX}"
+if [[ ! -f "$CONF" ]]; then
+  echo "Error: tmux config not found: $CONF" >&2
   exit 1
 fi
 
@@ -98,8 +80,7 @@ TERM_LINES=$(tput lines)
 ENV_ARGS=(-e "CLAUDECODE=" -e "KITTY_WINDOW_ID=${KITTY_WINDOW_ID:-}" -e "TERM_PROGRAM=${TERM_PROGRAM:-}")
 
 # Start Frame server before tmux so both claude and tui can connect
-# Use "pf launch frame" (server-only), NOT "pf frame start" (server + exec claude)
-(cd "$DIR" && pf launch frame) &
+(cd "$DIR" && pf frame start) &
 FRAME_BG=$!
 
 # Wait for port file

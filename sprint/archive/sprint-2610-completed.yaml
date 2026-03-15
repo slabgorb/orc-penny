@@ -885,3 +885,8 @@ completed_stories:
     title: Fix tmux nesting — detect existing session instead of spawning nested
     points: 2
     completed: '2026-03-14'
+  - id: 148-15
+    epic: ''
+    title: Peloton pane layout — CLI/TUI stacked top-bottom, peloton panes in right split
+    points: 2
+    completed: '2026-03-15'

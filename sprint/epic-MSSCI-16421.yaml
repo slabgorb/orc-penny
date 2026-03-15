@@ -149,3 +149,49 @@ stories:
     workflow: trivial
     completed: '2026-03-14'
     type: bug
+  - id: 148-14
+    title: Peloton TDD workflow — wire remaining phases (architect spec check, tandem)
+    description: Peloton mode currently runs setup→red→green→review, skipping spec-check, verify, and spec-reconcile. Wire the full TDD workflow with all 8 phases (setup→red→green→spec-check→verify→review→spec-reconcile→finish) and their gates (tests_fail, dev_exit, spec_check, quality_pass, approval, spec_reconcile). SM team lead must follow the workflow YAML exactly — no shortcuts. Each phase transition uses pf handoff complete-phase with the correct gate type.
+    points: 3
+    priority: p1
+    status: in_review
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-15'
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 148-15
+    jira: MSSCI-16473
+    title: Peloton pane layout — CLI/TUI stacked top-bottom, peloton panes in right split
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-15'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-15'
+  - id: 148-16
+    title: Disable CLI statusbar for subagents — saves screen space in peloton
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+  - id: 148-17
+    title: Reviewer subagent completion — wait for all 8 before writing assessment
+    description: "Two related issues: (1) Reviewer sometimes goes idle before sending verdict to team lead — subagents may still be running when the reviewer's turn ends. The reviewer needs to wait for all 8 subagents to return before writing the assessment and sending the verdict message. (2) The approval gate rejects bold markdown on 'All received: Yes' — the gate regex expects plain text but the reviewer template uses '**All received:** Yes'. Either fix the gate to handle markdown or fix the reviewer template to use plain text."
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 148-18
+    title: Peloton tmux session leak — agent panes not cleaned up on shutdown
+    description: "Two issues: (1) Peloton agent panes (tea, dev, reviewer, architect) accumulate across runs — visible as windows 4-15 in tmux after 3 peloton runs. TeamDelete and shutdown don't kill the tmux panes. (2) Tests that exercise tmux pane creation should NOT open real tmux panes — they must mock tmux interactions to avoid leaking sessions. User preference: no tests that open real tmux panels."
+    points: 2
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
