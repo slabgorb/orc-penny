@@ -915,3 +915,33 @@ completed_stories:
     title: Peloton skill loops without loading in consumer projects
     points: 1
     completed: '2026-03-15'
+  - id: 147-11
+    epic: ''
+    title: Jira integration should be optional — hobby projects don't use Jira
+    points: 2
+    completed: '2026-03-15'
+  - id: 148-17
+    epic: ''
+    title: "Reviewer subagent completion — wait for all 8 before writing assessment"
+    points: 2
+    completed: '2026-03-15'
+  - id: 148-4
+    epic: ''
+    title: Git pane should allow collapsing dirty trees
+    points: 2
+    completed: "2026-03-15"
+  - id: 148-7
+    epic: ''
+    title: Settings page rework for new settings
+    points: 3
+    completed: "2026-03-15"
+  - id: 148-23
+    epic: ''
+    title: Reviewer handoff gate instructions unclear — struggles to complete gate reliably
+    points: 2
+    completed: "2026-03-15"
+  - id: 147-6
+    epic: ''
+    title: Add set_repo_field writer to git/repos.py
+    points: 2
+    completed: "2026-03-15"

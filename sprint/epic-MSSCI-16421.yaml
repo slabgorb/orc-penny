@@ -51,9 +51,12 @@ stories:
     title: Git pane should allow collapsing dirty trees
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-15'
     repos: pennyfarthing
     workflow: tdd
+    completed: "2026-03-15"
   - id: 148-5
     jira: MSSCI-16426
     title: Audit log pane not recording OTEL traces via WebSocket
@@ -86,12 +89,15 @@ stories:
     title: Settings page rework for new settings
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-15'
     repos: pennyfarthing
     workflow: tdd
+    completed: "2026-03-15"
   - id: 148-8
     jira: MSSCI-16442
-    title: Peloton mode — spawn team panes and run TDD workflow through tmux
+    title: "Peloton mode — spawn team panes and run TDD workflow through tmux"
     points: 5
     priority: p0
     status: done
@@ -101,7 +107,7 @@ stories:
     review_verdict: approved
   - id: 148-9
     jira: MSSCI-16449
-    title: Peloton live mode — persistent tmux panes for team mode agents
+    title: "Peloton live mode — persistent tmux panes for team mode agents"
     points: 3
     priority: p0
     status: done
@@ -122,7 +128,7 @@ stories:
   - id: 148-11
     jira: MSSCI-16451
     title: Peloton live mode uses team mode instead of claude -p
-    description: Peloton live mode currently launches agents via claude -p (non-interactive one-shot) in tmux panes. This means agents cannot ask for tool approvals, interact with users, or run the full phased workflow with gates. Replace with Claude Code native Agent Teams — SM acts as team lead in the main session, spawns TEA/Dev/Architect/Reviewer as teammates via TeamCreate/SendMessage. No tmux panes needed for agent coordination.
+    description: "Peloton live mode currently launches agents via claude -p (non-interactive one-shot) in tmux panes. This means agents cannot ask for tool approvals, interact with users, or run the full phased workflow with gates. Replace with Claude Code native Agent Teams — SM acts as team lead in the main session, spawns TEA/Dev/Architect/Reviewer as teammates via TeamCreate/SendMessage. No tmux panes needed for agent coordination."
     points: 3
     priority: p0
     status: done
@@ -132,7 +138,7 @@ stories:
     workflow: tdd
     completed: '2026-03-14'
   - id: 148-12
-    title: Peloton team mode integration — wire activate_next to TeamCreate
+    title: "Peloton team mode integration — wire activate_next to TeamCreate"
     points: 3
     priority: p1
     status: done
@@ -140,7 +146,7 @@ stories:
     workflow: tdd
     completed: '2026-03-14'
   - id: 148-13
-    title: Fix tmux nesting — detect existing session instead of spawning nested
+    title: "Fix tmux nesting — detect existing session instead of spawning nested"
     points: 2
     priority: p1
     status: done
@@ -151,8 +157,8 @@ stories:
     completed: '2026-03-14'
     type: bug
   - id: 148-14
-    title: Peloton TDD workflow — wire remaining phases (architect spec check, tandem)
-    description: Peloton mode currently runs setup→red→green→review, skipping spec-check, verify, and spec-reconcile. Wire the full TDD workflow with all 8 phases (setup→red→green→spec-check→verify→review→spec-reconcile→finish) and their gates (tests_fail, dev_exit, spec_check, quality_pass, approval, spec_reconcile). SM team lead must follow the workflow YAML exactly — no shortcuts. Each phase transition uses pf handoff complete-phase with the correct gate type.
+    title: "Peloton TDD workflow — wire remaining phases (architect spec check, tandem)"
+    description: "Peloton mode currently runs setup→red→green→review, skipping spec-check, verify, and spec-reconcile. Wire the full TDD workflow with all 8 phases (setup→red→green→spec-check→verify→review→spec-reconcile→finish) and their gates (tests_fail, dev_exit, spec_check, quality_pass, approval, spec_reconcile). SM team lead must follow the workflow YAML exactly — no shortcuts. Each phase transition uses pf handoff complete-phase with the correct gate type."
     points: 3
     priority: p1
     status: done
@@ -163,7 +169,7 @@ stories:
     completed: '2026-03-15'
   - id: 148-15
     jira: MSSCI-16473
-    title: Peloton pane layout — CLI/TUI stacked top-bottom, peloton panes in right split
+    title: "Peloton pane layout — CLI/TUI stacked top-bottom, peloton panes in right split"
     points: 2
     priority: p1
     status: done
@@ -174,7 +180,7 @@ stories:
     completed: '2026-03-15'
   - id: 148-16
     jira: MSSCI-16475
-    title: Disable CLI statusbar for subagents — saves screen space in peloton
+    title: "Disable CLI statusbar for subagents — saves screen space in peloton"
     points: 1
     priority: p1
     status: done
@@ -184,17 +190,21 @@ stories:
     workflow: trivial
     completed: '2026-03-15'
   - id: 148-17
-    title: Reviewer subagent completion — wait for all 8 before writing assessment
+    title: "Reviewer subagent completion — wait for all 8 before writing assessment"
     description: "Two related issues: (1) Reviewer sometimes goes idle before sending verdict to team lead — subagents may still be running when the reviewer's turn ends. The reviewer needs to wait for all 8 subagents to return before writing the assessment and sending the verdict message. (2) The approval gate rejects bold markdown on 'All received: Yes' — the gate regex expects plain text but the reviewer template uses '**All received:** Yes'. Either fix the gate to handle markdown or fix the reviewer template to use plain text."
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-15'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-15'
     type: bug
+    branch: feat/148-17-reviewer-subagent-completion
   - id: 148-18
     jira: MSSCI-16474
-    title: Peloton tmux session leak — agent panes not cleaned up on shutdown
+    title: "Peloton tmux session leak — agent panes not cleaned up on shutdown"
     description: "Two issues: (1) Peloton agent panes (tea, dev, reviewer, architect) accumulate across runs — visible as windows 4-15 in tmux after 3 peloton runs. TeamDelete and shutdown don't kill the tmux panes. (2) Tests that exercise tmux pane creation should NOT open real tmux panes — they must mock tmux interactions to avoid leaking sessions. User preference: no tests that open real tmux panels."
     points: 2
     priority: p0
@@ -207,19 +217,49 @@ stories:
     type: bug
     branch: feat/148-18-peloton-tmux-session-leak
   - id: 148-19
-    title: Peloton pane reuse — TeamCreate should target pre-opened agent panes instead of spawning new ones
-    description: Stop pre-opening tmux panes for agents in create_peloton_layout. TeamCreate spawns its own panes via teammateMode=tmux, so pre-opened panes just sit idle with zsh. Remove the agent pane creation from create_peloton_layout — only create/position the TUI pane below CLI. Also revert the pane_mapping/prompt enrichment from the previous attempt (dead code since TeamCreate ignores it).
+    title: "Peloton pane reuse — TeamCreate should target pre-opened agent panes instead of spawning new ones"
+    description: "Stop pre-opening tmux panes for agents in create_peloton_layout. TeamCreate spawns its own panes via teammateMode=tmux, so pre-opened panes just sit idle with zsh. Remove the agent pane creation from create_peloton_layout — only create/position the TUI pane below CLI. Also revert the pane_mapping/prompt enrichment from the previous attempt (dead code since TeamCreate ignores it)."
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-15'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
       - TUI pane stacks below CLI pane in peloton layout (not at the bottom of the pane list)
+    completed: '2026-03-15'
   - id: 148-20
     title: Peloton skill loops without loading in consumer projects
     points: 1
     priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-15'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-03-15'
+  - id: 148-21
+    title: Peloton agent panes show portrait beside CLI — split each agent pane with portrait panel on left, Claude CLI on right
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 148-22
+    title: Peloton agent color matching — teammates run /color to match badge colors
+    points: 1
+    priority: p2
     status: backlog
     repos: pennyfarthing
     workflow: trivial
+  - id: 148-23
+    title: Reviewer handoff gate instructions unclear — struggles to complete gate reliably
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-15'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: "2026-03-15"
