@@ -905,3 +905,13 @@ completed_stories:
     title: Peloton pane reuse — TeamCreate should target pre-opened agent panes instead of spawning new ones
     points: 2
     completed: '2026-03-15'
+  - id: 148-14
+    epic: ''
+    title: Peloton TDD workflow — wire remaining phases (architect spec check, tandem)
+    points: 3
+    completed: '2026-03-15'
+  - id: 148-20
+    epic: ''
+    title: Peloton skill loops without loading in consumer projects
+    points: 1
+    completed: '2026-03-15'

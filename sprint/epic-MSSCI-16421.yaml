@@ -155,11 +155,12 @@ stories:
     description: Peloton mode currently runs setup→red→green→review, skipping spec-check, verify, and spec-reconcile. Wire the full TDD workflow with all 8 phases (setup→red→green→spec-check→verify→review→spec-reconcile→finish) and their gates (tests_fail, dev_exit, spec_check, quality_pass, approval, spec_reconcile). SM team lead must follow the workflow YAML exactly — no shortcuts. Each phase transition uses pf handoff complete-phase with the correct gate type.
     points: 3
     priority: p1
-    status: in_review
+    status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-03-15'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-15'
   - id: 148-15
     jira: MSSCI-16473
     title: Peloton pane layout — CLI/TUI stacked top-bottom, peloton panes in right split
@@ -207,6 +208,7 @@ stories:
     branch: feat/148-18-peloton-tmux-session-leak
   - id: 148-19
     title: Peloton pane reuse — TeamCreate should target pre-opened agent panes instead of spawning new ones
+    description: Stop pre-opening tmux panes for agents in create_peloton_layout. TeamCreate spawns its own panes via teammateMode=tmux, so pre-opened panes just sit idle with zsh. Remove the agent pane creation from create_peloton_layout — only create/position the TUI pane below CLI. Also revert the pane_mapping/prompt enrichment from the previous attempt (dead code since TeamCreate ignores it).
     points: 2
     priority: p1
     status: backlog
