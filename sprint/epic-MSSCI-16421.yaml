@@ -38,13 +38,14 @@ stories:
     title: Portrait pane shows description instead of random catchphrase
     points: 2
     priority: p1
-    status: backlog
+    status: done
     assigned_to: keith.avery@1898andco.io
-    started: '2026-03-14'
+    started: '2026-03-15'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-15'
     type: bug
-    review_verdict: approved
+    branch: feat/148-3-portrait-pane-fixes
   - id: 148-4
     jira: MSSCI-16425
     title: Git pane should allow collapsing dirty trees
@@ -204,3 +205,19 @@ stories:
     completed: '2026-03-15'
     type: bug
     branch: feat/148-18-peloton-tmux-session-leak
+  - id: 148-19
+    title: Peloton pane reuse — TeamCreate should target pre-opened agent panes instead of spawning new ones
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria:
+      - TUI pane stacks below CLI pane in peloton layout (not at the bottom of the pane list)
+  - id: 148-20
+    title: Peloton skill loops without loading in consumer projects
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
