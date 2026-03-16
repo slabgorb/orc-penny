@@ -55,3 +55,26 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: trivial
+  - id: 149-7
+    title: Save full patch diff and worktree snapshot per benchmark run for post-hoc comparison
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+  - id: 149-8
+    title: Benchmark pf module version gate — hard fail if harness code is from wrong project
+    points: 1
+    priority: p1
+    status: done
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-03-16'
+  - id: 149-9
+    title: Subagent-before-conclusions gate — block assessment until all subagents return
+    points: 1
+    priority: p1
+    status: done
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-03-16'
