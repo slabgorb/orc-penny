@@ -1,0 +1,91 @@
+judge_method: majority_vote
+n_judges: 3
+majority_threshold: 2
+model: opus
+judge_version: v2
+framework_version:
+  commit: c8a856fcd451
+  semver: 13.0.0-beta.1
+  tag: v13.0.0-beta.1-37-gc8a856fcd
+  agent_hashes:
+    tea: 8744c8f8c9ac
+    dev: d8266a0e4ba4
+    reviewer: c3ee93594f88
+total_caught: 3
+total_findings: 7
+weighted_caught: 15
+total_weight: 37
+score_pct: 40.5
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer flagged [HIGH][SEC] CWE-209: ''map_status() passes raw server
+    response body into CliError variants... main.rs:13 prints these to stderr. Server
+    stack traces, internal paths, and PII in error responses reach the operator.''
+    Same CWE-209 class, same core issue of leaking internal details via Display.'
+  votes: 3/3
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: TEA created tests/security.rs with 'Security (CWE-209, header injection)'
+    coverage. Dev also noted 'CWE-113 header injection prevention' in client.rs implementation.
+    The ground truth finding about raw String tenant_id and header injection risk
+    (CWE-113) was addressed.
+  votes: 3/3
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: dev
+  evidence: Dev explicitly noted 'Removed 3 tautological OutputFormat tests' and fixed
+    vacuous assertions. TEA's test-analyzer subagent flagged vacuous tests. Same category
+    (vacuously true test / tautological assertion) caught, even if the specific instance
+    differs.
+  votes: 2/3
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: "Dev fixed 'zero-assertion tests' \u2014 'Fixed each_command_help test\
+    \ to verify non-empty help text'. Reviewer's test-analyzer confirmed findings\
+    \ on tests with insufficient assertions. Same category (test with zero/insufficient\
+    \ assertions) caught."
+  votes: 1/3
+individual_scores:
+- 27.0
+- 54.1
+- 40.5

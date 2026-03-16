@@ -1,0 +1,90 @@
+scenario_id: dpgd-116
+theme: null
+run_id: 27
+model: null
+judge_model: claude-sonnet-4-6
+judge_version: v2
+judge_pass: 1
+total_caught: 4
+total_findings: 7
+weighted_caught: 20
+total_weight: 37
+score_pct: 54.1
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: Config loading handles missing file with Ok(default) but no distinction
+    between NotFound and other error types (parse errors, permission denied) is made.
+    Dev notes 'graceful handling of missing/empty/invalid files' treating all as equivalent.
+    No test or flag for distinguishing error types.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: 'TEA included CWE-209 security test: ''Error display doesn''t leak paths/internals
+    (exit_codes.rs)''. Reviewer also verified: ''CliError Display impl uses generic
+    messages (error.rs:13-38)'' and confirmed sanitized error messages.'
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: "TEA included header injection security test: 'CRLF in token/tenant_id\
+    \ must be rejected (siem_client.rs)'. Dev implemented sanitize_header_value()\
+    \ stripping CRLF. Reviewer verified at client.rs:15. The ground truth finding\
+    \ about using TenantId type was partially caught \u2014 pipeline caught the injection\
+    \ risk via CRLF sanitization (same vulnerability class CWE-113), though it used\
+    \ String with sanitization rather than the TenantId newtype."
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: "Dev explicitly used direct version strings: 'crates/axiathon-client/Cargo.toml\
+    \ \u2014 Added all required dependencies' and 'Cargo.toml \u2014 Added workspace\
+    \ deps: comfy-table, csv, dirs, toml'. The workspace.dependencies existed but\
+    \ crate-level Cargo.toml used direct versions. No test or reviewer flag for this."
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: "Reviewer noted 'Config token exclusion \u2014 ClientConfig has only server_url\
+    \ and timeout_seconds fields. No token field. Serde ignores unknown TOML keys\
+    \ by default, so a token = ... in the file is silently dropped' and marked it\
+    \ VERIFIED as correct behavior. This is the opposite conclusion \u2014 the pipeline\
+    \ examined the exact issue and concluded it was fine, when the ground truth says\
+    \ silent ignore is the problem. Score: not caught."
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer explicitly flagged: '[MEDIUM] [TEST] Tautological assertion\
+    \ \u2014 config_loading.rs:44-47' with the exact code 'assert!(config.server_url.is_none()\
+    \ || config.server_url.is_some())' and noted 'This is true || false or false ||\
+    \ true \u2014 always true. The test can never fail.' This matches the ground truth\
+    \ finding about vacuously true assertions."
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer explicitly flagged: '[MEDIUM] [TEST] Env var override tests\
+    \ never exercise the override path \u2014 Tests branch on std::env::var(...).\
+    \ In a clean CI environment, the env var isn't set, so the tests always take the\
+    \ else branch and only verify that file values are preserved. The actual env override\
+    \ logic is untested.' This matches the ground truth finding about a test with\
+    \ zero meaningful assertions (same category: test that doesn't actually verify\
+    \ what it claims)."

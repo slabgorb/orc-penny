@@ -1,0 +1,93 @@
+I have now read every production and test file. Let me process the subagent findings against my own analysis, build the checklist, and write the assessment.
+
+## Subagent Results
+
+| # | Specialist | Received | Status | Findings | Decision |
+|---|-----------|----------|--------|----------|----------|
+| 1 | reviewer-preflight | Yes | clean | none | N/A |
+| 2 | reviewer-edge-hunter | Yes | findings | 8 | confirmed 5, dismissed 3 |
+| 3 | reviewer-silent-failure-hunter | Yes | findings | 6 | confirmed 6, dismissed 0 |
+| 4 | reviewer-test-analyzer | Yes | findings | 18 | confirmed 10, dismissed 4, deferred 4 |
+| 5 | reviewer-comment-analyzer | Yes | findings | 4 | confirmed 2, dismissed 2 |
+| 6 | reviewer-type-design | Yes | findings | 5 | confirmed 3, dismissed 1, deferred 1 |
+| 7 | reviewer-security | Yes | findings | 5 | confirmed 3, dismissed 2 |
+| 8 | reviewer-simplifier | Yes | findings | 3 | confirmed 1, dismissed 2 |
+
+**All received:** Yes (8 returned, 7 with findings)
+**Total findings:** 30 confirmed, 12 dismissed (with rationale below), 5 deferred
+
+### Dismissals
+- **edge-hunter: config.rs load() no env var fallback** — env var override is via clap `env = "AXIATHON_SERVER"` on the CLI flag, not config loading. Design is correct.
+- **edge-hunter: map_reqwest_error missing cases** — the `else` branch catches all unmatched reqwest errors as ServerError. Not silent.
+- **edge-hunter: .claude/settings.json** — not part of story code.
+- **comment-analyzer: CLAUDE.md story 148-22** — session metadata, not production code.
+- **comment-analyzer: commands/mod.rs** — minor doc clarity, non-blocking.
+- **test-analyzer: help text vacuous** — checking command names in help text is the standard clap testing pattern. 
+- **test-analyzer: cli_name fragile** — checking help contains "axiathon" is reasonable.
+- **test-analyzer: CSV header format coupling** — checking the header contains expected column names is correct.
+- **test-analyzer: conflicting flags** — low priority, deferred to UX story.
+- **type-design: timeout as u64** — naming is clear, not a safety issue.
+- **security: .pennyfarthing symlink** — not part of story code.
+- **simplifier: redundant empty check** — the post-parse check catches explicitly-set empty strings that serde default wouldn't catch. Defensible.
+- **simplifier: verbose exit code tests** — explicit tests per variant are clearer than table-driven for debugging.
+
+---
+
+## Review Checklist
+
+- [x] **Subagent completion gate passed:** All 8 rows filled, all received Yes, every finding has Decision.
+- [x] **Find at least 5 observations** — see findings below.
+- [x] **Trace data flow:** `--tenant <id>` → `Cli::parse()` → stored as `Option<String>` → passed to `SiemClient::new()` → assert checks CR/LF → stored → `build_headers()` → `HeaderValue::from_str()` → `if let Ok` silently drops on failure → request sent potentially without header. **UNSAFE** — header can be silently dropped.
+- [x] **Wiring:** `main.rs` dispatches all Commands variants. Completion uses `clap_complete::generate()`. Stubs return `CliError::NotImplemented`. `commands/*.rs` `handle()` functions are dead code (never called from main.rs). Tests call `handle()` directly.
+- [x] **Identify pattern:** Good pattern — `#[non_exhaustive]` on CliError at `error.rs:10`, exit_code exhaustive match at `error.rs:47-57`. Bad pattern — `if let Ok(val) = ...` silent drops at `client.rs:44-52`.
+- [x] **Verify error handling:** OutputFormatter methods return empty string on failure (`output.rs:51,60`). SiemClient silently drops headers on validation failure (`client.rs:44-52`). Server response bodies flow directly into user-facing error messages (`client.rs:67-76`, `main.rs:13`).
+- [x] **Security analysis:** CWE-113 header injection: checked for CR/LF via assert. CWE-209 info leakage: **violated** — raw server bodies in error Display. Auth token: not in config file (verified).
+- [x] **Hard questions:** What if server returns a 500 with a stack trace? → It gets stored in `CliError::ServerError(body)` and printed to stderr. What if `HeaderValue::from_str()` rejects a valid-looking tenant ID with unusual characters? → Request proceeds without tenant isolation, no error shown. What if JSON serialization fails in format_json? → Empty string returned silently.
+- [x] **Incorporate subagent findings:** Done above, tagged by source.
+- [x] **Challenge VERIFIEDs against subagent findings:** No VERIFIEDs to challenge (this is initial review).
+
+### Devil's Advocate
+
+Let me argue this code is broken.
+
+**A confused operator sets up their config with `server_url = "not-a-url"`.** The config loads fine — no URL validation at `config.rs:52-56`. Later, every `SiemClient::get()` call produces a cryptic reqwest error about invalid URL format. The operator sees "server error: builder error: relative URL without a base" and has no idea their config is wrong. The error message leaks the reqwest crate's internal error text.
+
+**A malicious server returns `{"error": "stack trace\n  at internal.company.com:8080/admin/debug\n  PII: user@company.com"}` in a 500 response body.** The `map_status` function at `client.rs:74` stores this as `CliError::ServerError(body)`. The `main.rs:13` prints `error: server error: stack trace\n  at internal.company.com:8080/admin/debug\n  PII: user@company.com` to stderr. If the operator is sharing their screen or piping to a log file, internal hostnames and PII are exposed. The error.rs doc comment explicitly says "Do not expose internal details" but the implementation does exactly this.
+
+**An operator's tenant ID contains a tab character.** The assert in `new()` passes (no CR/LF). `HeaderValue::from_str()` rejects it (tabs are invalid HTTP header characters per RFC 7230). `build_headers()` silently skips the header. The request goes to the server without `X-Tenant-ID`. If the server has a default-deny policy, the request gets a 403. If the server has a default-allow policy, the operator sees data from the wrong tenant. Either way, no indication that the tenant header was dropped.
+
+**The OutputFormatter trait returns `String` instead of `Result`.** Every future command implementation that calls `format_json()` on a large dataset that somehow fails to serialize gets an empty string. No error propagation. The command looks like it succeeded but produced no output. The operator runs `axiathon rules list --format json | jq .` and gets a parse error from empty input. They assume the server is empty, not that serialization failed.
+
+**main.rs doesn't initialize a tokio runtime.** When Story 6.2 implements `status`, the dev will need to add `#[tokio::main]` to call `SiemClient::get()`. This is a forced architecture change during a feature story.
+
+This code isn't obviously broken today because everything is stubs. But it establishes foundational APIs that will be used by 10+ future stories. Every API design mistake here is a tax on every downstream story.
+
+- [x] **Devil's Advocate:** Completed (283 words). The CWE-209 issue with server bodies and the silent header drops are real problems my review didn't need to invent — they're in the code.
+- [x] **Make judgment:** See below.
+
+---
+
+## Reviewer Assessment
+
+**Verdict:** REJECTED
+
+| Severity | Issue | Location | Fix Required |
+|----------|-------|----------|--------------|
+| [HIGH] [SEC] | **CWE-209: Server response bodies leak to user.** `map_status()` passes raw server response body into `CliError::Unauthorized(body)`, `CliError::NotFound(body)`, `CliError::ServerError(body)`. `main.rs:13` prints these to stderr. Server stack traces, internal paths, and PII in error responses reach the operator. The error.rs SECURITY doc warns against this but the code violates it. | `client.rs:67-76`, `main.rs:13` | Use generic messages: `Err(CliError::Unauthorized("access denied".into()))`, `Err(CliError::NotFound(format!("resource not found: {path}")))`, `Err(CliError::ServerError("internal server error".into()))`. Log full body at debug verbosity. |
+| [HIGH] [SILENT] | **HTTP headers silently dropped.** `build_headers()` uses `if let Ok(val)` which silently skips headers that fail `HeaderValue::from_str()`. A request can proceed without `X-Tenant-ID` or `Authorization` with no error, warning, or indication. The assert in `new()` only catches CR/LF — other invalid characters (tabs, null bytes, >0x7F) bypass the assert but fail HeaderValue. | `client.rs:44-53` | Use `expect()` instead of `if let Ok` (the constructor assert already validates the dangerous cases), or validate all characters in `new()` by calling `HeaderValue::from_str()` there and returning an error. |
+| [HIGH] [SILENT] | **OutputFormatter returns empty string on failure.** `format_json()` returns `""` if serialization fails (`unwrap_or_default()`). `format_csv()` discards all write errors via `let _ =` and returns `""` via double `unwrap_or_default()`. Callers cannot detect formatting failures. Violates SOUL.md principle #10. This is the framework API — changing `-> String` to `-> Result<String, _>` later is a breaking change to every implementor. | `output.rs:47-60` | Change return type to `Result<String, CliError>` or `Result<String, std::fmt::Error>`. Propagate errors with `?`. |
+| [MEDIUM] [TYPE] | **Alert `id` should be required.** `Acknowledge { id: Option<String> }` allows `axiathon alerts acknowledge` with no ID. When implemented, this becomes a runtime error instead of a parse-time error. | `cli.rs:114` | Change to `id: String`. |
+| [MEDIUM] [EDGE] | **No async runtime in main.rs.** All async `SiemClient` methods require a tokio runtime. Current stubs work synchronously, but the next story that implements a real command will need `#[tokio::main]`. Better to set this up in the framework story. | `main.rs:8` | Add `#[tokio::main]` to main. |
+| [MEDIUM] [TEST] | **Dead code path in stub tests.** `commands/completion.rs::handle()` and `commands/init.rs::handle()` are dead code — `main.rs` implements completion inline via `clap_complete::generate()`. The stub_handlers tests test `handle()` which is never called from the binary. The test comment says "completion and init should be FUNCTIONAL" but tests assert they panic. | `stub_handlers.rs:60-73`, `commands/completion.rs`, `main.rs:24-28` | Either remove the `handle()` stubs and their tests, or wire `main.rs` to call them. |
+| [LOW] [SIMPLE] | **Duplicated header building logic.** Two nearly identical `if let Some / if let Ok / headers.insert` blocks. | `client.rs:44-53` | Extract helper method. |
+
+**Handoff:** Back to Dev for fixes (3 HIGH findings block approval).
+
+## Delivery Findings
+
+- **Gap** (blocking): CWE-209 — `map_status()` puts raw server bodies into user-facing errors. Affects `crates/axiathon-client/src/client.rs` (sanitize bodies before storing in CliError). *Found by Reviewer during code review.*
+- **Gap** (blocking): Silent header drops in `build_headers()` — requests can lose tenant/auth context. Affects `crates/axiathon-client/src/client.rs` (fail-fast on invalid headers). *Found by Reviewer during code review.*
+- **Gap** (blocking): `OutputFormatter` trait methods return `String` instead of `Result` — masks serialization failures. Affects `crates/axiathon-client/src/output.rs` (change API to return Result). *Found by Reviewer during code review.*
+- **Gap** (non-blocking): No tokio runtime in main.rs. Affects `crates/axiathon-client/src/main.rs` (add `#[tokio::main]`). *Found by Reviewer during code review.*
+
+VERDICT: REJECT

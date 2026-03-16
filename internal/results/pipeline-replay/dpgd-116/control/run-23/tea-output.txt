@@ -1,0 +1,40 @@
+RED state confirmed. Here's the summary:
+
+## TEA Assessment
+
+**Tests Required:** Yes
+**Phase:** RED (failing — ready for Dev)
+
+### Test Files
+
+| File | Tests | Pass | Fail | Coverage |
+|------|-------|------|------|----------|
+| `cli_structure_test.rs` | 44 | 26 | 18 | AC-1 (command groups), AC-2 (help), AC-5 (global flags), AC-6 (clap derive) |
+| `error_exit_codes_test.rs` | 15 | 12 | 3 | AC-3 (exit codes 0/1/2/3/4), CWE-209 security |
+| `output_format_test.rs` | 11 | 7 | 4 | AC-4 (table/json/csv, ResponseMetadata) |
+| `siem_client_test.rs` | 17 | 8 | 9 | AC-7 (HTTP error mapping, header injection security) |
+| `config_loading_test.rs` | 11 | 3 | 8 | AC-8 (TOML loading, env overrides, validation) |
+| `shell_completion_test.rs` | 6 | 6 | 0 | AC-9 (bash/zsh/fish/powershell) |
+| `stub_handlers_test.rs` | 9 | 1 | 8 | AC-10 (stub messages, exit code) |
+
+**Total:** 113 tests — 63 passing, 50 failing
+
+### Why Tests Fail (by category)
+
+- **Global flags missing** (11 tests): Cli struct has no `--format`, `-v`, `--quiet`, `--server`, `--tenant`, `--config`, `--no-color` flags
+- **Subcommands missing** (5 tests): No `tui`/`logout` commands, no verb subcommands (`rules list`, `alerts acknowledge`)
+- **Help content missing** (2 tests): No `after_help` usage examples
+- **Exit code mapping wrong** (3 tests): `exit_code()` always returns 1 instead of 2/3/4
+- **OutputFormat::FromStr stub** (4 tests): Always returns Err
+- **SiemClient error mapping stub** (4 tests): Always returns ServerError for 401/403/404/429
+- **Header validation missing** (5 tests): `validate_tenant_id` accepts CRLF, null, empty
+- **Config loading stub** (8 tests): `from_file()`/`load()` return empty defaults
+- **Stub handler messages** (8 tests): No handler functions wired up yet
+
+### Security Tests Included
+- Header injection prevention (CRLF, CR, LF, null byte in tenant ID)
+- CWE-209: Auth/server error messages don't leak tokens or stack traces
+- Config file: malformed TOML not silently ignored, negative timeout rejected
+- No token/password/secret fields in ClientConfig
+
+**Handoff:** To Dev for implementation (GREEN phase)

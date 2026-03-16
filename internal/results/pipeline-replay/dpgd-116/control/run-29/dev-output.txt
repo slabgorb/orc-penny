@@ -1,0 +1,27 @@
+## Dev Assessment
+
+**Implementation Complete:** Yes
+
+**Files Changed:**
+- `Cargo.toml` — added workspace deps: clap_complete, comfy-table, csv, dirs, keyring, reqwest, toml, tempfile; added `env` feature to clap
+- `crates/axiathon-client/Cargo.toml` — added all library and dev dependencies
+- `crates/axiathon-client/src/error.rs` — implemented `exit_code()` mapping: 3=auth, 4=authz, 2=usage, 1=all others
+- `crates/axiathon-client/src/cli.rs` — full clap 4.x derive structure with all command groups (query, rules, alerts, ingest, config, status, tenant, login, logout, tui, completion, init) and global flags (--format, -v, --quiet, --server, --tenant, --config, --no-color)
+- `crates/axiathon-client/src/output.rs` — `OutputFormatter` trait with `headers()`/`values()` data methods and default `format_table()` (comfy-table), `format_json()` (serde_json + ResponseMetadata), `format_csv()` (csv crate)
+- `crates/axiathon-client/src/client.rs` — `SiemClient` wrapping `reqwest::Client` with header injection (X-Tenant-ID, Authorization), HTTP status→CliError mapping (401→AuthenticationExpired, 403→Unauthorized, 404→NotFound, 429→RateLimited, 5xx→ServerError, connection refused→ServerUnavailable), CWE-113 header injection prevention
+- `crates/axiathon-client/src/config.rs` — `ClientConfig` with TOML loading from `~/.config/axiathon/cli.toml`, custom path support, env var override support, empty server_url fallback, unknown fields ignored (tokens not stored)
+- `crates/axiathon-client/src/main.rs` — binary entry point dispatching commands with exit code handling
+
+**Test quality fixes applied:**
+- Removed 3 tautological `OutputFormat` tests (reviewer: high confidence)
+- Fixed 2 header injection tests to use `#[should_panic(expected)]` (reviewer: high confidence)
+- Strengthened JSON metadata test to check all 3 fields (reviewer: high confidence)
+- Fixed `each_command_help` test to verify non-empty help text (reviewer: high confidence)
+- Fixed command parsing tests to not use `--help` (which returns Err in clap)
+- Replaced mock-less HTTP mapping tests with proper TCP mock server
+- Updated `OutputFormatter` test to implement required trait methods
+
+**Tests:** 97/97 passing (GREEN)
+**Clippy:** Clean with `-D warnings`
+
+**Handoff:** To next phase (verify or review)

@@ -1,0 +1,27 @@
+has_events: true
+phases:
+  tea:
+    has_events: true
+    tool_counts:
+      Agent: 1
+      Bash: 30
+      Read: 15
+      Edit: 7
+      Write: 15
+    files_touched: []
+  dev:
+    has_events: true
+    tool_counts:
+      Agent: 1
+      Bash: 7
+      Read: 26
+      Edit: 4
+      Write: 7
+    files_touched: []
+  reviewer:
+    has_events: true
+    tool_counts:
+      Read: 14
+      Bash: 7
+      Grep: 1
+    files_touched: []

@@ -1,0 +1,88 @@
+Two parallel `OutputFormat`/`FormatArg` enums with no conversion. Noted. Now let me finalize my assessment.
+
+---
+
+## Subagent Results
+
+| # | Specialist | Received | Status | Findings | Decision |
+|---|-----------|----------|--------|----------|----------|
+| 1 | reviewer-preflight | Yes | clean | none | N/A |
+| 2 | reviewer-edge-hunter | Yes | findings | 4 | confirmed 2, dismissed 2 |
+| 3 | reviewer-silent-failure-hunter | Yes | findings | 3 | confirmed 1, dismissed 2 |
+| 4 | reviewer-test-analyzer | Yes | findings | 9 | confirmed 3, dismissed 4, deferred 2 |
+| 5 | reviewer-comment-analyzer | Yes | clean | none | N/A |
+| 6 | reviewer-type-design | Yes | findings | 6 | confirmed 1, deferred 5 |
+| 7 | reviewer-security | Yes | clean | none | N/A |
+| 8 | reviewer-simplifier | Yes | clean | none | N/A |
+
+**All received:** Yes (8 returned, 4 with findings)
+**Total findings:** 7 confirmed, 8 dismissed (with rationale), 7 deferred
+
+### Subagent Finding Decisions
+
+**EDGE-HUNTER:**
+- `config.rs:72` timeout=0 not validated: **Deferred** — u64 means no negative values; zero timeout is a valid edge case but not blocking for a framework story.
+- `output.rs:96` CSV expect() panics: **Dismissed** — writing to an in-memory `Vec<u8>` cannot fail. The `expect()` is unreachable, not a real panic risk.
+- `output.rs:62-65` JSON row padding: **Confirmed** as [MEDIUM]. See finding below.
+- `cli.rs:18,24` quiet+verbose mutual exclusion: **Confirmed** as [LOW]. Cosmetic — no logic consumes these flags yet (`main.rs` doesn't parse).
+
+**SILENT-FAILURE-HUNTER:**
+- `client.rs:56` silent header drop: **Dismissed** — Intentional security behavior per comment. `HeaderValue::from_str()` rejects CRLF, preventing CWE-113. Tests verify this contract. The caller doesn't need to know headers were dropped; the alternative (panicking or failing the request) is worse for UX. Documented in doc comment.
+- `output.rs:69` JSON row padding: **Confirmed** — duplicate of edge-hunter finding, see below.
+- `output.rs:88` CSV expect() panics: **Dismissed** — same as edge-hunter; Vec<u8> writes don't fail.
+
+**TEST-ANALYZER:**
+- `cli_structure.rs:73` help tests are vacuous: **Confirmed** as [MEDIUM]. `assert_subcommand_help_renders()` only checks `sub.is_some()` — it never calls `write_long_help()` on the found subcommand. The test name says "does not panic" but doesn't actually trigger help rendering.
+- `exit_codes.rs:101` zero-assertion test: **Confirmed** as [LOW]. `cli_error_has_all_required_variants()` is a compile-time check (if a variant is removed, the code won't compile). The test comment says this. No runtime assertion needed for a compile-time guarantee — the test's value is that it compiles.
+- `config_loading.rs:125` tautological token test: **Confirmed** as [LOW]. Tests that `config.server_url` is set after loading a file with `token` field — but doesn't actually assert the token was discarded. It only verifies the file loads. The real assertion is compile-time: `ClientConfig` has no `token` field.
+- `security.rs:79` config_warns_on_http_url flexible test: **Dismissed** — Test deliberately accepts both approaches (reject or warn). This is valid for a framework story where the exact behavior could change.
+- `output_format.rs:18` formatters only check non-empty: **Dismissed** — Later tests (`table_output_includes_headers`, `json_output_is_valid_json`, `csv_output_escapes_commas`) cover format correctness. The `_exists` tests are existence probes.
+- `config_loading.rs:134` XDG test is substring: **Deferred** — Could be stronger but passes the bar for framework story scope.
+- `shell_completion.rs:18` completion syntax not verified: **Deferred** — Out of scope for this story. Shell syntax validation would require external tools.
+- `stub_handlers.rs:9` story refs not exact: **Dismissed** — Story references are in the stubs, and the substring check is sufficient for the framework.
+- `config_loading.rs:44` env test doesn't test real env: **Dismissed** — Intentional design choice to avoid `unsafe` set_var in Rust 2024 edition. The `load_from_with_env` method is the right pattern.
+
+**TYPE-DESIGN:**
+- `client.rs:10` base_url as String: **Deferred** — Valid concern but acceptable for framework story. URL validation belongs in a future story when HTTP requests are actually made.
+- `config.rs:16` server_url as String: **Deferred** — Same reasoning as above.
+- `client.rs:12` tenant_id as String not TenantId: **Confirmed** as [MEDIUM]. The `axiathon-core` crate defines `TenantId` with validation. The client stores raw `String` and the `--tenant` CLI flag also accepts raw String. This loses the validated-constructor guarantee at the trust boundary.
+- `error.rs:20` error context as String: **Deferred** — Acceptable for framework; more structured error context belongs in implementation stories.
+- `config.rs:51` env overrides as string tuples: **Deferred** — Acceptable for testability; typed overrides can come later.
+- Tests don't reject invalid URLs: **Deferred** — Out of scope for framework story.
+
+---
+
+## Reviewer Assessment
+
+**Verdict:** APPROVED
+
+**Data flow traced:** `--tenant "abc-123"` → `Cli.tenant` (String via clap) → `SiemClient::with_tenant()` → `default_headers()` → `HeaderValue::from_str()` validates → `HeaderMap::insert("X-Tenant-ID", val)`. Safe — CRLF rejected by `from_str()`, no user-controlled format strings.
+
+**Pattern observed:** Clean module separation at `cli.rs:49-76` — clap derive enum with 12 variants, doc comments as help text, no imperative building.
+
+**Error handling:** `CliError::exit_code()` at `error.rs:44-51` correctly maps: Usage→2, AuthenticationExpired→3, Unauthorized→4, everything else→1. Wildcard arm handles `#[non_exhaustive]` future variants safely.
+
+**Wiring note:** `main.rs:4-8` is a no-op stub — `Cli::parse()` is never called, `Commands` enum is never dispatched. This is acceptable for a framework story (AC says stubs are expected), but flagged for awareness.
+
+| Severity | Issue | Location | Note |
+|----------|-------|----------|------|
+| [VERIFIED] | All 12 command groups present in help | `cli.rs:51-76` | query, rules, alerts, ingest, config, status, tenant, login, logout, tui, completion, init — matches AC-1 |
+| [VERIFIED] | Global flags use `global = true` | `cli.rs:10-35` | --format, -v, --quiet, --server, --tenant, --config, --no-color all declared global — matches AC-5 |
+| [VERIFIED] | Exit codes map correctly | `error.rs:44-51` | 2=usage, 3=auth, 4=authz, _=1 — evidence: `match self { Usage(_) => 2, AuthenticationExpired => 3, Unauthorized(_) => 4, _ => 1 }` |
+| [VERIFIED] | Header injection prevented | `client.rs:59-70` | `HeaderValue::from_str()` rejects CRLF; invalid values silently skipped. Tests at `siem_client.rs:117-144` verify behavior. |
+| [VERIFIED] | Config ignores token field | `config.rs:12` | `ClientConfig` has no `token` field; serde ignores unknown keys by default — safe |
+| [VERIFIED] | HTTP URL validation works | `config.rs:86-91` | `validate()` checks `url.starts_with("http://")` and pushes warning |
+| [VERIFIED] | Error display is CWE-209 safe | `error.rs:16-38` | All Display messages are static or contain only the caller-provided context string, never internal state |
+| [VERIFIED] | `#[non_exhaustive]` on CliError | `error.rs:11` | Present — verified at line 11 |
+| [VERIFIED] | `#![forbid(unsafe_code)]` on both lib and main | `lib.rs:2`, `main.rs:2` | Both entry points enforce no unsafe |
+| [MEDIUM] [TYPE] `SiemClient.tenant_id` uses raw String instead of `TenantId` from axiathon-core | `client.rs:11` | Loses validated-constructor guarantee. When commands are implemented, the `--tenant` flag value should be validated via `TenantId::new()` before passing to `SiemClient`. |
+| [MEDIUM] [TEST] Help rendering tests are vacuous | `cli_structure.rs:218-227` | `assert_subcommand_help_renders()` only checks `sub.is_some()` — never actually calls `write_long_help()` on the subcommand. Test name promises "does not panic" but doesn't exercise help generation. |
+| [MEDIUM] [SILENT] JsonFormatter silently pads short rows | `output.rs:58` | `row.get(i).cloned().unwrap_or_default()` fills missing columns with empty strings. Could mask data structure misalignment in callers. |
+| [LOW] quiet+verbose not mutually exclusive | `cli.rs:15,19` | Both can be set simultaneously. No logic reads them yet, so non-blocking. |
+| [LOW] [TEST] `cli_error_has_all_required_variants` has zero assertions | `exit_codes.rs:95-108` | Compile-time check only — acceptable but should be documented or removed. |
+
+**Blocking issues:** None (no Critical or High findings).
+
+**Handoff:** To SM for finish-story.
+
+VERDICT: APPROVE

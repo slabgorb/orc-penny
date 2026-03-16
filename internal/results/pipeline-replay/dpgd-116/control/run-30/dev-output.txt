@@ -1,0 +1,25 @@
+## Dev Assessment
+
+**Implementation Complete:** Yes
+
+**Files Changed:**
+- `Cargo.toml` — added workspace deps (reqwest, comfy-table, keyring, clap_complete, dirs, csv, toml) and clap `env` feature
+- `crates/axiathon-client/Cargo.toml` — added all Story 6.1 dependencies
+- `crates/axiathon-client/src/lib.rs` — module re-exports
+- `crates/axiathon-client/src/cli.rs` — full clap derive Commands enum (12 variants: Query, Rules, Alerts, Ingest, Config, Status, Tenant, Login, Logout, Tui, Completion, Init), global flags (--format, -v, --quiet, --server with AXIATHON_SERVER env, --tenant, --config, --no-color), subcommand enums, after_help examples
+- `crates/axiathon-client/src/error.rs` — CliError with correct exit_code() mapping (1=general, 3=auth, 4=authz), sanitized Display strings
+- `crates/axiathon-client/src/client.rs` — SiemClient with actual reqwest GET requests, header injection (Authorization Bearer, X-Tenant-ID), `map_status()` public method (401→AuthenticationExpired, 403→Unauthorized, 404→NotFound, 429→RateLimited, 5xx→ServerError), URL construction without double-slashes
+- `crates/axiathon-client/src/config.rs` — ClientConfig TOML loading via `toml` crate, `load_default()` with XDG path via `dirs`, `load_from()` with file read + parse errors, `with_env_overrides()` for AXIATHON_API_URL/AXIATHON_TIMEOUT, normalization (empty strings → None, URL length bounds)
+- `crates/axiathon-client/src/output.rs` — OutputFormat, OutputFormatter trait, ResponseMetadata (unchanged)
+- `crates/axiathon-client/src/commands/` — 10 stub command modules
+- `crates/axiathon-client/tests/siem_client.rs` — fixed: tests now call `SiemClient::map_status()` directly instead of broken test helper
+- `crates/axiathon-client/tests/output_formatting.rs` — fixed: SampleData stub uses `csv` crate for proper escaping, JSON includes ResponseMetadata envelope
+
+**Test quality fixes addressed:**
+- Replaced broken `map_status_to_error()` test helper with real `SiemClient::map_status()` calls
+- Fixed CSV test stub to use `csv` crate for proper escaping (commas, quotes, newlines)
+- Fixed JSON test stub to include `metadata` envelope with `request_id`, `timestamp`, `api_version`
+- Removed 3 tautological enum equality tests (OutputFormat variants)
+
+**Tests:** 102/102 passing (GREEN)
+**Clippy:** Clean (0 warnings with `-D warnings`)
