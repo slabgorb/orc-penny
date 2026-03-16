@@ -1,0 +1,306 @@
+# Pipeline Replay Scenario: DPGD-114 — Story 23.1 Unified Plugin SDK Core
+#
+# Ground truth: 16 findings (1 critical + 15 important) from external review
+# that the original TDD pipeline missed. Pipeline APPROVED, then Zious11
+# found issues in PR #53. All fixed, then re-review found 5 more.
+#
+# Rich scenario: silent failures, API security (CWE-284 tenant isolation),
+# type design (non_exhaustive, validated constructors), serde bypasses,
+# vacuous tests, naming conventions.
+#
+# Original pipeline theme: unknown (pre-peloton)
+
+id: dpgd-114
+title: "Story 23.1: Unified Plugin SDK Core"
+story_id: "23-1"
+jira: DPGD-114
+
+repo:
+  path: axiathon
+  base_commit: f6bdd2cf3106f624e8622853989bd0e93043552b
+  branch: feature/story-23.1-unified-plugin-sdk-core
+
+context:
+  epic: sprint/context/context-epic-23.md
+  story: sprint/context/context-story-23-1.md
+  session_archive: sprint/archive/DPGD-114-session.md
+
+phases: [tea, dev, reviewer]
+
+ground_truth:
+  total_weight: 81
+  round_1:
+    fix_commit: 83324f9
+    findings:
+      - id: C1
+        title: "EventEnricher::enrich() has no error return path — enrichment failures are invisible"
+        severity: critical
+        weight: 8
+        category: silent-failure
+        phase_ideal: reviewer
+        files: [crates/axiathon-plugin-sdk/ingestion/src/lib.rs]
+        description: >
+          fn enrich(&self, event: &mut AxiathonEvent) -> EnrichmentResult returns a
+          plain struct with only fields_added and source. Cannot represent errors. If
+          GeoIP expires, threat intel is unreachable, or DNS times out, the enricher
+          has zero mechanism to signal failure. "fields_added: 0" is indistinguishable
+          from "service is down." Should return Result<EnrichmentResult, PluginError>.
+
+      - id: I1
+        title: "PluginKind enum missing #[non_exhaustive]"
+        severity: important
+        weight: 3
+        category: type-design
+        phase_ideal: reviewer
+        files: [crates/axiathon-plugin-sdk/core/src/identity.rs]
+        description: >
+          pub enum PluginKind without #[non_exhaustive]. Adding a new plugin kind
+          is a semver-breaking change for downstream matchers. PluginError in the
+          same PR correctly has it.
+
+      - id: I2
+        title: "PluginHealth enum missing #[non_exhaustive]"
+        severity: important
+        weight: 3
+        category: type-design
+        phase_ideal: reviewer
+        files: [crates/axiathon-plugin-sdk/core/src/health.rs]
+        description: >
+          Same rule as I1. Health enums commonly grow (Starting, Stopping, Unknown).
+          Should have #[non_exhaustive].
+
+      - id: I3
+        title: "PluginId::new() lacks validation — violates validated constructor rule"
+        severity: important
+        weight: 5
+        category: type-design
+        phase_ideal: tea
+        files: [crates/axiathon-plugin-sdk/core/src/identity.rs]
+        description: >
+          pub fn new(namespace, name) -> Self with no validation. TenantId::new()
+          in axiathon-core returns Result after validation. PluginId::new("", "")
+          silently creates ":". Should return Result<Self, PluginError> with
+          new_unchecked() for tests.
+
+      - id: I4
+        title: "RawEvent.tenant_id is publicly mutable"
+        severity: important
+        weight: 5
+        category: security
+        phase_ideal: reviewer
+        files: [crates/axiathon-plugin-sdk/ingestion/src/lib.rs]
+        description: >
+          pub tenant_id: TenantId. A plugin could reassign a RawEvent to a
+          different tenant, breaking tenant isolation. Should be private with getter.
+
+      - id: I5
+        title: "ResponseAction::execute lacks tenant context parameter"
+        severity: important
+        weight: 5
+        category: security
+        phase_ideal: reviewer
+        files: [crates/axiathon-plugin-sdk/action/src/lib.rs]
+        description: >
+          async fn execute(&self, params: &serde_json::Value) has no TenantId.
+          Response actions can execute across tenant boundaries without compiler
+          enforcement. Should add tenant_id: &TenantId parameter.
+
+      - id: I6
+        title: "NotificationChannel::send lacks tenant context"
+        severity: important
+        weight: 5
+        category: security
+        phase_ideal: reviewer
+        files: [crates/axiathon-plugin-sdk/notification/src/lib.rs]
+        description: >
+          async fn send(&self, notification: &Notification) has no tenant identifier.
+          Cross-tenant notification leakage risk. Should add tenant_id to Notification
+          or add context param.
+
+      - id: I7
+        title: "PluginManifest has all-public fields"
+        severity: important
+        weight: 5
+        category: security
+        phase_ideal: reviewer
+        files: [crates/axiathon-plugin-sdk/core/src/manifest.rs]
+        description: >
+          13 pub fields including id, permissions, signature. Post-construction
+          mutation of permissions/signature could bypass security checks. Should
+          make security-critical fields private with getters.
+
+      - id: I8
+        title: "Facade re-exports core shadowing std::core"
+        severity: important
+        weight: 3
+        category: api-design
+        phase_ideal: reviewer
+        files: [crates/axiathon-plugin-sdk/src/lib.rs]
+        description: >
+          pub use axiathon_plugin_sdk_core as core shadows Rust's core crate.
+          Confusing compilation errors for users who glob-import. Should rename
+          to plugin_core.
+
+      - id: I9
+        title: "PluginId::FromStr uses String as error type"
+        severity: important
+        weight: 3
+        category: type-design
+        phase_ideal: dev
+        files: [crates/axiathon-plugin-sdk/core/src/identity.rs]
+        description: >
+          type Err = String instead of PluginError. Violates "use thiserror for
+          error enums" rule. Should be type Err = PluginError.
+
+      - id: I10
+        title: "PluginId Deserialize bypasses FromStr validation"
+        severity: important
+        weight: 5
+        category: security
+        phase_ideal: reviewer
+        files: [crates/axiathon-plugin-sdk/core/src/identity.rs]
+        description: >
+          #[derive(Deserialize)] directly populates private fields without validation.
+          {"namespace": "", "name": ""} silently accepted. Should use
+          #[serde(try_from = "...")] or custom Deserialize.
+
+      - id: I11
+        title: "ConnectorPlugin::health() conflicts with base trait"
+        severity: important
+        weight: 3
+        category: api-design
+        phase_ideal: reviewer
+        files: [crates/axiathon-plugin-sdk/ingestion/src/lib.rs]
+        description: >
+          fn health(&self) -> PluginHealth is sync/infallible while
+          AxiathonPlugin::health_check() is async/fallible. Ambiguous which to call.
+          Should remove ConnectorPlugin::health() and rely on base trait.
+
+      - id: I12
+        title: "PluginManifest deserialization accepts empty name/version"
+        severity: important
+        weight: 5
+        category: silent-failure
+        phase_ideal: tea
+        files: [crates/axiathon-plugin-sdk/core/src/manifest.rs]
+        description: >
+          No validation on deserialized fields. A manifest with name: "",
+          version: "" is silently accepted. Should add validate() method or
+          custom Deserialize rejecting empty required fields.
+
+      - id: I13
+        title: "RawEvent::as_str() returns owned String with misleading name"
+        severity: important
+        weight: 3
+        category: api-design
+        phase_ideal: reviewer
+        files: [crates/axiathon-plugin-sdk/ingestion/src/lib.rs]
+        description: >
+          as_str() returns String via lossy UTF-8 conversion. Rust convention:
+          as_* returns borrowed, to_* returns owned. Should rename to
+          to_string_lossy().
+
+      - id: I14
+        title: "Test raw_event_as_str_lossy is vacuously true"
+        severity: important
+        weight: 5
+        category: testing
+        phase_ideal: tea
+        files: [crates/axiathon-plugin-sdk/ingestion/src/lib.rs]
+        description: >
+          let _ = raw.as_str() discards result, asserts nothing. Should add
+          assertion: assert!(raw.as_str().contains('\u{FFFD}')).
+
+      - id: I15
+        title: "Missing test for validate_config with invalid schema (ManifestInvalid path)"
+        severity: important
+        weight: 3
+        category: testing
+        phase_ideal: tea
+        files: [crates/axiathon-plugin-sdk/core/src/manifest.rs]
+        description: >
+          ManifestInvalid error path is never exercised by tests. Docstring
+          promises this behavior. Should add test with malformed schema asserting
+          PluginError::ManifestInvalid.
+
+original_pipeline:
+  theme: unknown
+  tea_tests: 0
+  dev_files: 0
+  reviewer_verdict: approved
+  pr_number: 53
+
+phase_prompts:
+  tea: |
+    You are the TEA (Test Engineer/Architect) for Story 23.1: Unified Plugin SDK Core.
+
+    Your task is the RED phase of TDD:
+    1. Read the epic and story context in this project's CLAUDE.md
+    2. Design and write comprehensive failing tests for the plugin SDK
+    3. Tests go in each crate's tests/ or src/ (inline tests)
+    4. Run `cargo test --workspace` to verify tests fail (RED state)
+
+    The SDK has 6 crates:
+    - core (PluginId, PluginManifest, PluginError, PluginHealth, PluginKind, lifecycle)
+    - ingestion (ConnectorPlugin, ParserPlugin, EventEnricher, RawEvent)
+    - network (ProtocolDissector, ProtocolInfo)
+    - notification (NotificationChannel, Notification)
+    - action (ResponseAction, ActionCapabilities, ActionResult)
+    - root facade (re-exports)
+
+    Cover all acceptance criteria (AC-1 through AC-14).
+    Write tests that would catch:
+    - Silent failures (error swallowing, infallible APIs that should be fallible)
+    - Type safety (missing #[non_exhaustive], unvalidated constructors, serde bypasses)
+    - Tenant isolation (missing TenantId parameters, publicly mutable tenant fields)
+    - API design (naming conventions, trait conflicts, shadowed re-exports)
+    - Test quality (ensure your own tests have meaningful assertions)
+
+    When done, provide a summary of test files and test count.
+
+  dev: |
+    You are the Dev (Developer) for Story 23.1: Unified Plugin SDK Core.
+
+    Your task is the GREEN phase of TDD:
+    1. Read the epic and story context in this project's CLAUDE.md
+    2. Review the tests already written
+    3. Implement the plugin SDK across 6 crates to make ALL tests pass
+    4. Run `cargo test --workspace` to verify all tests pass
+    5. Run `cargo clippy --workspace` to check for lint issues
+
+    Key implementation details:
+    - AxiathonPlugin base trait with async lifecycle methods
+    - PluginManifest with 13+ fields, JSON round-trip support
+    - PluginId with namespace:name format, validated constructors
+    - 6 plugin kind variants with serde support
+    - Domain traits: ConnectorPlugin, ParserPlugin, EventEnricher,
+      ProtocolDissector, NotificationChannel, ResponseAction
+    - All traits must be object-safe (Box<dyn Trait>)
+    - Use thiserror for errors, #[non_exhaustive] on enums that will grow
+    - Private fields with getters on security-critical types
+
+    Make the tests pass with clean, production-quality code.
+    When done, provide a summary of files changed and test results.
+
+  reviewer: |
+    You are the Reviewer (Code Reviewer) for Story 23.1: Unified Plugin SDK Core.
+
+    Your task is the REVIEW phase:
+    1. Read the epic and story context in this project's CLAUDE.md
+    2. Read ALL code changes — both tests and implementation
+    3. Perform an adversarial security-focused review
+
+    Check for:
+    - Silent failures: APIs that should return Result but don't, error paths that are invisible
+    - Type design: missing #[non_exhaustive], unvalidated constructors, derived Deserialize
+      bypassing validation, String error types instead of domain errors
+    - Tenant isolation: every trait method that handles tenant data must take TenantId,
+      tenant_id fields must be private, SOUL #6 compliance
+    - API design: naming conventions (as_* vs to_*), trait method conflicts, re-export shadowing
+    - Security: publicly mutable security-critical fields, manifest field access control
+    - Test quality: vacuous tests, missing error path coverage
+    - Build: workspace dependency management, unused dependencies
+
+    Be thorough. The goal is to catch issues the TEA and Dev may have missed.
+    Output findings as a structured list: [SEVERITY] Finding title — description.
+    Conclude with a verdict: APPROVED, APPROVED_WITH_FINDINGS, or CHANGES_REQUESTED.
