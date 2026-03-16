@@ -117,6 +117,30 @@ Workflow definitions live in `pennyfarthing/pennyfarthing-dist/workflows/*.yaml`
 | JobFair | Single-agent benchmarking — tests one role in isolation against a rubric. |
 </info>
 
+<info>
+## Team & Axiathon Context
+
+**Axiathon repo:** `orc-ax/axiathon` (Rust SIEM platform). All benchmark scenarios come from real PRs reviewed by the team.
+
+| Person | GitHub | Role |
+|--------|--------|------|
+| Keith Avery | slabgorb | Developer (user) |
+| Jared | zious11 | Immediate boss, external reviewer — runs subagents on every PR |
+| Josh | drbothen | Jared's boss |
+| Michael | arcaven | Collaborator |
+
+**Benchmark scenarios (from Jared's PR reviews):**
+
+| Scenario | PR | Findings | Focus | Status |
+|----------|-----|----------|-------|--------|
+| DPGD-116 | #51 | 1C + 6I | CLI framework — error handling, config, test quality | Active (20 runs) |
+| DPGD-117 | #52 | 8I | REST API — workspace deps, non_exhaustive, tracing | Scenario built |
+| — | #53 | 1C + 15I | Plugin SDK — silent failures, type design, API contracts | **Candidate** |
+| — | #55 | 9I | Query parser — regex DoS, stack overflow, depth limits | **Candidate** |
+| — | #58 | 15I | Webhooks — HMAC leak, CORS, timing attack, auth bypass | **Candidate** |
+| — | #59 | 1C + 9I | Query engine — CIDR bugs, injection, silent failures | **Candidate** |
+</info>
+
 <context>
 ## Component Guides
 
