@@ -292,3 +292,10 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: trivial
+  - id: 148-27
+    title: Add peloton layout setting to TUI settings page
+    points: 1
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial

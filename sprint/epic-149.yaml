@@ -1,0 +1,50 @@
+id: '149'
+type: epic
+title: Peloton Benchmark Detection Gap Closure
+description: Close detection gaps identified by DPGD-116 pipeline replay benchmarks. Three persistent misses (C1 error swallowing, I3 workspace deps, I4 serde silent ignore), judge split decisions, and structural improvements to subagent analysis depth.
+priority: p1
+status: backlog
+repos: pennyfarthing
+stories:
+  - id: 149-1
+    title: 'Silent-failure-hunter: add unwrap_or_default/unwrap_or/.ok() heuristic for config loading paths'
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 149-2
+    title: Add build-config specialist subagent for Cargo.toml workspace inheritance and package.json patterns
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 149-3
+    title: "Reviewer user-intent check: for each VERIFIED, assess user's reasonable expectation vs code behavior"
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 149-4
+    title: 'Judge calibration: reduce split decisions by tightening partial-match and opposite-conclusion rules'
+    points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 149-5
+    title: 'Benchmark harness: save all 3 judge YAML files consistently (run-27 only has 2)'
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+  - id: 149-6
+    title: Run N=5 control baseline with all fixes to establish new benchmark floor
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
