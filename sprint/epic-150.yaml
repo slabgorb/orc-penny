@@ -7,6 +7,7 @@ status: backlog
 repos: pennyfarthing
 stories:
   - id: 150-1
+    jira: MSSCI-16489
     title: Impact Summary enhancement — downstream effects and deviation justifications in PR body
     points: 3
     priority: p1
@@ -14,6 +15,7 @@ stories:
     repos: pennyfarthing
     workflow: tdd
   - id: 150-2
+    jira: MSSCI-16494
     title: PR body template generation from session artifacts
     points: 2
     priority: p1
