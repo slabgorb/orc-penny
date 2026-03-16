@@ -945,3 +945,8 @@ completed_stories:
     title: Add set_repo_field writer to git/repos.py
     points: 2
     completed: "2026-03-15"
+  - id: 148-24
+    epic: ''
+    title: Peloton layout selection — horizontal, vertical, or 2x2 grid for team panes
+    points: 2
+    completed: '2026-03-16'

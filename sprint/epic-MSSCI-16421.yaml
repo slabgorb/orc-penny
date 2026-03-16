@@ -243,16 +243,22 @@ stories:
     title: Peloton agent panes show portrait beside CLI — split each agent pane with portrait panel on left, Claude CLI on right
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-15'
     repos: pennyfarthing
     workflow: tdd
+    completed: "2026-03-15"
   - id: 148-22
     title: Peloton agent color matching — teammates run /color to match badge colors
     points: 1
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-15'
     repos: pennyfarthing
     workflow: trivial
+    completed: "2026-03-15"
   - id: 148-23
     title: Reviewer handoff gate instructions unclear — struggles to complete gate reliably
     points: 2
@@ -263,3 +269,26 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     completed: "2026-03-15"
+  - id: 148-24
+    title: Peloton layout selection — horizontal, vertical, or 2x2 grid for team panes
+    points: 2
+    priority: p2
+    status: done
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-16'
+    review_verdict: approved
+  - id: 148-25
+    title: 'Bug: TEA tmux panes not cleaned up after peloton session ends'
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+  - id: 148-26
+    title: 'Bug: Peloton should never open more than one tmux pane per agent role'
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
