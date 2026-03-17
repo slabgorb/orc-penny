@@ -1,0 +1,164 @@
+scenario_id: dpgd-114
+theme: null
+run_id: 3
+model: null
+judge_model: claude-sonnet-4-6
+judge_version: v2
+judge_pass: 1
+total_caught: 7
+total_findings: 16
+weighted_caught: 32
+total_weight: 81
+score_pct: 39.5
+findings:
+- finding_id: C1
+  title: "EventEnricher::enrich() has no error return path \u2014 enrichment failures\
+    \ are invisible"
+  weight: 8
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer confirmed [HIGH] [SILENT]: 'EventEnricher::enrich() has no error\
+    \ return path. Returns EnrichmentResult (not Result<EnrichmentResult, PluginError>).\
+    \ GeoIP timeout, malformed field, cache error \u2014 all silently produce fields_added:\
+    \ 0.'"
+- finding_id: I1
+  title: 'PluginKind enum missing #[non_exhaustive]'
+  weight: 3
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer confirmed [MEDIUM] [TYPE]: ''Missing #[non_exhaustive] on all
+    three enums. PluginError, PluginHealth, and PluginKind have no #[non_exhaustive]
+    attribute.'' PluginKind specifically flagged at ''core/src/identity.rs:68''.'
+- finding_id: I2
+  title: 'PluginHealth enum missing #[non_exhaustive]'
+  weight: 3
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer confirmed [MEDIUM] [TYPE]: ''Missing #[non_exhaustive] on all
+    three enums... PluginHealth'' flagged at ''core/src/health.rs:8'', noting ''PluginHealth
+    is debatable (3 states are likely stable)'' but still included.'
+- finding_id: I3
+  title: "PluginId::new() lacks validation \u2014 violates validated constructor rule"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer confirmed [HIGH] [EDGE]: ''PluginId::new() validation gap. new(),
+    builtin(), and community() accept empty strings without validation, but FromStr
+    rejects them.'' Located at ''core/src/identity.rs:22''.'
+- finding_id: I4
+  title: RawEvent.tenant_id is publicly mutable
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: No phase flagged RawEvent.tenant_id being publicly mutable allowing cross-tenant
+    reassignment. The reviewer flagged PluginId public fields and PluginManifest public
+    fields, but not RawEvent.tenant_id specifically.
+- finding_id: I5
+  title: ResponseAction::execute lacks tenant context parameter
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: No phase flagged ResponseAction::execute lacking a TenantId parameter.
+    The reviewer deferred 'validate_params/execute call ordering' to Story 23.12 but
+    did not flag the missing tenant context parameter.
+- finding_id: I6
+  title: NotificationChannel::send lacks tenant context
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: No phase flagged NotificationChannel::send lacking tenant context. The
+    reviewer deferred 'Notification.severity should be enum' but never mentioned missing
+    tenant_id on the send method.
+- finding_id: I7
+  title: PluginManifest has all-public fields
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer confirmed [HIGH] [TYPE]: 'PluginId fields are pub \u2014 bypasses\
+    \ all validation.' and separately flagged PluginManifest public fields issue under\
+    \ security: 'PluginManifest has all-public fields \u2014 security-critical fields\
+    \ private with getters on security-critical types.' per rust.md rules."
+- finding_id: I8
+  title: Facade re-exports core shadowing std::core
+  weight: 3
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: No phase flagged 'pub use axiathon_plugin_sdk_core as core' shadowing
+    Rust's std::core crate. The facade tests were checked but this naming conflict
+    was not identified.
+- finding_id: I9
+  title: PluginId::FromStr uses String as error type
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: "No phase flagged PluginId::FromStr using String as error type instead\
+    \ of PluginError. The reviewer deferred 'PluginIdParseError structured error type'\
+    \ noting 'String error type matches spike and is adequate for MVP' \u2014 explicitly\
+    \ dismissed rather than flagged."
+- finding_id: I10
+  title: PluginId Deserialize bypasses FromStr validation
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: 'No phase flagged that PluginId''s #[derive(Deserialize)] bypasses FromStr
+    validation. The reviewer flagged public fields but did not identify the serde
+    deserialization bypass path specifically.'
+- finding_id: I11
+  title: ConnectorPlugin::health() conflicts with base trait
+  weight: 3
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: No phase flagged ConnectorPlugin::health() conflicting with AxiathonPlugin::health_check()
+    (sync/infallible vs async/fallible). Not mentioned in any phase output.
+- finding_id: I12
+  title: PluginManifest deserialization accepts empty name/version
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase flagged PluginManifest deserialization accepting empty name/version
+    fields. The reviewer's test-analyzer finding about 'validate_config ManifestInvalid
+    path untested' covers the schema validator error path, not the empty field deserialization
+    path.
+- finding_id: I13
+  title: RawEvent::as_str() returns owned String with misleading name
+  weight: 3
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: "The reviewer dismissed the as_str() naming concern: 'Method is correctly\
+    \ named following the spike pattern and the test now asserts \\u{FFFD}. Rename\
+    \ to as_str_lossy() is a future improvement, not a bug.' Pipeline examined the\
+    \ code and explicitly concluded it was acceptable \u2014 opposite conclusion from\
+    \ ground truth."
+- finding_id: I14
+  title: Test raw_event_as_str_lossy is vacuously true
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: dev
+  evidence: 'Dev explicitly states: ''ingestion/tests/ingestion_tests.rs: Strengthened
+    non-UTF8 test to assert replacement char \u{FFFD}.'' The vacuous ''let _ = raw.as_str()''
+    was replaced with an actual assertion.'
+- finding_id: I15
+  title: Missing test for validate_config with invalid schema (ManifestInvalid path)
+  weight: 3
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer confirmed [MEDIUM] [TEST]: ''validate_config ManifestInvalid
+    path untested. The validator_for() error path at manifest.rs:83 that returns PluginError::ManifestInvalid
+    is never exercised by any test. An invalid JSON Schema (e.g., {"type": 42}) should
+    be tested.'''

@@ -1,0 +1,29 @@
+ .claude/settings.json                              |  19 +
+ .pennyfarthing                                     |   1 +
+ .session/pipeline-session.md                       |   7 +
+ CLAUDE.md                                          | 676 +++++++++++++++++++--
+ Cargo.lock                                         | 342 +++++++++++
+ Cargo.toml                                         |  11 +-
+ crates/axiathon-plugin-sdk/Cargo.toml              |  15 +
+ crates/axiathon-plugin-sdk/action/Cargo.toml       |  17 +
+ crates/axiathon-plugin-sdk/action/src/lib.rs       | 223 +++++++
+ crates/axiathon-plugin-sdk/core/Cargo.toml         |  19 +
+ crates/axiathon-plugin-sdk/core/src/config.rs      |  36 ++
+ crates/axiathon-plugin-sdk/core/src/error.rs       | 161 +++++
+ crates/axiathon-plugin-sdk/core/src/health.rs      |  65 ++
+ crates/axiathon-plugin-sdk/core/src/identity.rs    | 271 +++++++++
+ crates/axiathon-plugin-sdk/core/src/lib.rs         |  17 +
+ crates/axiathon-plugin-sdk/core/src/lifecycle.rs   | 214 +++++++
+ crates/axiathon-plugin-sdk/core/src/manifest.rs    | 345 +++++++++++
+ crates/axiathon-plugin-sdk/ingestion/Cargo.toml    |  20 +
+ crates/axiathon-plugin-sdk/ingestion/src/lib.rs    | 262 ++++++++
+ crates/axiathon-plugin-sdk/network/Cargo.toml      |  17 +
+ crates/axiathon-plugin-sdk/network/src/lib.rs      | 146 +++++
+ crates/axiathon-plugin-sdk/notification/Cargo.toml |  17 +
+ crates/axiathon-plugin-sdk/notification/src/lib.rs | 176 ++++++
+ crates/axiathon-plugin-sdk/src/lib.rs              |  72 +++
+ 24 files changed, 3113 insertions(+), 36 deletions(-)
+
+(uncommitted after reviewer):
+ CLAUDE.md | 469 +++++++++++++++++++++++++++++++-------------------------------
+ 1 file changed, 236 insertions(+), 233 deletions(-)

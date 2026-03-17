@@ -185,8 +185,14 @@ def extract_scenario(scenario_dir: Path, themes_dir: Path = None) -> dict:
             if not fw_version and pipeline_meta:
                 fw_version = pipeline_meta.get("framework_version")
 
+            # Batch metadata (pipeline version grouping)
+            batch = None
+            if pipeline_meta:
+                batch = pipeline_meta.get("batch")
+
             run_entry = {
                 "run_id": run_num,
+                "batch": batch,
                 "model": run_model,
                 "score_pct": score.get("score_pct", 0),
                 "weighted_caught": score.get("weighted_caught", 0),
@@ -266,6 +272,26 @@ def extract_scenario(scenario_dir: Path, themes_dir: Path = None) -> dict:
                 if tag:
                     fw_versions.add(tag)
 
+        # Compute per-batch stats
+        batch_stats = {}
+        for r in runs:
+            b = r.get("batch") or "untagged"
+            if b not in batch_stats:
+                batch_stats[b] = []
+            batch_stats[b].append(r["score_pct"])
+        batch_summary = {}
+        for b, b_scores in batch_stats.items():
+            bn = len(b_scores)
+            b_mean = sum(b_scores) / bn
+            b_std = math.sqrt(sum((s - b_mean) ** 2 for s in b_scores) / bn) if bn > 1 else 0
+            batch_summary[b] = {
+                "n": bn,
+                "mean": round(b_mean, 1),
+                "std": round(b_std, 1),
+                "min": round(min(b_scores), 1),
+                "max": round(max(b_scores), 1),
+            }
+
         themes_data[theme_name] = {
             "meta": meta,
             "pipeline": pipeline_type,
@@ -280,6 +306,7 @@ def extract_scenario(scenario_dir: Path, themes_dir: Path = None) -> dict:
             "framework_versions": sorted(fw_versions),
             "finding_catch_rates": finding_catch_rates,
             "phase_attribution": phase_pct,
+            "batch_stats": batch_summary,
         }
 
     return {
@@ -300,6 +327,16 @@ def main():
     print(f"Results dir: {results_dir}")
     print(f"Themes dir: {themes_dir}")
 
+    # Load batch metadata (pipeline version descriptions)
+    batches_file = results_dir / "batches.yaml"
+    batches_meta = {}
+    if batches_file.exists():
+        batches_data = load_yaml(batches_file)
+        if batches_data and "batches" in batches_data:
+            for b in batches_data["batches"]:
+                batches_meta[b["id"]] = b
+            print(f"Loaded {len(batches_meta)} batch definitions from batches.yaml")
+
     scenarios = {}
     for scenario_dir in sorted(results_dir.iterdir()):
         if not scenario_dir.is_dir():
@@ -315,6 +352,7 @@ def main():
 
     output = {
         "generated": str(Path(__file__).name),
+        "batches": batches_meta,
         "scenarios": scenarios,
     }
 

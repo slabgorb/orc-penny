@@ -1,0 +1,40 @@
+## TEA Assessment Summary
+
+**Story 23-1: Unified Plugin SDK Core — RED phase complete.**
+
+### Test Files (9 files, 93 tests)
+
+| File | AC Coverage | Tests | Failing |
+|------|------------|-------|---------|
+| `core/tests/identity_tests.rs` | AC-4, AC-5 | 29 | **15** |
+| `core/tests/manifest_tests.rs` | AC-3, AC-8 | 10 | **3** |
+| `core/tests/health_error_config_tests.rs` | AC-6, AC-7, AC-8 | 16 | 0 |
+| `core/tests/lifecycle_tests.rs` | AC-2, AC-13 | 6 | 0 |
+| `ingestion/tests/traits_tests.rs` | AC-9 | 12 | 0 |
+| `network/tests/traits_tests.rs` | AC-10 | 4 | 0 |
+| `notification/tests/traits_tests.rs` | AC-11 | 4 | 0 |
+| `action/tests/traits_tests.rs` | AC-12 | 6 | 0 |
+| `tests/facade_tests.rs` | AC-1, AC-13 | 6 | 0 |
+| **Total** | **AC-1 through AC-14** | **93** | **18** |
+
+### What the 18 failures catch
+
+All failures are assertion failures (not import/compilation), caused by intentional stub bugs:
+
+1. **`PluginId::FromStr`** — stub always returns `Err("not implemented")` (5 tests catch this)
+2. **`PluginId::Display`** — stub returns empty string (2 tests catch this)
+3. **`PluginKind::Display`** — stub uses `Debug` format (`"Connector"`) instead of snake_case (`"connector"`) (6 tests)
+4. **`PluginKind` serde** — missing `#[serde(rename_all = "snake_case")]` (4 tests)
+5. **`validate_config`** — stub always returns `Err(Internal)` instead of proper JSON Schema validation (3 tests)
+
+### What Dev needs to fix for GREEN
+
+1. Implement `FromStr` for `PluginId` (split on first `:`, reject empty parts)
+2. Implement `Display` for `PluginId` (output `namespace:name`)
+3. Implement `Display` for `PluginKind` (lowercase snake_case)
+4. Add `#[serde(rename_all = "snake_case")]` to `PluginKind`
+5. Implement `validate_config` using `jsonschema` crate (add to dependencies)
+
+### Pre-existing test quality fixes
+
+Removed 7 tautological/vacuous tests, strengthened 3 weak assertions, added 1 gap-documenting test in axiathon-core per the test analyzer findings.

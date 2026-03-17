@@ -1,0 +1,79 @@
+scenario_id: dpgd-116
+theme: null
+run_id: 31
+model: null
+judge_model: claude-opus-4-6
+judge_version: v2
+judge_pass: 1
+total_caught: 6
+total_findings: 7
+weighted_caught: 31
+total_weight: 37
+score_pct: 83.8
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer Rule #1 flagged config.rs:28-29 as VIOLATION: ''load() returns
+    Self::default() without applying env var overrides'' and identified silent error
+    swallowing pattern. Also flagged AXIATHON_TIMEOUT silent parse failure. Same error-swallowing
+    category in config loading.'
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: dev
+  evidence: "Dev implemented 'CWE-209 safe Display for Config/ServerError' in error.rs.\
+    \ TEA wrote security_rules_test.rs covering CWE-209. Reviewer additionally flagged\
+    \ 'CliError::NotFound exposes inner string via Display' as MEDIUM \u2014 incomplete\
+    \ fix but the vulnerability class was actively addressed across all three phases."
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged 'Cli.tenant is Option<String> \u2014 bypasses TenantId\
+    \ newtype at CLI boundary' as LOW finding. Dev flagged TenantId Deserialize bypass\
+    \ as pre-existing delivery finding. Same vulnerability class (raw string bypassing\
+    \ type-safe tenant isolation) identified, though deferred."
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: true
+  caught_by: dev
+  evidence: "Dev added all 6 dependencies using workspace = true in Cargo.toml. Reviewer\
+    \ Rule #11 check confirmed: 'All deps use { workspace = true } \u2014 compliant.'\
+    \ The issue was proactively avoided."
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: 'No phase mentioned serde silently ignoring unknown fields, #[serde(deny_unknown_fields)],
+    or the risk of a user placing a token field in config that gets silently dropped.
+    Reviewer flagged other config issues but not this one.'
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: "TEA 'Strengthened 2 weak assertions (OR\u2192AND)' and 'Removed 7 tautological/vacuous\
+    \ tests from core_types_integration.rs.' Directly addresses the vacuously-true\
+    \ assertion pattern (None || true \u2192 always passes)."
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: "TEA 'Removed 7 tautological/vacuous tests from core_types_integration.rs'\
+    \ \u2014 same category as zero-assertion tests that only check non-panic. The\
+    \ pipeline demonstrated awareness of and actively fixed weak test patterns."

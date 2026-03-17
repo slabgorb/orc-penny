@@ -1,0 +1,141 @@
+## Subagent Results
+
+| # | Specialist | Received | Status | Findings | Decision |
+|---|-----------|----------|--------|----------|----------|
+| 1 | reviewer-preflight | Yes | clean | none — all tests pass, clippy clean | N/A |
+| 2 | reviewer-edge-hunter | Yes | findings | 8 | confirmed 4, dismissed 3, deferred 1 |
+| 3 | reviewer-silent-failure-hunter | Yes | findings | 5 | confirmed 2, dismissed 2, deferred 1 |
+| 4 | reviewer-test-analyzer | Yes | findings | 10 | confirmed 4, dismissed 3, deferred 3 |
+| 5 | reviewer-comment-analyzer | Yes | findings | 4 | confirmed 3, dismissed 0, deferred 1 |
+| 6 | reviewer-type-design | Yes | findings | 7 | confirmed 2, dismissed 3, deferred 2 |
+| 7 | reviewer-security | Yes | findings | 4 | confirmed 2, dismissed 1, deferred 1 |
+| 8 | reviewer-simplifier | Yes | findings | 7 | confirmed 2, dismissed 3, deferred 2 |
+| 9 | reviewer-rule-checker | Yes | findings | 9 violations across 15 rules | confirmed 5, dismissed 2, deferred 2 |
+
+**All received:** Yes (9 returned, 8 with findings)
+**Total findings:** 14 confirmed, 12 dismissed (with rationale below), 9 deferred
+
+---
+
+## Rule Compliance
+
+Checking every applicable rule from the lang-review checklist against every type/function in the diff:
+
+### Rule #1: Silent error swallowing
+- `SiemClient::build_headers()` at `client.rs:63`: calls `.expect()` on user-controlled input path (`--tenant`). **VIOLATION** — should call `try_build_headers()` or return `Result`. Confirmed: [EDGE] + [RULE].
+- `output.rs:75,92-98`: `.expect()` on in-memory buffer serialization. Dismissed: these are infallible operations (writing Strings to `Vec<u8>`), per `rust.md` which says "use `?` or `expect()` with actionable message."
+
+### Rule #2: `#[non_exhaustive]` on public enums
+- `CliError` at `error.rs:13`: compliant, has `#[non_exhaustive]`.
+- `Commands` at `cli.rs:55`: **VIOLATION** — pub enum exported from crate, will grow as Stories 6.2-6.7 add commands. Confirmed: [RULE] + [TYPE].
+- `OutputFormat` at `cli.rs:46`: Dismissed — closed set defined by AC-4 (`table|json|csv`). Adding YAML/NDJSON would be a spec change, not organic growth. SOUL.md #1 applies.
+
+### Rule #3: Hardcoded placeholder values
+- `output.rs:71` `"api_version": "v1"`: Minor — should be a constant. Deferred to future cleanup.
+
+### Rule #4: Tracing
+- `client.rs`: No `tracing::warn!` or `tracing::error!` calls anywhere in the crate despite `tracing` being a dependency. **VIOLATION** — `map_http_status` should log 4xx at `warn!` level and 5xx at `error!` level per rule #4. Confirmed: [RULE].
+
+### Rule #5: Validated constructors
+- `SiemClient::try_new()`: compliant — validates base_url emptiness, token CRLF.
+- `ClientConfig::from_file_with_env()`: compliant for negative timeout; **partial violation** for env var path bypassing empty-URL check (see Rule #13).
+
+### Rule #6: Test quality
+- `cli_exit_codes.rs:101` and `cli_rules_enforcement.rs:153`: CWE-209 tests assert `msg.contains("server")` but `CliError::ServerError` uses `#[error("server error: {0}")]` which passes the full inner string through. The test **proves the opposite of what it claims** — internal details ARE echoed. **VIOLATION** — test is vacuous. Confirmed: [TEST] + [RULE].
+
+### Rule #7: Unsafe `as` casts
+- `config.rs:45` `t as u64` and `config.rs:123` `t as u64`: i64 from user-controlled TOML cast to u64. Guard checks `t < 0` but `u64::try_from(t)` is the idiomatic safe form. **VIOLATION** — should use `try_from()`. Confirmed: [RULE].
+
+### Rule #8: Deserialize bypass
+- `TenantId`: compliant — custom `Deserialize` routes through `new()`.
+- `ClientConfig`: compliant — custom `Deserialize` routes through `TryFrom<RawConfig>`.
+
+### Rule #9: Public fields on types with invariants
+- `SiemClient`: compliant — private fields with getters.
+- `ClientConfig`: compliant — private fields with getters.
+- `CliError`: compliant — enum variants with thiserror.
+
+### Rule #10: Tenant context in trait signatures
+- Not applicable to this story's scope — no trait methods touch tenant data.
+
+### Rule #11: Workspace dependency compliance
+- `tempfile = "3"` in `[dev-dependencies]`: `tempfile` is not in `[workspace.dependencies]`, so inline pin is acceptable. Dismissed.
+
+### Rule #12: Dev-only dependencies
+- All test-only deps (`insta`, `proptest`, `tempfile`) are in `[dev-dependencies]`. Compliant.
+
+### Rule #13: Constructor/Deserialize validation consistency
+- `config.rs`: `TryFrom<RawConfig>` checks `api_url.is_empty()` but `from_file_with_env()` does NOT check emptiness after env var override at line 128-130. `AXIATHON_API_URL=""` would produce a `ClientConfig` with empty `api_url`, bypassing the validation that `toml::from_str::<ClientConfig>()` enforces. **VIOLATION** — two code paths enforce different invariants. Confirmed: [RULE] + [EDGE] + [SILENT].
+
+---
+
+### Data flow traced
+`--tenant` CLI arg → `Cli.tenant: Option<String>` → passed to `SiemClient::build_headers(Some(&tenant))` → `HeaderValue::from_str(tid)` → injected as `X-Tenant-ID` header. Safe path: CRLF is rejected. Gap: `build_headers()` panics instead of returning error on invalid input.
+
+### Wiring
+`Cli` struct parses args. `Commands` enum dispatches to stubs. No `main.rs` yet — wiring is deferred. This is acceptable for Story 6.1 which delivers the framework, not the binary.
+
+### Error handling
+CliError variants map to exit codes correctly. `thiserror` derives Display. `#[non_exhaustive]` present on CliError. Missing on `Commands`.
+
+### Security analysis
+- CWE-113 (header injection): Properly prevented in `try_build_headers` and `try_new`. Token redacted in Debug.
+- CWE-209 (info exposure): `CliError::ServerError` passes raw message through Display via `#[error("server error: {0}")]`. Tests claim to verify CWE-209 protection but the assertions are vacuous — they check for "server" in the output but not for absence of internal details. **The implementation echoes raw server response bodies to operators.**
+- CWE-20 (input validation): TenantId deserialization bypass fixed correctly.
+
+### Tenant isolation audit
+- `TenantContext` and `SystemContext`: all fields private with getters. Compliant.
+- `SiemClient::try_build_headers()`: accepts tenant_id as explicit parameter. Compliant.
+- `Cli.tenant`: raw `Option<String>`, not validated as `TenantId`. Medium concern — server-side validation is the trust boundary, but the CLI is the first touch point.
+
+---
+
+### Devil's Advocate
+
+**Assume this code is broken. What would go wrong?**
+
+1. **An operator sets `AXIATHON_API_URL=""` in their CI env.** The `from_file_with_env()` path accepts empty strings from env vars (line 128-130) without checking emptiness. The `TryFrom<RawConfig>` path rejects empty URLs, but `from_file_with_env` bypasses it. The operator gets a `ClientConfig` with `api_url: ""`, and every HTTP request silently fails with an opaque reqwest error instead of a clear "api_url cannot be empty" message. This is a validation consistency bug.
+
+2. **A malicious server returns `500 Internal Server Error` with a body containing a database connection string.** `map_http_status(500, body_text)` wraps it in `CliError::ServerError(body_text)`. The `#[error("server error: {0}")]` Display echoes it verbatim to the operator's terminal. The CWE-209 tests pass because they only check for "server" in the output. If the operator pastes the error in a Slack channel, the DB connection string is leaked.
+
+3. **An operator's HOME directory is unset (e.g., systemd service).** `dirs::config_dir()` returns `None`. `default_config_path()` falls back to `PathBuf::from(".config")` — a relative path. The CLI silently resolves to `./config/axiathon/cli.toml` relative to CWD, potentially loading a config file planted by an attacker in the working directory.
+
+4. **A developer adds a new command in Story 6.2.** They match on `Commands` exhaustively. Six months later, Story 6.3 adds another command. Because `Commands` lacks `#[non_exhaustive]`, the Story 6.2 code now fails to compile. This is the exact scenario `#[non_exhaustive]` prevents.
+
+5. **JsonFormatter receives a row with 2 columns but headers has 3.** `zip()` silently drops the third header. The JSON output is missing a field with no error. An operator running `axiathon rules list --format json | jq .data[].severity` gets `null` instead of an error.
+
+The devil's advocate uncovered items 1, 2, and 4 as confirmed issues. Item 3 is medium-concern defense-in-depth. Item 5 is a real silent data loss path.
+
+---
+
+## Reviewer Assessment
+
+**Verdict:** APPROVED with findings
+
+**Positive observations:**
+- [VERIFIED] TenantId deserialization bypass fixed correctly — `types.rs:23-31` custom Deserialize routes through `new()`, which validates UUID format. Complies with Rule #8 and `rust.md` `#[serde(try_from)]` requirement.
+- [VERIFIED] SiemClient token redacted in Debug — `client.rs:18-24` custom Debug impl maps token to `[REDACTED]`. Complies with `rust.md` private-fields-with-getters rule.
+- [VERIFIED] CliError has `#[non_exhaustive]` — `error.rs:13`. Complies with Rule #2.
+- [VERIFIED] `#![forbid(unsafe_code)]` present — `lib.rs:2`. Complies with safety rule.
+- [VERIFIED] All production dependencies use `{ workspace = true }` — `Cargo.toml`. Complies with Rule #11.
+- [VERIFIED] CWE-113 header injection properly rejected — `client.rs:40-48` and `client.rs:73-81` check CRLF and validate via `HeaderValue::from_str`. Tests at `cli_siem_client.rs:127-145` exercise both paths.
+- [VERIFIED] Config token exclusion — `config.rs:14-16` RawConfig has no `token` field, unknown fields silently ignored. Test at `cli_config.rs:117-137` verifies token is not loaded.
+
+| Severity | Issue | Location | Fix Required |
+|----------|-------|----------|--------------|
+| [HIGH] | [RULE] Validation inconsistency: `from_file_with_env()` env var path bypasses empty-URL check in `TryFrom<RawConfig>` | `config.rs:128-130` | Add `if api_url.is_empty() { return Err(CliError::Config("api_url cannot be empty")) }` after env overrides are applied, or route all validation through one shared method |
+| [HIGH] | [RULE][EDGE] `Commands` enum missing `#[non_exhaustive]` — pub enum will grow as Stories 6.2-6.7 add commands | `cli.rs:55` | Add `#[non_exhaustive]` to `Commands` enum |
+| [HIGH] | [RULE] Missing `Logout` command variant — AC-1 specifies "login/logout" | `cli.rs:56-79` | Add `Logout` variant to `Commands` enum |
+| [MEDIUM] | [TEST] CWE-209 tests are vacuous — `CliError::ServerError` echoes raw inner message via `#[error("server error: {0}")]` but tests only assert "server" is present, not that internal details are absent | `cli_exit_codes.rs:101`, `cli_rules_enforcement.rs:153` | Either fix `ServerError` Display to use a generic message (logging detail at debug level), or strengthen tests to assert `!msg.contains("10.0.0.1")` / `!msg.contains("NullPointerException")` |
+| [MEDIUM] | [RULE] No tracing calls in the crate despite `tracing` dependency. Error paths in SiemClient need `warn!` for 4xx, `error!` for 5xx | `client.rs` (throughout) | Add `tracing::warn!` and `tracing::error!` to `map_http_status` and error paths in `try_new`/`try_build_headers` |
+| [MEDIUM] | [DOC] Duplicate/lying doc comment: line 9 has stale "used internally" text; line 24 says `#[serde(try_from)]` but implementation uses manual `Deserialize` impl | `config.rs:9-12`, `config.rs:24` | Remove line 9 duplicate, update line 24 to say "manual Deserialize impl" |
+| [MEDIUM] | [DOC] Doc says "URL construction" but no URL construction method exists | `client.rs:9` | Change to "base URL storage" |
+| [MEDIUM] | [SIMPLE] Duplicated validation logic between `TryFrom<RawConfig>` and `from_file_with_env` | `config.rs:32-53` vs `config.rs:113-125` | Have `from_file_with_env` apply env overrides to `RawConfig` fields, then call `ClientConfig::try_from(raw)` once |
+| [MEDIUM] | [SIMPLE] `_http: reqwest::Client` field constructed but never used | `client.rs:14` | Remove `_http` field — add it back when HTTP methods are implemented |
+| [LOW] | [RULE] `t as u64` on user-controlled i64 — should use `u64::try_from(t)` | `config.rs:45`, `config.rs:123` | Replace with `u64::try_from(t).map_err(...)` |
+| [LOW] | [EDGE] `JsonFormatter::format()` silently drops columns when row length != header length (zip behavior) | `output.rs:57-63` | Add debug_assert or document the behavior |
+| [LOW] | [TYPE] `TryFrom<RawConfig>` uses `type Error = String` — should use `CliError` per SOUL.md #5 | `config.rs:33` | Change to `type Error = CliError` |
+
+**Handoff:** Back to Dev for fixes on HIGH items (3 issues). MEDIUM items should be addressed but are not blocking.
+
+VERDICT: REJECT

@@ -84,7 +84,6 @@ This keeps the user's CLI and TUI visible and usable while peloton agents work i
 ## Delivery Findings
 
 No upstream findings
-
 ## Impact Summary
 
 **Upstream Effects:** No upstream effects noted

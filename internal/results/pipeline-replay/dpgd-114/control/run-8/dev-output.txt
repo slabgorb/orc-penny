@@ -1,0 +1,33 @@
+## Dev Assessment
+
+**Implementation Complete:** Yes
+
+**Files Changed:**
+- `crates/axiathon-plugin-sdk/core/src/identity.rs` — Full implementation: PluginId with private fields, getters, Display, FromStr with validation (rejects empty parts/missing colon), custom Deserialize via `PluginIdRaw` intermediary to prevent CWE-20 bypass; PluginKind Display with snake_case; `#[non_exhaustive]` on PluginKind
+- `crates/axiathon-plugin-sdk/core/src/error.rs` — Added `#[non_exhaustive]` to PluginError
+- `crates/axiathon-plugin-sdk/core/src/health.rs` — Added `#[non_exhaustive]` to PluginHealth
+- `crates/axiathon-plugin-sdk/core/src/manifest.rs` — Implemented `validate_config()` using `jsonschema` crate
+- `crates/axiathon-plugin-sdk/core/Cargo.toml` — Added `jsonschema = "0.28"` dependency
+- `crates/axiathon-core/tests/core_types_integration.rs` — Removed unused `Result` import (left over from TEA's tautological test removal)
+
+**Test fixes (pre-existing issues):**
+- Fixed 6 broken supertrait tests across ingestion/network/notification/action (added `_requires_base::<T>()` call)
+- Strengthened `raw_event_as_str_handles_non_utf8` to assert `U+FFFD` replacement character
+
+**Tests:** 194/194 passing (GREEN)
+**Clippy:** Zero warnings with `-D warnings`
+
+**Key design decisions:**
+- Custom `Deserialize` impl for `PluginId` using intermediate `PluginIdRaw` struct to enforce validation on deserialization (Rule #8, CWE-20)
+- `PluginId::new()` left as unchecked constructor for internal use (like `TenantId::new_unchecked`); validation enforced via `FromStr` and `Deserialize` at trust boundaries
+- `jsonschema::validate()` used directly (simpler than `validator_for` + iterate pattern)
+
+### Design Deviations
+
+### Dev (implementation)
+- No deviations from spec.
+
+### Delivery Findings
+
+- **Gap** (non-blocking): Tenant context parameters missing from sub-crate trait methods (`ConnectorPlugin::collect`, `NotificationChannel::send`, `ResponseAction::execute`, `EventEnricher::enrich`). Affects `crates/axiathon-plugin-sdk/{ingestion,notification,action}/src/lib.rs` (trait signatures need `&dyn TenantScoped` parameter). *Found by Dev during implementation — noted by security reviewer but out of scope for Story 23-1 (stubs only per AC-9-12).*
+- **Gap** (non-blocking): `PluginManifest` has all public fields including security-critical `signature` and `permissions`. Affects `crates/axiathon-plugin-sdk/core/src/manifest.rs` (fields should be private with getters per Rule #9). *Not addressed because existing tests directly access pub fields — would require test changes.*

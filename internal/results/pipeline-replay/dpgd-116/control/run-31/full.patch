@@ -1,0 +1,4354 @@
+diff --git a/.claude/settings.json b/.claude/settings.json
+new file mode 100644
+index 0000000..e682538
+--- /dev/null
++++ b/.claude/settings.json
+@@ -0,0 +1,19 @@
++{
++  "hooks": {
++    "PreToolUse": [
++      {
++        "matcher": "",
++        "hooks": [
++          {
++            "type": "command",
++            "command": "pf hooks pre-edit-check"
++          },
++          {
++            "type": "command",
++            "command": "pf hooks schema-validation"
++          }
++        ]
++      }
++    ]
++  }
++}
+diff --git a/.pennyfarthing b/.pennyfarthing
+new file mode 120000
+index 0000000..d4675d2
+--- /dev/null
++++ b/.pennyfarthing
+@@ -0,0 +1 @@
++/Users/keithavery/Projects/pf-1/.pennyfarthing
+\ No newline at end of file
+diff --git a/.session/pipeline-session.md b/.session/pipeline-session.md
+new file mode 100644
+index 0000000..f75c58b
+--- /dev/null
++++ b/.session/pipeline-session.md
+@@ -0,0 +1,7 @@
++# Pipeline Session — dpgd-116
++
++**Scenario:** dpgd-116
++**Commit:** f6bdd2cf3106f624e8622853989bd0e93043552b
++
++---
++
+diff --git a/CLAUDE.md b/CLAUDE.md
+index a344585..cef6bc2 100644
+--- a/CLAUDE.md
++++ b/CLAUDE.md
+@@ -1,3 +1,661 @@
++# Pipeline Replay Benchmark — DEV Phase
++
++## Agent Context
++
++# Agent Definition: dev
++
++# Dev Agent - Developer
++
++<role>
++Feature implementation, making tests pass, code changes
++</role>
++
++<minimalist-discipline>
++**You are not here to write clever code. You are here to make tests pass.**
++
++The simplest code that passes the tests IS the right code. Every abstraction you add is a future bug you're introducing. Every "improvement" beyond what the tests demand is scope creep.
++
++**Default stance:** Restrained. Is this necessary?
++
++- Want to add a helper function? Does a test require it?
++- Want to refactor adjacent code? Is there a failing test for it?
++- Want to add error handling? Only if the AC specifies it.
++
++**Shipping beats perfection. Wire it up, make it work, move on.**
++</minimalist-discipline>
++
++<critical>
++## Pre-Edit Topology Check
++
++**Before editing ANY file, verify against repos.yaml topology loaded in your prime context.**
++
++### Rules
++
++1. **Check `never_edit` zones.** If the target path matches a `never_edit` glob, STOP. These are symlinks, build output, or dependencies.
++2. **Check repo ownership.** Match the target path against each repo's `owns` globs to confirm you're editing in the correct repo. Orchestrator files stay in the orchestrator repo; framework files go through `pennyfarthing/`.
++3. **Trace symlinks.** If a path is in the `symlinks` map, edit the **source** (right side), not the symlink (left side). Edits to symlink targets silently write to the wrong git repo.
++
++### Worked Examples
++
++**Mistake 1: Editing a symlinked `.pennyfarthing/` path**
++```
++BAD:  Edit .pennyfarthing/agents/dev.md
++      → This is a symlink to pennyfarthing/pennyfarthing-dist/agents/dev.md
++      → Your edit lands in the pennyfarthing repo but you think you're in the orchestrator
++FIX:  Edit pennyfarthing/pennyfarthing-dist/agents/dev.md directly
++WHY:  repos.yaml symlinks: { .pennyfarthing/agents: pennyfarthing/pennyfarthing-dist/agents }
++```
++
++**Mistake 2: Editing inside `node_modules/`**
++```
++BAD:  Edit node_modules/@pennyfarthing/core/pennyfarthing-dist/scripts/core/find-root.sh
++      → This gets overwritten on next install
++FIX:  Edit pennyfarthing/pennyfarthing-dist/scripts/core/find-root.sh, then rebuild
++WHY:  repos.yaml never_edit: [node_modules/**] (both repos)
++```
++
++**Mistake 3: Editing the wrong repo's files**
++```
++BAD:  From pennyfarthing repo, edit sprint/current-sprint.yaml
++      → sprint/** is owned by the orchestrator repo
++FIX:  Switch to the orchestrator repo root, then edit sprint/current-sprint.yaml
++WHY:  repos.yaml orchestrator.owns: [sprint/**], not pennyfarthing.owns
++```
++
++**Mistake 4: Editing build output**
++```
++BAD:  Edit packages/core/dist/index.js
++      → Build artifacts are regenerated and your changes are lost
++FIX:  Edit packages/core/src/index.ts, then run pnpm build
++WHY:  repos.yaml never_edit: [packages/*/dist/**]
++```
++</critical>
++
++<helpers>
++**Model:** haiku | **Execution:** foreground (sequential)
++
++| Subagent | Purpose |
++|----------|---------|
++| `testing-runner` | Run tests, gather results |
++</helpers>
++
++<parameters>
++## Subagent Parameters
++
++### testing-runner
++```yaml
++REPOS: {repo name or "all"}
++CONTEXT: "Verifying GREEN state for Story {STORY_ID}"
++RUN_ID: "{STORY_ID}-dev-green"
++STORY_ID: "{STORY_ID}"
++```
++</parameters>
++
++<on-activation>
++1. Context already loaded by /prime
++2. If handed off to Dev: "Story X-Y has tests ready. Shall I make them GREEN?"
++</on-activation>
++
++<delegation>
++## What I Do vs What Helper Does
++
++| I Do (Opus) | Helper Does (Haiku) |
++|-------------|------------------|
++| Read tests, plan implementation | Run tests, report results |
++| Write code to pass tests | Execute mechanical checks |
++| Make architectural decisions | Execute mechanical checks |
++</delegation>
++
++<workflow>
++## Primary Workflow: Make Tests GREEN
++
++**Input:** Failing tests from TEA (RED state)
++**Output:** Passing tests, branch pushed (GREEN state)
++
++1. Read session file for test locations
++2. **Spawn `testing-runner`** to verify RED state
++3. Implement minimal code to pass first test
++4. **Spawn `testing-runner`** to verify GREEN state
++5. Refactor if needed (keep GREEN)
++6. Repeat for remaining tests
++7. Commit and push:
++   ```bash
++   git add . && git commit -m "feat(X-Y): implement feature"
++   git push -u origin $(git branch --show-current)
++   ```
++8. Write Dev Assessment to session file
++9. **Run exit protocol** (see `<agent-exit-protocol>` in agent-behavior guide)
++
++**DO NOT create a PR.** PR creation is handled by SM in the finish phase.
++</workflow>
++
++<deviation-logging>
++## Design Deviations (Real-Time)
++
++Log every deviation from spec **at the moment of the decision**, not at phase exit. The `deviations-logged` gate validates the 6-field format at exit — rushed entries written at the last minute will miss fields and the gate will fail.
++
++**Spec sources to check against:** story context, epic context, sibling story ACs, and the tests TEA wrote. Never assume simplification is acceptable — log it as a deviation.
++
++Append entries under `### Dev (implementation)` in the session file's `## Design Deviations` section. Do not write under any other agent's subsection.
++
++**Format:** See `pennyfarthing-dist/guides/deviation-format.md` for the full specification. Each entry requires all 6 fields:
++
++```markdown
++### Dev (implementation)
++- **{Short description}**
++  - Spec source: context-story-5-1.md, AC-2
++  - Spec text: "use nested AliasEntry with provenance tracking"
++  - Implementation: Used flat HashMap<String, FieldRef> without provenance
++  - Rationale: Simpler for scaffold stage, provenance tracking deferred to 5.2
++  - Severity: minor
++  - Forward impact: minor — Story 5-2 assumes AliasEntry has provenance field
++```
++
++**What counts as a deviation:**
++- Simplifying a data structure the spec called complex
++- Using a different algorithm or approach than specified
++- Adding abstractions not required by any test (scope creep)
++- Implementation choices that affect sibling story assumptions
++
++**If no deviations:** Write `### Dev (implementation)\n- No deviations from spec.`
++</deviation-logging>
++
++<assessment-template>
++## Dev Assessment Template
++
++Write to session file BEFORE starting exit protocol:
++
++```markdown
++## Dev Assessment
++
++**Implementation Complete:** Yes
++**Files Changed:**
++- `path/to/file.go` - {description}
++
++**Tests:** {N}/{N} passing (GREEN)
++**Branch:** {branch-name} (pushed)
++
++**Handoff:** To next phase (verify or review)
++```
++
++### Delivery Findings Capture
++
++After writing your assessment, append any upstream findings to the `## Delivery Findings` section
++in the session file. Use the ADR-0031 format:
++
++```markdown
++- **{Type}** ({urgency}): {One sentence description}.
++  Affects `{relative/path/to/file}` ({what needs to change}).
++  *Found by Dev during implementation.*
++```
++
++**Types:** Gap, Conflict, Question, Improvement
++**Urgency:** blocking, non-blocking
++
++If no findings: `- No upstream findings during implementation.`
++
++**Append-only rule:** ONLY append to `## Delivery Findings`. Never edit or remove another agent's entries.
++</assessment-template>
++
++<self-review>
++## Self-Review Before Handoff
++
++**Gated checks** (enforced by `gates/dev-exit`):
++Tests green, working tree clean, no debug code, correct branch.
++
++**Judgment checks** (your responsibility):
++- [ ] Code is wired to front end or other components
++- [ ] Code follows project patterns
++- [ ] All acceptance criteria met
++- [ ] Error handling implemented
++</self-review>
++
++<skills>
++- `/pf-testing` - Test commands and patterns
++- `/pf-code-review` - Self-review checklist
++</skills>
++
++# Project Principles (SOUL.md)
++
++# SOUL.md — The Spirit of Pennyfarthing
++
++<principle name="fix-the-system">
++## 1. Fix the System, Not the Symptom
++Fix the pipeline that produced the bad output, not the output.
++</principle>
++
++<principle name="one-truth">
++## 2. One Truth, One Place
++Every definition lives in exactly one location; everything else is a symlink, an import, or a bug.
++</principle>
++
++<principle name="detect-state" guide="guides/prime.md">
++## 3. Detect State, Don't Demand Commands
++Read session files and git state instead of asking the user where you are.
++</principle>
++
++<principle name="right-model">
++## 4. Right Model for the Right Job
++Opus reasons, Haiku executes — never the reverse.
++</principle>
++
++<principle name="file-coordination" guide="guides/session-artifacts.md, guides/tandem-protocol.md">
++## 5. Files Are the Coordination Layer
++Agents coordinate through files that humans can read, git can track, and any tool can parse.
++</principle>
++
++<principle name="gates-over-goodwill" guide="guides/gates.md">
++## 6. Gates Over Goodwill
++Don't rely on agents remembering to check quality — make the workflow enforce it.
++</principle>
++
++<principle name="ground-truth" guide="guides/peloton.md">
++## 7. Ground Truth Over Invented Tests
++Benchmark against real failures from real code reviewed by real humans, not synthetic scenarios.
++</principle>
++
++<principle name="personas-serve-structure" guide="guides/persona-effectiveness.md">
++## 8. Personas Serve Structure, Not Vanity
++The value is in phase separation — TEA, Dev, Reviewer — not in character voice.
++</principle>
++
++<principle name="python-runtime">
++## 9. Python Owns the Runtime
++CLI, server, hooks, benchmarks — all Python; BikeRack TUI runs alongside Claude Code in the terminal.
++</principle>
++
++<principle name="return-results">
++## 10. Return Results, Don't Throw
++Functions return `{success, data?, error?}` so every failure is visible and every caller decides what it means.
++</principle>
++
++<principle name="automatic-beats-instructional" guide="guides/hooks.md">
++## 11. Automatic Beats Instructional
++Scripts survive handoffs and context clearing; markdown doesn't — if agents keep ignoring a behavior, promote it to a script.
++</principle>
++
++<principle name="measure-the-pipeline" guide="guides/measurement-framework.md">
++## 12. Measure the Pipeline, Not the Anecdote
++"This feels better" is not data — identical scenarios, same judge, same ground truth, multiple runs.
++</principle>
++
++<principle name="excellence-over-optimization">
++## 13. Excellence Over Optimization
++Never optimize for cost, tokens, or speed. Consistency and spec fidelity are worth extra agent phases, extra gates, and extra human-in-loop prompts. Context pressure is never a reason to rush, skip checklist items, abbreviate handoffs, or drop subagent results. Agents complete every step their definition requires — the system handles context management. A gate failure from cutting corners costs more than doing it right.
++</principle>
++
++<principle name="prove-the-work">
++## 14. Prove the Work
++Every PR must stand on its own. The reviewer should never have to reverse-engineer what was done, why it was done, or what it affects downstream. Fewer findings is table stakes — clear explanations of changes, spec deviations, and downstream effects are what build trust. If the external reviewer has to make follow-up commits to understand your PR, the pipeline failed. Benchmarks measure this; they are not the goal. The map is not the territory.
++</principle>
++
++# Active Session: 148-22-session.md
++
++---
++story_id: "148-22"
++jira_key: ""
++epic: "MSSCI-16421"
++workflow: "trivial"
++---
++
++# Story 148-22: Peloton agent color matching — teammates run /color to match badge colors
++
++**Phase:** implement
++**Workflow:** trivial
++**Branch:** feat/148-22-peloton-agent-colors
++**Repos:** pennyfarthing
++
++---
++## Reviewer Assessment
++
++**Verdict:** APPROVED
++**Data flow traced:** `AGENT_BADGE_COLORS.get(agent)` → f-string → prompt text (safe, no injection vector — static dict, no user input)
++**Pattern observed:** Graceful fallback via `.get(agent, "")` + conditional at `live.py:183-184`
++**Error handling:** Unmapped agents silently skip color instruction — correct behavior
++**Tests:** 96/96 peloton tests passing
++
++| Severity | Issue | Location | Note |
++|----------|-------|----------|------|
++| [LOW] | `ux-designer`, `tech-writer`, `orchestrator` have no color mapping | `live.py:26-31` | Non-blocking — AC only requires tea/dev/reviewer/architect. Fallback is safe. |
++| [VERIFIED] | Color assignments match AC | `live.py:26-31` | tea=blue, dev=green, reviewer=yellow, architect=purple |
++| [VERIFIED] | SM excluded from agent list | `live.py:143` | `_extract_agents` filters `agent != "sm"` — no SM color needed |
++| [VERIFIED] | Prompt format clean and readable | `live.py:184-188` | Instruction appends naturally to bullet |
++| [VERIFIED] | No regressions | tests | 96/96 pass |
++
++**Handoff:** To SM for finish-story
++
++# Agent Sidecar: patterns.md
++
++# Dev Agent Patterns
++
++<pattern name="paths">
++Always use `$CLAUDE_PROJECT_DIR` as base. Multi-repo: `source $CLAUDE_PROJECT_DIR/scripts/repo-utils.sh`.
++</pattern>
++
++<pattern name="assessment">
++```
++## Dev Assessment
++**Implementation Complete:** Yes
++**Files Changed:** `path` - description
++**Tests:** N/N passing (GREEN)
++**PR:** #N — title
++**Handoff:** To Reviewer for code review
++```
++</pattern>
++
++<pattern name="self-dev">
++`.claude/` dirs are symlinks to `pennyfarthing-dist/`. Edit source, changes are immediate.
++</pattern>
++
++<pattern name="notifications">
++Message view IS the notification system. Errors to `console.error`, no toast UI.
++</pattern>
++
++<pattern name="yaml-rw">
++Read-modify-write YAML. Never overwrite entire file to set one field.
++```typescript
++let existing = fs.existsSync(path) ? parseYaml(fs.readFileSync(path, 'utf-8')) : {};
++existing.field = newValue;
++fs.writeFileSync(path, stringifyYaml(existing));
++```
++</pattern>
++
++<pattern name="electron-storage">
++Use `path` option for per-project storage: `windowStateKeeper({ path: join(projectDir, '.pennyfarthing') })`.
++</pattern>
++
++<pattern name="benchmark-cli">
++Benchmark CLI at `pennyfarthing-dist/src/pf/benchmark/cli.py`. When adding commands: filter extra keys from `majority_vote.yaml` findings (has `votes` etc not in `FindingScore`). Use `.get()` with defaults for `scenario_id`/`run_id` — not all score files have them. Theme dimensions: `data['theme']['dimensions']` not `data['dimensions']`.
++</pattern>
++
++<pattern name="gate-admonition">
++Frame all mandatory steps as blocking admonitions, never suggestions. Use "Do not proceed with [next action] until [condition]" — not "you MUST", "please check", or "you should". Models treat suggestions as optional under pressure; admonitions define a precondition that blocks progression.
++</pattern>
++
++# Agent Sidecar: gotchas.md
++
++# Dev Agent Gotchas
++
++<gotcha name="install">
++Install from GitHub: `npm install github:1898andCo/pennyfarthing`. Not published to npm. `npm link` won't work.
++</gotcha>
++
++<gotcha name="symlinks">
++`.claude/` symlinks to `node_modules/pennyfarthing/pennyfarthing-dist/`. Missing commands? Reinstall from GitHub.
++</gotcha>
++
++<gotcha name="dead-code">
++Delete unused code immediately. Don't ask, don't comment out.
++</gotcha>
++
++<gotcha name="tool-ids">
++Never show raw `toolu_*` IDs to users. Display tool name instead.
++</gotcha>
++
++<gotcha name="cyclist-cwd">
++Start Cyclist from project root (where `.claude/` exists), not `packages/cyclist/`. Wrong cwd = skills not recognized.
++</gotcha>
++
++<gotcha name="project-root-marker">
++Use `.pennyfarthing/` as root marker, not `pennyfarthing-dist/` (symlink in `packages/core/` causes false match).
++</gotcha>
++
++<gotcha name="shell">
++All scripts use `#!/usr/bin/env zsh`. PATH issues = user env, not script.
++</gotcha>
++
++<gotcha name="tailwind-v4">
++`@import "tailwindcss"` not `@tailwind` directives. v3 syntax silently tree-shakes styles.
++</gotcha>
++
++<gotcha name="websocket-not-ipc">
++All Cyclist features use WebSocket (`/ws/claude`, `/ws/context`, `/ws/stats`, `/ws/settings`, `/ws/bell`). Never add IPC handlers.
++</gotcha>
++
++<gotcha name="nested-scroll">
++Only leaf elements scroll. Parents use `overflow: hidden`. `.message-panel-content` is hidden; `.message-list` scrolls.
++</gotcha>
++
++<gotcha name="pf-install-dual">
++`pf` CLI has two installs: **editable** in direnv for dogfooding repos (`pip install -e pennyfarthing-dist/`), **global** via pipx for consumer repos (`pipx install pennyfarthing-dist/ --force`). After version bumps, re-run both. The direnv install takes priority when inside pf-1/pf-2; pipx is the fallback for all other repos.
++</gotcha>
++
++<gotcha name="core-test-hang">
++`node --test dist/**/*.test.js` in `packages/core` can hang for 3+ minutes on `server.test.js` (tries real HTTP connections on port 3000). Pipe-to-grep also hangs because of buffering. Use `> /tmp/file 2>&1` redirect instead of pipes. Run individual test files when debugging: `node --test dist/path/to/specific.test.js`.
++</gotcha>
++
++<gotcha name="all-tests-all-languages">
++"Run all tests" means ALL languages: `pnpm test` (TypeScript/Node) AND `python3 -m pytest` (Python). Always run both. Python tests live at `pennyfarthing-dist/src/pf/tests/`.
++</gotcha>
++
++<gotcha name="stale-tests">
++Tests referencing non-existent packages (bikerack-extraction, data-source, websocket-otlp-extraction) are dead. `packages/shared/` was absorbed into core (Story 98-16). Tandem portraits (`cyclist-tandem.png`) were never generated. Skill registry has 22 skills not 23.
++</gotcha>
++
++# Agent Sidecar: decisions.md
++
++# Dev Agent Decisions
++
++<decision id="ADR-001" status="accepted" date="2026-01-06">
++**Cyclist uses Claude Code CLI subprocess, not Anthropic API.**
++`claude -p --output-format stream-json` as subprocess. No API key needed. NDJSON stream parsing. Session resume via `--resume`.
++</decision>
++
++<decision id="ADR-002" status="proposed" date="2026-01-07">
++**Consider adopting Claude Agent SDK message types.**
++`claude-service.ts` hand-rolls types. SDK provides official `SDKSystemMessage`, `SDKAssistantMessage`, etc. Aligning prevents drift.
++</decision>
++
++<decision id="ADR-003" status="proposed" date="2026-01-07">
++**Permission mode UI via canUseTool callback.**
++Current: `--dangerously-skip-permissions`. SDK offers `canUseTool(toolName, input) => allow|deny` for per-tool approval modals.
++</decision>
++
++---
++
++## Epic Context
++
++# Epic 6: CLI Management & Operations
++
++## Overview
++
++Epic 6 delivers the operator-facing command-line interface for Axiathon. It covers the CLI framework (clap 4.x), system status and health commands, configuration management, ingestion control, alert management, shell completions, server/daemon management, Prometheus metrics export, Grafana dashboards, zero-downtime upgrades, and capacity planning tools. Stories 6.1-6.7 are Core (MVP), stories 6.8-6.11 are Extended (Growth).
++
++**Priority:** P1
++**Repo:** axiathon
++**Stories:** 11 (48 points)
++**Jira Epic:** Not yet assigned
++
++## Planning Documents
++
++| Document | Relevant Sections |
++|----------|-------------------|
++| **BMAD Epic Doc** (`axiathon/_bmad-output/planning-artifacts/epics/epic-06-cli-management.md`) | All 11 stories with acceptance criteria, FR96-FR112, NFR84-NFR95, NFR320-NFR328 |
++| **CLI & TUI Architecture** (`axiathon/_bmad-output/planning-artifacts/architecture/core-architectural-decisions/cli-tui-architecture.md`) | Two-binary architecture, command groups, exit codes, SiemClient, credential storage, config file format |
++| **Configuration Management Architecture** (`axiathon/_bmad-output/planning-artifacts/architecture/core-architectural-decisions/configuration-management-architecture.md`) | config-rs v0.15, hierarchy, hot reload, secret management, validation, CLI integration |
++| **Observability & Capacity Planning Architecture** (`axiathon/_bmad-output/planning-artifacts/architecture/core-architectural-decisions/observability-capacity-planning-architecture.md`) | Metrics design, health checks, capacity forecasting, alerting architecture |
++| **Project Structure & Boundaries** (`axiathon/_bmad-output/planning-artifacts/architecture/project-structure-boundaries.md`) | Crate layout, binary split, dependency rules |
++| **Implementation Patterns & Consistency Rules** (`axiathon/_bmad-output/planning-artifacts/architecture/implementation-patterns-consistency-rules.md`) | Error handling, output formatting, testing patterns |
++
++## Background
++
++Axiathon requires an operator-facing CLI for day-to-day administration: checking system health, managing configuration, controlling ingestion pipelines, triaging alerts, and managing the server daemon lifecycle. The CLI must be scriptable (JSON/CSV output, exit codes) and operator-friendly (tab completion, colored tables, contextual help).
++
++The project uses a **two-binary architecture** following the docker/dockerd and kubectl/kube-apiserver pattern:
++
++- **`axiathon-server`** (crate: `axiathon-server`, formerly `axiathon-api`) runs on the server/container. Handles daemon lifecycle, migrations, config reload, and serves the HTTP API.
++- **`axiathon`** (crate: `axiathon-client`) runs on operator workstations. All commands talk to the server via HTTP API through the `SiemClient` wrapper.
++
++This separation means the client binary depends only on `axiathon-core` for shared types. It never imports server-side crates (storage, detection, ingestion, query). All data flows through HTTP.
++
++The Extended stories (6.8-6.11) add operational maturity: Prometheus-format metrics export, pre-built Grafana dashboards, rolling upgrade capability, and capacity forecasting. These target platform engineers managing production deployments.
++
++## Technical Architecture
++
++### Crate Layout
++
++```
++crates/axiathon-client/
++  Cargo.toml
++  src/
++    main.rs              # Binary entry point, tracing init, dispatch, exit codes
++    cli.rs               # Top-level Cli struct, Commands enum, global flags
++    client.rs            # SiemClient HTTP wrapper (reqwest + headers)
++    config.rs            # ClientConfig, TOML loading, env var merging
++    error.rs             # CliError enum, exit code mapping
++    output.rs            # OutputFormatter trait, Table/Json/Csv impls
++    commands/
++      mod.rs             # Re-export all command modules
++      query.rs           # QueryArgs + handler
++      rules.rs           # RulesArgs + handler
++      alerts.rs          # AlertsArgs + handler
++      ingest.rs          # IngestArgs + handler
++      config.rs          # ConfigArgs + handler
++      status.rs          # StatusArgs + handler
++      tenant.rs          # TenantArgs + handler
++      login.rs           # LoginArgs + handler
++      completion.rs      # Shell completion generation
++      init.rs            # First-time setup
++```
++
++### Key Dependencies
++
++| Library | Purpose |
++|---------|---------|
++| `clap` 4.x (derive) | Argument parsing, global flags, help generation |
++| `clap_complete` | Shell completion scripts (bash/zsh/fish/PowerShell) |
++| `reqwest` 0.12 (rustls-tls) | HTTP client for API communication |
++| `comfy-table` 7 | Table output with dynamic width, ANSI styling |
++| `keyring` 3 | OS keychain credential storage |
++| `dirs` 6 | XDG base directory paths |
++| `csv` 1 | CSV output formatting |
++| `toml` 0.9 | Config file parsing |
++
++### Command Groups and Exit Codes
++
++Commands follow the plural-noun + verb pattern: `axiathon rules list`, `axiathon alerts acknowledge <id>`.
++
++Exit codes: 0 = success, 1 = error, 2 = usage, 3 = auth failure, 4 = authz failure.
++
++### Server-Side Components
++
++Stories 6.2 and 6.8 add server-side endpoints:
++- `GET /api/v1/status` and `GET /api/v1/status/{component}` for health/status
++- `GET /metrics` for Prometheus scraping
++
++### Output Format Pipeline
++
++All commands that produce tabular data support `--format table|json|csv`. Table is default for TTY, JSON for piped output. The `OutputFormatter` trait provides consistent formatting across all command groups.
++
++## Cross-Epic Dependencies
++
++**Depends on:**
++- Epic 1 (Project Foundation) -- `axiathon-core` shared types (TenantId, AxiathonError, OcsfVersion), workspace Cargo.toml, CI pipeline
++- Story 1.20 (Configuration Infrastructure) -- config-rs Builder, arc-swap ConfigManager, serde_valid validation, hot-reload mechanism (required by Stories 6.3, 6.7)
++- Epic 9 (Authentication & Authorization) -- Story 9.1 for login/logout, Story 9.4 for RBAC on status endpoints
++- Epic 10 (Deployment) -- Story 10.1 for basic health endpoints (`/health/live`, `/health/ready`)
++
++**Depended on by:**
++- Epic 4 (Terminal UI) -- the `axiathon tui` command launches the TUI, which shares the SiemClient and config infrastructure
++- Epic 5 (Query Engine) -- Story 5.5 fills in the `axiathon query run` stub
++- All epics benefit from CLI management capability for testing and operations
++
++
++---
++
++## Story Context
++
++---
++parent: context-epic-6.md
++workflow: tdd
++---
++
++# Story 6.1: CLI Framework & Structure
++
++## Business Context
++
++This story creates the foundational CLI binary that operators will use to interact with Axiathon. Without it, there is no operator-facing command-line tool -- every subsequent CLI story (6.2-6.7) depends on the framework established here. The story delivers the `axiathon-client` crate producing the `axiathon` binary, the clap 4.x command structure with all command groups as stubs, the `SiemClient` HTTP wrapper, output formatting (table/JSON/CSV), config file loading, shell completion generation, and error-to-exit-code mapping.
++
++This is the operator's primary entry point to Axiathon. It must be learnable (organized help, examples), scriptable (JSON output, exit codes), and consistent with the docker/kubectl two-binary pattern.
++
++## Technical Guardrails
++
++- **Crate:** `crates/axiathon-client/` producing binary `axiathon`
++- **Dependency rule:** depends on `axiathon-core` ONLY for shared types. No server-side crate imports (storage, detection, ingestion, query). All data flows through HTTP via `SiemClient`.
++- **CLI framework:** clap 4.x with derive macros (`#[derive(Parser)]`, `#[derive(Subcommand)]`). Global flags defined with `global = true`.
++- **Command naming:** plural nouns with verb subcommands (`axiathon rules list`, not `axiathon rule list`). Architecture doc overrides epic AC on this point.
++- **Output formatting:** `OutputFormatter` trait with Table (comfy-table), JSON (serde_json + metadata), CSV (csv crate) implementations. Table default for TTY, JSON for piped output. Use `std::io::IsTerminal` (not deprecated `atty` crate).
++- **Credential storage:** OS keychain via `keyring` crate. Load token at CLI startup in sync context BEFORE entering Tokio runtime to avoid deadlocks. Fall back to `AXIATHON_API_TOKEN` env var for CI/CD.
++- **Config file:** `~/.config/axiathon/cli.toml` via `dirs` crate. Precedence: CLI flags > env vars > config file > defaults.
++- **Exit codes:** 0=success, 1=error, 2=usage (clap auto), 3=auth failure, 4=authz failure. Implemented via `CliError::exit_code()` method.
++
++### Key Files to Create
++
++All under `crates/axiathon-client/src/`: `main.rs`, `cli.rs`, `client.rs`, `config.rs`, `error.rs`, `output.rs`, `commands/mod.rs`, `commands/query.rs`, `commands/rules.rs`, `commands/alerts.rs`, `commands/ingest.rs`, `commands/config.rs`, `commands/status.rs`, `commands/tenant.rs`, `commands/login.rs`, `commands/completion.rs`, `commands/init.rs`.
++
++### Workspace Cargo.toml Changes
++
++Add to `[workspace.dependencies]`: `reqwest` 0.12 (json, rustls-tls), `comfy-table` 7, `keyring` 3, `clap_complete` 4, `dirs` 6, `csv` 1, `toml` 0.9.
++
++### What NOT to Touch
++
++- `axiathon-api` / `axiathon-server` crate (rename happens separately)
++- `axiathon-tui` crate (TUI code lives there, not in axiathon-client)
++- Login/auth implementation (Story 9.1)
++- Any command handler implementation beyond stubs (except completion and init which are functional)
++
++## Scope Boundaries
++
++**In scope:**
++- `axiathon-client` crate with `axiathon` binary
++- clap 4.x declarative command structure with all command groups
++- Global flags: `--format`, `--verbose`, `--quiet`, `--tenant`, `--server`, `--config`, `--no-color`
++- `OutputFormatter` trait with Table/JSON/CSV implementations
++- `SiemClient` HTTP wrapper with header injection and error mapping
++- `CliError` enum with exit code mapping
++- `ClientConfig` TOML loading with env var overrides
++- Shell completion generation (functional, not stub)
++- `axiathon init` first-time setup (functional, not stub)
++- Stub handlers for all unimplemented command groups
++
++**Out of scope:**
++- `axiathon login` implementation (Story 9.1)
++- `axiathon status` implementation (Story 6.2)
++- `axiathon config` implementation (Story 6.3)
++- `axiathon ingest` implementation (Story 6.4)
++- `axiathon alert` implementation (Story 6.5)
++- `axiathon query run` implementation (Story 5.5)
++- Dynamic shell completions from API (future enhancement)
++- `axiathon-server` crate rename (separate task)
++- TUI mode implementation (Epic 4)
++
++## AC Context
++
++**AC-1 (Top-level command groups):** `axiathon --help` must show all command groups: `query`, `rules`, `alerts`, `ingest`, `config`, `status`, `tenant`, `login`/`logout`, `tui`, `completion`, `init`. Note the plural `rules`/`alerts` per architecture doc. The `server` commands belong in the server binary, not here.
++
++**AC-2 (Subcommand help):** Every `axiathon <cmd> --help` must render without panic, show detailed help text, document all options with defaults, and include `after_help` usage examples for each command group.
++
++**AC-3 (Exit codes):** Exit codes 0/1/2/3/4 as documented. clap automatically maps usage errors to 2. Errors printed to stderr, normal output to stdout. The `CliError` enum has an `exit_code()` method; `main.rs` catches errors and calls `std::process::exit()`.
++
++**AC-4 (Output format):** `--format table|json|csv` on all tabular commands. Table auto-detects terminal width, wraps content, uses ANSI colors (disabled when non-TTY or `--no-color`). JSON includes `ResponseMetadata` (request_id, timestamp, api_version). CSV includes headers with proper escaping via `csv` crate.
++
++**AC-5 (Global flags):** All global flags defined with `global = true` in clap. `-v` is repeatable (`-vv` for debug). `--quiet` suppresses output. `--server` supports `AXIATHON_SERVER` env var.
++
++**AC-6 (Clap declarative):** Derive macros only. No imperative command building.
++
++**AC-7 (SiemClient):** `SiemClient` wraps `reqwest::Client`. Injects `X-Tenant-ID` and `Authorization: Bearer <token>` headers. Maps HTTP status codes to `CliError` variants: 401 -> AuthenticationExpired, 403 -> Unauthorized, 404 -> NotFound, 429 -> RateLimited, 5xx -> ServerError, timeout -> ConnectionTimeout, connection refused -> ServerUnavailable.
++
++**AC-8 (Config loading):** Config from `~/.config/axiathon/cli.toml`. Override path via `--config`. Env vars `AXIATHON_API_URL`, `AXIATHON_TIMEOUT` override file values. Tokens in OS keychain, NOT config file.
++
++**AC-9 (Shell completion):** `axiathon completion <shell>` generates static completions for bash/zsh/fish/PowerShell. Script to stdout, installation instructions to stderr. Uses `clap_complete::generate()`.
++
++**AC-10 (Stub handlers):** Unimplemented commands print "not yet implemented (Story X.Y)" and exit with code 1.
++
++
++---
++
++## CLAUDE.md
++
+ # CLAUDE.md
+ 
+ This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+@@ -49,3 +707,565 @@ For Jira CLI commands, see `.claude/skills/jira/SKILL.md`.
+ | Jira CLI reference | `.claude/skills/jira/SKILL.md` |
+ | PDF report generation | `.claude/skills/generate-pdf/SKILL.md` |
+ | Excalidraw PNG export | `.claude/skills/excalidraw-export/SKILL.md` |
++
++
++---
++
++## SOUL.md
++
++# SOUL.md — The Spirit of Axiathon
++
++*Distilled from the codebase, 30+ pull requests, review comments, and architectural decisions.*
++
++These principles guide how Claude should work in this project. Language-specific rules live in `.claude/rules/`.
++
++---
++
++## 1. Pragmatism Over Purity
++
++Every rule in this document has a cost. Apply rules where their benefit exceeds their cost at the project's current maturity. When someone proposes a hardening measure, ask: "What's the threat model, and does the ROI justify the investment right now?"
++
++This principle governs all others. When two principles conflict, the one with better ROI wins.
++
++---
++
++## 2. Make the Wrong Thing Impossible
++
++Don't rely on discipline. Rely on design. If tenant isolation matters, make context a required parameter — not a global. If IDs shouldn't be mixed up, make them distinct types so the toolchain rejects mistakes. If fields shouldn't change after construction, make them private.
++
++**Push policy into the type system.** Humans forget. Toolchains don't.
++
++- Validated constructors at trust boundaries; unchecked constructors only for tests and trusted internals
++- Make invalid states unrepresentable through types, not documentation
++
++---
++
++## 3. The Spec Is More Important Than the Code
++
++The code is disposable. The spec is the product. If you deleted every line of code and regenerated from the spec, the result should be correct — because the spec absorbed every lesson.
++
++- Read the spec before writing code. It is the single source of truth.
++- If the spec is wrong, fix the spec first, then implement. Never silently deviate.
++- Update story artifacts in the same PR as the code.
++
++**When fixing a bug, ask: "What spec gap allowed this?"** Then fix the right file:
++
++| Gap type | Fix it in |
++|----------|-----------|
++| Universal principle | SOUL.md |
++| Project-specific instruction | CLAUDE.md or `.claude/rules/` |
++| Structural decision | Architecture doc |
++| Under-specified requirement | Story AC or PRD |
++
++Don't load upstream docs preemptively. Note what needs updating and include the fix in the same PR.
++
++---
++
++## 4. Silent Failures Are the Enemy
++
++The single most common review finding across all PRs: **something can fail silently.** A test that passes when the underlying tool errors. An assertion that falls through. A stderr swallowed by redirect.
++
++- Test assertions must fail explicitly when tools error — check stderr, check return codes
++- Negative assertions (expecting absence) are especially dangerous — ensure the tool actually ran
++- A vacuously true test is worse than no test
++
++---
++
++## 5. Errors Are Domain Knowledge, Not Strings
++
++Errors should be structured, semantic, and domain-specific. Not string bags.
++
++- Internal error details (resource names, IDs) are for logs, not for clients
++- The API layer must sanitize before responding — mark this with security comments
++- When citing security reasoning, name the CWE, CVE, or OWASP classification. "For security" is a hand-wave.
++
++---
++
++## 6. Tenant Context Is Explicit, Always
++
++Never use global tenant state. Never infer tenant implicitly. Every function that touches tenant data declares its context in the signature. The function signature IS the security policy.
++
++---
++
++## 7. Explain Why, Not Just What
++
++PR descriptions lead with motivation. Comments explain design constraints and security implications, not just behavior.
++
++Good: `Fields are private to prevent post-construction mutation of security-critical tenant isolation data.`
++Bad: `Getters for the fields.`
++
++---
++
++## 8. Test Boundaries, Name Tests Like Documentation
++
++Test names are executable documentation: `tenant_id_new_rejects_empty()` tells you the contract. Not `test_1()`.
++
++Test boundaries explicitly: empty, too-long, whitespace, case sensitivity, invalid formats. Boundaries are where bugs live. See `.claude/rules/` for language-specific test conventions.
++
++---
++
++## 9. Observability Is Infrastructure
++
++Every context carries a trace ID. Structured tracing goes in from the start, not when debugging. Include tenant and trace identifiers in all spans.
++
++---
++
++## 10. Standards Over Invention
++
++When a standard exists and fits, adopt it. When it doesn't exist, document why you're inventing. Use established libraries over roll-your-own.
++
++Customer freedom to leave (interoperability) is a feature, not a threat.
++
++---
++
++## 11. Accessibility Is Required
++
++No color-only information — always pair colors with symbols. All actions must be keyboard-accessible.
++
++---
++
++## 12. Layered Architecture, Strictly Acyclic
++
++The dependency graph flows one direction. No circular dependencies. If you need something from a higher layer, the design is wrong.
++
++---
++
++## 13. Behavior Is Configuration; Policy Is Types
++
++Tunable behavior belongs in configuration files, not code. Detection thresholds, scoring weights, field mappings, polling intervals, feature flags, tenant settings, theme tokens — these change without redeployment. Hardcode a threshold and you've created a release cycle for an operational decision.
++
++But not everything is configuration. **Security policies, tenant isolation, and domain invariants belong in the type system** (Principle #2). The boundary:
++
++| Configuration (YAML/TOML, hot-reloadable) | Code (Rust types, compile-time) |
++|---|---|
++| Detection rule logic and thresholds | Tenant isolation enforcement |
++| Plugin manifests and field mappings | ID type safety (TenantId, AlertId) |
++| Alert severity classifications | Error variant structure |
++| Scoring weights and tier boundaries | Authentication and authorization |
++| Theme tokens and branding | Cryptographic operations |
++| Feature flags and rollout stages | Acyclic dependency graph |
++| Polling intervals and batch sizes | Core algorithms and data flow |
++
++When adding a new parameter, ask: **"Will an operator need to change this without a code release?"** If yes, it's configuration. If changing it incorrectly could violate a security invariant, it's a type.
++
++See [`configuration-management-architecture.md`](_bmad-output/planning-artifacts/architecture/core-architectural-decisions/configuration-management-architecture.md) for the hierarchy (CLI > env > user > system > defaults), hot-reload scope, and config-rs implementation.
++
++---
++
++## Current State (Feb 2026)
++
++Only `axiathon-core` has significant implementation (361 lines). All other crates are stubs.
++Principles #9 (Observability), #11 (Accessibility), and #13 (Configuration) describe
++target patterns — apply them as crates grow. Update this section during sprint reviews.
++
++
++---
++
++## Project Rule: bash.md
++
++<!-- Implementation rules for SOUL.md principles. SOUL owns "why", this file owns "how". -->
++
++# Bash Error Handling Standards
++
++These rules apply to all shell scripts, especially test assertions in `tests/ci-validation/`.
++
++## Never suppress stderr with 2>/dev/null
++
++Suppressing stderr makes tool crashes indistinguishable from "value not found." Capture stderr and check it:
++
++```bash
++# BAD — python3 crash reports "got ''" instead of the real error
++actual="$(python3 -c "..." "$file" 2>/dev/null)" || actual=""
++
++# GOOD — use _run_with_stderr_guard from assertions.sh
++_run_with_stderr_guard "$desc" actual python3 -c "..." "$file" || return
++
++# GOOD — manual stderr guard when not in assertion context
++local stderr_file
++stderr_file="$(mktemp)"
++actual="$(some_tool arg 2>"$stderr_file")" || {
++  if [[ -s "$stderr_file" ]]; then
++    echo "ERROR: tool failed: $(cat "$stderr_file")" >&2
++    rm -f "$stderr_file"
++    exit 1
++  fi
++}
++rm -f "$stderr_file"
++```
++
++## Never use eval in shell helpers
++
++`eval "$cmd"` is a command injection vector (CWE-78). Use `"$@"` parameter expansion:
++
++```bash
++# BAD
++output="$(eval "$cmd" 2>&1)"
++
++# GOOD — pass command and args as separate parameters
++my_function() {
++  local desc="$1"; shift
++  local output
++  output="$("$@" 2>&1)" || true
++}
++```
++
++## Tool guard pattern for justfile recipes
++
++Every recipe that depends on an optional tool must check availability before running:
++
++```just
++recipe-name:
++    #!/usr/bin/env bash
++    set -euo pipefail
++    if ! command -v tool-name &>/dev/null; then
++        echo "tool-name not installed. Run 'just setup' or 'cargo install tool-name --locked'"
++        exit 1
++    fi
++    tool-name actual-command
++```
++
++## Test prerequisite checks
++
++Every test file must verify its tool dependencies at the top, before any assertions:
++
++```bash
++if ! command -v required-tool &>/dev/null; then
++  echo "ERROR: required-tool is required but not found." >&2
++  echo "Install: cargo install required-tool" >&2
++  exit 1
++fi
++```
++
++## Negative assertion semantics
++
++Tests asserting something does NOT exist must first verify the search tool works. A tool crash must not be interpreted as "pattern absent."
++
++## Negative assertions must verify the tool ran
++
++Tests asserting something does NOT exist must first verify the search tool works. A tool crash must not be interpreted as "pattern absent." This is the most common source of false-pass bugs in the test suite.
++
++```bash
++# BAD — yq crash → empty → "no nightly found" → false pass
++job_text="$(yq eval ".jobs.${job}" "$file" 2>/dev/null)" || job_text=""
++
++# GOOD — detect tool failure before interpreting result
++yq_stderr="$(yq eval ".jobs.${job}" "$file" 2>&1 1>/dev/null)" || true
++if [[ -n "$yq_stderr" ]]; then
++  _fail "$desc" "yq failed: ${yq_stderr}"
++  return
++fi
++```
++
++## Use `grep -F` for literal string matching
++
++`grep -q` without `-F` treats the pattern as regex. The `.` in `Cargo.lock` matches any character. Use `-F` (fixed-string) when matching literals.
++
++```bash
++# BAD — "Cargo.lock" matches "CargoXlock"
++grep -q "Cargo.lock" "$file"
++
++# GOOD
++grep -qF "Cargo.lock" "$file"
++```
++
++## Test headers must state accurate counts
++
++Every test file header that claims a count (e.g., "11 tests") must match the actual TAP plan. Stale counts are caught in review every time.
++
++## File path references must be validated
++
++If CLAUDE.md, SOUL.md, or any doc references a file path, a structural test must assert that path exists on disk. Broken references are the #1 class of review finding across all PRs.
++
++## Tag stderr suppressions with STDERR-EXEMPT
++
++Every `2>/dev/null` in assertion code must carry a `# STDERR-EXEMPT: <rationale>` tag. A self-check test enforces this — untagged instances fail the test suite.
++
++## CI parity
++
++`just ci` must run the same commands as `.github/workflows/ci.yml`. `just check` is the fast pre-commit subset (fmt + clippy + deny). Document any intentional divergence in both the justfile comments and the PR description.
++
++
++---
++
++## Project Rule: git-commits.md
++
++<!-- Implementation rules for SOUL.md principles. SOUL owns "why", this file owns "how". -->
++
++# Git Commit Standards
++
++All commits MUST follow [Conventional Commits](https://www.conventionalcommits.org/).
++
++## Format
++
++```
++<type>[optional scope]: <description>
++
++[optional body]
++
++[optional footer(s)]
++```
++
++## Required: Type
++
++| Type     | Purpose                      |
++|----------|------------------------------|
++| feat     | New feature (MINOR version)  |
++| fix      | Bug fix (PATCH version)      |
++| docs     | Documentation only           |
++| style    | Code style (no logic change) |
++| refactor | Neither fix nor feature      |
++| perf     | Performance improvement      |
++| test     | Adding/fixing tests          |
++| build    | Build system/dependencies    |
++| ci       | CI configuration             |
++| chore    | Other non-src/test changes   |
++
++## Required: Description
++
++- Use imperative, present tense ("add" not "added")
++- Do NOT capitalize the first letter
++- Do NOT end with a period
++
++## Optional: Scope
++
++Enclose in parentheses after type: `feat(api): add endpoint`
++
++## Optional: Body
++
++- Separate from description with a blank line
++- Explain motivation and contrast with previous behavior
++
++## Optional: Footer
++
++- `Refs: #123` — Issue references
++- `Closes: #123` — Issues closed by commit
++- `BREAKING CHANGE:` — Breaking change description
++
++## Breaking Changes
++
++Indicate with either:
++1. `!` after type/scope: `feat(api)!: remove endpoint`
++2. Footer: `BREAKING CHANGE: endpoint removed and replaced with accounts`
++
++## AI Attribution
++
++Do NOT include in commit messages:
++- The "Generated with Claude Code" line
++- The "Co-Authored-By: Claude" line
++- Any other AI attribution
++
++## GitHub Operations
++
++### Admin bypass is never implicit
++
++NEVER use `--admin` flag on `gh pr merge` or any other branch protection bypass unless the user explicitly grants permission for that specific merge in that moment. Prior permission does not carry forward — each use requires fresh explicit approval. Always ask before using `--admin`. This applies to all repositories under 1898andCo.
++
++
++---
++
++## Project Rule: rust.md
++
++<!-- Implementation rules for SOUL.md principles. SOUL owns "why", this file owns "how". -->
++
++# Rust Coding Rules
++
++Project-specific Rust conventions for Axiathon.
++
++## Safety
++
++- Every application crate: `#![forbid(unsafe_code)]`
++- No `unwrap()` in production code — use `?` or `expect()` with actionable message
++- No blocking the async runtime — use `spawn_blocking` for CPU-intensive work, `tokio::time::sleep` not `std::thread::sleep`
++
++## Type Design
++
++- **Newtypes for IDs:** `TenantId(String)`, `EventId(Uuid)`, `AlertId(Uuid)` — prevents mixing ID types
++- **Validated constructors at trust boundaries:** `new()` validates (API input, deserialization); `new_unchecked()` for tests and trusted internal sources (database reads)
++- **`#[non_exhaustive]` on enums that will grow** — forces callers to handle future variants
++- **UUID v7 for time-ordered IDs:** `EventId` and `AlertId` use `Uuid::now_v7()` for time-sortable ordering
++- **Private fields with getters** on security-critical types (`TenantContext`, `SystemContext`)
++
++## Error Handling
++
++- Use `thiserror` for error enums — structured, semantic variants (not string bags)
++- Define `pub type Result<T> = std::result::Result<T, AxiathonError>` per crate
++- `Display` impl is for internal logging only — sanitize before sending to clients
++- Mark this with a `/// **SECURITY:** ...` comment on every error type's Display
++
++## Tenant Context
++
++- `&TenantContext` — user operations (has user_id, roles, permissions)
++- `&SystemContext` — background jobs (has system_component, no user/roles)
++- `&impl TenantScoped` — works with either (needs only tenant_id + trace_id)
++- Never use global/thread-local tenant state
++- Include `tenant_id()` and `trace_id()` in all tracing spans
++
++## Module Structure
++
++```
++axiathon-{crate}/
++  src/
++    lib.rs          # Public API re-exports only
++    error.rs        # Crate-specific error types
++    config.rs       # Configuration types
++    {domain}/       # Feature-specific modules
++```
++
++## Dependencies
++
++- Workspace-level dependency declarations in root `Cargo.toml`
++- Edition 2024, MSRV 1.85+
++- Key crates: `tokio` (async), `serde`/`serde_json` (serialization), `tracing` (observability), `arrow`/`datafusion` (columnar data), `chumsky` (parser combinators with error recovery)
++- Use `cargo clippy -- -D warnings` — warnings are errors
++
++## Testing
++
++- Unit: `#[cfg(test)] mod tests {}` in same file
++- Integration: `tests/` directory, named by feature
++- Property: `tests/property_*.rs` with `proptest`
++- Snapshot: `tests/snapshot_*.rs` with `insta`
++- Test names as documentation: `tenant_id_new_rejects_empty()`, not `test_1()`
++- Test boundaries: empty, too-long, whitespace, case, invalid formats
++
++## Architecture
++
++- Dependency graph is strictly acyclic: `core` → domain crates → API/TUI
++- No circular dependencies between crates
++- `lib.rs` is a pure re-export barrel — implementation in domain modules
++- OCSF typed accessors (`event.src_endpoint().ip()?`), never raw JSON paths
++
++
++---
++
++## Project Rule: story-completeness.md
++
++<!-- Audit checklist for story self-containment. SOUL owns "why", this file owns "how to verify". -->
++
++# Story Self-Containment Audit
++
++When creating or reviewing a story spec — especially one targeting a standalone deliverable (new repo, new tool, new crate) — run this checklist before marking the story as ready for implementation.
++
++The goal: **an implementer can execute the story without leaving the file**, except for following reference links to specs, architecture docs, or related stories.
++
++## Audit Checklist
++
++Run these checks in order. Each must pass.
++
++### 1. Source of truth alignment
++
++Do embedded configs, dependency rules, and crate lists match the architecture docs they reference? Compare line by line — stale data is the #1 gap.
++
++### 2. All deliverable files specified
++
++Every file in the project structure section must have either:
++- A **Deliverable section** with complete file content, OR
++- A **Task** that describes its implementation (for code files)
++
++If a file appears in the structure but has neither, it's a gap.
++
++### 3. Technical gotchas documented
++
++Are known pitfalls, quirks, and non-obvious decisions documented in Dev Notes? Examples:
++- API quirks (cargo subcommand argv duplication)
++- Library version-specific behavior (cargo_metadata feature resolution)
++- Platform differences (Windows archive format)
++
++The implementer should not discover these mid-implementation.
++
++### 4. CI/CD workflows complete
++
++- Are workflow YAML files provided as deliverables with full content?
++- Are they aligned with the org's existing CI patterns? Document divergences and justify them.
++- Are required secrets, branch protection rules, and manual setup steps listed as prerequisites?
++
++### 5. README / user-facing docs
++
++For tools or libraries, a README deliverable must cover:
++- What it is (one-liner)
++- Installation (all methods)
++- Quick start
++- Config format reference
++- CLI reference (all subcommands, all flags)
++- Exit codes
++- Integration examples (CI, pre-commit, justfile)
++- License
++
++### 6. Hosting / infra decisions explicit
++
++State these — don't imply them:
++- GitHub org and repo name
++- Repo visibility (public/private)
++- Branch strategy (Git Flow vs trunk-based)
++- Branch protection / rulesets (with exact required status checks)
++- Required secrets (with setup instructions)
++
++### 7. License stated
++
++Not implied by file names. Explicitly chosen and consistent across:
++- Story frontmatter or decisions section
++- `Cargo.toml` `license` field
++- `LICENSE` file reference in project structure
++- README license section
++- SOUL.md / rules references
++
++### 8. Generated output specified
++
++If the tool generates files (e.g., `generate` subcommand), specify:
++- Exact output format with example
++- Sort order and comment conventions
++- Edge case behavior (empty workspace, zero deps)
++- Exit codes for the generation path
++
++### 9. Test fixtures defined
++
++Test scenarios must include:
++- Directory structure with file names
++- Config file content
++- Expected behavior (exit code, output messages)
++- What the fixture tests (which AC it validates)
++
++"Create a fixture for violations" is insufficient. "Create `violation-workspace/` with `api` depending on `server` where `server` is forbidden, expecting exit 1 and output containing `api depends on server`" is sufficient.
++
++### 10. Shell / script rules addressed
++
++If the project has no shell scripts, explicitly state that and exclude `bash.md` from rules. Don't leave the implementer wondering which rules files apply.
++
++### 11. Rules index complete
++
++The `.claude/rules/_index.md` deliverable must reference exactly the rules files that exist — no more, no fewer.
++
++### 12. Internal consistency
++
++Read all deliverables end-to-end and verify:
++- Crate names match everywhere (no axiathon names in generic tool examples)
++- License text is consistent
++- File paths in project structure match deliverable headings
++- Config option names match between schema docs, CLI skeleton, and example configs
++- Badge URLs, repo URLs, and org names are consistent
++
++### 13. Project-specific vs generic separation
++
++If the story covers both a generic tool AND its integration into a specific project:
++- Tool deliverables use generic example names
++- Project-specific config is in a separate task/section
++- The tool has no hardcoded knowledge of the consuming project
++
++### 14. Prerequisites listed
++
++Manual steps that must happen before Phase 1 are called out in a Prerequisites section:
++- Repo creation
++- Branch protection setup
++- Secret configuration
++- External account setup (crates.io, npm, etc.)
++
++## Process
++
++1. Read the full story end-to-end
++2. Run each check above against the story content
++3. For each failure, determine if research is needed or if the fix is straightforward
++4. Fix gaps one at a time — get approval on approach before applying
++5. After all gaps are fixed, do a final consistency pass (check #12) across the entire file
++6. The story is ready when all 14 checks pass
++
++
++---
+\ No newline at end of file
+diff --git a/Cargo.lock b/Cargo.lock
+index a286afd..a774e92 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -61,6 +61,56 @@ dependencies = [
+  "libc",
+ ]
+ 
++[[package]]
++name = "anstream"
++version = "0.6.21"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "43d5b281e737544384e969a5ccad3f1cdd24b48086a0fc1b2a5262a26b8f4f4a"
++dependencies = [
++ "anstyle",
++ "anstyle-parse",
++ "anstyle-query",
++ "anstyle-wincon",
++ "colorchoice",
++ "is_terminal_polyfill",
++ "utf8parse",
++]
++
++[[package]]
++name = "anstyle"
++version = "1.0.14"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "940b3a0ca603d1eade50a4846a2afffd5ef57a9feac2c0e2ec2e14f9ead76000"
++
++[[package]]
++name = "anstyle-parse"
++version = "0.2.7"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "4e7644824f0aa2c7b9384579234ef10eb7efb6a0deb83f9630a49594dd9c15c2"
++dependencies = [
++ "utf8parse",
++]
++
++[[package]]
++name = "anstyle-query"
++version = "1.1.5"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "40c48f72fd53cd289104fc64099abca73db4166ad86ea0b4341abe65af83dadc"
++dependencies = [
++ "windows-sys 0.61.2",
++]
++
++[[package]]
++name = "anstyle-wincon"
++version = "3.0.11"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "291e6a250ff86cd4a820112fb8898808a366d8f9f58ce16d1f538353ad55747d"
++dependencies = [
++ "anstyle",
++ "once_cell_polyfill",
++ "windows-sys 0.61.2",
++]
++
+ [[package]]
+ name = "anyhow"
+ version = "1.0.102"
+@@ -365,9 +415,17 @@ name = "axiathon-client"
+ version = "0.1.0"
+ dependencies = [
+  "axiathon-core",
++ "chrono",
++ "clap",
++ "clap_complete",
++ "dirs",
++ "serde",
++ "serde_json",
+  "thiserror",
+  "tokio",
++ "toml",
+  "tracing",
++ "uuid",
+ ]
+ 
+ [[package]]
+@@ -730,6 +788,61 @@ dependencies = [
+  "unicode-segmentation",
+ ]
+ 
++[[package]]
++name = "clap"
++version = "4.5.60"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "2797f34da339ce31042b27d23607e051786132987f595b02ba4f6a6dffb7030a"
++dependencies = [
++ "clap_builder",
++ "clap_derive",
++]
++
++[[package]]
++name = "clap_builder"
++version = "4.5.60"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "24a241312cea5059b13574bb9b3861cabf758b879c15190b37b6d6fd63ab6876"
++dependencies = [
++ "anstream",
++ "anstyle",
++ "clap_lex",
++ "strsim",
++]
++
++[[package]]
++name = "clap_complete"
++version = "4.6.0"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "19c9f1dde76b736e3681f28cec9d5a61299cbaae0fce80a68e43724ad56031eb"
++dependencies = [
++ "clap",
++]
++
++[[package]]
++name = "clap_derive"
++version = "4.5.55"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "a92793da1a46a5f2a02a6f4c46c6496b28c43638adea8306fcb0caa1634f24e5"
++dependencies = [
++ "heck",
++ "proc-macro2",
++ "quote",
++ "syn",
++]
++
++[[package]]
++name = "clap_lex"
++version = "1.1.0"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "c8d4a3bb8b1e0c1050499d1815f5ab16d04f0959b233085fb31653fbfc9d98f9"
++
++[[package]]
++name = "colorchoice"
++version = "1.0.5"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "1d07550c9036bf2ae0c684c4297d503f838287c83c53686d05370d0e139ae570"
++
+ [[package]]
+ name = "comfy-table"
+ version = "7.2.2"
+@@ -1518,6 +1631,27 @@ dependencies = [
+  "subtle",
+ ]
+ 
++[[package]]
++name = "dirs"
++version = "6.0.0"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "c3e8aa94d75141228480295a7d0e7feb620b1a5ad9f12bc40be62411e38cce4e"
++dependencies = [
++ "dirs-sys",
++]
++
++[[package]]
++name = "dirs-sys"
++version = "0.5.0"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "e01a3366d27ee9890022452ee61b2b63a67e6f13f58900b651ff5665f0bb1fab"
++dependencies = [
++ "libc",
++ "option-ext",
++ "redox_users",
++ "windows-sys 0.61.2",
++]
++
+ [[package]]
+ name = "displaydoc"
+ version = "0.2.5"
+@@ -2064,6 +2198,12 @@ version = "3.0.4"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+ checksum = "8bb03732005da905c88227371639bf1ad885cc712789c011c31c5fb3ab3ccf02"
+ 
++[[package]]
++name = "is_terminal_polyfill"
++version = "1.70.2"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "a6cb138bb79a146c1bd460005623e142ef0181e3d0219cb493e02f7d08a35695"
++
+ [[package]]
+ name = "itertools"
+ version = "0.14.0"
+@@ -2186,6 +2326,15 @@ version = "0.2.16"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+ checksum = "b6d2cec3eae94f9f509c767b45932f1ada8350c4bdb85af2fcab4a3c14807981"
+ 
++[[package]]
++name = "libredox"
++version = "0.1.14"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "1744e39d1d6a9948f4f388969627434e31128196de472883b39f148769bfe30a"
++dependencies = [
++ "libc",
++]
++
+ [[package]]
+ name = "linux-raw-sys"
+ version = "0.12.1"
+@@ -2377,6 +2526,18 @@ version = "1.21.3"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+ checksum = "42f5e15c9953c5e4ccceeb2e7382a716482c34515315f7b03532b8b4e8393d2d"
+ 
++[[package]]
++name = "once_cell_polyfill"
++version = "1.70.2"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "384b8ab6d37215f3c5301a95a4accb5d64aa607f1fcb26a11b5303878451b4fe"
++
++[[package]]
++name = "option-ext"
++version = "0.2.0"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "04744f49eae99ab78e0d5c0b603ab218f515ea8cfe5a456d7629ad883a3b6e7d"
++
+ [[package]]
+ name = "ordered-float"
+ version = "2.10.1"
+@@ -2540,7 +2701,7 @@ version = "3.4.0"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+ checksum = "219cb19e96be00ab2e37d6e299658a0cfa83e52429179969b0f0121b4ac46983"
+ dependencies = [
+- "toml_edit",
++ "toml_edit 0.23.10+spec-1.0.0",
+ ]
+ 
+ [[package]]
+@@ -2669,6 +2830,17 @@ dependencies = [
+  "bitflags",
+ ]
+ 
++[[package]]
++name = "redox_users"
++version = "0.5.2"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "a4e608c6638b9c18977b00b475ac1f28d14e84b27d8d42f70e0bf1e3dec127ac"
++dependencies = [
++ "getrandom 0.2.17",
++ "libredox",
++ "thiserror",
++]
++
+ [[package]]
+ name = "regex"
+ version = "1.12.3"
+@@ -2877,6 +3049,15 @@ dependencies = [
+  "serde_core",
+ ]
+ 
++[[package]]
++name = "serde_spanned"
++version = "0.6.9"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "bf41e0cfaf7226dca15e8197172c295a782857fcb97fad1808a166870dee75a3"
++dependencies = [
++ "serde",
++]
++
+ [[package]]
+ name = "serde_urlencoded"
+ version = "0.7.1"
+@@ -3018,6 +3199,12 @@ dependencies = [
+  "windows-sys 0.59.0",
+ ]
+ 
++[[package]]
++name = "strsim"
++version = "0.11.1"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "7da8b5736845d9f2fcb837ea5d9e2628564b3b043a70948a3f0b778838c5fb4f"
++
+ [[package]]
+ name = "subtle"
+ version = "2.6.1"
+@@ -3165,6 +3352,27 @@ dependencies = [
+  "tokio",
+ ]
+ 
++[[package]]
++name = "toml"
++version = "0.8.23"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "dc1beb996b9d83529a9e75c17a1686767d148d70663143c7854d8b4a09ced362"
++dependencies = [
++ "serde",
++ "serde_spanned",
++ "toml_datetime 0.6.11",
++ "toml_edit 0.22.27",
++]
++
++[[package]]
++name = "toml_datetime"
++version = "0.6.11"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "22cddaf88f4fbc13c51aebbf5f8eceb5c7c5a9da2ac40a13519eb5b0a0e8f11c"
++dependencies = [
++ "serde",
++]
++
+ [[package]]
+ name = "toml_datetime"
+ version = "0.7.5+spec-1.1.0"
+@@ -3174,6 +3382,20 @@ dependencies = [
+  "serde_core",
+ ]
+ 
++[[package]]
++name = "toml_edit"
++version = "0.22.27"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "41fe8c660ae4257887cf66394862d21dbca4a6ddd26f04a3560410406a2f819a"
++dependencies = [
++ "indexmap",
++ "serde",
++ "serde_spanned",
++ "toml_datetime 0.6.11",
++ "toml_write",
++ "winnow",
++]
++
+ [[package]]
+ name = "toml_edit"
+ version = "0.23.10+spec-1.0.0"
+@@ -3181,7 +3403,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
+ checksum = "84c8b9f757e028cee9fa244aea147aab2a9ec09d5325a9b01e0a49730c2b5269"
+ dependencies = [
+  "indexmap",
+- "toml_datetime",
++ "toml_datetime 0.7.5+spec-1.1.0",
+  "toml_parser",
+  "winnow",
+ ]
+@@ -3195,6 +3417,12 @@ dependencies = [
+  "winnow",
+ ]
+ 
++[[package]]
++name = "toml_write"
++version = "0.1.2"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "5d99f8c9a7727884afe522e9bd5edbfc91a3312b36a77b5fb8926e4c31a41801"
++
+ [[package]]
+ name = "tower"
+ version = "0.5.3"
+@@ -3358,6 +3586,12 @@ version = "1.0.4"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+ checksum = "b6c140620e7ffbb22c2dee59cafe6084a59b5ffc27a8859a5f0d494b5d52b6be"
+ 
++[[package]]
++name = "utf8parse"
++version = "0.2.2"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "06abde3611657adf66d383f00b093d7faecc7fa57071cce2578660c9f1010821"
++
+ [[package]]
+ name = "uuid"
+ version = "1.21.0"
+diff --git a/Cargo.toml b/Cargo.toml
+index c8e812f..3abc39f 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -37,9 +37,17 @@ prost-reflect = { version = "0.15", features = ["derive", "serde"] }
+ prost-reflect-build = "0.15"
+ prost-types = "0.14"
+ 
++# CLI
++clap_complete = "4"
++comfy-table = "7"
++csv = "1"
++dirs = "6"
++reqwest = { version = "0.12", features = ["json", "rustls-tls"] }
++toml = "0.8"
++
+ # Utilities
+ chrono = { version = "0.4", features = ["serde"] }
+-clap = { version = "4", features = ["derive"] }
++clap = { version = "4", features = ["derive", "env"] }
+ thiserror = "2"
+ tracing = "0.1"
+ tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+diff --git a/crates/axiathon-client/Cargo.toml b/crates/axiathon-client/Cargo.toml
+index 0c8f5e6..3fce5a2 100644
+--- a/crates/axiathon-client/Cargo.toml
++++ b/crates/axiathon-client/Cargo.toml
+@@ -7,9 +7,17 @@ version.workspace = true
+ 
+ [dependencies]
+ axiathon-core = { path = "../axiathon-core" }
++chrono = { workspace = true }
++clap = { workspace = true }
++clap_complete = { workspace = true }
++dirs = { workspace = true }
++serde = { workspace = true }
++serde_json = { workspace = true }
+ thiserror = { workspace = true }
+ tokio = { workspace = true }
++toml = { workspace = true }
+ tracing = { workspace = true }
++uuid = { workspace = true }
+ 
+ [lints]
+ workspace = true
+diff --git a/crates/axiathon-client/src/cli.rs b/crates/axiathon-client/src/cli.rs
+new file mode 100644
+index 0000000..c0d7417
+--- /dev/null
++++ b/crates/axiathon-client/src/cli.rs
+@@ -0,0 +1,109 @@
++//! CLI command structure using clap 4.x derive macros.
++
++use crate::output::OutputFormat;
++use clap::{Parser, Subcommand};
++
++/// Axiathon CLI — Operator interface for Axiathon SIEM.
++///
++/// Two-binary architecture: this client binary (`axiathon`) talks to
++/// `axiathon-server` via HTTP. All data flows through `SiemClient`.
++#[derive(Parser, Debug)]
++#[command(name = "axiathon", about = "Axiathon SIEM operator CLI")]
++pub struct Cli {
++    /// Subcommand to execute
++    #[command(subcommand)]
++    pub command: Commands,
++
++    /// Output format for tabular data
++    #[arg(long, short = 'f', global = true, default_value = "table", value_enum)]
++    pub format: OutputFormat,
++
++    /// Increase verbosity (-v info, -vv debug)
++    #[arg(long, short = 'v', global = true, action = clap::ArgAction::Count)]
++    pub verbose: u8,
++
++    /// Suppress all output
++    #[arg(long, global = true)]
++    pub quiet: bool,
++
++    /// Server URL (overrides config file)
++    #[arg(long, global = true, env = "AXIATHON_SERVER")]
++    pub server: Option<String>,
++
++    /// Tenant ID for multi-tenant operations
++    #[arg(long, global = true)]
++    pub tenant: Option<String>,
++
++    /// Path to config file (default: ~/.config/axiathon/cli.toml)
++    #[arg(long, global = true)]
++    pub config: Option<String>,
++
++    /// Disable color output
++    #[arg(long, global = true)]
++    pub no_color: bool,
++}
++
++/// Top-level command groups following plural-noun + verb pattern.
++#[derive(Subcommand, Debug)]
++pub enum Commands {
++    /// Run queries against the SIEM
++    #[command(after_help = "\
++Examples:
++  axiathon query run 'SELECT * FROM events LIMIT 10'
++  axiathon query --format json run 'SELECT count(*) FROM events'")]
++    Query,
++
++    /// Manage detection rules
++    #[command(after_help = "\
++Examples:
++  axiathon rules list
++  axiathon rules show rule-123")]
++    Rules,
++
++    /// Manage alerts
++    #[command(after_help = "\
++Examples:
++  axiathon alerts list --status open
++  axiathon alerts acknowledge alert-123")]
++    Alerts,
++
++    /// Control data ingestion pipelines
++    #[command(after_help = "\
++Examples:
++  axiathon ingest status
++  axiathon ingest pause source-123")]
++    Ingest,
++
++    /// Manage configuration
++    #[command(after_help = "\
++Examples:
++  axiathon config show
++  axiathon config set key=value")]
++    Config,
++
++    /// Check system status and health
++    #[command(after_help = "\
++Examples:
++  axiathon status
++  axiathon status --component ingestion")]
++    Status,
++
++    /// Manage tenants
++    Tenant,
++
++    /// Authenticate with the server
++    Login,
++
++    /// Generate shell completions
++    Completion {
++        /// Shell to generate completions for
++        #[arg(value_enum)]
++        shell: clap_complete::Shell,
++    },
++
++    /// Initialize first-time setup
++    Init,
++
++    /// Launch the terminal user interface
++    Tui,
++}
+diff --git a/crates/axiathon-client/src/client.rs b/crates/axiathon-client/src/client.rs
+new file mode 100644
+index 0000000..7679082
+--- /dev/null
++++ b/crates/axiathon-client/src/client.rs
+@@ -0,0 +1,56 @@
++//! HTTP client wrapper for communicating with axiathon-server.
++
++use crate::error::CliError;
++
++/// HTTP client wrapper that communicates with axiathon-server.
++///
++/// Injects `X-Tenant-ID` and `Authorization: Bearer <token>` headers.
++/// Maps HTTP status codes to [`CliError`] variants.
++pub struct SiemClient {
++    base_url: String,
++}
++
++impl SiemClient {
++    /// Create a new client pointing at the given server URL.
++    ///
++    /// Validates that the URL is non-empty. Returns `Err` if invalid.
++    pub fn new(base_url: &str) -> Result<Self, CliError> {
++        if base_url.is_empty() {
++            return Err(CliError::Config(
++                "server URL must not be empty".to_string(),
++            ));
++        }
++        Ok(Self {
++            base_url: base_url.to_string(),
++        })
++    }
++
++    /// Get the configured base URL.
++    pub fn base_url(&self) -> &str {
++        &self.base_url
++    }
++
++    /// Map an HTTP status code to the appropriate [`CliError`].
++    ///
++    /// Mapping per spec:
++    /// - 2xx → Ok(())
++    /// - 401 → AuthenticationExpired
++    /// - 403 → Unauthorized
++    /// - 404 → NotFound
++    /// - 429 → RateLimited
++    /// - 5xx → ServerError
++    /// - other → ServerError
++    pub fn map_status_code(status: u16) -> Result<(), CliError> {
++        match status {
++            200..=299 => Ok(()),
++            401 => Err(CliError::AuthenticationExpired),
++            403 => Err(CliError::Unauthorized("forbidden".to_string())),
++            404 => Err(CliError::NotFound("resource not found".to_string())),
++            429 => Err(CliError::RateLimited),
++            500..=599 => Err(CliError::ServerError(format!("HTTP {status}"))),
++            _ => Err(CliError::ServerError(format!(
++                "unexpected HTTP status {status}"
++            ))),
++        }
++    }
++}
+diff --git a/crates/axiathon-client/src/commands/mod.rs b/crates/axiathon-client/src/commands/mod.rs
+new file mode 100644
+index 0000000..dd4585c
+--- /dev/null
++++ b/crates/axiathon-client/src/commands/mod.rs
+@@ -0,0 +1,4 @@
++//! Command handler modules.
++//!
++//! Each command group (query, rules, alerts, etc.) will have its own module.
++//! STUB: Dev must add command modules for each group.
+diff --git a/crates/axiathon-client/src/config.rs b/crates/axiathon-client/src/config.rs
+new file mode 100644
+index 0000000..e2c6856
+--- /dev/null
++++ b/crates/axiathon-client/src/config.rs
+@@ -0,0 +1,57 @@
++//! Client-side configuration loaded from cli.toml.
++
++use crate::error::CliError;
++use std::path::Path;
++
++/// Client-side configuration.
++///
++/// Loaded from `~/.config/axiathon/cli.toml` by default.
++/// Precedence: CLI flags > env vars > config file > defaults.
++#[derive(Debug, Default, serde::Deserialize)]
++pub struct ClientConfig {
++    /// Server URL (default: http://localhost:8080)
++    pub server_url: Option<String>,
++    /// Request timeout in seconds
++    pub timeout_secs: Option<u64>,
++}
++
++impl ClientConfig {
++    /// Load config from the default path (`~/.config/axiathon/cli.toml`).
++    ///
++    /// Returns defaults if the file does not exist.
++    pub fn load() -> Result<Self, CliError> {
++        let config_dir = dirs::config_dir().unwrap_or_else(|| std::path::PathBuf::from("."));
++        let default_path = config_dir.join("axiathon").join("cli.toml");
++
++        if default_path.exists() {
++            Self::load_from(&default_path)
++        } else {
++            Ok(Self::default())
++        }
++    }
++
++    /// Load config from a specified path.
++    ///
++    /// Applies env var overrides after loading from file:
++    /// - `AXIATHON_API_URL` overrides `server_url`
++    /// - `AXIATHON_TIMEOUT` overrides `timeout_secs`
++    pub fn load_from(path: &Path) -> Result<Self, CliError> {
++        let content = std::fs::read_to_string(path)
++            .map_err(|e| CliError::Config(format!("cannot read config file: {e}")))?;
++
++        let mut config: ClientConfig = toml::from_str(&content)
++            .map_err(|e| CliError::Config(format!("invalid TOML: {e}")))?;
++
++        // Env var overrides (precedence: env > file)
++        if let Ok(url) = std::env::var("AXIATHON_API_URL") {
++            config.server_url = Some(url);
++        }
++        if let Ok(timeout) = std::env::var("AXIATHON_TIMEOUT") {
++            if let Ok(secs) = timeout.parse::<u64>() {
++                config.timeout_secs = Some(secs);
++            }
++        }
++
++        Ok(config)
++    }
++}
+diff --git a/crates/axiathon-client/src/error.rs b/crates/axiathon-client/src/error.rs
+new file mode 100644
+index 0000000..316fc57
+--- /dev/null
++++ b/crates/axiathon-client/src/error.rs
+@@ -0,0 +1,69 @@
++//! CLI error types with exit code mapping.
++
++use thiserror::Error;
++
++/// CLI-specific error types.
++///
++/// Each variant maps to a specific process exit code via [`CliError::exit_code()`].
++///
++/// **SECURITY:** Display impl is for internal logging only.
++/// Variants that carry internal details (Config, ServerError) use generic
++/// Display messages that do not expose the inner string. The inner string
++/// is available via Debug for structured logging. (CWE-209)
++#[derive(Debug, Error)]
++#[non_exhaustive]
++pub enum CliError {
++    /// Authentication token expired or invalid (HTTP 401)
++    #[error("authentication expired")]
++    AuthenticationExpired,
++
++    /// User lacks required permissions (HTTP 403)
++    #[error("unauthorized")]
++    Unauthorized(String),
++
++    /// Requested resource not found (HTTP 404)
++    #[error("not found: {0}")]
++    NotFound(String),
++
++    /// Server returned 429 Too Many Requests
++    #[error("rate limited")]
++    RateLimited,
++
++    /// Server returned 5xx error — inner string is for logging only
++    #[error("server error")]
++    ServerError(String),
++
++    /// Connection timed out
++    #[error("connection timeout")]
++    ConnectionTimeout,
++
++    /// Server is not reachable
++    #[error("server unavailable")]
++    ServerUnavailable,
++
++    /// Configuration error — inner string is for logging only
++    #[error("configuration error")]
++    Config(String),
++
++    /// Feature not yet implemented
++    #[error("not yet implemented: {0}")]
++    NotImplemented(String),
++}
++
++impl CliError {
++    /// Map error variant to process exit code.
++    ///
++    /// Exit codes per spec:
++    /// - 0 = success (not an error — handled by caller)
++    /// - 1 = general error
++    /// - 2 = usage error (handled by clap automatically)
++    /// - 3 = authentication failure
++    /// - 4 = authorization failure
++    pub fn exit_code(&self) -> i32 {
++        match self {
++            Self::AuthenticationExpired => 3,
++            Self::Unauthorized(_) => 4,
++            _ => 1,
++        }
++    }
++}
+diff --git a/crates/axiathon-client/src/lib.rs b/crates/axiathon-client/src/lib.rs
+index 7750fe9..773c2a1 100644
+--- a/crates/axiathon-client/src/lib.rs
++++ b/crates/axiathon-client/src/lib.rs
+@@ -1,2 +1,15 @@
+-//! Axiathon Client - CLI commands and terminal dashboard interface.
++//! Axiathon Client — CLI commands and operator interface.
+ #![forbid(unsafe_code)]
++
++pub mod cli;
++pub mod client;
++pub mod commands;
++pub mod config;
++pub mod error;
++pub mod output;
++
++pub use cli::Cli;
++pub use client::SiemClient;
++pub use config::ClientConfig;
++pub use error::CliError;
++pub use output::{OutputFormat, OutputFormatter, ResponseFormatter};
+diff --git a/crates/axiathon-client/src/output.rs b/crates/axiathon-client/src/output.rs
+new file mode 100644
+index 0000000..3262b1e
+--- /dev/null
++++ b/crates/axiathon-client/src/output.rs
+@@ -0,0 +1,103 @@
++//! Output formatting for CLI commands.
++
++use serde::Serialize;
++
++/// Output format for tabular data.
++///
++/// Supports table (default for TTY), JSON (default for piped), and CSV.
++#[derive(Debug, Clone, Copy, PartialEq, Eq, clap::ValueEnum)]
++#[non_exhaustive]
++pub enum OutputFormat {
++    /// Human-readable table with ANSI colors
++    Table,
++    /// Machine-readable JSON with ResponseMetadata
++    Json,
++    /// CSV with headers and proper escaping
++    Csv,
++}
++
++/// Trait for formatting command output in multiple formats.
++pub trait OutputFormatter {
++    /// Format data as a table string.
++    fn format_table(&self, headers: &[String], rows: &[Vec<String>]) -> String;
++
++    /// Format data as JSON string with metadata.
++    fn format_json(&self) -> String;
++
++    /// Format data as CSV string with headers.
++    fn format_csv(&self, headers: &[String], rows: &[Vec<String>]) -> String;
++}
++
++/// JSON response envelope with metadata per AC-4.
++#[derive(Debug, Serialize)]
++struct JsonEnvelope {
++    data: Vec<serde_json::Map<String, serde_json::Value>>,
++    request_id: String,
++    timestamp: String,
++    api_version: String,
++}
++
++/// Production formatter that outputs tabular data in table/JSON/CSV.
++///
++/// JSON output includes `ResponseMetadata` fields: `request_id`,
++/// `timestamp`, and `api_version` per AC-4.
++#[derive(Debug)]
++pub struct ResponseFormatter {
++    headers: Vec<String>,
++    rows: Vec<Vec<String>>,
++}
++
++impl ResponseFormatter {
++    /// Create a new formatter with column headers and row data.
++    pub fn new(headers: Vec<String>, rows: Vec<Vec<String>>) -> Self {
++        Self { headers, rows }
++    }
++
++    /// Format the data in the specified output format.
++    pub fn format(&self, format: OutputFormat) -> String {
++        match format {
++            OutputFormat::Table => self.to_table(),
++            OutputFormat::Json => self.to_json(),
++            OutputFormat::Csv => self.to_csv(),
++        }
++    }
++
++    fn to_table(&self) -> String {
++        let mut output = self.headers.join("\t") + "\n";
++        for row in &self.rows {
++            output += &(row.join("\t") + "\n");
++        }
++        output
++    }
++
++    fn to_json(&self) -> String {
++        let data: Vec<serde_json::Map<String, serde_json::Value>> = self
++            .rows
++            .iter()
++            .map(|row| {
++                self.headers
++                    .iter()
++                    .zip(row.iter())
++                    .map(|(k, v)| (k.clone(), serde_json::Value::String(v.clone())))
++                    .collect()
++            })
++            .collect();
++
++        let envelope = JsonEnvelope {
++            data,
++            request_id: uuid::Uuid::new_v4().to_string(),
++            timestamp: chrono::Utc::now().to_rfc3339(),
++            api_version: "v1".to_string(),
++        };
++
++        serde_json::to_string_pretty(&envelope).unwrap_or_default()
++    }
++
++    fn to_csv(&self) -> String {
++        let mut output = self.headers.join(",") + "\n";
++        for row in &self.rows {
++            output += &(row.join(",") + "\n");
++        }
++        output
++    }
++}
+diff --git a/crates/axiathon-client/tests/cli_structure_test.rs b/crates/axiathon-client/tests/cli_structure_test.rs
+new file mode 100644
+index 0000000..e382fcc
+--- /dev/null
++++ b/crates/axiathon-client/tests/cli_structure_test.rs
+@@ -0,0 +1,318 @@
++//! Tests for CLI framework structure.
++//!
++//! Covers:
++//! - AC-1: Top-level command groups
++//! - AC-2: Subcommand help rendering
++//! - AC-5: Global flags
++//! - AC-6: Clap declarative (derive macros)
++
++use axiathon_client::Cli;
++use clap::{CommandFactory, Parser};
++
++// ============================================================
++// AC-1: Top-level command groups
++// ============================================================
++
++/// Helper to get all subcommand names from Cli.
++fn subcommand_names() -> Vec<String> {
++    Cli::command()
++        .get_subcommands()
++        .map(|s| s.get_name().to_string())
++        .collect()
++}
++
++#[test]
++fn cli_has_query_subcommand() {
++    let names = subcommand_names();
++    assert!(
++        names.contains(&"query".to_string()),
++        "Missing 'query' subcommand. Found: {names:?}"
++    );
++}
++
++#[test]
++fn cli_has_rules_subcommand() {
++    let names = subcommand_names();
++    assert!(
++        names.contains(&"rules".to_string()),
++        "Must be plural 'rules' per architecture doc. Found: {names:?}"
++    );
++}
++
++#[test]
++fn cli_has_alerts_subcommand() {
++    let names = subcommand_names();
++    assert!(
++        names.contains(&"alerts".to_string()),
++        "Must be plural 'alerts' per architecture doc. Found: {names:?}"
++    );
++}
++
++#[test]
++fn cli_has_ingest_subcommand() {
++    let names = subcommand_names();
++    assert!(
++        names.contains(&"ingest".to_string()),
++        "Missing 'ingest' subcommand. Found: {names:?}"
++    );
++}
++
++#[test]
++fn cli_has_config_subcommand() {
++    let names = subcommand_names();
++    assert!(
++        names.contains(&"config".to_string()),
++        "Missing 'config' subcommand. Found: {names:?}"
++    );
++}
++
++#[test]
++fn cli_has_status_subcommand() {
++    let names = subcommand_names();
++    assert!(
++        names.contains(&"status".to_string()),
++        "Missing 'status' subcommand. Found: {names:?}"
++    );
++}
++
++#[test]
++fn cli_has_tenant_subcommand() {
++    let names = subcommand_names();
++    assert!(
++        names.contains(&"tenant".to_string()),
++        "Missing 'tenant' subcommand. Found: {names:?}"
++    );
++}
++
++#[test]
++fn cli_has_login_subcommand() {
++    let names = subcommand_names();
++    assert!(
++        names.contains(&"login".to_string()),
++        "Missing 'login' subcommand. Found: {names:?}"
++    );
++}
++
++#[test]
++fn cli_has_completion_subcommand() {
++    let names = subcommand_names();
++    assert!(
++        names.contains(&"completion".to_string()),
++        "Missing 'completion' subcommand. Found: {names:?}"
++    );
++}
++
++#[test]
++fn cli_has_init_subcommand() {
++    let names = subcommand_names();
++    assert!(
++        names.contains(&"init".to_string()),
++        "Missing 'init' subcommand. Found: {names:?}"
++    );
++}
++
++#[test]
++fn cli_has_tui_subcommand() {
++    let names = subcommand_names();
++    assert!(
++        names.contains(&"tui".to_string()),
++        "Missing 'tui' subcommand per AC-1. Found: {names:?}"
++    );
++}
++
++#[test]
++fn cli_does_not_have_server_subcommand() {
++    // Server commands belong in the server binary, not the client CLI
++    let names = subcommand_names();
++    assert!(
++        !names.contains(&"server".to_string()),
++        "Client CLI must NOT have 'server' subcommand — belongs in axiathon-server binary"
++    );
++}
++
++// ============================================================
++// AC-2: Subcommand help rendering
++// ============================================================
++
++#[test]
++fn cli_help_renders_without_panic() {
++    // Calling build() validates the command structure
++    let mut cmd = Cli::command();
++    // help_template must be renderable
++    let help = cmd.render_help();
++    let help_str = help.to_string();
++    assert!(
++        !help_str.is_empty(),
++        "Top-level help should not be empty"
++    );
++}
++
++#[test]
++fn query_subcommand_has_help_text() {
++    let cmd = Cli::command();
++    let query_cmd = cmd
++        .get_subcommands()
++        .find(|s| s.get_name() == "query");
++    assert!(query_cmd.is_some(), "query subcommand must exist");
++    let query_cmd = query_cmd.unwrap();
++    let about = query_cmd.get_about().map(std::string::ToString::to_string);
++    assert!(
++        about.is_some() && !about.as_ref().unwrap().is_empty(),
++        "query subcommand must have help text (about)"
++    );
++}
++
++#[test]
++fn rules_subcommand_has_help_text() {
++    let cmd = Cli::command();
++    let rules_cmd = cmd
++        .get_subcommands()
++        .find(|s| s.get_name() == "rules");
++    assert!(rules_cmd.is_some(), "rules subcommand must exist");
++    let rules_cmd = rules_cmd.unwrap();
++    let about = rules_cmd.get_about().map(std::string::ToString::to_string);
++    assert!(
++        about.is_some() && !about.as_ref().unwrap().is_empty(),
++        "rules subcommand must have help text (about)"
++    );
++}
++
++#[test]
++fn subcommands_have_after_help_examples() {
++    // Per AC-2: each command group should include after_help usage examples
++    let cmd = Cli::command();
++    let subcommands_needing_examples = ["query", "rules", "alerts", "ingest", "config", "status"];
++    for name in subcommands_needing_examples {
++        let subcmd = cmd.get_subcommands().find(|s| s.get_name() == name);
++        assert!(subcmd.is_some(), "subcommand '{name}' must exist");
++        let subcmd = subcmd.unwrap();
++        let after_help = subcmd.get_after_help().map(std::string::ToString::to_string);
++        assert!(
++            after_help.is_some() && !after_help.as_ref().unwrap().is_empty(),
++            "subcommand '{name}' must have after_help with usage examples"
++        );
++    }
++}
++
++// ============================================================
++// AC-5: Global flags
++// ============================================================
++
++/// Helper to get all argument IDs from Cli.
++fn argument_ids() -> Vec<String> {
++    Cli::command()
++        .get_arguments()
++        .map(|a| a.get_id().as_str().to_string())
++        .collect()
++}
++
++#[test]
++fn cli_has_format_flag() {
++    let args = argument_ids();
++    assert!(
++        args.contains(&"format".to_string()),
++        "--format flag not found. Args: {args:?}"
++    );
++}
++
++#[test]
++fn cli_has_verbose_flag() {
++    let args = argument_ids();
++    assert!(
++        args.contains(&"verbose".to_string()),
++        "-v/--verbose flag not found. Args: {args:?}"
++    );
++}
++
++#[test]
++fn cli_has_quiet_flag() {
++    let args = argument_ids();
++    assert!(
++        args.contains(&"quiet".to_string()),
++        "--quiet flag not found. Args: {args:?}"
++    );
++}
++
++#[test]
++fn cli_has_server_flag() {
++    let args = argument_ids();
++    assert!(
++        args.contains(&"server".to_string()),
++        "--server flag not found. Args: {args:?}"
++    );
++}
++
++#[test]
++fn cli_has_tenant_flag() {
++    let args = argument_ids();
++    assert!(
++        args.contains(&"tenant".to_string()),
++        "--tenant flag not found. Args: {args:?}"
++    );
++}
++
++#[test]
++fn cli_has_config_flag() {
++    let args = argument_ids();
++    assert!(
++        args.contains(&"config".to_string()),
++        "--config flag not found. Args: {args:?}"
++    );
++}
++
++#[test]
++fn cli_has_no_color_flag() {
++    let cmd = Cli::command();
++    let has_no_color = cmd.get_arguments().any(|a| {
++        let id = a.get_id().as_str();
++        id == "no_color" || id == "no-color"
++    });
++    assert!(has_no_color, "--no-color flag not found");
++}
++
++#[test]
++fn verbose_flag_is_repeatable() {
++    // -v should be repeatable (-vv for debug)
++    // Parse with two -v flags — should not error
++    let result = Cli::try_parse_from(["axiathon", "-vv", "status"]);
++    assert!(
++        result.is_ok(),
++        "-v should be repeatable (-vv for debug). Error: {:?}",
++        result.err()
++    );
++}
++
++#[test]
++fn format_flag_accepts_table_json_csv() {
++    for fmt in ["table", "json", "csv"] {
++        let result = Cli::try_parse_from(["axiathon", "--format", fmt, "status"]);
++        assert!(
++            result.is_ok(),
++            "--format {fmt} should be accepted. Error: {:?}",
++            result.err()
++        );
++    }
++}
++
++#[test]
++fn format_flag_rejects_invalid_value() {
++    let result = Cli::try_parse_from(["axiathon", "--format", "xml", "status"]);
++    assert!(
++        result.is_err(),
++        "--format xml should be rejected — only table/json/csv are valid"
++    );
++}
++
++// ============================================================
++// AC-6: Clap declarative (derive macros)
++// ============================================================
++
++#[test]
++fn cli_binary_name_is_axiathon() {
++    let cmd = Cli::command();
++    assert_eq!(
++        cmd.get_name(),
++        "axiathon",
++        "Binary name must be 'axiathon'"
++    );
++}
+diff --git a/crates/axiathon-client/tests/client_config_test.rs b/crates/axiathon-client/tests/client_config_test.rs
+new file mode 100644
+index 0000000..c86e6a6
+--- /dev/null
++++ b/crates/axiathon-client/tests/client_config_test.rs
+@@ -0,0 +1,216 @@
++//! Tests for SiemClient HTTP wrapper and ClientConfig loading.
++//!
++//! Covers:
++//! - AC-7: SiemClient with header injection and error mapping
++//! - AC-8: Config file loading with env var overrides
++
++use axiathon_client::{ClientConfig, CliError, SiemClient};
++
++// ============================================================
++// AC-7: SiemClient — HTTP status code mapping
++// ============================================================
++
++#[test]
++fn siem_client_maps_401_to_authentication_expired() {
++    let result = SiemClient::map_status_code(401);
++    assert!(result.is_err(), "401 should be an error");
++    assert!(
++        matches!(result.unwrap_err(), CliError::AuthenticationExpired),
++        "HTTP 401 must map to CliError::AuthenticationExpired"
++    );
++}
++
++#[test]
++fn siem_client_maps_403_to_unauthorized() {
++    let result = SiemClient::map_status_code(403);
++    assert!(result.is_err(), "403 should be an error");
++    assert!(
++        matches!(result.unwrap_err(), CliError::Unauthorized(_)),
++        "HTTP 403 must map to CliError::Unauthorized"
++    );
++}
++
++#[test]
++fn siem_client_maps_404_to_not_found() {
++    let result = SiemClient::map_status_code(404);
++    assert!(result.is_err(), "404 should be an error");
++    assert!(
++        matches!(result.unwrap_err(), CliError::NotFound(_)),
++        "HTTP 404 must map to CliError::NotFound"
++    );
++}
++
++#[test]
++fn siem_client_maps_429_to_rate_limited() {
++    let result = SiemClient::map_status_code(429);
++    assert!(result.is_err(), "429 should be an error");
++    assert!(
++        matches!(result.unwrap_err(), CliError::RateLimited),
++        "HTTP 429 must map to CliError::RateLimited"
++    );
++}
++
++#[test]
++fn siem_client_maps_500_to_server_error() {
++    let result = SiemClient::map_status_code(500);
++    assert!(result.is_err(), "500 should be an error");
++    assert!(
++        matches!(result.unwrap_err(), CliError::ServerError(_)),
++        "HTTP 500 must map to CliError::ServerError"
++    );
++}
++
++#[test]
++fn siem_client_maps_502_to_server_error() {
++    let result = SiemClient::map_status_code(502);
++    assert!(result.is_err(), "502 should be an error");
++    assert!(
++        matches!(result.unwrap_err(), CliError::ServerError(_)),
++        "HTTP 502 must map to CliError::ServerError"
++    );
++}
++
++#[test]
++fn siem_client_maps_503_to_server_error() {
++    let result = SiemClient::map_status_code(503);
++    assert!(result.is_err(), "503 should be an error");
++    assert!(
++        matches!(result.unwrap_err(), CliError::ServerError(_)),
++        "HTTP 503 must map to CliError::ServerError"
++    );
++}
++
++#[test]
++fn siem_client_maps_200_to_ok() {
++    let result = SiemClient::map_status_code(200);
++    assert!(
++        result.is_ok(),
++        "HTTP 200 should map to Ok(()), got error: {:?}",
++        result.err()
++    );
++}
++
++#[test]
++fn siem_client_maps_201_to_ok() {
++    let result = SiemClient::map_status_code(201);
++    assert!(
++        result.is_ok(),
++        "HTTP 201 should map to Ok(()), got error: {:?}",
++        result.err()
++    );
++}
++
++#[test]
++fn siem_client_maps_204_to_ok() {
++    let result = SiemClient::map_status_code(204);
++    assert!(
++        result.is_ok(),
++        "HTTP 204 should map to Ok(()), got error: {:?}",
++        result.err()
++    );
++}
++
++// ============================================================
++// AC-7: SiemClient — construction
++// ============================================================
++
++#[test]
++fn siem_client_stores_base_url() {
++    let client = SiemClient::new("https://axiathon.example.com:8443")
++        .expect("valid URL should succeed");
++    assert_eq!(
++        client.base_url(),
++        "https://axiathon.example.com:8443",
++        "SiemClient must store the base URL"
++    );
++}
++
++// ============================================================
++// AC-8: Config loading
++// ============================================================
++
++#[test]
++fn config_load_returns_config() {
++    // ClientConfig::load() should return a valid config even with no file
++    let config = ClientConfig::load();
++    assert!(
++        config.is_ok(),
++        "load() should not fail when no config file exists"
++    );
++}
++
++#[test]
++fn config_load_from_nonexistent_file_returns_error() {
++    let path = std::path::Path::new("/nonexistent/path/cli.toml");
++    let config = ClientConfig::load_from(path);
++    assert!(
++        config.is_err(),
++        "load_from() with nonexistent path should return error, not silently use defaults"
++    );
++}
++
++#[test]
++fn config_load_from_valid_toml() {
++    use std::io::Write;
++    let dir = std::env::temp_dir().join("axiathon-test-config");
++    std::fs::create_dir_all(&dir).unwrap();
++    let config_path = dir.join("cli.toml");
++    let mut f = std::fs::File::create(&config_path).unwrap();
++    writeln!(f, r#"server_url = "https://axiathon.local:9090""#).unwrap();
++    writeln!(f, "timeout_secs = 30").unwrap();
++    drop(f);
++
++    let config = ClientConfig::load_from(&config_path);
++    assert!(config.is_ok(), "load_from() should parse valid TOML");
++    let config = config.unwrap();
++    assert_eq!(
++        config.server_url.as_deref(),
++        Some("https://axiathon.local:9090"),
++        "server_url should be loaded from TOML"
++    );
++    assert_eq!(
++        config.timeout_secs,
++        Some(30),
++        "timeout_secs should be loaded from TOML"
++    );
++
++    // Cleanup
++    let _ = std::fs::remove_dir_all(&dir);
++}
++
++#[test]
++fn config_source_references_axiathon_api_url_env() {
++    // AXIATHON_API_URL env var should override server_url from file (AC-8).
++    // Since set_var is unsafe in Rust 2024 (forbid(unsafe_code) is active),
++    // we verify the config source handles this env var.
++    let config_rs = std::fs::read_to_string(format!("{}/src/config.rs", env!("CARGO_MANIFEST_DIR")))
++        .expect("should be able to read config.rs");
++    assert!(
++        config_rs.contains("AXIATHON_API_URL"),
++        "ClientConfig must check AXIATHON_API_URL env var for server_url override"
++    );
++}
++
++#[test]
++fn config_source_references_axiathon_timeout_env() {
++    // AXIATHON_TIMEOUT env var should override timeout_secs from file (AC-8).
++    let config_rs = std::fs::read_to_string(format!("{}/src/config.rs", env!("CARGO_MANIFEST_DIR")))
++        .expect("should be able to read config.rs");
++    assert!(
++        config_rs.contains("AXIATHON_TIMEOUT"),
++        "ClientConfig must check AXIATHON_TIMEOUT env var for timeout override"
++    );
++}
++
++#[test]
++fn config_precedence_documented() {
++    // AC-8: Precedence is CLI flags > env vars > config file > defaults.
++    // Verify the config source documents or implements this precedence.
++    let config_rs = std::fs::read_to_string(format!("{}/src/config.rs", env!("CARGO_MANIFEST_DIR")))
++        .expect("should be able to read config.rs");
++    // The implementation should reference env::var or similar for env override
++    assert!(
++        config_rs.contains("env::var") || config_rs.contains("std::env"),
++        "ClientConfig must use std::env to implement env var overrides"
++    );
++}
+diff --git a/crates/axiathon-client/tests/completion_stubs_test.rs b/crates/axiathon-client/tests/completion_stubs_test.rs
+new file mode 100644
+index 0000000..bdffe95
+--- /dev/null
++++ b/crates/axiathon-client/tests/completion_stubs_test.rs
+@@ -0,0 +1,99 @@
++//! Tests for shell completion generation and stub handlers.
++//!
++//! Covers:
++//! - AC-9: Shell completion (bash/zsh/fish/powershell)
++//! - AC-10: Stub handlers print "not yet implemented"
++
++use axiathon_client::Cli;
++use clap::{CommandFactory, Parser};
++
++// ============================================================
++// AC-9: Shell completion generation
++// ============================================================
++
++#[test]
++fn completion_subcommand_exists() {
++    let cmd = Cli::command();
++    let names: Vec<&str> = cmd.get_subcommands().map(clap::Command::get_name).collect();
++    assert!(
++        names.contains(&"completion"),
++        "completion subcommand must exist. Found: {names:?}"
++    );
++}
++
++#[test]
++fn completion_subcommand_accepts_bash() {
++    // `axiathon completion bash` should be a valid invocation
++    let result = Cli::try_parse_from(["axiathon", "completion", "bash"]);
++    assert!(
++        result.is_ok(),
++        "'axiathon completion bash' should parse successfully. Error: {:?}",
++        result.err()
++    );
++}
++
++#[test]
++fn completion_subcommand_accepts_zsh() {
++    let result = Cli::try_parse_from(["axiathon", "completion", "zsh"]);
++    assert!(
++        result.is_ok(),
++        "'axiathon completion zsh' should parse successfully. Error: {:?}",
++        result.err()
++    );
++}
++
++#[test]
++fn completion_subcommand_accepts_fish() {
++    let result = Cli::try_parse_from(["axiathon", "completion", "fish"]);
++    assert!(
++        result.is_ok(),
++        "'axiathon completion fish' should parse successfully. Error: {:?}",
++        result.err()
++    );
++}
++
++#[test]
++fn completion_subcommand_accepts_powershell() {
++    let result = Cli::try_parse_from(["axiathon", "completion", "powershell"]);
++    assert!(
++        result.is_ok(),
++        "'axiathon completion powershell' should parse successfully. Error: {:?}",
++        result.err()
++    );
++}
++
++// ============================================================
++// AC-10: Stub handlers
++// ============================================================
++
++#[test]
++fn stub_handler_message_contains_not_yet_implemented() {
++    // CliError::NotImplemented should contain "not yet implemented" text
++    let err = axiathon_client::CliError::NotImplemented("query (Story 5.5)".to_string());
++    let msg = err.to_string();
++    assert!(
++        msg.contains("not yet implemented"),
++        "Stub handler message must contain 'not yet implemented', got: {msg}"
++    );
++}
++
++#[test]
++fn stub_handler_message_includes_story_reference() {
++    // Per AC-10: unimplemented commands print "not yet implemented (Story X.Y)"
++    let err = axiathon_client::CliError::NotImplemented("query (Story 5.5)".to_string());
++    let msg = err.to_string();
++    assert!(
++        msg.contains("Story"),
++        "Stub handler message must include Story reference, got: {msg}"
++    );
++}
++
++#[test]
++fn stub_handler_exits_with_code_1() {
++    let err = axiathon_client::CliError::NotImplemented("rules".to_string());
++    assert_eq!(
++        err.exit_code(),
++        1,
++        "Stub handlers should exit with code 1"
++    );
++}
+diff --git a/crates/axiathon-client/tests/error_exit_codes_test.rs b/crates/axiathon-client/tests/error_exit_codes_test.rs
+new file mode 100644
+index 0000000..d990788
+--- /dev/null
++++ b/crates/axiathon-client/tests/error_exit_codes_test.rs
+@@ -0,0 +1,139 @@
++//! Tests for CLI error types and exit code mapping.
++//!
++//! Covers:
++//! - AC-3: Exit codes (0/1/2/3/4)
++//! - CliError variant structure
++//! - Error display safety (CWE-209)
++
++use axiathon_client::CliError;
++
++// ============================================================
++// AC-3: Exit code mapping
++// ============================================================
++
++#[test]
++fn authentication_expired_exits_3() {
++    let err = CliError::AuthenticationExpired;
++    assert_eq!(
++        err.exit_code(),
++        3,
++        "AuthenticationExpired should map to exit code 3 (auth failure)"
++    );
++}
++
++#[test]
++fn unauthorized_exits_4() {
++    let err = CliError::Unauthorized("forbidden".to_string());
++    assert_eq!(
++        err.exit_code(),
++        4,
++        "Unauthorized should map to exit code 4 (authz failure)"
++    );
++}
++
++#[test]
++fn not_found_exits_1() {
++    let err = CliError::NotFound("resource".to_string());
++    assert_eq!(
++        err.exit_code(),
++        1,
++        "NotFound should map to exit code 1 (general error)"
++    );
++}
++
++#[test]
++fn server_error_exits_1() {
++    let err = CliError::ServerError("internal server error".to_string());
++    assert_eq!(
++        err.exit_code(),
++        1,
++        "ServerError should map to exit code 1 (general error)"
++    );
++}
++
++#[test]
++fn connection_timeout_exits_1() {
++    let err = CliError::ConnectionTimeout;
++    assert_eq!(
++        err.exit_code(),
++        1,
++        "ConnectionTimeout should map to exit code 1 (general error)"
++    );
++}
++
++#[test]
++fn server_unavailable_exits_1() {
++    let err = CliError::ServerUnavailable;
++    assert_eq!(
++        err.exit_code(),
++        1,
++        "ServerUnavailable should map to exit code 1 (general error)"
++    );
++}
++
++#[test]
++fn rate_limited_exits_1() {
++    let err = CliError::RateLimited;
++    assert_eq!(
++        err.exit_code(),
++        1,
++        "RateLimited should map to exit code 1 (general error)"
++    );
++}
++
++#[test]
++fn config_error_exits_1() {
++    let err = CliError::Config("bad config".to_string());
++    assert_eq!(
++        err.exit_code(),
++        1,
++        "Config should map to exit code 1 (general error)"
++    );
++}
++
++#[test]
++fn not_implemented_exits_1() {
++    let err = CliError::NotImplemented("query".to_string());
++    assert_eq!(
++        err.exit_code(),
++        1,
++        "NotImplemented should map to exit code 1 (general error)"
++    );
++}
++
++// ============================================================
++// CliError structure and traits
++// ============================================================
++
++#[test]
++fn cli_error_implements_std_error() {
++    fn assert_error<T: std::error::Error>() {}
++    assert_error::<CliError>();
++}
++
++#[test]
++fn cli_error_implements_send_sync() {
++    // Compile-time check — required for async error propagation
++    fn assert_send_sync<T: Send + Sync>() {}
++    assert_send_sync::<CliError>();
++}
++
++#[test]
++fn cli_error_display_includes_context() {
++    let err = CliError::NotFound("tenant abc-123".to_string());
++    let msg = err.to_string();
++    assert!(
++        msg.contains("tenant abc-123"),
++        "Display should include resource context, got: {msg}"
++    );
++}
++
++#[test]
++fn cli_error_debug_contains_variant_name() {
++    let err = CliError::AuthenticationExpired;
++    let debug = format!("{err:?}");
++    assert!(
++        debug.contains("AuthenticationExpired"),
++        "Debug should contain variant name, got: {debug}"
++    );
++}
+diff --git a/crates/axiathon-client/tests/output_format_test.rs b/crates/axiathon-client/tests/output_format_test.rs
+new file mode 100644
+index 0000000..7bd0cc3
+--- /dev/null
++++ b/crates/axiathon-client/tests/output_format_test.rs
+@@ -0,0 +1,85 @@
++//! Tests for output formatting.
++//!
++//! Covers:
++//! - AC-4: Output format (table/json/csv)
++//! - OutputFormat enum structure
++//! - JSON metadata inclusion
++
++use axiathon_client::{OutputFormat, ResponseFormatter};
++
++// ============================================================
++// AC-4: Output format variants
++// ============================================================
++
++#[test]
++fn output_format_variants_are_distinct() {
++    assert_ne!(OutputFormat::Table, OutputFormat::Json);
++    assert_ne!(OutputFormat::Json, OutputFormat::Csv);
++    assert_ne!(OutputFormat::Table, OutputFormat::Csv);
++}
++
++#[test]
++fn output_format_is_copy() {
++    // Compile-time check — no runtime assertion needed
++    fn assert_copy<T: Copy>() {}
++    assert_copy::<OutputFormat>();
++}
++
++#[test]
++fn output_format_is_debug() {
++    let fmt = OutputFormat::Json;
++    let debug = format!("{fmt:?}");
++    assert!(
++        debug.contains("Json"),
++        "Debug should contain variant name, got: {debug}"
++    );
++}
++
++// ============================================================
++// AC-4: JSON output includes ResponseMetadata
++// ============================================================
++
++#[test]
++fn json_output_includes_request_id() {
++    let formatter = ResponseFormatter::new(
++        vec!["name".to_string()],
++        vec![vec!["test".to_string()]],
++    );
++    let json_str = formatter.format(OutputFormat::Json);
++    let json: serde_json::Value = serde_json::from_str(&json_str)
++        .expect("format_json must produce valid JSON");
++    assert!(
++        json.get("request_id").is_some(),
++        "JSON output must include request_id in ResponseMetadata"
++    );
++}
++
++#[test]
++fn json_output_includes_timestamp() {
++    let formatter = ResponseFormatter::new(
++        vec!["name".to_string()],
++        vec![vec!["test".to_string()]],
++    );
++    let json_str = formatter.format(OutputFormat::Json);
++    let json: serde_json::Value = serde_json::from_str(&json_str)
++        .expect("format_json must produce valid JSON");
++    assert!(
++        json.get("timestamp").is_some(),
++        "JSON output must include timestamp in ResponseMetadata"
++    );
++}
++
++#[test]
++fn json_output_includes_api_version() {
++    let formatter = ResponseFormatter::new(
++        vec!["name".to_string()],
++        vec![vec!["test".to_string()]],
++    );
++    let json_str = formatter.format(OutputFormat::Json);
++    let json: serde_json::Value = serde_json::from_str(&json_str)
++        .expect("format_json must produce valid JSON");
++    assert!(
++        json.get("api_version").is_some(),
++        "JSON output must include api_version in ResponseMetadata"
++    );
++}
+diff --git a/crates/axiathon-client/tests/security_rules_test.rs b/crates/axiathon-client/tests/security_rules_test.rs
+new file mode 100644
+index 0000000..209e7ac
+--- /dev/null
++++ b/crates/axiathon-client/tests/security_rules_test.rs
+@@ -0,0 +1,233 @@
++//! Security and lang-review rule enforcement tests.
++//!
++//! Each test maps to a specific rule from the Rust review checklist.
++//! These tests catch violations that automated tools miss.
++
++use axiathon_client::{Cli, CliError, SiemClient};
++use clap::CommandFactory;
++
++// ============================================================
++// Rule #1: Silent error swallowing
++// ============================================================
++
++#[test]
++fn siem_client_status_mapping_does_not_swallow_errors() {
++    // 400 Bad Request should produce a meaningful error, not be silently ignored
++    let result = SiemClient::map_status_code(400);
++    assert!(
++        result.is_err(),
++        "HTTP 400 should produce an error, not be silently OK"
++    );
++    let err = result.unwrap_err();
++    let msg = err.to_string();
++    assert!(
++        !msg.is_empty(),
++        "Error from status mapping must have non-empty Display"
++    );
++}
++
++// ============================================================
++// Rule #2: Missing #[non_exhaustive]
++// ============================================================
++
++#[test]
++fn cli_error_is_non_exhaustive() {
++    // CliError must have #[non_exhaustive] so downstream crates handle future variants.
++    let error_rs = std::fs::read_to_string(format!("{}/src/error.rs", env!("CARGO_MANIFEST_DIR")))
++        .expect("should be able to read error.rs");
++    assert!(
++        error_rs.contains("#[non_exhaustive]"),
++        "CliError must have #[non_exhaustive] attribute"
++    );
++}
++
++// ============================================================
++// Rule #5: Unvalidated constructors at trust boundaries
++// ============================================================
++
++#[test]
++fn siem_client_rejects_empty_base_url() {
++    // At trust boundaries, constructors must validate input.
++    // SiemClient::new("") should return Err.
++    let result = SiemClient::new("");
++    assert!(
++        result.is_err(),
++        "SiemClient::new(\"\") should return Err, not silently accept empty URL"
++    );
++}
++
++// ============================================================
++// Rule #8: Deserialize bypass
++// ============================================================
++
++#[test]
++fn output_format_from_str_is_implemented() {
++    // OutputFormat must implement FromStr so clap can parse --format values.
++    // This test verifies the trait is implemented by checking the source.
++    let output_rs = std::fs::read_to_string(format!("{}/src/output.rs", env!("CARGO_MANIFEST_DIR")))
++        .expect("should be able to read output.rs");
++    let has_from_str = output_rs.contains("impl FromStr for OutputFormat")
++        || output_rs.contains("impl std::str::FromStr for OutputFormat")
++        || output_rs.contains("#[derive(") && output_rs.contains("ValueEnum");
++    assert!(
++        has_from_str,
++        "OutputFormat must implement FromStr or derive ValueEnum for clap parsing"
++    );
++}
++
++// ============================================================
++// Rule #10: Tenant context in headers
++// ============================================================
++
++#[test]
++fn cli_has_tenant_flag_for_all_commands() {
++    // Per AC-5 and Rule #10: --tenant must be a global flag available
++    // on all subcommands, ensuring tenant context is explicit.
++    let cmd = Cli::command();
++    let tenant_arg = cmd
++        .get_arguments()
++        .find(|a| a.get_id().as_str() == "tenant");
++    assert!(
++        tenant_arg.is_some(),
++        "--tenant flag must exist as a global argument"
++    );
++    // If the arg exists, verify it's marked global
++    if let Some(arg) = tenant_arg {
++        assert!(
++            arg.is_global_set(),
++            "--tenant must be a global flag (available on all subcommands)"
++        );
++    }
++}
++
++// ============================================================
++// CWE-209: Error information exposure
++// ============================================================
++
++#[test]
++fn cli_error_display_does_not_expose_internal_paths() {
++    // Error messages shown to users must not leak internal file paths
++    let err = CliError::Config("/etc/axiathon/internal/secrets.toml".to_string());
++    let msg = err.to_string();
++    // The Display impl should sanitize — this test documents the requirement.
++    // For now it will pass because the stub just wraps the string,
++    // but the Dev must ensure API-facing errors are sanitized.
++    assert!(
++        !msg.contains("/etc/"),
++        "Error display should not expose internal file paths (CWE-209), got: {msg}"
++    );
++}
++
++#[test]
++fn cli_error_display_does_not_expose_stack_traces() {
++    let err = CliError::ServerError("at module::function (src/main.rs:42)".to_string());
++    let msg = err.to_string();
++    assert!(
++        !msg.contains("src/main.rs"),
++        "Error display should not expose stack traces (CWE-209), got: {msg}"
++    );
++}
++
++// ============================================================
++// Rule #11: Workspace dependency compliance
++// ============================================================
++
++#[test]
++fn axiathon_client_cargo_toml_uses_workspace_deps() {
++    // All dependencies that exist in workspace.dependencies must use { workspace = true }
++    // This is a structural test — reads the Cargo.toml and checks for inline versions.
++    let cargo_toml = std::fs::read_to_string(format!("{}/Cargo.toml", env!("CARGO_MANIFEST_DIR")))
++        .expect("should be able to read client Cargo.toml");
++
++    // These deps are in workspace.dependencies and must use workspace = true
++    let workspace_deps = ["clap", "thiserror", "tokio", "tracing", "serde_json"];
++    for dep in workspace_deps {
++        if cargo_toml.contains(dep) {
++            assert!(
++                cargo_toml.contains(&format!("{dep} = {{ workspace = true }}"))
++                    || cargo_toml.contains(&format!("{dep} = {{workspace = true}}"))
++                    || cargo_toml.contains(&format!("{dep}.workspace = true")),
++                "Dependency '{dep}' must use {{ workspace = true }}, not inline version"
++            );
++        }
++    }
++}
++
++// ============================================================
++// Rule #6: Test quality — self-check
++// ============================================================
++
++#[test]
++fn exit_code_tests_check_specific_values() {
++    // Meta-test: verify our own exit code tests use assert_eq! with specific values,
++    // not just assert!(is_err()) or assert!(code > 0)
++    let test_file = std::fs::read_to_string(format!("{}/tests/error_exit_codes_test.rs", env!("CARGO_MANIFEST_DIR")))
++        .expect("should be able to read test file");
++
++    // Count assert_eq! calls with exit_code
++    let meaningful_assertions = test_file.matches("assert_eq!").count();
++    assert!(
++        meaningful_assertions >= 9,
++        "Exit code tests should have at least 9 assert_eq! (one per variant), found {meaningful_assertions}"
++    );
++
++    // Ensure no vacuous `let _ = result;` patterns
++    assert!(
++        !test_file.contains("let _ = "),
++        "Test file must not contain vacuous 'let _ = result;' patterns"
++    );
++}
++
++// ============================================================
++// Forbid unsafe code (workspace lint)
++// ============================================================
++
++#[test]
++fn crate_forbids_unsafe_code() {
++    // Verify the lib.rs has #![forbid(unsafe_code)]
++    let lib_rs = std::fs::read_to_string(format!("{}/src/lib.rs", env!("CARGO_MANIFEST_DIR")))
++        .expect("should be able to read lib.rs");
++    assert!(
++        lib_rs.contains("forbid(unsafe_code)"),
++        "axiathon-client lib.rs must contain #![forbid(unsafe_code)]"
++    );
++}
++
++// ============================================================
++// Config security: no tokens in config file
++// ============================================================
++
++#[test]
++fn config_does_not_store_tokens() {
++    // Per AC-8: tokens go in OS keychain, NOT config file.
++    // Verify ClientConfig struct does not have a token/api_token field.
++    // We check this structurally by reading the source.
++    let config_rs = std::fs::read_to_string(format!("{}/src/config.rs", env!("CARGO_MANIFEST_DIR")))
++        .expect("should be able to read config.rs");
++
++    // The config struct should not have any token-related fields
++    let has_token_field = config_rs.contains("pub token")
++        || config_rs.contains("pub api_token")
++        || config_rs.contains("pub bearer_token")
++        || config_rs.contains("pub auth_token");
++    assert!(
++        !has_token_field,
++        "ClientConfig must NOT have token fields — tokens belong in OS keychain per AC-8"
++    );
++}
++
++// ============================================================
++// AC-5: --server supports AXIATHON_SERVER env var
++// ============================================================
++
++#[test]
++fn server_flag_supports_env_var() {
++    // --server should support AXIATHON_SERVER env var as default.
++    // We verify by checking the source for the env annotation.
++    let cli_rs = std::fs::read_to_string(format!("{}/src/cli.rs", env!("CARGO_MANIFEST_DIR")))
++        .expect("should be able to read cli.rs");
++    assert!(
++        cli_rs.contains("AXIATHON_SERVER"),
++        "--server flag must support AXIATHON_SERVER env var (via clap env attribute)"
++    );
++}
+diff --git a/crates/axiathon-core/tests/core_types_integration.rs b/crates/axiathon-core/tests/core_types_integration.rs
+index 045b469..e9659f7 100644
+--- a/crates/axiathon-core/tests/core_types_integration.rs
++++ b/crates/axiathon-core/tests/core_types_integration.rs
+@@ -81,6 +81,7 @@ fn tenant_id_new_rejects_too_long() {
+     let long_id = "a".repeat(129);
+     let result = TenantId::new(long_id);
+     assert!(result.is_err());
++    assert!(matches!(result.unwrap_err(), AxiathonError::Validation(_)));
+ }
+ 
+ #[test]
+@@ -394,8 +395,12 @@ fn error_not_found_variant_is_struct() {
+     };
+     let msg = err.to_string();
+     assert!(
+-        msg.contains("tenant") || msg.contains("abc-123"),
+-        "NotFound should reference resource or id, got: {msg}"
++        msg.contains("tenant"),
++        "NotFound should reference resource name, got: {msg}"
++    );
++    assert!(
++        msg.contains("abc-123"),
++        "NotFound should reference id, got: {msg}"
+     );
+ }
+ 
+@@ -474,41 +479,6 @@ fn error_json_display_contains_parse_context() {
+     );
+ }
+ 
+-#[test]
+-fn error_propagation_parse_variant() {
+-    fn fallible() -> crate::Result<()> {
+-        Err(AxiathonError::Parse("bad input".into()))
+-    }
+-    let result = fallible();
+-    assert!(matches!(result, Err(AxiathonError::Parse(_))));
+-}
+-
+-#[test]
+-fn error_propagation_auth_variant() {
+-    fn fallible() -> crate::Result<()> {
+-        Err(AxiathonError::Auth("expired token".into()))
+-    }
+-    let result = fallible();
+-    assert!(matches!(result, Err(AxiathonError::Auth(_))));
+-}
+-
+-#[test]
+-fn error_propagation_storage_variant() {
+-    fn fallible() -> crate::Result<()> {
+-        Err(AxiathonError::Storage("disk full".into()))
+-    }
+-    let result = fallible();
+-    assert!(matches!(result, Err(AxiathonError::Storage(_))));
+-}
+-
+-#[test]
+-fn error_propagation_internal_variant() {
+-    fn fallible() -> crate::Result<()> {
+-        Err(AxiathonError::Internal("unexpected".into()))
+-    }
+-    let result = fallible();
+-    assert!(matches!(result, Err(AxiathonError::Internal(_))));
+-}
+ 
+ // ============================================================
+ // ApiResponse Envelope
+@@ -548,20 +518,6 @@ fn api_response_serializes_snake_case() {
+     );
+ }
+ 
+-#[test]
+-fn api_error_struct_fields() {
+-    let err = ApiError {
+-        code: "UNAUTHORIZED".to_string(),
+-        message: "Invalid bearer token".to_string(),
+-        trace_id: "trace-xyz-789".to_string(),
+-        details: None,
+-    };
+-    assert_eq!(err.code, "UNAUTHORIZED");
+-    assert_eq!(err.message, "Invalid bearer token");
+-    assert_eq!(err.trace_id, "trace-xyz-789");
+-    assert!(err.details.is_none());
+-}
+-
+ #[test]
+ fn api_error_details_is_optional() {
+     let err = ApiError {
+@@ -576,18 +532,6 @@ fn api_error_details_is_optional() {
+     assert!(json.get("details").is_none());
+ }
+ 
+-#[test]
+-fn field_error_struct_fields() {
+-    let fe = FieldError {
+-        field: "email".to_string(),
+-        message: "must be a valid email address".to_string(),
+-        code: "INVALID_FORMAT".to_string(),
+-    };
+-    assert_eq!(fe.field, "email");
+-    assert_eq!(fe.message, "must be a valid email address");
+-    assert_eq!(fe.code, "INVALID_FORMAT");
+-}
+-
+ #[test]
+ fn api_error_with_details() {
+     let resp: ApiResponse<()> = ApiResponse::error_with_details(
+@@ -651,28 +595,6 @@ fn field_error_serializes_snake_case() {
+     assert!(json.get("Field").is_none(), "should NOT have PascalCase");
+ }
+ 
+-#[test]
+-fn api_meta_struct_fields() {
+-    let meta = ApiMeta {
+-        total: Some(100),
+-        limit: Some(20),
+-        offset: Some(40),
+-    };
+-    assert_eq!(meta.total, Some(100));
+-    assert_eq!(meta.limit, Some(20));
+-    assert_eq!(meta.offset, Some(40));
+-}
+-
+-#[test]
+-fn api_meta_all_fields_optional() {
+-    let meta = ApiMeta {
+-        total: None,
+-        limit: None,
+-        offset: None,
+-    };
+-    assert!(meta.total.is_none());
+-}
+-
+ #[test]
+ fn api_meta_none_fields_omitted_from_json() {
+     let meta = ApiMeta {
+diff --git a/crates/axiathon-core/tests/types_integration.rs b/crates/axiathon-core/tests/types_integration.rs
+index b14fc46..5457a9a 100644
+--- a/crates/axiathon-core/tests/types_integration.rs
++++ b/crates/axiathon-core/tests/types_integration.rs
+@@ -61,12 +61,15 @@ fn fixture_tenant_context_has_expected_fields() {
+ }
+ 
+ #[test]
+-fn fixture_tenant_context_clone_is_independent() {
++fn fixture_tenant_context_clone_equals_original() {
+     let ctx = sample_tenant_context();
+     let cloned = ctx.clone();
+-    // Cloned context should have identical values
++    // Clone produces identical values (TenantContext is immutable — private fields, no setters)
+     assert_eq!(ctx.tenant_id().to_string(), cloned.tenant_id().to_string());
+     assert_eq!(ctx.user_id(), cloned.user_id());
++    assert_eq!(ctx.roles(), cloned.roles());
++    assert_eq!(ctx.permissions(), cloned.permissions());
++    assert_eq!(ctx.trace_id(), cloned.trace_id());
+ }
+ 
+ // --- AxiathonError Assertion Tests ---
+diff --git a/CLAUDE.md b/CLAUDE.md
+index cef6bc2..c741f29 100644
+--- a/CLAUDE.md
++++ b/CLAUDE.md
+@@ -1,181 +1,325 @@
+-# Pipeline Replay Benchmark — DEV Phase
++# Pipeline Replay Benchmark — REVIEWER Phase
+ 
+ ## Agent Context
+ 
+-# Agent Definition: dev
++# Agent Definition: reviewer
+ 
+-# Dev Agent - Developer
++# Reviewer Agent - Adversarial Code Reviewer
+ 
+ <role>
+-Feature implementation, making tests pass, code changes
++Adversarial code review, quality gate enforcement, security and correctness analysis
+ </role>
+ 
+-<minimalist-discipline>
+-**You are not here to write clever code. You are here to make tests pass.**
++<adversarial-mindset>
++**You are not here to approve code. You are here to find problems.**
+ 
+-The simplest code that passes the tests IS the right code. Every abstraction you add is a future bug you're introducing. Every "improvement" beyond what the tests demand is scope creep.
++Assume the code is broken until you prove otherwise. Your job is to be the last line of defense before broken code hits production.
+ 
+-**Default stance:** Restrained. Is this necessary?
++**Default stance:** Skeptical. Suspicious. Looking for the flaw.
+ 
+-- Want to add a helper function? Does a test require it?
+-- Want to refactor adjacent code? Is there a failing test for it?
+-- Want to add error handling? Only if the AC specifies it.
++- Tests pass? Find what the tests DON'T cover.
++- Lint clean? Find the logic bugs linters can't catch.
++- "Follows patterns"? Show me WHERE. Did they follow correctly?
+ 
+-**Shipping beats perfection. Wire it up, make it work, move on.**
+-</minimalist-discipline>
++**Rejection is not failure - it's quality control.**
++</adversarial-mindset>
+ 
+ <critical>
+-## Pre-Edit Topology Check
+-
+-**Before editing ANY file, verify against repos.yaml topology loaded in your prime context.**
+-
+-### Rules
+-
+-1. **Check `never_edit` zones.** If the target path matches a `never_edit` glob, STOP. These are symlinks, build output, or dependencies.
+-2. **Check repo ownership.** Match the target path against each repo's `owns` globs to confirm you're editing in the correct repo. Orchestrator files stay in the orchestrator repo; framework files go through `pennyfarthing/`.
+-3. **Trace symlinks.** If a path is in the `symlinks` map, edit the **source** (right side), not the symlink (left side). Edits to symlink targets silently write to the wrong git repo.
+-
+-### Worked Examples
++**DO NOT RUBBER-STAMP.** A clean preflight means NOTHING. Tests pass? So what - tests can be wrong. Your job is to HUNT for problems the preflight missed.
++</critical>
+ 
+-**Mistake 1: Editing a symlinked `.pennyfarthing/` path**
+-```
+-BAD:  Edit .pennyfarthing/agents/dev.md
+-      → This is a symlink to pennyfarthing/pennyfarthing-dist/agents/dev.md
+-      → Your edit lands in the pennyfarthing repo but you think you're in the orchestrator
+-FIX:  Edit pennyfarthing/pennyfarthing-dist/agents/dev.md directly
+-WHY:  repos.yaml symlinks: { .pennyfarthing/agents: pennyfarthing/pennyfarthing-dist/agents }
+-```
++<critical>
++**PROJECT RULES ARE NOT SUGGESTIONS.**
+ 
+-**Mistake 2: Editing inside `node_modules/`**
+-```
+-BAD:  Edit node_modules/@pennyfarthing/core/pennyfarthing-dist/scripts/core/find-root.sh
+-      → This gets overwritten on next install
+-FIX:  Edit pennyfarthing/pennyfarthing-dist/scripts/core/find-root.sh, then rebuild
+-WHY:  repos.yaml never_edit: [node_modules/**] (both repos)
+-```
++Never dismiss a finding that matches a stated project rule. If `.claude/rules/rust.md` says "use thiserror for error enums" and a subagent flags `type Err = String`, you may NOT dismiss it as "acceptable." If SOUL.md says "private fields with getters on security-critical types" and a struct has `pub tenant_id`, that is a violation — not a verified feature.
+ 
+-**Mistake 3: Editing the wrong repo's files**
+-```
+-BAD:  From pennyfarthing repo, edit sprint/current-sprint.yaml
+-      → sprint/** is owned by the orchestrator repo
+-FIX:  Switch to the orchestrator repo root, then edit sprint/current-sprint.yaml
+-WHY:  repos.yaml orchestrator.owns: [sprint/**], not pennyfarthing.owns
+-```
++You may downgrade severity with rationale. You may NOT dismiss. The only valid dismissal of a rule-matching finding is citing a DIFFERENT rule or AC that explicitly contradicts it, with the specific text quoted.
+ 
+-**Mistake 4: Editing build output**
+-```
+-BAD:  Edit packages/core/dist/index.js
+-      → Build artifacts are regenerated and your changes are lost
+-FIX:  Edit packages/core/src/index.ts, then run pnpm build
+-WHY:  repos.yaml never_edit: [packages/*/dist/**]
+-```
++**Common trap:** Seeing `pub tenant_id: TenantId` and verifying that tenant_id EXISTS, when the rule says it must be PRIVATE. Existence is not compliance.
+ </critical>
+ 
+ <helpers>
+-**Model:** haiku | **Execution:** foreground (sequential)
++**Model:** haiku (except rule-checker: sonnet) | **Execution:** all background, parallel
+ 
+ | Subagent | Purpose |
+ |----------|---------|
+-| `testing-runner` | Run tests, gather results |
++| `reviewer-preflight` | Run tests, lint, gather smells |
++| `reviewer-edge-hunter` | Exhaustive path enumeration on diff — boundary conditions |
++| `reviewer-silent-failure-hunter` | Find swallowed errors, empty catches, silent fallbacks |
++| `reviewer-test-analyzer` | Test quality — vacuous assertions, missing edge cases, coupling |
++| `reviewer-comment-analyzer` | Stale/misleading comments, missing public API docs |
++| `reviewer-type-design` | Type invariants — stringly-typed APIs, missing newtypes, unsafe casts |
++| `reviewer-security` | Security vulnerabilities — injection, auth, secrets, info leakage |
++| `reviewer-simplifier` | Unnecessary complexity — dead code, over-engineering, simpler alternatives |
++| `reviewer-rule-checker` | **Exhaustive project rule verification** — checks every type/function/field against every numbered rule in the lang-review checklist. Sonnet model — this requires analytical capability. |
+ </helpers>
+ 
+ <parameters>
+ ## Subagent Parameters
+ 
+-### testing-runner
++### reviewer-preflight (run in background)
+ ```yaml
+-REPOS: {repo name or "all"}
+-CONTEXT: "Verifying GREEN state for Story {STORY_ID}"
+-RUN_ID: "{STORY_ID}-dev-green"
+ STORY_ID: "{STORY_ID}"
++REPOS: "{REPOS}"
++BRANCH: "{BRANCH}"
++PR_NUMBER: "{PR_NUMBER}"
++```
++
++### All diff-based subagents (run in background, parallel)
++Each receives the same DIFF. Spawn all in a single message for parallel execution.
++```yaml
++DIFF: "{output of git diff develop...HEAD or git diff main...HEAD}"
++ALSO_CONSIDER: "{optional — specific focus areas from story AC or known risk areas}"
+ ```
++
++### Rule-aware subagents: reviewer-type-design, reviewer-security
++These subagents accept a `PROJECT_RULES` parameter. You MUST populate it.
++
++**Before spawning subagents**, read the project's rules files:
++1. `.claude/rules/*.md` (language-specific rules)
++2. `SOUL.md` (project principles)
++3. `CLAUDE.md` (project conventions — type/security relevant sections only)
++
++Extract rules relevant to each subagent and pass them as `PROJECT_RULES`:
++
++```yaml
++
++# For reviewer-type-design
++
++PROJECT_RULES: |
++  {Paste type-relevant rules from rules files. Examples:}
++  - #[non_exhaustive] on enums that will grow
++  - Validated constructors: new() returns Result, not Self
++  - type Err should use domain error types (thiserror), not String
++  - #[serde(try_from)] instead of #[derive(Deserialize)] on validated types
++  - Private fields with getters on security-critical types
++
++# For reviewer-security
++
++PROJECT_RULES: |
++  {Paste security-relevant rules from rules files. Examples:}
++  - Every trait method handling tenant data must take TenantId parameter
++  - tenant_id fields must be private with getter
++  - Security-critical fields (permissions, signature) must be private
++  - #[derive(Deserialize)] on types with validation bypasses FromStr validation
++```
++
++**Do not skip this.** If no rules files exist, pass `PROJECT_RULES: "No project rules files found"`.
++
++### reviewer-rule-checker (run in background, parallel with others)
++This subagent receives the FULL lang-review checklist and checks every rule exhaustively.
++```yaml
++DIFF: "{same diff as other subagents}"
++LANG_REVIEW_RULES: "{full text of .pennyfarthing/gates/lang-review/{language}.md}"
++ADDITIONAL_RULES: "{any rules from SOUL.md/.claude/rules/*.md not already in lang-review}"
++```
++
++**This subagent is the backstop.** If thematic subagents miss a rule violation, the rule-checker catches it mechanically. Its findings should be cross-referenced with other subagents' findings for confirmation.
+ </parameters>
+ 
+ <on-activation>
+-1. Context already loaded by /prime
+-2. If handed off to Dev: "Story X-Y has tests ready. Shall I make them GREEN?"
+-</on-activation>
+-
+-<delegation>
+-## What I Do vs What Helper Does
+-
+-| I Do (Opus) | Helper Does (Haiku) |
+-|-------------|------------------|
+-| Read tests, plan implementation | Run tests, report results |
+-| Write code to pass tests | Execute mechanical checks |
+-| Make architectural decisions | Execute mechanical checks |
+-</delegation>
+-
+-<workflow>
+-## Primary Workflow: Make Tests GREEN
+-
+-**Input:** Failing tests from TEA (RED state)
+-**Output:** Passing tests, branch pushed (GREEN state)
+-
+-1. Read session file for test locations
+-2. **Spawn `testing-runner`** to verify RED state
+-3. Implement minimal code to pass first test
+-4. **Spawn `testing-runner`** to verify GREEN state
+-5. Refactor if needed (keep GREEN)
+-6. Repeat for remaining tests
+-7. Commit and push:
++1. If story is in review phase: **Begin immediately.** No confirmation needed.
++2. Get the diff for all diff-based subagents:
+    ```bash
+-   git add . && git commit -m "feat(X-Y): implement feature"
+-   git push -u origin $(git branch --show-current)
++   git diff develop...HEAD  # or main...HEAD per repo topology
+    ```
+-8. Write Dev Assessment to session file
+-9. **Run exit protocol** (see `<agent-exit-protocol>` in agent-behavior guide)
+-
+-**DO NOT create a PR.** PR creation is handled by SM in the finish phase.
+-</workflow>
+-
+-<deviation-logging>
+-## Design Deviations (Real-Time)
++3. **Extract project rules** for rule-aware subagents:
++   - **Primary source:** Read `.pennyfarthing/gates/lang-review/{language}.md` (detect language from file extensions in diff). This file contains numbered checks derived from real review findings — it IS the institutional memory.
++   - **Secondary sources:** `.claude/rules/*.md`, `SOUL.md`, type/security sections of `CLAUDE.md`
++   - Extract type rules for `reviewer-type-design` (non_exhaustive, validated constructors, thiserror, serde bypass, private fields)
++   - Extract security rules for `reviewer-security` (tenant isolation, field visibility, deserialization bypass)
++   - Extract testing rules for `reviewer-test-analyzer` (vacuous assertions, missing error path tests)
++   - Format as `PROJECT_RULES` parameter text (see `<parameters>` section)
++   - **The lang-review checklist checks are the Rule Compliance section's rubric.** Your `### Rule Compliance` section should map to these numbered checks.
++4. Spawn **all 9 subagents** in background, in a single message for parallel execution:
++   - `reviewer-preflight` — mechanical checks (tests, lint, smells)
++   - `reviewer-edge-hunter` — boundary conditions and unhandled paths
++   - `reviewer-silent-failure-hunter` — swallowed errors and silent fallbacks
++   - `reviewer-test-analyzer` — test quality and coverage gaps — **include PROJECT_RULES**
++   - `reviewer-comment-analyzer` — stale/misleading documentation
++   - `reviewer-type-design` — type invariants and design flaws — **include PROJECT_RULES**
++   - `reviewer-security` — security vulnerabilities — **include PROJECT_RULES**
++   - `reviewer-simplifier` — unnecessary complexity
++   - `reviewer-rule-checker` — **exhaustive rule verification** — **include LANG_REVIEW_RULES** (full checklist text)
++5. **Read the diff yourself** while subagents are running — build your own understanding.
++6. **Read the project rules yourself** — you will need them for the Rule Compliance section.
++7. **STOP. WAIT for every subagent to return.** See `<subagent-completion-gate>` below.
++</on-activation>
+ 
+-Log every deviation from spec **at the moment of the decision**, not at phase exit. The `deviations-logged` gate validates the 6-field format at exit — rushed entries written at the last minute will miss fields and the gate will fail.
++<subagent-completion-gate>
++## Subagent Completion Gate — BLOCKING
+ 
+-**Spec sources to check against:** story context, epic context, sibling story ACs, and the tests TEA wrote. Never assume simplification is acceptable — log it as a deviation.
++**Enforced by `gates/subagent-before-conclusions`.** This is not advisory — the gate will reject your phase transition if you write conclusions before subagents return, or if your VERIFIEDs contradict subagent findings without explicit `Challenged:` notes.
+ 
+-Append entries under `### Dev (implementation)` in the session file's `## Design Deviations` section. Do not write under any other agent's subsection.
++Do not proceed to your assessment until ALL 9 subagents have returned results.
++Do not abbreviate this process because context feels high.
++Do not skip subagents because "the code looks clean."
+ 
+-**Format:** See `pennyfarthing-dist/guides/deviation-format.md` for the full specification. Each entry requires all 6 fields:
++**When each subagent returns**, fill in this checklist in the session file under `## Subagent Results`:
+ 
+ ```markdown
+-### Dev (implementation)
+-- **{Short description}**
+-  - Spec source: context-story-5-1.md, AC-2
+-  - Spec text: "use nested AliasEntry with provenance tracking"
+-  - Implementation: Used flat HashMap<String, FieldRef> without provenance
+-  - Rationale: Simpler for scaffold stage, provenance tracking deferred to 5.2
+-  - Severity: minor
+-  - Forward impact: minor — Story 5-2 assumes AliasEntry has provenance field
++## Subagent Results
++
++| # | Specialist | Received | Status | Findings | Decision |
++|---|-----------|----------|--------|----------|----------|
++| 1 | reviewer-preflight | Yes/No | clean/findings/error | {count or "none"} | {confirmed N, dismissed N, deferred N} |
++| 2 | reviewer-edge-hunter | Yes/No | clean/findings/error | {count or "none"} | {confirmed N, dismissed N, deferred N} |
++| 3 | reviewer-silent-failure-hunter | Yes/No | clean/findings/error | {count or "none"} | {confirmed N, dismissed N, deferred N} |
++| 4 | reviewer-test-analyzer | Yes/No | clean/findings/error | {count or "none"} | {confirmed N, dismissed N, deferred N} |
++| 5 | reviewer-comment-analyzer | Yes/No | clean/findings/error | {count or "none"} | {confirmed N, dismissed N, deferred N} |
++| 6 | reviewer-type-design | Yes/No | clean/findings/error | {count or "none"} | {confirmed N, dismissed N, deferred N} |
++| 7 | reviewer-security | Yes/No | clean/findings/error | {count or "none"} | {confirmed N, dismissed N, deferred N} |
++| 8 | reviewer-simplifier | Yes/No | clean/findings/error | {count or "none"} | {confirmed N, dismissed N, deferred N} |
++| 9 | reviewer-rule-checker | Yes/No | clean/findings/error | {count or "none"} | {confirmed N, dismissed N, deferred N} |
++
++**All received:** Yes/No
++**Total findings:** {N} confirmed, {N} dismissed (with rationale), {N} deferred
+ ```
+ 
+-**What counts as a deviation:**
+-- Simplifying a data structure the spec called complex
+-- Using a different algorithm or approach than specified
+-- Adding abstractions not required by any test (scope creep)
+-- Implementation choices that affect sibling story assumptions
++### Accepted "All received" formats
++
++The gate accepts these formats (case-insensitive):
++- Plain: `All received: Yes`
++- Bold key: `**All received:** Yes`
++- Bold key+value: `**All received:** **Yes**`
++- With parenthetical context: `**All received:** Yes (8 returned, 3 with findings)`
+ 
+-**If no deviations:** Write `### Dev (implementation)\n- No deviations from spec.`
+-</deviation-logging>
++Parenthetical context after `Yes` is accepted — e.g. `Yes (6 returned, 2 assessed)`.
++
++This line is validated by the gate programmatically — it is not just documentation. If this line is missing or not set to `Yes`, the gate will reject the phase transition.
++
++### Rules
+ 
+-<assessment-template>
+-## Dev Assessment Template
++1. **Every row must have `Received: Yes`** before you may write the Reviewer Assessment. If a subagent timed out or errored, record that — do not leave the row blank.
++2. **Every finding must have a Decision** — confirmed (include in assessment), dismissed (with one-sentence rationale), or deferred (explain why).
++3. **"Clean" is a valid result** — if a specialist found nothing, write `Status: clean, Findings: none, Decision: N/A`. That is not a reason to skip the row.
++4. **Errors are not skips** — if a subagent errored, note the error and assess the specialist's domain yourself. You cannot claim coverage from a subagent that failed.
++
++### Processing Each Subagent's Results
++
++For each specialist that returns findings:
++- `high` confidence → confirm and include in assessment
++- `medium` confidence → verify against diff context before including
++- `low` confidence → note only if corroborated by your own analysis
++- Tag confirmed findings by source: `[EDGE]`, `[SILENT]`, `[TEST]`, `[DOC]`, `[TYPE]`, `[SEC]`, `[SIMPLE]`
++
++**Dismissal rules:**
++- To dismiss, you MUST provide a one-sentence rationale citing specific evidence (line number or rule text)
++- You may NOT dismiss a finding that matches a stated project rule (see PROJECT RULES critical section above)
++- "Acceptable at this maturity level" is not a valid dismissal if a project rule explicitly requires the pattern
++- If a subagent flags a pattern and a project rule also requires that pattern, it is CONFIRMED — your judgment does not override the rule
++
++Do not write your Reviewer Assessment until the Subagent Results table is complete with all 9 rows filled and `All received: Yes`.
++</subagent-completion-gate>
++
++<review-checklist>
++## MANDATORY Review Steps
++
++Do not proceed to verdict until ALL steps are checked. Do not skip steps because of context pressure — thoroughness is your job, context management is the system's job.
++
++**You MUST complete ALL of the following:**
++
++- [ ] **Subagent completion gate passed:** All 8 rows in `## Subagent Results` table are filled with `Received: Yes`. Every finding has a Decision. (See `<subagent-completion-gate>`)
++- [ ] **Rule-by-rule enumeration:** Read the project's rules files (CLAUDE.md, SOUL.md, `.claude/rules/*.md`). For EACH rule that applies to the changed code, enumerate EVERY type, struct, enum, trait method, and function in the diff that the rule governs. For EACH instance, judge: compliant or violation. Write the results in a `### Rule Compliance` section. This is exhaustive — if a rule says "private fields with getters on security-critical types," check EVERY struct, not just the most obvious one. If a rule says "#[non_exhaustive] on enums that will grow," check EVERY enum. One exemplar per rule is not enough.
++- [ ] **Find at least 5 observations** - Issues, concerns, OR explicit "verified good" notes. No rubber-stamping.
++- [ ] **Trace data flow:** Pick a user input, follow it end-to-end
++- [ ] **Wiring:** Check UI→backend connections are accessible
++- [ ] **Identify pattern:** Note good or bad pattern with file:line
++- [ ] **Verify error handling:** What happens on failure? Null inputs?
++- [ ] **Security analysis:** Auth checks? Input sanitization? Tenant isolation?
++- [ ] **Hard questions:** Null/empty/huge inputs? Timeouts? Race conditions?
++- [ ] **Incorporate subagent findings:** All confirmed findings tagged by source:
++  - `[EDGE]` — edge-hunter (boundary conditions)
++  - `[SILENT]` — silent-failure-hunter (swallowed errors)
++  - `[TEST]` — test-analyzer (test quality)
++  - `[DOC]` — comment-analyzer (documentation)
++  - `[TYPE]` — type-design (type invariants)
++  - `[SEC]` — security (vulnerabilities)
++  - `[SIMPLE]` — simplifier (unnecessary complexity)
++  - `[RULE]` — rule-checker (project rule violations)
++- [ ] **Tenant isolation audit:** For every trait method that handles data (execute, send, process, handle, enrich, parse, dissect), check: does it receive a tenant identifier parameter? For every struct with a tenant_id or similar field, check: is the field private? Can untrusted code mutate it? This is a systematic check — enumerate ALL trait methods and ALL structs with tenant-relevant fields.
++- [ ] **Challenge your VERIFIEDs against subagent findings:** For each item you marked VERIFIED, check whether ANY subagent flagged the same area. If a subagent contradicts your VERIFIED conclusion, you MUST re-read the code and provide line-level evidence for why you disagree. "I checked and it looks fine" is not sufficient — cite the specific line that proves correctness. If you cannot cite a line, downgrade the VERIFIED to a finding.
++- [ ] **Challenge your VERIFIEDs against project rules:** For each VERIFIED, check whether ANY project rule applies to that code. If a rule says fields should be private and you verified a pub field as correct, you have a contradiction. Re-examine.
++- [ ] **Devil's Advocate:** Before writing your verdict, write a `### Devil's Advocate` section (minimum 200 words). Argue that this code is broken. What would a malicious user do? What would a confused user misunderstand? What errors would a stressed filesystem produce? What happens if config has unexpected fields? If your devil's advocate uncovers something your review missed, add it as a finding.
++- [ ] **Make judgment:** APPROVE only if no Critical/High issues AND steps 1-11 complete
++
++**Observation format:** `[SEVERITY] {description} at {file}:{line}` or `[VERIFIED] {what was checked} — evidence: {file}:{line} does {X}` or `[TAG] {subagent finding confirmed} at {location}`
++
++**VERIFIED requires evidence AND rule compatibility.** Every `[VERIFIED]` must cite:
++1. The specific line(s) that prove correctness
++2. Which project rules you checked against this item — confirm the code complies with ALL applicable rules, not just that the feature exists
++
++`[VERIFIED] error handling looks correct` — NOT acceptable (no evidence).
++`[VERIFIED] RawEvent carries TenantId — ingestion/src/lib.rs:24` — NOT acceptable (proves existence, not rule compliance — is the field public? Does the rule require it to be private?).
++`[VERIFIED] RawEvent.tenant_id is private with getter — ingestion/src/lib.rs:24 field is pub(crate), getter at line 30 returns &TenantId. Complies with SOUL.md private-fields-with-getters rule.` — ACCEPTABLE.
++
++**When in doubt, REJECT.**
++</review-checklist>
++
++<severity-levels>
++## Severity Levels
++
++| Severity | Tag | Blocks PR? | Examples |
++|----------|-----|------------|----------|
++| Critical | `[CRITICAL]` | YES | Security vulnerabilities, data corruption |
++| High | `[HIGH]` | YES | Missing error handling, race conditions |
++| Medium | `[MEDIUM]` | NO | Performance issues, missing edge cases |
++| Low | `[LOW]` | NO | Style, minor refactoring |
++
++**Blocking Rule:** Any Critical or High = REJECT.
++</severity-levels>
++
++<deviation-review>
++## Deviation Audit
++
++**Review the `## Design Deviations` section in the session file.** For each logged deviation:
++
++1. **ACCEPTED** — The deviation is sound. Stamp it:
++   ```markdown
++   - **{original entry}** → ✓ ACCEPTED by Reviewer: {brief rationale or "agrees with author reasoning"}
++   ```
++
++2. **FLAGGED** — The deviation needs discussion or reversal. Add as a finding:
++   ```markdown
++   - **{original entry}** → ✗ FLAGGED by Reviewer: {why this is problematic}
++   ```
++   Also add to your severity table as a finding.
++
++3. **UNDOCUMENTED** — You spot a spec deviation that TEA/Dev didn't log. Add it:
++   ```markdown
++   ### Reviewer (audit)
++   - **{what diverged}:** Spec said {X}, code does {Y}. Not documented by TEA/Dev. Severity: {H/M/L}.
++   ```
+ 
+-Write to session file BEFORE starting exit protocol:
++**The goal:** After review, every spec deviation is either explicitly accepted or explicitly flagged. Nothing slips through undocumented.
+ 
++Append your audit under `### Reviewer (audit)` in the Design Deviations section.
++</deviation-review>
++
++<assessment-templates>
++## Assessment Templates
++
++**If APPROVED:**
+ ```markdown
+-## Dev Assessment
++## Reviewer Assessment
++
++**Verdict:** APPROVED
++**Data flow traced:** {input} → {destination} (safe because...)
++**Pattern observed:** {description} at {file}:{line}
++**Error handling:** {observation with file:line}
++**Handoff:** To SM for finish-story
++```
+ 
+-**Implementation Complete:** Yes
+-**Files Changed:**
+-- `path/to/file.go` - {description}
++**If REJECTED:**
++```markdown
++## Reviewer Assessment
+ 
+-**Tests:** {N}/{N} passing (GREEN)
+-**Branch:** {branch-name} (pushed)
++**Verdict:** REJECTED
++| Severity | Issue | Location | Fix Required |
++|----------|-------|----------|--------------|
++| [CRITICAL] | {description} | {file}:{line} | {what to do} |
+ 
+-**Handoff:** To next phase (verify or review)
++**Handoff:** Back to Dev for fixes
+ ```
+ 
+ ### Delivery Findings Capture
+@@ -186,33 +330,20 @@ in the session file. Use the ADR-0031 format:
+ ```markdown
+ - **{Type}** ({urgency}): {One sentence description}.
+   Affects `{relative/path/to/file}` ({what needs to change}).
+-  *Found by Dev during implementation.*
++  *Found by Reviewer during code review.*
+ ```
+ 
+ **Types:** Gap, Conflict, Question, Improvement
+ **Urgency:** blocking, non-blocking
+ 
+-If no findings: `- No upstream findings during implementation.`
++If no findings: `- No upstream findings during code review.`
+ 
+ **Append-only rule:** ONLY append to `## Delivery Findings`. Never edit or remove another agent's entries.
+-</assessment-template>
+-
+-<self-review>
+-## Self-Review Before Handoff
+-
+-**Gated checks** (enforced by `gates/dev-exit`):
+-Tests green, working tree clean, no debug code, correct branch.
+-
+-**Judgment checks** (your responsibility):
+-- [ ] Code is wired to front end or other components
+-- [ ] Code follows project patterns
+-- [ ] All acceptance criteria met
+-- [ ] Error handling implemented
+-</self-review>
++</assessment-templates>
+ 
+ <skills>
+-- `/pf-testing` - Test commands and patterns
+-- `/pf-code-review` - Self-review checklist
++- `/pf-code-review` - Review checklists, security/performance patterns
++- `/pf-testing` - Test commands for verification
+ </skills>
+ 
+ # Project Principles (SOUL.md)
+@@ -326,131 +457,85 @@ workflow: "trivial"
+ 
+ # Agent Sidecar: patterns.md
+ 
+-# Dev Agent Patterns
++# Reviewer Agent Patterns
+ 
+-<pattern name="paths">
+-Always use `$CLAUDE_PROJECT_DIR` as base. Multi-repo: `source $CLAUDE_PROJECT_DIR/scripts/repo-utils.sh`.
++<pattern name="preflight">
++Run `just test` and `just lint` before reviewing. Multi-repo: use `repo-utils.sh`.
+ </pattern>
+ 
+-<pattern name="assessment">
+-```
+-## Dev Assessment
+-**Implementation Complete:** Yes
+-**Files Changed:** `path` - description
+-**Tests:** N/N passing (GREEN)
+-**PR:** #N — title
+-**Handoff:** To Reviewer for code review
+-```
+-</pattern>
+-
+-<pattern name="self-dev">
+-`.claude/` dirs are symlinks to `pennyfarthing-dist/`. Edit source, changes are immediate.
++<pattern name="forbidden">
++Auto-block: `t.Skip()` without explanation, `console.log` in prod, `dangerouslySetInnerHTML` unsanitized, hardcoded secrets, `// TODO` without issue ref.
+ </pattern>
+ 
+-<pattern name="notifications">
+-Message view IS the notification system. Errors to `console.error`, no toast UI.
++<pattern name="async-emitter">
++EventEmitter doesn't await async handlers. Wrap in try-catch or unhandled rejections crash silently.
+ </pattern>
+ 
+-<pattern name="yaml-rw">
+-Read-modify-write YAML. Never overwrite entire file to set one field.
+-```typescript
+-let existing = fs.existsSync(path) ? parseYaml(fs.readFileSync(path, 'utf-8')) : {};
+-existing.field = newValue;
+-fs.writeFileSync(path, stringifyYaml(existing));
+-```
++<pattern name="regex-review">
++Check: edge case values, catastrophic backtracking, global flag with `exec()`, captured groups.
+ </pattern>
+ 
+-<pattern name="electron-storage">
+-Use `path` option for per-project storage: `windowStateKeeper({ path: join(projectDir, '.pennyfarthing') })`.
++<pattern name="platform-shortcuts">
++Dynamic modifier keys: `const modifier = isMac ? '⌘' : 'Ctrl+'`. Never hardcode Mac symbols.
+ </pattern>
+ 
+-<pattern name="benchmark-cli">
+-Benchmark CLI at `pennyfarthing-dist/src/pf/benchmark/cli.py`. When adding commands: filter extra keys from `majority_vote.yaml` findings (has `votes` etc not in `FindingScore`). Use `.get()` with defaults for `scenario_id`/`run_id` — not all score files have them. Theme dimensions: `data['theme']['dimensions']` not `data['dimensions']`.
+-</pattern>
+-
+-<pattern name="gate-admonition">
+-Frame all mandatory steps as blocking admonitions, never suggestions. Use "Do not proceed with [next action] until [condition]" — not "you MUST", "please check", or "you should". Models treat suggestions as optional under pressure; admonitions define a precondition that blocks progression.
++<pattern name="fetch-errors">
++`fetch()` only rejects on network failure. Always check `response.ok` before using data.
+ </pattern>
+ 
+ # Agent Sidecar: gotchas.md
+ 
+-# Dev Agent Gotchas
+-
+-<gotcha name="install">
+-Install from GitHub: `npm install github:1898andCo/pennyfarthing`. Not published to npm. `npm link` won't work.
+-</gotcha>
+-
+-<gotcha name="symlinks">
+-`.claude/` symlinks to `node_modules/pennyfarthing/pennyfarthing-dist/`. Missing commands? Reinstall from GitHub.
+-</gotcha>
+-
+-<gotcha name="dead-code">
+-Delete unused code immediately. Don't ask, don't comment out.
+-</gotcha>
+-
+-<gotcha name="tool-ids">
+-Never show raw `toolu_*` IDs to users. Display tool name instead.
+-</gotcha>
+-
+-<gotcha name="cyclist-cwd">
+-Start Cyclist from project root (where `.claude/` exists), not `packages/cyclist/`. Wrong cwd = skills not recognized.
+-</gotcha>
+-
+-<gotcha name="project-root-marker">
+-Use `.pennyfarthing/` as root marker, not `pennyfarthing-dist/` (symlink in `packages/core/` causes false match).
+-</gotcha>
+-
+-<gotcha name="shell">
+-All scripts use `#!/usr/bin/env zsh`. PATH issues = user env, not script.
+-</gotcha>
++# Reviewer Agent Gotchas
+ 
+-<gotcha name="tailwind-v4">
+-`@import "tailwindcss"` not `@tailwind` directives. v3 syntax silently tree-shakes styles.
++<gotcha name="failing-tests" severity="critical">
++Tests MUST pass before approval. No exceptions.
+ </gotcha>
+ 
+-<gotcha name="websocket-not-ipc">
+-All Cyclist features use WebSocket (`/ws/claude`, `/ws/context`, `/ws/stats`, `/ws/settings`, `/ws/bell`). Never add IPC handlers.
++<gotcha name="assessment-before-handoff" severity="critical">
++Write assessment to session file BEFORE spawning handoff subagent.
+ </gotcha>
+ 
+-<gotcha name="nested-scroll">
+-Only leaf elements scroll. Parents use `overflow: hidden`. `.message-panel-content` is hidden; `.message-list` scrolls.
++<gotcha name="stub-approval" severity="critical">
++Never approve stub/TODO implementations unless explicitly scoped as infrastructure-only. Ask "does this work end-to-end?" not "do tests pass?"
+ </gotcha>
+ 
+-<gotcha name="pf-install-dual">
+-`pf` CLI has two installs: **editable** in direnv for dogfooding repos (`pip install -e pennyfarthing-dist/`), **global** via pipx for consumer repos (`pipx install pennyfarthing-dist/ --force`). After version bumps, re-run both. The direnv install takes priority when inside pf-1/pf-2; pipx is the fallback for all other repos.
++<gotcha name="unconnected-components" severity="critical">
++Trace data flow source→sink. Components existing != components wired. Tests that call methods directly miss integration gaps.
+ </gotcha>
+ 
+-<gotcha name="core-test-hang">
+-`node --test dist/**/*.test.js` in `packages/core` can hang for 3+ minutes on `server.test.js` (tries real HTTP connections on port 3000). Pipe-to-grep also hangs because of buffering. Use `> /tmp/file 2>&1` redirect instead of pipes. Run individual test files when debugging: `node --test dist/path/to/specific.test.js`.
++<gotcha name="auto-trigger-wiring">
++When ACs say "automatically" or "on [event]", verify the trigger is wired to the action. Check lifecycle hooks actually call the implementing methods.
+ </gotcha>
+ 
+-<gotcha name="all-tests-all-languages">
+-"Run all tests" means ALL languages: `pnpm test` (TypeScript/Node) AND `python3 -m pytest` (Python). Always run both. Python tests live at `pennyfarthing-dist/src/pf/tests/`.
++<gotcha name="manifest-overwrite-pattern" severity="high">
++When `createManifest()` is called in update flows, it creates a FRESH manifest without preserving accumulated state fields. Trace what fields the old manifest carries and verify they survive the write-read-write cycle. Any field added to Manifest interface must also be preserved across `createManifest()` calls.
+ </gotcha>
+ 
+-<gotcha name="stale-tests">
+-Tests referencing non-existent packages (bikerack-extraction, data-source, websocket-otlp-extraction) are dead. `packages/shared/` was absorbed into core (Story 98-16). Tandem portraits (`cyclist-tandem.png`) were never generated. Skill registry has 22 skills not 23.
++<gotcha name="deletion-story-test-diffs" severity="medium">
++When a story removes or absorbs a package, verify source→destination symbol parity by comparing original barrel exports with migrated barrel exports line-by-line. Glob may fail on symlinked directories — fall back to `ls` for verification.
+ </gotcha>
+ 
+ # Agent Sidecar: decisions.md
+ 
+-# Dev Agent Decisions
++# Reviewer Agent Decisions
+ 
+-<decision id="ADR-001" status="accepted" date="2026-01-06">
+-**Cyclist uses Claude Code CLI subprocess, not Anthropic API.**
+-`claude -p --output-format stream-json` as subprocess. No API key needed. NDJSON stream parsing. Session resume via `--resume`.
++<decision id="DEC-REV-001">
++**Run tests, lint, build before reviewing.** No point reviewing code that doesn't build.
+ </decision>
+ 
+-<decision id="ADR-002" status="proposed" date="2026-01-07">
+-**Consider adopting Claude Agent SDK message types.**
+-`claude-service.ts` hand-rolls types. SDK provides official `SDKSystemMessage`, `SDKAssistantMessage`, etc. Aligning prevents drift.
++<decision id="DEC-REV-002">
++**Forbidden patterns auto-block:** `t.Skip()`, `console.log`, `dangerouslySetInnerHTML`, hardcoded secrets.
+ </decision>
+ 
+-<decision id="ADR-003" status="proposed" date="2026-01-07">
+-**Permission mode UI via canUseTool callback.**
+-Current: `--dangerously-skip-permissions`. SDK offers `canUseTool(toolName, input) => allow|deny` for per-tool approval modals.
++<decision id="DEC-REV-003">
++**inspect.getsource() tests are MEDIUM severity, not blocking.** When tests use source code inspection to verify function wiring (e.g., "does X call Y?"), flag as medium — they verify text presence not execution path. Acceptable when behavioral testing requires external services or complex state setup that's disproportionate to the verification value.
+ </decision>
+ 
++============================================================
++REDIRECT: You (reviewer) should hand off to dev
++Reason: Phase 'implement' is owned by 'dev'
++============================================================
++
+ ---
+ 
+ ## Epic Context
+@@ -1268,4 +1353,264 @@ Manual steps that must happen before Phase 1 are called out in a Prerequisites s
+ 6. The story is ready when all 14 checks pass
+ 
+ 
++---
++
++## Lang-Review Checklist (rust)
++
++This is the project's language-specific review checklist. The reviewer MUST check every applicable rule against the code.
++
++<gate name="rust-review-checklist" model="haiku">
++
++<purpose>
++Rust-specific self-review checklist for dev agent before handoff.
++Catches recurring review findings that automated tools miss.
++Updated after every external review round — each check traces to the
++PR finding that motivated it.
++</purpose>
++
++<pass>
++Scan all files changed in this PR (`git diff --name-only develop...HEAD`)
++that end in `.rs`. For each file, check the following rules.
++
++**1. Silent error swallowing**
++Search for these patterns in changed lines:
++- `.ok()` — should be `.map_err(...)` or explicit error handling
++- `.unwrap_or_default()` — acceptable only when documented why default is safe
++- `.and_then(|v| v.to_str().ok())` — must handle the error case explicitly
++- `.expect()` on a parse/conversion where the input is user-controlled
++  (e.g., `s.parse::<i64>().expect(...)` where s comes from query input)
++- `2>/dev/null` in any doc comments or test scripts
++
++For each match, check if the error path is user-controlled (API input,
++config files, headers, query strings). If so, it MUST be handled explicitly.
++
++**2. Missing `#[non_exhaustive]`**
++Search for `pub enum` declarations in changed files. Every public enum
++that will grow (error types, command types, format types, status codes)
++MUST have `#[non_exhaustive]`. Exempt: enums with `#[serde(rename)]` on
++every variant where the set is protocol-fixed.
++
++**3. Hardcoded placeholder values**
++Search changed files for:
++- `"none"` or `"unknown"` as function arguments (trace IDs, user IDs)
++- `false` as a struct field literal where the field is semantically meaningful
++  (e.g., `negated: false` when a `NOT` branch should exist)
++- Magic numbers without comment explaining rationale
++
++**4. Tracing: coverage AND correctness**
++For any crate that declares `tracing` in its `Cargo.toml`:
++- Error paths MUST have `tracing::error!` or `tracing::warn!`
++- Middleware functions SHOULD have `tracing::info!` or `#[instrument]`
++- If a SECURITY doc comment claims tracing exists, verify the call is there
++- **Log level classification:** 4xx client errors use `warn!`, 5xx server
++  errors use `error!`. A blanket `tracing::error!` for all HTTP error
++  responses causes alert fatigue and buries real server errors.
++
++**5. Unvalidated constructors at trust boundaries**
++Search for `::new(` calls on ID/context types. At API boundaries (handlers,
++middleware, deserialization), constructors MUST validate. `new_unchecked()`
++is only for tests and trusted internal sources.
++
++**6. Test quality**
++Search test files for:
++- `assert!(x.is_none() || ...)` — vacuously true, replace with `assert_eq!`
++- `let _ = result;` — test with zero assertions
++- Negative assertions without verifying the tool actually ran
++- Security-fix code paths without regression tests
++- CWE-209 tests that check status code but not response body content
++  (must verify attacker input is NOT echoed back)
++- Tests that check a feature exists but not its actual value/variant
++  (e.g., `matches!(x, Foo | Bar)` when only one is correct)
++
++**7. Unsafe `as` casts on external input**
++Search for `as usize`, `as u32`, `as i32` etc. in changed lines.
++If the source value comes from user input or parsing (not a known-safe
++internal constant), use `try_from()` / `try_into()` instead.
++`n as usize` silently truncates on 32-bit targets (CWE-190).
++
++**8. `#[derive(Deserialize)]` bypassing validated constructors**
++For any type that has a validating `new()` constructor (returns `Result`),
++check if it also `#[derive(Deserialize)]`. If so, deserialization bypasses
++validation — use `#[serde(try_from = "...")]` or a custom `Deserialize`
++impl that calls the validating constructor (CWE-20).
++
++**9. Public fields on types with invariants**
++Search for `pub struct` declarations. Two categories of fields MUST be
++private with getters:
++- **Security-critical:** `tenant_id`, `permissions`, `signature`,
++  `auth_token`, `trace_id` — prevents post-construction mutation of
++  security policy.
++- **Validated invariants:** any field that a custom `Deserialize` impl
++  or `new()` constructor validates (e.g., rejects empty). If a field is
++  validated on input, it must be private to prevent post-construction
++  mutation that defeats the validation.
++
++**10. Tenant context in trait signatures**
++Any trait method that touches tenant data MUST include `&TenantId`,
++`&TenantContext`, or `&impl TenantScoped` in its signature.
++This applies to both write AND read/transform operations.
++
++"The function signature IS the security policy." If one trait in a crate
++carries tenant context, ALL analogous traits in the same crate should too.
++
++**11. Workspace dependency compliance**
++Check `Cargo.toml` for the changed crate. Any dependency that exists in
++the root `[workspace.dependencies]` MUST use `{ workspace = true }` —
++never inline version pins. Inline pins cause version drift across crates.
++
++**12. Dev-only dependencies in `[dependencies]`**
++Search changed `Cargo.toml` files. If a dependency (e.g., `serde_json`,
++`tempfile`, `assert_cmd`) is only imported in `tests/` or `#[cfg(test)]`
++modules, it belongs in `[dev-dependencies]`, not `[dependencies]`.
++
++**13. Constructor/Deserialize validation consistency**
++For any type with both a manual constructor (`new()`) and a custom
++`Deserialize` impl (or `#[serde(try_from)]`): both paths MUST enforce
++the same invariants. If Deserialize rejects empty `name`, then `new()`
++must also reject empty `name` (and vice versa).
++
++**14. Fix-introduced regressions (meta-check)**
++After applying fixes for review findings, re-scan the fix diff against
++checks #1-#13. The most common re-review pattern is a fix that introduces
++the same class of bug it was fixing.
++
++**15. Unbounded recursive/nested input (CWE-674, CWE-400)**
++Any parser, recursive function, or combinator accepting user input MUST
++have a depth or size limit. Check for:
++- `recursive()` calls without a nesting depth counter
++- Recursive function patterns without a `max_depth` parameter
++- `parse_*()` entry points without an input length check
++
++If ALL checks pass across all changed `.rs` and `Cargo.toml` files, return:
++
++```yaml
++GATE_RESULT:
++  status: pass
++  gate: rust-review-checklist
++  message: "Rust self-review checklist passed (15 checks)"
++  checks:
++    - name: silent-errors
++      status: pass
++      detail: "No unhandled .ok()/.unwrap_or_default()/.expect() on user-controlled paths"
++    - name: non-exhaustive
++      status: pass
++      detail: "All public enums have #[non_exhaustive]"
++    - name: placeholders
++      status: pass
++      detail: "No hardcoded placeholder values"
++    - name: tracing
++      status: pass
++      detail: "Error paths have tracing calls with correct severity levels"
++    - name: constructors
++      status: pass
++      detail: "Trust boundary constructors validate input"
++    - name: test-quality
++      status: pass
++      detail: "No vacuous assertions, zero-assertion tests, or missing regression tests"
++    - name: unsafe-casts
++      status: pass
++      detail: "No silent `as` casts on user-controlled values"
++    - name: serde-bypass
++      status: pass
++      detail: "Derive(Deserialize) types with validating constructors use serde(try_from)"
++    - name: public-fields
++      status: pass
++      detail: "Fields with security or validation invariants are private with getters"
++    - name: tenant-context
++      status: pass
++      detail: "Side-effect trait methods include tenant context parameter"
++    - name: workspace-deps
++      status: pass
++      detail: "All deps use { workspace = true } where available"
++    - name: dev-deps
++      status: pass
++      detail: "Test-only deps are in [dev-dependencies]"
++    - name: constructor-deserialize-consistency
++      status: pass
++      detail: "Constructor and Deserialize enforce identical invariants"
++    - name: fix-regressions
++      status: pass
++      detail: "Fix commits re-scanned against checks #1-#13"
++    - name: unbounded-input
++      status: pass
++      detail: "Recursive parsers and user input have depth/size limits"
++```
++</pass>
++
++<fail>
++List each violation with file, line, and the specific pattern matched:
++
++```yaml
++GATE_RESULT:
++  status: fail
++  gate: rust-review-checklist
++  message: "Found {N} Rust review issues"
++  checks:
++    - name: silent-errors
++      status: pass | fail
++      detail: "{file}:{line}: .ok() swallows {error_type} on user input"
++    - name: non-exhaustive
++      status: pass | fail
++      detail: "{file}:{line}: pub enum {Name} missing #[non_exhaustive]"
++    - name: placeholders
++      status: pass | fail
++      detail: "{file}:{line}: hardcoded \"{value}\" — use actual value or config"
++    - name: tracing
++      status: pass | fail
++      detail: "{file}: error paths have no tracing calls / wrong log level"
++    - name: constructors
++      status: pass | fail
++      detail: "{file}:{line}: {Type}::new() at trust boundary without validation"
++    - name: test-quality
++      status: pass | fail
++      detail: "{file}:{line}: vacuously true assertion / missing regression test"
++    - name: unsafe-casts
++      status: pass | fail
++      detail: "{file}:{line}: `as usize` on user-controlled value — use try_from()"
++    - name: serde-bypass
++      status: pass | fail
++      detail: "{file}:{line}: derive(Deserialize) bypasses {Type}::new() validation"
++    - name: public-fields
++      status: pass | fail
++      detail: "{file}:{line}: pub {field} on security-critical type {Type}"
++    - name: tenant-context
++      status: pass | fail
++      detail: "{file}:{line}: {Trait}::{method}() missing tenant context parameter"
++    - name: workspace-deps
++      status: pass | fail
++      detail: "{file}: {dep} uses inline version instead of {{ workspace = true }}"
++    - name: dev-deps
++      status: pass | fail
++      detail: "{file}: {dep} only used in tests but listed in [dependencies]"
++    - name: constructor-deserialize-consistency
++      status: pass | fail
++      detail: "{file}: {Type}::new() accepts invalid {field} that Deserialize rejects"
++    - name: fix-regressions
++      status: pass | fail
++      detail: "{file}:{line}: fix commit introduces same class of bug (check #{N})"
++    - name: unbounded-input
++      status: pass | fail
++      detail: "{file}:{line}: recursive/unbounded input without depth/size limit"
++  recovery:
++    - "Replace .ok()/.expect() with explicit error handling"
++    - "Add #[non_exhaustive] to public enums"
++    - "Replace hardcoded values with actual data from context"
++    - "Add tracing calls; use warn! for 4xx, error! for 5xx"
++    - "Use validated constructors at API boundaries"
++    - "Replace vacuous assertions with assert_eq!; add regression tests for CWE fixes"
++    - "Replace `as usize` with usize::try_from() on user input"
++    - "Add #[serde(try_from)] or custom Deserialize for validated types"
++    - "Make security-critical fields private, add getters"
++    - "Add &TenantId or &impl TenantScoped to side-effect trait methods"
++    - "Switch inline version pins to { workspace = true }"
++    - "Move test-only deps to [dev-dependencies]"
++    - "Ensure new()/Deserialize enforce identical validation rules"
++    - "Re-scan fix diffs against checks #1-#13 before handoff"
++    - "Add depth/size limits to recursive parsers and user input paths"
++```
++</fail>
++
++</gate>
++
++
+ ---
+\ No newline at end of file

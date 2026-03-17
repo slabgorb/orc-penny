@@ -17,7 +17,7 @@ Read session files and git state instead of asking the user where you are.
 
 <principle name="right-model">
 ## 4. Right Model for the Right Job
-Opus reasons, Haiku executes — never the reverse.
+Match model to task complexity: Haiku for mechanical execution, Sonnet for analytical subagents, Opus for reasoning. With 1M context, consistency matters more than token conservation.
 </principle>
 
 <principle name="file-coordination" guide="guides/session-artifacts.md, guides/tandem-protocol.md">
@@ -63,4 +63,9 @@ Scripts survive handoffs and context clearing; markdown doesn't — if agents ke
 <principle name="excellence-over-optimization">
 ## 13. Excellence Over Optimization
 Never optimize for cost, tokens, or speed. Consistency and spec fidelity are worth extra agent phases, extra gates, and extra human-in-loop prompts. Context pressure is never a reason to rush, skip checklist items, abbreviate handoffs, or drop subagent results. Agents complete every step their definition requires — the system handles context management. A gate failure from cutting corners costs more than doing it right.
+</principle>
+
+<principle name="prove-the-work">
+## 14. Prove the Work
+Every PR must stand on its own. The reviewer should never have to reverse-engineer what was done, why it was done, or what it affects downstream. Fewer findings is table stakes — clear explanations of changes, spec deviations, and downstream effects are what build trust. If the external reviewer has to make follow-up commits to understand your PR, the pipeline failed. Benchmarks measure this; they are not the goal. The map is not the territory.
 </principle>

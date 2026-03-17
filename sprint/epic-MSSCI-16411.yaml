@@ -68,11 +68,12 @@ stories:
     title: Add set_repo_field writer to git/repos.py
     points: 2
     priority: p1
-    status: backlog
+    status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-03-14'
     repos: pennyfarthing
     workflow: tdd
+    completed: "2026-03-15"
   - id: 147-7
     jira: MSSCI-16418
     title: Add repos API endpoints to WheelHub
@@ -116,7 +117,11 @@ stories:
     description: "Bug reported from sidequest (hobby project, no Jira). pf sprint story finish rejects non-Jira story IDs like E1-13 ('Invalid story ID format') and silently skips the YAML status update. Stories get archived but status stays in_progress instead of done. Root cause: finish flow assumes Jira is present. The system should gracefully handle projects without Jira — skip Jira transitions, but still update YAML status and archive correctly. Reported symptoms: (1) 'Invalid story ID format: E1-13' warning, (2) YAML statuses not flipped to done after finish, (3) stories archived but sprint YAML out of sync."
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-15'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-15'
     type: bug
+    branch: feat/147-11-optional-jira-integration

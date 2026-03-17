@@ -1,0 +1,174 @@
+judge_method: majority_vote
+n_judges: 3
+majority_threshold: 2
+model: opus
+judge_version: v2
+framework_version:
+  commit: 819493e00003
+  semver: 13.0.0-beta.1
+  tag: v13.0.0-beta.1-44-g819493e00
+  agent_hashes:
+    tea: 8744c8f8c9ac
+    dev: d8266a0e4ba4
+    reviewer: 9493c06175a1
+total_caught: 5
+total_findings: 16
+weighted_caught: 19
+total_weight: 81
+score_pct: 23.5
+findings:
+- finding_id: C1
+  title: "EventEnricher::enrich() has no error return path \u2014 enrichment failures\
+    \ are invisible"
+  weight: 8
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I1
+  title: 'PluginKind enum missing #[non_exhaustive]'
+  weight: 3
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I2
+  title: 'PluginHealth enum missing #[non_exhaustive]'
+  weight: 3
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I3
+  title: "PluginId::new() lacks validation \u2014 violates validated constructor rule"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer confirmed [EDGE] finding: 'PluginId::new() accepts empty namespace/name,\
+    \ breaking invariant that FromStr enforces \u2014 new(\"\",\"\").to_string() produces\
+    \ \":\" which fails roundtrip' at identity.rs:19. Flagged as MEDIUM severity requiring\
+    \ Result return or validated try_new()."
+  votes: 3/3
+- finding_id: I4
+  title: RawEvent.tenant_id is publicly mutable
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I5
+  title: ResponseAction::execute lacks tenant context parameter
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I6
+  title: NotificationChannel::send lacks tenant context
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I7
+  title: PluginManifest has all-public fields
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I8
+  title: Facade re-exports core shadowing std::core
+  weight: 3
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer confirmed [EDGE] finding: 'Facade re-exports core which shadows\
+    \ Rust's core crate \u2014 glob imports break access to core::mem, core::fmt,\
+    \ etc.' at src/lib.rs:7. Flagged as MEDIUM severity requiring rename to plugin_core\
+    \ or sdk_core."
+  votes: 3/3
+- finding_id: I9
+  title: PluginId::FromStr uses String as error type
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I10
+  title: PluginId Deserialize bypasses FromStr validation
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I11
+  title: ConnectorPlugin::health() conflicts with base trait
+  weight: 3
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I12
+  title: PluginManifest deserialization accepts empty name/version
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: "Reviewer confirmed [TEST] finding: 'Missing test for malformed JSON Schema\
+    \ error path \u2014 validator_for error branch in validate_config untested' at\
+    \ manifest_tests.rs. This is the same class as missing validation on deserialized\
+    \ fields, and the reviewer recommended a test with malformed schema. However,\
+    \ the specific angle (empty name/version in deserialized manifest) was not tested\
+    \ \u2014 only the schema validation error path. Scoring as caught because the\
+    \ reviewer flagged the missing validation test and the PluginManifest serde(default)\
+    \ issue was flagged separately."
+  votes: 1/3
+- finding_id: I13
+  title: RawEvent::as_str() returns owned String with misleading name
+  weight: 3
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer confirmed [EDGE] finding: ''RawEvent::as_str() returns String,
+    violating Rust as_* convention (should be borrowed view) and double-allocates
+    via Cow::to_string()'' at ingestion/src/lib.rs:36. Flagged as MEDIUM severity
+    requiring rename to to_string_lossy() or return Cow<''_, str>.'
+  votes: 3/3
+- finding_id: I14
+  title: Test raw_event_as_str_lossy is vacuously true
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: dev
+  evidence: 'Dev explicitly fixed: ''Fixed lossy UTF-8 test to assert U+FFFD presence''
+    in ingestion/tests/ingestion_tests.rs. The vacuous let _ = raw.as_str() assertion
+    was strengthened to verify the replacement character is present.'
+  votes: 3/3
+- finding_id: I15
+  title: Missing test for validate_config with invalid schema (ManifestInvalid path)
+  weight: 3
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer confirmed [TEST] finding: 'Missing test for malformed JSON Schema\
+    \ error path \u2014 validate_config error branch untested' at manifest_tests.rs,\
+    \ recommending 'Add test: config_schema = {\"type\": \"not_a_real_type\"} \u2192\
+    \ expect PluginError::ConfigInvalid'. This directly matches the ManifestInvalid/ConfigInvalid\
+    \ error path being unexercised."
+  votes: 3/3
+individual_scores:
+- 29.6
+- 23.5
+- 23.5

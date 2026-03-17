@@ -1,0 +1,153 @@
+scenario_id: dpgd-114
+theme: null
+run_id: 3
+model: null
+judge_model: claude-sonnet-4-6
+judge_version: v2
+judge_pass: 2
+total_caught: 6
+total_findings: 16
+weighted_caught: 27
+total_weight: 81
+score_pct: 33.3
+findings:
+- finding_id: C1
+  title: "EventEnricher::enrich() has no error return path \u2014 enrichment failures\
+    \ are invisible"
+  weight: 8
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer confirmed [HIGH] [SILENT]: 'EventEnricher::enrich() has no error\
+    \ return path. Returns EnrichmentResult (not Result<EnrichmentResult, PluginError>).\
+    \ GeoIP timeout, malformed field, cache error \u2014 all silently produce fields_added:\
+    \ 0.'"
+- finding_id: I1
+  title: 'PluginKind enum missing #[non_exhaustive]'
+  weight: 3
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer confirmed [MEDIUM] [TYPE]: ''Missing #[non_exhaustive] on all
+    three enums. PluginError, PluginHealth, and PluginKind have no #[non_exhaustive]
+    attribute.'' Explicitly covers PluginKind.'
+- finding_id: I2
+  title: 'PluginHealth enum missing #[non_exhaustive]'
+  weight: 3
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Same reviewer finding as I1: ''Missing #[non_exhaustive] on all three
+    enums'' explicitly includes PluginHealth at ''core/src/health.rs:8''.'
+- finding_id: I3
+  title: "PluginId::new() lacks validation \u2014 violates validated constructor rule"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer confirmed [HIGH] [EDGE]: ''PluginId::new() validation gap. new(),
+    builtin(), and community() accept empty strings without validation, but FromStr
+    rejects them.'''
+- finding_id: I4
+  title: RawEvent.tenant_id is publicly mutable
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: No pipeline phase flagged RawEvent.tenant_id being publicly mutable or
+    the tenant isolation risk. Dev kept fields public but for different reasons (test
+    access), not flagging tenant isolation.
+- finding_id: I5
+  title: ResponseAction::execute lacks tenant context parameter
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: No pipeline phase mentioned ResponseAction::execute lacking a tenant_id
+    parameter or the cross-tenant execution risk.
+- finding_id: I6
+  title: NotificationChannel::send lacks tenant context
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: No pipeline phase flagged NotificationChannel::send lacking tenant context
+    or cross-tenant notification leakage risk.
+- finding_id: I7
+  title: PluginManifest has all-public fields
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: No pipeline phase flagged PluginManifest having all-public fields including
+    security-critical ones like permissions and signature. Reviewer flagged PluginId
+    pub fields but not PluginManifest.
+- finding_id: I8
+  title: Facade re-exports core shadowing std::core
+  weight: 3
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: No pipeline phase mentioned the facade re-exporting axiathon_plugin_sdk_core
+    as 'core' shadowing Rust's std::core crate.
+- finding_id: I9
+  title: PluginId::FromStr uses String as error type
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No pipeline phase flagged PluginId::FromStr using String as error type
+    instead of PluginError. The deferred finding 'PluginIdParseError structured error
+    type' was deferred as adequate for MVP, not flagged as a violation.
+- finding_id: I10
+  title: PluginId Deserialize bypasses FromStr validation
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: Reviewer flagged PluginId pub fields allowing direct struct construction
+    bypass, which partially overlaps, but did not specifically flag Deserialize bypassing
+    FromStr validation via derived deserialization.
+- finding_id: I11
+  title: ConnectorPlugin::health() conflicts with base trait
+  weight: 3
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: "No pipeline phase flagged ConnectorPlugin::health() conflicting with\
+    \ AxiathonPlugin::health_check() \u2014 sync/infallible vs async/fallible ambiguity."
+- finding_id: I12
+  title: PluginManifest deserialization accepts empty name/version
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No pipeline phase flagged PluginManifest deserialization accepting empty
+    name/version fields. The manifest tests exercised JSON round-trip but not validation
+    of empty required fields on deserialization.
+- finding_id: I13
+  title: RawEvent::as_str() returns owned String with misleading name
+  weight: 3
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: "Reviewer dismissed the as_str() naming issue as a future improvement,\
+    \ explicitly stating 'Rename to as_str_lossy() is a future improvement, not a\
+    \ bug.' Opposite conclusion \u2014 examined the code and decided it was acceptable."
+- finding_id: I14
+  title: Test raw_event_as_str_lossy is vacuously true
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: dev
+  evidence: 'Dev explicitly fixed this: ''Strengthened non-UTF8 test to assert replacement
+    char \u{FFFD}'' in ingestion/tests/ingestion_tests.rs.'
+- finding_id: I15
+  title: Missing test for validate_config with invalid schema (ManifestInvalid path)
+  weight: 3
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer confirmed [MEDIUM] [TEST]: ''validate_config ManifestInvalid
+    path untested. The validator_for() error path at manifest.rs:83 that returns PluginError::ManifestInvalid
+    is never exercised by any test.'''

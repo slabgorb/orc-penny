@@ -1,0 +1,165 @@
+scenario_id: dpgd-114
+theme: null
+run_id: 8
+model: null
+judge_model: claude-opus-4-6
+judge_version: v2
+judge_pass: 2
+total_caught: 8
+total_findings: 16
+weighted_caught: 34
+total_weight: 81
+score_pct: 42.0
+findings:
+- finding_id: C1
+  title: "EventEnricher::enrich() has no error return path \u2014 enrichment failures\
+    \ are invisible"
+  weight: 8
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: 'EventEnricher::enrich() error return path was never flagged. Reviewer
+    noted missing tenant context and unnecessary #[async_trait] on EventEnricher,
+    but never addressed the lack of error return path. Dev''s delivery findings mention
+    tenant context but not error handling.'
+- finding_id: I1
+  title: 'PluginKind enum missing #[non_exhaustive]'
+  weight: 3
+  phase_ideal: reviewer
+  caught: true
+  caught_by: dev
+  evidence: "Dev added #[non_exhaustive] to PluginKind in identity.rs:129. Reviewer\
+    \ verified: '[VERIFIED] #[non_exhaustive] on all 3 public enums \u2014 compliant\
+    \ with Rule #2'."
+- finding_id: I2
+  title: 'PluginHealth enum missing #[non_exhaustive]'
+  weight: 3
+  phase_ideal: reviewer
+  caught: true
+  caught_by: dev
+  evidence: 'Dev added #[non_exhaustive] to PluginHealth in health.rs:7. Reviewer
+    verified compliance with Rule #2.'
+- finding_id: I3
+  title: "PluginId::new() lacks validation \u2014 violates validated constructor rule"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: TEA wrote 5 failing tests for PluginId FromStr validation (plugin_id_from_str_rejects_*)
+    that reject empty namespace, empty name, missing colon. Dev implemented validation
+    in FromStr. Reviewer flagged PluginId::new() as still bypassing validation (HIGH
+    finding).
+- finding_id: I4
+  title: RawEvent.tenant_id is publicly mutable
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: RawEvent.tenant_id public mutability was never flagged. Reviewer discussed
+    tenant context on trait methods but not the pub field on RawEvent itself.
+- finding_id: I5
+  title: ResponseAction::execute lacks tenant context parameter
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: "Reviewer dismissed the ResponseAction::execute tenant context finding\
+    \ as out of scope for this story. Dev logged it as a delivery finding. However,\
+    \ identifying it as out-of-scope and logging it counts as awareness. Actually,\
+    \ the reviewer explicitly dismissed it: 'dismissed for this story: AC-12 says\
+    \ stubs'. The finding was identified but explicitly dismissed rather than flagged\
+    \ as a real issue. Dev did log it as a delivery gap. This is a borderline case\
+    \ \u2014 the pipeline demonstrated awareness but chose not to act. Scoring as\
+    \ caught since the pipeline identified the exact issue."
+- finding_id: I6
+  title: NotificationChannel::send lacks tenant context
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: "Reviewer dismissed NotificationChannel::send() missing tenant context\
+    \ as out of scope. Dev logged it as a delivery finding. Same reasoning as I5 \u2014\
+    \ pipeline identified the issue but dismissed it. Scoring as caught since awareness\
+    \ was demonstrated."
+- finding_id: I7
+  title: PluginManifest has all-public fields
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged as [MEDIUM]: 'PluginManifest.signature and permissions\
+    \ are pub \u2014 security-critical fields mutable post-construction (Rule #9)'.\
+    \ Dev also logged it as a delivery finding."
+- finding_id: I8
+  title: Facade re-exports core shadowing std::core
+  weight: 3
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: Facade re-export shadowing std::core was never mentioned by any phase.
+    TEA wrote facade tests but none tested for the naming conflict.
+- finding_id: I9
+  title: PluginId::FromStr uses String as error type
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: PluginId::FromStr using String as error type was never flagged. Dev implemented
+    FromStr but kept String as the Err type. No phase mentioned this violates the
+    thiserror convention.
+- finding_id: I10
+  title: PluginId Deserialize bypasses FromStr validation
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote 2 failing tests (plugin_id_deserialize_rejects_empty_*) and
+    1 consistency test. Dev implemented custom Deserialize via PluginIdRaw intermediary.
+    Reviewer verified: ''[VERIFIED] Custom Deserialize for PluginId prevents CWE-20
+    bypass''.'
+- finding_id: I11
+  title: ConnectorPlugin::health() conflicts with base trait
+  weight: 3
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: ConnectorPlugin::health() conflicting with base trait health_check() was
+    never flagged by any phase.
+- finding_id: I12
+  title: PluginManifest deserialization accepts empty name/version
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote validate_config tests including tests for manifest validation.
+    TEA''s Rule Coverage table shows ''Rule #8 Deserialize bypass'' tests and ''Rule
+    #13 constructor/Deserialize consistency'' test. Dev implemented validate_config
+    with jsonschema. However, the specific finding is about PluginManifest deserialization
+    accepting empty name/version, not PluginId. No test specifically checks manifest
+    deserialization with empty fields. Rescoring as not caught.'
+- finding_id: I13
+  title: RawEvent::as_str() returns owned String with misleading name
+  weight: 3
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer flagged as [MEDIUM]: ''RawEvent::as_str() returns owned String,
+    violates Rust as_* naming convention'' with fix ''Rename to to_string_lossy()''.'
+- finding_id: I14
+  title: Test raw_event_as_str_lossy is vacuously true
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: dev
+  evidence: Dev 'Strengthened raw_event_as_str_handles_non_utf8 to assert U+FFFD replacement
+    character'. The vacuous test was fixed to include actual assertions.
+- finding_id: I15
+  title: Missing test for validate_config with invalid schema (ManifestInvalid path)
+  weight: 3
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: TEA's Rule Coverage shows validate_config tests but specifically for PluginId,
+    not ManifestInvalid error path. TEA listed 'PluginManifest validate_config (5
+    tests)' but these test valid/invalid config against schema, not invalid schema
+    itself (the ManifestInvalid path). No test exercises malformed schema input.

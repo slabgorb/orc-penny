@@ -1,0 +1,140 @@
+Now let me count manifest fields to verify the comment analyzer's finding.
+
+The struct has: `schema_version`, `id`, `name`, `version`, `description`, `plugin_kind`, `category`, `config_schema`, `permissions`, `tags`, `ocsf_classes`, `ocsf_version`, `signature` — that's **13 fields**, not 14. The AC says "14 fields" but only lists 13 named fields (AC-3 lists `schema_version` through `signature`). The test comment is inaccurate.
+
+Now I have everything I need for the review.
+
+---
+
+## Reviewer Assessment
+
+### Subagent Results
+
+| # | Specialist | Received | Status | Findings | Decision |
+|---|-----------|----------|--------|----------|----------|
+| 1 | reviewer-preflight | Yes | clean | Tests pass, clippy clean | N/A |
+| 2 | reviewer-edge-hunter | Yes | findings | 7 findings | confirmed 3, dismissed 2, deferred 2 |
+| 3 | reviewer-silent-failure-hunter | Yes | findings | 3 findings | confirmed 1, dismissed 1, deferred 1 |
+| 4 | reviewer-test-analyzer | Yes | findings | 11 findings | confirmed 2, dismissed 5, deferred 4 |
+| 5 | reviewer-comment-analyzer | Yes | findings | 1 finding | confirmed 1 |
+| 6 | reviewer-type-design | Yes | findings | 5 findings | confirmed 2, dismissed 1, deferred 2 |
+| 7 | reviewer-security | Yes | findings | 3 findings | confirmed 1, deferred 2 |
+| 8 | reviewer-simplifier | Yes | findings | 5 findings | dismissed 3, deferred 2 |
+
+**All received:** Yes (8 returned, 7 with findings)
+**Total findings:** 10 confirmed, 10 dismissed (with rationale), 11 deferred
+
+---
+
+### Confirmed Findings
+
+| Severity | Issue | Location | Fix Required |
+|----------|-------|----------|--------------|
+| [CRITICAL] [SEC] | **SSRF via jsonschema remote $ref resolution.** `jsonschema::validator_for()` at `manifest.rs:82` uses reqwest (confirmed in dependency tree: `reqwest v0.12.28 → jsonschema v0.28.3 → axiathon-plugin-sdk-core`). An attacker-supplied `config_schema` containing `{"$ref": "http://169.254.169.254/latest/meta-data/"}` will cause the host to make outbound HTTP requests to cloud metadata endpoints, internal services, or localhost ports. This is CWE-918. | `core/src/manifest.rs:82` | Disable remote reference resolution. Use `jsonschema::options().with_retriever(NoopRetriever)` or strip `$ref` keys before passing to `validator_for()`. |
+| [HIGH] [EDGE] | **PluginId::new() validation gap.** `new()`, `builtin()`, and `community()` accept empty strings without validation, but `FromStr` rejects them. `PluginId::builtin("")` creates display `"builtin:"` which fails `FromStr` round-trip. The validation invariant is inconsistently enforced depending on construction path. | `core/src/identity.rs:22` | Add `debug_assert!(!namespace.as_ref().is_empty() && !name.as_ref().is_empty())` at minimum, or return `Result`. |
+| [HIGH] [TYPE] | **PluginId fields are pub — bypasses all validation.** Direct struct construction `PluginId { namespace: "".into(), name: "".into() }` silently creates an invalid ID. The `FromStr` validation is meaningless when struct literals bypass it. Tests directly access `id.namespace` and `id.name`, locking this as a public API. | `core/src/identity.rs:15-17` | Make fields private, add `namespace()` and `name()` getter methods, update tests to use getters. |
+| [HIGH] [SILENT] | **EventEnricher::enrich() has no error return path.** Returns `EnrichmentResult` (not `Result<EnrichmentResult, PluginError>`). GeoIP timeout, malformed field, cache error — all silently produce `fields_added: 0`. Caller cannot distinguish "nothing to enrich" from "enrichment crashed." Inconsistent with `ParserPlugin::parse()` and `ProtocolDissector::dissect()` which both return `Result`. | `ingestion/src/lib.rs:79` | Change return type to `Result<EnrichmentResult, PluginError>`. Update test mock accordingly. |
+| [MEDIUM] [SEC] | **PluginError Display leaks config validation details.** Raw jsonschema error strings joined verbatim in `PluginError::ConfigInvalid` at `manifest.rs:89`. These include JSON pointer paths, expected types, and instance values (e.g., `"\"secret-token\" is not of type \"integer\""`). No `/// **SECURITY:** Display is for internal logging only` comment per `rust.md` rules. | `core/src/error.rs:1-33` | Add security doc comment on `PluginError`. Consider limiting error detail to count + first error. |
+| [MEDIUM] [TYPE] | **Missing `#[non_exhaustive]` on all three enums.** `PluginError`, `PluginHealth`, and `PluginKind` have no `#[non_exhaustive]` attribute. The `rust.md` rules explicitly require `#[non_exhaustive]` on enums that will grow. `PluginError` and `PluginKind` will gain variants as the SDK evolves (new plugin types, new error modes). Downstream code with exhaustive matches will break on any addition. | `core/src/error.rs:8`, `core/src/health.rs:8`, `core/src/identity.rs:68` | Add `#[non_exhaustive]` to `PluginError` and `PluginKind`. `PluginHealth` is debatable (3 states are likely stable). |
+| [MEDIUM] [TEST] | **validate_config ManifestInvalid path untested.** The `validator_for()` error path at `manifest.rs:83` that returns `PluginError::ManifestInvalid` is never exercised by any test. An invalid JSON Schema (e.g., `{"type": 42}`) should be tested. | `core/tests/manifest_tests.rs` | Add test with invalid schema asserting `ManifestInvalid` variant. |
+| [MEDIUM] [TEST] | **Dropped-receiver error path in ConnectorPlugin untested.** The `MockConnector::start()` uses `tx.send()` which returns `Err` if the receiver is dropped. This `PluginError::Internal` path is never tested. | `ingestion/tests/ingestion_tests.rs` | Add test: drop receiver, call start, assert `Err(PluginError::Internal(_))`. |
+| [LOW] [DOC] | **Test comment claims "14 fields" but struct has 13.** The AC-3 text says "14 fields" but only names 13 (schema_version through signature). The test comment at `manifest_tests.rs:111` repeats this wrong count. | `core/tests/manifest_tests.rs:111` | Fix comment to say "13 specified fields". |
+| [LOW] [EDGE] | **FromStr accepts whitespace-only namespace/name.** `" : "` parses as `namespace=" ", name=" "`. Guard only checks `!is_empty()`, not `!trim().is_empty()`. | `core/src/identity.rs:57` | Add trim check to FromStr guard. |
+
+---
+
+### Dismissed Findings
+
+| Source | Finding | Rationale |
+|--------|---------|-----------|
+| simplifier | Remove `full_id()` (duplicate of Display) | AC-4 explicitly requires `full_id()` method. The spike has it. Removing breaks the AC contract. |
+| simplifier | Remove `PluginManifest::new()` (premature abstraction) | Used by 5+ test files and matches spike API. AC doesn't prohibit it, and it's a clean test helper. |
+| simplifier | Remove `as_str()` (thin wrapper) | Named method is clearer than inlined `from_utf8_lossy`. Matches spike API. |
+| simplifier | Inline `config.rs` module | Module separation follows the impl artifact's file list specification. |
+| test-analyzer | compile-check tests named as runtime tests | These are intentional compile-time object-safety checks. Standard Rust pattern. Renaming adds no value. |
+| test-analyzer | `plugin_kind_copy` test is tautological | It verifies Copy semantics (both bindings accessible after move). Minimal but valid compile-time contract test. |
+| test-analyzer | `plugin_kind_has_exactly_six_variants` only calls one variant | The exhaustive match IS the test. The single runtime call is just to satisfy the test harness. |
+| test-analyzer | `error_has_exactly_eight_variants` only calls one variant | Same reasoning — exhaustive match is the assertion. |
+| type-design | `PluginConfig` should be newtype not alias | AC-8 explicitly says "wraps serde_json::Value as a newtype or type alias." Type alias is acceptable per AC. Newtype is a future improvement. |
+| silent-failure | `RawEvent::as_str()` is lossy | Method is correctly named following the spike pattern and the test now asserts `\u{FFFD}`. Rename to `as_str_lossy()` is a future improvement, not a bug. |
+
+---
+
+### Deferred Findings (valid but out-of-scope for Story 23-1)
+
+| Finding | Deferred To | Rationale |
+|---------|------------|-----------|
+| `Notification.severity` should be enum | Story 23.11 (Enricher/Notification details) | AC-11 specifies `severity: String`. Type refinement deferred. |
+| `ocsf_classes: Vec<i32>` should use newtype | Story 23.12 (OCSF extension registration) | AC-3 specifies `Vec<i32>`. Newtype deferred to OCSF story. |
+| `SignatureMetadata.algorithm` should be enum | Story 23.6 (Plugin Packaging and Signing) | Placeholder struct per AC-3. Will be refined with signing story. |
+| `ActionResult.success` redundant with `Result` | Story 23.12 or action refinement | Valid design point but AC-12 specifies `success: bool`. |
+| `AxiathonPlugin` lifecycle has no double-init guard | Story 23.2 (Plugin Runtime) | Runtime manages lifecycle state machine, not the trait. |
+| `ConnectorPlugin::start()` takes `&self` not `&mut self` | Story 23.10 (Connector Plugin Trait) | Stub trait per AC-9. Detailed connector design is Story 23.10. |
+| `config_schema` unbounded depth | Story 23.3 (WASM sandbox) or 23.4 (Dynamic UI) | Schema depth limits belong at the trust boundary (package upload), not in validate_config itself. |
+| `PluginError` Display as internal-only | Applies to all error types project-wide | Cross-cutting concern, not SDK-specific. Tracked separately. |
+| `manifest_has_14_fields` and other compile-check tests | Test cleanup pass | Valid to strengthen but not blocking. |
+| `PluginIdParseError` structured error type | Future SDK refinement | `String` error type matches spike and is adequate for MVP. |
+| `validate_params`/`execute` call ordering | Story 23.12 | Action runtime owns ordering contract, not the trait. |
+
+---
+
+### Devil's Advocate
+
+Let me argue this code is broken.
+
+**The SSRF is real and exploitable today.** `jsonschema v0.28.3` depends on `reqwest v0.12.28` — I verified it in the dependency tree. The `validator_for()` function will happily resolve `$ref` URIs over HTTP. If any code path passes an untrusted schema to `validate_config()` — which is its designed purpose (validating plugin manifests from uploaded `.axpkg` packages) — an attacker can probe internal networks. The cloud metadata endpoint `169.254.169.254` is the canonical target. This isn't hypothetical; it's the documented behavior of jsonschema. The fact that Story 23.6 (packaging) hasn't landed yet means there's no current attack surface *in production* — but shipping this code establishes a pattern that future stories will build on without questioning. A developer writing the package upload handler in Story 23.6 will call `validate_config()` on user-supplied schemas and introduce the vulnerability silently.
+
+**The PluginId validation gap is a ticking bomb.** Right now `PluginId::builtin("")` creates `"builtin:"` which looks innocuous in tests. But when Story 23.2 (Plugin Runtime) builds the registry, plugin IDs will be used as map keys, filesystem paths for plugin storage, and URL segments for the Dynamic Source Catalog API (Story 23.4). An empty name segment in a path like `/plugins/builtin//config` is a path traversal vector. An empty namespace in a registry lookup returns unexpected results. The fix is trivial (add the same guard from `FromStr` to `new()`) but the Dev chose not to, citing "tests directly access fields." The tests are the problem — they encode a broken API surface.
+
+**The enrichment pipeline will silently lose data.** `EventEnricher::enrich()` returns `EnrichmentResult` with no error path. When the GeoIP database expires, the threat intel feed goes down, or a cache read fails, every event flows through unenriched. The pipeline metrics will show `fields_added: 0` but nothing distinguishes "enricher had nothing to add" from "enricher is completely broken." This was flagged pre-implementation, flagged post-implementation, and confirmed by two independent subagents. The Dev's rationale ("AC-9 says `EnrichmentResult`") is technically correct but violates SOUL.md #10 ("Return Results, Don't Throw") — the AC was written before the structured `PluginError` enum was designed.
+
+**Missing `#[non_exhaustive]` violates `rust.md` rule.** The project's own coding rules say: `#[non_exhaustive] on enums that will grow`. `PluginError` will absolutely grow — every new plugin type potentially adds error variants. `PluginKind` will grow when new plugin categories are added. Any downstream `match` on these enums will break at compile time when variants are added. This is a one-line fix that was overlooked.
+
+**Conclusion from devil's advocate:** The SSRF finding is genuinely critical and the `#[non_exhaustive]` omission violates the project's own rules. The PluginId validation gap and enricher silent failure are high-severity design issues that will compound as dependent stories build on this foundation. These are not hypothetical — they are structural flaws in the SDK's public API that become harder to fix with every downstream consumer.
+
+---
+
+### Challenge: VERIFIEDs vs Subagent Findings
+
+- **VERIFIED: Tests pass (preflight).** No contradictions — all subagents agree tests pass and clippy is clean.
+- **VERIFIED: Object safety for all 7 traits.** Compile tests exist and pass. No subagent disputes this.
+- **VERIFIED: PluginManifest JSON round-trip.** Tests exercise full 13-field round-trip. Comment-analyzer correctly flags the "14 fields" count as wrong — downgraded to LOW.
+- **Challenged: Dev claimed EventEnricher return type is per AC-9.** Reviewed AC-9 text: "fn enrich(&self, event: &mut AxiathonEvent) -> EnrichmentResult". The AC *does* specify `EnrichmentResult` directly. However, SOUL.md #10 says "Return Results, Don't Throw" — the AC conflicts with a project principle. I'm confirming this as HIGH because SOUL principles override individual AC text when they conflict.
+
+---
+
+### Deviation Audit
+
+No `## Design Deviations` section exists in the session file. The Dev logged the following deviations in their assessment but did not record them formally:
+
+### Reviewer (audit)
+- **EventEnricher::enrich() returns EnrichmentResult not Result:** AC-9 says `EnrichmentResult` but SOUL.md #10 says "Return Results, Don't Throw." Dev followed AC literal text. **→ FLAGGED**: The AC was written before `PluginError` was designed. The trait is the SDK's public API surface and should follow SOUL.md #10 consistently.
+- **PluginId fields are pub:** AC-4 says "has `namespace: String` and `name: String` fields" without specifying visibility. Dev kept pub for test compatibility. **→ FLAGGED**: rust.md says "Private fields with getters on security-critical types." Plugin IDs route plugin storage and registry lookups — they are security-relevant.
+- **No #[non_exhaustive] on enums:** Not mentioned by Dev. **→ UNDOCUMENTED**: rust.md says `#[non_exhaustive] on enums that will grow`. Both `PluginError` and `PluginKind` will grow. Dev did not document this deviation.
+
+---
+
+### Delivery Findings
+
+- **Gap** (blocking): SSRF via jsonschema remote `$ref` resolution. `validate_config()` will fetch arbitrary URLs when given attacker-controlled schemas. Affects `crates/axiathon-plugin-sdk/core/src/manifest.rs` (must disable remote retrieval). *Found by Reviewer during code review.*
+- **Gap** (blocking): Missing `#[non_exhaustive]` on `PluginError` and `PluginKind`. Violates project rust.md rule. Affects `crates/axiathon-plugin-sdk/core/src/error.rs` and `identity.rs`. *Found by Reviewer during code review.*
+- **Gap** (blocking): `PluginId::new()` accepts empty strings, creating IDs that fail `FromStr` round-trip. Validation invariant inconsistently enforced. Affects `crates/axiathon-plugin-sdk/core/src/identity.rs`. *Found by Reviewer during code review.*
+- **Improvement** (non-blocking): `EventEnricher::enrich()` should return `Result<EnrichmentResult, PluginError>` per SOUL.md #10. Affects `crates/axiathon-plugin-sdk/ingestion/src/lib.rs`. *Found by Reviewer during code review.*
+- **Improvement** (non-blocking): Add security doc comment on `PluginError` per rust.md convention. Affects `crates/axiathon-plugin-sdk/core/src/error.rs`. *Found by Reviewer during code review.*
+
+---
+
+## Reviewer Assessment
+
+**Verdict:** REJECTED
+
+| Severity | Issue | Location | Fix Required |
+|----------|-------|----------|--------------|
+| [CRITICAL] | SSRF via jsonschema remote `$ref` resolution — reqwest fetches arbitrary URLs from attacker-supplied schemas | `core/src/manifest.rs:82` | Disable remote reference resolution before calling `validator_for()` |
+| [HIGH] | `PluginId::new()` accepts empty strings, creating invalid IDs that fail `FromStr` round-trip | `core/src/identity.rs:22` | Add non-empty validation matching `FromStr` guards |
+| [HIGH] | `PluginId` fields are `pub` — direct struct construction bypasses all validation | `core/src/identity.rs:15-17` | Make fields private, add getters, update tests |
+| [HIGH] | Missing `#[non_exhaustive]` on `PluginError` and `PluginKind` — violates project rust.md rules | `core/src/error.rs:8`, `core/src/identity.rs:68` | Add `#[non_exhaustive]` attribute |
+
+**Handoff:** Back to Dev for fixes
+
+VERDICT: REJECT

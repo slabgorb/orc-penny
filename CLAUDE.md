@@ -18,7 +18,7 @@ Orchestrator for Pennyfarthing framework development. Manages sprint tracking, a
 4. **Modify `pennyfarthing/pennyfarthing-dist/`** — single source of truth for all distributed files
 5. **Use `.js` extensions** in relative TypeScript imports
 6. **Return result objects** `{success, data?, error?}` — don't throw
-7. **Use Haiku for subagents** — never Opus for mechanical tasks
+7. **Match model to task** — Haiku for mechanical tasks, Sonnet/Opus for analytical subagents
 8. **Runtime scripts use `.pennyfarthing/` paths** — never `pennyfarthing-dist/`
 9. **Dogfood symlinks** — `.claude/commands/` and `.claude/skills/` symlink to `pennyfarthing-dist/`. Edit source, not targets.
 </critical>
@@ -115,6 +115,17 @@ Workflow definitions live in `pennyfarthing/pennyfarthing-dist/workflows/*.yaml`
 | Peloton test | Repeatable benchmark scenario for a full agent team (TEA→Dev→Reviewer), sourced from real external review findings. Ground truth = what the pipeline actually missed. Run via `pf benchmark replay`. |
 | Pipeline replay | The harness (`pf benchmark replay run/score/compare`) that executes peloton tests against real code at a known commit. |
 | JobFair | Single-agent benchmarking — tests one role in isolation against a rubric. |
+</info>
+
+<info>
+## Team
+
+| Person | GitHub | Role |
+|--------|--------|------|
+| Keith Avery | slabgorb | Developer (user) |
+| Jared | zious11 | Immediate boss, external reviewer |
+| Josh | drbothen | Jared's boss |
+| Michael | arcaven | Collaborator |
 </info>
 
 <context>

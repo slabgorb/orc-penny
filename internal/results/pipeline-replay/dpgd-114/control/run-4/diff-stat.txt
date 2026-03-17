@@ -1,0 +1,42 @@
+ .claude/settings.json                              |  19 +
+ .pennyfarthing                                     |   1 +
+ .session/pipeline-session.md                       |   7 +
+ CLAUDE.md                                          | 676 +++++++++++++++++++--
+ Cargo.lock                                         | 352 +++++++++++
+ Cargo.toml                                         |  11 +-
+ .../axiathon-core/tests/core_types_integration.rs  |  84 ++-
+ crates/axiathon-core/tests/types_integration.rs    |  18 +-
+ crates/axiathon-plugin-sdk/Cargo.toml              |  20 +
+ crates/axiathon-plugin-sdk/action/Cargo.toml       |  18 +
+ crates/axiathon-plugin-sdk/action/src/lib.rs       |  33 +
+ .../action/tests/action_tests.rs                   |  70 +++
+ crates/axiathon-plugin-sdk/core/Cargo.toml         |  24 +
+ crates/axiathon-plugin-sdk/core/src/config.rs      |   4 +
+ crates/axiathon-plugin-sdk/core/src/error.rs       |  39 ++
+ crates/axiathon-plugin-sdk/core/src/health.rs      |  11 +
+ crates/axiathon-plugin-sdk/core/src/identity.rs    |  88 +++
+ crates/axiathon-plugin-sdk/core/src/lib.rs         |  17 +
+ crates/axiathon-plugin-sdk/core/src/lifecycle.rs   |  32 +
+ crates/axiathon-plugin-sdk/core/src/manifest.rs    |  69 +++
+ .../axiathon-plugin-sdk/core/tests/error_tests.rs  | 136 +++++
+ .../axiathon-plugin-sdk/core/tests/health_tests.rs |  58 ++
+ .../core/tests/identity_tests.rs                   | 278 +++++++++
+ .../core/tests/lifecycle_tests.rs                  | 189 ++++++
+ .../core/tests/manifest_tests.rs                   | 292 +++++++++
+ .../core/tests/object_safety_tests.rs              |  51 ++
+ crates/axiathon-plugin-sdk/ingestion/Cargo.toml    |  21 +
+ crates/axiathon-plugin-sdk/ingestion/src/lib.rs    |  82 +++
+ .../ingestion/tests/ingestion_tests.rs             | 129 ++++
+ crates/axiathon-plugin-sdk/network/Cargo.toml      |  17 +
+ crates/axiathon-plugin-sdk/network/src/lib.rs      |  23 +
+ .../network/tests/network_tests.rs                 |  55 ++
+ crates/axiathon-plugin-sdk/notification/Cargo.toml |  18 +
+ crates/axiathon-plugin-sdk/notification/src/lib.rs |  27 +
+ .../notification/tests/notification_tests.rs       |  58 ++
+ crates/axiathon-plugin-sdk/src/lib.rs              |  11 +
+ crates/axiathon-plugin-sdk/tests/facade_tests.rs   | 100 +++
+ 37 files changed, 3051 insertions(+), 87 deletions(-)
+
+(uncommitted after reviewer):
+ CLAUDE.md | 469 +++++++++++++++++++++++++++++++-------------------------------
+ 1 file changed, 236 insertions(+), 233 deletions(-)

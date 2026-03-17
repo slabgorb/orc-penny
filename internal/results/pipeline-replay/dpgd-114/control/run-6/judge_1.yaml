@@ -1,0 +1,157 @@
+scenario_id: dpgd-114
+theme: null
+run_id: 6
+model: null
+judge_model: claude-opus-4-6
+judge_version: v2
+judge_pass: 1
+total_caught: 8
+total_findings: 16
+weighted_caught: 33
+total_weight: 81
+score_pct: 40.7
+findings:
+- finding_id: C1
+  title: "EventEnricher::enrich() has no error return path \u2014 enrichment failures\
+    \ are invisible"
+  weight: 8
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer finding [MEDIUM]: 'EventEnricher::enrich() infallible return\
+    \ \u2014 returns EnrichmentResult not Result<EnrichmentResult, PluginError>. If\
+    \ the enrichment lookup fails... the implementor must return EnrichmentResult\
+    \ { fields_added: 0, ... } \u2014 caller cannot distinguish enrichment found nothing\
+    \ from enrichment errored.'"
+- finding_id: I1
+  title: 'PluginKind enum missing #[non_exhaustive]'
+  weight: 3
+  phase_ideal: reviewer
+  caught: true
+  caught_by: dev
+  evidence: "Dev implemented #[non_exhaustive] on PluginKind. Reviewer VERIFIED: '#[non_exhaustive]\
+    \ on PluginError, PluginHealth, PluginKind \u2014 evidence: identity.rs:69'"
+- finding_id: I2
+  title: 'PluginHealth enum missing #[non_exhaustive]'
+  weight: 3
+  phase_ideal: reviewer
+  caught: true
+  caught_by: dev
+  evidence: "Dev implemented #[non_exhaustive] on PluginHealth. Reviewer VERIFIED:\
+    \ '#[non_exhaustive] on PluginError, PluginHealth, PluginKind \u2014 evidence:\
+    \ health.rs:7'"
+- finding_id: I3
+  title: "PluginId::new() lacks validation \u2014 violates validated constructor rule"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer HIGH finding: 'PluginId pub fields bypass FromStr validation\
+    \ \u2014 PluginId { namespace: \"\", name: \"\" } compiles; new(), builtin(\"\"\
+    ), community(\"\") all accept empty strings.' Directly flags that new() has no\
+    \ validation."
+- finding_id: I4
+  title: RawEvent.tenant_id is publicly mutable
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: "Reviewer VERIFIED 'RawEvent carries TenantId \u2014 ingestion/src/lib.rs:24\
+    \ has pub tenant_id: TenantId' \u2014 examined the field but concluded it was\
+    \ correct. The ground truth says pub mutability is the problem. Opposite conclusion."
+- finding_id: I5
+  title: ResponseAction::execute lacks tenant context parameter
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: No mention of ResponseAction::execute lacking tenant context parameter
+    anywhere in pipeline output.
+- finding_id: I6
+  title: NotificationChannel::send lacks tenant context
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: No mention of NotificationChannel::send lacking tenant context parameter
+    anywhere in pipeline output.
+- finding_id: I7
+  title: PluginManifest has all-public fields
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: No mention of PluginManifest having all-public fields as a security concern.
+    The reviewer flagged PluginId pub fields but not PluginManifest pub fields (permissions,
+    signature).
+- finding_id: I8
+  title: Facade re-exports core shadowing std::core
+  weight: 3
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: No mention of facade re-exporting 'core' shadowing std::core. Reviewer
+    verified facade re-exports but did not flag the naming conflict.
+- finding_id: I9
+  title: PluginId::FromStr uses String as error type
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No mention of PluginId::FromStr using String as error type instead of
+    PluginError anywhere in pipeline output.
+- finding_id: I10
+  title: PluginId Deserialize bypasses FromStr validation
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer HIGH finding explicitly states: ''#[derive(Deserialize)] at
+    line 15 allows arbitrary JSON. FromStr at line 56-63 validates but is bypassable''
+    and ''The Deserialize derive makes this even worse: arbitrary JSON can produce
+    invalid IDs.'''
+- finding_id: I11
+  title: ConnectorPlugin::health() conflicts with base trait
+  weight: 3
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer MEDIUM finding: 'ConnectorPlugin::health() return type inconsistent\
+    \ with AxiathonPlugin::health_check() \u2014 ConnectorPlugin::health() returns\
+    \ bare PluginHealth (no Result). Implementors cannot signal that the health check\
+    \ itself failed.'"
+- finding_id: I12
+  title: PluginManifest deserialization accepts empty name/version
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No mention of PluginManifest deserialization accepting empty name/version.
+    The reviewer flagged PluginId empty validation but not PluginManifest field validation
+    on deserialization.
+- finding_id: I13
+  title: RawEvent::as_str() returns owned String with misleading name
+  weight: 3
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer MEDIUM finding: 'as_str() naming convention \u2014 returns String\
+    \ not &str. In Rust convention, as_* methods return borrowed references. This\
+    \ should be to_string_lossy().'"
+- finding_id: I14
+  title: Test raw_event_as_str_lossy is vacuously true
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No mention of the vacuous raw_event_as_str_lossy test that discards its
+    result. The reviewer mentioned vacuous tests generally but the dev's 'fixed 6
+    tautological tests' did not include this specific test.
+- finding_id: I15
+  title: Missing test for validate_config with invalid schema (ManifestInvalid path)
+  weight: 3
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer MEDIUM finding: ''No test exercises the ManifestInvalid error
+    path in validate_config (malformed schema).'' Listed as delivery finding.'

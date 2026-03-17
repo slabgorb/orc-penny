@@ -1,0 +1,157 @@
+scenario_id: dpgd-114
+theme: null
+run_id: 6
+model: opus
+judge_version: v2
+total_caught: 8
+total_findings: 16
+weighted_caught: 33
+total_weight: 81
+score_pct: 40.7
+findings:
+- finding_id: C1
+  title: "EventEnricher::enrich() has no error return path \u2014 enrichment failures\
+    \ are invisible"
+  weight: 8
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged as MEDIUM: 'EventEnricher::enrich() infallible return\
+    \ \u2014 returns EnrichmentResult not Result<EnrichmentResult, PluginError>. If\
+    \ the enrichment lookup fails... the implementor must return EnrichmentResult\
+    \ { fields_added: 0, ... } \u2014 caller cannot distinguish enrichment found nothing\
+    \ from enrichment errored.'"
+- finding_id: I1
+  title: 'PluginKind enum missing #[non_exhaustive]'
+  weight: 3
+  phase_ideal: reviewer
+  caught: true
+  caught_by: dev
+  evidence: "Dev implemented #[non_exhaustive] on PluginKind. Reviewer verified: '[VERIFIED]\
+    \ #[non_exhaustive] on PluginError, PluginHealth, PluginKind \u2014 evidence:\
+    \ identity.rs:69'"
+- finding_id: I2
+  title: 'PluginHealth enum missing #[non_exhaustive]'
+  weight: 3
+  phase_ideal: reviewer
+  caught: true
+  caught_by: dev
+  evidence: "Dev implemented #[non_exhaustive] on PluginHealth. Reviewer verified:\
+    \ '[VERIFIED] #[non_exhaustive] on PluginError, PluginHealth, PluginKind \u2014\
+    \ evidence: health.rs:7'"
+- finding_id: I3
+  title: "PluginId::new() lacks validation \u2014 violates validated constructor rule"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged as HIGH: 'PluginId pub fields bypass FromStr validation\
+    \ \u2014 PluginId { namespace: \"\", name: \"\" } compiles; new(), builtin(\"\"\
+    ), community(\"\") all accept empty strings.' Explicitly notes new() at line 23\
+    \ has no validation."
+- finding_id: I4
+  title: RawEvent.tenant_id is publicly mutable
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: "Reviewer verified 'RawEvent carries TenantId \u2014 ingestion/src/lib.rs:24\
+    \ has pub tenant_id: TenantId' but concluded this was CORRECT. The ground truth\
+    \ finding is that tenant_id being pub allows mutation. Pipeline reached opposite\
+    \ conclusion."
+- finding_id: I5
+  title: ResponseAction::execute lacks tenant context parameter
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: ResponseAction::execute lacking tenant context parameter was never flagged
+    by any phase.
+- finding_id: I6
+  title: NotificationChannel::send lacks tenant context
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: NotificationChannel::send lacking tenant context was never flagged by
+    any phase.
+- finding_id: I7
+  title: PluginManifest has all-public fields
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: PluginManifest having all-public fields was not flagged. The reviewer
+    flagged PluginId pub fields but not PluginManifest pub fields specifically (permissions,
+    signature mutation risk).
+- finding_id: I8
+  title: Facade re-exports core shadowing std::core
+  weight: 3
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: Facade re-exporting 'core' shadowing std::core was not flagged. Reviewer
+    verified facade re-exports as correct.
+- finding_id: I9
+  title: PluginId::FromStr uses String as error type
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: PluginId::FromStr using String as error type instead of PluginError was
+    never flagged by any phase.
+- finding_id: I10
+  title: PluginId Deserialize bypasses FromStr validation
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer flagged as HIGH: ''The struct has Deserialize so JSON {"namespace":"","name":""}
+    also bypasses validation'' and explicitly noted ''#[derive(Deserialize)] at line
+    15 allows arbitrary JSON. FromStr at line 56-63 validates but is bypassable.'''
+- finding_id: I11
+  title: ConnectorPlugin::health() conflicts with base trait
+  weight: 3
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged as MEDIUM: 'ConnectorPlugin::health() return type inconsistent\
+    \ with AxiathonPlugin::health_check() \u2014 ConnectorPlugin::health() returns\
+    \ bare PluginHealth (no Result). Implementors cannot signal that the health check\
+    \ itself failed.'"
+- finding_id: I12
+  title: PluginManifest deserialization accepts empty name/version
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: PluginManifest deserialization accepting empty name/version was never
+    specifically flagged. The reviewer's PluginId validation finding is about PluginId,
+    not PluginManifest fields.
+- finding_id: I13
+  title: RawEvent::as_str() returns owned String with misleading name
+  weight: 3
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged as MEDIUM: 'as_str() naming convention \u2014 returns\
+    \ String not &str. In Rust convention, as_* methods return borrowed references.\
+    \ This should be to_string_lossy().'"
+- finding_id: I14
+  title: Test raw_event_as_str_lossy is vacuously true
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: The specific vacuous test 'raw_event_as_str_lossy' using let _ = was not
+    flagged. TEA mentions removing 9 tautological tests but the specific as_str lossy
+    vacuous assertion is not mentioned. Dev fixed 6 tautological tests but no evidence
+    this specific one was addressed.
+- finding_id: I15
+  title: Missing test for validate_config with invalid schema (ManifestInvalid path)
+  weight: 3
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer flagged as MEDIUM: ''No test exercises the ManifestInvalid error
+    path in validate_config (malformed schema).'' Listed as delivery finding.'

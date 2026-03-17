@@ -1,0 +1,39 @@
+ .claude/settings.json                              |   19 +
+ .pennyfarthing                                     |    1 +
+ .session/pipeline-session.md                       |    7 +
+ CLAUDE.md                                          | 1213 ++++++++++++++++++++
+ Cargo.lock                                         |  340 ++++++
+ Cargo.toml                                         |   15 +-
+ .../axiathon-core/tests/core_types_integration.rs  |  141 +--
+ crates/axiathon-plugin-sdk/Cargo.toml              |   17 +
+ crates/axiathon-plugin-sdk/action/Cargo.toml       |   19 +
+ crates/axiathon-plugin-sdk/action/src/lib.rs       |   47 +
+ .../action/tests/action_tests.rs                   |   48 +
+ crates/axiathon-plugin-sdk/core/Cargo.toml         |   21 +
+ crates/axiathon-plugin-sdk/core/src/config.rs      |    4 +
+ crates/axiathon-plugin-sdk/core/src/error.rs       |   44 +
+ crates/axiathon-plugin-sdk/core/src/health.rs      |   15 +
+ crates/axiathon-plugin-sdk/core/src/identity.rs    |   90 ++
+ crates/axiathon-plugin-sdk/core/src/lib.rs         |   17 +
+ crates/axiathon-plugin-sdk/core/src/lifecycle.rs   |   42 +
+ crates/axiathon-plugin-sdk/core/src/manifest.rs    |   96 ++
+ .../core/tests/health_error_tests.rs               |  207 ++++
+ .../core/tests/identity_tests.rs                   |  195 ++++
+ .../core/tests/lifecycle_tests.rs                  |  216 ++++
+ .../core/tests/manifest_tests.rs                   |  217 ++++
+ crates/axiathon-plugin-sdk/ingestion/Cargo.toml    |   22 +
+ crates/axiathon-plugin-sdk/ingestion/src/lib.rs    |  107 ++
+ .../ingestion/tests/ingestion_tests.rs             |  104 ++
+ crates/axiathon-plugin-sdk/network/Cargo.toml      |   15 +
+ crates/axiathon-plugin-sdk/network/src/lib.rs      |   34 +
+ .../network/tests/network_tests.rs                 |   43 +
+ crates/axiathon-plugin-sdk/notification/Cargo.toml |   19 +
+ crates/axiathon-plugin-sdk/notification/src/lib.rs |   37 +
+ .../notification/tests/notification_tests.rs       |   49 +
+ crates/axiathon-plugin-sdk/src/lib.rs              |   16 +
+ .../tests/facade_reexport_tests.rs                 |   40 +
+ 34 files changed, 3430 insertions(+), 87 deletions(-)
+
+(uncommitted after reviewer):
+ CLAUDE.md | 469 +++++++++++++++++++++++++++++++-------------------------------
+ 1 file changed, 236 insertions(+), 233 deletions(-)

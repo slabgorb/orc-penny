@@ -27,3 +27,4 @@ framework_version:
   semver: 12.7.0
   tag: baseline-pre-edge-hunter
   agent_hashes: {}
+batch: baseline

@@ -1,0 +1,53 @@
+scenario_id: dpgd-116
+theme: null
+run_id: 25
+timestamp: '2026-03-16T08:58:14.515106+00:00'
+model_requested: opus
+models_used:
+- claude-opus-4-6[1m]
+total_cost_usd: 0.714
+worktree_path: /tmp/pf-replay/dpgd-116-control-run-25
+framework_version:
+  commit: cf62c2427608
+  semver: 13.0.0-beta.1
+  tag: v13.0.0-beta.1-34-gcf62c2427
+  agent_hashes:
+    tea: 8744c8f8c9ac
+    dev: d8266a0e4ba4
+    reviewer: da4ec2599332
+phases:
+  tea:
+    token_usage: {}
+    model_usage: null
+    cost_usd: null
+    duration_s: 504.59
+    exit_code: 143
+    session_id: null
+  dev:
+    token_usage: {}
+    model_usage: null
+    cost_usd: null
+    duration_s: 10.29
+    exit_code: 143
+    session_id: null
+  reviewer:
+    token_usage:
+      input: 10
+      cache_creation: 61644
+      cache_read: 399042
+      output: 5165
+    model_usage:
+      claude-opus-4-6[1m]:
+        inputTokens: 10
+        outputTokens: 5165
+        cacheReadInputTokens: 399042
+        cacheCreationInputTokens: 61644
+        webSearchRequests: 0
+        costUSD: 0.713971
+        contextWindow: 1000000
+        maxOutputTokens: 32000
+    cost_usd: 0.714
+    duration_s: 168.1
+    exit_code: 0
+    session_id: 5c093b91-8711-43d7-a7e4-05c497843b5b
+batch: baseline

@@ -1,0 +1,36 @@
+ .claude/settings.json                             |  19 +
+ .pennyfarthing                                    |   1 +
+ .session/pipeline-session.md                      |   7 +
+ CLAUDE.md                                         | 683 ++++++++++++++++++++--
+ Cargo.lock                                        | 585 ++++++++++++++++++
+ Cargo.toml                                        |  11 +-
+ crates/axiathon-client/Cargo.toml                 |  13 +
+ crates/axiathon-client/src/cli.rs                 | 197 +++++++
+ crates/axiathon-client/src/client.rs              |  93 +++
+ crates/axiathon-client/src/commands/alerts.rs     |   1 +
+ crates/axiathon-client/src/commands/completion.rs |   1 +
+ crates/axiathon-client/src/commands/config.rs     |   1 +
+ crates/axiathon-client/src/commands/ingest.rs     |   1 +
+ crates/axiathon-client/src/commands/init.rs       |   1 +
+ crates/axiathon-client/src/commands/login.rs      |   1 +
+ crates/axiathon-client/src/commands/mod.rs        |  12 +
+ crates/axiathon-client/src/commands/query.rs      |   1 +
+ crates/axiathon-client/src/commands/rules.rs      |   1 +
+ crates/axiathon-client/src/commands/status.rs     |   1 +
+ crates/axiathon-client/src/commands/tenant.rs     |   1 +
+ crates/axiathon-client/src/config.rs              |  62 ++
+ crates/axiathon-client/src/error.rs               |  61 ++
+ crates/axiathon-client/src/lib.rs                 |   7 +
+ crates/axiathon-client/src/output.rs              |  25 +
+ crates/axiathon-client/tests/cli_structure.rs     | 375 ++++++++++++
+ crates/axiathon-client/tests/config_loading.rs    | 252 ++++++++
+ crates/axiathon-client/tests/error_exit_codes.rs  | 189 ++++++
+ crates/axiathon-client/tests/output_formatting.rs | 259 ++++++++
+ crates/axiathon-client/tests/shell_completion.rs  |  85 +++
+ crates/axiathon-client/tests/siem_client.rs       | 182 ++++++
+ crates/axiathon-client/tests/stub_handlers.rs     | 148 +++++
+ 31 files changed, 3240 insertions(+), 36 deletions(-)
+
+(uncommitted after reviewer):
+ CLAUDE.md | 469 +++++++++++++++++++++++++++++++-------------------------------
+ 1 file changed, 236 insertions(+), 233 deletions(-)

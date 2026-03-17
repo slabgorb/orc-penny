@@ -1,0 +1,49 @@
+# Batch metadata for pipeline replay benchmark runs.
+# Each batch represents a distinct version of the pipeline with specific changes.
+# Runs reference their batch via `batch:` field in pipeline.yaml.
+
+batches:
+  - id: baseline
+    label: "Baseline Pipeline"
+    description: >
+      Original TDD pipeline with thematic scanning only.
+      Reviewer uses 8 subagents (edge-hunter, silent-failure, test-analyzer,
+      comment-analyzer, type-design, security, simplifier + preflight).
+      No project rule awareness. No lang-review integration.
+      TEA writes AC-driven tests only.
+    date_range: "2026-02-20 to 2026-03-16"
+    scenarios: [dpgd-116, dpgd-114]
+    key_metrics:
+      dpgd_116_median: 40.5
+      dpgd_116_n: 20
+      dpgd_114_median: 38.5
+      dpgd_114_n: 5
+
+  - id: reviewer-overhaul
+    label: "Reviewer Pipeline Overhaul"
+    description: >
+      Five-layer improvement to the reviewer and TEA pipelines:
+      rule-checker subagent, PROJECT_RULES on subagents, tenant isolation
+      audit, TEA rule enforcement, lang-review checklist integration.
+    date_range: "2026-03-17 onwards"
+    scenarios: [dpgd-116, dpgd-114]
+    changes:
+      - "9th subagent: reviewer-rule-checker (Sonnet, exhaustive rule checking)"
+      - "PROJECT_RULES parameter on type-design, security, test-analyzer subagents"
+      - "Tenant isolation audit: dedicated checklist step for every trait method and struct"
+      - "TEA reads lang-review rules, writes rule-enforcement tests (Phase B)"
+      - "TEA self-check for vacuous assertions (Phase C)"
+      - "Lang-review checklist (gates/lang-review/rust.md) injected into benchmark harness"
+      - "Approval gate: rule-compliance + verified-rule-citation nested gates"
+      - "Never dismiss rule violations critical tag"
+      - "VERIFIED requires rule citation, not just line evidence"
+    files_changed:
+      - agents/reviewer.md
+      - agents/reviewer-rule-checker.md (NEW)
+      - agents/reviewer-security.md
+      - agents/reviewer-type-design.md
+      - agents/reviewer-test-analyzer.md
+      - agents/tea.md
+      - gates/approval.md
+      - gates/tests-fail.md
+      - src/pf/benchmark/pipeline_replay.py

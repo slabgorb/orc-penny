@@ -1,0 +1,150 @@
+scenario_id: dpgd-114
+theme: null
+run_id: 1
+model: null
+judge_model: claude-sonnet-4-6
+judge_version: v2
+judge_pass: 1
+total_caught: 4
+total_findings: 16
+weighted_caught: 18
+total_weight: 81
+score_pct: 22.2
+findings:
+- finding_id: C1
+  title: "EventEnricher::enrich() has no error return path \u2014 enrichment failures\
+    \ are invisible"
+  weight: 8
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: No mention of EventEnricher::enrich() error return path. Reviewer verified
+    error handling generally but did not flag this specific issue.
+- finding_id: I1
+  title: 'PluginKind enum missing #[non_exhaustive]'
+  weight: 3
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: 'PluginKind enum missing #[non_exhaustive] was never flagged by TEA, Dev,
+    or Reviewer. Reviewer verified PluginKind serde snake_case but not non_exhaustive.'
+- finding_id: I2
+  title: 'PluginHealth enum missing #[non_exhaustive]'
+  weight: 3
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: 'PluginHealth enum missing #[non_exhaustive] was never flagged by any
+    phase.'
+- finding_id: I3
+  title: "PluginId::new() lacks validation \u2014 violates validated constructor rule"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: Reviewer confirmed [TYPE] PluginId::new() does not validate empty namespace/name
+    at identity.rs:16, noting 'Creates invariant inconsistency with FromStr.' Listed
+    as MEDIUM finding in verdict table.
+- finding_id: I4
+  title: RawEvent.tenant_id is publicly mutable
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: Reviewer's devil's advocate section explicitly notes 'RawEvent.tenant_id
+    field is publicly mutable. An enricher receives &mut AxiathonEvent and could theoretically
+    swap out the tenant_id field, causing cross-tenant data leakage.' However, this
+    was dismissed as deferred to Story 2.16, not flagged as a confirmed finding.
+- finding_id: I5
+  title: ResponseAction::execute lacks tenant context parameter
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: ResponseAction::execute lacking tenant context parameter was never flagged
+    by any phase.
+- finding_id: I6
+  title: NotificationChannel::send lacks tenant context
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: NotificationChannel::send lacking tenant context was never flagged by
+    any phase.
+- finding_id: I7
+  title: PluginManifest has all-public fields
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: PluginManifest all-public fields with security-critical fields like permissions/signature
+    was never flagged. Reviewer noted fields are public but dismissed security concern.
+- finding_id: I8
+  title: Facade re-exports core shadowing std::core
+  weight: 3
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: Facade re-exporting axiathon_plugin_sdk_core as 'core' shadowing Rust's
+    core crate was never flagged by any phase.
+- finding_id: I9
+  title: PluginId::FromStr uses String as error type
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: PluginId::FromStr using String as error type instead of PluginError was
+    never flagged. Dev implemented FromStr but did not flag the error type violation.
+- finding_id: I10
+  title: PluginId Deserialize bypasses FromStr validation
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: 'PluginId Deserialize bypassing FromStr validation via #[derive(Deserialize)]
+    was never flagged by any phase.'
+- finding_id: I11
+  title: ConnectorPlugin::health() conflicts with base trait
+  weight: 3
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: ConnectorPlugin::health() conflicting with base trait AxiathonPlugin::health_check()
+    was never flagged by any phase.
+- finding_id: I12
+  title: PluginManifest deserialization accepts empty name/version
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: PluginManifest deserialization accepting empty name/version was never
+    tested or flagged. TEA wrote manifest tests but not for empty field validation
+    on deserialization.
+- finding_id: I13
+  title: RawEvent::as_str() returns owned String with misleading name
+  weight: 3
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer confirmed [LOW] RawEvent::as_str() allocates but uses as_* naming
+    convention, noting ''Rust convention: as_* = borrow, to_* = allocate. Should be
+    to_str() or to_string_lossy().'' Listed in verdict table and delivery findings.'
+- finding_id: I14
+  title: Test raw_event_as_str_lossy is vacuously true
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: Reviewer confirmed [TEST] raw_event_as_str_lossy weak assertion at ingestion/lib.rs:144,
+    noting 'Only checks !is_empty(). Should assert on replacement character.' Listed
+    in verdict table.
+- finding_id: I15
+  title: Missing test for validate_config with invalid schema (ManifestInvalid path)
+  weight: 3
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: Missing test for validate_config with invalid schema (ManifestInvalid
+    path) was not caught as a confirmed finding. Reviewer deferred 'manifest validate_config
+    missing edge cases' but this was about nested types/additionalProperties, not
+    the ManifestInvalid error path specifically.
