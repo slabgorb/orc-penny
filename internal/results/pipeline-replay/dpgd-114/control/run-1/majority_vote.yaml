@@ -1,0 +1,163 @@
+judge_method: majority_vote
+n_judges: 3
+majority_threshold: 2
+model: opus
+judge_version: v2
+framework_version:
+  commit: b9ab4945080a
+  semver: 13.0.0-beta.1
+  tag: v13.0.0-beta.1-40-gb9ab49450
+  agent_hashes:
+    tea: 8744c8f8c9ac
+    dev: d8266a0e4ba4
+    reviewer: 9493c06175a1
+total_caught: 4
+total_findings: 16
+weighted_caught: 18
+total_weight: 81
+score_pct: 22.2
+findings:
+- finding_id: C1
+  title: "EventEnricher::enrich() has no error return path \u2014 enrichment failures\
+    \ are invisible"
+  weight: 8
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I1
+  title: 'PluginKind enum missing #[non_exhaustive]'
+  weight: 3
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I2
+  title: 'PluginHealth enum missing #[non_exhaustive]'
+  weight: 3
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I3
+  title: "PluginId::new() lacks validation \u2014 violates validated constructor rule"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer confirmed [TYPE] finding: 'PluginId::new() does not validate\
+    \ empty namespace/name \u2014 Creates invariant inconsistency with FromStr. Fix:\
+    \ validate in new() or make fields private.' Listed as MEDIUM severity in the\
+    \ assessment table."
+  votes: 3/3
+- finding_id: I4
+  title: RawEvent.tenant_id is publicly mutable
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer noted in Devil''s Advocate section: ''The RawEvent.tenant_id
+    field is publicly mutable. An enricher receives &mut AxiathonEvent and could theoretically
+    swap out the tenant_id field, causing cross-tenant data leakage.'' Dismissed as
+    deferred to Story 2.16, but explicitly identified.'
+  votes: 2/3
+- finding_id: I5
+  title: ResponseAction::execute lacks tenant context parameter
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I6
+  title: NotificationChannel::send lacks tenant context
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I7
+  title: PluginManifest has all-public fields
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I8
+  title: Facade re-exports core shadowing std::core
+  weight: 3
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I9
+  title: PluginId::FromStr uses String as error type
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I10
+  title: PluginId Deserialize bypasses FromStr validation
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I11
+  title: ConnectorPlugin::health() conflicts with base trait
+  weight: 3
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I12
+  title: PluginManifest deserialization accepts empty name/version
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I13
+  title: RawEvent::as_str() returns owned String with misleading name
+  weight: 3
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer confirmed finding: ''RawEvent::as_str() allocates via to_string()
+    but uses as_* naming convention which implies borrowing per Rust API guidelines.
+    Rename to to_str() or to_string_lossy().'' Listed as LOW severity in the assessment
+    table.'
+  votes: 3/3
+- finding_id: I14
+  title: Test raw_event_as_str_lossy is vacuously true
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer confirmed [TEST] finding: 'raw_event_as_str_lossy weak assertion\
+    \ \u2014 Only checks !is_empty(). Should assert on replacement character.' Listed\
+    \ as LOW severity."
+  votes: 3/3
+- finding_id: I15
+  title: Missing test for validate_config with invalid schema (ManifestInvalid path)
+  weight: 3
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+individual_scores:
+- 22.2
+- 22.2
+- 16.0

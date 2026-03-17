@@ -17,7 +17,7 @@ Read session files and git state instead of asking the user where you are.
 
 <principle name="right-model">
 ## 4. Right Model for the Right Job
-Opus reasons, Haiku executes — never the reverse.
+Match model to task complexity: Haiku for mechanical execution, Sonnet for analytical subagents, Opus for reasoning. With 1M context, consistency matters more than token conservation.
 </principle>
 
 <principle name="file-coordination" guide="guides/session-artifacts.md, guides/tandem-protocol.md">

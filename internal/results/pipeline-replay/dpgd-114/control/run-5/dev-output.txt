@@ -1,0 +1,26 @@
+## Summary
+
+**Story 23-1: Unified Plugin SDK Core — GREEN phase complete.**
+
+### Files Changed (3 source files, 1 test file, 2 Cargo.toml)
+
+| File | Change |
+|------|--------|
+| `Cargo.toml` | Added `async-trait` and `jsonschema` to workspace deps; added 5 SDK sub-crate members |
+| `core/Cargo.toml` | Added `jsonschema` dependency |
+| `core/src/identity.rs` | Implemented `PluginId::FromStr` (split on first `:`), `PluginId::Display`, `PluginKind::Display` (snake_case), added `#[serde(rename_all = "snake_case")]` |
+| `core/src/manifest.rs` | Implemented `validate_config()` using `jsonschema::validate()` |
+| `action/tests/traits_tests.rs` | Fixed clippy `bool_assert_comparison` warning |
+
+### Test Results
+
+- **93/93 SDK tests passing** (was 75 pass / 18 fail)
+- **94/94 axiathon-core tests passing** (unchanged)
+- **187 total tests across workspace** — all GREEN
+- **`cargo clippy --workspace -- -D warnings`** — zero warnings
+
+### Pre-existing Issues Addressed
+
+- **Silent failures**: Documented as deviations (EventEnricher::enrich return type, RawEvent::as_str lossy behavior) — both match the AC spec and spike exactly
+- **Type design**: PluginId fields kept public to match existing tests — documented as deviation with rationale
+- **Test quality**: Tautological tests noted but not modified (TEA-written tests are the contract; Dev implements to match)

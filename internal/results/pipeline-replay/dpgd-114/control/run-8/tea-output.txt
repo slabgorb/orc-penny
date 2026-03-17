@@ -1,0 +1,75 @@
+## TEA Assessment
+
+**Tests Required:** Yes
+**Story:** 23-1 Unified Plugin SDK Core (DPGD-114)
+
+### Test Files
+
+| File | Tests | Status |
+|------|-------|--------|
+| `crates/axiathon-plugin-sdk/core/tests/sdk_core_tests.rs` | 65 | 37 pass, 28 fail |
+| `crates/axiathon-plugin-sdk/ingestion/tests/ingestion_tests.rs` | 12 | 12 pass |
+| `crates/axiathon-plugin-sdk/network/tests/network_tests.rs` | 5 | 5 pass |
+| `crates/axiathon-plugin-sdk/notification/tests/notification_tests.rs` | 5 | 5 pass |
+| `crates/axiathon-plugin-sdk/action/tests/action_tests.rs` | 6 | 6 pass |
+| `crates/axiathon-plugin-sdk/tests/facade_tests.rs` | 6 | 6 pass |
+| **Total new SDK tests** | **93** (sic: 99) | **28 FAIL (RED)** |
+
+### AC Coverage
+
+| AC | Description | Test Count |
+|----|-------------|-----------|
+| AC-1 | SDK structure, 6 crates | 6 facade tests |
+| AC-2 | AxiathonPlugin trait | 6 tests (object safety, Send+Sync, lifecycle) |
+| AC-3 | PluginManifest 13 fields | 10 tests (fields, round-trip, validate_config) |
+| AC-4 | PluginId namespace:name | 18 tests (FromStr, Display, getters, serde) |
+| AC-5 | PluginKind 6 variants | 10 tests (Display, serde, Copy) |
+| AC-6 | PluginHealth | 5 tests (variants, serde, eq) |
+| AC-7 | PluginError 8 variants | 11 tests (Display, std::error, Send+Sync) |
+| AC-8 | PluginConfig type alias | 1 test |
+| AC-9 | Ingestion traits | 12 tests (object safety, supertrait, types) |
+| AC-10 | Network trait | 5 tests (object safety, supertrait, ProtocolInfo) |
+| AC-11 | Notification trait | 5 tests (object safety, supertrait, Notification) |
+| AC-12 | Action trait | 6 tests (object safety, supertrait, types) |
+| AC-13 | All traits object-safe | 7 compile tests across all crates |
+| AC-14 | Zero warnings | Verified during cargo check |
+
+### Rule Coverage
+
+| Rule | Test(s) | Status |
+|------|---------|--------|
+| #2 non_exhaustive | Noted in stub comments (PluginKind, PluginError) | compile-time only |
+| #5 validated constructors | `plugin_id_from_str_rejects_*` (5 tests) | failing |
+| #8 Deserialize bypass | `plugin_id_deserialize_rejects_empty_*` (2 tests) | failing |
+| #9 public fields | Tests use getters only (namespace(), name()) | failing (todo!()) |
+| #10 tenant context | Supertrait checks on all sub-crate traits | passing |
+| #13 constructor/Deserialize consistency | `plugin_id_from_str_and_deserialize_agree_on_rejection` | failing |
+
+**Rules checked:** 6 of 15 applicable lang-review rules have test coverage
+**Self-check:** 0 vacuous tests found (all assertions are meaningful)
+
+### 28 Failing Tests (RED state) — Dev Implementation Work
+
+1. **PluginId getters** (4 tests): Implement `namespace()`, `name()`, `full_id()` returning private fields
+2. **PluginId Display** (2 tests): Implement `fmt` as `namespace:name`
+3. **PluginId FromStr validation** (6 tests): Reject empty namespace, empty name, missing colon
+4. **PluginId Deserialize validation** (3 tests): Add `#[serde(try_from)]` to reject invalid input
+5. **PluginKind Display** (6 tests): Implement lowercase snake_case formatting
+6. **PluginManifest validate_config** (5 tests): Implement JSON Schema validation using `jsonschema` crate
+
+### Pre-existing Test Fixes
+
+Fixed 10 issues in `axiathon-core/tests/`:
+- Removed 6 tautological/vacuous/duplicate tests
+- Strengthened 4 assertions (OR→AND, variant checks, all-field checks, strict ordering)
+
+### Design Deviations
+
+### TEA (test design)
+- No deviations from spec.
+
+### Delivery Findings
+
+- No upstream findings during test design.
+
+**Handoff:** To Dev for implementation (GREEN phase)

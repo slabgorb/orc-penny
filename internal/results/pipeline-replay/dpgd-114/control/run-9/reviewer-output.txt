@@ -1,0 +1,39 @@
+## Reviewer Assessment — Story 23-1: Unified Plugin SDK Core
+
+### Findings Summary
+
+**1 HIGH, 5 MEDIUM, 3 LOW findings. No CRITICAL.**
+
+| # | Severity | Finding | Location |
+|---|----------|---------|----------|
+| 1 | **[HIGH]** | `PluginHealth` missing `#[non_exhaustive]` | `core/src/health.rs:6` |
+| 2 | [MEDIUM] | Builder missing setter methods for `ocsf_classes`, `ocsf_version`, `signature` — 3 of 13 fields unreachable via builder | `core/src/manifest.rs:158-172` |
+| 3 | [MEDIUM] | `PluginId::new()` accepts colons in namespace, breaking Display/FromStr round-trip | `core/src/identity.rs:31` |
+| 4 | [MEDIUM] | `RawEvent.metadata` permanently empty — no setter or builder method | `ingestion/src/lib.rs:34` |
+| 5 | [MEDIUM] | Unused prod dependencies: `chrono` and `axiathon-core` in core's `[dependencies]`, `axiathon-plugin-sdk-core` in notification/action/network | `core/Cargo.toml:10-12`, `notification/Cargo.toml:10`, `action/Cargo.toml:10`, `network/Cargo.toml:10` |
+| 6 | [MEDIUM] | `PluginManifestBuilder::build()` uses `expect()` on missing `id`/`plugin_kind` — panics in prod code | `core/src/manifest.rs:228,232` |
+| 7 | [LOW] | Test comment says "14 fields", actual is 13 | `core/tests/plugin_manifest_tests.rs:3` |
+| 8 | [LOW] | Lifecycle docstring implies supertrait relationship that doesn't exist | `core/src/lifecycle.rs:13-14` |
+| 9 | [LOW] | 6 zero-assertion variant-existence tests redundant with serde/display tests | `core/tests/plugin_kind_tests.rs:12-38` |
+
+### What's Good
+
+- **PluginId has exemplary validated Deserialize** — custom `Deserialize` impl calls `new()` for CWE-20 mitigation. This is the pattern TenantId should also follow.
+- **Private fields with getters everywhere that matters** — PluginId, PluginManifest, RawEvent all have proper encapsulation. Security-critical `tenant_id` on RawEvent is private.
+- **`#[non_exhaustive]` on PluginKind and PluginError** — correct.
+- **`#![forbid(unsafe_code)]` on all 6 crates** — confirmed present.
+- **thiserror with SECURITY comment on PluginError** — correct pattern.
+- **jsonschema for config validation** — proper library choice per SOUL.md #10.
+- **PluginId::FromStr uses `type Err = PluginError`** — domain error, not String, per SOUL.md #5.
+- **Pre-existing test quality fixes are all correct improvements.**
+
+### Why HIGH Finding #1 Blocks
+
+`PluginHealth` at `health.rs:6` is a public enum without `#[non_exhaustive]`. The project rule (rust.md): *"`#[non_exhaustive]` on enums that will grow — forces callers to handle future variants."* Plugin health WILL grow: `Starting`, `Stopping`, `Reloading`, `Unknown` are all plausible future states. Once external crates write exhaustive matches against the current 3 variants, adding a 4th is a breaking change. This is exactly the scenario `#[non_exhaustive]` exists to prevent. Fix is a single line addition.
+
+### Deferred Items (Non-Blocking)
+
+- **Tenant context in 4 trait signatures** (ConnectorPlugin::start, EventEnricher::enrich, NotificationChannel::send, ResponseAction::execute) — per story scope these are "stubs — detailed in 23.9-23.11." Must be addressed before traits handle real tenant data.
+- **`expect()` in builder** — currently only used in tests. Should become `Result`-returning before builder is used to parse untrusted manifests (Story 23.6 packaging).
+
+VERDICT: REJECT

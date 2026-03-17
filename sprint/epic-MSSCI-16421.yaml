@@ -301,3 +301,10 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: trivial
+  - id: 148-28
+    title: Peloton teammates must be pre-primed — inject full agent prompt into TeamCreate, not instructional
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial

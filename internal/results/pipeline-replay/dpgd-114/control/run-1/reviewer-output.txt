@@ -1,0 +1,116 @@
+All 6 crates present. Now I have enough information to produce my assessment.
+
+---
+
+## Subagent Results
+
+| # | Specialist | Received | Status | Findings | Decision |
+|---|-----------|----------|--------|----------|----------|
+| 1 | reviewer-preflight | Yes | clean | none | N/A |
+| 2 | reviewer-edge-hunter | Yes | clean | none | N/A |
+| 3 | reviewer-silent-failure-hunter | Yes | clean | none | N/A |
+| 4 | reviewer-test-analyzer | Yes | findings | 10 | confirmed 3, dismissed 5, deferred 2 |
+| 5 | reviewer-comment-analyzer | Yes | findings | 2 | confirmed 1, dismissed 1 |
+| 6 | reviewer-type-design | Yes | findings | 4 | confirmed 1, dismissed 2, deferred 1 |
+| 7 | reviewer-security | Yes | clean | none | N/A |
+| 8 | reviewer-simplifier | Yes | clean | none | N/A |
+
+**All received:** Yes (8 returned, 3 with findings)
+**Total findings:** 5 confirmed, 8 dismissed (with rationale), 3 deferred
+
+### Subagent Finding Decisions
+
+**[TEST] manifest_has_14_fields zero-assertion** — Confirmed. `manifest.rs:128` uses only `let _ =` with no assertions. This is a compile-only check masquerading as a unit test. However, it is LOW severity since `manifest_json_round_trip` at line 152 thoroughly asserts all field values.
+
+**[TEST] manifest validate_config missing edge cases** — Deferred. Missing tests for nested invalid types, additionalProperties, null in required field. Non-blocking for MVP; should be added in Story 23.4 when config_schema becomes user-facing.
+
+**[TEST] raw_event_as_str_lossy weak assertion** — Confirmed. `ingestion/lib.rs:144` only checks `!s.is_empty()` — this would pass even if lossy conversion produced garbage. Should assert on `\u{FFFD}` replacement character.
+
+**[TEST] lifecycle tests couple to mock** — Dismissed. Object-safety compile tests verify the trait contract; lifecycle tests verify the _pattern_ implementations should follow. This is standard trait-level TDD.
+
+**[TEST] plugin_id_from_str_round_trip missing intermediate check** — Dismissed. The intermediate format is already verified by `plugin_id_display_format` at line 152 and `plugin_id_full_id_format` at line 146.
+
+**[TEST] object-safety tests are compile-only** — Dismissed. This is the standard Rust pattern for verifying object safety. Calling the function would add nothing — it's the signature type check that matters.
+
+**[TEST] action_validate_params couples to mock** — Dismissed. The test verifies the trait's Result<(), PluginError> return type works correctly through a concrete implementation. That's what trait tests do.
+
+**[TEST] lifecycle double-init/shutdown edge cases** — Deferred. AC-2 doesn't specify idempotency behavior. Should be addressed in Story 23.2 (Plugin Runtime) which manages lifecycle state machines.
+
+**[TEST] manifest optional fields present round-trip** — Dismissed. `manifest_json_round_trip` at line 152 already tests with ALL optional fields present (config_schema, ocsf_classes, signature all set in `sample_manifest()`).
+
+**[TEST] tautological manifest_new_creates_minimal** — Dismissed. This test verifies the constructor's documented defaults per AC-3. It catches regressions if constructor defaults change. Not tautological.
+
+**[DOC] CLAUDE.md Project Notes say axiathon-server** — Confirmed. CLAUDE.md still says "target crate is axiathon-server" but this story targets axiathon-plugin-sdk. LOW severity — this is inherited context, not code.
+
+**[DOC] AC-3 says 14 fields but struct has 13** — Dismissed. The implementation artifact lists 13 distinct fields. The test documents this discrepancy. The manifest struct has all fields listed in AC-3. The "14" appears to be a counting error in the story spec.
+
+**[TYPE] PluginId::new() allows empty namespace/name** — Confirmed. `identity.rs:16` — `new()` accepts empty strings while `from_str()` rejects them. This creates an invariant hole: `PluginId::new("", "x")` compiles but would produce display format `:x` which is invalid per the spec.
+
+**[TYPE] config_schema not pre-validated as JSON Schema** — Deferred. Validated at validate_config() call time. Acceptable for MVP; could move to manifest construction in Story 23.2.
+
+**[TYPE] ValidatedPluginConfig type-level enforcement** — Dismissed. This is a design improvement for Story 23.2 (Plugin Runtime) which manages the initialize flow. The SDK trait definition is correct; enforcement belongs in the runtime.
+
+**[TYPE] AxiathonEvent placeholder** — Dismissed. Explicitly documented as placeholder for Story 1.21/2.16. Out of scope for 23-1.
+
+---
+
+## Review Checklist
+
+- [x] **Subagent completion gate passed:** All 8 rows filled with `Received: Yes`.
+- [x] **Find at least 5 observations** — See findings below.
+- [x] **Trace data flow:** `PluginConfig` (JSON value) → `PluginManifest::validate_config()` → `jsonschema::validator_for(schema)` → `compiled.validate(config)` → `map_err(PluginError::ConfigInvalid)`. Safe — no injection vector; jsonschema handles untrusted JSON safely.
+- [x] **Wiring:** All 6 SDK crates registered as workspace members. Facade re-exports verified. Sub-crate path dependencies correct. `crates/*` glob catches facade; explicit members catch sub-crates.
+- [x] **Identify pattern:** Supertrait composition pattern — all domain traits require `AxiathonPlugin` — at `ingestion/lib.rs:79`, `network/lib.rs:23`, `notification/lib.rs:30`, `action/lib.rs:37`. Good pattern — enforces lifecycle consistency.
+- [x] **Verify error handling:** All trait methods return `Result<T, PluginError>`. `validate_config` maps both schema compilation errors (`ManifestInvalid`) and validation errors (`ConfigInvalid`) distinctly. No unwrap in production code.
+- [x] **Security analysis:** `#![forbid(unsafe_code)]` on all crates. PluginId fields are pub but PluginId is a value type, not security-critical. `RawEvent.tenant_id` is pub but TenantId is a validated newtype from axiathon-core. SECURITY comment on PluginError Display.
+- [x] **Hard questions:** Null config to validate_config? → `None` schema returns Ok. Empty schema `{}`? → Valid JSON Schema, accepts anything. Multiple colons in PluginId? → `split_once(':')` takes first colon, rest goes to name — `"a:b:c"` produces namespace="a", name="b:c". This is correct behavior for reverse-domain namespaces.
+- [x] **Incorporate subagent findings:** [TEST] zero-assertion manifest test, [TEST] weak lossy assertion, [TYPE] PluginId invariant hole — all tagged.
+- [x] **Challenge VERIFIEDs against subagent findings:** No subagent contradicted the verified items.
+
+### Devil's Advocate
+
+Let me argue this code is broken.
+
+**The PluginId invariant hole is real and exploitable by plugin authors.** `PluginId::new("", "")` creates a plugin ID that displays as `:` — the exact format `FromStr` rejects. If the plugin runtime (Story 23.2) uses PluginId as a HashMap key, `PluginId::new("", "test")` and `PluginId::new("builtin", "test")` would be different keys despite both being "valid" in different contexts. A malicious or confused plugin author could register a plugin with namespace="" and name matching a builtin plugin's name, creating a shadow registration that bypasses namespace-based policy checks. The `builtin()` and `community()` helpers are safe, but `new()` is public and unchecked.
+
+However — this is MEDIUM severity, not HIGH. The plugin runtime (Story 23.2) will manage registration and can validate IDs at the registry boundary. The SDK is an internal API; plugin authors use `builtin()`/`community()` helpers or parse from string. Direct `new()` calls happen in test code and internal wiring. The fix is simple (validate in `new()` or make fields private), but it doesn't block this PR.
+
+**The `RawEvent.tenant_id` field is publicly mutable.** An enricher receives `&mut AxiathonEvent` and could theoretically swap out the `tenant_id` field, causing cross-tenant data leakage. But the AxiathonEvent type is a placeholder (Story 1.21), and enrichers work on events that have already been assigned to a tenant by the connector → parser pipeline. The real fix is private fields with getters on AxiathonEvent when it becomes the proto-backed type in Story 2.16.
+
+**The `as_str()` method on RawEvent returns an owned String, not a borrowed &str.** The naming convention per Rust API guidelines is that `as_*` methods should be cheap borrowing operations, while `to_*` methods indicate allocation. This allocates via `to_string()`. It should be `to_str()` or `to_string_lossy()`.
+
+**What if config_schema contains a `$ref` to an external URL?** The jsonschema crate's default configuration may fetch external schemas, which could be a SSRF vector if a plugin manifest is loaded from an untrusted source. However, the SDK doesn't load manifests from untrusted sources — manifests are compiled into plugin binaries. The risk is deferred to Story 23.6 (Plugin Packaging) when manifests come from .axpkg files.
+
+None of these issues are Critical or High severity blockers.
+
+---
+
+## Reviewer Assessment
+
+**Verdict:** APPROVED
+
+| Severity | Issue | Location | Note |
+|----------|-------|----------|------|
+| [MEDIUM] | `PluginId::new()` does not validate empty namespace/name | `identity.rs:16` | Creates invariant inconsistency with `FromStr`. Fix: validate in `new()` or make fields private. Non-blocking — runtime will validate at registration. |
+| [LOW] | `RawEvent::as_str()` allocates but uses `as_*` naming | `ingestion/lib.rs:52` | Rust convention: `as_*` = borrow, `to_*` = allocate. Should be `to_str()` or `to_string_lossy()`. Non-blocking. |
+| [LOW] | Test `manifest_has_14_fields` has zero assertions | `manifest.rs:128` | [TEST] Compile-only check. Covered by `manifest_json_round_trip`. Non-blocking. |
+| [LOW] | Test `raw_event_as_str_lossy` weak assertion | `ingestion/lib.rs:144` | [TEST] Only checks `!is_empty()`. Should assert on replacement character. Non-blocking. |
+| [VERIFIED] | `PluginError` uses thiserror with 8 variants — evidence: `error.rs:17-41` uses `#[derive(Debug, Error)]` with `#[error("...{0}")]` on every variant |
+| [VERIFIED] | All 7 traits object-safe — evidence: compile tests at `lifecycle.rs:170`, `ingestion/lib.rs:197-208`, `network/lib.rs:76`, `notification/lib.rs:86`, `action/lib.rs:95` |
+| [VERIFIED] | `validate_config` correctly maps errors — evidence: `manifest.rs:85` maps schema errors to `ManifestInvalid`, `manifest.rs:89` maps validation errors to `ConfigInvalid` |
+| [VERIFIED] | All crates use `#![forbid(unsafe_code)]` — evidence: `core/lib.rs:2`, `ingestion/lib.rs:2`, `network/lib.rs:2`, `notification/lib.rs:2`, `action/lib.rs:2`, `sdk/lib.rs:4` |
+| [VERIFIED] | `PluginKind` serde uses snake_case — evidence: `identity.rs:63` `#[serde(rename_all = "snake_case")]` |
+| [VERIFIED] | Workspace structure: 6 crates registered — evidence: `Cargo.toml:2-9` explicit members + `crates/*` glob |
+
+**Data flow traced:** `PluginConfig` → `validate_config()` → `jsonschema::validator_for()` → `compiled.validate()` → `map_err(ConfigInvalid)` (safe, no injection)
+**Pattern observed:** Supertrait composition at `ingestion/lib.rs:79,96,110`, `network/lib.rs:23`, `notification/lib.rs:30`, `action/lib.rs:37` — all domain traits require AxiathonPlugin
+**Error handling:** All trait methods return `Result<T, PluginError>`. No `unwrap()` in production paths. `validate_config` distinguishes schema errors from validation errors.
+
+**Handoff:** To SM for finish-story
+
+## Delivery Findings
+
+- **Improvement** (non-blocking): `PluginId::new()` should validate that namespace and name are non-empty, matching the invariant enforced by `FromStr`. Affects `crates/axiathon-plugin-sdk/core/src/identity.rs` (add validation in constructor). *Found by Reviewer during code review.*
+- **Improvement** (non-blocking): `RawEvent::as_str()` allocates via `to_string()` but uses `as_*` naming convention which implies borrowing per Rust API guidelines. Rename to `to_str()` or `to_string_lossy()`. Affects `crates/axiathon-plugin-sdk/ingestion/src/lib.rs` (rename method). *Found by Reviewer during code review.*
+
+VERDICT: APPROVE

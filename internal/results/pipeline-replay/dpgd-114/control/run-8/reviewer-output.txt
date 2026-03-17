@@ -1,0 +1,168 @@
+Now I have the complete picture. Let me write the review.
+
+## Subagent Results
+
+| # | Specialist | Received | Status | Findings | Decision |
+|---|-----------|----------|--------|----------|----------|
+| 1 | reviewer-preflight | Yes | clean | Tests pass, clippy clean | N/A |
+| 2 | reviewer-edge-hunter | Yes | findings | 6 | confirmed 3, dismissed 2, deferred 1 |
+| 3 | reviewer-silent-failure-hunter | Yes | findings | 2 | confirmed 2 |
+| 4 | reviewer-test-analyzer | Yes | findings | 9 | confirmed 3, dismissed 4, deferred 2 |
+| 5 | reviewer-comment-analyzer | Yes | findings | 5 | confirmed 4, dismissed 1 |
+| 6 | reviewer-type-design | Yes | findings | 5 | confirmed 3, dismissed 1, deferred 1 |
+| 7 | reviewer-security | Yes | findings | 8 | confirmed 3, dismissed 2, deferred 3 |
+| 8 | reviewer-simplifier | Yes | findings | 6 | confirmed 2, dismissed 2, deferred 2 |
+| 9 | reviewer-rule-checker | No | timeout | N/A | Domain covered manually below |
+
+**All received:** Yes (8 returned, 1 timed out — rule-checker domain covered by manual rule-by-rule enumeration below)
+
+**Total findings:** 11 confirmed, 8 dismissed (with rationale), 6 deferred
+
+### Subagent Finding Decisions
+
+**Confirmed:**
+- [EDGE] `PluginId::new()` bypasses validation — confirmed, matches Rule #5
+- [EDGE] `EventEnricher` has unnecessary `#[async_trait]` — confirmed, all methods are sync
+- [EDGE] `ConnectorPlugin::connect()` docstring says "returning them as a stream" but returns `()` — confirmed, lying docstring
+- [SILENT] `PluginId::new()` pub but skips validation — confirmed, Rule #5
+- [SILENT] `RawEvent::as_str()` lossy conversion — confirmed as medium
+- [DOC] `manifest.rs:24` says "13 fields (AC-3)" vs AC-3 says "14 fields" — confirmed, comment/spec mismatch
+- [DOC] `RawEvent::as_str()` returns owned String, violates `as_*` convention — confirmed
+- [DOC] `PluginId::new()` doc says "internal use" but is `pub` — confirmed
+- [TYPE] Missing `[lints] workspace = true` on all 6 SDK crates — confirmed (replaces the `#![forbid(unsafe_code)]` finding — the root cause is the missing lint inheritance)
+- [SEC] `PluginManifest.signature` and `permissions` are pub — confirmed medium
+- [SIMPLE] `full_id()` duplicates `Display::fmt` — confirmed
+
+**Dismissed:**
+- [EDGE] FromStr accepts multiple colons (e.g. `a:b:c`) — dismissed: this is intentional, `split_once` takes first colon, name `b:c` is valid for plugins like `builtin:syslog-tcp:v2`. No test or AC rejects this.
+- [EDGE] `validate_config` doesn't pre-validate the JSON Schema — dismissed: `jsonschema::validate` returns `Err` for malformed schemas which maps to `PluginError::ConfigInvalid`. The error path is handled.
+- [TEST] `plugin_health_healthy_variant` is tautological — dismissed: with `#[non_exhaustive]`, this test verifies the variant can be constructed and compared from an external crate. Low value but not vacuous post-non_exhaustive.
+- [TEST] 3 duplicate manifest tests (`has_ocsf_fields`, `has_signature_field`, `config_schema_is_optional`) — dismissed: these serve as per-AC documentation tests (AC-3 field-by-field). Redundant but intentional. Low-cost.
+- [SEC] `ResponseAction::execute()` missing tenant context — dismissed for this story: AC-12 says "stubs — detailed in 23.9-23.11". Tenant context on trait methods is out of scope per story boundaries. Dev correctly logged this as a delivery finding.
+- [SEC] `NotificationChannel::send()` missing tenant context — same rationale as above
+- [TYPE] Missing `pub type Result<T>` — dismissed: the rule says "per crate" for the main `AxiathonError`, not necessarily for every sub-crate. Acceptable to defer.
+- [SIMPLE] `PluginManifest::new()` is a test helper in production code — dismissed: AC-3 explicitly requires a convenience constructor and the spike has the same pattern.
+
+**Deferred (non-blocking for this story):**
+- [SEC] `EventEnricher::enrich()` missing tenant context — deferred: out of scope per story boundaries, logged
+- [SEC] `ConnectorPlugin::collect()` missing tenant context — deferred: same
+- [SEC] `SignatureMetadata` fields pub — deferred: signature verification is Story 23.6 scope
+- [TYPE] `Notification.severity` is stringly-typed — deferred: sub-crate traits are stubs per AC-9-12
+- [SIMPLE] `PluginIdRaw` intermediate struct — deferred: alternative approaches have trade-offs, current impl is correct
+- [TEST] `plugin_error_has_eight_variants` count is hardcoded — deferred: low impact
+
+---
+
+### Rule Compliance
+
+Checking every applicable rule against every type/function/field in the diff:
+
+**Rule #1 (silent-errors):** No `.ok()`, `.unwrap_or_default()`, or `.expect()` on user-controlled paths in production code. `validate_config` propagates errors via `?` and `.map_err()`. **PASS.**
+
+**Rule #2 (#[non_exhaustive]):**
+- `PluginKind` at `identity.rs:129` — **COMPLIANT**, has `#[non_exhaustive]`
+- `PluginHealth` at `health.rs:7` — **COMPLIANT**, has `#[non_exhaustive]`
+- `PluginError` at `error.rs:17` — **COMPLIANT**, has `#[non_exhaustive]`
+
+**Rule #5 (validated constructors):**
+- `PluginId::from_str()` at `identity.rs:97` — **COMPLIANT**, validates non-empty
+- `PluginId::new()` at `identity.rs:37` — **VIOLATION**: pub, accepts empty namespace/name, not named `new_unchecked()`. Project convention: `new()` validates, `new_unchecked()` for trusted internals.
+
+**Rule #8 (Deserialize bypass):**
+- `PluginId` at `identity.rs:112-124` — **COMPLIANT**, custom `Deserialize` via `PluginIdRaw` validates
+
+**Rule #9 (public fields on security types):**
+- `PluginId` fields — **COMPLIANT**, private with getters
+- `PluginManifest.signature` at `manifest.rs:53` — **VIOLATION**: pub `Option<SignatureMetadata>`, security-critical
+- `PluginManifest.permissions` at `manifest.rs:44` — **VIOLATION**: pub `Vec<String>`, security-critical
+- `SignatureMetadata` all fields at `manifest.rs:13-20` — **VIOLATION**: all pub, cryptographic data
+
+**Rule #10 (tenant context in trait signatures):**
+- Out of scope for this story per AC-9-12 "stubs — detailed in 23.9-23.11". Dev logged as delivery finding. **DEFERRED.**
+
+**Rule #11 (workspace dependency compliance):**
+- `jsonschema = "0.28"` at `core/Cargo.toml:10` — **VIOLATION**: inline version pin, not in `[workspace.dependencies]`
+
+**Rule #12 (dev-only dependencies):**
+- All crate Cargo.toml files — **COMPLIANT**, tokio is in `[dev-dependencies]`
+
+**Rule #13 (constructor/Deserialize consistency):**
+- `PluginId::new()` accepts empty, `FromStr` rejects empty, `Deserialize` rejects empty — **INCONSISTENCY**: `new()` is the outlier. However, `new()` is documented as unchecked. This is the same pattern as `TenantId::new_unchecked()` but without the naming convention.
+
+**Missing `[lints] workspace = true`:** All 6 SDK crates lack this. The workspace defines `unsafe_code = "forbid"` in `[workspace.lints.rust]`, but without `[lints] workspace = true` in each crate's Cargo.toml, none of the SDK crates inherit the workspace lint configuration. This means `unsafe_code` is NOT forbidden in the SDK crates.
+
+---
+
+### Data Flow Trace
+
+**User input → PluginId:**
+- JSON `{"namespace":"x","name":"y"}` → custom `Deserialize` → `PluginIdRaw` → `validate()` → rejects empty → safe
+- String `"x:y"` → `FromStr` → `split_once` → `validate()` → rejects empty → safe
+- `PluginId::new("", "")` → no validation → creates invalid ID → **gap** (pub, undocumented escape hatch)
+
+**User input → validate_config:**
+- `config: &serde_json::Value` → `jsonschema::validate(schema, config)` → `map_err` → `PluginError::ConfigInvalid` → safe, error propagated
+
+---
+
+### Devil's Advocate
+
+What if a malicious plugin author submits a manifest with `PluginId::new("", "")` directly? The empty namespace and name would create a plugin that collides with the `":"` identity, potentially hijacking another plugin's registration slot. The `builtin("")` call is equally dangerous — it creates `builtin:` which could match any builtin plugin in a prefix-based lookup. Since `PluginId::new()` is `pub`, any code depending on `axiathon-plugin-sdk-core` can create these invalid IDs.
+
+What if a plugin mutates its own manifest after registration? Since `PluginManifest.permissions` is `pub`, a plugin that receives `&mut` access to its manifest could add `"admin:all"` to its permissions vec, escalating privileges. Similarly, `manifest.signature = None` could clear the signature after verification, defeating the verification chain. This is only exploitable if the runtime passes `&mut PluginManifest` to plugins, which the current trait design doesn't — `manifest()` returns `&PluginManifest`. But any code holding the manifest by value (e.g., during registration) could mutate it.
+
+What if `jsonschema::validate` is called with a crafted recursive JSON Schema? The `jsonschema` crate handles this via internal depth limits, but the error is mapped to `PluginError::ConfigInvalid` which is appropriate. The risk is denial-of-service, but this is bounded by the crate's implementation.
+
+The lack of `#![forbid(unsafe_code)]` inheritance means a future contributor could add `unsafe` blocks to any SDK crate without compiler rejection. For a plugin SDK that will eventually load WASM code and manage sandboxing, this is a meaningful gap.
+
+---
+
+## Reviewer Assessment
+
+### Findings
+
+| Severity | Issue | Location | Fix Required |
+|----------|-------|----------|--------------|
+| [HIGH] | Missing `[lints] workspace = true` on all 6 SDK crates — `unsafe_code = "forbid"` not enforced | All 6 `Cargo.toml` files | Add `[lints]\nworkspace = true` to each SDK crate's Cargo.toml |
+| [HIGH] | `PluginId::new()` is `pub` and bypasses validation, violating project's validated-constructor convention (Rule #5) | `identity.rs:37` | Rename to `new_unchecked()` or restrict to `pub(crate)` |
+| [MEDIUM] | `jsonschema = "0.28"` is an inline version pin, not in `[workspace.dependencies]` (Rule #11) | `core/Cargo.toml:10` | Add to root `[workspace.dependencies]`, use `{ workspace = true }` |
+| [MEDIUM] | `PluginManifest.signature` and `permissions` are `pub` — security-critical fields mutable post-construction (Rule #9) | `manifest.rs:44,53` | Acceptable for MVP if logged as delivery finding for hardening |
+| [MEDIUM] | `EventEnricher` has `#[async_trait]` but zero async methods — unnecessary boxing overhead | `ingestion/src/lib.rs:67` | Remove `#[async_trait]` from `EventEnricher` |
+| [MEDIUM] | `RawEvent::as_str()` returns owned `String`, violates Rust `as_*` naming convention | `ingestion/src/lib.rs:30` | Rename to `to_string_lossy()` |
+| [MEDIUM] | `ConnectorPlugin::connect()` docstring says "returning them as a stream" but returns `Result<(), PluginError>` | `ingestion/src/lib.rs:48` | Fix docstring |
+| [MEDIUM] | `full_id()` duplicates `Display::fmt` — two methods producing identical output | `identity.rs:55` | Implement one in terms of the other |
+| [LOW] | Comment says "13 fields (AC-3)" but AC-3 says "14 fields" — count mismatch | `manifest.rs:24` | Reconcile comment with spec |
+| [LOW] | `PluginId::new()` doc says "internal use" but method is `pub` — doc/visibility mismatch | `identity.rs:35` | Update doc if keeping pub, or restrict visibility |
+| [VERIFIED] | `PluginId` fields are private with getters — compliant with Rule #9 | `identity.rs:29-67` | Checked against Rule #9: namespace/name are private, namespace()/name() return `&str` |
+| [VERIFIED] | Custom `Deserialize` for `PluginId` prevents CWE-20 bypass — compliant with Rule #8 | `identity.rs:112-124` | `PluginIdRaw` intermediate validates via `Self::validate()`, matching FromStr behavior |
+| [VERIFIED] | `#[non_exhaustive]` on all 3 public enums — compliant with Rule #2 | `identity.rs:129`, `health.rs:7`, `error.rs:17` | All checked |
+| [VERIFIED] | `PluginError` uses thiserror with 8 structured variants — compliant with Rule #7 | `error.rs:16-49` | Display messages contain the error detail, SECURITY comment present |
+| [VERIFIED] | `validate_config()` properly handles None schema (accept all) and propagates errors | `manifest.rs:80-87` | `jsonschema::validate` error mapped to `PluginError::ConfigInvalid` |
+| [VERIFIED] | All 7 trait object-safety compile tests pass, supertrait verification fixed | All test files | Supertrait tests now call `_requires_base::<T>()` (dev fixed the broken TEA pattern) |
+| [VERIFIED] | `AxiathonPlugin` is `Send + Sync`, object-safe, with correct `#[async_trait]` | `lifecycle.rs:21-41` | Methods use `PluginError` not `anyhow`, default `version()` reads manifest |
+
+### Deviation Audit
+
+### Reviewer (audit)
+- **13 vs 14 field count:** Spec says "14 fields" but only 13 field names are listed in AC-3. Implementation has 13. The 14th field is not specified anywhere. Not a code deviation — spec appears to have an off-by-one. Severity: L.
+
+---
+
+**Verdict:** REJECT
+
+The two HIGH findings must be fixed:
+
+1. **Add `[lints] workspace = true`** to all 6 SDK crate Cargo.toml files. Without this, `unsafe_code = "forbid"` is not enforced. This is a 6-line change.
+
+2. **Rename `PluginId::new()` to `new_unchecked()`** (and update `builtin()`/`community()` to call it). This matches the `TenantId::new()` / `TenantId::new_unchecked()` convention established in `axiathon-core`. The current naming violates SOUL.md Principle #2 and the project's validated-constructor rule.
+
+The MEDIUM findings (jsonschema workspace dep, async_trait on EventEnricher, as_str naming, docstring, full_id duplication) should be fixed in this PR but are non-blocking individually.
+
+**Handoff:** Back to Dev for fixes.
+
+### Delivery Findings
+
+- **Gap** (non-blocking): Tenant context parameters missing from sub-crate trait methods. Affects `ingestion/notification/action` crates. Scoped out by AC-9-12 "stubs". *Found by Reviewer during code review.*
+- **Gap** (non-blocking): `PluginManifest.signature` and `permissions` are pub — needs hardening when Story 23.6 (packaging/signing) lands. *Found by Reviewer during code review.*
+
+VERDICT: REJECT

@@ -87,3 +87,4 @@ phases:
     duration_s: 123.47
     exit_code: 0
     session_id: af1ad206-3c57-4e1e-8f32-23064b96fdf2
+batch: baseline
