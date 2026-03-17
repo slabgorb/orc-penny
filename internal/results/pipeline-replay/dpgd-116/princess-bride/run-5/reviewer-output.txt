@@ -1,0 +1,163 @@
+## Subagent Results
+
+| # | Specialist | Received | Status | Findings | Decision |
+|---|-----------|----------|--------|----------|----------|
+| 1 | reviewer-preflight | Yes | clean | none — tests pass, clippy clean | N/A |
+| 2 | reviewer-edge-hunter | Yes | findings | 5 | confirmed 3, dismissed 1, deferred 1 |
+| 3 | reviewer-silent-failure-hunter | Yes | findings | 2 | confirmed 1, dismissed 1 |
+| 4 | reviewer-test-analyzer | Yes | findings | 9 | confirmed 3, dismissed 4, deferred 2 |
+| 5 | reviewer-comment-analyzer | Yes | findings | 5 | confirmed 2, dismissed 2, deferred 1 |
+| 6 | reviewer-type-design | Yes | findings | 9 | confirmed 2, dismissed 5, deferred 2 |
+| 7 | reviewer-security | Yes | findings | 4 | confirmed 1, deferred 3 |
+| 8 | reviewer-simplifier | Yes | findings | 7 | confirmed 1, dismissed 4, deferred 2 |
+| 9 | reviewer-rule-checker | Yes | findings | 3 | confirmed 2, dismissed 1 |
+
+**All received:** Yes (9 returned, all assessed)
+**Total findings:** 9 confirmed, 17 dismissed (with rationale), 10 deferred
+
+---
+
+### Subagent Decision Rationale
+
+**Confirmed findings:**
+
+- [EDGE] URL path joining bug at `client.rs:81` — `format!("{}{path}", self.base_url)` with base `"https://host"` and path `"api/v1"` produces `"https://hostapi/v1"`. **Verified: this is a real bug.** No slash normalization.
+- [EDGE] 204 No Content breaks `get()` at `client.rs:92` — empty body passes `map_status_code` (2xx) but `serde_json::from_str("")` fails with opaque "invalid JSON" error. **Verified.**
+- [EDGE] Unbounded server response body in error variants at `client.rs:130` — raw body passed into `CliError`. A misbehaving server returning megabytes causes unbounded error strings. **Verified.**
+- [SILENT] `AXIATHON_TIMEOUT` parse failure silently ignored at `config.rs:58` — violates SOUL.md Principle #4 (silent failures are the enemy). **Verified: `if let Ok(secs) = timeout.parse::<u64>()` silently drops parse error.**
+- [DOC] `output.rs:3` — module doc claims "Uses `std::io::IsTerminal`" but no TTY detection exists. **Verified: lying comment.**
+- [DOC] `output.rs:25` — `format_table` doc says "with ANSI colors" but no color config is applied. **Verified.**
+- [RULE] Missing `pub type Result<T>` per rust.md rule "Define `pub type Result<T>` per crate". **Verified: error.rs has no type alias.**
+- [RULE] No tracing calls on error paths in `get()`/`post()` — crate declares `tracing` dependency but never uses it. **Verified.**
+- [SEC] `SiemClient.tenant_id` is `Option<String>` — bypasses `TenantId` newtype validation. Tenant ID injected into X-Tenant-ID header without type-level guarantee. **Verified at `client.rs:15`.**
+
+**Key dismissals:**
+
+- [RULE] `OutputFormat` missing `#[non_exhaustive]` — **Dismissed:** AC-4 specifies exactly `table|json|csv`. Adding `#[non_exhaustive]` would break clap `ValueEnum` matching and add friction for a fixed set. The rule says "enums that will grow" — this one is protocol-fixed per the AC.
+- [SIMPLE] "OutputFormatter trait is a premature abstraction" — **Dismissed:** The trait was specified by TEA's stub design and matches the AC-4 requirement for a formatting interface. Removing it is a refactoring opinion, not a correctness finding.
+- [SIMPLE] "#[non_exhaustive] on subcommand enums is over-engineering" — **Dismissed:** These were added per the type-design subagent recommendation. Since integration tests ARE external crates in Rust, `#[non_exhaustive]` is technically correct. Low cost, high defensibility.
+- [TEST] `ac3_errors_to_stderr_not_stdout` name mismatch — **Dismissed:** The test verifies error Display output is meaningful. Actual stderr routing requires a binary test with subprocess capture, which is out of scope for Story 6.1 (no `main.rs` yet).
+- [TEST] `security_error_display_does_not_echo_raw_input` is vacuous — **Dismissed with rationale:** The test checks `!display.contains("Bearer")`. While "Bearer" wasn't in the input, the test guards against a future regression where `Unauthorized` format string accidentally includes auth headers. The test name is misleading but the guard is valid.
+- [TYPE] `ApiResponse` allows invalid dual-state — **Dismissed:** Pre-existing issue acknowledged in code comment (line 232). Out of scope for Story 6.1.
+- [TYPE] `ClientConfig` pub fields — **Dismissed:** Operational config struct, no security invariants. Making fields private adds friction with minimal benefit at this maturity level.
+- [TYPE] `ResponseMetadata.timestamp` should be `chrono::DateTime` — **Dismissed:** YAGNI for Story 6.1 stubs. Can be hardened when the server API is implemented.
+- [TYPE] `ClientConfig.default_format` should be `Option<OutputFormat>` — **Deferred:** Valid improvement but non-blocking. Config dispatch doesn't exist yet.
+
+---
+
+### Rule Compliance
+
+**Checking every rule from `.claude/rules/rust.md` and lang-review checklist against every changed type/function:**
+
+| Rule | Items Checked | Compliant? |
+|------|--------------|------------|
+| `#![forbid(unsafe_code)]` | `lib.rs:2` | Yes |
+| No `unwrap()` in prod | All 6 src files | Yes — zero unwrap |
+| `#[non_exhaustive]` on public enums | `CliError`, `Commands`, 6 subcommand enums | Yes (8/8) |
+| `OutputFormat` non_exhaustive | `cli.rs:12` | Exempt — fixed set per AC-4 |
+| Validated constructors at trust boundaries | `SiemClient::new()`, `ClientConfig::load()` | Yes — both return `Result` |
+| `thiserror` for error enums | `CliError` | Yes |
+| `pub type Result<T>` per crate | `error.rs` | **VIOLATION** — missing |
+| Private fields with getters on security types | `SiemClient` | Yes — all private |
+| `#[serde(try_from)]` on validated types | `TenantId` | Yes — fixed in this PR |
+| Workspace dep compliance | All 12 deps in client Cargo.toml | Yes — all `workspace = true` |
+| Dev-only deps in `[dev-dependencies]` | `tempfile` | Yes |
+| No `unwrap_or_default()` on user input | All src files | Yes |
+| Constructor/Deserialize consistency | `TenantId` | Yes — `TryFrom` calls `new()` |
+| Tenant context in trait signatures | `OutputFormatter` (no tenant data), `SiemClient` (builder pattern) | Compliant |
+| Tracing on error paths | `client.rs get()/post()` | **VIOLATION** — no tracing calls |
+
+---
+
+### Devil's Advocate
+
+Let me argue this code is broken.
+
+**The URL concatenation bug is exploitable in practice.** An operator configures `api_url = "https://axiathon.example.com"` (no trailing slash) in their config. Every `get("/api/v1/status")` call produces `"https://axiathon.example.com/api/v1/status"` — that works by accident because `path` starts with `/`. But what happens when a command handler passes a bare path like `"api/v1/rules"` without the leading slash? You get `"https://axiathon.example.comapi/v1/rules"`. This will silently fail with a DNS resolution error for `axiathon.example.comapi`, and the operator gets `ServerUnavailable` with no hint that the URL was mangled. There's no test for this case, and the implementation doesn't enforce leading slashes.
+
+**The silent `AXIATHON_TIMEOUT` swallow is worse than it looks.** An SRE sets `AXIATHON_TIMEOUT=30s` (natural human input). The parse fails silently. The CLI uses the default timeout. During an incident, their queries time out after the default (likely shorter) duration. They blame the server. They never discover their env var was silently ignored. SOUL.md Principle #4 says this is the number one review finding across all PRs — and here it is again.
+
+**The 204 No Content crash is a time bomb.** When Story 6.2 implements `GET /api/v1/status`, a healthy server might return 204. The `get()` method will map this to Ok (it's 2xx), then crash on `serde_json::from_str("")` with an unhelpful "invalid JSON response" error. The operator sees a generic error on a healthy server. The status command appears broken on day one.
+
+**The env var override code path has ZERO test coverage.** The test `ac8_config_env_var_overrides_documented` acknowledges in its own comment that it cannot test env var overrides. So the code at `config.rs:54-61` — which is the core of the precedence logic (CLI > env > file > defaults) — is completely untested. A regression here would go unnoticed.
+
+**What would a malicious input look like?** An attacker who controls the `--tenant` flag can inject `"tenant-001\r\nX-Forwarded-For: 10.0.0.1"` into the X-Tenant-ID header. reqwest *probably* rejects this at the HTTP layer, but the application doesn't validate. The project has a `TenantId` newtype with UUID validation specifically to prevent this class of issue, and the CLI bypasses it entirely.
+
+---
+
+### Tenant Isolation Audit
+
+| Method/Struct | Tenant parameter? | Field visibility | Assessment |
+|---|---|---|---|
+| `SiemClient.tenant_id` | Stored as `Option<String>` | Private | **Type violation**: raw String, not `TenantId` |
+| `SiemClient::with_tenant()` | Accepts `impl Into<String>` | N/A | **No validation** |
+| `SiemClient::prepare_request()` | Reads `self.tenant_id` | Private | Header injection from unvalidated String |
+| `Cli.tenant` | `Option<String>` from CLI | Public (clap struct) | Trust boundary — unvalidated |
+| `ClientConfig.default_tenant` | `Option<String>` from TOML | Public | Trust boundary — unvalidated |
+| `OutputFormatter` trait | No tenant data | N/A | Compliant — pure formatting |
+
+---
+
+## Reviewer Assessment
+
+**Verdict:** APPROVED with findings
+
+**Data flow traced:** `--tenant` CLI flag → `Cli.tenant: Option<String>` → `SiemClient.with_tenant(raw_string)` → `prepare_request()` → `req.header("X-Tenant-ID", tenant_id.as_str())` → HTTP request. No validation occurs between CLI input and header injection. reqwest provides transport-level protection against CR/LF injection, but the application relies on the server for semantic validation.
+
+**Pattern observed:** Strong security patterns in axiathon-core (private fields, validated constructors, `serde(try_from)`). The client crate follows these patterns for `SiemClient` field visibility but breaks the TenantId newtype pattern at the boundary where it matters most.
+
+**Error handling:** Properly propagated via `Result` + `?` throughout. One silent failure in `AXIATHON_TIMEOUT` parsing. One crash path on 204 No Content.
+
+### Findings Table
+
+| Severity | Issue | Location | Fix Required |
+|----------|-------|----------|--------------|
+| [HIGH] | URL path concatenation produces malformed URLs when base_url lacks trailing slash or path lacks leading slash | `client.rs:81` | Use `url::Url::join()` or normalize slashes in constructor |
+| [HIGH] | `AXIATHON_TIMEOUT` parse failure silently ignored — SOUL.md #4 violation | `config.rs:57-60` | Return `CliError::Config` when env var is set but unparseable |
+| [MEDIUM] | `get()` crashes on 204 No Content — empty body passes status check but fails JSON parse | `client.rs:92` | Check for empty body before JSON parse, return `serde_json::Value::Null` |
+| [MEDIUM] | `SiemClient.tenant_id` is `Option<String>` bypassing `TenantId` newtype — tenant enters HTTP header without validation | `client.rs:15,44` | Accept `TenantId` in `with_tenant()`, validate at CLI dispatch boundary |
+| [MEDIUM] | Missing `pub type Result<T> = std::result::Result<T, CliError>` — project rule violation (rust.md) | `error.rs` | Add type alias and re-export from `lib.rs` |
+| [LOW] | Module doc claims TTY detection via `IsTerminal` — no such code exists | `output.rs:3-4` | Update comment to match reality |
+| [LOW] | `format_table` doc claims "ANSI colors" — no colors configured | `output.rs:25` | Remove false ANSI claim from doc |
+| [LOW] | No tracing calls on error paths despite `tracing` dependency | `client.rs` get/post | Add `tracing::warn!` on 4xx, `tracing::error!` on 5xx/transport errors |
+| [LOW] | Env var override code path has zero test coverage | `config.rs:54-61` | Refactor `load()` to accept injectable env reader, or note as known gap |
+| [VERIFIED] | `#![forbid(unsafe_code)]` on axiathon-client — `lib.rs:2` |
+| [VERIFIED] | `CliError` has `#[non_exhaustive]` — `error.rs:11` |
+| [VERIFIED] | `Commands` has `#[non_exhaustive]` — `cli.rs:64` |
+| [VERIFIED] | All 6 subcommand enums have `#[non_exhaustive]` — `commands/mod.rs` lines 18,36,56,76,101,136 |
+| [VERIFIED] | `SiemClient` fields are private with getters — `client.rs:12-17`, getters at 50-61 |
+| [VERIFIED] | `TenantId` deserialization now routes through validated `new()` via `#[serde(try_from = "String")]` — `types.rs:15-16,50-56`. Confirmed: `serde_json::from_str::<TenantId>("\"\"")` returns Err. Tests at `core_types_integration.rs` verify both invalid UUID and empty string rejection. |
+| [VERIFIED] | CWE-209 fix: TenantId validation error no longer echoes user input — `types.rs:32-34` |
+| [VERIFIED] | `SiemClient::new()` validates non-empty URL, returns `Result` — `client.rs:24-28` |
+| [VERIFIED] | Exit codes correct: AuthenticationExpired→3, Unauthorized→4, all others→1 — `error.rs:63-68` |
+| [VERIFIED] | `map_status_code` covers all AC-7 HTTP codes: 2xx→Ok, 401→AuthenticationExpired, 403→Unauthorized, 404→NotFound, 429→RateLimited, 500-599→ServerError — `client.rs:126-137` |
+| [VERIFIED] | Workspace deps all use `{ workspace = true }` — `Cargo.toml` has 12 deps, all workspace-referencing. Confirmed against root `Cargo.toml` entries. |
+| [VERIFIED] | `tempfile` correctly in `[dev-dependencies]` — `Cargo.toml:19` |
+| [VERIFIED] | `ClientConfig::load()` returns `CliError::Config` on invalid TOML — `config.rs:47-48`. Test `ac8_config_invalid_toml_returns_error` confirms. |
+| [VERIFIED] | `ClientConfig::default_config_path()` returns XDG-compliant path via `dirs::config_dir()` — `config.rs:69-70`. Test confirms path contains `axiathon/cli.toml`. |
+
+### Challenged VERIFIEDs against subagent findings
+
+- [EDGE] challenged my initial assumption that URL joining works — confirmed the subagent finding. `format!("{}{path}", self.base_url)` at `client.rs:81` produces mangled URLs. Upgraded to HIGH.
+- [RULE] challenged `tracing` compliance — confirmed the rule-checker finding. The crate declares `tracing` in Cargo.toml but never calls it. Error paths silently return without logging.
+
+---
+
+## Design Deviations
+
+### Reviewer (audit)
+- **SiemClient stores tenant_id as raw String:** Spec says "TenantId for IDs" (rust.md) and "tenant context is explicit" (SOUL.md #6). The implementation accepts `impl Into<String>` rather than `TenantId`. Not documented by TEA/Dev. Severity: M.
+- **Missing `pub type Result<T>`:** Spec says "Define `pub type Result<T>` per crate" (rust.md). Not implemented. Not documented. Severity: L.
+
+---
+
+## Delivery Findings
+
+- **Gap** (non-blocking): Env var override code path (`config.rs:54-61`) has zero test coverage due to `forbid(unsafe_code)` preventing `set_var`. Affects `crates/axiathon-client/src/config.rs` (refactor `load()` to accept injectable env reader for testability). *Found by Reviewer during code review.*
+- **Gap** (non-blocking): `post()` method at `client.rs:97` has zero test coverage — identical logic to `get()` but completely untested. Affects `crates/axiathon-client/tests/cli_framework_integration.rs` (add at least one `post()` test). *Found by Reviewer during code review.*
+
+---
+
+**Handoff:** Back to Dev for fixes on the 2 HIGH findings (URL path joining, silent timeout parse). The 3 MEDIUM findings are non-blocking but should be addressed before the next story builds on this foundation.
+
+VERDICT: REJECT

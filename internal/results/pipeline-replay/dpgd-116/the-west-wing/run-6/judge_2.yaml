@@ -1,0 +1,82 @@
+scenario_id: dpgd-116
+theme: the-west-wing
+run_id: 6
+model: null
+judge_model: claude-opus-4-6
+judge_version: v2
+judge_pass: 2
+total_caught: 6
+total_findings: 7
+weighted_caught: 28
+total_weight: 37
+score_pct: 75.7
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: 'No phase mentions from_file_or_default swallowing all errors via unwrap_or_default().
+    Reviewer''s Rule #1 audit flagged silent failures in client.rs and output.rs but
+    not the config file loading path. The config validation work focused on deserialization
+    and override methods, not the file-loading fallback.'
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: "TEA wrote CWE-209 tests: cli_error_display_does_not_expose_*, cli_error_from_5xx_*.\
+    \ Dev implemented ServerError Display as generic 'server error' (error.rs:25).\
+    \ Reviewer VERIFIED: 'ServerError Display is generic server error \u2014 String\
+    \ payload is for logging only.'"
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: TEA wrote siem_client_rejects_header_injection_* tests and siem_client_injects_tenant_header.
+    Dev implemented try_new() with CRLF validation in client.rs. Reviewer confirmed
+    and additionally flagged the silent header drop when validation fails.
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote cargo_toml_uses_workspace_dependencies test (passing). Dev
+    used { workspace = true } for all 12 deps. Reviewer VERIFIED: ''All workspace
+    dependencies use { workspace = true }.'''
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: dev
+  evidence: "Dev implemented #[serde(deny_unknown_fields)] on RawClientConfig (config.rs:12).\
+    \ TEA wrote client_config_rejects_token_in_config_file test. Reviewer VERIFIED:\
+    \ 'ClientConfig uses deny_unknown_fields \u2014 Token in config file will be rejected.'"
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: "TEA explicitly identified and removed vacuous assertions: 'Removed 9\
+    \ tautological tests and 1 vacuous assertion from axiathon-core' including 'api_meta_all_fields_optional\
+    \ \u2014 None.is_none() cannot fail.' Self-check confirmed '0 vacuous tests found\
+    \ in new code.' Same vulnerability class (vacuous/tautological assertions) detected\
+    \ and remediated."
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: "TEA removed tautological tests including set-then-read patterns (result_type_alias,\
+    \ api_error_struct_fields, field_error_struct_fields, api_meta_struct_fields)\
+    \ that had no meaningful assertions. Reviewer also flagged client_config_rejects_token_in_config_file\
+    \ as 'has no effective assertion \u2014 if let Ok branch discards result.' Same\
+    \ category (zero-assertion tests) caught across phases."

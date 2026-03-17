@@ -1,0 +1,198 @@
+judge_method: majority_vote
+n_judges: 3
+majority_threshold: 2
+model: opus
+judge_version: v2
+framework_version:
+  commit: 8b9857e1087c
+  semver: 13.0.0-beta.1
+  tag: v13.0.0-beta.1-49-g8b9857e10
+  agent_hashes:
+    tea: 1d13ea31f560
+    dev: d8266a0e4ba4
+    reviewer: 73003b26c8ce
+total_caught: 12
+total_findings: 17
+weighted_caught: 65
+total_weight: 74
+score_pct: 87.8
+findings:
+- finding_id: I1
+  title: "integer() panics on i64 overflow \u2014 process-level DoS (CWE-190/400)"
+  weight: 8
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: TEA wrote test `sql_limit_very_large_value_handles_overflow` (parser_security_test.rs)
+    which fails on i64 overflow panic. Dev fixed with `try_map` replacing `expect()`
+    in `integer()` at parser.rs:133-149. Reviewer VERIFIED CWE-190 fix.
+  votes: 3/3
+- finding_id: I2
+  title: n as usize silent truncation on 32-bit targets (CWE-190)
+  weight: 5
+  phase_ideal: dev
+  caught: true
+  caught_by: dev
+  evidence: TEA wrote test `pipe_head_large_value_no_silent_truncation` targeting
+    unsafe `as usize` casts. Dev implemented `positive_usize()` using `usize::try_from(n).map_err()`
+    at parser.rs:140-149 for LIMIT/head/tail. Reviewer VERIFIED no `as usize` casts
+    remain.
+  votes: 3/3
+- finding_id: I3
+  title: "No input length limit on parse_axiql() \u2014 parser-level DoS (CWE-400)"
+  weight: 7
+  phase_ideal: tea
+  caught: true
+  caught_by: dev
+  evidence: Dev added MAX_INPUT_LENGTH (1MB) check at parser.rs:30-38 before calling
+    parser. Reviewer VERIFIED CWE-400 input length limit. TEA wrote `very_long_input_does_not_hang`
+    test.
+  votes: 3/3
+- finding_id: I4
+  title: CIDR values stored as unvalidated raw strings (CWE-20)
+  weight: 5
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I5
+  title: "Wildcard detection silently discards comparison operator \u2014 semantic\
+    \ inversion"
+  weight: 8
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote test `wildcard_with_ne_operator_semantics` (parser_security_test.rs)
+    which fails because `!=` is silently discarded with wildcard. Dev fixed: wildcard
+    detection only triggers on `CompareOp::Eq` at parser.rs:299-310. Reviewer VERIFIED.'
+  votes: 3/3
+- finding_id: I6
+  title: "in_list hardcodes negated: false \u2014 NOT IN unimplemented"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote test `parse_filter_not_in_list` (parser_test.rs) which fails
+    because NOT IN syntax not implemented. Dev implemented NOT IN parsing at parser.rs:240-254
+    producing `FilterExpr::InList { negated: true }`. Reviewer VERIFIED.'
+  votes: 3/3
+- finding_id: I7
+  title: "SQL select_item has no AS branch \u2014 SelectExpr::Aliased unreachable"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: TEA wrote test `parse_sql_select_with_as_alias` (parser_test.rs) which
+    fails because AS alias not implemented. Dev added AS alias support at parser.rs:382-403.
+    Reviewer VERIFIED.
+  votes: 3/3
+- finding_id: I8
+  title: "serde_json in prod dependencies \u2014 only used in tests"
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I9
+  title: AxiQLError is a string-bag struct, not a thiserror enum
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer finding: 'FieldRef::FromStr uses type Err = String \u2014 violates\
+    \ SOUL.md #5 Errors are domain knowledge, not strings' at query_types.rs:106.\
+    \ Also flagged AxiQLError as related type design concern. Same vulnerability class\
+    \ (string-bag errors instead of thiserror enum)."
+  votes: 3/3
+- finding_id: I10
+  title: FieldRef::new() accepts invalid input at parser trust boundary
+  weight: 7
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "TEA wrote test `field_ref_new_empty_should_reject` (query_types_edge_test.rs)\
+    \ which fails because FieldRef::new('') silently succeeds. Reviewer confirmed\
+    \ as finding: 'FieldRef::new(\"\") / FromStr(\"\") inconsistency \u2014 new()\
+    \ silently produces empty segments, FromStr rejects. Rule #13 violation.' However,\
+    \ Reviewer dismissed the security aspect, saying parser grammar prevents empty\
+    \ strings from reaching new()."
+  votes: 3/3
+- finding_id: I11
+  title: FieldRef::Display breaks alias resolution for array-indexed fields
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote test `field_ref_display_from_str_roundtrip_with_array_index`
+    (query_types_edge_test.rs) which fails because Display loses bracket notation.
+    Dev fixed by adding `array_indices: Vec<bool>` to FieldRef to preserve bracket
+    notation through Display. Reviewer VERIFIED roundtrip.'
+  votes: 3/3
+- finding_id: I12
+  title: "Alias resolution stops at depth 2 \u2014 3-hop chains silently truncate"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: TEA wrote test `alias_chain_depth_three_resolves_fully` (aliases_test.rs)
+    which fails because only 2-level chain resolution works. Dev implemented loop-based
+    resolution up to 10 levels with cycle detection at aliases.rs:22-38. Reviewer
+    VERIFIED.
+  votes: 3/3
+- finding_id: I13
+  title: 'TypeConstraint::for_op() wildcard defeats #[non_exhaustive] intent'
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer confirmed finding #8: ''TypeConstraint::for_op wildcard _ =>
+    EQUALITY_TYPES silently applies wrong constraints to future CompareOp variants''
+    at type_system.rs:58. Rated MEDIUM severity. Also noted in Rule Compliance as
+    related to #[non_exhaustive] intent.'
+  votes: 3/3
+- finding_id: I14
+  title: Recursive parser has no nesting depth limit (CWE-674/400)
+  weight: 0
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: TEA wrote test `parser_has_nesting_depth_limit` (parser_security_test.rs)
+    targeting CWE-674. Dev implemented MAX_NESTING_DEPTH=128 pre-parse depth check
+    at parser.rs:50-72. Reviewer VERIFIED.
+  votes: 3/3
+- finding_id: I15
+  title: FieldRef::new() corrupts vendor extension bracket notation with dots
+  weight: 0
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: TEA wrote `field_ref_display_from_str_roundtrip_with_array_index` which
+    catches bracket notation corruption. Dev added array_indices tracking to preserve
+    bracket notation through Display. The ground truth about dot-splitting inside
+    brackets is addressed by the same fix.
+  votes: 1/3
+- finding_id: I16
+  title: No regression tests for security fixes
+  weight: 0
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: ''
+  votes: 0/3
+- finding_id: I17
+  title: NOT IN never tested through the parser
+  weight: 0
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: "TEA wrote `parse_filter_not_in_list` as a parser integration test for\
+    \ NOT IN. Dev implemented the parser branch. Reviewer VERIFIED: 'NOT IN syntax\
+    \ supported \u2014 parser.rs:240-254'. This is a parser-level integration test,\
+    \ not just an AST construction test."
+  votes: 1/3
+individual_scores:
+- 87.8
+- 87.8
+- 87.8

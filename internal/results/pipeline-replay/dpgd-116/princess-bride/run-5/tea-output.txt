@@ -1,0 +1,48 @@
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 delivers the foundational CLI framework with 10 acceptance criteria requiring comprehensive test coverage.
+
+**Test Files:**
+- `crates/axiathon-client/tests/cli_framework_integration.rs` — 97 tests covering all 10 ACs + lang-review rules
+
+**Stub Files Created** (minimal types for test compilation, all behavioral methods are `todo!()`):
+- `crates/axiathon-client/src/error.rs` — CliError enum with exit code method
+- `crates/axiathon-client/src/cli.rs` — Cli struct with clap derive, Commands enum, OutputFormat
+- `crates/axiathon-client/src/commands/mod.rs` — Arg structs for all 10+ command groups
+- `crates/axiathon-client/src/client.rs` — SiemClient HTTP wrapper
+- `crates/axiathon-client/src/config.rs` — ClientConfig with TOML loading stub
+- `crates/axiathon-client/src/output.rs` — OutputFormatter trait, DefaultFormatter, ResponseMetadata
+
+**Tests Written:** 97 tests covering all 10 ACs
+**Status:** RED (30 failing on `todo!()` stubs, 67 passing on structural/parsing checks)
+
+### Pre-existing Fixes Applied
+- 7 high/medium-confidence findings fixed in `core_types_integration.rs`
+- All 69+12 axiathon-core tests still passing
+
+### Rule Coverage
+
+| Rule | Test(s) | Status |
+|------|---------|--------|
+| #1 silent errors | `rule1_cli_error_implements_std_error` | passing |
+| #2 non_exhaustive | `rule2_cli_error_is_non_exhaustive` | passing |
+| #5 validated constructors | `rule5_siem_client_rejects_empty_base_url` | failing |
+| #6 test quality | `rule6_cli_error_display_is_meaningful` | passing |
+| #9 public fields | `rule9_siem_client_fields_are_private` | passing |
+| #11 workspace deps | `rule11_cargo_toml_uses_workspace_deps` | passing |
+| #12 dev-only deps | `rule12_tempfile_is_dev_dependency` | passing |
+| CWE-209 error exposure | `security_error_display_does_not_echo_raw_input` | passing |
+| CWE-209 stack trace | `security_server_error_does_not_expose_stack_trace` | passing |
+
+**Rules checked:** 9 of 15 applicable lang-review rules have test coverage (remaining rules apply to server-side patterns not relevant to CLI stubs)
+**Self-check:** 0 vacuous tests found — all 97 tests have meaningful assertions
+
+### Failing Tests Breakdown (30 RED)
+- **AC-3 exit codes:** 10 tests (exit_code() returns `todo!()`)
+- **AC-4 output formatting:** 5 tests (DefaultFormatter::new() returns `todo!()`)
+- **AC-7 SiemClient HTTP:** 9 tests (map_status_code, get return `todo!()`)
+- **AC-8 config loading:** 5 tests (load(), default_config_path() return `todo!()`)
+- **Rule #5 validation:** 1 test (SiemClient accepts empty URL)
+
+**Handoff:** To Dev for implementation (GREEN phase)

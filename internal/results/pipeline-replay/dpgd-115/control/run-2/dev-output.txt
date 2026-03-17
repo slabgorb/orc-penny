@@ -1,0 +1,25 @@
+## Summary
+
+**Tests:** 368/368 passing (GREEN), 0 failures
+**Lint:** `cargo clippy -- -D warnings` clean
+
+### Files Changed
+
+| File | Description |
+|------|-------------|
+| `crates/axiathon-core/src/query_types.rs` | FieldRef: empty path produces empty segments (rule #5 consistency), added `array_indices` field for Display/FromStr roundtrip fidelity, bracket notation preserved through Display |
+| `crates/axiathon-query/src/parser.rs` | Major rework: case-insensitive SQL keywords via `kw()` helper, `NOT IN` list parsing, `AS` alias in SELECT, wildcard only on `Eq` (preserves `!=`), `try_map` for integer overflow safety (CWE-190), `positive_usize()` for LIMIT/head/tail, nesting depth pre-check (CWE-674, MAX_NESTING_DEPTH=128), input length limit (CWE-400, 1MB), removed `=~` placeholder from compare_op |
+| `crates/axiathon-query/src/aliases.rs` | Loop-based resolution up to 10 levels deep with cycle detection |
+| `crates/axiathon-query/src/config.rs` | Added `#[serde(default)]` for partial deserialization support |
+| `crates/axiathon-query/tests/parser_security_test.rs` | Strengthened 4 vacuous `let _ =` assertions with actual checks |
+| `crates/axiathon-core/tests/query_types_edge_test.rs` | Fixed clippy `approx_constant` lint (3.14 -> 1.23) |
+
+### Security Fixes
+
+| Issue | CWE | Fix |
+|-------|-----|-----|
+| Integer overflow in LIMIT/head/tail | CWE-190 | `try_map` replaces `expect()`, `positive_usize()` validates non-negative |
+| Unbounded nesting depth | CWE-674 | Pre-parse depth check against MAX_NESTING_DEPTH (128) |
+| Unbounded input length | CWE-400 | Input length check against MAX_INPUT_LENGTH (1MB) |
+| Wildcard silently discards `!=` | — | Only convert to Wildcard on `Eq`, preserve `Ne`/other ops |
+| `=~` mapped to `CompareOp::Eq` placeholder | — | Removed from `compare_op()`, handled only by regex_match branch |

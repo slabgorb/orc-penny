@@ -1,0 +1,88 @@
+scenario_id: dpgd-116
+theme: null
+run_id: 35
+timestamp: '2026-03-17T11:09:01.989483+00:00'
+model_requested: opus
+models_used:
+- claude-haiku-4-5-20251001
+- claude-opus-4-6[1m]
+total_cost_usd: 9.2297
+worktree_path: /tmp/pf-replay/dpgd-116-control-run-35
+framework_version:
+  commit: d160d783f4d6
+  semver: 13.0.0-beta.1
+  tag: v13.0.0-beta.1-47-gd160d783f
+  agent_hashes:
+    tea: 1d13ea31f560
+    dev: d8266a0e4ba4
+    reviewer: 73003b26c8ce
+phases:
+  tea:
+    token_usage:
+      input: 37
+      cache_creation: 84158
+      cache_read: 2378942
+      output: 21305
+    model_usage:
+      claude-opus-4-6[1m]:
+        inputTokens: 37
+        outputTokens: 21305
+        cacheReadInputTokens: 2378942
+        cacheCreationInputTokens: 84158
+        webSearchRequests: 0
+        costUSD: 2.2482685000000004
+        contextWindow: 1000000
+        maxOutputTokens: 64000
+      claude-haiku-4-5-20251001:
+        inputTokens: 59
+        outputTokens: 5197
+        cacheReadInputTokens: 868531
+        cacheCreationInputTokens: 48951
+        webSearchRequests: 0
+        costUSD: 0.17408585
+        contextWindow: 200000
+        maxOutputTokens: 32000
+    cost_usd: 2.4224
+    duration_s: 526.98
+    exit_code: 0
+    session_id: 597c71e9-6b4f-43ea-83ed-d5c36e861b98
+  dev:
+    token_usage:
+      input: 44
+      cache_creation: 156278
+      cache_read: 5907584
+      output: 31044
+    model_usage:
+      claude-opus-4-6[1m]:
+        inputTokens: 44
+        outputTokens: 31044
+        cacheReadInputTokens: 5907584
+        cacheCreationInputTokens: 156278
+        webSearchRequests: 0
+        costUSD: 4.7068495000000015
+        contextWindow: 1000000
+        maxOutputTokens: 64000
+    cost_usd: 4.7068
+    duration_s: 616.3
+    exit_code: 0
+    session_id: 597c71e9-6b4f-43ea-83ed-d5c36e861b98
+  reviewer:
+    token_usage:
+      input: 9
+      cache_creation: 199444
+      cache_read: 1397132
+      output: 6215
+    model_usage:
+      claude-opus-4-6[1m]:
+        inputTokens: 9
+        outputTokens: 6215
+        cacheReadInputTokens: 1397132
+        cacheCreationInputTokens: 199444
+        webSearchRequests: 0
+        costUSD: 2.1005109999999996
+        contextWindow: 1000000
+        maxOutputTokens: 64000
+    cost_usd: 2.1005
+    duration_s: 152.72
+    exit_code: 0
+    session_id: 597c71e9-6b4f-43ea-83ed-d5c36e861b98

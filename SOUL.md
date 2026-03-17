@@ -69,3 +69,8 @@ Never optimize for cost, tokens, or speed. Consistency and spec fidelity are wor
 ## 14. Prove the Work
 Every PR must stand on its own. The reviewer should never have to reverse-engineer what was done, why it was done, or what it affects downstream. Fewer findings is table stakes — clear explanations of changes, spec deviations, and downstream effects are what build trust. If the external reviewer has to make follow-up commits to understand your PR, the pipeline failed. Benchmarks measure this; they are not the goal. The map is not the territory.
 </principle>
+
+<principle name="protect-the-reviewer">
+## 15. Protect the Reviewer
+The pipeline exists to make the external reviewer's job easy. Every spec deviation, every security finding, every undocumented decision that reaches the reviewer is work they have to do that the pipeline should have handled. The reviewer has stakeholders above them — every finding that slips through becomes a political problem, not just a technical one. Log every decision. Explain every change. Flag every deviation before the reviewer has to find it.
+</principle>

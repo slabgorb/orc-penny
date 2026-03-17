@@ -1,0 +1,139 @@
+## Subagent Results
+
+| # | Specialist | Received | Status | Findings | Decision |
+|---|-----------|----------|--------|----------|----------|
+| 1 | reviewer-preflight | Yes | clean | none — all tests pass, clippy clean | N/A |
+| 2 | reviewer-edge-hunter | Yes | findings | 11 | confirmed 5, dismissed 4, deferred 2 |
+| 3 | reviewer-silent-failure-hunter | Yes | findings | 4 | confirmed 2, dismissed 1, deferred 1 |
+| 4 | reviewer-test-analyzer | Yes | findings | 12 | confirmed 4, dismissed 4, deferred 4 |
+| 5 | reviewer-comment-analyzer | Yes | findings | 6 | confirmed 2, dismissed 2, deferred 2 |
+| 6 | reviewer-type-design | Yes | findings | 11 | confirmed 4, dismissed 3, deferred 4 |
+| 7 | reviewer-security | Yes | findings | 5 | confirmed 2, dismissed 2, deferred 1 |
+| 8 | reviewer-simplifier | Yes | findings | 5 | dismissed 3, deferred 2 |
+| 9 | reviewer-rule-checker | Yes | findings | 13 | confirmed 5, dismissed 4, deferred 4 |
+
+**All received:** Yes (9 returned, all with findings or clean)
+**Total findings:** 14 confirmed, 23 dismissed (with rationale), 18 deferred
+
+### Dismissal Rationale (selected)
+
+- **[EDGE] Commands missing `logout`/`tui`**: Dismissed. AC-1 lists these in `--help` but the story scope explicitly excludes TUI (Epic 4) and logout (Story 9.1). The test `cli_help_shows_all_command_groups` does NOT check for `logout` or `tui`. These should be added in their respective stories.
+- **[EDGE] map_http_status no branch for 408**: Dismissed. AC-7 says "timeout → ConnectionTimeout" refers to connection-level timeouts (reqwest errors), not HTTP 408.
+- **[EDGE] map_http_status accepts 2xx**: Dismissed. The function is only called on error paths; callers check `response.ok` first. Adding defensive `debug_assert` is gold-plating.
+- **[RULE] Commands/QueryCommands/etc missing `#[non_exhaustive]`**: Dismissed for clap `#[derive(Subcommand)]` enums. `#[non_exhaustive]` is incompatible with clap derive macro pattern — clap generates a match on all variants. Downstream crates don't match on these enums. The rule applies to domain enums, not framework-generated command enums.
+- **[SIMPLE] has_token_from_file() returns constant false**: Dismissed. The test and method document the design decision (tokens from keychain, not file). Removing it removes the documented contract.
+- **[SIMPLE] has_token()/has_tenant() only used in tests**: Dismissed. These are part of the public API for SiemClient introspection; they enable testing without making fields public.
+- **[TYPE] ResponseMetadata fields stringly-typed**: Dismissed per SOUL #1 (pragmatism). These are output-only metadata for JSON responses. Newtype wrappers add complexity with no safety benefit since the values are generated internally, never from user input.
+- **[TYPE] SiemClient::new() accepts empty base_url**: Dismissed. At current maturity, SiemClient is a stub with no HTTP calls. URL validation belongs at the point of use (reqwest will reject invalid URLs). Over-validating a builder at this stage is premature.
+
+---
+
+## Reviewer Assessment
+
+### Rule Compliance
+
+**Lang-review #2 (`#[non_exhaustive]` on enums that will grow):**
+- `CliError` at `error.rs:11` — COMPLIANT
+- `OutputFormat` at `output.rs:7` — **VIOLATION**: Public enum, will grow with YAML/XML. Missing `#[non_exhaustive]`.
+- `Commands`, `QueryCommands`, etc. — EXEMPT: Clap `Subcommand` enums managed by framework; `#[non_exhaustive]` breaks clap derive.
+
+**Lang-review #4 (Tracing on error paths):**
+- `client.rs:62-71` build_headers Err paths — **VIOLATION**: No `tracing::warn!` on header validation failures. The crate declares `tracing` in Cargo.toml.
+- `config.rs:65` from_toml Err path — **VIOLATION**: No tracing on config parse failure.
+- `config.rs:82` AXIATHON_TIMEOUT parse Err — **VIOLATION**: No tracing on env var parse failure.
+- `commands/init.rs:9` fs error — **VIOLATION**: No tracing on filesystem failure.
+
+**Lang-review #9 (Private fields with getters):**
+- `SiemClient` — COMPLIANT: all fields private.
+- `ClientConfig` — COMPLIANT: all fields private.
+
+**Lang-review #11 (Workspace deps):**
+- All dependencies use `{ workspace = true }` — COMPLIANT.
+
+**Lang-review #12 (Dev-only deps in [dependencies]):**
+- `serde_json` in `[dependencies]` but only used in test files — **VIOLATION** at `Cargo.toml:14`. Should be `[dev-dependencies]` until production code imports it.
+
+### Data Flow Trace
+
+**Input:** `--tenant "550e8400..."` CLI arg → `Cli.tenant: Option<String>` → (future: parsed to TenantId) → `SiemClient::with_tenant(TenantId)` → `build_headers()` → `HeaderValue::from_str()` validates → `X-Tenant-ID` header.
+
+**Safe because:** `HeaderValue::from_str()` at `client.rs:62` rejects control characters (CWE-113). The `TenantId::new()` validates UUID format. The `#[serde(try_from)]` at `types.rs:14` prevents deserialization bypass.
+
+### Security Analysis
+
+- **CWE-113 (Header Injection):** SAFE — `HeaderValue::from_str()` rejects `\r\n` in both tenant ID and token at `client.rs:62,70`. Tests at `client_http_integration.rs:126,151` verify this.
+- **CWE-209 (Error Information Exposure):** `ServerError` display SAFE at `error.rs:28` — body omitted. But `Unauthorized` at line 19 and `NotFound` at line 22 echo raw server response body, which could contain internal details.
+- **CWE-20 (Input Validation):** TenantId serde bypass FIXED — `#[serde(try_from)]` at `types.rs:14` routes through validated constructor. Tests at `core_types_integration.rs:57,64` verify rejection.
+- **`#![forbid(unsafe_code)]`:** Present at `lib.rs:2` — COMPLIANT.
+
+### Confirmed Findings
+
+| Severity | Issue | Location | Source | Fix Required |
+|----------|-------|----------|--------|--------------|
+| [HIGH] | `OutputFormat` missing `#[non_exhaustive]` | `output.rs:7` | [RULE][TYPE] | Add `#[non_exhaustive]` attribute |
+| [HIGH] | `OutputFormat::FromStr` uses `type Err = String` | `output.rs:24` | [RULE][TYPE] | Use `CliError` as error type per SOUL #5 |
+| [HIGH] | No tracing on 4 error paths (build_headers, from_toml, from_toml_with_env, run_init) | `client.rs:62`, `config.rs:65,82`, `init.rs:9` | [RULE] | Add `tracing::warn!` to all error paths in crates declaring tracing |
+| [HIGH] | `serde_json` in `[dependencies]` but only used in tests | `Cargo.toml:14` | [RULE] | Move to `[dev-dependencies]` |
+| [MEDIUM] | `default_config_path()` falls back to relative `.config` when `dirs::config_dir()` returns None | `config.rs:57` | [SILENT][EDGE] | Fall back to `dirs::home_dir().join(".config")` or return Result |
+| [MEDIUM] | `run_init()` docstring says "create config directory and default config file" but never writes a file | `init.rs:5` | [DOC] | Fix docstring to match reality |
+| [MEDIUM] | `generate_completions` docstring says "installation instructions to stderr" but doesn't write any | `completion.rs:11` | [DOC] | Fix docstring or add installation instructions per AC-9 |
+| [MEDIUM] | `CliError::Unauthorized` and `NotFound` Display echo raw server response body (CWE-209 partial) | `error.rs:19,22` | [SEC] | Use generic messages matching `ServerError` pattern |
+| [LOW] | `Cli.format` is `Option<String>` not `Option<OutputFormat>` — no validation at parse time | `cli.rs:17` | [TYPE][EDGE] | Consider `#[arg(value_enum)]` with OutputFormat |
+| [LOW] | `Cli.server` doc says "overrides config file and AXIATHON_SERVER env" but `env = "AXIATHON_SERVER"` means clap reads the env — misleading | `cli.rs:27` | [DOC] | Fix comment |
+
+### Verified Items
+
+- [VERIFIED] `#![forbid(unsafe_code)]` present — `lib.rs:2`. Complies with rust.md safety rule.
+- [VERIFIED] `CliError` has `#[non_exhaustive]` — `error.rs:11`. Complies with lang-review #2.
+- [VERIFIED] `CliError` uses `thiserror` — `error.rs:3,10`. Complies with SOUL #5.
+- [VERIFIED] `SiemClient` fields private with getters — `client.rs:16-20,41-51`. Complies with lang-review #9.
+- [VERIFIED] `ClientConfig` fields private with getters — `config.rs:15-21,41-47`. Complies with lang-review #9.
+- [VERIFIED] `TenantId` deserialization routes through `new()` — `types.rs:13-14,60-65`. `#[serde(try_from = "String")]` + `TryFrom<String>` impl calls `Self::new()`. Tests at `core_types_integration.rs:57-67` confirm rejection of invalid/empty UUIDs. Complies with lang-review #8 and #13.
+- [VERIFIED] CWE-113 header injection prevented — `client.rs:62,70` use `HeaderValue::from_str()` which rejects control characters. Tests at `client_http_integration.rs:126-165` verify both tenant and token injection attempts are blocked.
+- [VERIFIED] CWE-209 ServerError safe — `error.rs:28` displays only `HTTP {status_code}`, body stored but not in Display. Test at `error_exit_codes_integration.rs:111-122` confirms credentials not leaked.
+- [VERIFIED] All workspace deps compliant — `Cargo.toml` uses `{ workspace = true }` for all shared deps. Complies with lang-review #11.
+- [VERIFIED] Exit codes match AC-3 — `error.rs:50-55`: AuthenticationExpired→3, Unauthorized→4, all others→1. Tests at `error_exit_codes_integration.rs:17-74` verify each variant.
+- [VERIFIED] Stub handlers return `CliError::NotImplemented` with story references — all 8 stubs verified at `stub_handlers_integration.rs:150-172`.
+- [VERIFIED] All 10 command groups present in help — `cli_structure_integration.rs:86-97` checks all required groups.
+
+### Devil's Advocate
+
+What if this code is broken and I'm missing it?
+
+**The `Unauthorized`/`NotFound` CWE-209 gap is real and underestimated.** The SECURITY comment at `error.rs:7-9` says "ServerError Display intentionally omits the response body" — but then `Unauthorized` and `NotFound` don't follow the same pattern. A 403 response from axiathon-server could contain `{"detail": "user admin@internal.corp lacks permission on /api/v1/tenants/secret-tenant-id"}` and this entire string would be printed to the terminal. In a shared terminal session (screen recording, pair programming, shoulder surfing), this leaks tenant IDs and internal user identifiers. The ServerError pattern was deliberately designed to prevent this — why doesn't Unauthorized follow it? This inconsistency suggests the developer applied CWE-209 mitigation to ServerError (which had a test for it) but not to the other variants that also receive server response bodies.
+
+**The `default_config_path()` relative fallback is insidious.** When `dirs::config_dir()` returns `None` (e.g., in a Docker container with no HOME set, a CI environment, or a chroot), the path becomes `.config/axiathon/cli.toml` relative to CWD. If an operator runs `axiathon init` from `/tmp`, the config directory is created at `/tmp/.config/axiathon/`. Later, running from `/home/user`, `axiathon` looks for `/home/user/.config/axiathon/cli.toml` and finds nothing. The operator has a config file they can't find, and the CLI silently uses defaults. This is exactly the class of bug SOUL #4 warns about.
+
+**The `format` flag is a stringly-typed time bomb.** Right now, `--format xml` is silently accepted by clap (it's just a string) and nothing crashes because no dispatch code exists. When `main.rs` is written in a future story, the developer must remember to parse the string to `OutputFormat`. If they forget, invalid format strings pass through silently. The `OutputFormat` enum exists — it should be used at the CLI boundary.
+
+**What about a confused operator?** An operator types `axiathon config set timeout 60` and gets "not yet implemented (Story 6.3)". Fine. But they also typo their config file with `api_ulr = "https://..."` — no error, the default `http://localhost:8080` is silently used. They wonder why their CLI is hitting localhost. The TOML parser accepts unknown fields by default, which is serde's behavior, but it means config file typos are invisible.
+
+**The `run_init` function creates a directory but not a config file.** The docstring says it does both. An operator runs `axiathon init`, sees "initialized", edits... what file? There's no file. The function creates the parent directory and prints a path to a file that doesn't exist. The docstring is not just inaccurate — it will confuse anyone trying to use it.
+
+### Deviation Audit
+
+No `## Design Deviations` section exists in the session file. Reviewing against AC:
+
+- **AC-1:** Missing `logout` and `tui` commands. **Acceptable** — story scope explicitly excludes these (Story 9.1 and Epic 4).
+- **AC-9:** Completion generates scripts but no installation instructions to stderr. **Flagged** — AC says "Script to stdout, installation instructions to stderr."
+
+---
+
+## Reviewer Assessment
+
+**Verdict:** REJECTED
+
+| Severity | Issue | Location | Fix Required |
+|----------|-------|----------|--------------|
+| [HIGH] | `OutputFormat` missing `#[non_exhaustive]` — lang-review #2 explicit rule violation for "format types" | `output.rs:7` | Add `#[non_exhaustive]` |
+| [HIGH] | `OutputFormat::FromStr` uses `type Err = String` — SOUL #5 violation | `output.rs:24` | Use `CliError` or domain error type |
+| [HIGH] | No `tracing::warn!` on 4 error paths in crate declaring tracing — lang-review #4 | `client.rs:62`, `config.rs:65,82`, `init.rs:9` | Add tracing calls |
+| [HIGH] | `serde_json` in `[dependencies]` but only imported in tests — lang-review #12 | `Cargo.toml:14` | Move to `[dev-dependencies]` |
+| [MEDIUM] | `default_config_path()` fallback to relative `.config` — silent failure (SOUL #4) | `config.rs:57` | Use `dirs::home_dir().join(".config")` or return Result |
+| [MEDIUM] | CWE-209: `Unauthorized`/`NotFound` Display echo raw server body — inconsistent with `ServerError` | `error.rs:19,22` | Use generic messages |
+| [MEDIUM] | `run_init()` docstring says "create config directory and default config file" but only creates directory | `init.rs:5` | Fix docstring or write default config |
+| [MEDIUM] | `generate_completions` docstring claims stderr installation instructions that don't exist | `completion.rs:11` | Fix docstring or implement per AC-9 |
+
+**Handoff:** Back to Dev for fixes. The 4 HIGH issues are clear rule violations that can be fixed mechanically. The MEDIUM issues improve correctness and match stated project principles.
+
+VERDICT: REJECT

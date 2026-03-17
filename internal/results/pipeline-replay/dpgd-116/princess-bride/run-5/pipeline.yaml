@@ -1,0 +1,88 @@
+scenario_id: dpgd-116
+theme: princess-bride
+run_id: 5
+timestamp: '2026-03-17T11:09:10.168806+00:00'
+model_requested: opus
+models_used:
+- claude-haiku-4-5-20251001
+- claude-opus-4-6[1m]
+total_cost_usd: 11.1174
+worktree_path: /tmp/pf-replay/dpgd-116-princess-bride-run-5
+framework_version:
+  commit: d160d783f4d6
+  semver: 13.0.0-beta.1
+  tag: v13.0.0-beta.1-47-gd160d783f
+  agent_hashes:
+    tea: 1d13ea31f560
+    dev: d8266a0e4ba4
+    reviewer: 73003b26c8ce
+phases:
+  tea:
+    token_usage:
+      input: 9958
+      cache_creation: 118941
+      cache_read: 2825606
+      output: 49287
+    model_usage:
+      claude-opus-4-6[1m]:
+        inputTokens: 9958
+        outputTokens: 49287
+        cacheReadInputTokens: 2825606
+        cacheCreationInputTokens: 118941
+        webSearchRequests: 0
+        costUSD: 3.43814925
+        contextWindow: 1000000
+        maxOutputTokens: 64000
+      claude-haiku-4-5-20251001:
+        inputTokens: 23
+        outputTokens: 4513
+        cacheReadInputTokens: 1614811
+        cacheCreationInputTokens: 52711
+        webSearchRequests: 0
+        costUSD: 0.24995784999999998
+        contextWindow: 200000
+        maxOutputTokens: 32000
+    cost_usd: 3.6881
+    duration_s: 1160.0
+    exit_code: 0
+    session_id: 146aa45e-4a2b-45ed-b13b-91d0212a6115
+  dev:
+    token_usage:
+      input: 33
+      cache_creation: 191708
+      cache_read: 5413489
+      output: 44708
+    model_usage:
+      claude-opus-4-6[1m]:
+        inputTokens: 33
+        outputTokens: 44708
+        cacheReadInputTokens: 5413489
+        cacheCreationInputTokens: 191708
+        webSearchRequests: 0
+        costUSD: 5.022784499999999
+        contextWindow: 1000000
+        maxOutputTokens: 64000
+    cost_usd: 5.0228
+    duration_s: 847.91
+    exit_code: 0
+    session_id: 146aa45e-4a2b-45ed-b13b-91d0212a6115
+  reviewer:
+    token_usage:
+      input: 8
+      cache_creation: 243921
+      cache_read: 1449707
+      output: 6284
+    model_usage:
+      claude-opus-4-6[1m]:
+        inputTokens: 8
+        outputTokens: 6284
+        cacheReadInputTokens: 1449707
+        cacheCreationInputTokens: 243921
+        webSearchRequests: 0
+        costUSD: 2.4064997499999996
+        contextWindow: 1000000
+        maxOutputTokens: 64000
+    cost_usd: 2.4065
+    duration_s: 190.36
+    exit_code: 0
+    session_id: 146aa45e-4a2b-45ed-b13b-91d0212a6115

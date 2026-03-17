@@ -1,0 +1,79 @@
+scenario_id: dpgd-116
+theme: null
+run_id: 34
+model: null
+judge_model: claude-opus-4-6
+judge_version: v2
+judge_pass: 2
+total_caught: 6
+total_findings: 7
+weighted_caught: 28
+total_weight: 37
+score_pct: 75.7
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No phase addressed distinguishing NotFound from other errors in from_file_or_default.
+    Config loading was implemented but the error-swallowing pattern (unwrap_or_default
+    catching parse/permission/IO errors) was not flagged or tested for.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote error_display_does_not_expose_server_url and error_display_does_not_expose_token
+    tests (passing). Reviewer verified CWE-209 safety: ''ServerError Display shows
+    only status code, not the body.'' Same vulnerability class (CWE-209 information
+    exposure) caught.'
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote siem_client_tenant_header_rejects_newlines test (CWE-113).
+    Dev noted as delivery finding: ''SiemClient::build_headers() takes &str instead
+    of &TenantId, bypassing the newtype''s validation.'' Reviewer verified CWE-113
+    header injection prevented.'
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: true
+  caught_by: dev
+  evidence: "Dev added deps to workspace Cargo.toml and used workspace = true in axiathon-client/Cargo.toml.\
+    \ Reviewer verified: 'All workspace deps use { workspace = true } \u2014 axiathon-client/Cargo.toml:9-23.'"
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer flagged [MEDIUM]: 'Config silently ignores unknown TOML keys\
+    \ \u2014 typo [servr] uses all defaults with no warning (SOUL.md #4)' and recommended\
+    \ adding #[serde(deny_unknown_fields)] to RawConfig and ServerConfig."
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: 'TEA rule #6 self-check found and fixed vacuous assertions: ''0 vacuous
+    tests found in new code; 11 pre-existing tautological tests fixed/removed.'' Deleted
+    6 tautological tests and fixed 1 incomplete assertion. Same category of vacuous
+    test detection demonstrated.'
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: 'TEA fixed pre-existing tests with no real assertions: ''Deleted 6 tautological
+    tests,'' ''Replaced 4 error propagation tests with real From/? chain tests,''
+    ''Fixed 1 incomplete assertion.'' Same category (zero/weak assertion tests) detected
+    and remediated.'

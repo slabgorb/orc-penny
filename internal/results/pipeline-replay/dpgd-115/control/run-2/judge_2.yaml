@@ -1,0 +1,197 @@
+scenario_id: dpgd-115
+theme: null
+run_id: 2
+model: null
+judge_model: claude-opus-4-6
+judge_version: v2
+judge_pass: 2
+total_caught: 12
+total_findings: 17
+weighted_caught: 65
+total_weight: 74
+score_pct: 87.8
+findings:
+- finding_id: I1
+  title: "integer() panics on i64 overflow \u2014 process-level DoS (CWE-190/400)"
+  weight: 8
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: "TEA wrote test `sql_limit_very_large_value_handles_overflow` (parser_security_test.rs)\
+    \ which fails on i64 overflow panic. Dev fixed with `try_map` replacing `expect()`\
+    \ in `integer()`. Reviewer VERIFIED: \"CWE-190 integer overflow fixed \u2014 parser.rs:133-149:\
+    \ integer() uses try_map with s.parse::<i64>().map_err()\""
+- finding_id: I2
+  title: n as usize silent truncation on 32-bit targets (CWE-190)
+  weight: 5
+  phase_ideal: dev
+  caught: true
+  caught_by: dev
+  evidence: 'Dev implemented `positive_usize()` using `usize::try_from(n).map_err()`
+    for LIMIT/head/tail. Reviewer VERIFIED: "No `as usize` casts remain. Complies
+    with rule #7." TEA also had test `pipe_head_large_value_no_silent_truncation`.'
+- finding_id: I3
+  title: "No input length limit on parse_axiql() \u2014 parser-level DoS (CWE-400)"
+  weight: 7
+  phase_ideal: tea
+  caught: true
+  caught_by: dev
+  evidence: "Dev added MAX_INPUT_LENGTH (1MB) check in parse_axiql() before calling\
+    \ parser. Reviewer VERIFIED: \"CWE-400 input length limited \u2014 parser.rs:30-38:\
+    \ trimmed.len() > MAX_INPUT_LENGTH (1MB) returns error.\" TEA wrote `very_long_input_does_not_hang`\
+    \ test. However, the ground truth specifies no length limit AND deeply nested\
+    \ expressions causing super-linear parse time \u2014 the nesting depth limit also\
+    \ addresses the nested AND/OR concern."
+- finding_id: I4
+  title: CIDR values stored as unvalidated raw strings (CWE-20)
+  weight: 5
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: "Reviewer explicitly dismissed CIDR validation: \"[TYPE] FilterExpr::Cidr.cidr\
+    \ is raw String \u2014 dismissed: same as regex, semantic validation in Story\
+    \ 5.2.\" Dismissing is the opposite conclusion \u2014 they saw the issue and decided\
+    \ it was acceptable, but the ground truth says it's a real problem."
+- finding_id: I5
+  title: "Wildcard detection silently discards comparison operator \u2014 semantic\
+    \ inversion"
+  weight: 8
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote test `wildcard_with_ne_operator_semantics` (parser_security_test.rs)
+    which failed because != was silently discarded with wildcard. Dev fixed: "Only
+    convert to Wildcard on Eq, preserve Ne/other ops." Reviewer VERIFIED: "hostname
+    != ''web-*'' produces Comparison { op: Ne, ... } not Wildcard."'
+- finding_id: I6
+  title: "in_list hardcodes negated: false \u2014 NOT IN unimplemented"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: "TEA wrote test `parse_filter_not_in_list` (parser_test.rs) \u2014 listed\
+    \ as failing test #1: \"NOT IN syntax not implemented (AC-1)\". Dev implemented\
+    \ NOT IN parsing at parser.rs:240-254. Reviewer VERIFIED: \"NOT IN syntax supported\
+    \ \u2014 parser.rs:240-254: not_in_list parser branch produces FilterExpr::InList\
+    \ { negated: true }.\""
+- finding_id: I7
+  title: "SQL select_item has no AS branch \u2014 SelectExpr::Aliased unreachable"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: "TEA wrote test `parse_sql_select_with_as_alias` (parser_test.rs) \u2014\
+    \ listed as failing test #2: \"AS alias not implemented (AC-2)\". Dev implemented\
+    \ AS alias support. Reviewer VERIFIED: \"SQL AS alias supported \u2014 parser.rs:382-403:\
+    \ select_field and agg_with_alias both support optional AS ident.\""
+- finding_id: I8
+  title: "serde_json in prod dependencies \u2014 only used in tests"
+  weight: 3
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: "Reviewer explicitly checked rule #12 (Dev-only deps) and concluded: \"\
+    serde_json is in both [dependencies] and [dev-dependencies] \u2014 acceptable\
+    \ for crate that may serialize ASTs.\" This is the opposite conclusion \u2014\
+    \ they examined the issue and decided it was fine, when the ground truth says\
+    \ serde_json has zero src/ usage and should be dev-only."
+- finding_id: I9
+  title: AxiQLError is a string-bag struct, not a thiserror enum
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer finding: \"[TYPE] FieldRef::FromStr uses type Err = String \u2014\
+    \ SOUL.md #5 requires domain error types, not string bags.\" While this targets\
+    \ FieldRef::FromStr rather than AxiQLError specifically, the reviewer also noted\
+    \ in rule compliance that AxiQLError's structure was examined. The ground truth\
+    \ about string-bag error types and unused thiserror is partially addressed by\
+    \ the reviewer flagging string error types as a pattern violation."
+- finding_id: I10
+  title: FieldRef::new() accepts invalid input at parser trust boundary
+  weight: 7
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer finding: \"[TYPE] FieldRef::new('') / FromStr('') inconsistency\
+    \ \u2014 new() silently produces empty segments, FromStr rejects. Rule #13 violation.\"\
+    \ TEA also wrote test `field_ref_new_empty_should_reject`. However, the reviewer\
+    \ dismissed it as non-blocking because \"parser's field_ref() combinator requires\
+    \ at_least(1) identifier characters, so empty strings cannot reach FieldRef::new()\
+    \ through the parser path.\" The finding was flagged but the security boundary\
+    \ concern was downplayed."
+- finding_id: I11
+  title: FieldRef::Display breaks alias resolution for array-indexed fields
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: "TEA wrote test `field_ref_display_from_str_roundtrip_with_array_index`\
+    \ (query_types_edge_test.rs) \u2014 listed as failing test #11: \"Display loses\
+    \ bracket notation\". Dev fixed by adding `array_indices` field to FieldRef for\
+    \ Display/FromStr roundtrip fidelity. Reviewer VERIFIED the roundtrip fix. The\
+    \ ground truth concern about alias resolution breaking due to Display output is\
+    \ directly addressed by preserving bracket notation in Display."
+- finding_id: I12
+  title: "Alias resolution stops at depth 2 \u2014 3-hop chains silently truncate"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: "TEA wrote test `alias_chain_depth_three_resolves_fully` (aliases_test.rs)\
+    \ \u2014 listed as failing test #8: \"Only 2-level chain resolution (AC-4)\".\
+    \ Dev fixed with loop-based resolution up to 10 levels deep. Reviewer VERIFIED:\
+    \ \"aliases.rs:22-38: loop-based resolution with MAX_CHAIN_DEPTH=10.\""
+- finding_id: I13
+  title: 'TypeConstraint::for_op() wildcard defeats #[non_exhaustive] intent'
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer confirmed finding: "[SILENT] TypeConstraint::for_op wildcard
+    _ => EQUALITY_TYPES silently applies wrong constraints to future CompareOp variants"
+    at type_system.rs:58. Rated MEDIUM severity. Matches the ground truth exactly.'
+- finding_id: I14
+  title: Recursive parser has no nesting depth limit (CWE-674/400)
+  weight: 0
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: "TEA wrote test `parser_has_nesting_depth_limit` (parser_security_test.rs)\
+    \ \u2014 listed as failing test #5: \"No depth limit (CWE-674)\". Dev implemented\
+    \ MAX_NESTING_DEPTH=128 pre-parse check. Reviewer VERIFIED: \"CWE-674 nesting\
+    \ depth limited.\""
+- finding_id: I15
+  title: FieldRef::new() corrupts vendor extension bracket notation with dots
+  weight: 0
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: No test or finding addresses FieldRef::new() corrupting vendor extension
+    bracket notation with dots (e.g., "unmapped['claroty.alert_type']" splitting on
+    dot inside brackets). The FieldRef changes added array_indices tracking but the
+    splitting logic for dot-inside-brackets was not tested or flagged.
+- finding_id: I16
+  title: No regression tests for security fixes
+  weight: 0
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: The ground truth asks for regression tests specifically covering error
+    paths of the security fixes (MAX_QUERY_LENGTH, integer(), positive_usize(), validate_cidr()).
+    While TEA wrote some security tests, the reviewer noted 3 vacuous test assertions
+    and the specific error path coverage for all security fixes is incomplete. The
+    pipeline did not explicitly flag the absence of regression tests for the fixes
+    as a finding.
+- finding_id: I17
+  title: NOT IN never tested through the parser
+  weight: 0
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: "The ground truth says NOT IN was never tested through the parser \u2014\
+    \ only ast_test.rs constructs it manually. However, TEA DID write `parse_filter_not_in_list`\
+    \ in parser_test.rs which IS a parser integration test. This finding appears to\
+    \ be about the state BEFORE the pipeline ran. The pipeline actually fixed this\
+    \ by writing the parser test. Since I17 is a NEW issue (0pts) about 'feature without\
+    \ test' and the pipeline DID write the parser-level test, this is actually caught."

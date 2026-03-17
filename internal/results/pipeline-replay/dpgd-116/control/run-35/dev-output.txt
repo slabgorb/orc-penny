@@ -1,0 +1,35 @@
+## Dev Assessment
+
+**Implementation Complete:** Yes
+
+**Pre-existing Issues Fixed:**
+
+| Issue | Location | Fix |
+|-------|----------|-----|
+| TenantId Deserialize bypass (CWE-20) | `axiathon-core/src/types.rs:11` | Added `#[serde(try_from = "String")]` + `TryFrom<String>` impl routing through `new()` |
+| UUID parse error details discarded | `axiathon-core/src/types.rs:27` | Preserved original error: `format!("...({e})")` |
+| Test `unwrap_or("")` silent failure | `client_http_integration.rs:137,160` | Changed to `.expect("header value should be valid ASCII")` |
+| Test `contains("serve")` substring match | `cli_structure_integration.rs:103` | Check subcommand names directly |
+
+**Files Changed:**
+
+| File | Description |
+|------|-------------|
+| `crates/axiathon-core/src/types.rs` | TenantId serde bypass fix, UUID error preservation |
+| `crates/axiathon-core/tests/core_types_integration.rs` | Fixed roundtrip test, added deserialize rejection tests |
+| `Cargo.toml` | Added workspace deps: clap_complete, comfy-table, csv, dirs, http, toml; added clap `env` feature |
+| `crates/axiathon-client/Cargo.toml` | Full dependency list for CLI framework |
+| `crates/axiathon-client/src/lib.rs` | Module re-exports |
+| `crates/axiathon-client/src/error.rs` | `CliError` enum with `exit_code()`, CWE-209 safe Display |
+| `crates/axiathon-client/src/cli.rs` | Clap derive CLI: 10 command groups, 7 global flags |
+| `crates/axiathon-client/src/output.rs` | `OutputFormat`, `OutputFormatter` trait, `TableFormatter`, `CsvFormatter`, `ResponseMetadata` |
+| `crates/axiathon-client/src/client.rs` | `SiemClient` with header building, CWE-113 protection, HTTP status mapping |
+| `crates/axiathon-client/src/config.rs` | `ClientConfig` TOML loading with env var overrides |
+| `crates/axiathon-client/src/commands/*.rs` | 10 command modules (8 stubs + completion + init) |
+| Test files | Fixed clippy issues, `CommandFactory` import, `unwrap_or` → `expect` |
+
+**Tests:** 111/111 passing (GREEN) for axiathon-client, 100/100 for axiathon-core
+**Clippy:** Clean (0 warnings)
+**Branch:** (detached HEAD — needs branch creation for PR)
+
+**Handoff:** To next phase (verify or review)

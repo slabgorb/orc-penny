@@ -1,0 +1,52 @@
+RED state confirmed. Here's the summary:
+
+## TEA Assessment
+
+**Tests Required:** Yes
+**Story:** 6.1 — CLI Framework & Structure
+
+### Pre-existing Issues Fixed
+
+Removed 9 tautological tests and 1 vacuous assertion from `axiathon-core`:
+- `result_type_alias`, `error_propagation_{parse,auth,storage,internal}_variant` — construct Err then match
+- `api_error_struct_fields`, `field_error_struct_fields`, `api_meta_struct_fields` — set-then-read
+- `api_meta_all_fields_optional` — `None.is_none()` cannot fail
+- Fixed `event_ids_are_time_ordered` / `alert_ids_are_time_ordered` — strict `<` with sleep
+- Added boundary tests for empty `TenantContext`/`SystemContext` fields
+
+### Test Files
+
+| File | Tests | Description |
+|------|-------|-------------|
+| `tests/cli_structure_tests.rs` | 26 | AC-1, AC-2, AC-5, AC-6, AC-9, AC-10 |
+| `tests/error_output_tests.rs` | 25 | AC-3, AC-4, HTTP mapping, CWE-209 |
+| `tests/client_config_tests.rs` | 22 | AC-7, AC-8, CWE-113, config validation |
+| **Total** | **73** | Covering all 10 ACs |
+
+### Results
+
+- **cli_structure_tests:** 17 passed, 9 failed
+- **error_output_tests:** 5 passed, 20 failed
+- **client_config_tests:** 4 passed, 18 failed
+- **axiathon-core:** 96 passed (no regressions)
+
+**Status:** RED — 47 tests failing on `todo!()` panics (correct failure reason, not import errors)
+
+### Rule Coverage
+
+| Rule | Test(s) | Status |
+|------|---------|--------|
+| #1 silent errors | `cli_error_display_*`, CWE-209 tests | failing |
+| #2 non_exhaustive | `commands_enum_is_non_exhaustive`, `cli_error_enum_is_non_exhaustive` | passing (stubs have it) |
+| #5 validated constructors | `client_config_deserialize_rejects_*` | failing |
+| #8 Deserialize bypass | `client_config_deserialize_rejects_empty_server_url` | failing |
+| #9 private fields | `siem_client_token_is_not_directly_accessible` | failing |
+| #10 tenant context | `siem_client_injects_tenant_header` | failing |
+| #11 workspace deps | `cargo_toml_uses_workspace_dependencies` | passing |
+| #13 constructor/deser consistency | `client_config_deserialize_rejects_*` | failing |
+| CWE-113 header injection | `siem_client_rejects_header_injection_*` | failing |
+| CWE-209 info leakage | `cli_error_display_does_not_expose_*`, `cli_error_from_5xx_*` | failing |
+
+**Self-check:** 0 vacuous tests found in new code. All assertions test meaningful properties.
+
+**Handoff:** To Dev for implementation (GREEN phase).

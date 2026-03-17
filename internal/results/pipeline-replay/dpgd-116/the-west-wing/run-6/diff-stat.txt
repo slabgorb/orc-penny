@@ -1,0 +1,27 @@
+ .claude/settings.json                              |   19 +
+ .pennyfarthing                                     |    1 +
+ .session/pipeline-session.md                       |    7 +
+ CLAUDE.md                                          | 1220 ++++++++++++++++++++
+ Cargo.lock                                         |  683 ++++++++++-
+ Cargo.toml                                         |    9 +-
+ crates/axiathon-client/Cargo.toml                  |   14 +
+ crates/axiathon-client/src/cli.rs                  |   84 ++
+ crates/axiathon-client/src/client.rs               |   76 ++
+ crates/axiathon-client/src/commands/completion.rs  |   13 +
+ crates/axiathon-client/src/commands/mod.rs         |    4 +
+ crates/axiathon-client/src/commands/stubs.rs       |   25 +
+ crates/axiathon-client/src/config.rs               |  118 ++
+ crates/axiathon-client/src/error.rs                |   85 ++
+ crates/axiathon-client/src/lib.rs                  |    7 +
+ crates/axiathon-client/src/output.rs               |   96 ++
+ .../axiathon-client/tests/cli_structure_tests.rs   |  417 +++++++
+ .../axiathon-client/tests/client_config_tests.rs   |  373 ++++++
+ crates/axiathon-client/tests/error_output_tests.rs |  361 ++++++
+ crates/axiathon-core/src/types.rs                  |    9 +
+ .../axiathon-core/tests/core_types_integration.rs  |  146 +--
+ crates/axiathon-core/tests/types_integration.rs    |   22 +-
+ 22 files changed, 3684 insertions(+), 105 deletions(-)
+
+(uncommitted after reviewer):
+ CLAUDE.md | 803 ++++++++++++++++++++++++++++++++++++++++++++------------------
+ 1 file changed, 574 insertions(+), 229 deletions(-)

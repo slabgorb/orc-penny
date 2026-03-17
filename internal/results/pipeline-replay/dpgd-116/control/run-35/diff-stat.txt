@@ -1,0 +1,38 @@
+ .claude/settings.json                              |   19 +
+ .pennyfarthing                                     |    1 +
+ .session/pipeline-session.md                       |    7 +
+ CLAUDE.md                                          | 1220 ++++++++++++++++++++
+ Cargo.lock                                         |  304 ++++-
+ Cargo.toml                                         |   10 +-
+ crates/axiathon-client/Cargo.toml                  |   15 +
+ crates/axiathon-client/src/cli.rs                  |  180 +++
+ crates/axiathon-client/src/client.rs               |   90 ++
+ crates/axiathon-client/src/commands/alerts.rs      |    7 +
+ crates/axiathon-client/src/commands/completion.rs  |   15 +
+ crates/axiathon-client/src/commands/config.rs      |    7 +
+ crates/axiathon-client/src/commands/ingest.rs      |    7 +
+ crates/axiathon-client/src/commands/init.rs        |   14 +
+ crates/axiathon-client/src/commands/login.rs       |    7 +
+ crates/axiathon-client/src/commands/mod.rs         |   12 +
+ crates/axiathon-client/src/commands/query.rs       |    7 +
+ crates/axiathon-client/src/commands/rules.rs       |    7 +
+ crates/axiathon-client/src/commands/status.rs      |    7 +
+ crates/axiathon-client/src/commands/tenant.rs      |    7 +
+ crates/axiathon-client/src/config.rs               |   99 ++
+ crates/axiathon-client/src/error.rs                |   57 +
+ crates/axiathon-client/src/lib.rs                  |    7 +
+ crates/axiathon-client/src/output.rs               |  120 ++
+ .../tests/cli_structure_integration.rs             |  341 ++++++
+ .../tests/client_http_integration.rs               |  228 ++++
+ .../tests/config_loading_integration.rs            |  164 +++
+ .../tests/error_exit_codes_integration.rs          |  191 +++
+ .../tests/output_format_integration.rs             |  190 +++
+ .../tests/stub_handlers_integration.rs             |  172 +++
+ crates/axiathon-core/src/types.rs                  |   15 +-
+ .../axiathon-core/tests/core_types_integration.rs  |   71 +-
+ crates/axiathon-core/tests/types_integration.rs    |   46 +-
+ 33 files changed, 3579 insertions(+), 65 deletions(-)
+
+(uncommitted after reviewer):
+ CLAUDE.md | 803 ++++++++++++++++++++++++++++++++++++++++++++------------------
+ 1 file changed, 574 insertions(+), 229 deletions(-)

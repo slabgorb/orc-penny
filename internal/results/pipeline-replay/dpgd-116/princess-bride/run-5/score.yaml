@@ -1,0 +1,78 @@
+scenario_id: dpgd-116
+theme: princess-bride
+run_id: 5
+model: opus
+judge_version: v2
+total_caught: 5
+total_findings: 7
+weighted_caught: 23
+total_weight: 37
+score_pct: 62.2
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: false
+  caught_by: null
+  evidence: Pipeline verified ClientConfig::load() returns errors on invalid TOML,
+    but never addressed the from_file_or_default pattern that swallows all errors
+    via unwrap_or_default(). The silent timeout env var finding is a different code
+    path.
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote CWE-209 tests: ''security_error_display_does_not_echo_raw_input''
+    and ''security_server_error_does_not_expose_stack_trace''. Dev also fixed CWE-209
+    input echo in TenantId validation error. Same vulnerability class (CWE-209 information
+    exposure) addressed.'
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: reviewer
+  evidence: "Reviewer explicitly flagged: 'SiemClient.tenant_id is Option<String>\
+    \ bypassing TenantId newtype \u2014 tenant enters HTTP header without validation'\
+    \ at client.rs:15,44. Rated MEDIUM with fix: 'Accept TenantId in with_tenant(),\
+    \ validate at CLI dispatch boundary.' Security subagent and tenant isolation audit\
+    \ both identified this."
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: true
+  caught_by: tea
+  evidence: "TEA wrote test 'rule11_cargo_toml_uses_workspace_deps' (passing). Dev\
+    \ implemented all deps with workspace = true. Reviewer verified: 'Workspace deps\
+    \ all use { workspace = true } \u2014 Cargo.toml has 12 deps, all workspace-referencing.'"
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: 'Pipeline never mentioned serde silently ignoring unknown fields, #[serde(deny_unknown_fields)],
+    or the risk of a user placing a token field in config. The silent-failure-hunter
+    found AXIATHON_TIMEOUT parsing (different issue), not the unknown-fields problem.'
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: dev
+  evidence: Dev explicitly 'fixed 6 weak/tautological tests' including 'tautology,
+    zero-assertion, vacuous assertion, missing checks'. Same category of vacuous/tautological
+    test assertions addressed.
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: dev
+  evidence: Dev fixed 6 weak/tautological tests explicitly listing 'zero-assertion'
+    as one of the fix categories. Same issue type (test with no meaningful assertions)
+    addressed.

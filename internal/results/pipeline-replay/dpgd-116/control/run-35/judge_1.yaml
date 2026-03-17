@@ -1,0 +1,81 @@
+scenario_id: dpgd-116
+theme: null
+run_id: 35
+model: null
+judge_model: claude-opus-4-6
+judge_version: v2
+judge_pass: 1
+total_caught: 5
+total_findings: 7
+weighted_caught: 26
+total_weight: 37
+score_pct: 70.3
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote tests for rule #1 (silent errors): config_invalid_timeout_env_returns_error
+    and config_rejects_invalid_toml, both designed to fail if errors are swallowed.
+    Dev then implemented config loading that returns errors on invalid TOML rather
+    than silently defaulting.'
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: TEA wrote cli_error_server_error_display_does_not_expose_internals targeting
+    CWE-209. Dev implemented CWE-209 safe Display on CliError. Reviewer then caught
+    remaining CWE-209 gap in Unauthorized/NotFound variants echoing raw server body
+    (error.rs:19,22), flagging it as MEDIUM confirmed finding.
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: TEA wrote siem_client_rejects_tenant_id_with_newlines and siem_client_rejects_token_with_newlines
+    targeting CWE-113. Dev implemented HeaderValue::from_str() validation at client.rs:62,70.
+    Reviewer verified CWE-113 header injection prevented.
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: true
+  caught_by: dev
+  evidence: "Dev added all dependencies using { workspace = true } in crates/axiathon-client/Cargo.toml.\
+    \ Reviewer verified: 'All dependencies use { workspace = true } \u2014 COMPLIANT'\
+    \ under lang-review #11."
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: reviewer
+  evidence: 'Reviewer''s devil''s advocate explicitly flags: ''they also typo their
+    config file with api_ulr... no error, the default http://localhost:8080 is silently
+    used... The TOML parser accepts unknown fields by default, which is serde''s behavior,
+    but it means config file typos are invisible.'' Same issue class as the token
+    field being silently ignored by serde.'
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: "TEA self-check reported '0 vacuous tests found' \u2014 this means the\
+    \ pipeline looked for vacuous assertions and concluded there were none, missing\
+    \ this specific is_none() || true pattern. No phase identified this test."
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase identified the zero-assertion test (let _ = config). TEA's self-check
+    claimed 0 vacuous tests. Dev fixed unwrap_or('') to .expect() which is a different
+    issue (weak assertion, not zero assertion). The specific no-assertion pattern
+    was not flagged.

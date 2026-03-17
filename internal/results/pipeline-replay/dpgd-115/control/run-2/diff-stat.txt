@@ -1,0 +1,23 @@
+ .claude/settings.json                              |   19 +
+ .pennyfarthing                                     |    1 +
+ .session/pipeline-session.md                       |    7 +
+ CLAUDE.md                                          | 1231 ++++++++++++++++++++
+ crates/axiathon-core/src/query_types.rs            |   51 +-
+ .../axiathon-core/tests/core_types_integration.rs  |   73 +-
+ .../axiathon-core/tests/query_types_edge_test.rs   |  431 +++++++
+ crates/axiathon-query/src/aliases.rs               |   25 +-
+ crates/axiathon-query/src/config.rs                |    4 +
+ crates/axiathon-query/src/parser.rs                |  231 +++-
+ crates/axiathon-query/tests/aliases_test.rs        |  142 +++
+ crates/axiathon-query/tests/ast_test.rs            |  442 +++++--
+ crates/axiathon-query/tests/config_test.rs         |  144 ++-
+ crates/axiathon-query/tests/error_test.rs          |   75 +-
+ .../axiathon-query/tests/parser_security_test.rs   |  466 ++++++++
+ crates/axiathon-query/tests/parser_test.rs         |  563 ++++++++-
+ crates/axiathon-query/tests/type_system_test.rs    |  146 ++-
+ crates/axiathon-query/tests/version_test.rs        |   80 +-
+ 18 files changed, 3831 insertions(+), 300 deletions(-)
+
+(uncommitted after reviewer):
+ CLAUDE.md | 803 ++++++++++++++++++++++++++++++++++++++++++++------------------
+ 1 file changed, 574 insertions(+), 229 deletions(-)

@@ -1,0 +1,40 @@
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 6.1 introduces the entire CLI framework — all ACs need test coverage
+
+**Test Files:**
+| File | Description | Tests |
+|------|-------------|-------|
+| `crates/axiathon-client/tests/cli_structure_integration.rs` | AC-1 (command groups), AC-2 (help), AC-5 (global flags), AC-6 (derive), AC-9 (completion) | 30 |
+| `crates/axiathon-client/tests/error_exit_codes_integration.rs` | AC-3 (exit codes), CliError variants, CWE-209 safety | 16 |
+| `crates/axiathon-client/tests/output_format_integration.rs` | AC-4 (table/json/csv), OutputFormatter, ResponseMetadata, CSV escaping | 14 |
+| `crates/axiathon-client/tests/client_http_integration.rs` | AC-7 (SiemClient), header injection, HTTP→CliError mapping | 14 |
+| `crates/axiathon-client/tests/config_loading_integration.rs` | AC-8 (config loading), env overrides, TOML parsing, token exclusion | 10 |
+| `crates/axiathon-client/tests/stub_handlers_integration.rs` | AC-10 (stub handlers), story references, consistent error variant | 13 |
+
+**Tests Written:** 97 tests covering all 10 ACs
+**Status:** RED (failing to compile — modules don't exist yet)
+
+### Rule Coverage
+
+| Rule | Test(s) | Status |
+|------|---------|--------|
+| #1 silent errors | `config_invalid_timeout_env_returns_error`, `config_rejects_invalid_toml` | failing |
+| #2 non_exhaustive | `cli_error_is_non_exhaustive` | failing |
+| #5 validated constructors | `config_rejects_invalid_toml`, `output_format_from_str_invalid_returns_err` | failing |
+| #6 test quality | Self-checked — all tests have meaningful assertions | n/a |
+| #8 Deserialize bypass | `client_config_serializes_and_deserializes_consistently` | failing |
+| #9 public fields | `siem_client_exposes_base_url_via_getter` (private fields, getter access) | failing |
+| #13 constructor/deserialize consistency | `client_config_serializes_and_deserializes_consistently` | failing |
+| CWE-113 header injection | `siem_client_rejects_tenant_id_with_newlines`, `siem_client_rejects_token_with_newlines` | failing |
+| CWE-209 error exposure | `cli_error_server_error_display_does_not_expose_internals` | failing |
+
+**Rules checked:** 9 of 15 applicable lang-review rules have test coverage
+**Self-check:** 0 vacuous tests found
+
+### Pre-existing Issues Fixed
+- 5 high-confidence findings fixed in `core_types_integration.rs`
+- 2 medium-confidence findings fixed in `types_integration.rs`
+
+**Handoff:** To Dev for implementation (GREEN phase)

@@ -1,0 +1,171 @@
+## Subagent Results
+
+| # | Specialist | Received | Status | Findings | Decision |
+|---|-----------|----------|--------|----------|----------|
+| 1 | reviewer-preflight | Yes | clean | 0 — tests pass, clippy clean | N/A |
+| 2 | reviewer-edge-hunter | Yes | findings | 9 | confirmed 5, dismissed 2, deferred 2 |
+| 3 | reviewer-silent-failure-hunter | Yes | findings | 7 | confirmed 3, dismissed 2, deferred 2 |
+| 4 | reviewer-test-analyzer | Yes | findings | 11 | confirmed 5, dismissed 4, deferred 2 |
+| 5 | reviewer-comment-analyzer | Yes | findings | 4 | confirmed 2, dismissed 1, deferred 1 |
+| 6 | reviewer-type-design | Yes | findings | 12 | confirmed 5, dismissed 4, deferred 3 |
+| 7 | reviewer-security | Yes | findings | 4 | confirmed 2, dismissed 1, deferred 1 |
+| 8 | reviewer-simplifier | Yes | findings | 6 | confirmed 3, dismissed 2, deferred 1 |
+| 9 | reviewer-rule-checker | Yes | findings | 12 | confirmed 7, dismissed 2, deferred 3 |
+
+**All received:** Yes (9 returned, 8 with findings)
+**Total findings:** 14 confirmed, 18 dismissed (with rationale below), 15 deferred
+
+### Dismissal Rationale (key dismissals)
+
+- **`_inner: reqwest::Client` dead code** [SIMPLE]: Dismissed — this is a stub crate. The field is scaffolding for HTTP methods that will be added in Stories 6.2-6.5. Removing and re-adding increases churn.
+- **`OutputFormat` missing `#[non_exhaustive]`** [TYPE/RULE]: Dismissed — OutputFormat is a closed set defined by AC-4 (`table|json|csv`). Adding formats requires updating `ValueEnum` and `OutputFormatter` anyway. `non_exhaustive` adds cost (wildcard arms everywhere) with no benefit for a CLI-internal enum. Per SOUL.md #1, pragmatism wins.
+- **`from_http_status` mapping 2xx/3xx to ServerError** [EDGE]: Dismissed — this function is only called on HTTP error responses. The catch-all exists for unexpected 4xx codes (e.g., 418). Caller responsibility to only invoke on error status codes. Adding guards for success codes is over-engineering.
+- **`Cli.config` is `Option<String>` not `Option<PathBuf>`** [TYPE]: Dismissed — clap parses `PathBuf` but the config loading path uses `Path::new()` on the string anyway. Low impact at current maturity.
+- **`Cli.server` is `Option<String>` not validated URL** [TYPE]: Dismissed — URL validation happens at HTTP request time via reqwest. Early validation adds a dependency on url crate for no runtime benefit since reqwest will reject bad URLs anyway.
+- **format_csv `.expect()` calls** [TYPE/RULE]: Dismissed — writing to an in-memory `Vec<u8>` writer cannot fail. The `.expect()` messages are actionable. The project rule says "no `unwrap()` in production code — use `?` or `expect()` with actionable message." These use `expect()` with actionable messages on infallible operations.
+- **`exit_code_success_is_zero` tautology** [TEST]: Dismissed — tautological but harmless documentation test. Does not mask bugs. Not worth blocking on.
+- **`output_format_has_all_variants` zero assertions** [TEST]: Dismissed — compile-time structural test. Variants are exercised by formatter tests. Harmless.
+
+---
+
+### Rule Compliance
+
+**Rule #1: Silent error swallowing**
+- `client.rs:64` — `if let Ok(val) = HeaderValue::from_str(tenant)` — **VIOLATION**. Silent tenant header drop. Verified at line 64: if `from_str` returns `Err`, no log, no error, request goes out without `X-Tenant-ID`. Same at line 70 for `Authorization`.
+- `output.rs:78` — `unwrap_or_default()` on `serde_json::to_string_pretty` — **MEDIUM**. Returns empty string on failure. Low practical risk (wrapper is well-formed JSON) but violates the spirit of "silent failures are the enemy."
+- `completion.rs:12` — `unwrap_or_default()` — **LOW**. clap_complete produces valid UTF-8. Acceptable.
+
+**Rule #2: `#[non_exhaustive]` on enums that will grow**
+- `CliError` — compliant at `error.rs:19`
+- `Commands` — compliant at `cli.rs:48`
+- `AxiathonError` — compliant at `core/error.rs:14`
+- `OutputFormat` — dismissed (closed set per AC-4)
+
+**Rule #5: Validated constructors at trust boundaries**
+- `TenantId::new()` — compliant: validates UUID format
+- `SiemClient::try_new()` — compliant: validates CRLF
+- `ClientConfig` via `TryFrom<RawClientConfig>` — compliant for deserialization path
+- `ClientConfig::from_values()` — **VIOLATION** at `config.rs:75`: bypasses validation, accepts empty `server_url` and `timeout_seconds=0`
+
+**Rule #8: `#[serde(try_from)]` on validated types**
+- `TenantId` at `types.rs:12` — compliant: `#[serde(try_from = "String")]`
+- `ClientConfig` at `config.rs:24` — compliant: `#[serde(try_from = "RawClientConfig")]`
+
+**Rule #9: Private fields with getters on security-critical types**
+- `SiemClient` — compliant: all fields private, `base_url()` getter, token only via `default_headers()`
+- `ClientConfig` — compliant: private fields, `server_url()` and `timeout_seconds()` getters
+- `TenantContext`/`SystemContext` — compliant (pre-existing, unchanged)
+
+**Rule #11: Workspace dependency compliance**
+- All 12 dependencies in `axiathon-client/Cargo.toml` use `{ workspace = true }` — compliant
+- Dev-dependencies (`assert_cmd`, `predicates`, `tempfile`) correctly inline-versioned (not in workspace) — compliant
+
+**Rule #13: Constructor/Deserialize validation consistency**
+- `TenantId` — compliant after fix: `TryFrom<String>` routes through `new()`
+- `ClientConfig` — **VIOLATION**: `from_values()` at line 75 accepts empty `server_url`; `apply_env_overrides()` at line 83, `with_env_override()` at line 91, `with_cli_override()` at line 100 can all set empty `server_url` or zero `timeout` post-construction, bypassing `TryFrom` invariants. 4 methods undermine the validation gate.
+
+---
+
+### Tenant Isolation Audit
+
+- `SiemClient.tenant` — private field at `client.rs:13`. No public setter. Value set at construction only.
+- `default_headers()` injects `X-Tenant-ID` at `client.rs:64-66` — but **silently skips** if `HeaderValue::from_str` fails. This is the most security-relevant finding: a malformed tenant value silently disables tenant scoping.
+- No trait methods handle tenant data in this crate (correct — client-side uses header injection pattern).
+
+---
+
+### Data Flow Trace
+
+Input: `--tenant "acme-corp"` on CLI
+- Parsed by clap into `Cli.tenant: Option<String>` at `cli.rs:32` (raw string, no validation)
+- Passed to `SiemClient::new(url, Some("acme-corp"), token)` at construction
+- Stored in `SiemClient.tenant: Option<String>` (private)
+- On request: `default_headers()` calls `HeaderValue::from_str("acme-corp")` — succeeds for ASCII
+- Header `X-Tenant-ID: acme-corp` injected
+- **Gap**: No validation that tenant is a valid `TenantId` (UUID). A non-UUID tenant like "acme-corp" would be accepted by the CLI and SiemClient, then rejected by the server. Acceptable at CLI layer — server enforces.
+
+---
+
+### Devil's Advocate
+
+**What would a malicious operator do?**
+
+1. **Header injection via `SiemClient::new()`**: An attacker who can control the `--tenant` flag passes `"evil\r\nX-Admin: true"`. The `new()` constructor accepts it (no validation). However, `HeaderValue::from_str` at line 64 rejects the CRLF — the header is silently dropped. The request goes out **without any tenant header**, potentially hitting a default/admin tenant on a misconfigured server. Defense-in-depth from reqwest saves us, but the **silent drop** means the operator doesn't know their tenant was rejected.
+
+2. **Config file with token**: An operator accidentally writes `token = "secret"` in `cli.toml`. With `deny_unknown_fields`, parsing fails with a clear error. **Good defense.**
+
+3. **Empty server_url via override chain**: `ClientConfig::from_values("", 0)` silently creates a config with empty URL. If this propagates to `SiemClient`, `reqwest` would fail at request time with an opaque URL parse error. The test `client_config_deserialize_rejects_empty_server_url` proves the deserialization path rejects this, but `from_values()` and the override methods don't. **In practice**, `from_values()` is only called in tests and the config precedence test with valid values. But the API is public — nothing prevents misuse.
+
+4. **`from_http_status(200, "")` returns `ServerError`**: If a caller accidentally maps a success code, they get a misleading error. Low risk since the function is only called on error paths.
+
+5. **Race condition in config loading**: `load_from_path` reads the file and parses it non-atomically. A concurrent writer could produce garbled TOML. Low risk for a CLI tool — config files don't change during execution.
+
+6. **CWE-209 in `TenantId::new()`**: Error message at `types.rs:37` includes raw user input: `format!("TenantId must be a valid UUID, got: {id}")`. If this error propagates to an API response without sanitization, it echoes attacker-controlled input. The `AxiathonError` Display is documented as internal-only, and the future `From<AxiathonError> for ApiError` conversion must sanitize. **Risk is deferred, not eliminated.**
+
+The devil's advocate reveals one actionable issue not in any subagent report: the **silent header drop** is the most dangerous because it's a security mechanism that fails open (drops tenant isolation) rather than closed (rejects the request).
+
+---
+
+### Confirmed Findings
+
+| Severity | Tag | Issue | Location | Fix Required |
+|----------|-----|-------|----------|--------------|
+| [HIGH] | [SILENT][EDGE] | `default_headers()` silently drops tenant/auth headers when `HeaderValue::from_str` fails — request proceeds without tenant isolation or authentication, no log/error | `client.rs:64,70` | Add `tracing::warn!` when header value is rejected, or return `Result<HeaderMap, CliError>` |
+| [HIGH] | [RULE] | `ClientConfig::from_values()` bypasses `TryFrom` validation — accepts empty `server_url` and zero `timeout_seconds` | `config.rs:75` | Validate or rename to `from_values_unchecked` with doc warning |
+| [HIGH] | [RULE] | `apply_env_overrides()`, `with_env_override()`, `with_cli_override()` can overwrite validated fields with invalid values (empty URL, zero timeout) | `config.rs:83,91,100` | Validate inputs in override methods |
+| [MEDIUM] | [TYPE] | `TryFrom<RawClientConfig>` uses `type Error = String` — project rules require domain error types | `config.rs:31` | Use `CliError::Config` or dedicated error type |
+| [MEDIUM] | [RULE] | `try_new()` validates tenant/token for CRLF but does not validate `base_url` | `client.rs:33` | Add CRLF check for `base_url` |
+| [MEDIUM] | [DOC] | Module doc says "Maps HTTP status codes to CliError variants" but SiemClient doesn't — mapping is in `CliError::from_http_status()` | `client.rs:4` | Fix module doc |
+| [MEDIUM] | [DOC] | `from_values()` doc doesn't mention it bypasses validation | `config.rs:74` | Add doc: "Does not validate. Use for trusted internals only." |
+| [MEDIUM] | [RULE] | `try_new()` CRLF rejection has no `tracing::warn!` — security events must be observable | `client.rs:37-50` | Add `tracing::warn!` on rejection |
+| [LOW] | [TEST] | `client_config_rejects_token_in_config_file` has no effective assertion — `if let Ok` branch discards result | `client_config_tests.rs:222` | Assert `result.is_err()` unconditionally |
+| [LOW] | [TEST] | `server_flag_reads_env_var` doesn't actually test env var — only tests default is None | `cli_structure_tests.rs:194` | Rename or test with actual env var |
+| [LOW] | [SIMPLE] | `apply_env_overrides` and `with_env_override` duplicate logic — keep only the consuming version | `config.rs:83,91` | Remove `apply_env_overrides`, use `with_env_override` |
+
+---
+
+### VERIFIEDs
+
+- [VERIFIED] `#![forbid(unsafe_code)]` on axiathon-client — evidence: `lib.rs:2` contains `#![forbid(unsafe_code)]`. Complies with rust.md safety rule.
+- [VERIFIED] `TenantId` deserialization routes through validating constructor — evidence: `types.rs:12` has `#[serde(try_from = "String")]`, `types.rs:15-21` implements `TryFrom<String>` calling `Self::new(s)`. Complies with rust.md rule #8.
+- [VERIFIED] `CliError` has `#[non_exhaustive]` — evidence: `error.rs:19`. Complies with rust.md rule #2.
+- [VERIFIED] `Commands` has `#[non_exhaustive]` — evidence: `cli.rs:48`. Complies with rust.md rule #2.
+- [VERIFIED] `ServerError` Display is generic "server error" — evidence: `error.rs:25` `#[error("server error")]`. String payload is for logging only. Complies with CWE-209 / SOUL.md #5.
+- [VERIFIED] `from_http_status` does not echo response body — evidence: `error.rs:75-83`, `_body` parameter is unused. Complies with CWE-209.
+- [VERIFIED] `ClientConfig` uses `deny_unknown_fields` — evidence: `config.rs:12` on `RawClientConfig`. Token in config file will be rejected.
+- [VERIFIED] `SiemClient.token` is private with no getter — evidence: `client.rs:14` `token: Option<String>` (no `pub`). Only accessible through `default_headers()`. Complies with rust.md rule #9.
+- [VERIFIED] All workspace dependencies use `{ workspace = true }` — evidence: `axiathon-client/Cargo.toml` lines 9-22, all 12 deps use workspace. Complies with rust.md rule #11.
+- [VERIFIED] Dev-only deps are in `[dev-dependencies]` — evidence: `Cargo.toml` lines 24-26, `assert_cmd`, `predicates`, `tempfile` correctly placed. Complies with rust.md rule #12.
+
+**Challenge against subagent findings**: No subagent contradicted any VERIFIED. Rule-checker confirmed all workspace dep and dev-dep compliance. Security agent confirmed private fields with getters. No conflicts.
+
+---
+
+## Reviewer Assessment
+
+**Verdict:** REJECTED
+
+The code is well-structured overall — good use of `#[serde(try_from)]`, `#[non_exhaustive]`, private fields, CWE-209 protection on error Display. The TenantId deserialization fix is a genuine security improvement. However, two HIGH-severity issues block approval:
+
+1. **Silent tenant/auth header drop** (`client.rs:64,70`): When `HeaderValue::from_str` fails, the request proceeds without tenant isolation or authentication. No error, no log. SOUL.md #4 says "Silent Failures Are the Enemy." This is a security mechanism failing open.
+
+2. **ClientConfig validation bypass** (`config.rs:75,83,91,100`): Four public methods bypass the validation that `TryFrom` enforces. `from_values("")` silently creates a config that deserialization would reject. The override methods can set empty `server_url` post-construction. This violates SOUL.md #2 ("Make the Wrong Thing Impossible") and the constructor/deserialize consistency rule.
+
+### Required Fixes (3)
+
+1. **`client.rs:64,70`**: Add `tracing::warn!` when `HeaderValue::from_str` fails, OR return `Result<HeaderMap, CliError>` from `default_headers()`. The caller must know tenant/auth headers were not set.
+
+2. **`config.rs:75`**: Either validate in `from_values()` (return `Result`) or rename to `from_values_unchecked()` with a doc comment marking it as trusted-internal-only.
+
+3. **`config.rs:83,91,100`**: Validate `server_url` is non-empty and `timeout > 0` in all override methods, or document them as unchecked.
+
+### Recommended (non-blocking)
+
+- Change `type Error = String` to `CliError::Config` in `TryFrom<RawClientConfig>` (config.rs:31)
+- Add CRLF validation for `base_url` in `try_new()` (client.rs:33)
+- Add `tracing::warn!` for CRLF rejection in `try_new()` (client.rs:37-50)
+- Fix module doc in `client.rs:4`
+
+**Handoff:** Back to Dev for fixes
+
+VERDICT: REJECT

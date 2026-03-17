@@ -1,0 +1,80 @@
+scenario_id: dpgd-116
+theme: null
+run_id: 35
+model: null
+judge_model: claude-opus-4-6
+judge_version: v2
+judge_pass: 2
+total_caught: 4
+total_findings: 7
+weighted_caught: 21
+total_weight: 37
+score_pct: 56.8
+findings:
+- finding_id: C1
+  title: from_file_or_default swallows ALL errors including parse and permission failures
+  weight: 8
+  phase_ideal: dev
+  caught: true
+  caught_by: tea
+  evidence: 'TEA wrote config_rejects_invalid_toml and config_invalid_timeout_env_returns_error
+    tests under Rule #1 (silent errors), which would fail if from_file_or_default
+    silently swallows parse/permission errors. Dev implemented config.rs with explicit
+    error handling on these paths.'
+- finding_id: I1
+  title: CliError Display leaks internal details to stderr (CWE-209)
+  weight: 5
+  phase_ideal: reviewer
+  caught: true
+  caught_by: tea
+  evidence: "TEA wrote cli_error_server_error_display_does_not_expose_internals (CWE-209).\
+    \ Dev implemented CWE-209 safe Display on CliError. Reviewer further flagged Unauthorized/NotFound\
+    \ variants still echoing raw server body (error.rs:19,22) as MEDIUM finding \u2014\
+    \ same vulnerability class, adjacent instances."
+- finding_id: I2
+  title: "SiemClient.tenant_id uses raw String \u2014 header injection risk (CWE-113)"
+  weight: 5
+  phase_ideal: tea
+  caught: true
+  caught_by: tea
+  evidence: TEA wrote siem_client_rejects_tenant_id_with_newlines and siem_client_rejects_token_with_newlines
+    tests for CWE-113. Dev implemented HeaderValue::from_str() validation at client.rs:62,70.
+    Reviewer verified CWE-113 safe.
+- finding_id: I3
+  title: Dependencies use direct version strings instead of workspace = true
+  weight: 3
+  phase_ideal: dev
+  caught: true
+  caught_by: dev
+  evidence: "Dev used { workspace = true } for all dependencies in Cargo.toml. Reviewer\
+    \ verified: 'All workspace deps compliant \u2014 Cargo.toml uses { workspace =\
+    \ true } for all shared deps. Complies with lang-review #11.'"
+- finding_id: I4
+  title: "Config token field silently ignored \u2014 secret left on disk"
+  weight: 5
+  phase_ideal: reviewer
+  caught: false
+  caught_by: null
+  evidence: 'Reviewer''s devil''s advocate section describes the exact mechanism (''serde''s
+    default behavior accepts unknown fields, config typos are invisible'') but did
+    NOT escalate it to a confirmed finding or recommend #[serde(deny_unknown_fields)].
+    The token-on-disk scenario was not flagged by any phase.'
+- finding_id: I5
+  title: "Vacuously true test \u2014 assertion is None || true"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: TEA's self-check claims '0 vacuous tests found' but the ground truth identifies
+    assert!(config.server().is_none() || ...) as vacuously true. No phase flagged
+    this specific assertion pattern. Reviewer test-analyzer confirmed 4 findings but
+    no specific evidence this was among them.
+- finding_id: I6
+  title: "Test with zero assertions \u2014 only checks non-panic"
+  weight: 5
+  phase_ideal: tea
+  caught: false
+  caught_by: null
+  evidence: No phase flagged the zero-assertion test pattern (let _ = config with
+    no assert). TEA's self-check did not identify it. Reviewer test-analyzer findings
+    not specific enough to confirm this was caught.

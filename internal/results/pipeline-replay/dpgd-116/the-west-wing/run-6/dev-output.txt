@@ -1,0 +1,32 @@
+## Dev Assessment
+
+**Implementation Complete:** Yes
+
+**Files Changed:**
+
+| File | Description |
+|------|-------------|
+| `crates/axiathon-core/src/types.rs` | Fixed TenantId serde bypass — added `#[serde(try_from = "String")]` + `TryFrom<String>` so deserialization routes through validating `new()` |
+| `crates/axiathon-core/tests/core_types_integration.rs` | Updated roundtrip test to use valid UUID; removed unused `Result` import |
+| `crates/axiathon-core/tests/types_integration.rs` | Fixed uninlined format args in time-ordering tests |
+| `crates/axiathon-client/src/error.rs` | `CliError` with `exit_code()` (0/1/2/3/4) and `from_http_status()` mapping; CWE-209 compliant — `ServerError` Display is generic, body not echoed |
+| `crates/axiathon-client/src/cli.rs` | `Cli` (Parser) + `Commands` (Subcommand) with all 12 command groups, global flags, `after_help` examples |
+| `crates/axiathon-client/src/output.rs` | `OutputFormat` (ValueEnum), `OutputFormatter` with table (comfy-table), JSON (with metadata), CSV (csv crate), TTY detection |
+| `crates/axiathon-client/src/client.rs` | `SiemClient` with `default_headers()` (X-Tenant-ID, Authorization), `try_new()` with CWE-113 CRLF validation |
+| `crates/axiathon-client/src/config.rs` | `ClientConfig` with validated deserialization via `#[serde(try_from)]`, `deny_unknown_fields`, XDG paths, env/CLI override chain |
+| `crates/axiathon-client/src/commands/completion.rs` | `generate_completion()` using `clap_complete::generate` |
+| `crates/axiathon-client/src/commands/stubs.rs` | `handle_stub()` returning `CliError::NotImplemented` with story references |
+
+**Pre-existing Issues Addressed:**
+- **TenantId serde bypass (HIGH):** Added `#[serde(try_from = "String")]` — deserialization now validates UUID format
+- **ClientConfig serde bypass (HIGH):** Added `#[serde(try_from = "RawClientConfig")]` + `deny_unknown_fields`
+- **SiemClient header injection (HIGH):** Implemented `try_new()` with CRLF rejection
+- **Clippy:** Fixed unused import and uninlined format args in core tests
+
+**Tests:** 169/169 passing (GREEN)
+- axiathon-core: 96 tests (63 + 8 + 14 + 11)
+- axiathon-client: 73 tests (26 + 22 + 25)
+
+**Clippy:** Clean on both crates (`-D warnings`)
+
+**Handoff:** To next phase (verify or review)

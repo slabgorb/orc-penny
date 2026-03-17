@@ -1,0 +1,46 @@
+## TEA Assessment
+
+**Tests Required:** Yes
+**Story:** 6.1 — CLI Framework & Structure
+
+### Test Files
+
+| File | Tests | Failing | AC Coverage |
+|------|-------|---------|-------------|
+| `tests/cli_commands.rs` | 33 | 7 | AC-1, AC-2, AC-5, AC-6 |
+| `tests/exit_codes.rs` | 14 | 9 | AC-3 |
+| `tests/output_format.rs` | 19 | 16 | AC-4 |
+| `tests/siem_client.rs` | 16 | 11 | AC-7 |
+| `tests/config_loading.rs` | 10 | 10 | AC-8 |
+| `tests/shell_completion.rs` | 7 | 6 | AC-9 |
+| `tests/stub_handlers.rs` | 12 | 12 | AC-10 |
+| **Total** | **111** | **71** | **All 10 ACs** |
+
+**Status:** RED — 71 tests failing, 40 passing (structural/compile-time checks)
+
+### Rule Coverage
+
+| Rule | Test(s) | Status |
+|------|---------|--------|
+| #1 silent errors | `siem_client_map_http_status_does_not_swallow_body` | failing |
+| #2 non_exhaustive | `cli_error_is_non_exhaustive` | passing (enum has attribute) |
+| #5 validated constructors | `config_rejects_empty_server_url`, `config_rejects_negative_timeout` | failing |
+| #6 test quality | Self-check pass — no vacuous assertions | passing |
+| #8 Deserialize bypass | N/A — no Deserialize on CliError/ClientConfig yet | — |
+| #9 public fields | `siem_client_does_not_log_auth_token` (CWE-532) | passing |
+| CWE-113 header injection | `siem_client_tenant_header_rejects_newlines` | failing |
+| CWE-209 error exposure | `error_display_does_not_expose_server_url`, `error_display_does_not_expose_token` | passing |
+
+**Rules checked:** 7 of 15 applicable lang-review rules have test coverage
+**Self-check:** 0 vacuous tests found in new code; 11 pre-existing tautological tests fixed/removed
+
+### Pre-existing Test Fixes
+
+- **Deleted 6 tautological tests** (struct field read-back, construct-then-match-self)
+- **Replaced 4 error propagation tests** with real `From`/`?` chain tests
+- **Fixed 1 incomplete assertion** (`api_meta_all_fields_optional` now checks all 3 fields)
+- **Fixed 1 weak assertion** (`tenant_id_new_rejects_too_long` now verifies `Validation` variant)
+- **Fixed 2 flaky time-ordering tests** (strict `<` with retry loop instead of `<=`)
+- axiathon-core: all 98 tests still passing
+
+**Handoff:** To Dev for implementation (GREEN phase)

@@ -1,0 +1,46 @@
+## Reviewer Assessment
+
+| Severity | Issue | Location | Fix Required |
+|----------|-------|----------|--------------|
+| [HIGH] | `expect()` on user-supplied `--tenant` value panics on non-visible-ASCII input instead of returning error | `client.rs:54` | Change `build_headers()` to return `Result<HeaderMap, CliError>`. Map `HeaderValue::from_str` errors to `CliError::General`. Update test and caller. |
+| [HIGH] | `panic!()` on user-supplied shell name crashes process with stack trace | `completion.rs:18` | Return `Result<String, CliError>` from `generate_completions`. Map unknown shell to `CliError::General`. Update `execute_command` to handle the Result. |
+| [MEDIUM] | `expect()` on auth token header panics if keychain/env token contains non-ASCII | `client.rs:60` | Same fix as above — `build_headers` returns `Result`, maps auth token header errors to `CliError::AuthenticationExpired` |
+| [MEDIUM] | Config silently ignores unknown TOML keys — typo `[servr]` uses all defaults with no warning (SOUL.md #4) | `config.rs:16` | Add `#[serde(deny_unknown_fields)]` to `RawConfig` and `ServerConfig` to reject typos at parse time |
+| [LOW] | `dirs::config_dir()` fallback to relative `.config/` path — misleading on systems with unset HOME | `config.rs:107` | Non-blocking. Consider returning `Result` or logging a warning when `dirs::config_dir()` returns None |
+| [LOW] | `siem_client_map_http_status_does_not_swallow_body` test asserts `!display.is_empty()` but `Display` never includes the body — vacuous assertion | `siem_client.rs:195` | Non-blocking. Test should assert the status code appears in display, or assert the body is stored in the variant |
+| [LOW] | `stub_handlers_reference_story_number` only checks Status, not all stubs | `stub_handlers.rs:115` | Non-blocking. Should iterate all stub commands |
+
+### Verified Good
+
+- [VERIFIED] `#![forbid(unsafe_code)]` present — `lib.rs:2`
+- [VERIFIED] `CliError` has `#[non_exhaustive]` — `error.rs:18`. Checked against rust.md "non_exhaustive on enums that will grow" rule. CliError is public, will grow, attribute present.
+- [VERIFIED] `OutputFormat` has `#[non_exhaustive]` — `output.rs:10`. Same rule compliance.
+- [VERIFIED] `CommandResult` has `#[non_exhaustive]` — `commands/mod.rs:9`. Same rule compliance.
+- [VERIFIED] `SiemClient.auth_token` is private, Debug redacts it — `client.rs:10-21`. Checked against rust.md "private fields with getters on security-critical types" and CWE-532. Field is private, `has_auth_token()` returns bool not value, Debug shows `[REDACTED]`.
+- [VERIFIED] `ClientConfig` private fields with getters — `config.rs:28-31`. Checked against rust.md. Fields `server_url` and `timeout_seconds` are private, accessible only via `server_url()` and `timeout_seconds()` getters.
+- [VERIFIED] All workspace deps use `{ workspace = true }` — `axiathon-client/Cargo.toml:9-23`. Checked against rust.md "workspace dependency compliance". `tempfile` in dev-deps is NOT in workspace, so inline `"3"` is correct.
+- [VERIFIED] Exit code mapping correct — `error.rs:59-64`. AuthenticationExpired -> 3, Unauthorized -> 4, all others -> 1. Matches AC-3.
+- [VERIFIED] CWE-113 header injection prevented — `client.rs:51-54`. `HeaderValue::from_str` rejects `\r`/`\n`. Test at `siem_client.rs:153-172` confirms the rejection path.
+- [VERIFIED] CWE-209 error display safety — `error.rs`. `ServerError` Display shows only status code (`server error ({0})`), not the body. `ServerUnavailable`/`ConnectionTimeout` show no URLs.
+- [VERIFIED] Shell completions work for all 4 shells — tested via `shell_completion.rs:14-78`. Each shell generates non-empty, distinct output containing "axiathon".
+- [VERIFIED] All 10 ACs covered by tests — 111 tests across 7 test files.
+
+---
+
+### Delivery Findings
+
+- **Gap** (blocking): `build_headers()` panics on user-controlled `--tenant` input with non-visible-ASCII characters. Violates rust.md "No unwrap() in production code" and SOUL.md #4 "Silent Failures." Affects `crates/axiathon-client/src/client.rs:54` (change return type to `Result<HeaderMap, CliError>`). *Found by Reviewer during code review.*
+
+- **Gap** (blocking): `generate_completions()` panics on invalid shell name. User input from CLI args reaches `panic!()`. Violates rust.md "No unwrap() in production code." Affects `crates/axiathon-client/src/commands/completion.rs:18` (return `Result<String, CliError>`). *Found by Reviewer during code review.*
+
+- **Gap** (non-blocking): `RawConfig` silently ignores unknown TOML keys. Operator typos in config file produce silent fallback to defaults. Violates SOUL.md #4 "Silent Failures." Affects `crates/axiathon-client/src/config.rs:16` (add `#[serde(deny_unknown_fields)]`). *Found by Reviewer during code review.*
+
+- **Gap** (non-blocking): `TenantId` in axiathon-core derives `Deserialize` directly, bypassing `new()` UUID validation (CWE-20). Affects `crates/axiathon-core/src/types.rs:11`. *Found by subagents, confirmed by Reviewer.*
+
+**Verdict:** REJECTED
+
+The two `panic!()` / `expect()` paths on user-controlled input (`build_headers` on `--tenant` and `generate_completions` on shell name) are HIGH severity violations of rust.md's "No unwrap() in production code" rule. Both are reachable from direct CLI input and crash the process with a stack trace instead of a clean error message and exit code 1. These must be changed to return `Result` before approval.
+
+**Handoff:** Back to Dev for fixes (2 HIGH issues)
+
+VERDICT: REJECT

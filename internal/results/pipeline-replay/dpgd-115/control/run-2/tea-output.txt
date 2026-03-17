@@ -1,0 +1,66 @@
+## TEA Assessment
+
+**Tests Required:** Yes
+**Reason:** Story 5-1 delivers foundational language design types, parser scaffold, and supporting infrastructure
+
+### Test Files
+
+| File | Tests | Status |
+|------|-------|--------|
+| `crates/axiathon-query/tests/ast_test.rs` | 36 | all pass (rewritten from tautological) |
+| `crates/axiathon-query/tests/parser_test.rs` | 58 | 54 pass, **4 fail** |
+| `crates/axiathon-query/tests/parser_security_test.rs` | 24 | 21 pass, **3 fail** |
+| `crates/axiathon-query/tests/aliases_test.rs` | 19 | 18 pass, **1 fail** |
+| `crates/axiathon-query/tests/config_test.rs` | 11 | 10 pass, **1 fail** |
+| `crates/axiathon-query/tests/error_test.rs` | 15 | all pass |
+| `crates/axiathon-query/tests/type_system_test.rs` | 21 | all pass |
+| `crates/axiathon-query/tests/version_test.rs` | 12 | all pass |
+| `crates/axiathon-core/tests/query_types_edge_test.rs` | 35 | 33 pass, **2 fail** |
+| `crates/axiathon-core/tests/core_types_integration.rs` | 69 | all pass (propagation tests fixed) |
+
+**Tests Written:** 231 tests across 10 files (196 rewritten/new in axiathon-query, 35 new in axiathon-core)
+**Status:** RED — 11 failing tests, 346 passing
+
+### Failing Tests (11)
+
+| # | Test | File | Reason |
+|---|------|------|--------|
+| 1 | `parse_filter_not_in_list` | parser_test.rs | `NOT IN` syntax not implemented (AC-1) |
+| 2 | `parse_sql_select_with_as_alias` | parser_test.rs | `AS` alias not implemented (AC-2) |
+| 3 | `parse_sql_case_insensitive_keywords` | parser_test.rs | Lowercase `select` rejected (AC-2) |
+| 4 | `parse_sql_mixed_case_keywords` | parser_test.rs | Mixed case `Select` rejected (AC-2) |
+| 5 | `parser_has_nesting_depth_limit` | parser_security_test.rs | No depth limit (CWE-674) |
+| 6 | `sql_limit_very_large_value_handles_overflow` | parser_security_test.rs | `expect()` panics on overflow (CWE-190) |
+| 7 | `wildcard_with_ne_operator_semantics` | parser_security_test.rs | `!=` silently discarded with wildcard |
+| 8 | `alias_chain_depth_three_resolves_fully` | aliases_test.rs | Only 2-level chain resolution (AC-4) |
+| 9 | `query_config_deserialize_missing_fields_uses_defaults` | config_test.rs | No `#[serde(default)]` (AC-11) |
+| 10 | `field_ref_new_empty_should_reject` | query_types_edge_test.rs | `new("")` silently succeeds (rule #5) |
+| 11 | `field_ref_display_from_str_roundtrip_with_array_index` | query_types_edge_test.rs | Display loses bracket notation |
+
+### Rule Coverage
+
+| Rule | Test(s) | Status |
+|------|---------|--------|
+| #2 non_exhaustive | `agg_function_exhaustive_match_covers_all_variants`, `value_non_exhaustive_requires_wildcard`, `compare_op_non_exhaustive_requires_wildcard` | passing |
+| #5 validated constructors | `field_ref_new_empty_should_reject`, `field_ref_new_vs_from_str_consistency` | **failing** |
+| #7 unsafe `as` casts | `sql_limit_very_large_value_handles_overflow`, `pipe_head_large_value_no_silent_truncation` | **failing** (panic) |
+| #8 Deserialize bypass | `field_ref_deserialize_empty_json_string`, `field_ref_serde_roundtrip_preserves_array_index` | passing |
+| #9 public fields | N/A — query types use pub fields by design (not security-critical) | N/A |
+| #13 constructor/deserialize consistency | `field_ref_new_vs_from_str_consistency` | passing (documents inconsistency) |
+| #15 unbounded input | `parser_has_nesting_depth_limit`, `deeply_nested_parentheses_do_not_stack_overflow` | **failing** |
+
+**Rules checked:** 6 of 15 applicable lang-review rules have test coverage
+**Self-check:** 0 vacuous tests found in new code; ~35 vacuous tests fixed in pre-existing code
+
+### Pre-existing Test Quality Fixes
+
+- **30 tautological `matches!` tests** in ast_test.rs → replaced with field-value assertions
+- **6 tautological type variant tests** in type_system_test.rs → replaced with Display checks
+- **2 tautological version tests** in version_test.rs → replaced with Debug output checks
+- **1 vacuous wildcard assertion** in parser_test.rs → now requires `Wildcard` variant specifically
+- **5 weak `> 0` assertions** in config_test.rs → replaced with specific expected values
+- **1 loose position assertion** in error_test.rs → now checks `starts_with("at 5:")`
+- **4 tautological error propagation tests** in core_types_integration.rs → now propagate through `?` operator
+- **1 vacuous `len() == 7` assertion** in ast_test.rs → replaced with exhaustive match
+
+**Handoff:** To Dev for implementation (GREEN phase)
