@@ -950,3 +950,8 @@ completed_stories:
     title: Peloton layout selection — horizontal, vertical, or 2x2 grid for team panes
     points: 2
     completed: '2026-03-16'
+  - id: 148-22
+    epic: ''
+    title: Peloton agent color matching — teammates run /color to match badge colors
+    points: 1
+    completed: "2026-03-15"
