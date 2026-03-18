@@ -2,7 +2,7 @@ id: '147'
 type: epic
 title: Configuration Gap Closure
 priority: p0
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-16411
 stories:
@@ -139,6 +139,11 @@ stories:
     title: Add configurable toggle to enable/disable individual reviewer sub-agents
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-18'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-18'
+    branch: feat/147-12-reviewer-subagent-toggles
+completed: '2026-03-18'

@@ -24,6 +24,7 @@ completed_epics:
   - MSSCI-16358
   - MSSCI-16384
   - MSSCI-16396
+  - MSSCI-16411
 completed_stories:
   - id: 110-1
     epic: '110'
@@ -984,4 +985,9 @@ completed_stories:
     epic: ''
     title: Add --jira flag to pf sprint story update command
     points: 1
+    completed: '2026-03-18'
+  - id: 147-12
+    epic: ''
+    title: Add configurable toggle to enable/disable individual reviewer sub-agents
+    points: 2
     completed: '2026-03-18'

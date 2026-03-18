@@ -10,7 +10,6 @@ sprint:
 epics:
   - MSSCI-16293
   - MSSCI-16405
-  - MSSCI-16411
   - MSSCI-16421
   - '149'
   - '150'
