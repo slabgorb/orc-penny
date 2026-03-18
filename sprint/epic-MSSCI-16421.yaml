@@ -138,6 +138,7 @@ stories:
     workflow: tdd
     completed: '2026-03-14'
   - id: 148-12
+    jira: MSSCI-16582
     title: "Peloton team mode integration — wire activate_next to TeamCreate"
     points: 3
     priority: p1
@@ -146,6 +147,7 @@ stories:
     workflow: tdd
     completed: '2026-03-14'
   - id: 148-13
+    jira: MSSCI-16583
     title: "Fix tmux nesting — detect existing session instead of spawning nested"
     points: 2
     priority: p1
@@ -157,6 +159,7 @@ stories:
     completed: '2026-03-14'
     type: bug
   - id: 148-14
+    jira: MSSCI-16584
     title: "Peloton TDD workflow — wire remaining phases (architect spec check, tandem)"
     description: "Peloton mode currently runs setup→red→green→review, skipping spec-check, verify, and spec-reconcile. Wire the full TDD workflow with all 8 phases (setup→red→green→spec-check→verify→review→spec-reconcile→finish) and their gates (tests_fail, dev_exit, spec_check, quality_pass, approval, spec_reconcile). SM team lead must follow the workflow YAML exactly — no shortcuts. Each phase transition uses pf handoff complete-phase with the correct gate type."
     points: 3
@@ -190,6 +193,7 @@ stories:
     workflow: trivial
     completed: '2026-03-15'
   - id: 148-17
+    jira: MSSCI-16585
     title: "Reviewer subagent completion — wait for all 8 before writing assessment"
     description: "Two related issues: (1) Reviewer sometimes goes idle before sending verdict to team lead — subagents may still be running when the reviewer's turn ends. The reviewer needs to wait for all 8 subagents to return before writing the assessment and sending the verdict message. (2) The approval gate rejects bold markdown on 'All received: Yes' — the gate regex expects plain text but the reviewer template uses '**All received:** Yes'. Either fix the gate to handle markdown or fix the reviewer template to use plain text."
     points: 2
@@ -217,6 +221,7 @@ stories:
     type: bug
     branch: feat/148-18-peloton-tmux-session-leak
   - id: 148-19
+    jira: MSSCI-16586
     title: "Peloton pane reuse — TeamCreate should target pre-opened agent panes instead of spawning new ones"
     description: "Stop pre-opening tmux panes for agents in create_peloton_layout. TeamCreate spawns its own panes via teammateMode=tmux, so pre-opened panes just sit idle with zsh. Remove the agent pane creation from create_peloton_layout — only create/position the TUI pane below CLI. Also revert the pane_mapping/prompt enrichment from the previous attempt (dead code since TeamCreate ignores it)."
     points: 2
@@ -230,6 +235,7 @@ stories:
       - TUI pane stacks below CLI pane in peloton layout (not at the bottom of the pane list)
     completed: '2026-03-15'
   - id: 148-20
+    jira: MSSCI-16587
     title: Peloton skill loops without loading in consumer projects
     points: 1
     priority: p1
@@ -240,6 +246,7 @@ stories:
     workflow: trivial
     completed: '2026-03-15'
   - id: 148-21
+    jira: MSSCI-16588
     title: Peloton agent panes show portrait beside CLI — split each agent pane with portrait panel on left, Claude CLI on right
     points: 2
     priority: p2
@@ -250,6 +257,7 @@ stories:
     workflow: tdd
     completed: "2026-03-15"
   - id: 148-22
+    jira: MSSCI-16589
     title: Peloton agent color matching — teammates run /color to match badge colors
     points: 1
     priority: p2
@@ -260,6 +268,7 @@ stories:
     workflow: trivial
     completed: "2026-03-15"
   - id: 148-23
+    jira: MSSCI-16590
     title: Reviewer handoff gate instructions unclear — struggles to complete gate reliably
     points: 2
     priority: p1
@@ -270,6 +279,7 @@ stories:
     workflow: tdd
     completed: "2026-03-15"
   - id: 148-24
+    jira: MSSCI-16591
     title: Peloton layout selection — horizontal, vertical, or 2x2 grid for team panes
     points: 2
     priority: p2
@@ -297,13 +307,16 @@ stories:
     workflow: trivial
     completed: '2026-03-17'
   - id: 148-27
+    jira: MSSCI-16592
     title: Add peloton layout setting to TUI settings page
     points: 1
     priority: p2
     status: backlog
     repos: pennyfarthing
     workflow: trivial
+    review_verdict: approved
   - id: 148-28
+    jira: MSSCI-16593
     title: Peloton teammates must be pre-primed — inject full agent prompt into TeamCreate, not instructional
     points: 2
     priority: p1
