@@ -991,3 +991,8 @@ completed_stories:
     title: Add configurable toggle to enable/disable individual reviewer sub-agents
     points: 2
     completed: '2026-03-18'
+  - id: 150-6
+    epic: ''
+    title: Enforce spec-authority hierarchy and quality regression guards in agent workflow
+    points: 3
+    completed: '2026-03-18'

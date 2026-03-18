@@ -24,7 +24,6 @@ stories:
     repos: pennyfarthing
     workflow: tdd
   - id: 150-3
-    jira: MSSCI-16565
     title: Internal spec-drift pre-check during review phase
     points: 3
     priority: p1
@@ -32,7 +31,6 @@ stories:
     repos: pennyfarthing
     workflow: tdd
   - id: 150-4
-    jira: MSSCI-16566
     title: Deviation traceability — link every deviation to spec source with forward impact
     points: 2
     priority: p1
@@ -40,10 +38,47 @@ stories:
     repos: pennyfarthing
     workflow: tdd
   - id: 150-5
-    jira: MSSCI-16567
     title: Configurable drift tolerance — adjustable threshold for acceptable vs flagged deviations
     points: 2
     priority: p1
     status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 150-6
+    jira: MSSCI-16595
+    title: Enforce spec-authority hierarchy and quality regression guards in agent workflow
+    points: 3
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-18'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-18'
+  - id: 150-7
+    title: Reviewer subagents should always diff against base branch, not incremental
+    points: 2
+    priority: p1
+    status: backlog
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-18'
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 150-8
+    title: Reviewer must run full subagent pipeline on every rework cycle
+    points: 2
+    priority: p1
+    status: backlog
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-18'
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 150-9
+    title: Reviewer subagents need full file context, not just diffs
+    points: 2
+    priority: p1
+    status: backlog
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-18'
     repos: pennyfarthing
     workflow: tdd
