@@ -125,3 +125,10 @@ stories:
     completed: '2026-03-15'
     type: bug
     branch: feat/147-11-optional-jira-integration
+  - id: 147-12
+    title: Add configurable toggle to enable/disable individual reviewer sub-agents
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial

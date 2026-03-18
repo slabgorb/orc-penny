@@ -950,3 +950,13 @@ completed_stories:
     title: Peloton layout selection — horizontal, vertical, or 2x2 grid for team panes
     points: 2
     completed: '2026-03-16'
+  - id: 148-25
+    epic: ''
+    title: 'Bug: TEA tmux panes not cleaned up after peloton session ends'
+    points: 1
+    completed: '2026-03-17'
+  - id: 148-28
+    epic: ''
+    title: Peloton teammates must be pre-primed — inject full agent prompt into TeamCreate, not instructional
+    points: 2
+    completed: '2026-03-17'

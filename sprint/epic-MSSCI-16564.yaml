@@ -1,0 +1,49 @@
+id: '150'
+type: epic
+title: Prove the Work — PR Explanation Quality
+description: 'Improve PR output so external reviewer understands changes without reverse-engineering. Downstream effects, spec deviation justifications, impact summaries. SOUL.md principle #14.'
+priority: p1
+status: backlog
+repos: pennyfarthing
+jira: MSSCI-16564
+stories:
+  - id: 150-1
+    jira: MSSCI-16489
+    title: Impact Summary enhancement — downstream effects and deviation justifications in PR body
+    points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 150-2
+    jira: MSSCI-16494
+    title: PR body template generation from session artifacts
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 150-3
+    jira: MSSCI-16565
+    title: Internal spec-drift pre-check during review phase
+    points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 150-4
+    jira: MSSCI-16566
+    title: Deviation traceability — link every deviation to spec source with forward impact
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 150-5
+    jira: MSSCI-16567
+    title: Configurable drift tolerance — adjustable threshold for acceptable vs flagged deviations
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd

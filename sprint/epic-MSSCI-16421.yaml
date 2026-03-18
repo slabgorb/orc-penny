@@ -283,17 +283,19 @@ stories:
     title: 'Bug: TEA tmux panes not cleaned up after peloton session ends'
     points: 1
     priority: p1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-17'
   - id: 148-26
     jira: MSSCI-16488
     title: 'Bug: Peloton should never open more than one tmux pane per agent role'
     points: 1
     priority: p1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-17'
   - id: 148-27
     title: Add peloton layout setting to TUI settings page
     points: 1
@@ -305,6 +307,7 @@ stories:
     title: Peloton teammates must be pre-primed — inject full agent prompt into TeamCreate, not instructional
     points: 2
     priority: p1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-17'
