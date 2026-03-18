@@ -965,3 +965,18 @@ completed_stories:
     title: Add peloton layout setting to TUI settings page
     points: 1
     completed: '2026-03-18'
+  - id: 148-10
+    epic: ''
+    title: Unify peloton pane management with tmux registry
+    points: 2
+    completed: '2026-03-14'
+  - id: 147-7
+    epic: ''
+    title: Add repos API endpoints to WheelHub
+    points: 1
+    completed: '2026-03-18'
+  - id: 147-8
+    epic: ''
+    title: Add write-time validators to settings and repo writers
+    points: 2
+    completed: '2026-03-18'

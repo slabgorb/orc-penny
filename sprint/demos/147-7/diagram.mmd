@@ -1,0 +1,16 @@
+sequenceDiagram
+    participant Client as Client Service
+    participant API as WheelHub API
+    participant Store as Repo Store
+
+    Client->>API: GET /api/repos
+    API->>Store: Fetch all repositories
+    Store-->>API: Repo list []
+    API-->>Client: 200 OK · JSON array of repos
+
+    Client->>API: GET /api/repos/{id}
+    API->>Store: Fetch repo by ID
+    Store-->>API: Repo object
+    API-->>Client: 200 OK · JSON repo object
+
+    note over API: 404 returned if repo ID not found
