@@ -102,11 +102,12 @@ stories:
     title: Add --jira flag to pf sprint story update command
     points: 1
     priority: p1
-    status: in_progress
+    status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-03-18'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-18'
   - id: 147-10
     jira: MSSCI-16429
     title: Summon agent into saddle from running session — pf saddle summon
