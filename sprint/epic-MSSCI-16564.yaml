@@ -43,9 +43,12 @@ stories:
     title: Deviation traceability — link every deviation to spec source with forward impact
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-19'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-19'
   - id: 150-5
     jira: MSSCI-16606
     title: Configurable drift tolerance — adjustable threshold for acceptable vs flagged deviations

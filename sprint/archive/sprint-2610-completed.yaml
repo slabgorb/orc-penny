@@ -1016,3 +1016,8 @@ completed_stories:
     title: Internal spec-drift pre-check during review phase
     points: 3
     completed: '2026-03-19'
+  - id: 150-4
+    epic: ''
+    title: Deviation traceability — link every deviation to spec source with forward impact
+    points: 2
+    completed: '2026-03-19'
