@@ -8,7 +8,6 @@ repos: pennyfarthing
 jira: MSSCI-16551
 stories:
   - id: 149-1
-    jira: MSSCI-16552
     title: 'Silent-failure-hunter: add unwrap_or_default/unwrap_or/.ok() heuristic for config loading paths'
     description: 'DONE: Post-Dev scout pass + expanded file globs (Cargo.toml, yaml). Committed in feat/148-24 branch.'
     points: 2
@@ -18,7 +17,6 @@ stories:
     workflow: tdd
     completed: '2026-03-16'
   - id: 149-2
-    jira: MSSCI-16553
     title: Add build-config specialist subagent for Cargo.toml workspace inheritance and package.json patterns
     description: 'DONE: Merged into 149-1 — file globs expanded in same commit.'
     points: 2
@@ -28,7 +26,6 @@ stories:
     workflow: tdd
     completed: '2026-03-16'
   - id: 149-3
-    jira: MSSCI-16574
     title: "Reviewer user-intent check: for each VERIFIED, assess user's reasonable expectation vs code behavior"
     description: "DONE: Replaced with devil's advocate approach after run-28 proved checklist inflation backfires. TEA test validator also built."
     points: 2
@@ -46,7 +43,6 @@ stories:
     repos: pennyfarthing
     workflow: tdd
   - id: 149-5
-    jira: MSSCI-16571
     title: 'Benchmark harness: save all 3 judge YAML files consistently (run-27 only has 2)'
     points: 1
     priority: p1
@@ -54,7 +50,6 @@ stories:
     repos: pennyfarthing
     workflow: trivial
   - id: 149-6
-    jira: MSSCI-16572
     title: Run N=5 control baseline with all fixes to establish new benchmark floor
     points: 1
     priority: p1
@@ -62,7 +57,6 @@ stories:
     repos: pennyfarthing
     workflow: trivial
   - id: 149-7
-    jira: MSSCI-16573
     title: Save full patch diff and worktree snapshot per benchmark run for post-hoc comparison
     points: 2
     priority: p1
@@ -70,7 +64,6 @@ stories:
     repos: pennyfarthing
     workflow: trivial
   - id: 149-8
-    jira: MSSCI-16575
     title: Benchmark pf module version gate — hard fail if harness code is from wrong project
     points: 1
     priority: p1
@@ -79,7 +72,6 @@ stories:
     workflow: trivial
     completed: '2026-03-16'
   - id: 149-9
-    jira: MSSCI-16576
     title: Subagent-before-conclusions gate — block assessment until all subagents return
     points: 1
     priority: p1
@@ -87,3 +79,13 @@ stories:
     repos: pennyfarthing
     workflow: trivial
     completed: '2026-03-16'
+  - id: 149-10
+    title: Reviewer specialist subagents should default to sonnet, not haiku
+    points: 1
+    priority: p1
+    status: in_progress
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-18'
+    repos: pennyfarthing
+    workflow: trivial
+    jira: MSSCI-16551
