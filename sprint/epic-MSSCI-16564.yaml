@@ -32,9 +32,12 @@ stories:
     title: Internal spec-drift pre-check during review phase
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-19'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-19'
   - id: 150-4
     jira: MSSCI-16605
     title: Deviation traceability — link every deviation to spec source with forward impact
@@ -97,6 +100,13 @@ stories:
     title: Session files must be append-only — enforce chronological audit trail
     points: 3
     priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 150-11
+    title: Configurable reviewer subagent profiles — settings toggle for specialist checks with TUI integration
+    points: 3
+    priority: p2
     status: backlog
     repos: pennyfarthing
     workflow: tdd
