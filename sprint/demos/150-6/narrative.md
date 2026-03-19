@@ -1,40 +1,48 @@
 # Narrative
 
 ## Problem Statement
-**Problem:** The agent review pipeline could pass quality gates even when agents were citing vague or low-authority sources for spec deviations, silently weakening test coverage, or ignoring the hierarchy of which documents should take precedence over others. **Why it matters:** When agents skip or misrepresent their sources, reviewers lose confidence in the output, defects slip through to production, and the audit trail that proves "we checked this" becomes unreliable.
+**Problem:** The agent review pipeline accepted vague, unchecked justifications for rule deviations, had no safeguard against quietly deleting or weakening tests, and enforced a fixed list of reviewers that became wrong the moment an operator changed the configuration.
+
+**Why it matters:** When any team — human or AI — can say "I reviewed this" without citing a real source, the audit trail is fiction. Defects slip to production, reviewers lose confidence in the output, and compliance paperwork becomes a checkbox exercise rather than a real control.
 
 ---
 
 ## What Changed
-Think of the agent workflow like a law firm with a clear chain of authority: a client's signed contract outweighs a generic industry handbook. Before this fix, agents could file a "deviation report" and cite the equivalent of "general vibes" as their justification — the system accepted it without complaint.
+Think of the agent review workflow like a law firm's signature chain. Every deviation from the agreed playbook has to cite a real document — not "general vibes."
 
-Three concrete problems were fixed:
+Three specific holes were closed:
 
-1. **Vague citations were allowed.** An agent could write `Spec source: general architecture` and the gate would wave it through. Now, every deviation must cite a real document — a file name, an acceptance criterion number, or a section reference. Saying "I read the spec" is no longer enough; you have to say *which page*.
+**1. Vague citations were silently accepted.**
+Before, an agent could write `Spec source: general architecture` and the quality gate would wave it through. Now every deviation must point to a real document — a specific file name, an acceptance-criteria number, or a named section. "I read the spec" no longer passes; you have to say *which page*.
 
-2. **Test coverage could be silently erased.** A developer could delete a snapshot test file, add `.skip()` to a test, or replace a strict snapshot assertion with a weaker one — and no gate would catch it. A new quality regression guard now scans every code change for these patterns and blocks the handoff.
+**2. Test coverage could be quietly erased.**
+A developer could delete a snapshot test file, add a "skip this test" marker, or swap a strict assertion for a meaningless one — and no gate would notice. A new quality regression guard now scans every change for these patterns and stops the handoff before weakened coverage can reach review.
 
-3. **Reviewer subagents were hardwired.** The reviewer always had to wait for all nine specialist subagents, even if some were turned off in configuration. Gate error messages still listed all nine and blocked on all nine. Now the gate reads live configuration and only requires the agents that are actually enabled — disabled agents are pre-filled as "Skipped" so the workflow can proceed cleanly.
+**3. The required-reviewer list was hardcoded.**
+The workflow had nine specialist reviewer agents baked in. When an operator disabled two of them in settings, the gate still demanded results from all nine and blocked the handoff with a misleading error listing agents that weren't even running. The gate now reads live configuration: if an agent is disabled, its slot is pre-filled as "Skipped" and the workflow proceeds cleanly.
 
 ---
 
 ## Why This Approach
-**Pattern matching over AI judgment.** Each of these checks uses deterministic regular-expression rules rather than asking another AI to decide. This keeps the gates fast, predictable, and auditable — a gate either fires or it doesn't, with no ambiguity about why.
+**Pattern matching, not another AI layer.**
+Each of these checks uses deterministic rules — the same logic a search-and-replace would use. This keeps gates fast (milliseconds), predictable (same input, same result every time), and auditable (a gate either fires or it doesn't, with no ambiguity).
 
-**Graduated authority, not binary pass/fail.** The hierarchy (`session → story-context → epic-context → architecture`) issues a warning rather than a hard block when a low-authority source is cited. This lets the workflow surface the issue for human review without grinding everything to a halt over edge cases.
+**Graduated authority, not binary pass/fail.**
+The hierarchy (session notes > story context > epic context > architecture docs) issues a *warning* when a lower-authority source is cited, rather than an outright block. The issue surfaces for human review without grinding the whole workflow to a halt over edge cases.
 
-**Configuration-aware enforcement.** Hardcoding a list of required subagents meant the enforcement logic was always out of sync when operators toggled subagents off. By reading live settings at gate-evaluation time, enforcement and configuration stay in lockstep automatically.
+**Configuration-aware enforcement.**
+Hardcoding a list of required reviewers means the enforcement logic falls out of sync every time an operator changes settings. By reading live configuration at gate-evaluation time, enforcement and configuration stay in lockstep automatically — zero manual maintenance.
 
 ---
 
 ## Before/After
 | Scenario | Before | After |
 |---|---|---|
-| **Empty spec source** | `Spec source:` (blank line) — gate passes silently | Gate fails: `"Entry 'Changed field name' has empty Spec source — must cite a specific document or section"` |
+| **Blank spec source** | `Spec source:` (empty) — gate passes silently | Gate fails: `"Entry 'Changed field name' has empty Spec source — must cite a specific document or section"` |
 | **Vague spec source** | `Spec source: general architecture` — gate passes | Gate fails: `"vague Spec source 'general architecture' — must reference a file path, AC, or section"` |
-| **Valid spec source** | `Spec source: context-story-150-6.md, AC-3` — passes | Continues to pass — no change to valid citations |
+| **Valid spec source** | `Spec source: context-story-150-6.md, AC-3` — passes | Still passes — no change for well-formed citations |
 | **Snapshot test deleted** | `tests/snapshots/api.snap` deleted — gate has no awareness | Gate fails: `"Snapshot file deleted: tests/snapshots/api.snap"` |
-| **Test skipped** | `it.skip('auth test')` added — gate has no awareness | Gate fails: `".skip() added in src/auth.test.ts"` |
-| **Snapshot assertion replaced** | `assert_json_snapshot!` removed, replaced with `assert!(true)` — gate silent | Gate fails: `"Snapshot assertion removed in src/api_test.rs"` |
-| **Subagent disabled in settings** | Gate still demands all 9 subagents, blocks handoff with misleading error | Gate reads settings, only requires enabled subagents, pre-fills disabled ones as `Skipped / disabled` |
-| **Gate error message** | `"missing specialist subagent tags: [EDGE], [SILENT], [TEST], [DOC], [TYPE], [SEC], [SIMPLE]"` (always 7 hardcoded) | `"missing specialist subagent tags: [EDGE], [TEST]"` (only the tags for enabled subagents) |
+| **Test marked `.skip()`** | `it.skip('auth test')` added — gate has no awareness | Gate fails: `".skip() added in src/auth.test.ts"` |
+| **Strict assertion replaced** | `assert_json_snapshot!` removed, replaced with `assert!(true)` — gate is silent | Gate fails: `"Snapshot assertion removed in src/api_test.rs"` |
+| **Subagent disabled in config** | Gate still demands all 9, blocks handoff with misleading error | Gate reads settings, pre-fills disabled agents as `Skipped / disabled`, workflow proceeds |
+| **Gate error message** | `"missing specialist subagent tags: [EDGE], [SILENT], [TEST], [DOC], [TYPE], [SEC], [SIMPLE]"` (7 hardcoded, always) | `"missing specialist subagent tags: [EDGE], [TEST]"` (only the 2 that are actually enabled) |
