@@ -12,9 +12,12 @@ stories:
     title: Impact Summary enhancement — downstream effects and deviation justifications in PR body
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-18'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-19'
   - id: 150-2
     jira: MSSCI-16494
     title: PR body template generation from session artifacts
@@ -80,5 +83,12 @@ stories:
     status: backlog
     assigned_to: keith.avery@1898andco.io
     started: '2026-03-18'
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 150-10
+    title: Session files must be append-only — enforce chronological audit trail
+    points: 3
+    priority: p1
+    status: backlog
     repos: pennyfarthing
     workflow: tdd
