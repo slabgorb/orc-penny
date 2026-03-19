@@ -80,12 +80,13 @@ stories:
     workflow: trivial
     completed: '2026-03-16'
   - id: 149-10
+    jira: MSSCI-16551
     title: Reviewer specialist subagents should default to sonnet, not haiku
     points: 1
     priority: p1
-    status: in_progress
+    status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-03-18'
     repos: pennyfarthing
     workflow: trivial
-    jira: MSSCI-16551
+    completed: '2026-03-19'
