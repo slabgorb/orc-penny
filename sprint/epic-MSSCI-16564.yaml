@@ -26,6 +26,7 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    review_verdict: approved
   - id: 150-3
     jira: MSSCI-16604
     title: Internal spec-drift pre-check during review phase
