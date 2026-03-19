@@ -325,9 +325,13 @@ stories:
     workflow: trivial
     completed: '2026-03-17'
   - id: 148-29
+    jira: MSSCI-16603
     title: Add /tmux realign subcommand for pane layout reset
     points: 1
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-19'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-19'
