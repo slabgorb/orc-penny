@@ -76,11 +76,12 @@ stories:
     title: Reviewer subagents should always diff against base branch, not incremental
     points: 2
     priority: p1
-    status: backlog
+    status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-03-18'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-20'
   - id: 150-8
     jira: MSSCI-16608
     title: Reviewer must run full subagent pipeline on every rework cycle
