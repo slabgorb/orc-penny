@@ -1071,3 +1071,8 @@ completed_stories:
     title: TEA RED phase — add spec traceability audit step to workflow
     points: 3
     completed: '2026-03-20'
+  - id: 150-16
+    epic: ''
+    title: Spec authority hierarchy guide — shared 4-level precedence for Dev and TEA
+    points: 2
+    completed: '2026-03-20'

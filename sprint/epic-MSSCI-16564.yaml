@@ -167,9 +167,12 @@ stories:
     title: Spec authority hierarchy guide — shared 4-level precedence for Dev and TEA
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-20'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-20'
   - id: 150-17
     title: Subagent model defaults — agent definitions should specify sonnet for specialists
     points: 1
