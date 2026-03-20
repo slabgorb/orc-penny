@@ -1076,3 +1076,8 @@ completed_stories:
     title: Spec authority hierarchy guide — shared 4-level precedence for Dev and TEA
     points: 2
     completed: '2026-03-20'
+  - id: 150-19
+    epic: ''
+    title: Zero quality regression policy — test ratchet enforcement for Dev, TEA, Reviewer
+    points: 2
+    completed: '2026-03-20'
