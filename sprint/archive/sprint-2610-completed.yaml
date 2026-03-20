@@ -1061,3 +1061,8 @@ completed_stories:
     title: Audit in_review flow — spelling consistency and transition gating
     points: 2
     completed: '2026-03-20'
+  - id: 150-13
+    epic: ''
+    title: Reviewer gate template and docs for specialist tag format
+    points: 2
+    completed: '2026-03-20'

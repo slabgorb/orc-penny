@@ -139,9 +139,12 @@ stories:
     title: Reviewer gate template and docs for specialist tag format
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-20'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-20'
   - id: 150-14
     title: TEA RED phase — add spec traceability audit step to workflow
     points: 3
