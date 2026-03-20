@@ -1031,3 +1031,8 @@ completed_stories:
     title: 'Bug: Peloton should never open more than one tmux pane per agent role'
     points: 1
     completed: '2026-03-17'
+  - id: 150-17
+    epic: ''
+    title: Subagent model defaults — agent definitions should specify sonnet for specialists
+    points: 1
+    completed: '2026-03-20'
