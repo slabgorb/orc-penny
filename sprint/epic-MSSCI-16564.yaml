@@ -204,6 +204,9 @@ stories:
     title: Reviewer finding documentation requirements — go/no-go gate structure
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-20'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-20'

@@ -1081,3 +1081,8 @@ completed_stories:
     title: Zero quality regression policy — test ratchet enforcement for Dev, TEA, Reviewer
     points: 2
     completed: '2026-03-20'
+  - id: 150-20
+    epic: ''
+    title: Reviewer finding documentation requirements — go/no-go gate structure
+    points: 2
+    completed: '2026-03-20'
