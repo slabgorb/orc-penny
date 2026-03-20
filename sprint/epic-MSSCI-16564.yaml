@@ -146,12 +146,16 @@ stories:
     workflow: tdd
     completed: '2026-03-20'
   - id: 150-14
+    jira: MSSCI-16639
     title: TEA RED phase — add spec traceability audit step to workflow
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: K. Avery
+    started: '2026-03-20'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-20'
   - id: 150-15
     title: pf sprint story split — decompose stories with dependency tracking
     points: 3

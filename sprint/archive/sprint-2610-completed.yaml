@@ -1066,3 +1066,8 @@ completed_stories:
     title: Reviewer gate template and docs for specialist tag format
     points: 2
     completed: '2026-03-20'
+  - id: 150-14
+    epic: ''
+    title: TEA RED phase — add spec traceability audit step to workflow
+    points: 3
+    completed: '2026-03-20'
