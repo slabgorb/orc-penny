@@ -1041,3 +1041,8 @@ completed_stories:
     title: Reviewer subagents should always diff against base branch, not incremental
     points: 2
     completed: '2026-03-20'
+  - id: 150-8
+    epic: ''
+    title: Reviewer must run full subagent pipeline on every rework cycle
+    points: 2
+    completed: '2026-03-20'
