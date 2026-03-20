@@ -112,9 +112,12 @@ stories:
     title: Session files must be append-only — enforce chronological audit trail
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: K. Avery
+    started: '2026-03-20'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-20'
   - id: 150-11
     title: Configurable reviewer subagent profiles — settings toggle for specialist checks with TUI integration
     points: 3

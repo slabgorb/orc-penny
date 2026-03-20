@@ -1051,3 +1051,8 @@ completed_stories:
     title: Reviewer subagents need full file context, not just diffs
     points: 2
     completed: '2026-03-20'
+  - id: 150-10
+    epic: ''
+    title: Session files must be append-only — enforce chronological audit trail
+    points: 3
+    completed: '2026-03-20'
