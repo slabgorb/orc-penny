@@ -1046,3 +1046,8 @@ completed_stories:
     title: Reviewer must run full subagent pipeline on every rework cycle
     points: 2
     completed: '2026-03-20'
+  - id: 150-9
+    epic: ''
+    title: Reviewer subagents need full file context, not just diffs
+    points: 2
+    completed: '2026-03-20'
