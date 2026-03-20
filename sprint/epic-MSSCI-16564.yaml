@@ -23,9 +23,12 @@ stories:
     title: PR body template generation from session artifacts
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-20'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-20'
     review_verdict: approved
   - id: 150-3
     jira: MSSCI-16604
