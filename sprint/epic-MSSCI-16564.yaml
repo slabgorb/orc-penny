@@ -119,12 +119,17 @@ stories:
     workflow: tdd
     completed: '2026-03-20'
   - id: 150-11
+    jira: MSSCI-16640
     title: Configurable reviewer subagent profiles — settings toggle for specialist checks with TUI integration
     points: 3
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-21'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-21'
+    branch: feat/150-11-configurable-reviewer-subagent-profiles
   - id: 150-12
     title: Audit in_review flow — spelling consistency and transition gating
     points: 2

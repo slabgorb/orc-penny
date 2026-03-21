@@ -1086,3 +1086,8 @@ completed_stories:
     title: Reviewer finding documentation requirements — go/no-go gate structure
     points: 2
     completed: '2026-03-20'
+  - id: 150-11
+    epic: ''
+    title: Configurable reviewer subagent profiles — settings toggle for specialist checks with TUI integration
+    points: 3
+    completed: '2026-03-21'
