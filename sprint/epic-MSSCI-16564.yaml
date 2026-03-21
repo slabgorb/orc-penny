@@ -220,3 +220,21 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     completed: '2026-03-20'
+  - id: 150-21
+    jira: MSSCI-16656
+    title: Remove hardcoded MSSCI/1898 defaults from framework — configurable Jira project and URL
+    points: 3
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-21'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-21'
+  - id: 150-22
+    title: Replace MSSCI test fixtures with generic project key (PROJ/DEMO)
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
