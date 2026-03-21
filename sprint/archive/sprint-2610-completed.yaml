@@ -1091,3 +1091,8 @@ completed_stories:
     title: Configurable reviewer subagent profiles — settings toggle for specialist checks with TUI integration
     points: 3
     completed: '2026-03-21'
+  - id: 150-15
+    epic: ''
+    title: pf sprint story split — decompose stories with dependency tracking
+    points: 3
+    completed: '2026-03-21'

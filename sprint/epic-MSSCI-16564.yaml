@@ -162,12 +162,17 @@ stories:
     workflow: tdd
     completed: '2026-03-20'
   - id: 150-15
+    jira: MSSCI-16655
     title: pf sprint story split — decompose stories with dependency tracking
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-21'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-21'
+    branch: feat/150-15-sprint-story-split
   - id: 150-16
     title: Spec authority hierarchy guide — shared 4-level precedence for Dev and TEA
     points: 2
