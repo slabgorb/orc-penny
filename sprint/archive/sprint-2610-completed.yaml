@@ -960,3 +960,8 @@ completed_stories:
     title: Peloton agent panes show portrait beside CLI — split each agent pane with portrait panel on left, Claude CLI on right
     points: 2
     completed: "2026-03-15"
+  - id: 150-1
+    epic: ''
+    title: Impact Summary enhancement — downstream effects and deviation justifications in PR body
+    points: 3
+    completed: '2026-03-23'

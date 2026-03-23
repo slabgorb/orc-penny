@@ -1,11 +1,11 @@
 # Dev Agent Gotchas
 
 <gotcha name="install">
-Install from GitHub: `npm install github:1898andCo/pennyfarthing`. Not published to npm. `npm link` won't work.
+`pf` is Python-only. Global install: `pipx install pennyfarthing-dist/ --force`. Editable (dogfood repos): `pip install -e pennyfarthing-dist/` via direnv. No npm involvement.
 </gotcha>
 
 <gotcha name="symlinks">
-`.claude/` symlinks to `node_modules/pennyfarthing/pennyfarthing-dist/`. Missing commands? Reinstall from GitHub.
+`.claude/` and `.pennyfarthing/` symlink to `pennyfarthing/pennyfarthing-dist/` (in dogfood repos) or to the pipx-installed package (consumer repos). Missing commands? Reinstall via pipx.
 </gotcha>
 
 <gotcha name="dead-code">
