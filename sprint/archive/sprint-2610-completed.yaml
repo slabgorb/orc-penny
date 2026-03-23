@@ -1001,3 +1001,8 @@ completed_stories:
     title: Add repos API endpoints to WheelHub
     points: 1
     completed: '2026-03-23'
+  - id: 148-26
+    epic: ''
+    title: 'Bug: Peloton should never open more than one tmux pane per agent role'
+    points: 1
+    completed: '2026-03-23'
