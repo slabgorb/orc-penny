@@ -311,6 +311,7 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: trivial
+    review_verdict: approved
   - id: 148-29
     title: 'Bug: Peloton skill recurses when invoked from consumer projects'
     points: 1
