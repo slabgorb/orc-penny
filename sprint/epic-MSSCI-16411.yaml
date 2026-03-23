@@ -79,18 +79,21 @@ stories:
     title: Add repos API endpoints to WheelHub
     points: 1
     priority: p1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-23'
     review_verdict: approved
   - id: 147-8
     jira: MSSCI-16419
     title: Add write-time validators to settings and repo writers
     points: 2
     priority: p2
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-03-23'
+    review_verdict: approved
   - id: 147-9
     jira: MSSCI-16420
     title: Add --jira flag to pf sprint story update command
