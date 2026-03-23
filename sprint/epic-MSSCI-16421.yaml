@@ -293,24 +293,28 @@ stories:
     title: 'Bug: Peloton should never open more than one tmux pane per agent role'
     points: 1
     priority: p1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-23'
     review_verdict: approved
   - id: 148-27
     title: Add peloton layout setting to TUI settings page
     points: 1
     priority: p2
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-23'
+    review_verdict: approved
   - id: 148-28
     title: "Peloton teammates must be pre-primed — inject full agent prompt into TeamCreate, not instructional"
     points: 2
     priority: p1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-03-23'
     review_verdict: approved
   - id: 148-29
     title: 'Bug: Peloton skill recurses when invoked from consumer projects'

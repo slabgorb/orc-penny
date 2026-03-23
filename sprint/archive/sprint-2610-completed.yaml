@@ -1011,3 +1011,8 @@ completed_stories:
     title: "Peloton teammates must be pre-primed — inject full agent prompt into TeamCreate, not instructional"
     points: 2
     completed: '2026-03-23'
+  - id: 148-27
+    epic: ''
+    title: Add peloton layout setting to TUI settings page
+    points: 1
+    completed: '2026-03-23'
