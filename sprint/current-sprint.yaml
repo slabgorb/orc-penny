@@ -13,7 +13,6 @@ epics:
   - MSSCI-16411
   - MSSCI-16421
   - '149'
-  - '150'
 stories: []
 standalone_stories:
   - id: MSSCI-16066

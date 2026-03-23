@@ -3,7 +3,7 @@ type: epic
 title: Prove the Work — PR Explanation Quality
 description: 'Improve PR output so external reviewer understands changes without reverse-engineering. Downstream effects, spec deviation justifications, impact summaries. SOUL.md principle #14.'
 priority: p1
-status: backlog
+status: done
 repos: pennyfarthing
 stories:
   - id: 150-1
@@ -52,3 +52,4 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     completed: '2026-03-23'
+completed: '2026-03-23'

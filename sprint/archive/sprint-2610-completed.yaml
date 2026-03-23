@@ -24,6 +24,7 @@ completed_epics:
   - MSSCI-16358
   - MSSCI-16384
   - MSSCI-16396
+  - '150'
 completed_stories:
   - id: 110-1
     epic: '110'
@@ -964,4 +965,29 @@ completed_stories:
     epic: ''
     title: Impact Summary enhancement — downstream effects and deviation justifications in PR body
     points: 3
+    completed: '2026-03-23'
+  - id: 148-29
+    epic: ''
+    title: 'Bug: Peloton skill recurses when invoked from consumer projects'
+    points: 1
+    completed: '2026-03-23'
+  - id: 150-2
+    epic: '150'
+    title: PR body template generation from session artifacts
+    points: 2
+    completed: '2026-03-23'
+  - id: 150-3
+    epic: '150'
+    title: Internal spec-drift pre-check during review phase
+    points: 3
+    completed: '2026-03-23'
+  - id: 150-4
+    epic: '150'
+    title: Deviation traceability — link every deviation to spec source with forward impact
+    points: 2
+    completed: '2026-03-23'
+  - id: 150-5
+    epic: '150'
+    title: Configurable drift tolerance — adjustable threshold for acceptable vs flagged deviations
+    points: 2
     completed: '2026-03-23'
