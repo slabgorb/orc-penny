@@ -82,6 +82,7 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: trivial
+    review_verdict: approved
   - id: 147-8
     jira: MSSCI-16419
     title: Add write-time validators to settings and repo writers

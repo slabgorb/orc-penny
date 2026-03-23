@@ -1,0 +1,21 @@
+sequenceDiagram
+    participant Client as External Client<br/>(CI / Dashboard / Script)
+    participant WH as WheelHub API<br/>(:8080)
+    participant Handler as Repos Handler
+    participant Config as repos.yaml<br/>(Config Layer)
+
+    Client->>WH: GET /api/repos
+    WH->>Handler: route request
+    Handler->>Config: read repo topology
+    Config-->>Handler: repo list (name, strategy, branch, zones)
+    Handler-->>WH: serialize to JSON
+    WH-->>Client: 200 OK — JSON array of repos
+
+    Client->>WH: GET /api/repos/pennyfarthing
+    WH->>Handler: route request
+    Handler->>Config: lookup by name
+    Config-->>Handler: single repo record
+    Handler-->>WH: serialize to JSON
+    WH-->>Client: 200 OK — repo detail object
+
+    note over Config: Single source of truth.<br/>No data duplicated.
