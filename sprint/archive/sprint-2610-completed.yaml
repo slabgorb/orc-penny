@@ -25,6 +25,7 @@ completed_epics:
   - MSSCI-16384
   - MSSCI-16396
   - MSSCI-16411
+  - MSSCI-16564
 completed_stories:
   - id: 110-1
     epic: '110'
@@ -1105,4 +1106,9 @@ completed_stories:
     epic: ''
     title: Replace MSSCI test fixtures with generic project key (PROJ/DEMO)
     points: 2
+    completed: '2026-04-03'
+  - id: 150-18
+    epic: ''
+    title: Gate strictness profiles — workflow.strictness setting for strict/standard/minimal
+    points: 5
     completed: '2026-04-03'

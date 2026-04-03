@@ -1,0 +1,250 @@
+id: '150'
+type: epic
+title: Prove the Work — PR Explanation Quality
+description: 'Improve PR output so external reviewer understands changes without reverse-engineering. Downstream effects, spec deviation justifications, impact summaries. SOUL.md principle #14.'
+priority: p1
+status: done
+repos: pennyfarthing
+jira: MSSCI-16564
+stories:
+  - id: 150-1
+    jira: MSSCI-16489
+    title: Impact Summary enhancement — downstream effects and deviation justifications in PR body
+    points: 3
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-18'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-19'
+  - id: 150-2
+    jira: MSSCI-16494
+    title: PR body template generation from session artifacts
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-20'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-20'
+    review_verdict: approved
+  - id: 150-3
+    jira: MSSCI-16604
+    title: Internal spec-drift pre-check during review phase
+    points: 3
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-19'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-19'
+  - id: 150-4
+    jira: MSSCI-16605
+    title: Deviation traceability — link every deviation to spec source with forward impact
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-19'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-19'
+    review_verdict: approved
+  - id: 150-5
+    jira: MSSCI-16606
+    title: Configurable drift tolerance — adjustable threshold for acceptable vs flagged deviations
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-19'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-19'
+  - id: 150-6
+    jira: MSSCI-16595
+    title: Enforce spec-authority hierarchy and quality regression guards in agent workflow
+    points: 3
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-18'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-18'
+  - id: 150-7
+    jira: MSSCI-16607
+    title: Reviewer subagents should always diff against base branch, not incremental
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-18'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-20'
+  - id: 150-8
+    jira: MSSCI-16608
+    title: Reviewer must run full subagent pipeline on every rework cycle
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-18'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-20'
+  - id: 150-9
+    jira: MSSCI-16609
+    title: Reviewer subagents need full file context, not just diffs
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-18'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-20'
+  - id: 150-10
+    jira: MSSCI-16610
+    title: Session files must be append-only — enforce chronological audit trail
+    points: 3
+    priority: p1
+    status: done
+    assigned_to: K. Avery
+    started: '2026-03-20'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-20'
+  - id: 150-11
+    jira: MSSCI-16640
+    title: Configurable reviewer subagent profiles — settings toggle for specialist checks with TUI integration
+    points: 3
+    priority: p2
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-21'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-21'
+    branch: feat/150-11-configurable-reviewer-subagent-profiles
+  - id: 150-12
+    title: Audit in_review flow — spelling consistency and transition gating
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-20'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-20'
+  - id: 150-13
+    title: Reviewer gate template and docs for specialist tag format
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-20'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-20'
+  - id: 150-14
+    jira: MSSCI-16639
+    title: TEA RED phase — add spec traceability audit step to workflow
+    points: 3
+    priority: p1
+    status: done
+    assigned_to: K. Avery
+    started: '2026-03-20'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-20'
+  - id: 150-15
+    jira: MSSCI-16655
+    title: pf sprint story split — decompose stories with dependency tracking
+    points: 3
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-21'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-21'
+    branch: feat/150-15-sprint-story-split
+  - id: 150-16
+    title: Spec authority hierarchy guide — shared 4-level precedence for Dev and TEA
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-20'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-20'
+  - id: 150-17
+    title: Subagent model defaults — agent definitions should specify sonnet for specialists
+    points: 1
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-20'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-03-20'
+  - id: 150-18
+    title: Gate strictness profiles — workflow.strictness setting for strict/standard/minimal
+    points: 5
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-04-03T09:15:00Z'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-04-03'
+    review_verdict: approved
+  - id: 150-19
+    title: Zero quality regression policy — test ratchet enforcement for Dev, TEA, Reviewer
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-20'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-20'
+  - id: 150-20
+    title: Reviewer finding documentation requirements — go/no-go gate structure
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-20'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-20'
+  - id: 150-21
+    jira: MSSCI-16656
+    title: Remove hardcoded MSSCI/1898 defaults from framework — configurable Jira project and URL
+    points: 3
+    priority: p1
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-03-21'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-21'
+  - id: 150-22
+    title: Replace MSSCI test fixtures with generic project key (PROJ/DEMO)
+    points: 2
+    priority: p2
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-04-03T00:00:00Z'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-04-03'
+    review_verdict: approved
+completed: '2026-04-03'
