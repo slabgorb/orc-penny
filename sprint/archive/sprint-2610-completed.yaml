@@ -1027,3 +1027,8 @@ completed_stories:
     title: Unify peloton pane management with tmux registry
     points: 2
     completed: '2026-03-14'
+  - id: 147-12
+    epic: ''
+    title: Fix story finish flow for non-Jira repos — bridge backlog→done transitions
+    points: 2
+    completed: '2026-04-03'
