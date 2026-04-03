@@ -31,9 +31,11 @@ stories:
     description: "New CLI command: pf agent create <name> [--type tactical|strategic]. Scaffolds a properly-structured .md in agents-local/ from agents/templates/agent-template-{type}.md. Also creates .pennyfarthing/sidecars/{name}/ with empty patterns.md, gotchas.md, decisions.md. Validates name doesn't conflict with built-in agents."
     points: 3
     priority: p0
-    status: backlog
+    status: in_progress
     repos: pennyfarthing
     workflow: tdd
+    started: '2026-04-03'
+    branch: feat/150-2-agent-create-cli
   - id: 150-3
     title: Theme character extension — config.local.yaml overrides for custom roles
     description: 'Wire theme_characters map from config.local.yaml into load_persona(). Consumer sets theme_characters.my-agent: "Character Name" and the persona loader picks it up for custom agent roles without requiring a theme file fork.'
