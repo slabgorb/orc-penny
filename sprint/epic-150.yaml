@@ -43,9 +43,12 @@ stories:
     description: 'Wire theme_characters map from config.local.yaml into load_persona(). Consumer sets theme_characters.my-agent: "Character Name" and the persona loader picks it up for custom agent roles without requiring a theme file fork.'
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-04-03'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-04-03'
+    review_verdict: approved
   - id: 150-4
     title: Auto-generate command files for custom agents on pf init
     description: During pf init, scan agents-local/ and generate corresponding .claude/commands/pf-{name}.md activation files. Also generate .claude/skills/pf-{name}/ if a skill template exists. Existing custom commands should not be clobbered.
