@@ -20,9 +20,12 @@ stories:
     description: Create .pennyfarthing/agents-local/ as a protected directory (like gates-local/) that pf init never overwrites. Update load_agent_definition() in prime/loader.py to check agents-local/{name}.md BEFORE agents/{name}.md. This is the foundation — all other stories depend on it.
     points: 2
     priority: p0
-    status: backlog
+    status: done
+    started: '2026-04-03'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-04-03'
+    review_verdict: approved
   - id: 150-2
     title: pf agent create CLI — scaffold custom agent from template
     description: "New CLI command: pf agent create <name> [--type tactical|strategic]. Scaffolds a properly-structured .md in agents-local/ from agents/templates/agent-template-{type}.md. Also creates .pennyfarthing/sidecars/{name}/ with empty patterns.md, gotchas.md, decisions.md. Validates name doesn't conflict with built-in agents."
