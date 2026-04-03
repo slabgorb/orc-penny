@@ -130,6 +130,7 @@ stories:
     type: bug
     branch: feat/147-11-optional-jira-integration
   - id: 147-12
+    jira: MSSCI-16449
     title: Fix story finish flow for non-Jira repos — bridge backlog→done transitions
     description: |-
       Two bugs in story_finish.py and story_transition.py:
@@ -141,6 +142,8 @@ stories:
       Key files: story_finish.py (lines 241-285), story_transition.py (TRANSITIONS map), jira/client.py (_call_api_sync). Related: 147-11.
     points: 2
     priority: p0
-    status: backlog
+    status: in_progress
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-04-03'
     repos: pennyfarthing
     workflow: tdd
