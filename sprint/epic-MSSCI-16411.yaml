@@ -129,3 +129,18 @@ stories:
     completed: '2026-03-15'
     type: bug
     branch: feat/147-11-optional-jira-integration
+  - id: 147-12
+    title: Fix story finish flow for non-Jira repos — bridge backlog→done transitions
+    description: |-
+      Two bugs in story_finish.py and story_transition.py:
+
+      1. finish_story() only bridges in_progress→in_review, but stories often stay in backlog because work.py:start_work() is a stub that never writes in_progress. Fix: walk the full chain (backlog→in_progress→in_review→done) automatically in finish_story().
+
+      2. Jira transition failures reported as drift when Jira isn't configured. JiraClient._call_api_sync() returns None with empty token, causing transition_sync() to return {success: False}. Fix: detect no-Jira-configured state and skip cleanly instead of reporting drift.
+
+      Key files: story_finish.py (lines 241-285), story_transition.py (TRANSITIONS map), jira/client.py (_call_api_sync). Related: 147-11.
+    points: 2
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd

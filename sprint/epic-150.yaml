@@ -1,0 +1,57 @@
+id: '150'
+type: epic
+title: Custom Agent Creation System
+description: |-
+  Enable consumer repos to create custom agents that get the full Pennyfarthing treatment — priming, persona, sidecars, skills — without fragile manual wiring. Currently works if you're careful (place files in the right spots, hope pf init doesn't clobber them). This epic makes it a proper supported feature with CLI scaffolding, protected directories, and a stepped workflow.
+
+  Key extension points needed:
+  - agents-local/ directory (not symlinked, not overwritten by pf init)
+  - pf agent create CLI with template scaffolding
+  - Theme character extension via config.local.yaml
+  - Auto-generated command files for slash command discovery
+  - Sidecar directory scaffolding
+  - Optional skill association
+priority: p1
+status: backlog
+repos: pennyfarthing
+stories:
+  - id: 150-1
+    title: Add agents-local/ directory with loader priority over agents/
+    description: Create .pennyfarthing/agents-local/ as a protected directory (like gates-local/) that pf init never overwrites. Update load_agent_definition() in prime/loader.py to check agents-local/{name}.md BEFORE agents/{name}.md. This is the foundation — all other stories depend on it.
+    points: 2
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 150-2
+    title: pf agent create CLI — scaffold custom agent from template
+    description: "New CLI command: pf agent create <name> [--type tactical|strategic]. Scaffolds a properly-structured .md in agents-local/ from agents/templates/agent-template-{type}.md. Also creates .pennyfarthing/sidecars/{name}/ with empty patterns.md, gotchas.md, decisions.md. Validates name doesn't conflict with built-in agents."
+    points: 3
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 150-3
+    title: Theme character extension — config.local.yaml overrides for custom roles
+    description: 'Wire theme_characters map from config.local.yaml into load_persona(). Consumer sets theme_characters.my-agent: "Character Name" and the persona loader picks it up for custom agent roles without requiring a theme file fork.'
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 150-4
+    title: Auto-generate command files for custom agents on pf init
+    description: During pf init, scan agents-local/ and generate corresponding .claude/commands/pf-{name}.md activation files. Also generate .claude/skills/pf-{name}/ if a skill template exists. Existing custom commands should not be clobbered.
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 150-5
+    title: Custom agent stepped workflow — walk user through full agent creation
+    description: 'A stepped workflow (like git-cleanup or release) that walks the user through creating a custom agent interactively: choose name, select template type, define role/duties, pick persona character, associate skills, verify priming works. Depends on 150-1 through 150-4.'
+    points: 3
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
