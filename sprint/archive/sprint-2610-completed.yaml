@@ -1101,3 +1101,8 @@ completed_stories:
     title: Remove hardcoded MSSCI/1898 defaults from framework — configurable Jira project and URL
     points: 3
     completed: '2026-03-21'
+  - id: 150-22
+    epic: ''
+    title: Replace MSSCI test fixtures with generic project key (PROJ/DEMO)
+    points: 2
+    completed: '2026-04-03'

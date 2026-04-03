@@ -236,6 +236,10 @@ stories:
     title: Replace MSSCI test fixtures with generic project key (PROJ/DEMO)
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-04-03T00:00:00Z'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-04-03'
+    review_verdict: approved
