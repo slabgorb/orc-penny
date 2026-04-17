@@ -296,7 +296,7 @@ stories:
     status: done
     repos: pennyfarthing
     workflow: trivial
-    completed: '2026-03-17'
+    completed: '2026-04-17'
   - id: 148-26
     jira: MSSCI-16488
     title: 'Bug: Peloton should never open more than one tmux pane per agent role'
@@ -305,16 +305,17 @@ stories:
     status: done
     repos: pennyfarthing
     workflow: trivial
-    completed: '2026-03-17'
+    completed: '2026-04-17'
   - id: 148-27
     jira: MSSCI-16592
     title: Add peloton layout setting to TUI settings page
     points: 1
     priority: p2
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: trivial
     review_verdict: approved
+    completed: "2026-04-17"
   - id: 148-28
     jira: MSSCI-16593
     title: Peloton teammates must be pre-primed — inject full agent prompt into TeamCreate, not instructional
