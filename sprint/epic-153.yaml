@@ -1,0 +1,31 @@
+id: '153'
+type: epic
+title: Framework reliability fixes from downstream reports
+description: 'Three independent framework bugs surfaced while using pennyfarthing in external projects (oq-1, oq-2): wrong session-file path, stray branches on main-only orchestrators, missing CLI story-move operation.'
+priority: p1
+status: backlog
+repos: pennyfarthing
+stories:
+  - id: 153-1
+    title: sm-setup writes session files to .session/ (not sprint/); migrate legacy session files
+    points: 2
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 153-2
+    title: Skip branch creation on orchestrator (main-only) repos during story setup and finish
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 153-3
+    title: Add pf sprint story move and --epic flag; document full story lifecycle CLI surface
+    points: 5
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd

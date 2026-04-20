@@ -1,0 +1,15 @@
+id: '154'
+type: epic
+title: R2 CDN portrait distribution
+description: 'On-demand per-theme portrait delivery via the existing portraits.darkatelier.org Cloudflare R2 CDN. Replaces the GitHub Contents API download. Fully specified in issue #17 with a drop-in reference module.'
+priority: p3
+status: backlog
+repos: pennyfarthing
+stories:
+  - id: 154-1
+    title: Implement portrait_cdn module with SHA256-verified theme packs and local cache
+    points: 8
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd

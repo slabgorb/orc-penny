@@ -1,0 +1,24 @@
+id: '152'
+type: epic
+title: Jira isolation — config-driven project keys
+description: Remove MSSCI hardcoding and corporate-email leakage from the framework. Gate all jira integration on explicit config; no silent defaults; no downstream contamination.
+priority: p1
+status: backlog
+repos: pennyfarthing
+stories:
+  - id: 152-1
+    title: Remove MSSCI hardcoding — config-driven project key with fail-loud, scrub templates and docs
+    points: 5
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: refactor
+  - id: 152-2
+    title: Gate jira-cli lookups on jira.enabled config; skip assignee lookup for non-jira stories
+    points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug

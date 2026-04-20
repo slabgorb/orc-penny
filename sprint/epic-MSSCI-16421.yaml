@@ -314,8 +314,8 @@ stories:
     status: done
     repos: pennyfarthing
     workflow: trivial
-    review_verdict: approved
     completed: "2026-04-17"
+    review_verdict: approved
   - id: 148-28
     jira: MSSCI-16593
     title: Peloton teammates must be pre-primed — inject full agent prompt into TeamCreate, not instructional

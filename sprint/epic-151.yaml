@@ -1,0 +1,32 @@
+id: '151'
+type: epic
+title: Sprint YAML write correctness
+description: Fix silent failures and fragile path/field resolution in the sprint YAML write paths (archive, finish, story update). Three downstream-reported bugs trace to the same subsystem.
+priority: p0
+status: backlog
+repos: pennyfarthing
+stories:
+  - id: 151-1
+    title: Resolve archive filename from sprint.number when name is absent
+    points: 2
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: bug
+  - id: 151-2
+    title: Fail loudly on missing epic field during archive write, backfill historical entries
+    points: 3
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 151-3
+    title: story update locates stories across epic-*.yaml; story finish fails loudly on yaml-update error
+    points: 3
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug

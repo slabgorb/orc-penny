@@ -12,6 +12,10 @@ epics:
   - MSSCI-16405
   - MSSCI-16421
   - MSSCI-16551
+  - '151'
+  - '152'
+  - '153'
+  - '154'
 stories: []
 standalone_stories:
   - id: MSSCI-16066
