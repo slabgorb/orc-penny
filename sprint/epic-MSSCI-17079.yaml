@@ -25,12 +25,14 @@ stories:
     title: Fail loudly on missing epic field during archive write, backfill historical entries
     points: 3
     priority: p2
-    status: in_progress
+    status: done
     assigned_to: keith.avery@1898andco.io
     started: '2026-04-20'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-04-20'
     type: bug
+    review_verdict: approved
   - id: 151-3
     jira: MSSCI-17082
     title: story update locates stories across epic-*.yaml; story finish fails loudly on yaml-update error
