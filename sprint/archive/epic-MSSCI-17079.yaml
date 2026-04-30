@@ -3,7 +3,7 @@ type: epic
 title: Sprint YAML write correctness
 description: Fix silent failures and fragile path/field resolution in the sprint YAML write paths (archive, finish, story update). Three downstream-reported bugs trace to the same subsystem.
 priority: p0
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-17079
 stories:
@@ -38,7 +38,12 @@ stories:
     title: story update locates stories across epic-*.yaml; story finish fails loudly on yaml-update error
     points: 3
     priority: p0
-    status: backlog
+    status: done
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-04-20'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-04-30'
     type: bug
+    review_verdict: approved
+completed: '2026-04-30'
