@@ -38,7 +38,10 @@ stories:
     title: story update locates stories across epic-*.yaml; story finish fails loudly on yaml-update error
     points: 3
     priority: p0
-    status: backlog
+    status: in_review
+    assigned_to: keith.avery@1898andco.io
+    started: '2026-04-20'
     repos: pennyfarthing
     workflow: tdd
     type: bug
+    review_verdict: approved
