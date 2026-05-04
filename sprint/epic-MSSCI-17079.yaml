@@ -38,7 +38,17 @@ stories:
     title: story update locates stories across epic-*.yaml; story finish fails loudly on yaml-update error
     points: 3
     priority: p0
-    status: backlog
+    status: done
+    started: '2026-05-04'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-04-30'
     type: bug
+  - id: 151-4
+    title: narrow story_finish.py read_sprint exception handler
+    points: 1
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: chore
