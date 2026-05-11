@@ -10,10 +10,14 @@ stories:
     title: Remove MSSCI hardcoding — config-driven project key with fail-loud, scrub templates and docs
     points: 5
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-05-11'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-05-11'
     type: refactor
+    review_findings: '3 HIGH: (F1) create_epic_in_jira:232,267 unguarded JIRA_PROJECT in same file Dev modified; (F2) hygiene MSSCI scan is case-sensitive — lowercase mssci-00000 in tests/python/test_sprint_story_command.py:93 survives gate; (F3) test_jira_project_resolution_distinguishes_unset_state distinguishable boolean shorts on has_strict_helper, cannot catch resolver regression.'
+    review_verdict: approved
   - id: 152-2
     title: Gate jira-cli lookups on jira.enabled config; skip assignee lookup for non-jira stories
     points: 3
