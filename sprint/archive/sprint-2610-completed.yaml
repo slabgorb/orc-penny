@@ -27,6 +27,7 @@ completed_epics:
   - MSSCI-16411
   - MSSCI-16564
   - MSSCI-16421
+  - MSSCI-17079
 completed_stories:
   - id: 110-1
     epic: '110'
@@ -1128,3 +1129,13 @@ completed_stories:
     title: Peloton agent color matching — teammates run /color to match badge colors
     points: 1
     completed: "2026-03-15"
+  - id: 151-3
+    epic: ''
+    title: story update locates stories across epic-*.yaml; story finish fails loudly on yaml-update error
+    points: 3
+    completed: '2026-04-30'
+  - id: 151-2
+    epic: MSSCI-17079
+    title: Fail loudly on missing epic field during archive write, backfill historical entries
+    points: 3
+    completed: '2026-04-20'
