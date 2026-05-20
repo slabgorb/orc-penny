@@ -1,0 +1,84 @@
+id: "129"
+title: "Epic: Context Validation & Visibility"
+priority: P1
+status: done
+repos: pennyfarthing
+jira: PROJ-15680
+points: 6
+stories:
+  - id: "129-1"
+    jira: PROJ-15681
+    title: "Fix Context Check Bugs in sprint-data.ts"
+    points: 1
+    priority: P1
+    status: canceled
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-25'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-02-25'
+    type: fix
+  - id: "129-2"
+    jira: PROJ-15682
+    title: "Create Context Schema YAML"
+    points: 1
+    priority: P1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-25'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-02-25'
+    type: feature
+    review_verdict: approved
+  - id: "129-3"
+    jira: PROJ-15683
+    title: "Build Context Validator Python Module and CLI"
+    points: 3
+    priority: P1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-25'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-26'
+    type: feature
+    review_verdict: approved
+  - id: "129-4"
+    jira: PROJ-15684
+    title: "Generate Context Document Templates from Schema"
+    description: Delivered as part of 130-1
+    points: 1
+    priority: P1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-26'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-02-26'
+    type: feature
+    review_findings: 'HIGH: f-string backslash SyntaxError on Python 3.11 (templates.py:39). MEDIUM: 10 ruff violations (unused import, f-strings without placeholders, missing exception chaining, unsorted imports). Route back to dev for lint fixes.'
+    review_verdict: approved
+  - id: 129-5
+    jira: PROJ-15694
+    title: Integrate frontmatter hooks into pf init pipeline
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-25'
+    workflow: tdd
+    completed: '2026-02-25'
+    review_verdict: approved
+  - id: 129-6
+    jira: PROJ-15695
+    title: Detect stale hooks and prompt upgrade on session start
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-26'
+    workflow: tdd
+    completed: '2026-02-26'
+    review_verdict: approved
+completed: '2026-02-26'

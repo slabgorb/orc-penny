@@ -12,7 +12,7 @@
 
 ## Problem
 
-`finish-story.sh` step 4 (YAML update) is broken. It targets `sprint/current-sprint.yaml` with yq path `.epics[].stories[]`, but the sprint now uses **epic shard files** (`sprint/epic-MSSCI-14465.yaml`) with a flat `stories:` array at root. The yq updates silently do nothing.
+`finish-story.sh` step 4 (YAML update) is broken. It targets `sprint/current-sprint.yaml` with yq path `.epics[].stories[]`, but the sprint now uses **epic shard files** (`sprint/epic-PROJ-14465.yaml`) with a flat `stories:` array at root. The yq updates silently do nothing.
 
 The Python CLI `pf sprint story finish` just shells out to the broken bash script.
 
@@ -59,7 +59,7 @@ SPRINT_FILE="$PROJECT_ROOT/sprint/current-sprint.yaml"
 yq eval -i "(.epics[].stories[] | select(.id == \"$STORY_ID\")).status = \"done\"" "$SPRINT_FILE"
 ```
 
-But `current-sprint.yaml` has `epics:` as a list of string refs (e.g., `- MSSCI-14465`), NOT nested epic objects with stories. Stories live in shard files like `sprint/epic-MSSCI-14465.yaml`. The `read_sprint()` function already handles loading and merging shards — use it.
+But `current-sprint.yaml` has `epics:` as a list of string refs (e.g., `- PROJ-14465`), NOT nested epic objects with stories. Stories live in shard files like `sprint/epic-PROJ-14465.yaml`. The `read_sprint()` function already handles loading and merging shards — use it.
 
 ## SM Assessment
 
@@ -89,7 +89,7 @@ Straightforward port. All utilities exist. The bug is a path mismatch — the Py
 
 **Verdict:** APPROVED
 
-**Data flow traced:** `story_id` → Path construction (`session_path`) → `_parse_session` regex extraction → `_extract_jira_key` validates `^MSSCI-\d+$` → safe for file paths and subprocess args. No shell injection: `_run` uses list-based `subprocess.run` (no `shell=True`).
+**Data flow traced:** `story_id` → Path construction (`session_path`) → `_parse_session` regex extraction → `_extract_jira_key` validates `^PROJ-\d+$` → safe for file paths and subprocess args. No shell injection: `_run` uses list-based `subprocess.run` (no `shell=True`).
 
 **Pattern observed:** Follows `story_update.py` result pattern exactly — `read_sprint()` → `find_epic()` → `find_story()` → mutate in-place → `write_sprint()`. Shard-aware writes work correctly because `write_sprint` detects `_is_sharded_on_disk` and splits to `epic-{ref}.yaml` files.
 
@@ -98,7 +98,7 @@ Straightforward port. All utilities exist. The bug is a path mismatch — the Py
 | Severity | Observation | Location |
 |----------|-------------|----------|
 | [MEDIUM] | Hardcoded `"python"` instead of `sys.executable` — may fail on systems where `python` != `python3` | `story_finish.py:189` |
-| [LOW] | Standalone stories (ID format `MSSCI-XXXXX`) won't match epic split — step 4 emits warning, doesn't crash | `story_finish.py:169-170` |
+| [LOW] | Standalone stories (ID format `PROJ-XXXXX`) won't match epic split — step 4 emits warning, doesn't crash | `story_finish.py:169-170` |
 | [VERIFIED] | No shell injection: `_run` uses list args, Jira key validated via regex before reaching subprocess | `story_finish.py:71-73, 53` |
 | [VERIFIED] | Session regex handles all observed session formats (with/without bullet prefix, optional space after colon, multi-word keys) | `story_finish.py:27` |
 | [VERIFIED] | `dry_run=True` has zero side effects — tested in `TestFinishStoryDryRun` | `story_finish.py:131-142` |

@@ -120,7 +120,7 @@ setup:
     # Step 1: Clone pennyfarthing repo if missing (inlined framework source)
     if [ ! -d "{{pennyfarthing}}" ]; then
         echo "Step 1/4: Cloning pennyfarthing framework..."
-        git clone git@github.com:1898andCo/pennyfarthing.git "{{pennyfarthing}}"
+        git clone git@github.com:slabgorb/pennyfarthing.git "{{pennyfarthing}}"
     else
         echo "Step 1/4: pennyfarthing/ already exists, skipping clone"
     fi

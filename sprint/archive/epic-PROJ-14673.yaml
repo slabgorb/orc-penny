@@ -1,0 +1,85 @@
+stories:
+  - id: 96-1
+    jira: PROJ-14674
+    title: TandemPortrait component
+    description: |
+      React component rendering backseat portrait below primary in
+      PersonaHeader. 48px circular, opacity 0.55, 8px gap, role badge
+      at bottom-right. Fade-in/out 300ms on mount/unmount. Emoji fallback
+      on portrait error. No layout shifts in adjacent dockview panels.
+      Uses shadcn Avatar/AvatarImage/AvatarFallback.
+    points: 3
+    type: feature
+    priority: P0
+    status: done
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria: []
+    completed: '2026-02-10'
+  - id: 96-2
+    jira: PROJ-14675
+    title: Backseat thinking animation
+    description: |
+      New tandem-throb CSS keyframe (1.8s ease-in-out, scale 1.04,
+      6px/1px accent box-shadow). Applied via .avatar-tandem-thinking
+      class when backseat is processing. CSS-only, no JS polling.
+      Visually distinct from primary avatar-throb (faster/larger).
+    points: 2
+    type: feature
+    priority: P0
+    status: done
+    repos: pennyfarthing
+    workflow: trivial
+    acceptance_criteria: []
+    started: '2026-02-10'
+    completed: '2026-02-10'
+  - id: 96-3
+    jira: PROJ-14676
+    title: Observation pulse on primary portrait
+    description: |
+      New observation-pulse CSS keyframe (600ms ease-out, 12px/4px
+      accent box-shadow fading to 0). One-shot animation on primary
+      portrait when backseat observation injected. Auto-removes class
+      after animation. Distinct from thinking throb.
+    points: 2
+    type: feature
+    priority: P0
+    status: done
+    repos: pennyfarthing
+    workflow: trivial
+    acceptance_criteria: []
+    started: '2026-02-10'
+    completed: '2026-02-10'
+  - id: 96-4
+    jira: PROJ-14677
+    title: Tandem UI accessibility and responsive behavior
+    description: |
+      prefers-reduced-motion: all animations degrade to opacity/border
+      changes. Screen reader: alt text "{character} ({role}) - observing",
+      aria-live="polite" announcements. Container queries: hide backseat
+      below 180px panel width. Non-interactive MVP (no tab stop).
+      WCAG AA compliance.
+    points: 2
+    type: feature
+    priority: P1
+    status: done
+    repos: pennyfarthing
+    workflow: trivial
+    acceptance_criteria: []
+    started: '2026-02-10'
+    completed: '2026-02-10'
+id: epic-96
+jira: PROJ-14673
+title: 'Epic: Cyclist Tandem UI'
+description: |
+  Users watching agents in Cyclist see the backseat portrait below the
+  primary, with distinct animation states (idle, thinking, observation
+  pulse). TandemPortrait component wraps shadcn Avatar with tandem-specific
+  styling. Three CSS animation tiers with no ambiguity. Container queries
+  for dockview panel resize. WCAG AA accessibility compliance.
+priority: P1
+status: done
+repos: pennyfarthing
+points: 9
+marker: feature
+completed: '2026-02-10'

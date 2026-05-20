@@ -25,7 +25,7 @@ Cyclist's sprint panel has a `ContextIndicator` component (`packages/core/src/pu
 
 2. **`checkEpicContext` (never implemented):** Same pattern — `SprintEpic` interface has `hasContext?: boolean` (line 41) but `transformCanonicalEpic()` never populates it.
 
-The **correct implementation** exists in Python at `pennyfarthing-dist/src/pf/bikerack/story_detail_data.py:177-239`. The `_check_context_files()` function handles both numeric IDs (`context-epic-{N}.md`) and MSSCI-keyed epics (glob `sprint/epic-*.yaml`, parse Jira key, try `context-epic-{jira_key}.md`). This Python version is only used by BikeRack story detail — not by Cyclist or gates.
+The **correct implementation** exists in Python at `pennyfarthing-dist/src/pf/bikerack/story_detail_data.py:177-239`. The `_check_context_files()` function handles both numeric IDs (`context-epic-{N}.md`) and PROJ-keyed epics (glob `sprint/epic-*.yaml`, parse Jira key, try `context-epic-{jira_key}.md`). This Python version is only used by BikeRack story detail — not by Cyclist or gates.
 
 ### Why Schema First
 
@@ -34,7 +34,7 @@ ADR-0029 Consistency Rule #2: "Schema is the ONLY authority for required section
 ### Existing Context Files
 
 ~145 context files exist in `sprint/context/`. Naming is inconsistent:
-- Epic: `context-epic-{N}.md` (numeric) and `context-epic-{JIRA_KEY}.md` (MSSCI-keyed)
+- Epic: `context-epic-{N}.md` (numeric) and `context-epic-{JIRA_KEY}.md` (PROJ-keyed)
 - Story: Mix of `context-{N-N}.md` and `context-story-{N-N}.md`
 - No YAML frontmatter on existing epic contexts
 - Section headings vary (Overview, Goals, Technical Approach, Key Files, etc.)
@@ -155,7 +155,7 @@ New module at `pf/context_docs/` follows established conventions from `pf/sprint
 
 **What to do:** Add context file existence checks to `transformCanonicalStory()` and `transformCanonicalEpic()` in `packages/cyclist/src/sprint-data.ts`. Port the logic from Python `_check_context_files()` (`story_detail_data.py:177-239`).
 
-**Epic context check:** Try `context-epic-{numeric_id}.md` first. If epic has a Jira key (MSSCI-prefixed), also try `context-epic-{jira_key}.md`. Return true if either exists.
+**Epic context check:** Try `context-epic-{numeric_id}.md` first. If epic has a Jira key (PROJ-prefixed), also try `context-epic-{jira_key}.md`. Return true if either exists.
 
 **Story context check:** Look for `context-story-{story_id}.md` (canonical pattern per ADR-0029 Rule #1).
 

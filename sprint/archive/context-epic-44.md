@@ -7,7 +7,7 @@ Replace single LLM-as-judge evaluation with ensemble multi-judge scoring to impr
 **Priority:** P0
 **Repo:** pennyfarthing
 **Stories:** 4 (10 points)
-**Jira:** MSSCI-16214
+**Jira:** PROJ-16214
 
 ## Planning Documents
 
@@ -29,7 +29,7 @@ PersonaGym (EMNLP 2025 Findings) uses multi-evaluator ensemble scoring as standa
 
 ### Why This Is P0
 
-Without reliable measurement, all other benchmark improvements (anchored rubrics MSSCI-16210, gold standards MSSCI-16212, false positive traps MSSCI-16211) rest on an unreliable foundation. Multi-judge validation is the prerequisite that makes the entire measurement stack trustworthy.
+Without reliable measurement, all other benchmark improvements (anchored rubrics PROJ-16210, gold standards PROJ-16212, false positive traps PROJ-16211) rest on an unreliable foundation. Multi-judge validation is the prerequisite that makes the entire measurement stack trustworthy.
 
 ### Evolution from Epic 44
 
@@ -95,10 +95,10 @@ internal/results/benchmarks/{scenario}/{theme}-{role}/
 ## Cross-Epic Dependencies
 
 **Depends on:**
-- MSSCI-16127 (Tech Debt Audit) — clean benchmark infrastructure baseline
+- PROJ-16127 (Tech Debt Audit) — clean benchmark infrastructure baseline
 
 **Depended on by:**
-- MSSCI-16210 (Anchored Rubric Criteria) — multi-judge reveals which dimensions need better anchoring
-- MSSCI-16212 (Gold Standard References) — multi-judge validates whether gold standards improve agreement
-- MSSCI-16211 (False Positive Traps) — multi-judge measures whether red herrings cause judge disagreement
-- MSSCI-16213 (Difficulty Profile Enhancement) — multi-judge agreement varies by difficulty tier
+- PROJ-16210 (Anchored Rubric Criteria) — multi-judge reveals which dimensions need better anchoring
+- PROJ-16212 (Gold Standard References) — multi-judge validates whether gold standards improve agreement
+- PROJ-16211 (False Positive Traps) — multi-judge measures whether red herrings cause judge disagreement
+- PROJ-16213 (Difficulty Profile Enhancement) — multi-judge agreement varies by difficulty tier

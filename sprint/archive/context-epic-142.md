@@ -19,11 +19,11 @@ Make pipeline replay benchmarks reliable, self-documenting, and debuggable so we
 
 ### Current State
 
-The pipeline replay system (`pf benchmark replay`) runs TDD pipelines (TEA -> Dev -> Reviewer) against real code at known commits, then scores output against ground-truth findings from external reviews. We have 152+ runs across 4 scenarios (`dpgd-116`, `dpgd-117`, `mssci-10836`, `pprof-cobra-15`), but only `dpgd-116` and `dpgd-117` actually work — the other two fail with `KeyError` because `load_scenario()` hardcodes `ctx["epic"]` and `ctx["story"]` while those scenarios use `context: {claude_md: CLAUDE.md}`.
+The pipeline replay system (`pf benchmark replay`) runs TDD pipelines (TEA -> Dev -> Reviewer) against real code at known commits, then scores output against ground-truth findings from external reviews. We have 152+ runs across 4 scenarios (`dpgd-116`, `dpgd-117`, `proj-10836`, `pprof-cobra-15`), but only `dpgd-116` and `dpgd-117` actually work — the other two fail with `KeyError` because `load_scenario()` hardcodes `ctx["epic"]` and `ctx["story"]` while those scenarios use `context: {claude_md: CLAUDE.md}`.
 
 ### Problems
 
-1. **Cross-repo context resolution is broken.** `load_scenario()` assumes all scenarios live in the orchestrator's sprint/context structure. Scenarios referencing external repos (poller-cobra) with their own CLAUDE.md cannot resolve paths. This blocks mssci-10836 and pprof-cobra-15 scenarios entirely, and will block Epic 47's PM/Architect benchmarks.
+1. **Cross-repo context resolution is broken.** `load_scenario()` assumes all scenarios live in the orchestrator's sprint/context structure. Scenarios referencing external repos (poller-cobra) with their own CLAUDE.md cannot resolve paths. This blocks proj-10836 and pprof-cobra-15 scenarios entirely, and will block Epic 47's PM/Architect benchmarks.
 
 2. **Double-nested run directories.** Duplicated path logic between `_compute_run_dir()` and `save_result()` with subtly different conditional branches produces `run-N/run-N/` nesting. A cleanup extension exists but the root cause persists.
 

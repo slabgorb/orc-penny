@@ -72,7 +72,7 @@ function checkEpicContext(projectDir: string, epicId: string): boolean {
   // ...
 }
 ```
-Regex `\d+` fails for MSSCI-keyed epics (e.g., `MSSCI-11942`). **MSSCI epic context always returns false.**
+Regex `\d+` fails for PROJ-keyed epics (e.g., `PROJ-11942`). **PROJ epic context always returns false.**
 
 **Separate impl in `generic-sm-setup.ts:429-447`:** This `checkEpicContext()` takes a raw `epicId` and builds `context-epic-${epicId}.md` directly — no regex. Works for numeric IDs but depends on caller passing the clean ID (not `epic-123` format).
 
@@ -94,12 +94,12 @@ Regex `\d+` fails for MSSCI-keyed epics (e.g., `MSSCI-11942`). **MSSCI epic cont
 | Location | What It Does | Bugs |
 |----------|-------------|------|
 | `sprint-data.ts:checkStoryContext()` | Cyclist sprint panel `hasContext` | Wrong filename pattern |
-| `sprint-data.ts:checkEpicContext()` | Cyclist sprint panel `hasContext` | MSSCI regex failure |
-| `generic-sm-setup.ts:checkEpicContext()` | SM setup gate (soft warn) | Works for numeric, untested for MSSCI |
+| `sprint-data.ts:checkEpicContext()` | Cyclist sprint panel `hasContext` | PROJ regex failure |
+| `generic-sm-setup.ts:checkEpicContext()` | SM setup gate (soft warn) | Works for numeric, untested for PROJ |
 
 **Existing context file inventory:**
 - ~50 epic context files (`context-epic-{N}.md`) — ad-hoc format, no frontmatter, no schema
-- ~7 MSSCI-keyed epic context files (`context-epic-MSSCI-*.md`) — never detected by Cyclist
+- ~7 PROJ-keyed epic context files (`context-epic-PROJ-*.md`) — never detected by Cyclist
 - Very few story context files (`context-story-{N-N}.md`) — creation is manual, inconsistent
 
 **Gate system (ADR-0025):**
@@ -305,7 +305,7 @@ Separately (bug fix):
 | **`/pf-context` Skill** | Orchestrates context creation — reads workflow, selects tandem, spawns PM+partner | Skill definition | `pennyfarthing-dist/skills/pf-context/skill.md` |
 | **sm-setup-exit Gate** | Sequential cascade: validate epic context → validate story context → pass/fail | Gate definition | `pennyfarthing-dist/gates/sm-setup-exit.md` |
 | **TEA Context Gate** | Validates story context before RED phase | Gate definition | New check in TEA's activation or existing gate |
-| **Bug Fixes** | Fix filename pattern and MSSCI regex in sprint-data.ts | None (correctness fix) | `packages/cyclist/src/sprint-data.ts` |
+| **Bug Fixes** | Fix filename pattern and PROJ regex in sprint-data.ts | None (correctness fix) | `packages/cyclist/src/sprint-data.ts` |
 
 ### Boundary Decisions
 
@@ -336,7 +336,7 @@ Separately (bug fix):
 
 > These rules prevent AI agents from making conflicting implementation choices.
 
-1. **Context file naming is canonical:** Epic = `context-epic-{id}.md`, Story = `context-story-{id}.md`. The `{id}` is the raw epic/story ID (e.g., `97`, `MSSCI-11942`, `125-3`). No `epic-` prefix in the ID itself.
+1. **Context file naming is canonical:** Epic = `context-epic-{id}.md`, Story = `context-story-{id}.md`. The `{id}` is the raw epic/story ID (e.g., `97`, `PROJ-11942`, `125-3`). No `epic-` prefix in the ID itself.
 
 2. **Schema is the ONLY authority for required sections.** Templates and validators MUST read `context-schema.yaml`. Never hardcode section names in Python, TypeScript, or gate files.
 
@@ -367,7 +367,7 @@ Separately (bug fix):
 | Parameter | Required | Description |
 |-----------|----------|-------------|
 | `type` | yes | `epic` or `story` |
-| `id` | yes | Epic ID (e.g., `97`, `MSSCI-11942`) or Story ID (e.g., `125-3`) |
+| `id` | yes | Epic ID (e.g., `97`, `PROJ-11942`) or Story ID (e.g., `125-3`) |
 | `--context-dir` | no | Override `sprint/context/` default |
 
 **Output (stdout, YAML):**
@@ -613,7 +613,7 @@ Validator loads schema once, checks file against it. Schema location resolved vi
 | `/pf-context` Skill | PM subagent produces empty/garbage context | Validator catches on post-creation validation step (step 9 in skill flow) | Skill reports failure, SM falls back to manual creation message |
 | sm-setup-exit Gate | Cascade logic runs epic check but skips story check | Gate subagent logs show only one `pf context-docs validate` call | Fix gate file check ordering in `sm-setup-exit.md` |
 | Tandem Backseat | Observation file never written (backseat stuck) | No observations injected into PM context after 2+ minutes | PM proceeds without observations. Context still valid, just less rich. |
-| Bug Fix | Regex fix breaks numeric epic IDs | `checkEpicContext` returns false for ALL epics | TS test for `checkEpicContext` with both numeric and MSSCI IDs |
+| Bug Fix | Regex fix breaks numeric epic IDs | `checkEpicContext` returns false for ALL epics | TS test for `checkEpicContext` with both numeric and PROJ IDs |
 
 ### Security Considerations
 

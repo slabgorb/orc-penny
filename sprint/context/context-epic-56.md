@@ -5,7 +5,7 @@
 | Field | Value |
 |-------|-------|
 | Epic ID | epic-56 |
-| Jira | MSSCI-12189 |
+| Jira | PROJ-12189 |
 | Title | Glanceable Status Awareness |
 | Total Points | 13 |
 | Stories | 4 |

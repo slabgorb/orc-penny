@@ -115,7 +115,7 @@ execution_mode: team (native teams, per-phase)
 Dev activates (Prime, normal) → detects team config in workflow YAML
   → TeamCreate("green-phase")
   → Task(team_name="green-phase", name="architect",
-         prompt="Run `pf agent start architect`. Story: MSSCI-14400.
+         prompt="Run `pf agent start architect`. Story: PROJ-14400.
                  Review Dev's implementation approach. Focus on patterns
                  and coupling. Send findings via SendMessage.")
   → Dev works on implementation
@@ -232,7 +232,7 @@ From ADR-0012 — all consultations recorded:
 ```
 .session/{story-id}-dialogue.md
 
-# Tandem Dialogue: MSSCI-14400
+# Tandem Dialogue: PROJ-14400
 **Leader:** Dev (Roy Batty) | **Partner:** Architect (Niander Wallace)
 
 ## Exchange 1

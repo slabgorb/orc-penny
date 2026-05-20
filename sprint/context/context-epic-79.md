@@ -1,6 +1,6 @@
 # Epic 79: Dialog Infrastructure + Hotspot Refactor
 
-**Jira:** MSSCI-14440
+**Jira:** PROJ-14440
 **Priority:** P1
 **Repos:** pennyfarthing
 

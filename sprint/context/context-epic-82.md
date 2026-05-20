@@ -4,7 +4,7 @@
 
 Tool to evaluate agent context budget by running `getPrimeContextJson()` for all agents at FULL tier. Shows per-component token breakdown (agent definition, persona, behavior guide, sprint context, session, sidecars). Enables viewing and pruning sidecar files that have grown too large. Express API on WheelHub server + React dialog in Cyclist.
 
-**Prior work:** MSSCI-12800 added component-level token tracking to prime JSON output. MSSCI-12796 built the tiered context injection system. This epic exposes that data through a dedicated analysis UI.
+**Prior work:** PROJ-12800 added component-level token tracking to prime JSON output. PROJ-12796 built the tiered context injection system. This epic exposes that data through a dedicated analysis UI.
 
 ## Background
 

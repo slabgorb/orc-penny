@@ -189,8 +189,8 @@ This is not cosmetic theming. Pennyfarthing runs scientific studies measuring wh
 
 Pennyfarthing is already configured for the 1898 workflow:
 
-- **Jira integration:** Bidirectional sync with MSSCI project keys, story creation, epic management
-- **Team assignment:** `assigned_to` fields with `@1898andco.io` email addresses, sprint panel filters by assignee
+- **Jira integration:** Bidirectional sync with PROJ project keys, story creation, epic management
+- **Team assignment:** `assigned_to` fields with `@slabgorb.io` email addresses, sprint panel filters by assignee
 - **Sprint management:** Story lifecycle matching actual team cadence
 - **Workflow selection:** TDD for features, trivial for small changes, patch for hotfixes — matching how the team actually works
 

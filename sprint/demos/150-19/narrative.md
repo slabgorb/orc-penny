@@ -36,4 +36,4 @@ The implementation deliberately carves out legitimate cases — for example, ref
 | **Agent skips a test, no ticket** | Pipeline advances. Test silently disabled. | Blocked. Agent must link a JIRA issue or remove the skip. |
 | **Agent refactors `isinstance` to `type() is`** | Passes — correct behavior. | Still passes — ratchet correctly identifies this as a refactor, not a weakening. |
 | **Agent removes an entire test function** | No detection. Coverage drops invisibly. | Ratchet flags missing test function by name. |
-| **Skip with a linked ticket (e.g., `# MSSCI-12345`)** | Passes. | Still passes — legitimate exception is honored. |
+| **Skip with a linked ticket (e.g., `# PROJ-12345`)** | Passes. | Still passes — legitimate exception is honored. |

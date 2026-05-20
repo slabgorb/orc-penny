@@ -68,7 +68,7 @@ These are non-blocking and consistent with the TEA round-3 handoff.
 The boss reads this section. Every round-3 deviation is captured below in 6-field form so the audit trail stands on its own without external lookups.
 
 - **start_date validation is shape-only, not calendrically valid**
-  - Spec source: round-2 reviewer findings (`sprint/epic-MSSCI-17079.yaml#stories[151-5].review_findings`), MEDIUM row "`--since` accepts free-text date"; pinned by `tests/python/test_151_5_staleness_preflight.py::TestSinceDateValidation`
+  - Spec source: round-2 reviewer findings (`sprint/epic-PROJ-17079.yaml#stories[151-5].review_findings`), MEDIUM row "`--since` accepts free-text date"; pinned by `tests/python/test_151_5_staleness_preflight.py::TestSinceDateValidation`
   - Spec text: "Git silently treats an unrecognised free-text date as 'match nothing'" (round-3 RED test docstring)
   - Implementation: `pennyfarthing-dist/src/pf/sprint/staleness.py:124` uses `re.fullmatch(r"\d{4}-\d{2}-\d{2}.*", start_date_str)` — accepts `9999-99-99` and other calendrically-invalid shapes; trailing `.*` permits arbitrary suffix.
   - Rationale: Architect ruled stricter calendar validation out-of-scope for round 3 during spec-check. The pinned test only requires free-text rejection; impossible-date residue and suffix-permissiveness fall to a follow-up.
@@ -188,7 +188,7 @@ These were [LOW] in round-2 and explicitly held by TEA out of round-3 RED scope;
 
 ### Delivery Findings — Architect notes (spec-check)
 
-- **Question** (non-blocking): The story 151-5 has no `acceptance_criteria`, `description`, or `implementation_surface` field in `sprint/epic-MSSCI-17079.yaml`, and there is no `sprint/context/151-5-context.md` either. Round-3 spec lives entirely in (a) the round-2 reviewer findings YAML field, (b) TEA's session-file assessment, (c) the round-3 RED test names. This makes the spec-check phase work but ties spec audit to session-file longevity. If the session is later archived or trimmed, the audit trail thins. Worth a SM-side process note for chore-type stories that iterate via review findings rather than ACs. *Found by Architect during spec-check.*
+- **Question** (non-blocking): The story 151-5 has no `acceptance_criteria`, `description`, or `implementation_surface` field in `sprint/epic-PROJ-17079.yaml`, and there is no `sprint/context/151-5-context.md` either. Round-3 spec lives entirely in (a) the round-2 reviewer findings YAML field, (b) TEA's session-file assessment, (c) the round-3 RED test names. This makes the spec-check phase work but ties spec audit to session-file longevity. If the session is later archived or trimmed, the audit trail thins. Worth a SM-side process note for chore-type stories that iterate via review findings rather than ACs. *Found by Architect during spec-check.*
 - **Confirmation** (non-blocking): The Dev-flagged `feature/test` branch issue and `testing-runner` branch-checkout incident are real and worth following up — but they are scope-orthogonal to 151-5 and properly belong to a framework story. Leaving the Dev findings intact for SM to triage.
 
 **Decision:** Proceed to TEA verify (next phase per workflow).

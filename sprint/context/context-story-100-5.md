@@ -1,6 +1,6 @@
 # Story 100-5: Sprint panel: sprint metrics from completed/current/future
 
-**MSSCI-14781** | Epic 100 (MSSCI-14758) | TDD Workflow | 3 points
+**PROJ-14781** | Epic 100 (PROJ-14758) | TDD Workflow | 3 points
 
 ## Overview
 

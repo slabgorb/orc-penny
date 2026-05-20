@@ -1,0 +1,149 @@
+id: '147'
+type: epic
+title: Configuration Gap Closure
+priority: p0
+status: done
+repos: pennyfarthing
+jira: PROJ-16411
+stories:
+  - id: 147-1
+    jira: PROJ-16412
+    title: Add Jira config to DEFAULTS and TUI settings panel
+    points: 1
+    priority: p0
+    status: done
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-03-13'
+  - id: 147-2
+    jira: PROJ-16413
+    title: Promote saddle_mode to explicit SettingSpec
+    points: 1
+    priority: p0
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-03-13'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-03-13'
+    branch: feat/147-2-promote-saddle-mode-setting-spec
+    review_verdict: approved
+  - id: 147-3
+    jira: PROJ-16414
+    title: Remove colorPreset from settings — unused dead config
+    points: 1
+    priority: p1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-03-13'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-03-13'
+    review_verdict: approved
+  - id: 147-4
+    jira: PROJ-16415
+    title: Create RepoFieldSpec registry in repos_meta.py
+    points: 2
+    priority: p0
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-03-13'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-13'
+    review_verdict: approved
+  - id: 147-5
+    jira: PROJ-16416
+    title: Create ReposPanel with per-repo collapsible sections
+    points: 3
+    priority: p0
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-03-14'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-14'
+  - id: 147-6
+    jira: PROJ-16417
+    title: Add set_repo_field writer to git/repos.py
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-03-14'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: "2026-03-15"
+  - id: 147-7
+    jira: PROJ-16418
+    title: Add repos API endpoints to WheelHub
+    points: 1
+    priority: p1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-03-18'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-03-18'
+  - id: 147-8
+    jira: PROJ-16419
+    title: Add write-time validators to settings and repo writers
+    points: 2
+    priority: p2
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-03-18'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-18'
+    branch: feat/147-8-settings-write-validators
+  - id: 147-9
+    jira: PROJ-16420
+    title: Add --jira flag to pf sprint story update command
+    points: 1
+    priority: p1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-03-18'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-03-18'
+  - id: 147-10
+    jira: PROJ-16429
+    title: Summon agent into saddle from running session — pf saddle summon
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-03-13'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-13'
+    branch: feat/147-10-saddle-summon-agent
+    review_findings: 'CWE-78 fix ineffective: shlex.quote() inside double quotes provides no shell protection. Tests are false positives.'
+    review_verdict: approved
+  - id: 147-11
+    title: Jira integration should be optional — hobby projects don't use Jira
+    description: "Bug reported from sidequest (hobby project, no Jira). pf sprint story finish rejects non-Jira story IDs like E1-13 ('Invalid story ID format') and silently skips the YAML status update. Stories get archived but status stays in_progress instead of done. Root cause: finish flow assumes Jira is present. The system should gracefully handle projects without Jira — skip Jira transitions, but still update YAML status and archive correctly. Reported symptoms: (1) 'Invalid story ID format: E1-13' warning, (2) YAML statuses not flipped to done after finish, (3) stories archived but sprint YAML out of sync."
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-03-15'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-15'
+    type: bug
+    branch: feat/147-11-optional-jira-integration
+  - id: 147-12
+    title: Add configurable toggle to enable/disable individual reviewer sub-agents
+    points: 2
+    priority: p2
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-03-18'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-03-18'
+    branch: feat/147-12-reviewer-subagent-toggles
+completed: '2026-03-18'

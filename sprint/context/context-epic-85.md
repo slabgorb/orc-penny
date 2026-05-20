@@ -4,8 +4,8 @@
 
 Move all Pennyfarthing-managed files under `.pennyfarthing/`, update init to bootstrap then hand off to an interactive workflow, and validate the install against real repos. Currently files are scattered across `.claude/`, `.pennyfarthing/`, `.git/hooks/`, and `.session/`, making it hard to reason about what Pennyfarthing owns vs user files.
 
-**Epic Jira:** MSSCI-14364
-**Stories:** MSSCI-14365 through MSSCI-14374 (10 stories, 34 points)
+**Epic Jira:** PROJ-14364
+**Stories:** PROJ-14365 through PROJ-14374 (10 stories, 34 points)
 **Planning doc:** `docs/planning/install-overhaul-epics.md`
 
 ## Background
@@ -182,15 +182,15 @@ Commands and skills are **copied** (not symlinked) to allow merging built-in + u
 
 | # | Story | Jira | Points | Depends On |
 |---|-------|------|--------|------------|
-| 1.1 | Audit and map all files outside .pennyfarthing | MSSCI-14365 | 2 | - |
-| 1.2 | Move settings.local.json generation | MSSCI-14366 | 3 | 1.1 |
-| 1.3 | Move persona-config.yaml | MSSCI-14367 | 3 | 1.1 |
-| 1.4 | Move project hooks | MSSCI-14368 | 3 | 1.1 |
-| 1.5 | Consolidate sidecars directory | MSSCI-14369 | 2 | 1.1 |
-| 1.6 | Update init command | MSSCI-14370 | 5 | 1.2-1.5 |
-| 1.7 | Update update command | MSSCI-14371 | 5 | 1.6 |
-| 1.8 | Update doctor | MSSCI-14372 | 3 | 1.6 |
-| 1.9 | E2E test - fresh install | MSSCI-14373 | 5 | 1.6-1.8 |
-| 1.10 | E2E test - upgrade | MSSCI-14374 | 3 | 1.7-1.8 |
+| 1.1 | Audit and map all files outside .pennyfarthing | PROJ-14365 | 2 | - |
+| 1.2 | Move settings.local.json generation | PROJ-14366 | 3 | 1.1 |
+| 1.3 | Move persona-config.yaml | PROJ-14367 | 3 | 1.1 |
+| 1.4 | Move project hooks | PROJ-14368 | 3 | 1.1 |
+| 1.5 | Consolidate sidecars directory | PROJ-14369 | 2 | 1.1 |
+| 1.6 | Update init command | PROJ-14370 | 5 | 1.2-1.5 |
+| 1.7 | Update update command | PROJ-14371 | 5 | 1.6 |
+| 1.8 | Update doctor | PROJ-14372 | 3 | 1.6 |
+| 1.9 | E2E test - fresh install | PROJ-14373 | 5 | 1.6-1.8 |
+| 1.10 | E2E test - upgrade | PROJ-14374 | 3 | 1.7-1.8 |
 
-Story 1.1 (MSSCI-14365) is the audit - a research/documentation story that feeds all subsequent work.
+Story 1.1 (PROJ-14365) is the audit - a research/documentation story that feeds all subsequent work.

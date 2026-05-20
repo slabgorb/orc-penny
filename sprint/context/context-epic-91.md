@@ -129,7 +129,7 @@ The validator runs in warning mode (exit 0) by default. `--strict` flag enables 
 | BMAD-METHOD | [#1494](https://github.com/bmad-code-org/BMAD-METHOD/pull/1494) | Merged | Layer 1 file ref validator (original) |
 | BMAD-METHOD | [#1529](https://github.com/bmad-code-org/BMAD-METHOD/pull/1529) | Closed | Layer 2 Zod schema validator (format migration) |
 | BMAD-METHOD | [#1573](https://github.com/bmad-code-org/BMAD-METHOD/pull/1573) | Open | Layer 1 CSV extension |
-| Pennyfarthing | [PR #721](https://github.com/1898andCo/pennyfarthing/pull/721) | Draft | Layer 1 adapted for Pennyfarthing |
+| Pennyfarthing | [PR #721](https://github.com/slabgorb/pennyfarthing/pull/721) | Draft | Layer 1 adapted for Pennyfarthing |
 | Pennyfarthing | `tests/check-references.sh` | Outdated | Legacy 328-line zsh checker (not maintained) |
 
 ## Broken References Found
@@ -138,19 +138,19 @@ The validator runs in warning mode (exit 0) by default. `--strict` flag enables 
 
 | File | Line | Reference | Fix PR | Jira |
 |------|------|-----------|--------|------|
-| `commands/run-ci.md` | 114 | `.pennyfarthing/scripts/run-ci.sh` | Merged (PR #722) | MSSCI-14517 |
-| `commands/setup.md` | 61 | `/theme` → `/set-theme` | Merged (PR #723) | MSSCI-14518 |
-| `skills/workflow/skill.md` | 343 | `../../docs/BIKELANE.md` | Merged (PR #724) | MSSCI-14519 |
-| `skills/workflow/skill.md` | 344 | ADR 0005 → 0013 | Merged (PR #726) | MSSCI-14520 |
-| `skills/workflow/skill.md` | 345 | `../workflows/` → `../../workflows/` | Merged (PR #725) | MSSCI-14521 |
-| `epics-and-stories/step-05` | 15 | `import-epic-to-future.sh` (never implemented) | Merged (PR #727) | MSSCI-14522 |
+| `commands/run-ci.md` | 114 | `.pennyfarthing/scripts/run-ci.sh` | Merged (PR #722) | PROJ-14517 |
+| `commands/setup.md` | 61 | `/theme` → `/set-theme` | Merged (PR #723) | PROJ-14518 |
+| `skills/workflow/skill.md` | 343 | `../../docs/BIKELANE.md` | Merged (PR #724) | PROJ-14519 |
+| `skills/workflow/skill.md` | 344 | ADR 0005 → 0013 | Merged (PR #726) | PROJ-14520 |
+| `skills/workflow/skill.md` | 345 | `../workflows/` → `../../workflows/` | Merged (PR #725) | PROJ-14521 |
+| `epics-and-stories/step-05` | 15 | `import-epic-to-future.sh` (never implemented) | Merged (PR #727) | PROJ-14522 |
 
 ### Second run (2 more from checks 14-17)
 
 | File | Line | Reference | Jira |
 |------|------|-----------|------|
-| `skills/workflow/skill.md` | 344 | `../../docs/adr/0013-bmad-workflow-import.md` | MSSCI-14552 |
-| `guides/patterns/tdd-flow-pattern.md` | 397 | `guides/tactical-agent-behavior.md` → `agent-template-tactical.md` | MSSCI-14553 |
+| `skills/workflow/skill.md` | 344 | `../../docs/adr/0013-bmad-workflow-import.md` | PROJ-14552 |
+| `guides/patterns/tdd-flow-pattern.md` | 397 | `guides/tactical-agent-behavior.md` → `agent-template-tactical.md` | PROJ-14553 |
 
 ### False positives eliminated (7 total)
 
@@ -187,8 +187,8 @@ Create Jira tickets for the 9 unlinked stories when they move from `planning` to
 
 | Story | Points | Jira | Depends On | Notes |
 |-------|--------|------|-----------|-------|
-| 91-1: Productize validator | 3 | MSSCI-14511 | None | **In progress** (PR #721) |
-| 91-2: GHA workflow | 5 | MSSCI-14512 | 91-1 | `::warning` annotations, `GITHUB_STEP_SUMMARY`, PR comment |
+| 91-1: Productize validator | 3 | PROJ-14511 | None | **In progress** (PR #721) |
+| 91-2: GHA workflow | 5 | PROJ-14512 | 91-1 | `::warning` annotations, `GITHUB_STEP_SUMMARY`, PR comment |
 
 ### Layer 2: Schema Validation (13 pts, 3 stories)
 
@@ -209,23 +209,23 @@ Create Jira tickets for the 9 unlinked stories when they move from `planning` to
 
 | Story | Points | Jira | Notes |
 |-------|--------|------|-------|
-| 91-3: Layer 0 R&D | 2 | MSSCI-14513 | Linter selection and adoption plan |
-| 91-4: Layer 1 R&D | 2 | MSSCI-14514 | BMAD adaptation decisions doc |
-| 91-5: Layer 2 R&D | 3 | MSSCI-14515 | Schema approach and gap analysis |
-| 91-6: Layer 3 R&D | 3 | MSSCI-14516 | Graph validation feasibility study |
+| 91-3: Layer 0 R&D | 2 | PROJ-14513 | Linter selection and adoption plan |
+| 91-4: Layer 1 R&D | 2 | PROJ-14514 | BMAD adaptation decisions doc |
+| 91-5: Layer 2 R&D | 3 | PROJ-14515 | Schema approach and gap analysis |
+| 91-6: Layer 3 R&D | 3 | PROJ-14516 | Graph validation feasibility study |
 
 ### Bug Fixes (8 pts, 8 stories)
 
 | Story | Points | Jira | Status |
 |-------|--------|------|--------|
-| 91-16: run-ci.md wrong path | 1 | MSSCI-14517 | done (PR #722) |
-| 91-17: setup.md /theme ref | 1 | MSSCI-14518 | done (PR #723) |
-| 91-18: workflow BIKELANE link | 1 | MSSCI-14519 | done (PR #724) |
-| 91-19: workflow ADR 0005 link | 1 | MSSCI-14520 | done (PR #726) |
-| 91-20: workflow architecture.yaml path | 1 | MSSCI-14521 | done (PR #725) |
-| 91-21: step-05 missing script | 1 | MSSCI-14522 | done (PR #727) |
-| 91-22: broken ADR link | 1 | MSSCI-14552 | planning |
-| 91-23: stale guide ref | 1 | MSSCI-14553 | planning |
+| 91-16: run-ci.md wrong path | 1 | PROJ-14517 | done (PR #722) |
+| 91-17: setup.md /theme ref | 1 | PROJ-14518 | done (PR #723) |
+| 91-18: workflow BIKELANE link | 1 | PROJ-14519 | done (PR #724) |
+| 91-19: workflow ADR 0005 link | 1 | PROJ-14520 | done (PR #726) |
+| 91-20: workflow architecture.yaml path | 1 | PROJ-14521 | done (PR #725) |
+| 91-21: step-05 missing script | 1 | PROJ-14522 | done (PR #727) |
+| 91-22: broken ADR link | 1 | PROJ-14552 | planning |
+| 91-23: stale guide ref | 1 | PROJ-14553 | planning |
 
 ## Key Files
 

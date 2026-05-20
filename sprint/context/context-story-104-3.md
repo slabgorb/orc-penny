@@ -3,7 +3,7 @@
 **Story ID:** 104-3
 **Story Title:** BikeShow client layout stash/restore on panel focus
 **Story Points:** TBD
-**Jira Key:** MSSCI-14977
+**Jira Key:** PROJ-14977
 **Epic:** 104 (BikeShow/BikeRack Follow-up)
 **Workflow:** tdd
 **Status:** Planning

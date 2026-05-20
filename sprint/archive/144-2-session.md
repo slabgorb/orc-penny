@@ -8,7 +8,7 @@
 **Phase:** finish
 **Repos:** pennyfarthing
 **Branch:** feature/story-144-2-update-tea-dev-agent-defs-deviation-logging
-**Assigned:** keith.avery@1898andco.io
+**Assigned:** keith.avery@slabgorb.io
 **Started:** 2026-03-12
 
 ## Story Context

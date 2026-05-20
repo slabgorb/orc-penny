@@ -1,6 +1,6 @@
 # Context: Story 120-6 — TUI Sprint panel does not resolve active sprint context
 
-**GitHub Issue:** 1898andCo/pennyfarthing#1028
+**GitHub Issue:** slabgorb/pennyfarthing#1028
 **Points:** 5 (resized from 3)
 **Consolidation proposal:** `sprint/planning/sprint-state-consolidation-proposal.md`
 

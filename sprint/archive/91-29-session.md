@@ -35,7 +35,7 @@ After the epic reference is added to `completed_epics`, iterate through `epic.ge
 
 ## SM Assessment
 
-Bug found during sprint panel investigation. Epic 98 (MSSCI-14697) was archived with all 8 stories done, but only 4 of 8 stories had been written to `sprint-2606-completed.yaml` — the rest were lost. Root cause: neither `archive_epic()` nor `finish_story()` writes completed stories to the completed file. The `completed_stories` entries that exist were written manually by the SM agent, not by any script.
+Bug found during sprint panel investigation. Epic 98 (PROJ-14697) was archived with all 8 stories done, but only 4 of 8 stories had been written to `sprint-2606-completed.yaml` — the rest were lost. Root cause: neither `archive_epic()` nor `finish_story()` writes completed stories to the completed file. The `completed_stories` entries that exist were written manually by the SM agent, not by any script.
 
 **Repos:** pennyfarthing
 **Branch:** feat/91-29-archive-epic-completed-stories-bug

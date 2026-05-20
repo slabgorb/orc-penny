@@ -1,7 +1,7 @@
 ---
 story_id: "147-11"
 jira_key: "none"
-epic: "MSSCI-16411"
+epic: "PROJ-16411"
 workflow: "tdd"
 ---
 
@@ -13,7 +13,7 @@ workflow: "tdd"
 - **Jira Key:** none (hobby project without Jira)
 - **Workflow:** tdd
 - **Stack Parent:** none
-- **Epic:** MSSCI-16411 (Configuration Gap Closure)
+- **Epic:** PROJ-16411 (Configuration Gap Closure)
 - **Priority:** p1
 - **Points:** 2
 

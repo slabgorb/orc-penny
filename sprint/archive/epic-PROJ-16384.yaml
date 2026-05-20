@@ -1,0 +1,144 @@
+id: '144'
+type: epic
+title: Specification Fidelity Gates
+description: 'Enforce spec fidelity end-to-end: structured deviation documentation, AC accountability with operator approval, Architect spec alignment phases, and modernized TDD workflow.'
+priority: p0
+status: done
+repos: pennyfarthing
+jira: PROJ-16384
+stories:
+  - id: 144-1
+    jira: PROJ-16385
+    title: Deviation format spec and gate validation upgrade
+    points: 3
+    priority: p0
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-03-12'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-12'
+  - id: 144-2
+    jira: PROJ-16386
+    title: Update TEA and Dev agent definitions for deviation logging
+    points: 2
+    priority: p0
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-03-12'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-03-12'
+    review_verdict: approved
+  - id: 144-3
+    jira: PROJ-16387
+    title: Create AC-completion gate
+    points: 3
+    priority: p0
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-03-12'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-12'
+    review_verdict: approved
+  - id: 144-4
+    jira: PROJ-16388
+    title: Add simplify toggle to repos.yaml
+    points: 1
+    priority: p1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-03-13'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-03-13'
+    review_verdict: approved
+  - id: 144-5
+    jira: PROJ-16389
+    title: Add Assumptions section to story context schema
+    points: 1
+    priority: p0
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-03-13'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-03-13'
+    review_verdict: approved
+  - id: 144-6
+    jira: PROJ-16390
+    title: Create Architect spec-check phase and gate
+    points: 3
+    priority: p0
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-03-13'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-13'
+    review_verdict: approved
+  - id: 144-7
+    jira: PROJ-16391
+    title: Create Architect spec-reconcile phase and gate
+    points: 3
+    priority: p0
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-03-13'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-13'
+  - id: 144-8
+    jira: PROJ-16392
+    title: Remove tandem workflows
+    points: 1
+    priority: p1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-03-13'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-03-13'
+    review_verdict: approved
+  - id: 144-9
+    jira: PROJ-16393
+    title: Update TDD workflow with new phases and gates
+    points: 2
+    priority: p0
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-03-13'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-03-13'
+    review_verdict: approved
+  - id: 144-10
+    title: Fix spec-check gate naming discrepancy in 144-9 context doc
+    points: 1
+    priority: p1
+    status: done
+    started: '2026-03-13'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-03-13'
+    branch: feat/144-10-fix-spec-check-gate-naming
+    review_verdict: approved
+  - id: 144-11
+    title: Wire saddle_command consumption in relay hook and agent behavior guide
+    points: 2
+    priority: p0
+    status: in_review
+    started: '2026-03-13'
+    repos: pennyfarthing
+    workflow: tdd
+    branch: feat/144-11-saddle-command-relay-hook
+    review_verdict: approved
+  - id: 144-12
+    title: Wire saddle_command consumption in relay hook and agent behavior guide
+    points: 2
+    priority: p0
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+completed: '2026-03-13'

@@ -1,7 +1,7 @@
 ---
 story_id: "151-3"
-jira_key: "MSSCI-17082"
-epic: "MSSCI-17079"
+jira_key: "PROJ-17082"
+epic: "PROJ-17079"
 workflow: "tdd"
 ---
 
@@ -9,8 +9,8 @@ workflow: "tdd"
 
 ## Story Details
 - **ID:** 151-3
-- **Jira Key:** MSSCI-17082 (skipped — project uses kanban, created locally)
-- **Epic:** MSSCI-17079 (Sprint YAML write correctness)
+- **Jira Key:** PROJ-17082 (skipped — project uses kanban, created locally)
+- **Epic:** PROJ-17079 (Sprint YAML write correctness)
 - **Workflow:** tdd
 - **Points:** 3
 - **Stack Parent:** none
@@ -54,9 +54,9 @@ This story addresses a critical bug in sprint story management where `story upda
   The SM patterns sidecar entry `sprint-yaml-sharded` is stale; the bug it describes was already fixed before this story landed. 13 passing regression tests in `test_151_3_yaml_write_correctness.py` document the correct current behavior. Worth updating the sidecar after merge.
   *Found by TEA during test design.*
 
-- **Improvement** (non-blocking): `_extract_jira_key` in `pennyfarthing-dist/src/pf/sprint/story_finish.py` (line 78) hard-codes `^PROJ-\d+$` and silently returns None for any other prefix (e.g., `MSSCI-17082`).
+- **Improvement** (non-blocking): `_extract_jira_key` in `pennyfarthing-dist/src/pf/sprint/story_finish.py` (line 78) hard-codes `^PROJ-\d+$` and silently returns None for any other prefix (e.g., `PROJ-17082`).
   Affects all stories whose Jira key uses a non-`PROJ` project prefix.
-  This project's stories use `MSSCI-`; finish skips Jira transitions with no warning. Out of scope for 151-3 (does not affect YAML write correctness) but worth filing as a follow-up.
+  This project's stories use `PROJ-`; finish skips Jira transitions with no warning. Out of scope for 151-3 (does not affect YAML write correctness) but worth filing as a follow-up.
   *Found by TEA during test design.*
 
 - **Gap** (non-blocking): `pf validate context-story {story_id}` referenced in the TEA agent definition does not exist as a CLI subcommand.
@@ -132,7 +132,7 @@ This story addresses a critical bug in sprint story management where `story upda
 
 **Repo:** pennyfarthing (gitflow, target `develop`).
 
-**Jira:** MSSCI-17082 not yet created in Jira — local-only kanban story. No Jira claim performed.
+**Jira:** PROJ-17082 not yet created in Jira — local-only kanban story. No Jira claim performed.
 
 **Branch:** `feat/151-3-story-update-shard-aware` (created on develop).
 
@@ -297,7 +297,7 @@ By the High Energy Magic, the silent failures are now loud.
 
 ### Root Cause
 
-The branch `feat/151-3-story-update-shard-aware` was created from merge-base `2ad627cfa` (the merge of PR #31, story 151-2). After that point, develop received commit `b5d00bbd4` — **PR #33 "MSSCI-17082 - feat(sprint): story update locates stories across epic-*.yaml; story finish fails loudly on yaml-update error"** — which addresses the SAME Jira key (MSSCI-17082) and the SAME ACs as this story. Neither SM nor TEA nor Dev noticed develop had moved forward with an in-flight resolution of the same scope.
+The branch `feat/151-3-story-update-shard-aware` was created from merge-base `2ad627cfa` (the merge of PR #31, story 151-2). After that point, develop received commit `b5d00bbd4` — **PR #33 "PROJ-17082 - feat(sprint): story update locates stories across epic-*.yaml; story finish fails loudly on yaml-update error"** — which addresses the SAME Jira key (PROJ-17082) and the SAME ACs as this story. Neither SM nor TEA nor Dev noticed develop had moved forward with an in-flight resolution of the same scope.
 
 The branch is now ~3 days behind develop on exactly the files this story touches, and a `develop..feat/151-3` diff REVERSES large portions of the already-merged fix.
 
@@ -335,7 +335,7 @@ Exactly one improvement is novel: **narrowing the bare `except Exception` around
 ### Required Action (hand-back to SM)
 
 1. **Abort the current implementation.** Do not merge `feat/151-3-story-update-shard-aware` as-is — it would revert PR #33's fixes for AC2 / AC4 and the step-entry contract for AC3.
-2. **Reconcile with develop.** Story MSSCI-17082 / 151-3 is materially complete on develop already. Verify b5d00bbd4 against the 5 ACs:
+2. **Reconcile with develop.** Story PROJ-17082 / 151-3 is materially complete on develop already. Verify b5d00bbd4 against the 5 ACs:
    - AC1 (shard-aware update_story): met by existing read/write_sprint shard merging.
    - AC2 (update returns non-zero on missing): worth confirming with a regression test if not already present.
    - AC3 (finish loud failure on YAML error): mostly met — only the `read_sprint` bare-except remains a silent swallow site.

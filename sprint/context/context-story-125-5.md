@@ -1,9 +1,9 @@
 # Context: Story 125-5 — Add pf sprint data --json canonical output for subprocess consumers
 
-**Jira Issue:** MSSCI-15426
+**Jira Issue:** PROJ-15426
 **Points:** 2
 **Priority:** P2
-**Epic:** 125 — Sprint State Engine Consolidation (MSSCI-15421)
+**Epic:** 125 — Sprint State Engine Consolidation (PROJ-15421)
 **Workflow:** tdd
 
 ## Problem
@@ -67,7 +67,7 @@ The canonical merged output from `load_sprint()` contains:
   "epics": [
     {
       "id": "epic-125",
-      "jira": "MSSCI-15421",
+      "jira": "PROJ-15421",
       "title": "...",
       "description": "...",
       "priority": "P2",
@@ -77,7 +77,7 @@ The canonical merged output from `load_sprint()` contains:
       "stories": [
         {
           "id": "125-5",
-          "jira": "MSSCI-15426",
+          "jira": "PROJ-15426",
           "title": "Add pf sprint data --json canonical output...",
           "description": "...",
           "points": 2,
@@ -98,8 +98,8 @@ The canonical merged output from `load_sprint()` contains:
   "_orphans": [  // NEW: detected orphaned epic shards
     {
       "id": "epic-117",
-      "jira": "MSSCI-14999",
-      "file": "epic-MSSCI-14999.yaml",
+      "jira": "PROJ-14999",
+      "file": "epic-PROJ-14999.yaml",
       "reason": "unindexed (not in current-sprint.yaml, not in initiative shards)"
     }
   ],
@@ -132,7 +132,7 @@ stories: {
 ### Shard Merge Logic (from shard_merge.py)
 
 - Iterate through epics list in sprint YAML
-- Each string ref (e.g., "MSSCI-15421" or "epic-125") → load `epic-{ref}.yaml` shard
+- Each string ref (e.g., "PROJ-15421" or "epic-125") → load `epic-{ref}.yaml` shard
 - Replace string with full epic dict
 - Detect and warn about:
   - Missing shard files (ref in index but file doesn't exist)

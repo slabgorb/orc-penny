@@ -13,11 +13,11 @@
 
 ## Acceptance Criteria
 
-- Both schemas load without KeyError (`mssci-10836.yaml` and `dpgd-116.yaml` both return valid Scenario)
+- Both schemas load without KeyError (`proj-10836.yaml` and `dpgd-116.yaml` both return valid Scenario)
 - `roots:` resolves relative to scenario file (not project_dir)
 - Backward compatible — dpgd-116.yaml (no `roots:`) produces identical Scenario
 - Skips epic/story for `context_type="repo"` — worktree has `.pennyfarthing/` + `.claude/` but no `sprint/context/`
-- mssci/pprof scenarios run: `pf benchmark replay run scenarios/mssci-10836.yaml --skip-score --keep-worktree` succeeds
+- proj/pprof scenarios run: `pf benchmark replay run scenarios/proj-10836.yaml --skip-score --keep-worktree` succeeds
 
 ## SM Assessment
 
@@ -29,16 +29,16 @@
 **Files Changed:**
 - `pennyfarthing-dist/src/pf/benchmark/pipeline_replay.py` — Extended `Scenario` with `context_type`, `claude_md_path`, `roots`; updated `load_scenario()` to detect sprint vs repo context; guarded `build_phase_claude_md()` and `_build_bmad_claude_md()` for repo-context
 - `pennyfarthing-dist/guides/peloton.md` — Documented both context schemas in scenario YAML reference
-- `internal/results/pipeline-replay/scenarios/mssci-10836.yaml` — Added `roots:` block
-- `internal/results/pipeline-replay/scenarios/mssci-15531-pprof.yaml` — Added `roots:` block
+- `internal/results/pipeline-replay/scenarios/proj-10836.yaml` — Added `roots:` block
+- `internal/results/pipeline-replay/scenarios/proj-15531-pprof.yaml` — Added `roots:` block
 
 **Tests:** 57/57 benchmark tests passing, 1874/1874 total passing (1 pre-existing pypi packaging error)
 **Branch:** story/142-1-unified-context-resolution (pushed)
 
 **Verification:**
 - dpgd-116 (sprint-context): loads identically — backward compatible
-- mssci-10836 (repo-context): loads without KeyError, resolves to `/Users/keithavery/Projects/poller-orc/poller-cobra`
-- mssci-15531-pprof (repo-context): loads without KeyError, same repo resolution
+- proj-10836 (repo-context): loads without KeyError, resolves to `/Users/keithavery/Projects/poller-orc/poller-cobra`
+- proj-15531-pprof (repo-context): loads without KeyError, same repo resolution
 
 **Handoff:** To Reviewer for code review
 

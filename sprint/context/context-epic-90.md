@@ -1,6 +1,6 @@
 # Epic 90: Confidence Circuit Breaker (via Gate)
 
-**Jira:** MSSCI-14662
+**Jira:** PROJ-14662
 **Repo:** pennyfarthing
 **PRD:** `sprint/planning/gate-prd.md`
 

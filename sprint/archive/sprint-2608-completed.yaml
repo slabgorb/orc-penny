@@ -9,773 +9,773 @@ sprint:
   status: active
 
 completed_epics:
-  - MSSCI-15184
-  - MSSCI-14697
-  - MSSCI-15373
+  - PROJ-15184
+  - PROJ-14697
+  - PROJ-15373
   - '110'
-  - MSSCI-15310
-  - MSSCI-15365
-  - MSSCI-15396
-  - MSSCI-15391
-  - MSSCI-14510
-  - MSSCI-15551
-  - MSSCI-15488
-  - MSSCI-15680
-  - MSSCI-15685
-  - MSSCI-15676
-  - MSSCI-15765
-  - MSSCI-15771
-  - MSSCI-15776
-  - MSSCI-15780
-  - MSSCI-15839
+  - PROJ-15310
+  - PROJ-15365
+  - PROJ-15396
+  - PROJ-15391
+  - PROJ-14510
+  - PROJ-15551
+  - PROJ-15488
+  - PROJ-15680
+  - PROJ-15685
+  - PROJ-15676
+  - PROJ-15765
+  - PROJ-15771
+  - PROJ-15776
+  - PROJ-15780
+  - PROJ-15839
 completed_stories:
   - id: 110-1
-    epic: MSSCI-15184
+    epic: PROJ-15184
     title: Cross-panel event bus with Changed-to-Diffs navigation
     points: 5
     completed: '2026-02-17'
   - id: 110-2
-    epic: MSSCI-15184
+    epic: PROJ-15184
     title: Story drill-through with dossier detail screen
     points: 5
     completed: '2026-02-17'
   - id: 110-3
-    epic: MSSCI-15184
+    epic: PROJ-15184
     title: Portrait image header with textual-image
     points: 3
     completed: '2026-02-17'
   - id: 110-4
-    epic: MSSCI-15184
+    epic: PROJ-15184
     title: Split-pane layouts with workflow-aware presets
     points: 5
     completed: '2026-02-18'
   - id: 110-5
-    epic: MSSCI-15184
+    epic: PROJ-15184
     title: Context meter footer bar
     points: 3
     completed: '2026-02-17'
   - id: 110-6
-    epic: MSSCI-15184
+    epic: PROJ-15184
     title: Project directory indicator in TUI header
     points: 2
     completed: '2026-02-19'
   - id: 110-7
-    epic: MSSCI-15184
+    epic: PROJ-15184
     title: Fix velocity and sprint count points
     points: 2
     completed: '2026-02-17'
   - id: 110-8
-    epic: MSSCI-15184
+    epic: PROJ-15184
     title: Hook up audit log panel
     points: 3
     completed: '2026-02-17'
   - id: 110-9
-    epic: MSSCI-15184
+    epic: PROJ-15184
     title: TUI portrait resolution for consumer installs
     points: 3
     completed: '2026-02-18'
   - id: 110-10
-    epic: MSSCI-15184
+    epic: PROJ-15184
     title: Audit log panel not showing data in TUI
     points: 2
     completed: '2026-02-19'
   - id: 110-11
-    epic: MSSCI-15184
+    epic: PROJ-15184
     title: 'Fix git panel: cyclist settings module never initialized'
     points: 2
     completed: '2026-02-18'
   - id: 110-12
-    epic: MSSCI-15184
+    epic: PROJ-15184
     title: Context meter in TUI needs more frequent redraws
     points: 2
     completed: '2026-02-18'
   - id: 118-1
-    epic: MSSCI-15184
+    epic: PROJ-15184
     title: Add future epics to the Sprint Panel in the TUI
     points: 3
     completed: '2026-02-20'
   - id: 98-9
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Fix uninstall data loss — replace rmSync with cleanManagedEntries for commands and skills
     points: 2
     completed: '2026-02-14'
   - id: 98-10
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Fix settings symlink crash on existing real file
     points: 2
     completed: '2026-02-14'
   - id: 98-11
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Settings.local.json shared merge model for multi-framework coexistence
     points: 5
     completed: '2026-02-14'
   - id: 98-12
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Git hook chaining with .d/ dispatcher pattern
     points: 3
     completed: '2026-02-14'
   - id: 98-13
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Cleanup migration for backward-compat symlinks
     points: 2
     completed: '2026-02-15'
   - id: 98-14
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Remove dead copy-mode code paths
     points: 2
     completed: "2026-02-14"
   - id: 98-15
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Remove TTY panel and node-pty dependency
     points: 2
     completed: '2026-02-14'
   - id: 98-16
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Absorb @pennyfarthing/shared and @pennyfarthing/benchmark into core
     points: 3
     completed: '2026-02-14'
   - id: 98-17
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Move Cyclist web server and API layer into core
     points: 8
     completed: '2026-02-14'
   - id: 98-18
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Move React UI build and static assets into core
     points: 5
     completed: '2026-02-14'
   - id: 98-19
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Add pennyfarthing web and pennyfarthing bikerack CLI commands with lazy loading
     points: 3
     completed: '2026-02-21'
   - id: 98-20
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Extract Electron shell to packages/electron with BikeShow entry point
     points: 5
     completed: '2026-02-16'
   - id: 98-21
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Standalone Electron distribution via GitHub releases
     points: 3
     completed: '2026-02-16'
   - id: 98-22
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: v11 migration automation — detect and remove old multi-package installs
     points: 3
     completed: '2026-02-15'
   - id: 98-23
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Implement real OTLP integrations for core server stubs
     points: 5
     completed: '2026-02-16'
   - id: 122-1
-    epic: MSSCI-15373
+    epic: PROJ-15373
     title: Convert SettingsPanel from interactive controls to read-only display
     points: 3
     completed: '2026-02-20'
   - id: 122-2
-    epic: MSSCI-15373
+    epic: PROJ-15373
     title: Add CLI command reference and usage guide to SettingsPanel
     points: 3
     completed: '2026-02-21'
   - id: 122-3
-    epic: MSSCI-15373
+    epic: PROJ-15373
     title: Remove dead interactive components after SettingsPanel conversion
     points: 1
     completed: '2026-02-21'
   - id: 117-1
-    epic: MSSCI-15310
+    epic: PROJ-15310
     title: Ship pyproject.toml in npm package for consumer Python hooks
     points: 3
     completed: '2026-02-19'
   - id: 117-2
-    epic: MSSCI-15310
+    epic: PROJ-15310
     title: Generate hook commands with pf.sh wrapper path, not bare pf
     points: 2
     completed: '2026-02-19'
   - id: 117-3
-    epic: MSSCI-15310
+    epic: PROJ-15310
     title: Postinstall cleanup of stale pre-11.x artifacts
     points: 3
     completed: '2026-02-19'
   - id: 117-4
-    epic: MSSCI-15310
+    epic: PROJ-15310
     title: Ensure project hook templates have execute permission
     points: 1
     completed: '2026-02-19'
   - id: 117-5
-    epic: MSSCI-15310
+    epic: PROJ-15310
     title: Ship index.html and add ws dependency in @pennyfarthing/core npm package
     points: 2
     completed: '2026-02-19'
   - id: 117-6
-    epic: MSSCI-15310
+    epic: PROJ-15310
     title: Fix getDistDir() wrong path resolution in npm-installed mode
     points: 2
     completed: '2026-02-19'
   - id: 117-7
-    epic: MSSCI-15310
+    epic: PROJ-15310
     title: Fix doctor git hook staleness check for dispatcher pattern
     points: 3
     completed: '2026-02-19'
   - id: 117-8
-    epic: MSSCI-15310
+    epic: PROJ-15310
     title: Setup workflow should create config.local.yaml with theme
     points: 2
     completed: '2026-02-21'
   - id: 117-9
-    epic: MSSCI-15310
+    epic: PROJ-15310
     title: Fix pennyfarthing cyclist CLI command — points to wrong entry file
     points: 2
     completed: '2026-02-21'
   - id: 117-10
-    epic: MSSCI-15310
+    epic: PROJ-15310
     title: Doctor persona-config check false negative when config.local.yaml missing
     points: 2
     completed: '2026-02-20'
   - id: 117-11
-    epic: MSSCI-15310
+    epic: PROJ-15310
     title: Fix npm install EHOSTUNREACH on theme packages
     points: 2
     completed: '2026-02-21'
   - id: 117-12
-    epic: MSSCI-15310
+    epic: PROJ-15310
     title: Fix version reporting inconsistency (2.0.0 vs 11.4.0)
     points: 1
     completed: '2026-02-21'
   - id: 123-1
-    epic: MSSCI-15365
+    epic: PROJ-15365
     title: Package contents assertion test and npm pack gate
     points: 3
     completed: '2026-02-21'
   - id: 123-2
-    epic: MSSCI-15365
+    epic: PROJ-15365
     title: Automate changelog comparison link updates
     points: 2
     completed: '2026-02-21'
   - id: 123-3
-    epic: MSSCI-15365
+    epic: PROJ-15365
     title: Add pf release deprecate command
     points: 3
     completed: '2026-02-21'
   - id: 123-4
-    epic: MSSCI-15365
+    epic: PROJ-15365
     title: Implement pf release dry-run command
     points: 3
     completed: '2026-02-21'
   - id: 123-5
-    epic: MSSCI-15365
+    epic: PROJ-15365
     title: Document pnpm publish requirement in release gotchas
     points: 1
     completed: '2026-02-22'
   - id: 123-6
-    epic: MSSCI-15365
+    epic: PROJ-15365
     title: Consumer install smoke test in CI
     points: 3
     completed: '2026-02-21'
   - id: 123-7
-    epic: MSSCI-15365
+    epic: PROJ-15365
     title: Set up git-lfs for portrait images in cyclist package
     points: 2
     completed: '2026-02-21'
   - id: 120-1
-    epic: MSSCI-15396
+    epic: PROJ-15396
     title: 'Story detail screen: markdown preview with context and session'
     points: 3
     completed: '2026-02-21'
   - id: 120-2
-    epic: MSSCI-15396
+    epic: PROJ-15396
     title: Combine audit log and token counts into a single panel
     points: 2
     completed: '2026-02-22'
   - id: 120-3
-    epic: MSSCI-15396
+    epic: PROJ-15396
     title: Enrich progress screen with detailed sprint and story metrics
     points: 3
     completed: '2026-02-22'
   - id: 120-4
-    epic: MSSCI-15396
+    epic: PROJ-15396
     title: Fix TUI reconnecting flicker from unsupported WS channel
     points: 2
     completed: '2026-02-21'
   - id: 120-5
-    epic: MSSCI-15396
+    epic: PROJ-15396
     title: Fix npm path resolution assuming monorepo layout
     points: 5
     completed: '2026-02-21'
   - id: 120-6
-    epic: MSSCI-15396
+    epic: PROJ-15396
     title: Sprint panel ignores active sprint preference from sprint registry
     points: 5
     completed: '2026-02-21'
   - id: 120-7
-    epic: MSSCI-15396
+    epic: PROJ-15396
     title: Refactor remaining call sites to use get_dist_root()
     points: 2
     completed: '2026-02-21'
   - id: 120-8
-    epic: MSSCI-15396
+    epic: PROJ-15396
     title: Story details and progress page enrichment with native Textual widgets
     points: 3
     completed: '2026-02-21'
   - id: 120-9
-    epic: MSSCI-15396
+    epic: PROJ-15396
     title: Add statusbar CLI toggle setting
     points: 1
     completed: '2026-02-22'
   - id: 120-10
-    epic: MSSCI-15396
+    epic: PROJ-15396
     title: Customizable bar layout ordering (menu/profile/content/status)
     points: 3
     completed: '2026-02-22'
   - id: 120-11
-    epic: MSSCI-15396
+    epic: PROJ-15396
     title: Auto-reload Cyclist on code changes
     points: 2
     completed: '2026-02-21'
   - id: 120-12
-    epic: MSSCI-15396
+    epic: PROJ-15396
     title: Enrich statusbar with additional context (current directory, story ID)
     points: 1
     completed: '2026-02-22'
   - id: 120-13
-    epic: MSSCI-15396
+    epic: PROJ-15396
     title: 'Audit log enrichment: hook-based tool input forwarding and drill-through'
     points: 5
     completed: '2026-02-22'
   - id: 120-14
-    epic: MSSCI-15396
+    epic: PROJ-15396
     title: OTEL enrichment and background task tracking in CLI mode
     points: 5
     completed: '2026-02-22'
   - id: 121-1
-    epic: MSSCI-15391
+    epic: PROJ-15391
     title: Improve debug panel refresh rate for real-time token usage tracking
     points: 2
     completed: '2026-02-20'
   - id: 121-2
-    epic: MSSCI-15391
+    epic: PROJ-15391
     title: Add code quality rules trigger from debug panel
     points: 3
     completed: '2026-02-23'
   - id: 121-3
-    epic: MSSCI-15391
+    epic: PROJ-15391
     title: Fix footer keybinding labels — bracket display is inaccurate
     points: 1
     completed: '2026-02-21'
   - id: 121-4
-    epic: MSSCI-15391
+    epic: PROJ-15391
     title: Fix git sync cache busting for stale UI state
     points: 2
     completed: '2026-02-23'
   - id: 91-1
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: Productize Layer 1 file reference validator
     points: 3
     completed: '2026-02-08'
   - id: 91-2
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: 'CI polish: ::warning annotations, summary table, and PR comments'
     points: 2
     completed: '2026-02-24'
   - id: 91-3
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: 'Research: Layer 0 linter selection and adoption plan'
     points: 2
     completed: '2026-02-24'
   - id: 91-4
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: 'Research: Layer 1 validator adaptation from BMAD'
     points: 2
     completed: '2026-02-24'
   - id: 91-5
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: 'Research: Layer 2 schema validation approach and gap analysis'
     points: 3
     completed: '2026-02-24'
   - id: 91-6
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: 'Research: Layer 3 graph validation feasibility study'
     points: 3
     completed: '2026-02-24'
   - id: 91-7
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: Enforce ESLint across all packages
     points: 3
     completed: '2026-02-10'
   - id: 91-8
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: Add Ruff to CI for Python scripts
     points: 1
     completed: '2026-02-10'
   - id: 91-9
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: Add markdownlint to CI
     points: 2
     completed: '2026-02-10'
   - id: 91-10
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: Add yamllint for workflow and config files
     points: 2
     completed: '2026-02-10'
   - id: 91-11
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: Workflow YAML schema validation
     points: 5
     completed: '2026-02-10'
   - id: 91-12
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: Agent definition structural validation
     points: 5
     completed: '2026-02-10'
   - id: 91-13
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: Skill registry and command schema validation
     points: 3
     completed: '2026-02-10'
   - id: 91-14
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: Workflow graph validation
     points: 8
     completed: '2026-02-19'
   - id: 91-15
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: Cross-entity reference validation
     points: 5
     completed: "2026-02-19"
   - id: 91-16
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: run-ci.md references wrong path for run-ci.sh
     points: 1
     completed: '2026-02-07'
   - id: 91-17
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: setup.md references /theme instead of /set-theme
     points: 1
     completed: '2026-02-07'
   - id: 91-18
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: workflow skill.md broken link to BIKELANE.md
     points: 1
     completed: '2026-02-07'
   - id: 91-19
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: workflow skill.md broken link to ADR 0005 (renumbered)
     points: 1
     completed: '2026-02-07'
   - id: 91-20
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: workflow skill.md wrong path depth for architecture.yaml
     points: 1
     completed: '2026-02-07'
   - id: 91-21
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: step-05 references unimplemented import-epic-to-future.sh
     points: 1
     completed: '2026-02-07'
   - id: 91-22
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: Broken ADR link in skills/workflow/skill.md
     points: 1
     completed: '2026-02-09'
   - id: 91-23
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: Stale guide ref in tdd-flow-pattern.md
     points: 1
     completed: '2026-02-09'
   - id: 91-25
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: Preserve assigned_to field through story lifecycle
     points: 2
     completed: '2026-02-10'
   - id: 91-26
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: Enhance pf sprint info to return full sprint header
     points: 1
     completed: '2026-02-10'
   - id: 91-24
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: Sprint shard write-time validation and reference integrity
     points: 5
     completed: '2026-02-10'
   - id: 91-27
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: Normalize stepped workflow output paths and de-collision document names
     points: 3
     completed: '2026-02-11'
   - id: 91-28
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: 'validate-refs: differentiate native vs plugin reference sources'
     points: 2
     completed: '2026-02-16'
   - id: 91-29
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: 'Bug: archive_epic does not populate completed_stories in sprint completed file'
     points: 2
     completed: '2026-02-14'
   - id: 124-1
-    epic: MSSCI-15551
+    epic: PROJ-15551
     title: Extract Server Engine into packages/bikerack/
     points: 5
     completed: '2026-02-24'
   - id: 124-2
-    epic: MSSCI-15551
+    epic: PROJ-15551
     title: Move WebSocket and OTLP from Cyclist to BikeRack
     points: 3
     completed: '2026-02-24'
   - id: 124-3
-    epic: MSSCI-15551
+    epic: PROJ-15551
     title: Introduce DataSource<T> and Refactor Panel Hooks
     points: 3
     completed: '2026-02-24'
   - id: 124-4
-    epic: MSSCI-15551
+    epic: PROJ-15551
     title: Rewire Cyclist to Depend on BikeRack
     points: 3
     completed: '2026-02-24'
   - id: 124-5
-    epic: MSSCI-15551
+    epic: PROJ-15551
     title: Move Display Components and Update Entry Points
     points: 2
     completed: '2026-02-24'
   - id: 124-6
-    epic: MSSCI-15551
+    epic: PROJ-15551
     title: CI, Build, and Test Fixup
     points: 2
     completed: '2026-02-24'
   - id: 126-1
-    epic: MSSCI-15488
+    epic: PROJ-15488
     title: Publish pf package to private PyPI with CI pipeline
     points: 3
     completed: '2026-02-23'
   - id: 126-2
-    epic: MSSCI-15488
+    epic: PROJ-15488
     title: Rewrite pf init in Python — directory structure, commands/skills, settings
     points: 5
     completed: '2026-02-23'
   - id: 126-3
-    epic: MSSCI-15488
+    epic: PROJ-15488
     title: Integrate auto-setup into pf init — repo discovery, theme, git hooks, Node install
     points: 5
     completed: '2026-02-24'
   - id: 126-4
-    epic: MSSCI-15488
+    epic: PROJ-15488
     title: Remove uv/pf.sh wrapper chain — global pf invoked directly
     points: 2
     completed: '2026-02-24'
   - id: 126-5
-    epic: MSSCI-15488
+    epic: PROJ-15488
     title: Config consolidation — migrate preferences.yaml into config.local.yaml
     points: 3
     completed: '2026-02-24'
   - id: 126-6
-    epic: MSSCI-15488
+    epic: PROJ-15488
     title: Frontmatter hooks on all agents and skills, shrink settings.local.json
     points: 5
     completed: '2026-02-24'
   - id: 126-7
-    epic: MSSCI-15488
+    epic: PROJ-15488
     title: pf upgrade — detect npm-based install, migrate to Python-based
     points: 5
     completed: '2026-02-24'
   - id: 126-8
-    epic: MSSCI-15488
+    epic: PROJ-15488
     title: Reduce doctor to ~10 health checks with --fix mode
     points: 3
     completed: '2026-02-24'
   - id: 126-9
-    epic: MSSCI-15488
+    epic: PROJ-15488
     title: Remove Node init.ts, npx entry point, postinstall.cjs
     points: 2
     completed: '2026-02-24'
   - id: 126-10
-    epic: MSSCI-15488
+    epic: PROJ-15488
     title: E2E tests — fresh install, upgrade from npm, pf init --dry-run
     points: 5
     completed: '2026-02-25'
   - id: 126-11
-    epic: MSSCI-15488
+    epic: PROJ-15488
     title: Update stale pennyfarthing init references to pf setup
     points: 2
     completed: '2026-02-25'
   - id: 126-12
-    epic: MSSCI-15488
+    epic: PROJ-15488
     title: Wire setup auto-detection into session-start hook
     points: 3
     completed: '2026-02-24'
   - id: 126-13
-    epic: MSSCI-15488
+    epic: PROJ-15488
     title: Extract shared hook constants and fix onboarding rough edges
     points: 2
     completed: '2026-02-24'
   - id: 126-14
-    epic: MSSCI-15488
+    epic: PROJ-15488
     title: pf upgrade cleanup — remove npm artifacts and stale symlinks
     points: 2
     completed: '2026-02-24'
   - id: 126-15
-    epic: MSSCI-15488
+    epic: PROJ-15488
     title: Pull LFS portraits during pf init/setup so TUI portraits work out of the box
     points: 2
     completed: '2026-02-24'
   - id: 126-16
-    epic: MSSCI-15488
+    epic: PROJ-15488
     title: Epic promote fails for inline initiative epics — extract to shards on workflow finish
     points: 2
     completed: '2026-02-24'
   - id: "129-1"
-    epic: MSSCI-15680
+    epic: PROJ-15680
     title: "Fix Context Check Bugs in sprint-data.ts"
     points: 1
     completed: '2026-02-25'
   - id: "129-2"
-    epic: MSSCI-15680
+    epic: PROJ-15680
     title: "Create Context Schema YAML"
     points: 1
     completed: '2026-02-25'
   - id: "129-3"
-    epic: MSSCI-15680
+    epic: PROJ-15680
     title: "Build Context Validator Python Module and CLI"
     points: 3
     completed: '2026-02-26'
   - id: "129-4"
-    epic: MSSCI-15680
+    epic: PROJ-15680
     title: "Generate Context Document Templates from Schema"
     points: 1
     completed: '2026-02-26'
   - id: 129-5
-    epic: MSSCI-15680
+    epic: PROJ-15680
     title: Integrate frontmatter hooks into pf init pipeline
     points: 2
     completed: '2026-02-25'
   - id: 129-6
-    epic: MSSCI-15680
+    epic: PROJ-15680
     title: Detect stale hooks and prompt upgrade on session start
     points: 2
     completed: '2026-02-26'
   - id: "130-1"
-    epic: MSSCI-15685
+    epic: PROJ-15685
     title: "/pf-context create epic Skill"
     points: 2
     completed: '2026-02-26'
   - id: "130-2"
-    epic: MSSCI-15685
+    epic: PROJ-15685
     title: "/pf-context create story Skill (PM-Only Mode)"
     points: 3
     completed: '2026-02-26'
   - id: "130-3"
-    epic: MSSCI-15685
+    epic: PROJ-15685
     title: "Tandem Partner Selection and Integration"
     points: 2
     completed: "2026-02-26"
   - id: 131-1
-    epic: MSSCI-15676
+    epic: PROJ-15676
     title: Update sm-setup-exit Gate with Context Validation Cascade
     points: 2
     completed: '2026-02-26'
   - id: 131-2
-    epic: MSSCI-15676
+    epic: PROJ-15676
     title: SM Auto-Triggers Context Creation on Gate Failure
     points: 2
     completed: '2026-02-26'
   - id: 131-3
-    epic: MSSCI-15676
+    epic: PROJ-15676
     title: TEA Context Gate and Agent Integration
     points: 2
     completed: '2026-02-26'
   - id: 132-1
-    epic: MSSCI-15765
+    epic: PROJ-15765
     title: Fix pf-* prefix filter in init and doctor
     points: 2
     completed: '2026-02-26'
   - id: 132-2
-    epic: MSSCI-15765
+    epic: PROJ-15765
     title: Add package contents verification to release workflow
     points: 2
     completed: '2026-02-27'
   - id: 132-3
-    epic: MSSCI-15765
+    epic: PROJ-15765
     title: Automate changelog comparison link updates
     points: 1
     completed: '2026-02-27'
   - id: 132-4
-    epic: MSSCI-15765
+    epic: PROJ-15765
     title: Implement pf release dry-run command
     points: 3
     completed: '2026-02-27'
   - id: 132-5
-    epic: MSSCI-15765
+    epic: PROJ-15765
     title: Sprint totals must include archived stories from current sprint
     points: 2
     completed: '2026-02-27'
   - id: 133-1
-    epic: MSSCI-15771
+    epic: PROJ-15771
     title: Add Delivery Findings section to session template
     points: 1
     completed: "2026-02-27"
   - id: 133-2
-    epic: MSSCI-15771
+    epic: PROJ-15771
     title: Add finding-capture to agent exit behaviors
     points: 3
     completed: '2026-02-27'
   - id: 133-3
-    epic: MSSCI-15771
+    epic: PROJ-15771
     title: Create finding format validation gate
     points: 2
     completed: '2026-02-27'
   - id: 133-4
-    epic: MSSCI-15771
+    epic: PROJ-15771
     title: Update session-artifacts guide for Delivery Findings
     points: 1
     completed: '2026-02-27'
   - id: 134-1
-    epic: MSSCI-15776
+    epic: PROJ-15776
     title: Add Impact Summary compilation to SM finish flow
     points: 3
     completed: '2026-02-27'
   - id: 134-2
-    epic: MSSCI-15776
+    epic: PROJ-15776
     title: Generate boss-readable PR body from session file
     points: 3
     completed: '2026-02-27'
   - id: 134-3
-    epic: MSSCI-15776
+    epic: PROJ-15776
     title: Update session-artifacts guide for Impact Summary and PR body
     points: 1
     completed: '2026-02-28'
   - id: 135-1
-    epic: MSSCI-15780
+    epic: PROJ-15780
     title: Create sprint findings aggregation script
     points: 2
     completed: '2026-02-28'
   - id: 135-2
-    epic: MSSCI-15780
+    epic: PROJ-15780
     title: Integrate aggregated findings into retro workflow
     points: 2
     completed: '2026-02-28'
   - id: 136-1
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: Unified pf discovery — fix PATH resolution in hooks, launchers, and setup
     points: 5
     completed: '2026-02-28'
   - id: 136-2
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: WheelHub pip-install support — remove monorepo path assumptions
     points: 3
     completed: '2026-02-28'
   - id: 136-3
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: Fix init/doctor prefix filtering for Python dist layout
     points: 2
     completed: '2026-02-28'
   - id: 136-4
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: Extract shared TUI color thresholds and contrast constants
     points: 2
     completed: '2026-02-28'
   - id: 136-5
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: Fix TUI data pipeline — context, sprint, and debug panel fallbacks
     points: 3
     completed: '2026-02-28'

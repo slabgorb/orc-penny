@@ -32,7 +32,7 @@ After this story, all three delegate to `pf` CLI `--json` endpoints. Format chan
 **Hardcoded Jira URL to remove:**
 ```typescript
 // packages/core/src/server/story-parser.ts, line 42
-const JIRA_BASE_URL = 'https://1898andco.atlassian.net/browse';
+const JIRA_BASE_URL = 'https://slabgorb.atlassian.net/browse';
 ```
 
 ### Interfaces to Preserve
@@ -175,7 +175,7 @@ Use `.js` extensions in all relative TypeScript imports.
 
 **AC3: Jira URL comes from config not hardcode**
 
-- `const JIRA_BASE_URL = 'https://1898andco.atlassian.net/browse'` is removed
+- `const JIRA_BASE_URL = 'https://slabgorb.atlassian.net/browse'` is removed
 - `jiraUrl` fields populated from the JSON payload returned by `pf sprint story show --json`
 - If the CLI payload omits `jiraUrl`, the TypeScript layer returns `null` — no fallback hardcode
 - Test: assert that when CLI returns `{"jiraUrl": null}`, mapped `StoryInfo.jiraUrl` is `null`

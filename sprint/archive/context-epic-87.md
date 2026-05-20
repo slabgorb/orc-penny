@@ -1,6 +1,6 @@
 # Epic 87: Repo Topology & Agent Spatial Awareness
 
-**Jira:** MSSCI-14784
+**Jira:** PROJ-14784
 **Repo:** pennyfarthing
 **Priority:** P1
 

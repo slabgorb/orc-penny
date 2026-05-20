@@ -71,7 +71,7 @@ Story 43-3 adds red herrings to the existing `order-service` scenario as a pilot
 ## Cross-Epic Dependencies
 
 **Depends on:**
-- MSSCI-16214 (Multi-Judge Validation) — multi-judge measures whether red herrings cause judge disagreement (judges may disagree on what counts as "correctly ignored")
+- PROJ-16214 (Multi-Judge Validation) — multi-judge measures whether red herrings cause judge disagreement (judges may disagree on what counts as "correctly ignored")
 
 **Depended on by:**
-- MSSCI-16213 (Difficulty Profile Enhancement) — red herring count/subtlety is a difficulty dimension
+- PROJ-16213 (Difficulty Profile Enhancement) — red herring count/subtlety is a difficulty dimension

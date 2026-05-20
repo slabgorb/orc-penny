@@ -1,15 +1,15 @@
 ---
 story_id: "150-17"
-jira_key: "MSSCI-16564"
-epic: "MSSCI-16564"
+jira_key: "PROJ-16564"
+epic: "PROJ-16564"
 workflow: "trivial"
 ---
 # Story 150-17: Subagent model defaults — agent definitions should specify sonnet for specialists
 
 ## Story Details
 - **ID:** 150-17
-- **Jira Key:** MSSCI-16564
-- **Epic:** MSSCI-16564 (Prove the Work — PR Explanation Quality)
+- **Jira Key:** PROJ-16564
+- **Epic:** PROJ-16564 (Prove the Work — PR Explanation Quality)
 - **Workflow:** trivial
 - **Repos:** pennyfarthing
 - **Branch:** feat/150-17-subagent-model-defaults

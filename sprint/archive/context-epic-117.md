@@ -54,7 +54,7 @@ This epic addresses critical postinstall and hook generation issues that break c
 
 ## Related Issues
 
-- MSSCI-15304: Original conductor install diagnostic (predecessor context)
+- PROJ-15304: Original conductor install diagnostic (predecessor context)
 - Consumer feedback: npm install → session start fails due to missing pyproject.toml and permission errors
 
 ## Technical Debt

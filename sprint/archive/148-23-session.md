@@ -1,7 +1,7 @@
 ---
 story_id: "148-23"
 jira_key: ""
-epic: "MSSCI-16421"
+epic: "PROJ-16421"
 workflow: "tdd"
 ---
 

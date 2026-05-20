@@ -1,7 +1,7 @@
 # Context: Story 121-3 — Fix footer keybinding labels — bracket display is inaccurate
 
-**GitHub Issue:** 1898andCo/pennyfarthing#1050
-**Jira:** MSSCI-15394
+**GitHub Issue:** slabgorb/pennyfarthing#1050
+**Jira:** PROJ-15394
 **Points:** 1
 **Epic:** 121 — Debug Panel and Brownfield Tools Fixes
 

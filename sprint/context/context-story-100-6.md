@@ -217,7 +217,7 @@ The play button should use the REST endpoint approach for now (no Electron API),
 
 - Story 100-3: Enhanced Epic/Story management UI
 - Story 100-5: Archive/Promote buttons (parallel pattern)
-- Story MSSCI-14189: Original EnhancedSprintPanel implementation
+- Story PROJ-14189: Original EnhancedSprintPanel implementation
 
 ## References
 

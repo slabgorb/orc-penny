@@ -1,0 +1,48 @@
+id: '122'
+type: epic
+title: SettingsPanel Read-Only Conversion
+description: Remove interactive controls from the Cyclist SettingsPanel. Replace with a read-only display of all settings and CLI command reference showing users how to change settings via /pf-settings skill. Reduces UI complexity and makes the skill the single entry point for configuration changes.
+priority: p1
+status: done
+repos: pennyfarthing
+jira: PROJ-15373
+stories:
+  - id: 122-1
+    jira: PROJ-15374
+    title: Convert SettingsPanel from interactive controls to read-only display
+    description: 'Remove all interactive controls from SettingsPanel.tsx (theme dropdown, ThemePalette color picker, FontPicker/FontSizePicker for UI and code fonts, Bell Mode and Relay Mode toggles). Replace with a structured read-only view that displays all current settings grouped by category: Theme & Display (theme, colorPreset, fonts), Workflow (bell_mode, relay_mode, permission_mode, git_monitor), and Notifications. Data comes from existing /api/settings endpoint. WebSocket listener stays for live updates when settings change via CLI. ACs: (1) No interactive controls remain in SettingsPanel, (2) All settings from config.local.yaml are displayed read-only, (3) Settings update live when changed via /pf-settings CLI, (4) Panel renders cleanly in both Cyclist and BikeRack.'
+    points: 3
+    priority: p1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-20'
+    workflow: tdd
+    completed: '2026-02-20'
+    type: refactor
+    review_verdict: approved
+  - id: 122-2
+    jira: PROJ-15375
+    title: Add CLI command reference and usage guide to SettingsPanel
+    description: 'Fix SettingsPanel defects from 122-1 and add CLI command reference. Issues: (1) No styling — setting-row/label/value CSS classes have no style definitions, panel renders as unstyled text. (2) Undefined values — String() on undefined settings shows "undefined" for Bell Mode, Phase Change, Sound. (3) Missing values — Theme, Color Preset, and font settings render blank because API data shape does not match the interface. (4) Remove Notifications section — not a real feature, phase_change and sound are not implemented. (5) No CLI instructions — users cannot see how to change settings. ACs: (1) Settings panel has proper visual styling with labeled rows, (2) All setting values display correctly from the API (no undefined or blank), (3) Notifications section removed, (4) CLI command reference shows /pf-settings usage and dot-path keys for each setting, (5) Help text is concise and scannable.'
+    points: 3
+    priority: p1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-21'
+    workflow: tdd
+    completed: '2026-02-21'
+    review_verdict: approved
+  - id: 122-3
+    jira: PROJ-15376
+    title: Remove dead interactive components after SettingsPanel conversion
+    description: 'After 122-1 lands, audit and remove components that are no longer used: ThemePalette, FontPicker, FontSizePicker, and any Switch toggle wrappers if only consumed by SettingsPanel. Check for other consumers before deleting. Clean up unused imports in SettingsPanel.tsx. Do NOT remove the PATCH /api/settings endpoint — other tools may use it. ACs: (1) No orphaned component files remain, (2) No unused imports in SettingsPanel, (3) Build passes clean.'
+    points: 1
+    priority: p2
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-21'
+    workflow: trivial
+    completed: '2026-02-21'
+    type: chore
+    review_verdict: approved
+completed: '2026-02-21'

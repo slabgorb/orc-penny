@@ -1,0 +1,53 @@
+id: '104'
+type: epic
+title: /bc CLI Panel Focus
+description: 'Implement /bc command for CLI-driven panel focus in BikeShow. User types /bc {panel} to write panel config via pf bc command; BikeShow reacts by showing only that panel. /bc reset returns to saved layout (no stash stack — successive /bc calls preserve original saved state). Panels: sprint, git, settings, diffs, debug, audit, todo, ac. Growth feature from BikeRack PRD Idea A.'
+priority: P1
+status: done
+repos: pennyfarthing
+jira: PROJ-14952
+stories:
+  - id: 104-1
+    title: pf bc CLI command + /bc user skill
+    description: |
+      New Click group `pf bc` in pennyfarthing_scripts/ with subcommands:
+      reset, sprint, git, settings, diffs, debug, audit, todo, ac.
+      Reads/writes `focus` key in config.local.yaml. Also create /bc user
+      skill in pennyfarthing-dist/skills/bc/ that maps `/bc <arg>` to
+      `pf bc <arg>`.
+    points: 2
+    priority: P1
+    status: done
+    repos: pennyfarthing
+    workflow: tdd
+    completed: "2026-02-12"
+  - id: 104-2
+    title: WheelHub config file watch + panel focus broadcast
+    description: |
+      WheelHub watches config.local.yaml for `focus` key changes.
+      On change, broadcast `panel:focus` event over WebSocket to all
+      connected BikeShow clients with the target panel name (or null
+      for reset).
+    points: 2
+    priority: P1
+    status: done
+    repos: pennyfarthing
+    workflow: tdd
+    completed: "2026-02-12"
+  - id: 104-3
+    jira: PROJ-14977
+    title: BikeShow client layout stash/restore on panel focus
+    description: |
+      BikeShow client handles `panel:focus` WebSocket events. On focus
+      event: if not already in single-panel view, save current dockview
+      layout as "saved" state. Render requested panel as single-panel
+      view. On reset (focus: null): restore saved layout. Successive
+      /bc calls preserve the original saved state — only the first
+      focus after a reset triggers a save.
+    points: 3
+    priority: P1
+    status: done
+    repos: pennyfarthing
+    workflow: tdd
+    completed: "2026-02-13"
+completed: '2026-02-13'

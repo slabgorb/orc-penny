@@ -17,7 +17,7 @@ inputDocuments:
   - sprint/planning/bikerack-prd.md
   - sprint/planning/bikerack-extraction-proposal.md
   - docs/adr/0024-bikerack-mode.md
-  - sprint/archive/epic-MSSCI-14819.yaml
+  - sprint/archive/epic-PROJ-14819.yaml
 workflowType: 'prd'
 documentCounts:
   briefCount: 0

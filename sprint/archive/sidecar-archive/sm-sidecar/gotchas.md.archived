@@ -71,7 +71,7 @@
 
 ### Wrong Project Key
 **Problem:** Using wrong Jira project identifier
-**Solution:** Verify MSSCI project key matches configuration
+**Solution:** Verify PROJ project key matches configuration
 
 ### Transition Not Allowed
 **Problem:** Jira workflow doesn't allow direct transition

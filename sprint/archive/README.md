@@ -39,7 +39,7 @@ Re-bloat from 200KB to 2.3MB. Deleted 240+ files that accumulated since first pr
 | `*-session*.md` | 227 | Session logs re-accumulated |
 | `context-epic-*.md` | 4 | Epic context files |
 | `sessions/` subfolder | 8 | Duplicate session storage |
-| `epic-MSSCI-*.yaml` | 3 | Verbose epic archives |
+| `epic-PROJ-*.yaml` | 3 | Verbose epic archives |
 | `sprint-*.yaml` (verbose) | 4 | Sprint 11/12/2604/2606 verbose files |
 | `story-*.md` | 1 | Individual story file |
 | `context/archived/` | 194 | Old story summaries and research notes |

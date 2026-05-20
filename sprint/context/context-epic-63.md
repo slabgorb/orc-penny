@@ -29,8 +29,8 @@ pennyfarthing_scripts/            # Main package
 async with AsyncJiraClient() as client:
     # Parallel fetches via asyncio.gather
     issues = await asyncio.gather(
-        client.get_issue("MSSCI-12395"),
-        client.get_issue("MSSCI-12396"),
+        client.get_issue("PROJ-12395"),
+        client.get_issue("PROJ-12396"),
     )
 
     # Available methods:

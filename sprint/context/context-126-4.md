@@ -16,5 +16,5 @@
 - Skills that reference the wrapper chain
 
 ## Dependencies
-- 126-3 (MSSCI-15491) delivered — auto-setup complete
+- 126-3 (PROJ-15491) delivered — auto-setup complete
 - `pf` must be globally installable via pip/pipx

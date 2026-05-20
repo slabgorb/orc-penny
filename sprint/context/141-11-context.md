@@ -1,7 +1,7 @@
 # Story 141-11: Type OTLP Receiver Payloads Properly
 
 **Story ID:** 141-11
-**Jira:** MSSCI-16138
+**Jira:** PROJ-16138
 **Workflow:** tdd
 **Repos:** pennyfarthing
 

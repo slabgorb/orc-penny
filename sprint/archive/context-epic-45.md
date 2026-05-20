@@ -61,8 +61,8 @@ Story 45-4 compares judge variance with and without gold standard references on 
 ## Cross-Epic Dependencies
 
 **Depends on:**
-- MSSCI-16214 (Multi-Judge Validation) — multi-judge measures whether gold standards improve agreement
-- MSSCI-16210 (Anchored Rubric Criteria) — anchored rubrics define what scores mean; gold standards exemplify them
+- PROJ-16214 (Multi-Judge Validation) — multi-judge measures whether gold standards improve agreement
+- PROJ-16210 (Anchored Rubric Criteria) — anchored rubrics define what scores mean; gold standards exemplify them
 
 **Depended on by:**
-- MSSCI-16213 (Difficulty Profile Enhancement) — gold standard scores contribute to difficulty calibration
+- PROJ-16213 (Difficulty Profile Enhancement) — gold standard scores contribute to difficulty calibration

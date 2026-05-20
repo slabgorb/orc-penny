@@ -1,0 +1,57 @@
+id: '92'
+type: epic
+title: 2pTDD Workflow and Review/PR Lifecycle
+priority: p1
+status: done
+repos: pennyfarthing
+jira: PROJ-15237
+stories:
+  - id: 92-1
+    jira: PROJ-15238
+    title: Create quality-pass gate file
+    points: 1
+    priority: p1
+    status: done
+    workflow: tdd
+    completed: '2026-02-17'
+  - id: 92-2
+    jira: PROJ-15239
+    title: Add pr_mode config preference
+    points: 2
+    priority: p1
+    status: done
+    workflow: tdd
+    completed: '2026-02-17'
+  - id: 92-3
+    jira: PROJ-15240
+    title: Update agent definitions for PR lifecycle
+    points: 2
+    priority: p1
+    status: done
+    workflow: tdd
+    completed: '2026-02-17'
+  - id: 92-4
+    jira: PROJ-15241
+    title: 'Add next: directive support in resolve_gate.py'
+    points: 1
+    priority: p1
+    status: done
+    workflow: tdd
+    completed: '2026-02-17'
+  - id: 92-5
+    jira: PROJ-15242
+    title: Add review fields to sprint story schema
+    points: 1
+    priority: p1
+    status: done
+    workflow: tdd
+    completed: '2026-02-17'
+  - id: 92-6
+    jira: PROJ-15243
+    title: Validate 2party-tdd.yaml and add verify phase to tdd.yaml
+    points: 2
+    priority: p1
+    status: done
+    workflow: tdd
+    completed: '2026-02-17'
+completed: '2026-02-17'

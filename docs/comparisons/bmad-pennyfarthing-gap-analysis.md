@@ -1,7 +1,7 @@
 # BMAD-METHOD vs Pennyfarthing: Gap Analysis
 
 **Date:** 2026-02-13
-**Updated:** 2026-02-13 (party-mode roleplay — MSSCI-15038) (party mode roleplay)
+**Updated:** 2026-02-13 (party-mode roleplay — PROJ-15038) (party mode roleplay)
 **Purpose:** Identify gaps between BMAD-METHOD and Pennyfarthing agents, workflows, and infrastructure.
 
 ## Changes Applied
@@ -9,7 +9,7 @@
 - **Architecture data files**: Added `data/domain-complexity.csv` (5-column, 12 domains incl. OT) and `data/project-types.csv` (6 project types) to `workflows/architecture/data/`
 - **Quick-spec workflow**: Imported 4-step workflow (understand → investigate → generate → review) + template to `workflows/quick-spec/`
 - **OT domains**: Added `process_control` and `building_automation` to PRD `domain-complexity.csv`, `step-v-08`, and `prd-purpose.md`
-- **Party-mode roleplay**: Added `party-mode-roleplay` stepped workflow (3 steps) adapted from BMAD's party-mode. Coexists with existing quick brainstorm as two variants. MSSCI-15038
+- **Party-mode roleplay**: Added `party-mode-roleplay` stepped workflow (3 steps) adapted from BMAD's party-mode. Coexists with existing quick brainstorm as two variants. PROJ-15038
 
 ---
 
@@ -246,7 +246,7 @@ These BMAD modules have no Pennyfarthing equivalent:
 | QA Automate workflow | Medium | No PF standalone QA automation workflow |
 | Document Project workflow | Medium | 4 templates for project documentation generation |
 | Advanced Elicitation workflow | Low | XML-based elicitation methods |
-| ~~Party Mode (as stepped workflow)~~ | -- | RESOLVED — added as `party-mode-roleplay` workflow (MSSCI-15038) |
+| ~~Party Mode (as stepped workflow)~~ | -- | RESOLVED — added as `party-mode-roleplay` workflow (PROJ-15038) |
 | ~~Architecture data files~~ | -- | Imported to PF |
 | TEA module depth | Medium | BMAD's Murat has 9 specialized testing workflows vs PF's TDD-focused TEA |
 | External module system | Low | BMAD supports importable modules; PF is monolithic |
@@ -335,7 +335,7 @@ PF and BMAD have fundamentally different implementations that serve different us
 3. **Cross-talk and intelligent selection** — agents building on each other.
 4. **Standalone deep-session use case** — not just a quick intervention.
 
-### Resolution: Two Variants (MSSCI-15038)
+### Resolution: Two Variants (PROJ-15038)
 
 Implemented as recommended — both variants coexist under the `party-mode` command:
 

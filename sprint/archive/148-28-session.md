@@ -1,7 +1,7 @@
 ---
 story_id: "148-28"
 jira_key: ""
-epic: "MSSCI-16421"
+epic: "PROJ-16421"
 workflow: "trivial"
 ---
 # Story 148-28: Peloton teammates must be pre-primed

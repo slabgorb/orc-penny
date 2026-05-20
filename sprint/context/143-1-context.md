@@ -2,7 +2,7 @@
 
 ## Summary
 
-Create a native Claude Code subagent definition for the Dev agent. This is the first concrete step in the Native Subagent Migration epic (MSSCI-16358). The subagent definition will:
+Create a native Claude Code subagent definition for the Dev agent. This is the first concrete step in the Native Subagent Migration epic (PROJ-16358). The subagent definition will:
 
 - Live at `pennyfarthing-dist/agents/native/dev.md`
 - Be symlinked to consumer projects via `.claude/agents/dev.md`
@@ -111,7 +111,7 @@ symlinks:
 
 ## Dependencies
 
-- [ ] Native subagent migration epic (MSSCI-16358) must be active
+- [ ] Native subagent migration epic (PROJ-16358) must be active
 - [ ] Claude Code subagent format must be validated against local Claude Code version
 - [ ] Symlink registration in orchestrator repos.yaml
 

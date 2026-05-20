@@ -1,6 +1,6 @@
 # Epic 83: Complexity + Dependencies Tools
 
-**Jira:** MSSCI-14465
+**Jira:** PROJ-14465
 **Goal:** Two lightweight diagnostic tools for codebase analysis
 
 ## Stories

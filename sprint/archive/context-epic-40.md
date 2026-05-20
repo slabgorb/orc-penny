@@ -255,7 +255,7 @@ async def import_prd(
 ### Internal Dependencies
 - **Epic 50** (Stepped Workflow Support) - Foundation for stepped workflows (COMPLETE)
 - **Epic 54** (BMAD Workflow Imports) - PRD workflow already imported (COMPLETE)
-- **MSSCI-12419** (Brownfield Discovery) - Initial implementation (COMPLETE)
+- **PROJ-12419** (Brownfield Discovery) - Initial implementation (COMPLETE)
 
 ### External Dependencies
 - None - all foundations are in place

@@ -4,7 +4,7 @@
 
 Create ground truth reference documents for dpgd-116: a concern manifest (what a good PM/Architect should flag) and an AC manifest (what acceptance criteria should cover). These serve as scoring rubrics for evaluating PM/Architect persona output in stories 47-3 through 47-5.
 
-**Points:** 2 | **Workflow:** trivial | **Jira:** MSSCI-16295
+**Points:** 2 | **Workflow:** trivial | **Jira:** PROJ-16295
 
 ## Objective
 

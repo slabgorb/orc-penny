@@ -1,7 +1,7 @@
 ---
 story_id: "144-10"
 jira_key: ""
-epic: "MSSCI-16384"
+epic: "PROJ-16384"
 workflow: "trivial"
 ---
 # Story 144-10: Fix spec-check gate naming discrepancy in 144-9 context doc

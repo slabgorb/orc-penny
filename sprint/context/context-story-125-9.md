@@ -1,10 +1,10 @@
 # Context: Story 125-9 — Extend sprints.yaml with managed focus context fields
 
-**GitHub Issue:** 1898andCo/pennyfarthing-orchestrator#28
-**Jira:** MSSCI-15430
+**GitHub Issue:** slabgorb/pennyfarthing-orchestrator#28
+**Jira:** PROJ-15430
 **Points:** 2
 **Priority:** P3
-**Epic:** 125 — Sprint State Engine Consolidation (MSSCI-15421)
+**Epic:** 125 — Sprint State Engine Consolidation (PROJ-15421)
 **Workflow:** trivial
 
 ## Problem
@@ -84,10 +84,10 @@ sprints:
 
     # NEW FIELDS (this story)
     created: '2026-02-10'                          # When the focus started
-    owner: michael.pursifull@1898andco.io          # Who initiated the focus
+    owner: michael.pursifull@slabgorb.io          # Who initiated the focus
     participants: [michael.pursifull]              # Who's currently focused here
     status: active                                 # active | completed | abandoned
-    parent_epic: MSSCI-15200                       # Links back to orchestrator planning
+    parent_epic: PROJ-15200                       # Links back to orchestrator planning
 ```
 
 ### Backward Compatibility
@@ -145,7 +145,7 @@ The new fields are **optional**. Existing entries without them remain valid:
 
 7. **Email validation:** `owner` and `participants` should accept email addresses. A simple regex or library validation is fine. If unsure, allow any non-empty string and let downstream commands do stricter validation.
 
-8. **Jira key format:** `parent_epic` is a Jira ticket reference. Validate using the existing `JIRA_KEY_PATTERN` in validator.py (PROJECT-NUMBER format, e.g., MSSCI-15200).
+8. **Jira key format:** `parent_epic` is a Jira ticket reference. Validate using the existing `JIRA_KEY_PATTERN` in validator.py (PROJECT-NUMBER format, e.g., PROJ-15200).
 
 ## Relationship to Other Work
 

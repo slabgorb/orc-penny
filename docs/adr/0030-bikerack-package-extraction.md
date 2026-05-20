@@ -5,7 +5,7 @@
 **Author:** architect (Vito Cornelius)
 **Supersedes:** [ADR-0026: Single Package Consolidation](0026-single-package-consolidation.md)
 **Extends:** [ADR-0024: BikeRack Mode](0024-bikerack-mode.md)
-**Epic:** MSSCI-15551
+**Epic:** PROJ-15551
 **Source:** [Extraction Proposal](../../sprint/planning/bikerack-extraction-proposal.md) (M. Pursifull, 2026-02-20), [Design Review Checklist](../../sprint/planning/bikeshop-design-review-checklist.md) (10 issues resolved)
 
 ## Context

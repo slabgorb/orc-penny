@@ -25,7 +25,7 @@
 1. **React + Electron requires careful IPC design** - The ClaudeService bridge pattern worked well
 2. **Stepped workflows need explicit ownership** - BikeLane vs phased routing caused initial confusion
 3. **Theme catchphrases > static quotes** - Random selection adds personality without staleness
-4. **Test failures accumulate invisibly** - MSSCI-12856 revealed 81 pre-existing broken tests
+4. **Test failures accumulate invisibly** - PROJ-12856 revealed 81 pre-existing broken tests
 5. **Token optimization compounds** - Tiered injection + compressed personas = significant savings
 6. **Session files as state machines** - Workflow/Phase fields enable clean agent handoffs
 
@@ -34,7 +34,7 @@
 1. **Test coverage discipline** - Pre-existing failures accumulated (81 broken test files discovered)
 2. **Session cleanup automation** - 182 session files in archive, manual cleanup needed
 3. **Sidecar pruning** - Agent learnings not consolidated during sprint
-4. **VS Code extension deprecation clarity** - MSSCI-12376 cancelled because "extension potentially being deprecated" - unclear strategy
+4. **VS Code extension deprecation clarity** - PROJ-12376 cancelled because "extension potentially being deprecated" - unclear strategy
 5. **Benchmark baseline** - Benchmark epics blocked without stable baseline
 
 ## Longed For (What do we wish we had)
@@ -67,19 +67,19 @@
 | Bugs fixed | 15+ (Epic 64 UX bugs) |
 | Tech debt addressed | Epic 65 (script separation) |
 | Tests broken (discovered) | 81 files |
-| Tests fixed | MSSCI-12856 |
+| Tests fixed | PROJ-12856 |
 
 ## Completed Epics Summary
 
 | Epic | Title | Points |
 |------|-------|--------|
-| MSSCI-11705 | Runtime Permission Management | 2 |
-| MSSCI-11942 | WheelHub Notification Consolidation | 21 |
-| MSSCI-11952 | Skill Frontmatter Enhancement | 17 |
-| MSSCI-12042 | VS Code Extension | 26 |
-| MSSCI-12077 | Stepped Workflow Support (BMAD) | 17 |
-| MSSCI-12122 | VS Code Extension UX Pass | 12 |
-| MSSCI-12131 | BikeLane BMAD Workflow Imports | 40 |
+| PROJ-11705 | Runtime Permission Management | 2 |
+| PROJ-11942 | WheelHub Notification Consolidation | 21 |
+| PROJ-11952 | Skill Frontmatter Enhancement | 17 |
+| PROJ-12042 | VS Code Extension | 26 |
+| PROJ-12077 | Stepped Workflow Support (BMAD) | 17 |
+| PROJ-12122 | VS Code Extension UX Pass | 12 |
+| PROJ-12131 | BikeLane BMAD Workflow Imports | 40 |
 | epic-61 | Reflector Marker Consolidation | 8 |
 | epic-60 | Reflector Marker Consolidation (v2) | 5 |
 | epic-65 | Meta Scripts Separation | 5 |
@@ -88,7 +88,7 @@
 | epic-70 | Flexible Workspace | 7 |
 | epic-72 | Command & Navigation | 6 |
 | epic-73 | Visual Customization & Accessibility | 23 |
-| MSSCI-12793 | Tiered Context Injection | 18 |
+| PROJ-12793 | Tiered Context Injection | 18 |
 | epic-64 | Cyclist UX Polish | 47 |
 
 ## Session Cleanup Status
@@ -116,7 +116,7 @@
 - Cyclist (Electron app) provides superior UX for Pennyfarthing workflows
 - VS Code Chat API limitations constrain agent interaction patterns
 - Maintenance burden of two UI surfaces not justified
-- Extension was 38 points of investment (MSSCI-12042 + MSSCI-12122) but Cyclist delivers better value
+- Extension was 38 points of investment (PROJ-12042 + PROJ-12122) but Cyclist delivers better value
 
 **Action Taken**:
 - Removed `pennyfarthing/packages/vscode-extension/` directory

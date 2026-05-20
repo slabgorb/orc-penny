@@ -1,6 +1,6 @@
 # Story 103-21: Add git fetch cooldown to prevent frequent network calls during active sessions
 
-**Epic:** 103 — BikeRack TUI (MSSCI-14951)
+**Epic:** 103 — BikeRack TUI (PROJ-14951)
 **Points:** 1
 **Priority:** P2
 **Repos:** pennyfarthing

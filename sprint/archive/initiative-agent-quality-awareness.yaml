@@ -11,5 +11,5 @@ description: |
   clarify when instructions are ambiguous instead of guessing.
 total_points: 5
 epics:
-  - MSSCI-14662  # CANCELED — never started
+  - PROJ-14662  # CANCELED — never started
 standalone_stories: []

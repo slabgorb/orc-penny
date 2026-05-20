@@ -25,7 +25,7 @@ The tandem pattern itself is not deprecated permanently — it needs a full reth
 
 **Sprint YAML reassignment:**
 
-- Active sprint YAML files (non-archive) have no stories currently assigned to `tdd-tandem`, `review-tandem`, or `bdd-tandem`. The grep confirms all remaining references are in `sprint/archive/` (completed stories in MSSCI-15488, MSSCI-15310, MSSCI-14819 epics) and planning documents. Archived stories do not require reassignment — they are done.
+- Active sprint YAML files (non-archive) have no stories currently assigned to `tdd-tandem`, `review-tandem`, or `bdd-tandem`. The grep confirms all remaining references are in `sprint/archive/` (completed stories in PROJ-15488, PROJ-15310, PROJ-14819 epics) and planning documents. Archived stories do not require reassignment — they are done.
 - No active story reassignment work is needed. AC-2 and AC-3 are satisfied vacuously for active sprint YAML.
 
 **Workflow registry:** `pf workflow list` reads from `pennyfarthing-dist/workflows/`. Deletion from that directory is sufficient for the command to stop listing the tandem workflows. No separate registry file to update.

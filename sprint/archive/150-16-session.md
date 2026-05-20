@@ -1,7 +1,7 @@
 ---
 story_id: "150-16"
 jira_key: "none"
-epic: "MSSCI-16564"
+epic: "PROJ-16564"
 workflow: "tdd"
 ---
 # Story 150-16: Spec authority hierarchy guide

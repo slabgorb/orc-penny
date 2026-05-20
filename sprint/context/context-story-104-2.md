@@ -1,6 +1,6 @@
 # Story 104-2: WheelHub config file watch + panel focus broadcast
 
-**Jira Key:** MSSCI-14976
+**Jira Key:** PROJ-14976
 **Story Points:** 5
 **Workflow:** tdd
 **Branch:** feature/104-2-wheelhub-focus-broadcast
@@ -23,7 +23,7 @@ WheelHub server watches `config.local.yaml` for `focus` key changes. On change, 
 
 #### 1. Add focus client set (after line 161):
 ```javascript
-// Focus WebSocket clients (MSSCI-14976: WheelHub panel focus broadcast)
+// Focus WebSocket clients (PROJ-14976: WheelHub panel focus broadcast)
 const focusClients = new Set<WebSocket>();
 ```
 
@@ -60,7 +60,7 @@ export function broadcastFocusUpdate(focus: string | null): void {
 
 #### 5. Add focus WebSocket server creation (after line 433):
 ```javascript
-// WebSocket server for focus at /ws/focus (MSSCI-14976: WheelHub panel focus broadcast)
+// WebSocket server for focus at /ws/focus (PROJ-14976: WheelHub panel focus broadcast)
 const focusWss = new WebSocketServer({ noServer: true });
 ```
 
@@ -74,7 +74,7 @@ const focusWss = new WebSocketServer({ noServer: true });
 
 #### 7. Add focus connection handler (after line 1197):
 ```javascript
-// Handle focus WebSocket connections (MSSCI-14976: WheelHub panel focus broadcast)
+// Handle focus WebSocket connections (PROJ-14976: WheelHub panel focus broadcast)
 focusWss.on('connection', async (ws: WebSocket) => {
   console.log('[WebSocket] Focus client connected');
   focusClients.add(ws);
@@ -125,7 +125,7 @@ Replace the existing settings file watcher block with:
 ```javascript
 // Set up settings file watcher for config.local.yaml changes
 // This enables real-time bidirectional sync between ControlBar and SettingsPanel
-// Also broadcasts focus updates for panel focus broadcast (MSSCI-14976)
+// Also broadcasts focus updates for panel focus broadcast (PROJ-14976)
 if (existsSync(join(projectDir, '.pennyfarthing'))) {
   try {
     watch(join(projectDir, '.pennyfarthing'), { recursive: false }, (eventType, filename) => {

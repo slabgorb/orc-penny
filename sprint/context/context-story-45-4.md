@@ -18,7 +18,7 @@ Validation story measuring whether gold standard calibration actually reduces ju
 **Patterns to follow:**
 - Same methodology as 42-3 (CV comparison)
 - Use same agents and run counts for apples-to-apples comparison
-- If multi-judge is available (MSSCI-16214), use it for richer agreement data
+- If multi-judge is available (PROJ-16214), use it for richer agreement data
 
 **Do NOT:**
 - Modify any code — measurement/validation only

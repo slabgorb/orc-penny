@@ -1,14 +1,14 @@
 ---
 story_id: "148-24"
-jira_key: "MSSCI-16421"
-epic: "MSSCI-16421"
+jira_key: "PROJ-16421"
+epic: "PROJ-16421"
 workflow: "tdd"
 ---
 # Story 148-24: Peloton layout selection — horizontal, vertical, or 2x2 grid for team panes
 
 ## Story Details
 - **ID:** 148-24
-- **Jira Key:** MSSCI-16421 (Epic)
+- **Jira Key:** PROJ-16421 (Epic)
 - **Workflow:** tdd
 - **Stack Parent:** none
 

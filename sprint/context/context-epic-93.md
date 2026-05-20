@@ -1,6 +1,6 @@
 # Epic 93: Extract Benchmarking System into @pennyfarthing/benchmark
 
-**Jira:** MSSCI-14629
+**Jira:** PROJ-14629
 **ADR:** 0020-benchmark-package-extraction.md
 
 ## Summary

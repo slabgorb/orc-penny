@@ -1,14 +1,14 @@
 ---
 story_id: "148-13"
-jira_key: "MSSCI-16452"
-epic: "MSSCI-16421"
+jira_key: "PROJ-16452"
+epic: "PROJ-16421"
 workflow: "trivial"
 ---
 # Story 148-13: Fix tmux nesting — detect existing session instead of spawning nested
 
 ## Story Details
 - **ID:** 148-13
-- **Jira Key:** MSSCI-16452
+- **Jira Key:** PROJ-16452
 - **Workflow:** trivial
 - **Stack Parent:** none
 

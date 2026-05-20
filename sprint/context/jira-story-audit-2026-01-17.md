@@ -7,7 +7,7 @@
 
 | Metric | Count |
 |--------|-------|
-| Stories with MSSCI IDs (linked) | 104 |
+| Stories with PROJ IDs (linked) | 104 |
 | Stories with local IDs (unlinked) | **303** |
 | **Total Stories** | **407** |
 | **Link Coverage** | **25%** |
@@ -16,7 +16,7 @@
 
 ## Breakdown by File
 
-| File | Local IDs | MSSCI IDs | Notes |
+| File | Local IDs | PROJ IDs | Notes |
 |------|-----------|-----------|-------|
 | current-sprint.yaml | 44 | 22 | Active sprint work |
 | completed.yaml | 74 | 35 | Sprints 2-7, 10 completed |
@@ -30,26 +30,26 @@
 
 ## Current Sprint (44 unlinked stories)
 
-### Epic MSSCI-11599: Customizable Workflow Engine
+### Epic PROJ-11599: Customizable Workflow Engine
 | Story ID | Title | Status |
 |----------|-------|--------|
 | 31-15 | Background task completion notifications in Cyclist | done |
 | 31-17 | Bug: Trivial workflow phase naming inconsistency | backlog |
 
-### Epic MSSCI-11705: Runtime Permission Management
+### Epic PROJ-11705: Runtime Permission Management
 | Story ID | Title | Status |
 |----------|-------|--------|
 | 33-5 | Permission presets by workflow | backlog |
 | 33-7 | Wire approval gate into tool execution pipeline | done |
 
-### Epic MSSCI-11715: Cyclist UI/UX Improvements
+### Epic PROJ-11715: Cyclist UI/UX Improvements
 | Story ID | Title | Status |
 |----------|-------|--------|
 | 35-13 | Window state persistence | done |
 | 35-14 | Settings architecture cleanup and consolidation | done |
 | 35-15 | Collapsible Bash tool output in message stream | backlog |
 
-### Epic MSSCI-11794: Technical Debt & Bug Fixes (0 stories in Jira!)
+### Epic PROJ-11794: Technical Debt & Bug Fixes (0 stories in Jira!)
 | Story ID | Title | Status |
 |----------|-------|--------|
 | 37-1 | Clean up stale TODO comments | done |
@@ -72,7 +72,7 @@
 | 37-18 | Bug: cyclist-doctor reports false failures for workspace deps | backlog |
 | 37-19 | Bug: workflows directory not included in installation symlinks | backlog |
 
-### Epic MSSCI-11795: Agent File Modernization (0 stories in Jira!)
+### Epic PROJ-11795: Agent File Modernization (0 stories in Jira!)
 | Story ID | Title | Status |
 |----------|-------|--------|
 | 38-1 | Fix stale references in agent files | done |
@@ -89,7 +89,7 @@
 | 38-12 | Consolidate duplicated instructions to shared-agent-behavior.md | done |
 | 38-13 | Auto-mode context clear and agent reload on handoff | backlog |
 
-### Epic MSSCI-11796: Jira-Pennyfarthing Sync (1 story in Jira)
+### Epic PROJ-11796: Jira-Pennyfarthing Sync (1 story in Jira)
 | Story ID | Title | Status |
 |----------|-------|--------|
 | 47-1 | Auto-create Jira epic on local epic creation | done |
@@ -155,13 +155,13 @@ Stories from Sprints 2-7 that predate Jira integration:
 
 ## Sprint Archives (61 unlinked stories)
 
-### sprint-10-final.yaml (42 stories, 0 MSSCI)
+### sprint-10-final.yaml (42 stories, 0 PROJ)
 | Epic | Story IDs | Count |
 |------|-----------|-------|
-| MSSCI-11599 (Workflow Engine) | 31-1 to 31-16 | 16 |
-| MSSCI-11705 (Permissions) | 33-1 to 33-6 | 6 |
-| MSSCI-11715 (Cyclist UI/UX) | 35-1 to 35-13 | 13 |
-| MSSCI-11728 (OTEL Enrichment) | 36-1 to 36-9 | 7 |
+| PROJ-11599 (Workflow Engine) | 31-1 to 31-16 | 16 |
+| PROJ-11705 (Permissions) | 33-1 to 33-6 | 6 |
+| PROJ-11715 (Cyclist UI/UX) | 35-1 to 35-13 | 13 |
+| PROJ-11728 (OTEL Enrichment) | 36-1 to 36-9 | 7 |
 
 ### sprint-9-final.yaml (19 unlinked, 44 linked)
 | Epic | Story IDs |
@@ -181,13 +181,13 @@ Queried Jira for stories under pennyfarthing-labeled epics:
 
 | Epic | Jira Key | Stories in Jira | Unlinked in YAML |
 |------|----------|-----------------|------------------|
-| Workflow Engine | MSSCI-11599 | 13 | 2 |
-| Permission Mgmt | MSSCI-11705 | 6 | 2 |
-| Cyclist UI/UX | MSSCI-11715 | 12 | 3 |
-| OTEL Enrichment | MSSCI-11728 | 6 | 0 |
-| **Tech Debt** | MSSCI-11794 | **0** | **14** |
-| **Agent Modern** | MSSCI-11795 | **0** | **13** |
-| **Jira Sync** | MSSCI-11796 | **1** | **5** |
+| Workflow Engine | PROJ-11599 | 13 | 2 |
+| Permission Mgmt | PROJ-11705 | 6 | 2 |
+| Cyclist UI/UX | PROJ-11715 | 12 | 3 |
+| OTEL Enrichment | PROJ-11728 | 6 | 0 |
+| **Tech Debt** | PROJ-11794 | **0** | **14** |
+| **Agent Modern** | PROJ-11795 | **0** | **13** |
+| **Jira Sync** | PROJ-11796 | **1** | **5** |
 
 ---
 
@@ -223,15 +223,15 @@ These epics exist only in YAML with no corresponding Jira epic:
 
 ### Priority 1: Active Epics with 0 Jira Stories (32 stories)
 Create Jira stories for these epics that have active work but no Jira presence:
-- **MSSCI-11794** (Tech Debt): 14 stories
-- **MSSCI-11795** (Agent Modernization): 13 stories
-- **MSSCI-11796** (Jira Sync): 5 stories
+- **PROJ-11794** (Tech Debt): 14 stories
+- **PROJ-11795** (Agent Modernization): 13 stories
+- **PROJ-11796** (Jira Sync): 5 stories
 
 ### Priority 2: Partial Epics (7 stories)
 Link existing Jira stories to YAML entries that exist in both:
-- MSSCI-11599: 31-15, 31-17
-- MSSCI-11705: 33-5, 33-7
-- MSSCI-11715: 35-13, 35-14, 35-15
+- PROJ-11599: 31-15, 31-17
+- PROJ-11705: 33-5, 33-7
+- PROJ-11715: 35-13, 35-14, 35-15
 
 ### Priority 3: Sprint 10 Archive (42 stories)
 Recently completed work with no Jira links. Consider:

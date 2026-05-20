@@ -145,7 +145,7 @@ def _read_yaml(path: Path) -> Any:
 
 # ---------- Epic ID / filename logic ----------
 
-JIRA_PATTERN = re.compile(r"^MSSCI-\d{5}$")
+JIRA_PATTERN = re.compile(r"^PROJ-\d{5}$")
 
 
 def _get_epic_ref(epic: dict) -> str:

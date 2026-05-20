@@ -7,7 +7,7 @@ Extend peloton-style benchmarking beyond the TEA→Dev→Reviewer pipeline to ev
 **Priority:** P1
 **Repo:** pennyfarthing
 **Stories:** 8 (23 points)
-**Jira:** MSSCI-16293
+**Jira:** PROJ-16293
 
 ## Planning Documents
 

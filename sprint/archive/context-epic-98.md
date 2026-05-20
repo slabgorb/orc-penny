@@ -1,6 +1,6 @@
 # Epic 98: Safe Install, Upgrade, and Namespace Isolation
 
-**Jira:** MSSCI-14697
+**Jira:** PROJ-14697
 **ADR:** 0021
 **Repo:** pennyfarthing
 

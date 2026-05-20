@@ -2,8 +2,8 @@
 
 ## Story Metadata
 - **Story ID:** 143-2
-- **Jira Key:** MSSCI-16360
-- **Epic:** 143 — Native Subagent Migration (MSSCI-16358)
+- **Jira Key:** PROJ-16360
+- **Epic:** 143 — Native Subagent Migration (PROJ-16358)
 - **Title:** Create native subagent definitions for TEA and Reviewer in pennyfarthing-dist
 - **Type:** Feature
 - **Priority:** P0

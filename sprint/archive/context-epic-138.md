@@ -7,7 +7,7 @@ Integrate Claude Code's `/simplify` concept into Pennyfarthing's TDD workflow as
 **Priority:** P0/P1
 **Repo:** pennyfarthing
 **Stories:** 7 (8 points)
-**Jira:** MSSCI-16073
+**Jira:** PROJ-16073
 
 ## Planning Documents
 

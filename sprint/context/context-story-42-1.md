@@ -27,7 +27,7 @@ Judges currently interpret score levels subjectively — "a 7 for correctness" m
 
 **Do NOT:**
 - Modify the judge prompt yet (that's 42-2)
-- Create exemplar responses (that's closer to gold standards, MSSCI-16212)
+- Create exemplar responses (that's closer to gold standards, PROJ-16212)
 
 ## Scope Boundaries
 

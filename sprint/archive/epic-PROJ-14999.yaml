@@ -1,0 +1,69 @@
+id: '105'
+type: epic
+title: Script-First Handoff
+description: 'Replace handoff subagent with bash scripts (handoff-cli.sh) for phase routing and atomic session updates. Agents drive exit directly. Manual gates cost zero tokens. Per ADR-0025.'
+priority: P1
+status: done
+repos: pennyfarthing
+jira: PROJ-14999
+stories:
+  - id: 105-1
+    jira: PROJ-15000
+    title: Create handoff-cli.sh with resolve-gate and complete-phase
+    description: |
+      Bash script with two subcommands: `resolve-gate` reads workflow YAML,
+      finds current phase gate, pre-checks assessment section, resolves gate
+      file path, returns RESOLVE_RESULT YAML. `complete-phase` atomically
+      updates session file (temp+mv) with phase transition, timestamps,
+      and history tables. Pure bash, no LLM. Script stdout is the only
+      communication channel.
+    points: 3
+    priority: P1
+    status: done
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-15'
+  - id: 105-2
+    jira: PROJ-15001
+    title: Update agent exit protocol across all agent files
+    description: |
+      Replace <agent-exit-protocol> in all ~10 agent files with the new
+      7-step sequence from ADR-0025: write assessment, terminate tandem,
+      resolve-gate, gate subagent (if needed), complete-phase,
+      handoff-marker, emit marker, EXIT. Remove all references to
+      handoff and sm-handoff subagents for phase transitions.
+    points: 2
+    priority: P1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    repos: pennyfarthing
+    workflow: agent-docs
+    completed: '2026-02-15'
+  - id: 105-3
+    jira: PROJ-15002
+    title: End-to-end handoff smoke test
+    description: |
+      Verify TDD handoff works with new script-based exit flow. Test
+      resolve-gate returns status:ready for green phase with assessment,
+      gate subagent evaluates tests_pass (inline fallback), complete-phase
+      updates session, handoff-marker emits correct marker. Also verify
+      trivial workflow skips gate (status:skip) with no LLM spawn.
+    points: 1
+    priority: P1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-02-15'
+  - id: 105-4
+    jira: PROJ-15100
+    title: Replace handoff-marker.sh with gate-aware Python CLI
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    workflow: trivial
+    completed: '2026-02-15'
+    type: refactor
+initiative: gate-extraction
+completed: '2026-02-15'

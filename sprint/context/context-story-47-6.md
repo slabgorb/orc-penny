@@ -4,7 +4,7 @@
 
 Systematically remove sections from context documents and re-run the pipeline to measure which sections actually affect downstream defect detection. Tests whether strategic context has causal impact or is just noise.
 
-**Points:** 3 | **Workflow:** tdd | **Jira:** MSSCI-16299
+**Points:** 3 | **Workflow:** tdd | **Jira:** PROJ-16299
 **Priority:** P2 — only pursue if 47-5 shows signal
 
 ## Objective

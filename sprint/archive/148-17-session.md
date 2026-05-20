@@ -1,15 +1,15 @@
 ---
 story_id: "148-17"
-jira_key: "MSSCI-16476"
-epic: "MSSCI-16421"
+jira_key: "PROJ-16476"
+epic: "PROJ-16421"
 workflow: "tdd"
 ---
 # Story 148-17: Reviewer subagent completion — wait for all 8 before writing assessment
 
 ## Story Details
 - **ID:** 148-17
-- **Jira Key:** MSSCI-16476
-- **Epic:** MSSCI-16421 (TUI-tmux Fixer)
+- **Jira Key:** PROJ-16476
+- **Epic:** PROJ-16421 (TUI-tmux Fixer)
 - **Workflow:** tdd
 - **Priority:** p1
 - **Points:** 2

@@ -4,7 +4,7 @@
 
 The definitive experiment: run the full TDD pipeline on dpgd-116 with the best PM/Architect context versus no strategic context at all. Measures the end-to-end causal impact of strategic role personas on pipeline detection rates.
 
-**Points:** 5 | **Workflow:** tdd | **Jira:** MSSCI-16300
+**Points:** 5 | **Workflow:** tdd | **Jira:** PROJ-16300
 **Priority:** P2 — only pursue if 47-5/47-6 show signal
 
 ## Objective

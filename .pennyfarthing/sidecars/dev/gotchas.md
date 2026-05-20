@@ -1,7 +1,7 @@
 # Dev Agent Gotchas
 
 <gotcha name="install">
-Install from GitHub: `npm install github:1898andCo/pennyfarthing`. Not published to npm. `npm link` won't work.
+Install from GitHub: `npm install github:slabgorb/pennyfarthing`. Not published to npm. `npm link` won't work.
 </gotcha>
 
 <gotcha name="symlinks">

@@ -1,9 +1,9 @@
 # Context: 132-9 Add pf CLI installation to just setup bootstrap
 
-**Jira Issue:** MSSCI-15645
+**Jira Issue:** PROJ-15645
 **Points:** 3
 **Priority:** P1
-**Epic:** 132 — Guided Tour Enhancements (MSSCI-15616)
+**Epic:** 132 — Guided Tour Enhancements (PROJ-15616)
 **Workflow:** tdd
 
 ## Goal

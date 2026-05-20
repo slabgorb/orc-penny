@@ -57,8 +57,8 @@ This document provides the complete epic and story breakdown for the Formalized 
 
 **Bug Fixes**
 - FR25: `checkStoryContext` can correctly identify story context files using the `context-story-{N-N}.md` naming convention
-- FR26: `checkEpicContext` can correctly identify epic context files for any Jira project key (dynamic — not hardcoded to MSSCI)
-- FR27: Context file naming and resolution supports both numeric IDs (e.g., `97`, `125-3`) and Jira-keyed IDs (e.g., `PROJ-123`, `MSSCI-15395`) where the project key is dynamic
+- FR26: `checkEpicContext` can correctly identify epic context files for any Jira project key (dynamic — not hardcoded to PROJ)
+- FR27: Context file naming and resolution supports both numeric IDs (e.g., `97`, `125-3`) and Jira-keyed IDs (e.g., `PROJ-123`, `PROJ-15395`) where the project key is dynamic
 
 ### NonFunctional Requirements
 
@@ -158,7 +158,7 @@ So that I can see at a glance what's ready for development.
 **Given** `checkEpicContext` in `sprint-data.ts` checks for epic context files
 **When** an epic context file exists at `sprint/context/context-epic-PROJ-123.md`
 **Then** `checkEpicContext("PROJ-123")` returns true
-**And** the regex handles any Jira project key pattern (not hardcoded to `MSSCI` or numeric-only)
+**And** the regex handles any Jira project key pattern (not hardcoded to `PROJ` or numeric-only)
 
 **Given** an epic uses a numeric ID like `97`
 **When** `checkEpicContext("97")` is called

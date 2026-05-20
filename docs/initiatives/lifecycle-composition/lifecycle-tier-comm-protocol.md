@@ -123,7 +123,7 @@ finding:
   id: DF-{STORY_ID}-{SEQ}
   type: gap | conflict | question | improvement
   source:
-    story: MSSCI-XXXX
+    story: PROJ-XXXX
     phase: red | green | review
     person: {name}
   affected_spec:
@@ -176,7 +176,7 @@ scr:
 **Product → Domain:**
 - Architecture compliance audit: "Run the fitness function suite and report results"
 - Drift detection: "Compare current implementation against architecture spec X"
-- Random deep review: "Review story MSSCI-1234 for architectural compliance, not just code correctness"
+- Random deep review: "Review story PROJ-1234 for architectural compliance, not just code correctness"
 
 **Domain → Delivery:**
 - Spot-check review: domain lead reviews a completed story in depth, beyond normal code review

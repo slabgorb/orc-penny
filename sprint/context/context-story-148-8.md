@@ -1,6 +1,6 @@
 # Story 148-8: Peloton mode — spawn team panes and run TDD workflow through tmux
 
-**Jira Key:** MSSCI-16421
+**Jira Key:** PROJ-16421
 **Points:** 5
 **Workflow:** tdd
 **Status:** in_progress

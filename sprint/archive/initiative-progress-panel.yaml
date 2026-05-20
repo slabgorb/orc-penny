@@ -11,13 +11,13 @@ epics:
 stories:
   - id: "103-11"
     title: "ProgressPanel: at-a-glance story dashboard"
-    jira: MSSCI-14966
+    jira: PROJ-14966
     type: feature
     status: complete
     points: 5
     workflow: tdd
     repos: pennyfarthing
-    pr: https://github.com/1898andCo/pennyfarthing/pull/895
+    pr: https://github.com/slabgorb/pennyfarthing/pull/895
     notes: |
       Delivered as a single story under Epic 103 (BikeRack TUI).
       Original initiative had placeholder stories (105-1/2/3) that

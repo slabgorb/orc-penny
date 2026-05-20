@@ -23,7 +23,7 @@ This is the validation story that answers: "Does multi-judge actually improve re
 
 **Integration points:**
 - Depends on all three prior stories (44-1, -2, -3) — needs full system working
-- Results inform priority decisions for MSSCI-16210 (anchored rubrics)
+- Results inform priority decisions for PROJ-16210 (anchored rubrics)
 
 **Do NOT:**
 - Modify any code — this is a test/validation story, not implementation

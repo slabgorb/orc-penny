@@ -1,0 +1,114 @@
+id: '123'
+type: epic
+title: Release Tooling Hardening
+description: Harden the release pipeline after 11.3.x packaging failures. Pre-publish gates, tarball assertion, changelog automation, deprecation tooling, and pnpm publish documentation.
+priority: p2
+status: done
+repos: pennyfarthing
+jira: PROJ-15365
+stories:
+  - id: 123-1
+    jira: PROJ-15366
+    title: Package contents assertion test and npm pack gate
+    description: >-
+      Run npm pack --dry-run and assert tarball contents against a known-good manifest before publishing. Catches missing files that slipped through in 11.3.x releases.
+    points: 3
+    priority: p1
+    refs:
+      - github: slabgorb/pennyfarthing-orchestrator#84
+      - github: slabgorb/pennyfarthing-orchestrator#88
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    workflow: tdd
+    completed: '2026-02-21'
+    type: chore
+    review_verdict: approved
+  - id: 123-2
+    jira: PROJ-15367
+    title: Automate changelog comparison link updates
+    description: >-
+      Comparison links at the bottom of CHANGELOG.md drifted during 11.x. Automate creation and validation of version comparison links during releases.
+    points: 2
+    priority: p2
+    refs:
+      - github: slabgorb/pennyfarthing-orchestrator#85
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    workflow: trivial
+    completed: '2026-02-21'
+    type: chore
+    review_verdict: approved
+  - id: 123-3
+    jira: PROJ-15368
+    title: Add pf release deprecate command
+    description: >-
+      Automate npm deprecation, changelog updates, and git notes when a bad version needs to be deprecated. v11.3.7 had to be manually deprecated after the workspace:* leak.
+    points: 3
+    priority: p2
+    refs:
+      - github: slabgorb/pennyfarthing-orchestrator#86
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-21'
+    workflow: tdd
+    completed: '2026-02-21'
+    review_verdict: approved
+  - id: 123-4
+    jira: PROJ-15369
+    title: Implement pf release dry-run command
+    description: >-
+      Simulate the full release pipeline without publishing. Run version bump, changelog, build, pack steps without committing, tagging, or publishing.
+    points: 3
+    priority: p2
+    refs:
+      - github: slabgorb/pennyfarthing-orchestrator#87
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    workflow: tdd
+    completed: '2026-02-21'
+    review_verdict: approved
+  - id: 123-5
+    jira: PROJ-15370
+    title: Document pnpm publish requirement in release gotchas
+    description: >-
+      Document in CONTRIBUTING.md, release workflow, and justfile that pnpm publish must always be used in the pnpm workspace. npm publish leaks literal workspace:* refs.
+    points: 1
+    priority: p1
+    refs:
+      - github: slabgorb/pennyfarthing-orchestrator#89
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    workflow: trivial
+    completed: '2026-02-22'
+    type: chore
+    review_verdict: approved
+  - id: 123-6
+    jira: PROJ-15371
+    title: Consumer install smoke test in CI
+    description: >-
+      CI job that packs, installs in a clean temp directory, and runs pennyfarthing doctor to validate. Every 11.x packaging bug would have been caught by this.
+    points: 3
+    priority: p1
+    refs:
+      - github: slabgorb/pennyfarthing-orchestrator#83
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-21'
+    workflow: tdd
+    completed: '2026-02-21'
+    type: chore
+    review_verdict: approved
+  - id: 123-7
+    jira: PROJ-15372
+    title: Set up git-lfs for portrait images in cyclist package
+    description: >-
+      The cyclist package bundles ~54MB of portrait images that bloat git history. Set up git-lfs to track image files and migrate existing images.
+    points: 2
+    priority: p3
+    refs:
+      - github: slabgorb/pennyfarthing-orchestrator#90
+    status: done
+    workflow: trivial
+    completed: '2026-02-21'
+    type: chore
+completed: '2026-02-22'

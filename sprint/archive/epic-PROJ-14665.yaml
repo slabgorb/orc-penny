@@ -1,0 +1,142 @@
+stories:
+  - id: 95-1
+    jira: PROJ-14666
+    title: Tandem YAML schema and BikeLane validation
+    description: |
+      Parse tandem: block from workflow phase definitions (partner + scope).
+      Support single scope and combined scopes (scope: [file-watch, tool-watch]).
+      Validate schema at load time — fail fast on invalid config.
+      Backward-compatible: workflows without tandem: blocks work unchanged.
+    points: 3
+    type: feature
+    priority: P0
+    status: done
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria: []
+    assigned_to: keith.avery@slabgorb.io
+    completed: '2026-02-10'
+  - id: 95-2
+    jira: PROJ-14667
+    title: Backseat agent spawn and lifecycle
+    description: |
+      BikeLane spawns backseat agent as long-lived background subagent
+      (Task tool, run_in_background: true) at tandem phase start.
+      Clean termination at phase end. Cleanup handlers for crash recovery.
+      Zero orphan processes. Primary continues unaffected if backseat crashes.
+    points: 3
+    type: feature
+    priority: P0
+    status: done
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria: []
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-10'
+    completed: '2026-02-10'
+  - id: 95-3
+    jira: PROJ-14668
+    title: Observation file format and writer
+    description: |
+      Backseat writes observations to append-only markdown file at
+      .session/{story-id}-tandem-{agent}.md. Each entry includes timestamp,
+      trigger type, trigger detail, and observation text. File remains valid
+      markdown even on mid-write crash (entry-atomic appends).
+    points: 2
+    type: feature
+    priority: P0
+    status: done
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria: []
+    assigned_to: keith.avery@slabgorb.io
+    completed: '2026-02-10'
+  - id: 95-4
+    jira: PROJ-14669
+    title: File-watch observation scope
+    description: |
+      Backseat with file-watch scope detects file changes (create, modify,
+      delete) in the working tree within 5 seconds. Writes observations with
+      trigger type file-watch. Non-blocking to primary agent. Accumulates
+      context across observations within the phase.
+    points: 3
+    type: feature
+    priority: P0
+    status: done
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria: []
+    assigned_to: keith.avery@slabgorb.io
+    completed: '2026-02-10'
+  - id: 95-5
+    jira: PROJ-14670
+    title: Tool-watch observation scope
+    description: |
+      Backseat with tool-watch scope receives tool call information (name,
+      params, results) from primary agent within one tool-use cycle. Truncates
+      large results to configurable max size. Non-blocking to primary.
+    points: 3
+    type: feature
+    priority: P1
+    status: done
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria: []
+    started: '2026-02-10'
+    assigned_to: keith.avery@slabgorb.io
+    completed: '2026-02-10'
+  - id: 95-6
+    jira: PROJ-14671
+    title: Context-watch observation scope
+    description: |
+      Backseat with context-watch scope receives periodic conversation
+      summaries from primary agent at configurable turn intervals. Summary
+      generation non-blocking. Token overhead stays under 25% per phase
+      when combined with other scopes.
+    points: 3
+    type: feature
+    priority: P1
+    status: done
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria: []
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-10'
+    completed: '2026-02-10'
+  - id: 95-7
+    jira: PROJ-14672
+    title: Bell mode observation injection
+    description: |
+      PostToolUse hook checks tandem observation file mtime for new content.
+      Injects as bell message: [Tandem] {persona_name}: {observation_summary}.
+      Primary agent surfaces in own voice attributing to backseat persona.
+      No bell mode schema changes required. Completes within existing hook
+      time budget.
+    points: 3
+    type: feature
+    priority: P0
+    status: done
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria: []
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-10'
+    completed: '2026-02-10'
+id: epic-95
+jira: PROJ-14665
+title: 'Epic: Workflow Configuration & Observation Protocol'
+description: |
+  Workflow authors can add tandem: blocks to their workflow YAML, and
+  BikeLane spawns/terminates backseat agents with working observation
+  scopes. The tandem system works end-to-end — backseat observes,
+  writes observations, bell mode injects them, primary surfaces them.
+
+  Covers YAML schema, agent lifecycle, observation file format,
+  three observation scopes (file-watch, tool-watch, context-watch),
+  and bell mode injection.
+priority: P1
+status: done
+repos: pennyfarthing
+points: 20
+marker: feature
+completed: '2026-02-11'

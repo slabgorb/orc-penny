@@ -1,0 +1,184 @@
+id: '101'
+type: epic
+title: BikeRack Mode — Decoupled WheelHub Dashboard
+description: Decoupled WheelHub dashboard for CLI-first developers. Panels served individually via browser tabs, OTEL telemetry from standalone Claude CLI. See ADR-0024 and sprint/planning/bikerack-prd.md.
+priority: P1
+status: done
+repos: pennyfarthing
+jira: PROJ-14819
+stories:
+  - id: 101-1
+    title: isBikeRackMode() gate and bikerack.ts entry point
+    description: |
+      Add centralized BikeRack mode detection and a new server entry point
+      that starts WheelHub without ClaudeService.
+
+      Files:
+      - NEW: src/bikerack.ts — sets IS_BIKERACK=1, calls createTerminalServer(),
+        listens on port 2898, writes .bikerack-port after listen() callback
+      - MODIFY: src/server.ts — export isBikeRackMode() function, use
+        .bikerack-port when in BikeRack mode (~10 lines)
+      - MODIFY: src/websocket.ts — skip /ws/claude setup when
+        isBikeRackMode() (~3 lines guard)
+
+      ACs:
+      - [ ] isBikeRackMode() exported from server.ts, checks process.env.IS_BIKERACK === '1' (Rule 1)
+      - [ ] No direct process.env.IS_BIKERACK checks outside isBikeRackMode() (Rule 1)
+      - [ ] bikerack.ts sets IS_BIKERACK=1 before any imports that check it (Rule 9)
+      - [ ] bikerack.ts does NOT go through main.ts (Rule 9)
+      - [ ] Port file written AFTER server.listen() callback (CE-3)
+      - [ ] Port file is .bikerack-port, not .cyclist-port (Rule 4)
+      - [ ] Default port 2898 with auto-increment on conflict (Rule 6)
+      - [ ] /ws/claude WebSocket skipped in BikeRack mode
+      - [ ] pnpm build succeeds
+      - [ ] Existing Cyclist tests pass unchanged
+
+      Ref: ADR-0024, Rules 1/4/6/9, CE-3
+    points: 2
+    priority: P0
+    status: done
+    repos: pennyfarthing
+    workflow: tdd-tandem
+    completed: "2026-02-11"
+  - id: 101-2
+    title: StandalonePanel wrapper and ?panel=X client routing
+    description: |
+      Add client-side routing that detects ?panel=X in the URL and renders
+      a single panel full-screen instead of the dockview workspace.
+
+      Files:
+      - NEW: src/public/components/StandalonePanel.tsx — PANEL_REGISTRY mapping
+        panel names to components, full-viewport wrapper, "Panel not found"
+        fallback with link to /bikerack
+      - MODIFY: src/public/App.tsx — check ?panel= before rendering
+        DockviewWorkspace (~15 lines)
+
+      ACs:
+      - [ ] ?panel=sprint renders SprintPanel full-screen
+      - [ ] All 12 existing panels in PANEL_REGISTRY (sprint, git, diffs, todos,
+            workflow, background, audit, changed, ac, tty, debug, bikelane)
+      - [ ] PANEL_REGISTRY is single source of truth for routing (CE-2)
+      - [ ] Invalid ?panel= value shows "Panel not found" with link to /bikerack
+      - [ ] No dockview-react imports in StandalonePanel (Rule 7)
+      - [ ] No BikeRack-specific props passed to panels (Rule 2)
+      - [ ] BikeRack detection is URL-based only — ?panel= presence (Rule 10)
+      - [ ] Normal / URL still loads dockview workspace
+      - [ ] pnpm build succeeds
+
+      Ref: ADR-0024, Rules 2/7/10, CE-2
+    points: 3
+    priority: P0
+    status: done
+    repos: pennyfarthing
+    workflow: tdd-tandem
+    completed: "2026-02-11"
+  - id: 101-3
+    title: BikeRackIndex panel listing page
+    description: |
+      Create an index page at /bikerack listing all available panels with
+      links to open each in a standalone tab.
+
+      Files:
+      - NEW: src/public/components/BikeRackIndex.tsx — panel listing with
+        ?panel= links, styled with Tailwind
+      - MODIFY: src/server.ts — add /bikerack route serving the SPA
+
+      ACs:
+      - [ ] /bikerack URL renders the index page
+      - [ ] Lists all 13 panels (12 existing + portrait) with links
+      - [ ] Links use ?panel=X format
+      - [ ] Styled with Tailwind dark mode, consistent with Cyclist
+      - [ ] pnpm build succeeds
+
+      Ref: ADR-0024, Pattern 3 (index page)
+    points: 1
+    priority: P1
+    status: done
+    repos: pennyfarthing
+    workflow: tdd-tandem
+    completed: "2026-02-11"
+  - id: 101-4
+    title: PortraitPanel with tandem support
+    description: |
+      New standalone panel displaying agent identity (character, role,
+      portrait image) with tandem backseat support.
+
+      Files:
+      - NEW: src/public/components/panels/PortraitPanel.tsx — subscribes
+        to /ws/persona via usePersona() hook, displays portrait image
+        from /portraits/{theme}/medium/{slug}.png, shows tandem agent
+      - MODIFY: src/public/components/panels/index.ts — export PortraitPanel
+
+      ACs:
+      - [ ] PortraitPanel uses existing usePersona() hook (CE-1)
+      - [ ] No new WebSocket connections or endpoints (CE-5, Rule 3)
+      - [ ] Displays character name, role, portrait image
+      - [ ] Shows tandem agent when active (tandemAgent data)
+      - [ ] Shows "No agent active" state when no persona data
+      - [ ] Portrait URL resolved via /portraits/{theme}/medium/{slug}.png
+      - [ ] Renders correctly in StandalonePanel wrapper via ?panel=portrait
+      - [ ] pnpm build succeeds
+
+      Ref: ADR-0024, Rules 2/3, CE-1/CE-5, Contract 4
+    points: 2
+    priority: P1
+    status: done
+    repos: pennyfarthing
+    workflow: tdd-tandem
+    completed: "2026-02-11"
+  - id: 101-5
+    title: BikeRack launcher CLI (pf bikerack start/stop/status)
+    description: |
+      Python CLI command that orchestrates WheelHub + Claude CLI lifecycle.
+
+      Files:
+      - NEW: pennyfarthing_scripts/bikerack.py — pf bikerack subcommand
+      - MODIFY: justfile — add bikerack recipe (~5 lines)
+
+      ACs:
+      - [ ] `pf bikerack start` starts WheelHub background with IS_BIKERACK=1
+      - [ ] Polls for .bikerack-port (100ms interval, 5s timeout)
+      - [ ] Sets exactly 5 OTEL env vars from discovered port (Rule 5)
+      - [ ] Uses exec (not spawn) for Claude CLI — replaces launcher process (CE-4)
+      - [ ] trap EXIT registered before exec to kill WheelHub PID (Rule 8)
+      - [ ] Writes .bikerack-pid after spawning WheelHub
+      - [ ] `pf bikerack stop` reads PID, sends SIGTERM, deletes files
+      - [ ] `pf bikerack status` shows running state (PID, port, uptime)
+      - [ ] Error if already running (.bikerack-port exists with live PID)
+      - [ ] Exit code 1 if WheelHub fails to start, 2 if already running
+      - [ ] Prints dashboard URL on startup
+      - [ ] `just bikerack` works as alias
+
+      Ref: ADR-0024, Rules 5/8, CE-4, Launcher CLI spec
+    points: 3
+    priority: P0
+    status: done
+    repos: pennyfarthing
+    workflow: tdd-tandem
+    completed: '2026-02-13'
+  - id: 101-6
+    title: BikeRack integration test and operational verification
+    description: |
+      End-to-end verification that BikeRack mode works correctly and
+      Cyclist mode is unaffected.
+
+      ACs:
+      - [ ] pf bikerack start → WheelHub starts, panels serve data
+      - [ ] Ctrl+C → WheelHub terminates, .bikerack-port and .bikerack-pid cleaned
+      - [ ] Kill terminal → PID file exists for manual cleanup
+      - [ ] All 13 panel tabs render with live data
+      - [ ] PortraitPanel shows identity, updates on agent handoff
+      - [ ] Cyclist runs simultaneously on 1898 without collision
+      - [ ] Existing Cyclist test suite passes unchanged
+      - [ ] No new WebSocket channels created (CE-5)
+      - [ ] No panel receives BikeRack-specific props (Rule 2)
+      - [ ] grep for direct IS_BIKERACK checks returns only isBikeRackMode() (Rule 1)
+
+      Ref: ADR-0024, Operational Readiness checklist
+    points: 2
+    priority: P1
+    status: done
+    repos: pennyfarthing
+    workflow: tdd-tandem
+    completed: "2026-02-11"
+completed: '2026-02-13'

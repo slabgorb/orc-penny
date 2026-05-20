@@ -3,7 +3,7 @@ validationTarget: 'sprint/planning/session-feedback-prd.md'
 validationDate: '2026-02-23'
 inputDocuments:
   - docs/lifecycle-tier-work-products.md
-  - sprint/archive/MSSCI-15033-session.md
+  - sprint/archive/PROJ-15033-session.md
   - sprint/planning/prd-sprint-data-management.md
   - sprint/planning/context-gate-prd.md
   - pennyfarthing/pennyfarthing-dist/guides/session-artifacts.md
@@ -33,7 +33,7 @@ overallStatus: 'Warning'
 ## Input Documents
 
 - `docs/lifecycle-tier-work-products.md` — Tier model with Delivery Finding definition
-- `sprint/archive/MSSCI-15033-session.md` — Example completed session
+- `sprint/archive/PROJ-15033-session.md` — Example completed session
 - `sprint/planning/prd-sprint-data-management.md` — PRD format reference
 - `sprint/planning/context-gate-prd.md` — Recent PRD format reference
 - `pennyfarthing/pennyfarthing-dist/guides/session-artifacts.md` — Session schema

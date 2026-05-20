@@ -50,7 +50,7 @@ pennyfarthing-dist/scripts/sprint/
 | Operation | Script | Example |
 |-----------|--------|---------|
 | Read story field | `get-story-field.sh` | `get-story-field.sh 28-1 status` → `in_progress` |
-| Read epic field | `get-epic-field.sh` | `get-epic-field.sh 35 jira` → `MSSCI-12042` |
+| Read epic field | `get-epic-field.sh` | `get-epic-field.sh 35 jira` → `PROJ-12042` |
 | Check story exists | `check-story.sh` | `check-story.sh 28-1` → exit 0 or 1 |
 | List available work | `available-stories.sh` | Returns JSON of ready stories |
 | Archive completed | `archive-story.sh` | Moves to `sprint/archive/`, updates totals |
@@ -62,12 +62,12 @@ Scripts enforce these invariants:
 
 | Rule | Enforcement |
 |------|-------------|
-| Story ID format | `{epic}-{seq}` or `MSSCI-{number}` |
+| Story ID format | `{epic}-{seq}` or `PROJ-{number}` |
 | Status transitions | `backlog → ready → in_progress → done` |
 | Points must be numeric | Reject non-integer values |
 | Completion date on done | Auto-set if missing |
 | Epic totals recalculated | On any story status change |
-| Jira key format | `MSSCI-{5 digits}` when present |
+| Jira key format | `PROJ-{5 digits}` when present |
 
 ### Integration with Jira
 

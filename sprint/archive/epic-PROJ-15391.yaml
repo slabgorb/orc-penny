@@ -1,0 +1,61 @@
+id: '121'
+type: epic
+title: Debug Panel and Brownfield Tools Fixes
+description: Fix issues with the Debug panel in Cyclist/BikeRack and the brownfield analysis tools (hotspots, dead code, health score). Improve reliability, output formatting, and panel rendering.
+priority: p2
+status: done
+repos: pennyfarthing
+jira: PROJ-15391
+stories:
+  - id: 121-1
+    jira: PROJ-15392
+    title: Improve debug panel refresh rate for real-time token usage tracking
+    description: Increase the debug panel's polling/WebSocket refresh rate so token usage metrics update in near-real-time as the agent works. Currently the panel lags behind actual context consumption, making it hard to track burn rate during long sessions. Investigate whether the bottleneck is the WheelHub broadcast interval, the OTEL span ingestion cadence, or the React component polling cycle, and fix accordingly.
+    points: 2
+    priority: p1
+    status: done
+    workflow: trivial
+    completed: '2026-02-20'
+    type: bug
+    review_verdict: approved
+  - id: 121-2
+    jira: PROJ-15393
+    title: Add code quality rules trigger from debug panel
+    description: Add interactive controls to the debug panel that let users fire off brownfield code quality analysis tools (hotspots, dead code, health score) directly from the UI. Currently these tools are CLI-only via pf debug. Add action buttons or a command palette in the debug panel that triggers analysis runs and displays results inline, so users can assess code quality without leaving the TUI/Cyclist.
+    points: 3
+    priority: p2
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    workflow: tdd
+    completed: '2026-02-23'
+    review_verdict: approved
+  - id: 121-3
+    jira: PROJ-15394
+    title: Fix footer keybinding labels — bracket display is inaccurate
+    description: The footer bar in BikeRack TUI shows keybinding hints with incorrect bracket formatting. The bracket characters around key names are wrong or inconsistent, making the menu hard to read. Fix the keybinding label rendering in the footer widget to display accurate bracket notation matching the actual key shortcuts.
+    points: 1
+    priority: p1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    workflow: trivial
+    completed: '2026-02-21'
+    type: bug
+    review_verdict: approved
+  - id: 121-4
+    jira: PROJ-15395
+    title: Fix git sync cache busting for stale UI state
+    description: >-
+      The git status cache mechanism is not invalidating properly on writes,
+      leading to stale/incorrect git state in the UI. Needs either a
+      lock-free status approach or a fix to the cache busting logic.
+    points: 2
+    priority: p2
+    refs:
+      - github: slabgorb/pennyfarthing-orchestrator#31
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    workflow: tdd
+    completed: '2026-02-23'
+    type: bug
+    review_verdict: approved
+completed: '2026-02-23'

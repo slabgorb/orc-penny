@@ -1,7 +1,7 @@
 # Context: Story 121-1 — Improve BikeRack TUI debug panel refresh rate for real-time token usage tracking
 
-**GitHub Issue:** 1898andCo/pennyfarthing-orchestrator#[pending]
-**Jira:** MSSCI-15392
+**GitHub Issue:** slabgorb/pennyfarthing-orchestrator#[pending]
+**Jira:** PROJ-15392
 **Points:** 2
 **Epic:** 121 — Debug Panel and Brownfield Tools Fixes
 **Status:** done (2026-02-20)
@@ -176,5 +176,5 @@ Modified: `packages/cyclist/src/websocket.ts` (+19 lines)
 - **121-2** — Add code quality tools trigger (separate BikeRack feature)
 - **121-3** — Fix footer keybinding labels (separate BikeRack TUI fix)
 - **121-4** — Fix git cache busting (separate git issue)
-- **MSSCI-12800** — Token count breakdown (context injected components)
-- **MSSCI-12782** — Token stats formatting (earlier WebSocket performance work)
+- **PROJ-12800** — Token count breakdown (context injected components)
+- **PROJ-12782** — Token stats formatting (earlier WebSocket performance work)

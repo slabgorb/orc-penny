@@ -106,7 +106,7 @@ Track 3:
 **Problem:** `jira.project` and `jira.url` are loaded by `jira/client.py` from config.local.yaml but aren't in DEFAULTS, so they're invisible to the settings panel and `pf settings show`.
 
 **AC:**
-1. DEFAULTS in settings.py includes `"jira": {"project": "MSSCI", "url": "https://1898andco.atlassian.net"}`
+1. DEFAULTS in settings.py includes `"jira": {"project": "PROJ", "url": "https://slabgorb.atlassian.net"}`
 2. SHOW_KEYS in settings.py already includes "jira" — verify it works
 3. Two explicit SettingSpecs added to settings_meta.py: `jira.project` (input, Integration group) and `jira.url` (input, Integration group)
 4. `pf settings show` displays jira.project and jira.url with (default) annotation

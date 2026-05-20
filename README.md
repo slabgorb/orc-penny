@@ -1,17 +1,17 @@
 # orc-penny
 
-Sprint orchestrator and agent coordination for [Pennyfarthing](https://github.com/1898andCo/pennyfarthing) framework development.
+Sprint orchestrator and agent coordination for [Pennyfarthing](https://github.com/slabgorb/pennyfarthing) framework development.
 
 ## Quick Start
 
 ```bash
-git clone git@github.com:1898andCo/orc-penny.git && cd orc-penny
+git clone git@github.com:slabgorb/orc-penny.git && cd orc-penny
 just setup        # clones pennyfarthing/, installs deps, builds
 just claude       # launches Claude Code with OTEL pre-configured
 /guided-tour      # interactive walkthrough inside Claude Code
 ```
 
-Prerequisites: Node 18+, [pnpm](https://pnpm.io/) 9+, Python 3.11+, [just](https://github.com/casey/just), [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI, Git SSH access to `1898andCo`.
+Prerequisites: Node 18+, [pnpm](https://pnpm.io/) 9+, Python 3.11+, [just](https://github.com/casey/just), [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI, Git SSH access to `slabgorb`.
 
 ## What's in this repo
 

@@ -60,8 +60,8 @@ Story 42-3 measures coefficient of variation (CV) before and after anchoring on 
 ## Cross-Epic Dependencies
 
 **Depends on:**
-- MSSCI-16214 (Multi-Judge Validation) — multi-judge data reveals which dimensions have highest disagreement, prioritizing anchor development
+- PROJ-16214 (Multi-Judge Validation) — multi-judge data reveals which dimensions have highest disagreement, prioritizing anchor development
 
 **Depended on by:**
-- MSSCI-16212 (Gold Standard References) — anchored rubrics inform what "correct" scoring looks like for gold standards
-- MSSCI-16213 (Difficulty Profile Enhancement) — anchored rubrics may need difficulty-aware calibration
+- PROJ-16212 (Gold Standard References) — anchored rubrics inform what "correct" scoring looks like for gold standards
+- PROJ-16213 (Difficulty Profile Enhancement) — anchored rubrics may need difficulty-aware calibration

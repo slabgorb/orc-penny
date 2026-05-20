@@ -1,7 +1,7 @@
 ---
 story_id: "148-9"
 jira_key: ""
-epic: "MSSCI-16421"
+epic: "PROJ-16421"
 workflow: "tdd"
 ---
 
@@ -10,7 +10,7 @@ workflow: "tdd"
 ## Story Details
 - **ID:** 148-9
 - **Jira Key:** (pending assignment)
-- **Epic:** MSSCI-16421 (TUI-tmux Fixer)
+- **Epic:** PROJ-16421 (TUI-tmux Fixer)
 - **Workflow:** tdd
 - **Points:** 3
 - **Priority:** p0

@@ -1,9 +1,9 @@
 # Context: Story 125-10 — Add pf sprint focus commands (use/close/status)
 
-**Jira Issue:** MSSCI-15431
+**Jira Issue:** PROJ-15431
 **Points:** 2
 **Priority:** P3
-**Epic:** 125 — Sprint State Engine Consolidation (MSSCI-15421)
+**Epic:** 125 — Sprint State Engine Consolidation (PROJ-15421)
 **Workflow:** trivial
 
 ## Problem

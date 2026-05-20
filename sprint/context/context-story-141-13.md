@@ -51,7 +51,7 @@ The `claim_story()` function in `pf/jira/claim.py` does attempt to call `transit
 
 **AC1: `pf jira claim {JIRA_KEY}` transitions the story to "In Progress" in Jira**
 
-When `claim_story()` runs successfully, `transition_story(root, story_id, "in_progress")` must be called and must succeed. The result dict must include `"Moved to In Progress"` in `actions`. Verify by running `pf jira claim MSSCI-16156` on a test story and confirming the Jira issue status changes from "To Do" to "In Progress." If `pf jira check MSSCI-16156` shows status is not "In Progress" after the claim, the AC fails.
+When `claim_story()` runs successfully, `transition_story(root, story_id, "in_progress")` must be called and must succeed. The result dict must include `"Moved to In Progress"` in `actions`. Verify by running `pf jira claim PROJ-16156` on a test story and confirming the Jira issue status changes from "To Do" to "In Progress." If `pf jira check PROJ-16156` shows status is not "In Progress" after the claim, the AC fails.
 
 **AC2: Transition failures are reported, not silently swallowed**
 
@@ -68,4 +68,4 @@ Inside `claim_story()`, the loop that maps `jira_key` back to a `story_id` (line
 
 **AC4: Sprint YAML status updates to `in_progress` when claim succeeds**
 
-After a successful claim, the story entry in the epic shard YAML (e.g., `sprint/epic-MSSCI-16127.yaml`) must have `status: in_progress` and a `started` date set to today. This is handled by `transition_story()` — verify it writes through correctly when called from `claim_story()`. Confirm by reading the shard file directly after a successful `pf jira claim`.
+After a successful claim, the story entry in the epic shard YAML (e.g., `sprint/epic-PROJ-16127.yaml`) must have `status: in_progress` and a `started` date set to today. This is handled by `transition_story()` — verify it writes through correctly when called from `claim_story()`. Confirm by reading the shard file directly after a successful `pf jira claim`.

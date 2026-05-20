@@ -1,7 +1,7 @@
 ---
 story_id: "147-1"
 jira_key: ""
-epic: "MSSCI-16394"
+epic: "PROJ-16394"
 workflow: "trivial"
 ---
 # Story 147-1: Add Jira config to DEFAULTS and TUI settings panel
@@ -9,7 +9,7 @@ workflow: "trivial"
 ## Story Details
 - **ID:** 147-1
 - **Jira Key:** (pending creation)
-- **Epic:** MSSCI-16394 - Configuration Gap Closure
+- **Epic:** PROJ-16394 - Configuration Gap Closure
 - **Workflow:** trivial
 - **Stack Parent:** none
 - **Branch:** feat/147-1-jira-config-defaults-tui (pennyfarthing/)
@@ -41,7 +41,7 @@ Each finding is one list item. Use "No upstream findings" if none.
 - No upstream findings during implementation.
 
 ### Reviewer (code review)
-- **Improvement** (non-blocking): Jira client `_resolve_jira_config()` at `jira/client.py:19` has duplicated default values ("MSSCI", "https://1898andco.atlassian.net") that now also exist in DEFAULTS. Future story should consolidate to read from DEFAULTS, eliminating the dual source of truth. Affects `pennyfarthing-dist/src/pf/jira/client.py` (should import from DEFAULTS instead of hardcoding). *Found by Reviewer during code review.*
+- **Improvement** (non-blocking): Jira client `_resolve_jira_config()` at `jira/client.py:19` has duplicated default values ("PROJ", "https://slabgorb.atlassian.net") that now also exist in DEFAULTS. Future story should consolidate to read from DEFAULTS, eliminating the dual source of truth. Affects `pennyfarthing-dist/src/pf/jira/client.py` (should import from DEFAULTS instead of hardcoding). *Found by Reviewer during code review.*
 
 ## Design Deviations
 
@@ -124,7 +124,7 @@ Total findings: 0 confirmed, 19 dismissed (all pre-existing or non-applicable), 
 - [x] Judgment: APPROVE — no Critical/High issues, all steps complete
 
 **Observations:**
-1. [VERIFIED] DEFAULTS values `"MSSCI"` and `"https://1898andco.atlassian.net"` match hardcoded fallbacks in `jira/client.py:28-29` — no divergence
+1. [VERIFIED] DEFAULTS values `"PROJ"` and `"https://slabgorb.atlassian.net"` match hardcoded fallbacks in `jira/client.py:28-29` — no divergence
 2. [VERIFIED] `SHOW_KEYS` at `settings.py:22` already contained `"jira"` — `pf settings show` correctly displays the new section with `# (default)` annotations
 3. [VERIFIED] `build_setting_specs()` discovers new keys and returns 17 total specs including 2 Jira specs in group "Jira"
 4. [LOW] Dual source of truth: DEFAULTS dict and `_resolve_jira_config()` both define the same fallback values — logged as Delivery Finding for future consolidation

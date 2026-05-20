@@ -10,33 +10,33 @@ sprint:
 
 completed_epics:
   - '110'
-  - MSSCI-15920
-  - MSSCI-15839
-  - MSSCI-16090
-  - MSSCI-16095
-  - MSSCI-16073
-  - MSSCI-16127
-  - MSSCI-16210
-  - MSSCI-16211
-  - MSSCI-16214
-  - MSSCI-16212
-  - MSSCI-16213
-  - MSSCI-16312
+  - PROJ-15920
+  - PROJ-15839
+  - PROJ-16090
+  - PROJ-16095
+  - PROJ-16073
+  - PROJ-16127
+  - PROJ-16210
+  - PROJ-16211
+  - PROJ-16214
+  - PROJ-16212
+  - PROJ-16213
+  - PROJ-16312
   - '49'
-  - MSSCI-16348
-  - MSSCI-16358
-  - MSSCI-16384
-  - MSSCI-16396
-  - MSSCI-16411
-  - MSSCI-16564
-  - MSSCI-16421
-  - MSSCI-17079
+  - PROJ-16348
+  - PROJ-16358
+  - PROJ-16384
+  - PROJ-16396
+  - PROJ-16411
+  - PROJ-16564
+  - PROJ-16421
+  - PROJ-17079
 
 epics:
-  - MSSCI-16293
-  - MSSCI-16405
-  - MSSCI-16551
-  - MSSCI-17079
+  - PROJ-16293
+  - PROJ-16405
+  - PROJ-16551
+  - PROJ-17079
   - '152'
   - '153'
   - '154'
@@ -73,332 +73,332 @@ completed_stories:
     points: 2
     completed: '2026-02-21'
   - id: 137-1
-    epic: MSSCI-15920
+    epic: PROJ-15920
     title: "Research spike — <switch> and <gate> tag design for stepped workflows"
     points: 1
     completed: '2026-03-01'
   - id: 137-2
-    epic: MSSCI-15920
+    epic: PROJ-15920
     title: "Replace static collaboration menus with AskUserQuestion"
     points: 2
     completed: '2026-03-02'
   - id: 137-3
-    epic: MSSCI-15920
+    epic: PROJ-15920
     title: "Gate validation for stepped workflows"
     points: 3
     completed: '2026-03-02'
   - id: 137-4
-    epic: MSSCI-15920
+    epic: PROJ-15920
     title: "Workflow-type-aware agent initialization"
     points: 2
     completed: '2026-03-02'
   - id: 137-5
-    epic: MSSCI-15920
+    epic: PROJ-15920
     title: "Tandem and team collaboration on stepped workflow steps"
     points: 2
     completed: '2026-03-03'
   - id: 137-6
-    epic: MSSCI-15920
+    epic: PROJ-15920
     title: Remove legacy text menus from migrated switch files
     points: 1
     completed: '2026-03-03'
   - id: 137-7
-    epic: MSSCI-15920
+    epic: PROJ-15920
     title: Sprint status aggregates all archive files instead of filtering by current sprint
     points: 2
     completed: '2026-03-03'
   - id: 136-1
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: Unified pf discovery — fix PATH resolution in hooks, launchers, and setup
     points: 5
     completed: '2026-02-28'
   - id: 136-2
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: WheelHub pip-install support — remove monorepo path assumptions
     points: 3
     completed: '2026-02-28'
   - id: 136-3
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: Fix init/doctor prefix filtering for Python dist layout
     points: 2
     completed: '2026-02-28'
   - id: 136-4
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: Extract shared TUI color thresholds and contrast constants
     points: 2
     completed: '2026-02-28'
   - id: 136-5
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: Fix TUI data pipeline — context, sprint, and debug panel fallbacks
     points: 3
     completed: '2026-02-28'
   - id: 136-6
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: WheelHub crashes on pipx install — findMonorepoRoot uses __dirname instead of project root
     points: 2
     completed: '2026-03-02'
   - id: 136-7
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: WheelHub cannot resolve pennyfarthing-dist in distributed projects
     points: 2
     completed: '2026-03-02'
   - id: 136-8
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: pf launch fails — bikerack entry.js path wrong when installed via uv tool
     points: 2
     completed: '2026-03-02'
   - id: 136-9
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: context.py not found in npm-installed projects — missing search path
     points: 2
     completed: '2026-03-02'
   - id: 136-10
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: WheelHub not launched on initial startup
     points: 2
     completed: '2026-03-02'
   - id: 136-11
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: doctor --fix and update fail to restore missing .claude/commands/ and .claude/skills/
     points: 2
     completed: '2026-03-02'
   - id: 136-12
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: pf CLI missing setup command — users try CLI before discovering skill
     points: 1
     completed: '2026-03-03'
   - id: 136-13
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: run-pf.sh should prefer global pf over broken local venv
     points: 1
     completed: '2026-03-02'
   - id: 136-14
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: SM sprint status omits completed stories
     points: 1
     completed: '2026-03-02'
   - id: 136-15
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: Sprint status undercounts completed points — ignores archived epics
     points: 2
     completed: '2026-03-02'
   - id: 136-16
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: Phase name vs agent name confusion in handoff session file
     points: 1
     completed: '2026-03-03'
   - id: 136-17
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: Setup workflow step-06 missing wheelhub/bikerack/tui justfile recipes
     points: 1
     completed: '2026-03-03'
   - id: 136-18
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: Add In Review status for stories
     points: 2
     completed: '2026-03-04'
   - id: 136-19
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: Integrate Context7 API for automated skill documentation updates
     points: 3
     completed: '2026-03-03'
   - id: 136-20
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: Integrate Perplexity MCP for agent research tasks
     points: 3
     completed: '2026-03-04'
   - id: 136-21
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: Unified Research Tools section in agent-coordination guide
     points: 2
     completed: '2026-03-04'
   - id: 136-22
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: tmux-dev WheelHub launch crashes script — pipefail propagates non-zero exit
     points: 2
     completed: '2026-03-03'
   - id: 136-23
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: TUI connects to wrong WheelHub — kill port-scanning fallback and enforce project-scoped discovery
     points: 3
     completed: '2026-03-03'
   - id: 136-24
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: Add project identity to WheelHub /health endpoint for cross-project verification
     points: 2
     completed: '2026-03-03'
   - id: 136-25
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: justfile.pf claude recipe uses stale WheelHub launch — sync pf init templates to consumer projects
     points: 1
     completed: '2026-03-03'
   - id: 136-26
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: Remove stale npm/uv-era references from setup workflows and docs
     points: 2
     completed: '2026-03-03'
   - id: 136-27
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: 'Fix auto-load-sm hook skill name: sm should be pf-sm'
     points: 1
     completed: '2026-03-03'
   - id: 136-28
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: Fix pf sprint story add --repos flag not persisting repos field
     points: 1
     completed: '2026-03-03'
   - id: 136-29
-    epic: MSSCI-15839
+    epic: PROJ-15839
     title: Implement pf release dry-run command
     points: 3
     completed: '2026-03-03'
   - id: 140-1
-    epic: MSSCI-16090
+    epic: PROJ-16090
     title: Create Batch Workflow YAML
     points: 2
     completed: '2026-03-03'
   - id: 140-2
-    epic: MSSCI-16090
+    epic: PROJ-16090
     title: Add Session Units XML Tracking
     points: 1
     completed: '2026-03-03'
   - id: 140-3
-    epic: MSSCI-16090
+    epic: PROJ-16090
     title: Extend Session Tooling for Unit Status Updates
     points: 1
     completed: '2026-03-04'
   - id: 140-4
-    epic: MSSCI-16090
+    epic: PROJ-16090
     title: Add Batch Fan-Out to Orchestrator Agent Definition
     points: 1
     completed: '2026-03-04'
   - id: 139-1
-    epic: MSSCI-16095
+    epic: PROJ-16095
     title: File-Overlap Independence Check
     points: 1
     completed: '2026-03-04'
   - id: 138-1
-    epic: MSSCI-16073
+    epic: PROJ-16073
     title: Create simplify-reuse subagent definition
     points: 1
     completed: '2026-03-03'
   - id: 138-2
-    epic: MSSCI-16073
+    epic: PROJ-16073
     title: Create simplify-quality subagent definition
     points: 1
     completed: '2026-03-03'
   - id: 138-3
-    epic: MSSCI-16073
+    epic: PROJ-16073
     title: Create simplify-efficiency subagent definition
     points: 1
     completed: '2026-03-04'
   - id: 138-4
-    epic: MSSCI-16073
+    epic: PROJ-16073
     title: Extend TEA verify phase to spawn and aggregate simplify teammates
     points: 2
     completed: '2026-03-04'
   - id: 138-5
-    epic: MSSCI-16073
+    epic: PROJ-16073
     title: Add simplify team block to tdd and tdd-tandem workflow YAMLs
     points: 1
     completed: '2026-03-04'
   - id: 138-6
-    epic: MSSCI-16073
+    epic: PROJ-16073
     title: Update TEA assessment template with simplify report section
     points: 1
     completed: '2026-03-04'
   - id: 138-7
-    epic: MSSCI-16073
+    epic: PROJ-16073
     title: Define SIMPLIFY_RESULT structured finding format
     points: 1
     completed: '2026-03-04'
   - id: 141-1
-    epic: MSSCI-16127
+    epic: PROJ-16127
     title: Hoist Shared UI Dependencies to Monorepo Root
     points: 2
     completed: '2026-03-03'
   - id: 141-2
-    epic: MSSCI-16127
+    epic: PROJ-16127
     title: Unify Dependency Version Drift
     points: 1
     completed: '2026-03-04'
   - id: 141-3
-    epic: MSSCI-16127
+    epic: PROJ-16127
     title: Audit Unexported Hooks — Export or Delete
     points: 3
     completed: '2026-03-04'
   - id: 141-4
-    epic: MSSCI-16127
+    epic: PROJ-16127
     title: Remove Deprecated Bikerack Shim and Stale References
     points: 1
     completed: '2026-03-04'
   - id: 141-8
-    epic: MSSCI-16127
+    epic: PROJ-16127
     title: Convert Throw to Result Objects in Scripts and Generators
     points: 3
     completed: '2026-03-04'
   - id: 141-11
-    epic: MSSCI-16127
+    epic: PROJ-16127
     title: Type OTLP Receiver Payloads Properly
     points: 2
     completed: '2026-03-04'
   - id: 141-12
-    epic: MSSCI-16127
+    epic: PROJ-16127
     title: Remove as-any from UI Components
     points: 2
     completed: '2026-03-04'
   - id: 141-13
-    epic: MSSCI-16127
+    epic: PROJ-16127
     title: Fix Jira story transition — claim stories as In Progress during setup
     points: 1
     completed: '2026-03-04'
   - id: 141-14
-    epic: MSSCI-16127
+    epic: PROJ-16127
     title: Improve agent handoff command documentation and examples
     points: 2
     completed: '2026-03-04'
   - id: 141-15
-    epic: MSSCI-16127
+    epic: PROJ-16127
     title: Delete Dead Shell/Python Scripts That Duplicate pf CLI
     points: 1
     completed: '2026-03-04'
   - id: 141-16
-    epic: MSSCI-16127
+    epic: PROJ-16127
     title: Add --json Output to pf CLI for GUI Consumption
     points: 3
     completed: '2026-03-04'
   - id: 141-17
-    epic: MSSCI-16127
+    epic: PROJ-16127
     title: Replace TypeScript File Parsers with pf CLI Subprocess Calls
     points: 8
     completed: '2026-03-04'
   - id: 141-18
-    epic: MSSCI-16127
+    epic: PROJ-16127
     title: Replace TypeScript Workflow Engine with pf CLI Delegation
     points: 5
     completed: '2026-03-05'
   - id: 141-19
-    epic: MSSCI-16127
+    epic: PROJ-16127
     title: MERGED into 141-17
     points: 0
     completed: '2026-03-04'
   - id: 141-20
-    epic: MSSCI-16127
+    epic: PROJ-16127
     title: Consolidate Agent Validation — Port Shell Checks to pf validate
     points: 3
     completed: '2026-03-04'
   - id: 141-21
-    epic: MSSCI-16127
+    epic: PROJ-16127
     title: Extract Hardcoded Values and Relocate Misplaced Business Logic
     points: 2
     completed: '2026-03-05'
   - id: 141-23
-    epic: MSSCI-16127
+    epic: PROJ-16127
     title: Add actionable fix instructions to all validators that can halt agents
     points: 3
     completed: '2026-03-04'
   - id: 141-25
-    epic: MSSCI-16127
+    epic: PROJ-16127
     title: Support Project-Level Workflow Definitions
     points: 3
     completed: '2026-03-04'
@@ -413,12 +413,12 @@ completed_stories:
     points: 3
     completed: '2026-03-13'
   - id: 143-14
-    epic: MSSCI-16358
+    epic: PROJ-16358
     title: Tandem mode with native subagents
     points: 3
     completed: '2026-03-13'
   - id: 143-15
-    epic: MSSCI-16358
+    epic: PROJ-16358
     title: Team mode with native subagents
     points: 2
     completed: '2026-03-13'
@@ -458,7 +458,7 @@ completed_stories:
     points: 2
     completed: '2026-03-13'
   - id: 143-12
-    epic: MSSCI-16358
+    epic: PROJ-16358
     title: Validate per-role tool restrictions
     points: 2
     completed: '2026-03-13'
@@ -483,32 +483,32 @@ completed_stories:
     points: 2
     completed: '2026-03-13'
   - id: 145-1
-    epic: MSSCI-16396
+    epic: PROJ-16396
     title: Signal collector — gather ACs, PR diff, commits, session, review findings
     points: 3
     completed: '2026-03-12'
   - id: 145-2
-    epic: MSSCI-16396
+    epic: PROJ-16396
     title: Story type classifier — rule-based type detection and format mapping
     points: 2
     completed: '2026-03-12'
   - id: 145-3
-    epic: MSSCI-16396
+    epic: PROJ-16396
     title: Content generator — Claude ELI5 translation from signals
     points: 3
     completed: '2026-03-13'
   - id: 145-4
-    epic: MSSCI-16396
+    epic: PROJ-16396
     title: Demo script generator — step-by-step presenter walkthrough
     points: 2
     completed: '2026-03-13'
   - id: 145-5
-    epic: MSSCI-16396
+    epic: PROJ-16396
     title: PPTX assembler — build slide deck from generated content
     points: 3
     completed: '2026-03-13'
   - id: 145-6
-    epic: MSSCI-16396
+    epic: PROJ-16396
     title: Mermaid diagram generation for backend stories
     points: 2
     completed: '2026-03-13'
@@ -809,12 +809,12 @@ completed_stories:
     completed: '2026-03-21'
   - id: 150-21
     epic: ''
-    title: Remove hardcoded MSSCI/1898 defaults from framework — configurable Jira project and URL
+    title: Remove hardcoded PROJ/1898 defaults from framework — configurable Jira project and URL
     points: 3
     completed: '2026-03-21'
   - id: 150-22
     epic: ''
-    title: Replace MSSCI test fixtures with generic project key (PROJ/DEMO)
+    title: Replace PROJ test fixtures with generic project key (PROJ/DEMO)
     points: 2
     completed: '2026-04-03'
   - id: 150-18
@@ -828,12 +828,12 @@ completed_stories:
     points: 2
     completed: '2026-04-20'
   - id: 148-21
-    epic: MSSCI-16421
+    epic: PROJ-16421
     title: Peloton agent panes show portrait beside CLI — split each agent pane with portrait panel on left, Claude CLI on right
     points: 2
     completed: "2026-03-15"
   - id: 148-22
-    epic: MSSCI-16421
+    epic: PROJ-16421
     title: Peloton agent color matching — teammates run /color to match badge colors
     points: 1
     completed: "2026-03-15"
@@ -843,7 +843,7 @@ completed_stories:
     points: 3
     completed: '2026-04-30'
   - id: 151-2
-    epic: MSSCI-17079
+    epic: PROJ-17079
     title: Fail loudly on missing epic field during archive write, backfill historical entries
     points: 3
     completed: '2026-04-20'
@@ -851,157 +851,157 @@ completed_stories:
 stories: []
 
 standalone_stories:
-  - id: MSSCI-16066
-    jira: MSSCI-16066
+  - id: PROJ-16066
+    jira: PROJ-16066
     title: Remove is_gui gating from relay mode handoff
     points: 2
     status: done
     repos: pennyfarthing
     pr: 1238
-    branch: feat/MSSCI-16066-remove-isgui-relay
-  - id: MSSCI-16146
-    jira: MSSCI-16146
+    branch: feat/PROJ-16066-remove-isgui-relay
+  - id: PROJ-16146
+    jira: PROJ-16146
     title: Wire pf validate into CI + add document type validators
     points: 5
     status: done
     repos: pennyfarthing
     pr: 1260
-    branch: feat/MSSCI-16146-pf-validate-ci-doc-validators
-  - id: MSSCI-16164
-    jira: MSSCI-16164
+    branch: feat/PROJ-16146-pf-validate-ci-doc-validators
+  - id: PROJ-16164
+    jira: PROJ-16164
     title: Homebrew tap + shell installer
     points: 3
     status: done
     repos: pennyfarthing
     pr: 1268
-    branch: feat/MSSCI-16164-homebrew-tap-shell-installer
-  - id: MSSCI-16187
-    jira: MSSCI-16187
+    branch: feat/PROJ-16164-homebrew-tap-shell-installer
+  - id: PROJ-16187
+    jira: PROJ-16187
     title: Rewrite onboarding docs with three user journeys and brew-first install
     points: 3
     status: done
     repos: pennyfarthing
     pr: 1276
-    branch: feat/MSSCI-16187-rewrite-onboarding-docs
-  - id: MSSCI-16200
-    jira: MSSCI-16200
+    branch: feat/PROJ-16187-rewrite-onboarding-docs
+  - id: PROJ-16200
+    jira: PROJ-16200
     title: Model story statuses on Jira lifecycle — add in_review support
     points: 5
     status: done
     repos: pennyfarthing
     pr: 1281
-    branch: feat/MSSCI-16200-add-in-review-status
-  - id: MSSCI-16204
-    jira: MSSCI-16204
+    branch: feat/PROJ-16200-add-in-review-status
+  - id: PROJ-16204
+    jira: PROJ-16204
     title: Consumer gate extensions via config + gate files
     points: 2
     status: done
     repos: pennyfarthing
     pr: 1283
-    branch: feat/MSSCI-16204-gate-extensions
-  - id: MSSCI-16205
-    jira: MSSCI-16205
+    branch: feat/PROJ-16204-gate-extensions
+  - id: PROJ-16205
+    jira: PROJ-16205
     title: Configurable PR title format via repos.yaml
     points: 2
     status: done
     repos: pennyfarthing
     pr: 1284
-    branch: feat/MSSCI-16205-pr-title-format
-  - id: MSSCI-16209
-    jira: MSSCI-16209
+    branch: feat/PROJ-16205-pr-title-format
+  - id: PROJ-16209
+    jira: PROJ-16209
     title: Add tests for core API routes (settings through welcome)
     points: 3
     status: done
     repos: pennyfarthing
     pr: 1288
-    branch: feat/MSSCI-16209-add-tests-core-api-routes
-  - id: MSSCI-16233
-    jira: MSSCI-16233
+    branch: feat/PROJ-16209-add-tests-core-api-routes
+  - id: PROJ-16233
+    jira: PROJ-16233
     title: Rebuild WheelHub bundle with in_review status mapping
     points: 1
     status: done
     repos: pennyfarthing
     pr: 1296
-    branch: feat/MSSCI-16233-wheelhub-in-review-bundle
-  - id: MSSCI-16302
-    jira: MSSCI-16302
+    branch: feat/PROJ-16233-wheelhub-in-review-bundle
+  - id: PROJ-16302
+    jira: PROJ-16302
     title: Add judge versioning and partial-match rubric
     points: 2
     status: done
     repos: pennyfarthing
     pr: 1309
-    branch: feat/MSSCI-16302-judge-versioning
-  - id: MSSCI-16303
-    jira: MSSCI-16303
+    branch: feat/PROJ-16302-judge-versioning
+  - id: PROJ-16303
+    jira: PROJ-16303
     title: Fix persona tracking — eliminate CYCLIST_SESSION_ID, set SESSION_ID before WheelHub spawn
     points: 3
     status: done
     repos: pennyfarthing
     pr: 1310
-    branch: feat/MSSCI-16303-fix-persona-session-id
-  - id: MSSCI-16323
-    jira: MSSCI-16323
+    branch: feat/PROJ-16303-fix-persona-session-id
+  - id: PROJ-16323
+    jira: PROJ-16323
     title: Plan mode agent reload hook for ExitPlanMode
     points: 2
     status: done
     repos: pennyfarthing
     pr: 1318
-    branch: feat/MSSCI-16323-plan-exit-reload
-  - id: MSSCI-16331
-    jira: MSSCI-16331
+    branch: feat/PROJ-16323-plan-exit-reload
+  - id: PROJ-16331
+    jira: PROJ-16331
     title: Add startup agent auto-invoke on SessionStart
     points: 3
     status: done
     repos: pennyfarthing
     pr: 1319
-    branch: feat/MSSCI-16331-startup-agent-autoinvoke
-  - id: MSSCI-16335
-    jira: MSSCI-16335
+    branch: feat/PROJ-16331-startup-agent-autoinvoke
+  - id: PROJ-16335
+    jira: PROJ-16335
     title: Add reviewer specialist subagents (silent-failure, test, comment, type-design, security, simplifier)
     points: 3
     status: done
     repos: pennyfarthing
     pr: 1324
-    branch: feat/MSSCI-16335-reviewer-specialist-subagents
-  - id: MSSCI-16336
-    jira: MSSCI-16336
+    branch: feat/PROJ-16335-reviewer-specialist-subagents
+  - id: PROJ-16336
+    jira: PROJ-16336
     title: Upgrade pipeline replay benchmark to exercise full PF machinery
     points: 3
     status: done
     repos: pennyfarthing
     pr: 1326
-    branch: feat/MSSCI-16336-pipeline-replay-pf-machinery
-  - id: MSSCI-16346
-    jira: MSSCI-16346
+    branch: feat/PROJ-16336-pipeline-replay-pf-machinery
+  - id: PROJ-16346
+    jira: PROJ-16346
     title: Add spec deviation tracking to agent session output
     points: 3
     status: done
     repos: pennyfarthing
     pr: 1331
-    branch: feat/MSSCI-16346-spec-deviation-tracking
-  - id: MSSCI-16347
-    jira: MSSCI-16347
+    branch: feat/PROJ-16346-spec-deviation-tracking
+  - id: PROJ-16347
+    jira: PROJ-16347
     title: Implement stacked PR depends_on field and Graphite health check
     points: 3
     status: done
     repos: pennyfarthing
-    branch: feat/MSSCI-16347-stacked-pr-depends-on
+    branch: feat/PROJ-16347-stacked-pr-depends-on
     review_verdict: approved
     completed: '2026-03-12'
-  - id: MSSCI-16432
-    jira: MSSCI-16432
+  - id: PROJ-16432
+    jira: PROJ-16432
     title: Enhance Architect spec-check with mismatch taxonomy
     points: 2
     status: done
     repos: pennyfarthing
     pr: 1393
-    branch: feat/MSSCI-16432-architect-spec-check
-  - id: MSSCI-16440
-    jira: MSSCI-16440
+    branch: feat/PROJ-16432-architect-spec-check
+  - id: PROJ-16440
+    jira: PROJ-16440
     title: Update Jira label from pennyfarthing to product-pennyfarthing
     points: 2
     status: done
     repos: pennyfarthing
     pr: 1395
-    branch: feat/MSSCI-16440-jira-label-update
+    branch: feat/PROJ-16440-jira-label-update
     completed: '2026-03-13'
