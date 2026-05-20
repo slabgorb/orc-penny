@@ -10,9 +10,11 @@ stories:
     title: sm-setup writes session files to .session/ (not sprint/); migrate legacy session files
     points: 2
     priority: p0
-    status: backlog
+    status: done
+    started: '2026-05-20'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-05-20'
     type: bug
   - id: 153-2
     title: Skip branch creation on orchestrator (main-only) repos during story setup and finish
