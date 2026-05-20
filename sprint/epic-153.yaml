@@ -30,9 +30,67 @@ stories:
     repos: pennyfarthing
     workflow: tdd
   - id: 153-4
-    title: pf sprint story remove fails to locate stories in epic shard files — only searches top-level index
+    title: 'pf sprint story remove/update/finish all fail to locate stories in epic shard files — same root cause (BLOCKING: breaks SM finish ceremony)'
+    description: |
+      `pf sprint story add` and `pf sprint epic show` read/write epic shard files
+      (`sprint/epic-*.yaml`) correctly, but three other commands fail with
+      "Story 'X' not found in epics, standalone_stories, or stories":
+
+      - `pf sprint story remove <id>`
+      - `pf sprint story update <id> --<field> <value>`
+      - `pf sprint story finish <id>` — fails with "yaml-update step failed during
+        finish: Story X not found in sprint YAML"
+
+      Most painful: `finish`. It blocks the entire SM finish ceremony — no Jira
+      transition, no PR merge step, no session archival. All-or-nothing with no
+      recovery hook. Workaround: direct-edit the shard YAML.
+
+      Repro:
+        mkdir /tmp/pf-bug && cd /tmp/pf-bug
+        mkdir sprint && cat > sprint/current-sprint.yaml <<EOF
+        sprint: {number: 1, goal: test, start_date: 2026-01-01, end_date: 2026-01-14, status: active}
+        epics: []
+        EOF
+        pf sprint epic add E "Test epic" --priority p1
+        pf sprint story add E "Story one" 1
+        pf sprint story remove E-1                  # → "not found"
+        pf sprint story update E-1 --status done    # → "not found"
+        pf sprint story finish E-1                  # → "not found in sprint YAML"
+        pf sprint epic show E                       # → works fine
+    points: 5
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 153-5
+    title: TEA/SM workflow references missing CLI surface — pf check command and pf validate context-story validator don't exist
     points: 2
     priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 153-6
+    title: sm-setup doesn't create sprint/context/context-story-{ID}.md but TEA on-activation expects it — gate sm-setup-exit doesn't enforce; either create or stop requiring
+    points: 3
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 153-7
+    title: Cyclist sprint-yaml PostToolUse hook crashes — node yaml package unresolvable; switch to PyYAML or detect-and-skip when module missing
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 153-8
+    title: DX bundle — pf sprint story update --title, error messages list candidate IDs on not-found, --brief agent activation mode, document auto-PR behavior on git push
+    points: 3
+    priority: p3
     status: backlog
     repos: pennyfarthing
     workflow: tdd

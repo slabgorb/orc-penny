@@ -12,6 +12,7 @@ completed_epics:
   - PROJ-16293
   - PROJ-16405
   - PROJ-16551
+  - '152'
 completed_stories:
   - id: 47-1
     epic: PROJ-16293
@@ -143,3 +144,13 @@ completed_stories:
     title: Reviewer specialist subagents should default to sonnet, not haiku
     points: 1
     completed: '2026-03-19'
+  - id: 152-1
+    epic: '152'
+    title: Remove PROJ hardcoding — config-driven project key with fail-loud, scrub templates and docs
+    points: 5
+    completed: '2026-05-11'
+  - id: 152-2
+    epic: '152'
+    title: Gate jira-cli lookups on jira.enabled config; skip assignee lookup for non-jira stories
+    points: 3
+    completed: '2026-05-20'
