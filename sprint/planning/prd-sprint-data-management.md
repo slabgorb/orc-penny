@@ -103,7 +103,7 @@ Deterministic YAML output
 
 **Flow:**
 1. Validate epic exists
-2. Generate next story ID (MSSCI-XXXXX from Jira or local sequence)
+2. Generate next story ID (PROJ-XXXXX from Jira or local sequence)
 3. Create properly formatted YAML block
 4. Insert at correct position under epic
 5. Validate entire file
@@ -115,7 +115,7 @@ Deterministic YAML output
 **Goal:** Mark story as done
 
 ```bash
-/sprint story update MSSCI-14211 --status done --completed 2026-02-04
+/sprint story update PROJ-14211 --status done --completed 2026-02-04
 ```
 
 **Flow:**

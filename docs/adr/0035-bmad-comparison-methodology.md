@@ -3,7 +3,7 @@
 **Status:** Accepted
 **Date:** 2026-03-10
 **Author:** Dev (Reverend Mother Gaius Helen Mohiam)
-**Epic:** 142 (MSSCI-16324)
+**Epic:** 142 (PROJ-16324)
 
 ## Context
 

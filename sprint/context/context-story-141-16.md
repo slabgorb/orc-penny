@@ -62,7 +62,7 @@ cd pennyfarthing/pennyfarthing-dist/src && python -m pytest pf/tests/ -x
 - Adding `--json` to commands not listed above (e.g., `pf sprint status`, `pf workflow list`, `pf theme list`)
 - Changing any human-readable (non-`--json`) output format of any existing command
 - Adding a `pf story info` alias (the command is `pf sprint story show`; the description's shorthand is informal)
-- Jira URL generation in the CLI — TypeScript hardcodes `https://1898andco.atlassian.net/browse`; if the Jira base URL belongs in the CLI output, that is deferred to 141-17 when the TypeScript replacement is done
+- Jira URL generation in the CLI — TypeScript hardcodes `https://slabgorb.atlassian.net/browse`; if the Jira base URL belongs in the CLI output, that is deferred to 141-17 when the TypeScript replacement is done
 - Schema validation or JSON Schema files — docstring-level documentation is sufficient for this story
 - Changes to `packages/core` or `packages/cyclist` TypeScript files
 

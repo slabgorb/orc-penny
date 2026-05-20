@@ -11,7 +11,7 @@ stories:
     points: 2
     priority: p1
     status: done
-    assigned_to: keith.avery@1898andco.io
+    assigned_to: keith.avery@slabgorb.io
     started: '2026-03-09'
     repos: pennyfarthing
     workflow: trivial
@@ -23,7 +23,7 @@ stories:
     points: 3
     priority: p2
     status: done
-    assigned_to: keith.avery@1898andco.io
+    assigned_to: keith.avery@slabgorb.io
     started: '2026-03-09'
     repos: pennyfarthing
     workflow: trivial

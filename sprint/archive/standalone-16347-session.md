@@ -1,15 +1,15 @@
 ---
-story_id: "MSSCI-16347"
-jira_key: "MSSCI-16347"
+story_id: "PROJ-16347"
+jira_key: "PROJ-16347"
 epic: null
 workflow: "trivial"
 ---
 
-# Story MSSCI-16347: Implement stacked PR depends_on field and Graphite health check
+# Story PROJ-16347: Implement stacked PR depends_on field and Graphite health check
 
 ## Story Details
-- **ID:** MSSCI-16347
-- **Jira Key:** MSSCI-16347
+- **ID:** PROJ-16347
+- **Jira Key:** PROJ-16347
 - **Workflow:** trivial
 - **Stack Parent:** none
 
@@ -90,13 +90,13 @@ No upstream findings.
 - `pf/git/repos.py` - Added check_stack_tool_health() for Graphite CLI
 
 **Tests:** Imports verified, no regressions
-**Branch:** feat/MSSCI-16347-stacked-pr-depends-on (pushed)
+**Branch:** feat/PROJ-16347-stacked-pr-depends-on (pushed)
 
 **Handoff:** To Leto II (Reviewer) for code review
 
 ## SM Assessment
 
-**Story:** MSSCI-16347 — Implement stacked PR depends_on field and Graphite health check
+**Story:** PROJ-16347 — Implement stacked PR depends_on field and Graphite health check
 **Workflow:** trivial (setup → implement → review → finish)
 **Routing:** Dev (Reverend Mother) for implementation
 

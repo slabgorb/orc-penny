@@ -30,7 +30,7 @@ classification:
 
 **Author:** Keith Avery
 **Date:** 2026-03-12
-**Source:** [GitHub Issue #1332](https://github.com/1898andCo/pennyfarthing/issues/1332)
+**Source:** [GitHub Issue #1332](https://github.com/slabgorb/pennyfarthing/issues/1332)
 **Classification:** CLI Tool / Developer Tooling | DX / Build Infrastructure | Medium complexity | Brownfield
 
 ## Executive Summary

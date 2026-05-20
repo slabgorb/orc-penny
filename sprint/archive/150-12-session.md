@@ -1,14 +1,14 @@
 ---
 story_id: "150-12"
-jira_key: "MSSCI-16564"
-epic: "MSSCI-16564"
+jira_key: "PROJ-16564"
+epic: "PROJ-16564"
 workflow: "tdd"
 ---
 # Story 150-12: Audit in_review flow — spelling consistency and transition gating
 
 ## Story Details
 - **ID:** 150-12
-- **Jira Key:** MSSCI-16564
+- **Jira Key:** PROJ-16564
 - **Workflow:** tdd
 - **Repos:** pennyfarthing
 - **Branch:** feat/150-12-in-review-audit

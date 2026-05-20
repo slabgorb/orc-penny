@@ -1,15 +1,15 @@
 # BMAD vs Pennyfarthing Pipeline Comparison Report
 
 **Date:** 2026-03-10
-**Epic:** 142 (MSSCI-16324)
-**Story:** 142-6 (MSSCI-16330)
+**Epic:** 142 (PROJ-16324)
+**Story:** 142-6 (PROJ-16330)
 **Methodology:** ADR-0035
 
 ## Executive Summary
 
 We ran the DPGD-116 Peloton scenario through both the BMAD (v6.0.4) and Pennyfarthing pipelines, scored by the same multi-judge consensus method against identical ground truth. **Neither pipeline demonstrates statistically significant superiority over the other at the aggregate level.** BMAD's mean weighted score (55.7%) is slightly higher than PF control (49.9%), but with wide confidence intervals and p=0.40, this difference is indistinguishable from noise.
 
-The more interesting finding: **the heatmap revealed a specific technique BMAD does better** — mechanical edge-case path enumeration in the reviewer phase. BMAD's reviewer caught I5 and I6 (test-quality findings) at 60% vs PF's 36%/18%, and I3 at 20% vs PF's 0%. This led directly to the `reviewer-edge-hunter` subagent (MSSCI-16333), which absorbs BMAD's orthogonal review approach into PF's pipeline. The PF version tag `baseline-pre-edge-hunter` marks the before state.
+The more interesting finding: **the heatmap revealed a specific technique BMAD does better** — mechanical edge-case path enumeration in the reviewer phase. BMAD's reviewer caught I5 and I6 (test-quality findings) at 60% vs PF's 36%/18%, and I3 at 20% vs PF's 0%. This led directly to the `reviewer-edge-hunter` subagent (PROJ-16333), which absorbs BMAD's orthogonal review approach into PF's pipeline. The PF version tag `baseline-pre-edge-hunter` marks the before state.
 
 Additionally, **PF's persona system unlocks significant variance.** Two PF personas (princess-bride, dune) significantly outperform both PF control and BMAD, suggesting agent instruction tuning matters more than framework architecture.
 
@@ -140,7 +140,7 @@ The comparison's primary value was not picking a winner — it was identifying a
 
 BMAD's reviewer instructions explicitly demand exhaustive path enumeration: "find 3-10 specific issues minimum," walking every branch, guard, and boundary condition mechanically. PF's reviewer is attitude-driven — adversarial judgment that relies on intuition and experience. The heatmap showed BMAD's mechanical approach catches edge-case findings (I5, I6, I3) that PF's reviewer misses.
 
-### The Fix: `reviewer-edge-hunter` Subagent (MSSCI-16333)
+### The Fix: `reviewer-edge-hunter` Subagent (PROJ-16333)
 
 Rather than changing PF's reviewer personality, we separated concerns:
 
@@ -168,7 +168,7 @@ The PF version `baseline-pre-edge-hunter` marks the before state. Re-running DPG
 
 2. **The heatmap revealed a specific, actionable gap.** BMAD's mechanical path enumeration catches edge-case findings (I5: 60% vs 36%, I6: 60% vs 18%, I3: 20% vs 0%) that PF's attitude-driven reviewer misses. This is the most valuable finding of the comparison.
 
-3. **The gap has been closed architecturally.** The `reviewer-edge-hunter` subagent (MSSCI-16333) absorbs BMAD's orthogonal review technique into PF's pipeline without replacing PF's adversarial reviewer strengths. Validation runs pending.
+3. **The gap has been closed architecturally.** The `reviewer-edge-hunter` subagent (PROJ-16333) absorbs BMAD's orthogonal review technique into PF's pipeline without replacing PF's adversarial reviewer strengths. Validation runs pending.
 
 4. **PF's persona system is the larger differentiator.** Top PF personas (princess-bride: 68.3%, dune: 61.5%) significantly outperform both PF control and BMAD, suggesting agent instruction tuning matters more than framework architecture.
 
@@ -185,4 +185,4 @@ The PF version `baseline-pre-edge-hunter` marks the before state. Re-running DPG
 
 ---
 
-*Generated from Peloton benchmark replay data. BMAD source pinned to commit `b7315c6e329e`. PF version: baseline-pre-edge-hunter (v12.7.0). All scoring via multi-judge majority vote with Claude Opus 4.6. Process improvement (`reviewer-edge-hunter`) shipped as MSSCI-16333.*
+*Generated from Peloton benchmark replay data. BMAD source pinned to commit `b7315c6e329e`. PF version: baseline-pre-edge-hunter (v12.7.0). All scoring via multi-judge majority vote with Claude Opus 4.6. Process improvement (`reviewer-edge-hunter`) shipped as PROJ-16333.*

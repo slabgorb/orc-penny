@@ -4,13 +4,13 @@
 
 Import all BMAD workflows into Pennyfarthing's BikeLane stepped workflow system. Goal: full BMAD compatibility - any BMAD workflow should run unchanged in Pennyfarthing.
 
-**Epic Jira:** MSSCI-12131
+**Epic Jira:** PROJ-12131
 **Source:** `~/Projects/BMAD-METHOD/src/modules/bmm/workflows/`
 **Target:** `pennyfarthing-dist/workflows/`
 
 ## Technical Landscape
 
-### Completed Foundation (Epic MSSCI-12060)
+### Completed Foundation (Epic PROJ-12060)
 
 Epic 50 (Stepped Workflow Support) is complete. We now have:
 
@@ -23,7 +23,7 @@ Epic 50 (Stepped Workflow Support) is complete. We now have:
 7. **Tri-modal support** - create/validate/edit modes
 8. **Example workflow** - Architecture workflow with 7 steps
 
-### Migration Script (MSSCI-12132 - Complete)
+### Migration Script (PROJ-12132 - Complete)
 
 `pennyfarthing-dist/scripts/migrate-bmad-workflow.mjs` handles:
 - Parse BMAD `workflow.md` with YAML frontmatter
@@ -108,20 +108,20 @@ workflow:
 
 | Priority | Story | Title | Points |
 |----------|-------|-------|--------|
-| P0 | MSSCI-12133 | Import PRD workflow (all 3 modes) | 5 |
-| P0 | MSSCI-12134 | Import Product Brief workflow | 2 |
-| P0 | MSSCI-12135 | Import Research workflow | 2 |
-| P1 | MSSCI-12136 | Enhance Architecture workflow from BMAD | 2 |
-| P1 | MSSCI-12137 | Import Epics-and-Stories workflow | 3 |
-| P1 | MSSCI-12138 | Import Implementation Readiness workflow | 2 |
-| P1 | MSSCI-12139 | Import UX Design workflow | 3 |
-| P2 | MSSCI-12140 | Import Dev-Story workflow | 3 |
-| P2 | MSSCI-12141 | Import Sprint Planning workflow | 2 |
-| P2 | MSSCI-12142 | Import Retrospective workflow | 2 |
-| P2 | MSSCI-12143 | Import Code Review workflow | 2 |
-| P2 | MSSCI-12144 | Import Brainstorming workflow | 2 |
-| P2 | MSSCI-12145 | Import Project Context workflow | 2 |
-| P2 | MSSCI-12146 | BMAD compatibility validation suite | 3 |
+| P0 | PROJ-12133 | Import PRD workflow (all 3 modes) | 5 |
+| P0 | PROJ-12134 | Import Product Brief workflow | 2 |
+| P0 | PROJ-12135 | Import Research workflow | 2 |
+| P1 | PROJ-12136 | Enhance Architecture workflow from BMAD | 2 |
+| P1 | PROJ-12137 | Import Epics-and-Stories workflow | 3 |
+| P1 | PROJ-12138 | Import Implementation Readiness workflow | 2 |
+| P1 | PROJ-12139 | Import UX Design workflow | 3 |
+| P2 | PROJ-12140 | Import Dev-Story workflow | 3 |
+| P2 | PROJ-12141 | Import Sprint Planning workflow | 2 |
+| P2 | PROJ-12142 | Import Retrospective workflow | 2 |
+| P2 | PROJ-12143 | Import Code Review workflow | 2 |
+| P2 | PROJ-12144 | Import Brainstorming workflow | 2 |
+| P2 | PROJ-12145 | Import Project Context workflow | 2 |
+| P2 | PROJ-12146 | BMAD compatibility validation suite | 3 |
 
 ## Testing Strategy
 

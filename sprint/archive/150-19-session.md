@@ -1,6 +1,6 @@
 ---
 story_id: "150-19"
-epic: MSSCI-16564
+epic: PROJ-16564
 workflow: tdd
 repos:
   - pennyfarthing

@@ -45,7 +45,7 @@ workflowType: 'prd'
 
 ## Executive Summary
 
-Pennyfarthing inherited the concept of epic and story context documents from BMAD, where they provide structured technical context that downstream agents (TEA, Dev) consume during implementation. In Pennyfarthing, ~120 context files exist in `sprint/context/` but creation is entirely ad-hoc — no templates, no enforcement, inconsistent quality. Two bugs in the existing context-checking code (`checkStoryContext` uses a legacy filename pattern, `checkEpicContext` fails for MSSCI-keyed epics) mean the Cyclist sprint panel never accurately reflects context status.
+Pennyfarthing inherited the concept of epic and story context documents from BMAD, where they provide structured technical context that downstream agents (TEA, Dev) consume during implementation. In Pennyfarthing, ~120 context files exist in `sprint/context/` but creation is entirely ad-hoc — no templates, no enforcement, inconsistent quality. Two bugs in the existing context-checking code (`checkStoryContext` uses a legacy filename pattern, `checkEpicContext` fails for PROJ-keyed epics) mean the Cyclist sprint panel never accurately reflects context status.
 
 This PRD defines a formalized context creation system: a `/pf-context create` skill that generates context documents via PM+Architect or PM+UX-Designer tandem sessions, a schema validator that checks structure and content, and gate updates that enforce context existence before story work begins. TEA consumes context as primary input for test strategy.
 
@@ -70,7 +70,7 @@ This PRD defines a formalized context creation system: a `/pf-context create` sk
 ### Technical Success
 
 - Gate validates both epic context (`context-epic-{N}.md`) and story context (`context-story-{N-N}.md`) existence and required sections
-- Two existing bugs fixed: `checkStoryContext` legacy filename pattern, `checkEpicContext` MSSCI-key regex
+- Two existing bugs fixed: `checkStoryContext` legacy filename pattern, `checkEpicContext` PROJ-key regex
 - Architect agent performs quality review of generated context before gate passes
 - Context creation integrates with existing skill invocation infrastructure
 - Tandem configuration reuses existing tandem protocol infrastructure — no new plumbing
@@ -276,7 +276,7 @@ Single template with optional sections controlled by `sections:` frontmatter fie
 ### Bug Fixes
 
 - **FR25:** `checkStoryContext` can correctly identify story context files using the `context-story-{N-N}.md` naming convention
-- **FR26:** `checkEpicContext` can correctly identify epic context files for MSSCI-keyed epics
+- **FR26:** `checkEpicContext` can correctly identify epic context files for PROJ-keyed epics
 
 ## Non-Functional Requirements
 

@@ -1,4 +1,4 @@
-# Epic 76: Sprint Data Management System (MSSCI-14253)
+# Epic 76: Sprint Data Management System (PROJ-14253)
 
 ## Overview
 
@@ -120,7 +120,7 @@ cd pennyfarthing && python -m pytest pennyfarthing_scripts/tests/ -v
 ## Story Breakdown
 
 ### 76-1: Core yaml_io module (5 pts, P0, TDD)
-**Jira:** MSSCI-14254
+**Jira:** PROJ-14254
 
 Foundation module. Everything else depends on this.
 
@@ -142,7 +142,7 @@ Foundation module. Everything else depends on this.
 ---
 
 ### 76-2: Sprint validate command (3 pts, P0, TDD)
-**Jira:** MSSCI-14255
+**Jira:** PROJ-14255
 
 CLI command wrapping existing `validator.py` + new format validation.
 
@@ -166,7 +166,7 @@ CLI command wrapping existing `validator.py` + new format validation.
 ---
 
 ### 76-3: Sprint story add command (3 pts, P0, TDD)
-**Jira:** MSSCI-14256
+**Jira:** PROJ-14256
 
 Add stories to sprint YAML programmatically.
 
@@ -189,7 +189,7 @@ Add stories to sprint YAML programmatically.
 ---
 
 ### 76-4: Sprint story update command (2 pts, P1, TDD)
-**Jira:** MSSCI-14257
+**Jira:** PROJ-14257
 
 Update story fields by ID.
 
@@ -212,7 +212,7 @@ Update story fields by ID.
 ---
 
 ### 76-5: Pre-commit hook for YAML validation (2 pts, P1, trivial)
-**Jira:** MSSCI-14258
+**Jira:** PROJ-14258
 
 Git hook that validates sprint YAML before commit.
 
@@ -233,7 +233,7 @@ Git hook that validates sprint YAML before commit.
 ---
 
 ### 76-6: Migrate existing YAML files (2 pts, P1, trivial)
-**Jira:** MSSCI-14259
+**Jira:** PROJ-14259
 
 Run `--fix` on all existing files to canonicalize format.
 
@@ -284,7 +284,7 @@ Run `--fix` on all existing files to canonicalize format.
 
 Detailed context for each remaining story lives in separate files:
 
-- [`context-MSSCI-14256.md`](context-MSSCI-14256.md) — 76-3: Sprint story add command
-- [`context-MSSCI-14257.md`](context-MSSCI-14257.md) — 76-4: Sprint story update command
-- [`context-MSSCI-14258.md`](context-MSSCI-14258.md) — 76-5: Pre-commit hook for YAML validation
-- [`context-MSSCI-14259.md`](context-MSSCI-14259.md) — 76-6: Migrate existing YAML files to canonical format
+- [`context-PROJ-14256.md`](context-PROJ-14256.md) — 76-3: Sprint story add command
+- [`context-PROJ-14257.md`](context-PROJ-14257.md) — 76-4: Sprint story update command
+- [`context-PROJ-14258.md`](context-PROJ-14258.md) — 76-5: Pre-commit hook for YAML validation
+- [`context-PROJ-14259.md`](context-PROJ-14259.md) — 76-6: Migrate existing YAML files to canonical format

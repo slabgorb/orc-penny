@@ -52,10 +52,10 @@ suits their content and audience.
 
 | Repository | Org | GitHub Default | Has `main` | Has `develop` | Most-Used Branch | Proposed Default | Change Required |
 |---|---|---|---|---|---|---|---|
-| **pennyfarthing-orchestrator** | 1898andCo | `develop` | Yes | Yes | `main` (direct pushes + PRs) | `main` | Set default to `main`, delete `develop` |
-| **conductor-orchestrator** | 1898andCo | `develop` | Yes | Yes | `develop` (direct pushes + PRs) | `main` | FF `main` to `develop`, set default, delete `develop` |
-| **clip-orchestrator** | 1898andCo | `develop` | **No** | Yes | `develop` (only branch) | `main` | Rename `develop` → `main`, set default |
-| **poller-orchestrator** | 1898andCo | `main` | Yes | No | `main` | `main` | None |
+| **pennyfarthing-orchestrator** | slabgorb | `develop` | Yes | Yes | `main` (direct pushes + PRs) | `main` | Set default to `main`, delete `develop` |
+| **conductor-orchestrator** | slabgorb | `develop` | Yes | Yes | `develop` (direct pushes + PRs) | `main` | FF `main` to `develop`, set default, delete `develop` |
+| **clip-orchestrator** | slabgorb | `develop` | **No** | Yes | `develop` (only branch) | `main` | Rename `develop` → `main`, set default |
+| **poller-orchestrator** | slabgorb | `main` | Yes | No | `main` | `main` | None |
 | **bmad-orc** | arcaven | `main` | Yes | No | `main` | `main` | None |
 | **i-orc** | arcaven | `main` | Yes | No | `main` | `main` | None |
 
@@ -71,7 +71,7 @@ at all — it just needs a rename.
 
 ## Supporting Statistics
 
-### pennyfarthing-orchestrator (1898andCo)
+### pennyfarthing-orchestrator (slabgorb)
 
 | Metric | Value |
 |--------|-------|
@@ -106,7 +106,7 @@ Sprint tracking:  pushed directly to main → develop never updated
 Feature work:     branch → PR → develop → merged to main → develop never synced back
 ```
 
-### conductor-orchestrator (1898andCo)
+### conductor-orchestrator (slabgorb)
 
 | Metric | Value |
 |--------|-------|
@@ -128,7 +128,7 @@ touched in two months. 263 commits sit on `develop` that have never been promote
 develop→main promotion step simply isn't happening because there is no meaningful gate
 for sprint tracking content.
 
-### clip-orchestrator (1898andCo)
+### clip-orchestrator (slabgorb)
 
 | Metric | Value |
 |--------|-------|
@@ -140,7 +140,7 @@ for sprint tracking content.
 
 Small repo, only `develop` exists. No `main` at all. Needs a rename rather than a merge.
 
-### poller-orchestrator (1898andCo) — already compliant
+### poller-orchestrator (slabgorb) — already compliant
 
 | Metric | Value |
 |--------|-------|
@@ -328,7 +328,7 @@ different needs. This proposal applies only to the orchestrator layer.
 
 #### Context
 
-The 1898andCo organization operates several orchestrator-pattern repositories that
+The slabgorb organization operates several orchestrator-pattern repositories that
 coordinate work across child software repos. These orchestrator repos contain sprint
 tracking YAML, planning documents, session artifacts, and coordination configuration —
 not compiled software.

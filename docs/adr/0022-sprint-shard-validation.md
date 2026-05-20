@@ -12,9 +12,9 @@ Epics 94-97 were created by the `epics-and-stories` stepped workflow, promoted t
 
 3. **Loader silently drops unresolvable refs.** `_merge_epic_shards()` in `loader.py` skips refs that don't resolve to files without any warning. Sprint showed 29 stories when 51 existed — nearly half invisible.
 
-4. **Jira sync created duplicates.** Epic 94 was synced to Jira twice (MSSCI-14659 and MSSCI-14662) because there was no idempotency check — the `jira:` field was absent, so each sync looked like a fresh create.
+4. **Jira sync created duplicates.** Epic 94 was synced to Jira twice (PROJ-14659 and PROJ-14662) because there was no idempotency check — the `jira:` field was absent, so each sync looked like a fresh create.
 
-5. **Reference format inconsistency.** `current-sprint.yaml` had both `MSSCI-14510` (works) and `epic-94` (broken). No validator catches that `epic-94` resolves to `epic-epic-94.yaml`.
+5. **Reference format inconsistency.** `current-sprint.yaml` had both `PROJ-14510` (works) and `epic-94` (broken). No validator catches that `epic-94` resolves to `epic-epic-94.yaml`.
 
 6. **Stale completed session.** The workflow session sat at 100% complete but wasn't archived, blocking SM from picking up new work.
 
@@ -58,7 +58,7 @@ REQUIRED_SHARD_STORY_FIELDS = {"id", "title", "points", "status"}
 Validations:
 - `id` must NOT start with `epic-` (that's a reference prefix, not an ID value)
 - `id` should be `epic-{N}` where N is numeric — but the value stored should be this full string (the `_get_epic_ref` strips it)
-- If `jira` present, must match `MSSCI-\d{5}`
+- If `jira` present, must match `PROJ-\d{5}`
 - `stories` must be a list
 - Each story must have required fields
 - No duplicate story IDs within the epic
@@ -84,10 +84,10 @@ def normalize_epic_ref(epic: Mapping) -> str:
 ```
 
 Rules:
-- If `jira:` present and valid → use Jira key (e.g., `MSSCI-14659`)
+- If `jira:` present and valid → use Jira key (e.g., `PROJ-14659`)
 - If `id` is `epic-94` → extract `94`, return `94` (file becomes `epic-94.yaml`)
 - If `id` is `94` → return `94`
-- If `id` is `MSSCI-14659` → return `MSSCI-14659`
+- If `id` is `PROJ-14659` → return `PROJ-14659`
 - Reject `id` values that would create double-prefix filenames
 
 ### 3. Loader Warnings (Detective)

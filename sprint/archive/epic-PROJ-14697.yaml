@@ -1,0 +1,156 @@
+id: '98'
+type: epic
+title: Safe Install, Upgrade, and Namespace Isolation
+description: 'Install experience v2: fix uninstall data loss, settings symlink crash, add hook chaining, cleanup compat symlinks, remove dead code'
+priority: p1
+status: done
+repos: pennyfarthing
+jira: PROJ-14697
+stories:
+  - id: 98-9
+    jira: PROJ-15064
+    title: Fix uninstall data loss — replace rmSync with cleanManagedEntries for commands and skills
+    points: 2
+    priority: p0
+    status: done
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-02-14'
+    type: bug
+  - id: 98-10
+    jira: PROJ-15065
+    title: Fix settings symlink crash on existing real file
+    points: 2
+    priority: p0
+    status: done
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-02-14'
+    type: bug
+  - id: 98-11
+    jira: PROJ-15066
+    title: Settings.local.json shared merge model for multi-framework coexistence
+    points: 5
+    priority: p1
+    status: done
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-14'
+  - id: 98-12
+    jira: PROJ-15067
+    title: Git hook chaining with .d/ dispatcher pattern
+    points: 3
+    priority: p1
+    status: done
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-14'
+  - id: 98-13
+    jira: PROJ-15068
+    title: Cleanup migration for backward-compat symlinks
+    points: 2
+    priority: p2
+    status: done
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-02-15'
+    type: chore
+  - id: 98-14
+    jira: PROJ-15069
+    title: Remove dead copy-mode code paths
+    points: 2
+    priority: p2
+    status: done
+    started: '2026-02-14'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: "2026-02-14"
+    type: refactor
+  - id: 98-15
+    jira: PROJ-15073
+    title: Remove TTY panel and node-pty dependency
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    workflow: tdd
+    completed: '2026-02-14'
+    type: refactor
+  - id: 98-16
+    jira: PROJ-15074
+    title: Absorb @pennyfarthing/shared and @pennyfarthing/benchmark into core
+    points: 3
+    priority: p1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    workflow: tdd
+    completed: '2026-02-14'
+    type: refactor
+  - id: 98-17
+    jira: PROJ-15075
+    title: Move Cyclist web server and API layer into core
+    points: 8
+    priority: p1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-14'
+    workflow: tdd
+    completed: '2026-02-14'
+    type: refactor
+  - id: 98-18
+    jira: PROJ-15076
+    title: Move React UI build and static assets into core
+    points: 5
+    priority: p1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-14'
+    workflow: tdd
+    completed: '2026-02-14'
+    type: refactor
+  - id: 98-19
+    jira: PROJ-15077
+    title: Add pennyfarthing web and pennyfarthing bikerack CLI commands with lazy loading
+    points: 3
+    priority: p1
+    status: canceled
+    workflow: tdd
+    notes: Canceled per user request 2026-02-14
+  - id: 98-20
+    jira: PROJ-15078
+    title: Extract Electron shell to packages/electron with BikeShow entry point
+    points: 5
+    priority: p2
+    status: done
+    workflow: tdd
+    completed: '2026-02-16'
+    type: refactor
+  - id: 98-21
+    jira: PROJ-15079
+    title: Standalone Electron distribution via GitHub releases
+    points: 3
+    priority: p2
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    workflow: tdd
+    completed: '2026-02-16'
+  - id: 98-22
+    jira: PROJ-15080
+    title: v11 migration automation — detect and remove old multi-package installs
+    points: 3
+    priority: p1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-15'
+    workflow: tdd
+    completed: '2026-02-15'
+  - id: 98-23
+    jira: PROJ-15132
+    title: Implement real OTLP integrations for core server stubs
+    points: 5
+    priority: p2
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    workflow: tdd
+    completed: '2026-02-16'
+completed: '2026-02-21'

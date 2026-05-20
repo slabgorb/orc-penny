@@ -16,7 +16,7 @@ This story represents a TUI entry point refactoring to standardize how the BikeR
 - Simplifying entry points in `pennyfarthing_scripts/bikerack/`
 - Ensuring `pf bikerack start` correctly initializes the TUI
 
-See `sprint/epic-MSSCI-14951.yaml` for full story definition.
+See `sprint/epic-PROJ-14951.yaml` for full story definition.
 
 ## Technical Context
 

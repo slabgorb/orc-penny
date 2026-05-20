@@ -2,7 +2,7 @@
 
 ## Story Details
 - **ID:** 132-5
-- **Epic:** 132 (MSSCI-15765) — Release Workflow Hardening (11.x Followup)
+- **Epic:** 132 (PROJ-15765) — Release Workflow Hardening (11.x Followup)
 - **Type:** bug
 - **Priority:** p0
 - **Points:** 2
@@ -17,7 +17,7 @@ Sprint metrics are not counting archived stories from the current sprint. The is
 - The archive file is being counted in the "all-time" bucket instead of current sprint totals
 - Both TUI Sprint panel and `pf sprint metrics` show wrong numbers
 
-Related work: Story MSSCI-15763 "Move sprint calculations to backend" recently completed, so the calculation logic is now in the WheelHub API routes or core package.
+Related work: Story PROJ-15763 "Move sprint calculations to backend" recently completed, so the calculation logic is now in the WheelHub API routes or core package.
 
 ## Workflow Tracking
 **Workflow:** trivial
@@ -61,4 +61,4 @@ Related work: Story MSSCI-15763 "Move sprint calculations to backend" recently c
 **Handoff:** To SM for finish-story
 
 ## SM Assessment (setup → implement)
-**Bug:** Sprint totals exclude 356 points / 145 stories from `sprint/archive/sprint-2608-completed.yaml`. The archive is counted under "all-time" (707 archived) instead of current sprint done. Both CLI `pf sprint metrics` and TUI Sprint panel show ~32 pts done when the real number is ~388. The calculation logic was recently moved to the backend (MSSCI-15763) so the fix is in the core package sprint calculation code. Trivial workflow — Dev implements and reviews.
+**Bug:** Sprint totals exclude 356 points / 145 stories from `sprint/archive/sprint-2608-completed.yaml`. The archive is counted under "all-time" (707 archived) instead of current sprint done. Both CLI `pf sprint metrics` and TUI Sprint panel show ~32 pts done when the real number is ~388. The calculation logic was recently moved to the backend (PROJ-15763) so the fix is in the core package sprint calculation code. Trivial workflow — Dev implements and reviews.

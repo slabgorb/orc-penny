@@ -1,15 +1,15 @@
 ---
 story_id: "148-20"
-jira_key: "MSSCI-16421"
-epic: "MSSCI-16421"
+jira_key: "PROJ-16421"
+epic: "PROJ-16421"
 workflow: "trivial"
 ---
 # Story 148-20: Peloton skill loops without loading in consumer projects
 
 ## Story Details
 - **ID:** 148-20
-- **Jira Key:** MSSCI-16421
-- **Epic:** MSSCI-16421
+- **Jira Key:** PROJ-16421
+- **Epic:** PROJ-16421
 - **Workflow:** trivial
 - **Stack Parent:** none
 

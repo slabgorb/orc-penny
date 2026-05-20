@@ -10,15 +10,15 @@
 Pennyfarthing inherited epic and story context documents from BMAD. ~120 context files exist in `sprint/context/` but creation is entirely ad-hoc — no templates, no enforcement, inconsistent quality. Two bugs in the existing context-checking code mean the Cyclist sprint panel never accurately reflects context status:
 
 1. **`checkStoryContext` (sprint-data.ts:198-201):** Looks for `{storyId}-context.md` but actual files use `context-story-{N-N}.md`. Every story context check returns false.
-2. **`checkEpicContext` (sprint-data.ts:187-193):** Regex `\d+` fails for MSSCI-keyed epics. MSSCI epic context always returns false.
+2. **`checkEpicContext` (sprint-data.ts:187-193):** Regex `\d+` fails for PROJ-keyed epics. PROJ epic context always returns false.
 
 Three separate context-checking implementations exist today, none correct for all cases:
 
 | Location | Bugs |
 |----------|------|
 | `sprint-data.ts:checkStoryContext()` | Wrong filename pattern |
-| `sprint-data.ts:checkEpicContext()` | MSSCI regex failure |
-| `generic-sm-setup.ts:checkEpicContext()` | Works for numeric, untested for MSSCI |
+| `sprint-data.ts:checkEpicContext()` | PROJ regex failure |
+| `generic-sm-setup.ts:checkEpicContext()` | Works for numeric, untested for PROJ |
 
 The correct implementation exists in Python (`story_detail_data.py:177-208`) but is only used by BikeRack story detail, not by gates or Cyclist.
 
@@ -114,7 +114,7 @@ TEA Agent (RED phase)
 | Context Validator CLI | `pf context-docs validate {type} {id}` — exit 0/1/2 + YAML stdout | `pf/context_docs/cli.py` |
 | `/pf-context` Skill | Orchestrates creation: PM primary + tandem backseat | `pennyfarthing-dist/skills/pf-context/skill.md` |
 | sm-setup-exit Gate | Sequential cascade: epic context → story context | `pennyfarthing-dist/gates/sm-setup-exit.md` (updated) |
-| Bug Fixes | Fix filename pattern + MSSCI regex | `packages/cyclist/src/sprint-data.ts` |
+| Bug Fixes | Fix filename pattern + PROJ regex | `packages/cyclist/src/sprint-data.ts` |
 
 ### Interfaces
 

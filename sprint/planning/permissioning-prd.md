@@ -21,7 +21,7 @@ inputDocuments:
   - pennyfarthing/pennyfarthing-dist/skills/permissions/skill.md
   - pennyfarthing/packages/core/src/permissions/permission-schema.ts
   - pennyfarthing/packages/core/src/workflow/workflow-permissions.ts
-  - sprint/context/MSSCI-11705-context.md
+  - sprint/context/PROJ-11705-context.md
 workflowType: 'prd'
 documentCounts:
   briefCount: 0

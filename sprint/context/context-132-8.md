@@ -19,12 +19,12 @@ Project name, one sentence: "Sprint orchestrator and agent coordination for Penn
 
 ### 2. Quick Start (the 4 steps)
 ```bash
-git clone git@github.com:1898andCo/orc-penny.git && cd orc-penny
+git clone git@github.com:slabgorb/orc-penny.git && cd orc-penny
 just setup        # clones pennyfarthing/, installs deps, builds
 just claude       # launches Claude Code with OTEL pre-configured
 /guided-tour      # interactive walkthrough inside Claude Code
 ```
-Prerequisites listed inline: Node 18+, pnpm 9+, Python 3.11+, just, Claude Code CLI, SSH access to 1898andCo.
+Prerequisites listed inline: Node 18+, pnpm 9+, Python 3.11+, just, Claude Code CLI, SSH access to slabgorb.
 
 ### 3. What's in this repo (compact directory table)
 One-level deep, ~8 rows:
@@ -59,7 +59,7 @@ This repo is trunk-based on `main`. The `pennyfarthing/` directory is a separate
 - `.pennyfarthing/skills/guided-tour/` — the `/guided-tour` skill invoked in step 4
 
 ## Dependencies
-- 132-7 (MSSCI-15642) delivered — `/guided-tour` skill exists and works
+- 132-7 (PROJ-15642) delivered — `/guided-tour` skill exists and works
 - `just setup` recipe exists and bootstraps from scratch
 - `just claude` recipe exists and launches with OTEL
 

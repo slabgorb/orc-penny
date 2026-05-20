@@ -1,0 +1,162 @@
+stories:
+  - id: 93-1
+    title: Create @pennyfarthing/benchmark package shell with TS modules
+    description: |
+      Create packages/benchmark/ with package.json, tsconfig, and move the
+      two core TypeScript modules:
+      - job-fair-aggregator.ts (+ test)
+      - benchmark-integration.ts (+ test)
+
+      Set up peer dependencies on @pennyfarthing/core and @pennyfarthing/shared.
+      Export all functions and types from new package index.ts.
+      Verify both test suites pass in new location.
+
+      Out of scope: removing from core (done in 93-5).
+    points: 3
+    priority: P0
+    status: done
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria: []
+    jira: PROJ-14630
+    completed: '2026-02-13'
+  - id: 93-2
+    title: Move benchmark commands, skills, and scripts to new package
+    description: |
+      Move into packages/benchmark/:
+      - Commands: solo.md, benchmark.md, benchmark-control.md, job-fair.md
+      - Skills: judge/, finalize-run/, persona-benchmark/
+      - Shell scripts: benchmark-runner.*, job-fair-*.sh, parallel-benchmark.sh,
+        aggregate-benchmark-stats.*, consolidate-job-fair.sh,
+        convert-jobfair-to-benchmarks.sh
+      - Python scripts: swebench-judge.py, ground-truth-judge.py,
+        ensure-swebench-data.sh, test-cache.sh, test-setup.sh
+      - Tier scripts: compute_theme_tiers.py, compute-theme-tiers.sh,
+        update-theme-tiers.sh
+      - Scenarios: entire scenarios/ directory
+
+      Update all internal path references within moved files.
+
+      Out of scope: plugin discovery (93-3), core cleanup (93-5).
+    points: 3
+    priority: P0
+    status: done
+    repos: pennyfarthing
+    workflow: trivial
+    acceptance_criteria: []
+    jira: PROJ-14631
+    completed: '2026-02-13'
+  - id: 93-3
+    title: Extend plugin discovery from validate-refs to core runtime loading
+    description: |
+      The package.json "pennyfarthing" field convention is already established
+      by PR #859 (PROJ-15038) — validate-refs.js uses pennyfarthing.skills
+      to discover skill directories from plugin packages.
+
+      This story extends that convention to core runtime loading:
+
+      When @pennyfarthing/benchmark is installed:
+      - Its 4 commands appear in the command namespace
+      - Its 3 skills load when referenced
+      - Cyclist benchmark API router registers automatically
+
+      Implementation: extend the existing pennyfarthing field in package.json
+      to include commands, skills, and api_routers paths. Wire discovery into
+      @pennyfarthing/core's command loader, skill resolver, and Cyclist's
+      feature init.
+
+      Design decision made: package.json "pennyfarthing" field (not
+      convention-based or config-based). Precedent set in validate-refs.js
+      getSkillNames().
+    points: 3
+    priority: P0
+    status: done
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria: []
+    jira: PROJ-14632
+    completed: '2026-02-13'
+  - id: 93-4
+    title: Move benchmark docs, results, and showcase components
+    description: |
+      Move to packages/benchmark/:
+      - Guides: guides/benchmarks.md
+      - Docs: personas/BENCHMARK-METHODOLOGY.md, docs/BENCHMARKING.md
+      - Showcase: internal/showcase/src/lib/benchmark-loader.ts (+ test)
+      - Results: internal/results/ (dev-only, .npmignore'd)
+
+      Update all cross-references in moved docs.
+      Add migration section to BENCHMARKING.md for existing users.
+
+      Out of scope: historical results are dev-only data, not published.
+    points: 2
+    priority: P1
+    status: done
+    repos: pennyfarthing
+    workflow: trivial
+    acceptance_criteria: []
+    jira: PROJ-14633
+    completed: '2026-02-13'
+  - id: 93-5
+    title: 'Clean up @pennyfarthing/core: remove benchmark exports and API'
+    description: |
+      Remove from @pennyfarthing/core:
+      - 11 functions + 11 types from packages/core/src/index.ts
+        (job-fair-aggregator exports)
+      - packages/cyclist/src/api/benchmark.ts (replaced by plugin)
+      - Root-level benchmark scripts from scripts/
+      - Integration test files for removed scripts
+
+      This is a BREAKING CHANGE to the public API.
+      Options: major version bump OR deprecation aliases that re-export
+      from @pennyfarthing/benchmark with console.warn.
+
+      Theme tier: field becomes optional metadata. Themes without tiers
+      display "Unranked" in UI.
+    points: 2
+    priority: P1
+    status: done
+    repos: pennyfarthing
+    workflow: trivial
+    acceptance_criteria: []
+    jira: PROJ-14634
+    completed: '2026-02-13'
+  - id: 93-6
+    title: Update Cyclist to use benchmark plugin instead of inline API
+    description: |
+      Replace the existing dynamic import in packages/cyclist/src/server.ts
+      (initPennyfarthingFeatures) with the plugin discovery mechanism from
+      93-3.
+
+      Benchmark API router should register via plugin entry point from
+      @pennyfarthing/benchmark rather than being built into Cyclist.
+
+      Verify: Cyclist starts cleanly with and without benchmark package.
+    points: 2
+    priority: P1
+    status: done
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria: []
+    jira: PROJ-14635
+    completed: '2026-02-13'
+id: epic-93
+title: 'Epic: Extract Benchmarking System into @pennyfarthing/benchmark'
+description: |
+  Extract the JobFair benchmarking system from @pennyfarthing/core into a
+  standalone optional npm package (@pennyfarthing/benchmark). Benchmarking is
+  a meta-operation that most users don't need — it evaluates persona
+  effectiveness but isn't required for core agent workflows.
+
+  Key finding: zero reverse dependencies. Core never imports from benchmarking.
+  Cyclist already uses dynamic imports that gracefully degrade.
+
+  See ADR-0020 (docs/adr/0020-benchmark-package-extraction.md) for full
+  architectural rationale and file inventory.
+priority: P2
+status: done
+repos: pennyfarthing
+jira: PROJ-14629
+marker: infrastructure
+adr: '0020'
+completed: '2026-02-13'

@@ -1,6 +1,6 @@
 # Story 104-1: pf bc CLI command + /bc user skill
 
-**Jira Key:** MSSCI-14975
+**Jira Key:** PROJ-14975
 **Points:** 5
 **Workflow:** tdd
 **Status:** ready

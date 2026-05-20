@@ -1,7 +1,7 @@
 # Context: Story 121-2 — Add code quality rules trigger from debug panel
 
-**GitHub Issue:** 1898andCo/pennyfarthing-orchestrator#(TBD)
-**Jira:** MSSCI-15393
+**GitHub Issue:** slabgorb/pennyfarthing-orchestrator#(TBD)
+**Jira:** PROJ-15393
 **Points:** 3
 **Epic:** 121 — Debug Panel and Brownfield Tools Fixes
 

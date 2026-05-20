@@ -1,6 +1,6 @@
 # Epic 92: 2pTDD Workflow and Review/PR Lifecycle
 
-**Jira:** MSSCI-14580
+**Jira:** PROJ-14580
 **Status:** backlog
 **Priority:** P1
 **Marker:** infrastructure
@@ -22,12 +22,12 @@ Epic 92 implements a new 2party-TDD workflow with comprehensive story refinement
 
 | ID | Jira | Title | Points | Priority |
 |---|---|---|---|---|
-| 92-1 | MSSCI-14580 | 2party-tdd.yaml workflow definition (v2.0.0) | 2 | P0 |
-| 92-2 | MSSCI-14582 | Apply review rejection loop and PR policy to tdd.yaml | 3 | P0 |
-| 92-3 | MSSCI-14583 | Implement pr_mode user preference in pennyfarthing config | 3 | P0 |
-| 92-4 | MSSCI-14584 | Update agent definitions: reviewer, dev, sm for new PR/review lifecycle | 2 | P0 |
-| 92-5 | MSSCI-14585 | BikeLane engine: support next directive, workflow_phase override, review fields | 5 | P1 |
-| 92-6 | MSSCI-14588 | BikeLane gate type: quality_pass — run all project quality checks | 3 | P0 |
+| 92-1 | PROJ-14580 | 2party-tdd.yaml workflow definition (v2.0.0) | 2 | P0 |
+| 92-2 | PROJ-14582 | Apply review rejection loop and PR policy to tdd.yaml | 3 | P0 |
+| 92-3 | PROJ-14583 | Implement pr_mode user preference in pennyfarthing config | 3 | P0 |
+| 92-4 | PROJ-14584 | Update agent definitions: reviewer, dev, sm for new PR/review lifecycle | 2 | P0 |
+| 92-5 | PROJ-14585 | BikeLane engine: support next directive, workflow_phase override, review fields | 5 | P1 |
+| 92-6 | PROJ-14588 | BikeLane gate type: quality_pass — run all project quality checks | 3 | P0 |
 
 ## Technical Context
 

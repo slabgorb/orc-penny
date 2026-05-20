@@ -2,7 +2,7 @@
 
 ## Epic Overview
 
-**Jira:** MSSCI-12236
+**Jira:** PROJ-12236
 **Goal:** Users can see their current story, sprint status, and branch health without leaving VS Code - full workflow awareness via the sidebar tree view.
 
 ## Architecture Decision: WheelHub as Single Source of Truth
@@ -90,7 +90,7 @@ This dual approach:
 ## Dependencies
 
 - **Story 57-3** (Real-time Agent Updates) established the WheelHub WebSocket pattern for the extension
-- **MSSCI-11943** (Story/Git WebSocket channels) added `/ws/story` and `/ws/git` channels
+- **PROJ-11943** (Story/Git WebSocket channels) added `/ws/story` and `/ws/git` channels
 
 ## Testing Strategy
 

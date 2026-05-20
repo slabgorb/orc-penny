@@ -1,14 +1,14 @@
 ---
 story_id: "148-14"
-jira_key: "MSSCI-16421"
-epic: "MSSCI-16421"
+jira_key: "PROJ-16421"
+epic: "PROJ-16421"
 workflow: "tdd"
 ---
 # Story 148-14: Peloton TDD workflow — wire remaining phases (architect spec check, tandem)
 
 ## Story Details
 - **ID:** 148-14
-- **Jira Key:** MSSCI-16421
+- **Jira Key:** PROJ-16421
 - **Workflow:** tdd
 - **Stack Parent:** none (stack root)
 
@@ -35,7 +35,7 @@ workflow: "tdd"
 **Points:** 3
 **Repos:** pennyfarthing
 **Branch:** feat/148-14-peloton-full-tdd-phases
-**Epic:** TUI-tmux Fixer (MSSCI-16421)
+**Epic:** TUI-tmux Fixer (PROJ-16421)
 
 **Description:** Peloton mode currently runs setup→red→green→review, skipping spec-check, verify, and spec-reconcile. Wire the full TDD workflow with all 8 phases (setup→red→green→spec-check→verify→review→spec-reconcile→finish) and their gates (tests_fail, dev_exit, spec_check, quality_pass, approval, spec_reconcile). SM team lead must follow the workflow YAML exactly — no shortcuts. Each phase transition uses pf handoff complete-phase with the correct gate type.
 

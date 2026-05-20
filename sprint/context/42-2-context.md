@@ -1,9 +1,9 @@
 # Context: Story 42-2 — Reference anchors in judge prompts
 
-**Jira Issue:** MSSCI-16220
+**Jira Issue:** PROJ-16220
 **Points:** 2
 **Priority:** P0
-**Epic:** 42 — Anchored Rubric Criteria (MSSCI-16210)
+**Epic:** 42 — Anchored Rubric Criteria (PROJ-16210)
 **Workflow:** tdd
 
 ## Problem
@@ -115,7 +115,7 @@ The primary change is to `pf-judge/SKILL.md`. Since judge prompts are defined as
 
 ### Dependency Note
 
-Story 42-1's rubric-anchors.md must be on the working branch. It was created on `feature/MSSCI-16219-rubric-anchors-behavioral-scales` and needs to be merged to develop or cherry-picked before 42-2 implementation begins.
+Story 42-1's rubric-anchors.md must be on the working branch. It was created on `feature/PROJ-16219-rubric-anchors-behavioral-scales` and needs to be merged to develop or cherry-picked before 42-2 implementation begins.
 
 ### Testing Strategy
 
@@ -128,8 +128,8 @@ Tests should validate that:
 ## Dependency Notes
 
 - **Depends on 42-1:** rubric-anchors.md must exist on the branch
-- **Depended on by 42-3:** Variance test (MSSCI-16221) will measure CV reduction from anchored prompts
-- **Related to 44-1:** Multi-judge validation (MSSCI-16214) provides disagreement data that motivates anchoring
+- **Depended on by 42-3:** Variance test (PROJ-16221) will measure CV reduction from anchored prompts
+- **Related to 44-1:** Multi-judge validation (PROJ-16214) provides disagreement data that motivates anchoring
 
 ## Out of Scope
 

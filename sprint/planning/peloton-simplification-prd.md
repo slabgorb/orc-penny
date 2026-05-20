@@ -6,13 +6,13 @@ Make pipeline replay benchmarks reliable, self-documenting, and debuggable so we
 
 ## Why Now
 
-1. **Blocking:** mssci-10836 and pprof scenarios can't run — cross-repo context resolution is broken (KeyError in `load_scenario()`). Epic 47 stories (PM/Architect benchmarks) will hit the same wall.
+1. **Blocking:** proj-10836 and pprof scenarios can't run — cross-repo context resolution is broken (KeyError in `load_scenario()`). Epic 47 stories (PM/Architect benchmarks) will hit the same wall.
 2. **Corrupting:** Double-nested `run-N/run-N/` directories silently invalidate results. We built a cleanup script but never fixed the root cause.
 3. **Blind:** After 152 runs, we still can't answer "why didn't the reviewer catch C1?" The reasoning is in the stream-json events but we throw it away. Recent agent def changes showed no effect — we can't tell if agents ignored the changes or if the changes didn't matter.
 
 ## Success Metrics
 
-- All 4 existing scenarios (`dpgd-116`, `dpgd-117`, `mssci-10836`, `pprof-cobra-15`) run without manual path fixups
+- All 4 existing scenarios (`dpgd-116`, `dpgd-117`, `proj-10836`, `pprof-cobra-15`) run without manual path fixups
 - Zero nesting bugs in new runs (cleanup extension finds 0 issues)
 - Every new run has a `{role}-events.jsonl` trace that can be replayed
 - `pf benchmark replay trace <run>` answers "did the agent read the relevant file and what did it think?"
@@ -49,7 +49,7 @@ Make pipeline replay benchmarks reliable, self-documenting, and debuggable so we
 - [ ] New optional `roots:` block in scenario YAML resolves `repo` and `context` paths relative to scenario file location
 - [ ] Backward compatible — dpgd-116.yaml runs unchanged with no `roots:` block
 - [ ] `setup_worktree_pf_context()` skips epic/story injection when `context_type="repo"`
-- [ ] mssci-10836.yaml and pprof-cobra-15.yaml run with correct `roots:` added
+- [ ] proj-10836.yaml and pprof-cobra-15.yaml run with correct `roots:` added
 
 - [ ] Update `peloton.md` scenario YAML schema docs with `roots:` and `context_type`
 
@@ -178,7 +178,7 @@ Make pipeline replay benchmarks reliable, self-documenting, and debuggable so we
 
 ### 1A. Unified context resolution in `load_scenario()`
 
-**Problem:** `load_scenario()` (pipeline_replay.py:156) hardcodes `ctx["epic"]` and `ctx["story"]` — the mssci scenarios use `context: {claude_md: CLAUDE.md}` which raises `KeyError`.
+**Problem:** `load_scenario()` (pipeline_replay.py:156) hardcodes `ctx["epic"]` and `ctx["story"]` — the proj scenarios use `context: {claude_md: CLAUDE.md}` which raises `KeyError`.
 
 **Fix:** Add a `roots` resolution block to scenario YAML and extend `Scenario` dataclass:
 
@@ -331,7 +331,7 @@ Correlates a ground-truth finding with the agent trace:
 | `pennyfarthing/pennyfarthing-dist/src/pf/benchmark/pipeline_replay.py` | 1, 2, 3, 4, 5 |
 | `pennyfarthing/pennyfarthing-dist/src/pf/benchmark/cli.py` | 2, 6, 7 |
 | `pennyfarthing/pennyfarthing-dist/src/pf/benchmark/events.py` | 6 (new file) |
-| `internal/results/pipeline-replay/scenarios/*.yaml` | 1 (add roots to mssci/pprof) |
+| `internal/results/pipeline-replay/scenarios/*.yaml` | 1 (add roots to proj/pprof) |
 | `.pennyfarthing/extensions/benchmark/cleanup.py` | 2 (simplify after root-cause fix) |
 
 ## Reuse (existing code to preserve)

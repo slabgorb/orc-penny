@@ -1,7 +1,7 @@
 ---
 story_id: "147-12"
 jira_key: null
-epic: "MSSCI-16411"
+epic: "PROJ-16411"
 workflow: "trivial"
 ---
 # Story 147-12: Add configurable toggle to enable/disable individual reviewer sub-agents

@@ -1,0 +1,45 @@
+id: '42'
+type: epic
+title: Anchored Rubric Criteria
+priority: p0
+status: done
+repos: pennyfarthing
+jira: PROJ-16210
+stories:
+  - id: 42-1
+    jira: PROJ-16219
+    title: Create rubric-anchors.md with behavioral scales
+    points: 3
+    priority: p0
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-03-06'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-06'
+    review_verdict: approved
+  - id: 42-2
+    jira: PROJ-16220
+    title: Reference anchors in judge prompts
+    points: 2
+    priority: p0
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-03-06'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-06'
+    review_verdict: approved
+  - id: 42-3
+    jira: PROJ-16221
+    title: 'Variance test: measure CV reduction'
+    points: 1
+    priority: p1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-03-06'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-03-06'
+    review_verdict: approved
+completed: '2026-03-06'

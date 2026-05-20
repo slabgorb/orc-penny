@@ -6,7 +6,7 @@
 **Phase:** finish
 **Repos:** pennyfarthing
 **Branch:** feature/120-12-enrich-statusbar-context
-**Assigned:** keith.avery@1898andco.io
+**Assigned:** keith.avery@slabgorb.io
 
 ---
 

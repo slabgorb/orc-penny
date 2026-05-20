@@ -1,0 +1,353 @@
+id: '126'
+type: epic
+title: Python-First Installation
+description: |-
+  Replace npm-based installation with Python-first approach. Global pip install
+  from private PyPI, pf init handles full bootstrap including Node package
+  installation and auto-setup. Eliminates uv, npm distribution, Node-based init,
+  and wrapper script chain. Implements ADR-0028. Supersedes epics 111-116.
+priority: p1
+status: done
+repos: pennyfarthing
+jira: PROJ-15488
+stories:
+  - id: 126-1
+    jira: PROJ-15489
+    title: Publish pf package to private PyPI with CI pipeline
+    description: |-
+      Set up private PyPI publication for the pf package. Configure GitHub Actions
+      to build and publish on tag. Update pyproject.toml package name from
+      pennyfarthing-scripts to pf. Verify pip install pf works globally.
+
+      AC:
+      - pyproject.toml updated with name "pf"
+      - CI pipeline builds and publishes to private PyPI on tag
+      - pip install pf from private PyPI installs globally with pf on PATH
+      - pf --version works after install
+    points: 3
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-23'
+    type: feature
+    review_verdict: approved
+  - id: 126-2
+    jira: PROJ-15490
+    title: Rewrite pf init in Python — directory structure, commands/skills, settings
+    description: |-
+      New Click command pf init that replaces npx pennyfarthing init. Creates
+      .pennyfarthing/ and .claude/ directories, copies pf-* commands and skills,
+      writes minimal settings.local.json (5 hooks), updates .gitignore.
+      Idempotent and deterministic. Supports --dry-run.
+
+      AC:
+      - pf init creates .pennyfarthing/ directory structure
+      - pf init creates .claude/ directory structure
+      - Commands and skills copied with pf-* prefix
+      - Minimal settings.local.json written (5 hooks only)
+      - .gitignore updated
+      - Idempotent — running twice produces same result
+      - --dry-run flag shows what would be done without doing it
+    points: 5
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-23'
+    repos: pennyfarthing
+    workflow: tdd-tandem
+    completed: '2026-02-23'
+    type: feature
+    review_verdict: approved
+  - id: 126-3
+    jira: PROJ-15491
+    title: Integrate auto-setup into pf init — repo discovery, theme, git hooks, Node install
+    description: |-
+      pf init automatically runs the setup workflow after creating directory
+      structure. Interactive prompts for repo discovery (repos.yaml), theme
+      selection (config.local.yaml), git hook installation. Detects pnpm/yarn/npm
+      and installs Node packages (BikeRack, Cyclist, WheelHub). No separate
+      setup-detector or two-phase dance.
+
+      AC:
+      - pf init runs setup workflow automatically after directory creation
+      - Repo discovery writes repos.yaml
+      - Theme selection writes config.local.yaml
+      - Git hooks offered (opt-in)
+      - Package manager auto-detected (pnpm > yarn > npm)
+      - Node packages installed via detected package manager
+      - Handles partial completion and re-entry gracefully
+    points: 5
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-23'
+    repos: pennyfarthing
+    workflow: tdd-tandem
+    completed: '2026-02-24'
+    type: feature
+    review_verdict: approved
+  - id: 126-4
+    jira: PROJ-15492
+    title: Remove uv/pf.sh wrapper chain — global pf invoked directly
+    description: |-
+      Remove run-pf.sh, pf.sh wrapper, and all uv-based invocation logic.
+      All hooks and scripts call pf directly (globally installed). Update
+      settings.local.json hook commands, agent definitions, and any shell
+      scripts that use the wrapper chain.
+
+      AC:
+      - run-pf.sh removed
+      - pf.sh wrapper removed
+      - All hook commands reference bare pf (not wrapper)
+      - No uv references remain in runtime code
+      - All agent activation commands updated
+    points: 2
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-24'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-24'
+    type: feature
+    review_findings: Missed commands/*.md (12 files), init/core.py, settings template, list-workflows.sh - all still reference deleted wrapper chain
+    review_verdict: approved
+  - id: 126-5
+    jira: PROJ-15493
+    title: Config consolidation — migrate preferences.yaml into config.local.yaml
+    description: |-
+      Write migration that moves preferences.yaml settings into config.local.yaml.
+      Update all config readers to use config.local.yaml as single source.
+      Remove dead preferences.yaml template and persona-config.yaml references.
+
+      AC:
+      - Migration moves preferences.yaml content to config.local.yaml
+      - All config readers use config.local.yaml
+      - preferences.yaml template removed
+      - persona-config.yaml references removed
+      - Existing user settings preserved during migration
+    points: 3
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-24'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-24'
+    type: feature
+    review_findings: 'HIGH: data loss risk (unlink before write), HIGH: migration never called in production (no callers outside tests). MEDIUM: no error handling, TypeScript persona-config fallback survives'
+    review_verdict: approved
+  - id: 126-6
+    jira: PROJ-15494
+    title: Frontmatter hooks on all agents and skills, shrink settings.local.json
+    description: |-
+      Add frontmatter hooks to all agent .md files and relevant skill directories.
+      Component-specific hooks move from settings.local.json into frontmatter.
+      Settings.local.json shrinks from 13 hooks to 5 infrastructure-only hooks.
+
+      AC:
+      - All agent .md files have frontmatter hooks for their lifecycle
+      - Relevant skill directories have frontmatter hooks
+      - settings.local.json reduced to 5 infrastructure hooks
+      - No functional regression — all hooks still fire correctly
+    points: 5
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-24'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-24'
+    type: feature
+    review_findings: 'HIGH: SKILL.md case-sensitivity bug silently drops skill hooks on Linux. MEDIUM: mutation hazard in merge_with_infrastructure. LOW: dead FrontmatterHooks dataclass.'
+    review_verdict: approved
+  - id: 126-7
+    jira: PROJ-15495
+    title: pf upgrade — detect npm-based install, migrate to Python-based
+    description: |-
+      New command pf upgrade that detects an npm-based Pennyfarthing installation
+      and migrates to the Python-based structure. Preserves user custom hooks,
+      commands, and skills. Migrates config files. Removes npm artifacts.
+
+      AC:
+      - Detects npm-based install (node_modules/@pennyfarthing)
+      - Migrates directory structure to new layout
+      - Preserves user custom hooks (non-pf-* prefixed)
+      - Migrates settings.local.json (removes old hooks, adds new)
+      - Config files migrated (preferences.yaml → config.local.yaml)
+      - Clear reporting of what changed
+    points: 5
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-24'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-24'
+    type: feature
+    review_verdict: approved
+  - id: 126-8
+    jira: PROJ-15496
+    title: Reduce doctor to ~10 health checks with --fix mode
+    description: |-
+      Reduce doctor from 30 health checks to ~10 that reflect the simplified
+      Python-first architecture. Add --fix flag that offers to repair problems
+      instead of just reporting them.
+
+      AC:
+      - Doctor reduced to ~10 relevant health checks
+      - --fix flag offers interactive repair for each failed check
+      - Checks cover Python install, Node packages, config, hooks, directories
+      - Removed checks for things that can no longer break
+    points: 3
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-24'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-24'
+    type: feature
+    review_verdict: approved
+  - id: 126-9
+    jira: PROJ-15497
+    title: Remove Node init.ts, npx entry point, postinstall.cjs
+    description: |-
+      Remove all Node-based installation artifacts that are replaced by
+      Python-first approach. Clean up package.json bin entries. Remove
+      setup-detector.js and session-start.js.
+
+      AC:
+      - init.ts removed
+      - npx pennyfarthing entry point removed from package.json bin
+      - postinstall.cjs removed
+      - setup-detector.js removed
+      - session-start.js removed (functionality in Python)
+      - No Node-based init code remains
+    points: 2
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-24'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-02-24'
+    type: chore
+    review_verdict: approved
+  - id: 126-10
+    jira: PROJ-15498
+    title: E2E tests — fresh install, upgrade from npm, pf init --dry-run
+    description: |-
+      End-to-end test suite covering the full installation lifecycle.
+      Fresh install from PyPI, upgrade from npm-based install, dry-run
+      verification, idempotency check.
+
+      AC:
+      - E2E test: fresh pip install pf + pf init on empty project
+      - E2E test: pf upgrade from npm-based v11 install
+      - E2E test: pf init --dry-run shows correct plan
+      - E2E test: pf init is idempotent (run twice, same result)
+      - Tests run in CI with isolated environments
+    points: 5
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-24'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-25'
+    type: feature
+    review_verdict: approved
+  - id: 126-11
+    jira: PROJ-15599
+    title: Update stale pennyfarthing init references to pf setup
+    description: '~30 string references to pennyfarthing init and npx pennyfarthing remain after init.ts removal in 126-9. Users hitting these error paths are told to run a command that no longer exists. Locations: skill.ts (5), command.ts (5), theme.ts (2), version.ts, doctor.ts, uninstall.ts, files.ts, pf-help.md, pf-setup.md, hooks.md, templates, workflows, scripts, hooks_installer.py, upgrade/core.py. ACs: All pennyfarthing init refs updated to pf setup. All npx pennyfarthing refs updated to pf. No user-facing message references a nonexistent command.'
+    points: 2
+    priority: p1
+    status: done
+    workflow: trivial
+    type: chore
+  - id: 126-12
+    jira: PROJ-15600
+    title: Wire setup auto-detection into session-start hook
+    description: Session-start hook should detect incomplete setup (pf init ran but /pf-setup did not) and inject additionalContext telling Claude to run /pf-setup. Replaces the removed setup-detector.js. Without this, users who run pf init but miss the setup prompt get a half-configured installation with no nudge to complete it.
+    points: 3
+    priority: p1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-24'
+    workflow: tdd
+    acceptance_criteria:
+      - session_start.py checks for .pennyfarthing/ present but config.local.yaml missing theme key
+      - When incomplete setup detected, hook returns additionalContext with setup instructions
+      - When setup is complete, hook is a no-op (no performance penalty on every session)
+      - 'Detection also covers: repos.yaml missing, settings.local.json missing'
+      - Unit tests for detection logic and additionalContext output
+    completed: '2026-02-24'
+    type: chore
+    review_verdict: approved
+  - id: 126-13
+    jira: PROJ-15601
+    title: Extract shared hook constants and fix onboarding rough edges
+    description: "Housekeeping debt from party-mode review. Three issues in one story: (1) _MINIMAL_SETTINGS in init/core.py and _PYTHON_HOOKS in upgrade/core.py define the same 5 hooks independently — extract to shared constant. (2) verify_pf_cli() install_hint says 'pipx install -e pennyfarthing-dist/' (dev path) instead of 'pip install pennyfarthing-scripts' (user path). (3) Dead code: run_auto_setup() in setup.py is never called — remove or wire up. (4) _copy_tree() does rmtree before copytree, nuking user files in skill dirs — add pre-flight check."
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-24'
+    workflow: trivial
+    acceptance_criteria:
+      - Single _INFRASTRUCTURE_HOOKS constant imported by both init/core.py and upgrade/core.py
+      - verify_pf_cli() install_hint shows user-facing pip install command
+      - run_auto_setup() either removed or wired to a code path
+      - _copy_tree() preserves non-pf user files or warns before overwriting
+      - Existing tests still pass after refactor
+    completed: '2026-02-24'
+    type: chore
+    review_verdict: approved
+  - id: 126-14
+    jira: PROJ-15602
+    title: pf upgrade cleanup — remove npm artifacts and stale symlinks
+    description: "pf upgrade detects node_modules/@pennyfarthing but doesn't clean up npm-era artifacts. After migration, users are left with: (1) node_modules/@pennyfarthing still present, (2) old Node commands/symlinks in .claude/commands that reference npx pennyfarthing, (3) stale .pennyfarthing/manifest.json (Node-era) alongside new init-manifest.json. Upgrade should offer to remove these artifacts (with user confirmation) and produce a clean post-migration state."
+    points: 2
+    priority: p2
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-24'
+    workflow: trivial
+    acceptance_criteria:
+      - pf upgrade --clean offers to remove node_modules/@pennyfarthing directory
+      - Stale symlinks in .claude/commands/ pointing to node_modules are detected and removed
+      - Old manifest.json (Node-era) removed after migration to init-manifest.json
+      - All cleanup requires user confirmation (or --yes flag for CI)
+      - Dry-run shows what would be cleaned without acting
+    completed: '2026-02-24'
+    type: chore
+    review_verdict: approved
+  - id: 126-15
+    jira: PROJ-15603
+    title: Pull LFS portraits during pf init/setup so TUI portraits work out of the box
+    description: |-
+      Portrait files are stored in Git LFS. After pf init or pf-setup, the portrait files remain as LFS pointers (ASCII text) instead of actual PNGs. The BikeRack TUI persona bar shows no portrait because the images aren't real files.
+
+      PROJ-15501 added auto-pull on theme set, but that only covers pf theme set. New installs that run pf init followed by pf-setup need LFS portraits pulled as part of the setup flow so the TUI works immediately without manual git lfs pull.
+    points: 2
+    priority: p2
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-24'
+    workflow: trivial
+    acceptance_criteria:
+      - pf init or pf-setup runs git lfs pull for the selected theme's portraits
+      - Only pulls portraits for the active theme (not all themes)
+      - Graceful degradation if git-lfs is not installed (warn, don't fail)
+      - Works for both fresh installs and upgrades
+    completed: '2026-02-24'
+    session_file: .session/126-15-session.md
+    branch: feat/126-15-lfs-portrait-pull
+    review_verdict: approved
+  - id: 126-16
+    jira: PROJ-15612
+    title: Epic promote fails for inline initiative epics — extract to shards on workflow finish
+    points: 2
+    priority: p1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-24'
+    workflow: trivial
+    completed: '2026-02-24'
+    type: bug
+    review_verdict: approved
+completed: '2026-02-25'

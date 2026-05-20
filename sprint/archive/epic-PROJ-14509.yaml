@@ -1,0 +1,197 @@
+id: epic-86
+title: "Agent Collaboration — Tandem to Teams"
+description: |
+  Phase 1 (15 pts): Tandem consultation protocol — workflow YAML
+  tandem: blocks, structured request/response with Sonnet partner,
+  dialogue file persistence, agent tandem awareness, templates.
+
+  Phase 2 (16 pts): Phase-scoped native Agent Teams — feature detection,
+  lightweight teammate activation via spawn prompts, team: block on
+  workflow phases, phase-scoped lifecycle with TeammateIdle/TaskCompleted
+  hook-based gates, team-mode agent behavior protocol, team workflow
+  templates.
+
+  Phase 3 (8 pts): Cyclist integration — TandemPanel for dialogue
+  visualization, TeamPanel for native team status/messaging.
+priority: P1
+status: done
+repos: pennyfarthing
+jira: PROJ-14509
+points: 39
+marker: infrastructure
+stories:
+  - id: "86-1"
+    jira: PROJ-14496
+    title: "Workflow schema: tandem: block"
+    points: 3
+    priority: P0
+    status: done
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-15'
+  - id: "86-2"
+    jira: PROJ-14497
+    title: "Consultation protocol implementation"
+    points: 3
+    priority: P0
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-15'
+  - id: "86-3"
+    jira: PROJ-14498
+    title: "Dialogue file management"
+    points: 2
+    priority: P0
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-16'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: "2026-02-16"
+  - id: "86-4"
+    jira: PROJ-14499
+    title: "Agent tandem awareness"
+    points: 3
+    priority: P0
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-16'
+  - id: "86-5"
+    jira: PROJ-14500
+    title: "Tandem workflow templates"
+    points: 2
+    priority: P1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-16'
+  - id: "86-6"
+    jira: PROJ-14501
+    title: "Tandem metrics and token tracking"
+    points: 2
+    priority: P1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-16'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-16'
+  - id: "86-7"
+    jira: PROJ-14502
+    title: "Feature detection: native teams capability"
+    points: 2
+    priority: P1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-16'
+  - id: "86-8"
+    jira: PROJ-14503
+    title: "Teammate activation via spawn prompts"
+    points: 2
+    priority: P1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-16'
+  - id: "86-9"
+    jira: PROJ-14504
+    title: "Workflow schema: team: block on phases"
+    points: 3
+    priority: P1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    repos: pennyfarthing
+    workflow: tdd
+    completed: "2026-02-16"
+  - id: "86-10"
+    jira: PROJ-14505
+    title: "Phase-scoped team lifecycle + gate hooks"
+    points: 5
+    priority: P1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    repos: pennyfarthing
+    workflow: tdd
+    completed: "2026-02-17"
+  - id: "86-11"
+    jira: PROJ-14506
+    title: "Cyclist: Tandem dialogue panel"
+    points: 3
+    priority: P2
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-17'
+  - id: "86-12"
+    jira: PROJ-14507
+    title: "Cyclist: Native team panel"
+    points: 5
+    priority: P3
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-17'
+  - id: 86-13
+    jira: PROJ-15126
+    title: Tandem backseat not activating from CLI invocation
+    points: 2
+    priority: P1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-17'
+    workflow: tdd
+    completed: '2026-02-17'
+    type: bug
+  - id: "86-14"
+    jira: PROJ-15109
+    title: "Agent behavior: team-mode protocol"
+    points: 2
+    priority: P1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-18'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: "2026-02-18"
+    review_verdict: approved
+  - id: "86-15"
+    jira: PROJ-15110
+    title: "Team-enabled workflow templates"
+    points: 2
+    priority: P1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-18'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-18'
+    review_verdict: approved
+  - id: 86-16
+    jira: PROJ-15127
+    title: Port dialogue manager from TypeScript/bash to Python
+    points: 2
+    priority: P0
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    workflow: tdd
+    completed: '2026-02-16'
+  - id: 86-17
+    jira: PROJ-15128
+    title: 'Tandem mode portrait: ImageMagick theme variations + swap indicator'
+    points: 3
+    priority: p2
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    workflow: tdd
+    completed: '2026-02-16'
+completed: '2026-02-18'

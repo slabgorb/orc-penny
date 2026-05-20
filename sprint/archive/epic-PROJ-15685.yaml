@@ -1,0 +1,47 @@
+id: "130"
+title: "Epic: Automated Context Creation"
+priority: P1
+status: done
+repos: pennyfarthing
+jira: PROJ-15685
+points: 7
+stories:
+  - id: "130-1"
+    jira: PROJ-15686
+    title: "/pf-context create epic Skill"
+    points: 2
+    priority: P1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-26'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-26'
+    type: feature
+    review_verdict: approved
+  - id: "130-2"
+    jira: PROJ-15687
+    title: "/pf-context create story Skill (PM-Only Mode)"
+    points: 3
+    priority: P1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-26'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-02-26'
+    type: feature
+    review_verdict: approved
+  - id: "130-3"
+    jira: PROJ-15688
+    title: "Tandem Partner Selection and Integration"
+    points: 2
+    priority: P1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-26'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: "2026-02-26"
+    type: feature
+completed: '2026-02-26'

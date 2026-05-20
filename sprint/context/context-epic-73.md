@@ -2,7 +2,7 @@
 
 ## Epic
 - **ID:** epic-73
-- **Jira:** [MSSCI-12767](https://1898andco.atlassian.net/browse/MSSCI-12767)
+- **Jira:** [PROJ-12767](https://slabgorb.atlassian.net/browse/PROJ-12767)
 - **Title:** Visual Customization & Accessibility
 
 ## Vision
@@ -11,10 +11,10 @@ Users can customize their visual experience and use the application with assisti
 ## Stories
 | ID | Jira | Title | Points | Priority |
 |----|------|-------|--------|----------|
-| 73-1 | MSSCI-12768 | Color Palette System | 2 | P1 |
-| 73-2 | MSSCI-12769 | Font Customization | 2 | P1 |
-| 73-3 | MSSCI-12770 | Responsive Breakpoints | 2 | P2 |
-| 73-4 | MSSCI-12771 | Accessibility Compliance | 3 | P2 |
+| 73-1 | PROJ-12768 | Color Palette System | 2 | P1 |
+| 73-2 | PROJ-12769 | Font Customization | 2 | P1 |
+| 73-3 | PROJ-12770 | Responsive Breakpoints | 2 | P2 |
+| 73-4 | PROJ-12771 | Accessibility Compliance | 3 | P2 |
 
 ## Technical Context
 

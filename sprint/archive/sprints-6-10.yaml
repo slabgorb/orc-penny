@@ -12,7 +12,7 @@ sprints:
     points: 93
     status: complete
     epics:
-      - id: MSSCI-11294
+      - id: PROJ-11294
         title: Pennyfarthing Showcase Website
         points: 34
         stories: 14
@@ -23,7 +23,7 @@ sprints:
           - Comparison overlays
           - Benchmark reports
 
-      - id: MSSCI-11347
+      - id: PROJ-11347
         title: Cyclist-Pennyfarthing Integration
         points: 17
         stories: 8
@@ -32,7 +32,7 @@ sprints:
           - Sprint context display
           - Handoff protocols
 
-      - id: MSSCI-11357
+      - id: PROJ-11357
         title: Persona Performance Analytics
         points: 25
         stories: 10
@@ -94,7 +94,7 @@ sprints:
     points: 18
     status: complete
     epics:
-      - id: MSSCI-11513
+      - id: PROJ-11513
         title: Skill Discovery & Documentation Hub
         points: 18
         stories: 9
@@ -112,7 +112,7 @@ sprints:
     points: 51
     status: complete
     epics:
-      - id: MSSCI-11548
+      - id: PROJ-11548
         title: Configuration & Theme Switcher Panels
         points: 28
         stories: 10
@@ -122,7 +122,7 @@ sprints:
           - OCEAN visualization
           - Quick theme switcher
 
-      - id: MSSCI-11582
+      - id: PROJ-11582
         title: Developer Workflow Documentation
         points: 24
         stories: 10
@@ -132,7 +132,7 @@ sprints:
           - Troubleshooting guide
           - CI/CD patterns
 
-      - id: MSSCI-11526
+      - id: PROJ-11526
         title: Cyclist Web Mode Improvements
         points: 9
         stories: 5
@@ -140,7 +140,7 @@ sprints:
           - Browser-based terminal
           - Session persistence
 
-      - id: MSSCI-11530
+      - id: PROJ-11530
         title: Smart Question Detection
         points: 9
         stories: 5
@@ -170,7 +170,7 @@ sprints:
     status: complete
     velocity: 245%
     epics:
-      - id: MSSCI-11599
+      - id: PROJ-11599
         title: Customizable Workflow Engine
         points: 30
         stories: 16
@@ -180,7 +180,7 @@ sprints:
           - Story-to-workflow routing
           - Phase transition engine
 
-      - id: MSSCI-11705
+      - id: PROJ-11705
         title: Runtime Permission Management
         points: 7
         stories: 6
@@ -189,7 +189,7 @@ sprints:
           - Approval gates
           - Grant persistence
 
-      - id: MSSCI-11715
+      - id: PROJ-11715
         title: Cyclist UI/UX Improvements
         points: 13
         stories: 13
@@ -198,7 +198,7 @@ sprints:
           - Settings panel polish
           - Contextual settings
 
-      - id: MSSCI-11728
+      - id: PROJ-11728
         title: OTEL Tool Call Enrichment
         points: 9
         stories: 7
@@ -207,7 +207,7 @@ sprints:
           - Bash/Search enrichment
           - Export visualization
 
-      - id: MSSCI-11626
+      - id: PROJ-11626
         title: BMAD Artifact Compatibility
         points: 11
         stories: 4
@@ -215,7 +215,7 @@ sprints:
           - Artifact parsing
           - Format conversion
 
-      - id: MSSCI-11618
+      - id: PROJ-11618
         title: Cyclist Developer Experience
         points: 8
         stories: 5

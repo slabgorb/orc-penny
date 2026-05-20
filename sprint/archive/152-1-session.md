@@ -4,14 +4,14 @@ jira_key: null
 epic: "152"
 workflow: "tdd"
 ---
-# Story 152-1: Remove MSSCI hardcoding — config-driven project key with fail-loud, scrub templates and docs
+# Story 152-1: Remove PROJ hardcoding — config-driven project key with fail-loud, scrub templates and docs
 
 ## Story Details
 - **ID:** 152-1
 - **Jira Key:** None (local-only sprint)
 - **Epic:** 152 (Jira isolation — config-driven project keys)
 - **Workflow:** tdd
-- **Branch:** feat/152-1-remove-mssci-hardcoding
+- **Branch:** feat/152-1-remove-proj-hardcoding
 - **Stack Parent:** none
 - **Points:** 5
 - **Priority:** p1
@@ -19,13 +19,13 @@ workflow: "tdd"
 ## Expanded Scope Context
 
 The initial story scope is to:
-1. Remove MSSCI hardcoding from framework — implement config-driven project key support
+1. Remove PROJ hardcoding from framework — implement config-driven project key support
 2. Implement fail-loud behavior (no silent defaults, no implicit fallbacks)
-3. Scrub MSSCI references from templates and documentation
+3. Scrub PROJ references from templates and documentation
 
 **User has expanded scope to include scrubbing references to:**
 - **"1898"** — Investigate and remove (likely company brand/historical reference)
-- **MSSCI Jira project key** — All hardcoded instances
+- **PROJ Jira project key** — All hardcoded instances
 - **Comments referencing the company's Jira board** — Strip professional company references
 - **Other professional company references** — Full sweep for context isolation
 
@@ -43,29 +43,29 @@ This expanded context ensures TEA designs tests covering the broader refactoring
 
 ## Sm Assessment
 
-**Story:** 152-1 — Remove MSSCI hardcoding, fail-loud config-driven project keys, scrub templates/docs.
+**Story:** 152-1 — Remove PROJ hardcoding, fail-loud config-driven project keys, scrub templates/docs.
 
-**Scope confirmed with user:** Beyond the core MSSCI removal, expand sweep to:
-- Hardcoded `MSSCI` Jira project key references in code, configs, templates, docs
+**Scope confirmed with user:** Beyond the core PROJ removal, expand sweep to:
+- Hardcoded `PROJ` Jira project key references in code, configs, templates, docs
 - "1898" references (likely company brand/numeric identifier — investigate before removing; could be year, version, or brand)
 - Comments referencing the company's Jira board, workflows, or internal processes
 - Any other professional-company-specific identifiers leaking into the open framework
 
 **Repo:** `pennyfarthing/` (framework, not orchestrator). Gitflow → PR targets `develop`.
 
-**Branch:** `feat/152-1-remove-mssci-hardcoding` created off `develop`.
+**Branch:** `feat/152-1-remove-proj-hardcoding` created off `develop`.
 
 **Workflow:** tdd (5 pts, p1) — TEA designs failing tests before any code.
 
 **Out of scope (stays in orchestrator):** Sprint YAML history, archived sessions, planning docs that already shipped — these are local artifacts in this repo and don't redistribute. Framework-side scrub only. If TEA finds a leak path that *would* redistribute (e.g. a template, persona, or sprint-init asset), include it.
 
-**Fail-loud requirement:** No silent fallbacks. If config is missing the project key, framework must error with a clear message — never default to MSSCI or any other key.
+**Fail-loud requirement:** No silent fallbacks. If config is missing the project key, framework must error with a clear message — never default to PROJ or any other key.
 
 **Notes for TEA:**
-- Inventory first: rg over `pennyfarthing/pennyfarthing-dist/` and `packages/` for `MSSCI`, `1898`, company name patterns. Distinguish file types: code vs benchmark fixtures vs test data vs personas.
-- Test fixtures referencing MSSCI (e.g. `test_151_3_sharded_update_and_finish_loud.py`) may be intentional — assess case-by-case.
+- Inventory first: rg over `pennyfarthing/pennyfarthing-dist/` and `packages/` for `PROJ`, `1898`, company name patterns. Distinguish file types: code vs benchmark fixtures vs test data vs personas.
+- Test fixtures referencing PROJ (e.g. `test_151_3_sharded_update_and_finish_loud.py`) may be intentional — assess case-by-case.
 - Personas with embedded numbers (e.g. `norns-55231.png`) are hash suffixes, not company refs — leave alone.
-- Benchmark `pipeline.yaml` results capturing real runs may legitimately contain MSSCI as historical data; user can decide.
+- Benchmark `pipeline.yaml` results capturing real runs may legitimately contain PROJ as historical data; user can decide.
 
 ## TEA Assessment
 
@@ -81,7 +81,7 @@ This expanded context ensures TEA designs tests covering the broader refactoring
 
 | AC (implied) | Test(s) | Status |
 |---|---|---|
-| Remove MSSCI hardcoding from framework redistributables | `test_no_corporate_jira_key_in_framework_redistributables` | failing — 31 occurrences in 2 test fixtures |
+| Remove PROJ hardcoding from framework redistributables | `test_no_corporate_jira_key_in_framework_redistributables` | failing — 31 occurrences in 2 test fixtures |
 | Remove 1898 (company year) from framework redistributables | `test_no_company_brand_number_in_framework_redistributables` | failing — 13 occurrences across docs/tests |
 | Remove `1898&co` brand literal from framework redistributables | `test_no_company_brand_string_in_framework_redistributables` | passing — forward-looking guard |
 | Walk-sanity check (avoid vacuous pass) | `test_skip_dirs_actually_exist_in_walk` | passing |
@@ -92,7 +92,7 @@ This expanded context ensures TEA designs tests covering the broader refactoring
 **Self-check (vacuous-test scan):** All 7 tests have meaningful assertions tied to observable behavior. No `assert True`, no `let _`, no `is_none()`-on-always-None patterns. Forbidden tokens are constructed by string concatenation (`"MS" + "SCI"`, `"18" + "98"`, `"1898" + "&co"`) so the test file itself does not pollute its own scan.
 
 **Notes for Dev (Ponder Stibbons):**
-1. **Test fixture renames** (MSSCI → generic): `test_archive_epic_field_validation.py` and `test_151_3_sharded_update_and_finish_loud.py` use `MSSCI-17079`/`MSSCI-17082` etc. as test data. Replace with a generic key like `PROJ-17079` — the test logic is project-key-agnostic.
+1. **Test fixture renames** (PROJ → generic): `test_archive_epic_field_validation.py` and `test_151_3_sharded_update_and_finish_loud.py` use `PROJ-17079`/`PROJ-17082` etc. as test data. Replace with a generic key like `PROJ-17079` — the test logic is project-key-agnostic.
 2. **Doc rewrites** (1898 → 2898): `docs/adr/0022-python-wheelhub-replacement.md` and `pennyfarthing-dist/guides/tui.md` reference port `1898`. The live code already uses port `2898` (see `pennyfarthing-dist/src/pf/hooks/__init__.py:36`); update the docs to match reality.
 3. **Test fixture port updates**: `test_frame_server.py` and `test_frame_websocket.py` use the literal port `1898` in fixtures. Replace with `2898` (or with whatever `DEFAULT_FRAME_PORT` is at the time) to match the live default.
 4. **Fail-loud implementation**: The cleanest path is a `require_jira_project()` helper in `pf/jira/client.py` that raises a `JiraConfigError` (or similar) with a message like `"Jira project key not configured. Set jira.project in .pennyfarthing/config.local.yaml or export JIRA_PROJECT."`. Have `build_epic_payload`, `create_story_in_jira`, and the `JIRA_PROJECT`-using payload builders call it before they reference the value.
@@ -107,7 +107,7 @@ This expanded context ensures TEA designs tests covering the broader refactoring
 **Phase:** finish
 **Status:** GREEN — 198/198 passing on touched files (4 hygiene + 3 fail-loud + 191 pre-existing in modified fixtures)
 
-**Files Changed (framework repo, branch `feat/152-1-remove-mssci-hardcoding`):**
+**Files Changed (framework repo, branch `feat/152-1-remove-proj-hardcoding`):**
 
 Code:
 - `pennyfarthing-dist/src/pf/jira/client.py` — added `JiraConfigError`, `require_jira_project()`; `_resolve_jira_config` now returns `(None, None)` for unset.
@@ -116,8 +116,8 @@ Code:
 
 Tests + scrub:
 - `pennyfarthing-dist/src/pf/tests/test_152_1_no_company_leakage.py` — added `.session` to SKIP_DIRS (gitignored runtime artifact).
-- `pennyfarthing-dist/src/pf/tests/test_151_3_sharded_update_and_finish_loud.py` — `MSSCI-` → `PROJ-` in fixtures and docstring.
-- `pennyfarthing-dist/src/pf/tests/test_archive_epic_field_validation.py` — `MSSCI-` → `PROJ-` in fixtures.
+- `pennyfarthing-dist/src/pf/tests/test_151_3_sharded_update_and_finish_loud.py` — `PROJ-` → `PROJ-` in fixtures and docstring.
+- `pennyfarthing-dist/src/pf/tests/test_archive_epic_field_validation.py` — `PROJ-` → `PROJ-` in fixtures.
 - `pennyfarthing-dist/src/pf/tests/test_frame_server.py` — port literal `1898` → `3898` (fictional port for tests; AC4 overwrite test now uses 3898 + 2898 as the two distinct values).
 - `pennyfarthing-dist/src/pf/tests/test_frame_websocket.py` — port literal `1898` → `2898` (matches live default).
 - `pennyfarthing-dist/src/pf/tests/test_jira_package.py` — pre-existing `test_build_epic_payload` and `test_create_epic_dry_run` updated to monkeypatch `JIRA_PROJECT="PROJ"`.
@@ -126,7 +126,7 @@ Docs:
 - `pennyfarthing-dist/guides/tui.md` — `1898` → `2898` (live default); custom-port example bumped to `3898` to keep the example distinct from default.
 - `docs/adr/0022-python-wheelhub-replacement.md` — diagrams updated to port `2898`; parallel-running paragraph rewritten to use `2898`/`2899` instead of `1898`/`2898`.
 
-**Branch:** `feat/152-1-remove-mssci-hardcoding` pushed to origin.
+**Branch:** `feat/152-1-remove-proj-hardcoding` pushed to origin.
 
 **Self-review:**
 - [x] Code is wired (the helpers are called from the two payload builders the test pinned)
@@ -152,7 +152,7 @@ The spec-check gate passed structurally (Dev Assessment present, ACs accounted f
 
 ### M1 — Fail-loud contract is partial across the Jira CLI
 
-- **Spec:** SM Assessment §"Fail-loud requirement" — *"If config is missing the project key, framework must error with a clear message — never default to MSSCI or any other key."* Phrased as a global property of the framework.
+- **Spec:** SM Assessment §"Fail-loud requirement" — *"If config is missing the project key, framework must error with a clear message — never default to PROJ or any other key."* Phrased as a global property of the framework.
 - **TEA tests pinned:** Only `build_epic_payload` and `create_story_in_jira`.
 - **Code:** `require_jira_project()` is wired only at those two sites. `pf/jira/reconcile.py:114,139` (JQL queries) and `pf/jira/cli.py:164,344` (assignment payload) still reference `JIRA_PROJECT` directly and will silently emit malformed queries / payloads when the project key is unset.
 - **Category:** Missing in code · **Type:** Behavioral · **Severity:** Major (if those CLI paths are exercised without configured project)
@@ -238,7 +238,7 @@ The spec-check gate passed structurally (Dev Assessment present, ACs accounted f
 
 **Test changes (two existing files, no new files):**
 - `pennyfarthing-dist/src/pf/tests/test_152_1_no_company_leakage.py`
-  - `test_no_corporate_jira_key_in_framework_redistributables` — added `ignore_case=True` to mirror the brand-string scan; currently FAILS because lowercase `mssci-00000` exists at `tests/python/test_sprint_story_command.py:93`.
+  - `test_no_corporate_jira_key_in_framework_redistributables` — added `ignore_case=True` to mirror the brand-string scan; currently FAILS because lowercase `proj-00000` exists at `tests/python/test_sprint_story_command.py:93`.
   - `test_skip_dirs_actually_exist_in_walk` — now counts files specifically under `pennyfarthing-dist/` (asserts `> 10`) instead of the all-walk count `> 100`; closes the loophole where a mis-rooted walk could pass via files outside the redistributable tree. Currently passes.
   - Module docstring rewritten to mention all three forbidden tokens.
 
@@ -252,7 +252,7 @@ The spec-check gate passed structurally (Dev Assessment present, ACs accounted f
 | Reviewer Finding | Test | Status |
 |------------------|------|--------|
 | F1 — `create_epic_in_jira` unguarded | `test_create_epic_in_jira_fails_loud_when_project_unconfigured` | failing — short-circuits via `not sentinel_called["created"]` |
-| F2 — MSSCI scan case-sensitive | `test_no_corporate_jira_key_in_framework_redistributables` | failing — `tests/python/test_sprint_story_command.py:93` matches |
+| F2 — PROJ scan case-sensitive | `test_no_corporate_jira_key_in_framework_redistributables` | failing — `tests/python/test_sprint_story_command.py:93` matches |
 | F3 — `distinguishable` shorts on helper | `test_jira_project_resolution_returns_sentinel_when_unset` + `test_jira_project_strict_helper_is_exposed` | both passing on current impl; either regression now fails its dedicated test |
 | M4 — walk-sanity could pass on wrong root | `test_skip_dirs_actually_exist_in_walk` | strengthened, still passing |
 | M-DOC — stale "Current behavior (the bug)" docstrings | (in-place rewrite) | docstrings now describe implemented contract |
@@ -267,7 +267,7 @@ The spec-check gate passed structurally (Dev Assessment present, ACs accounted f
 
 Primary fixes (drive RED tests to GREEN):
 1. **Add `require_jira_project` guard to `create_epic_in_jira`** in `pennyfarthing-dist/src/pf/jira/create.py`. Resolve the project key BEFORE the duplicate-search block (so the JQL at line 232 uses the validated key) and use the same resolved value at line 267. On `JiraConfigError`, `return {"success": False, "error": str(e)}`. Mirror exactly the pattern used in `create_story_in_jira` lines 110-113.
-2. **Fix the lowercase MSSCI leak** at `tests/python/test_sprint_story_command.py:93`. Replace `"mssci-00000"` with a generic placeholder (e.g. `"proj-00000"` or whatever neutral key the surrounding fixture uses).
+2. **Fix the lowercase PROJ leak** at `tests/python/test_sprint_story_command.py:93`. Replace `"proj-00000"` with a generic placeholder (e.g. `"proj-00000"` or whatever neutral key the surrounding fixture uses).
 
 Secondary cleanups (Reviewer MEDIUM/LOW findings, sweep while in the area):
 3. Strip whitespace in `require_jira_project`: change `if not value` to `if not (value and value.strip())` and `value = value.strip()` before return (`pf/jira/client.py:51`).
@@ -280,7 +280,7 @@ Secondary cleanups (Reviewer MEDIUM/LOW findings, sweep while in the area):
 **Out of scope for round 2** (logged as Reviewer follow-up; not blockers):
 - `reconcile.py:114,139` and `cli.py:164,344` JIRA_PROJECT direct usage (Architect M1 deferral remains valid).
 - `create_epic_in_jira` partial-failure surfacing (story-adjacent silent failure in child-story loop).
-- Git history rewrite for MSSCI in past commit blobs (cross-cutting; user opt-in).
+- Git history rewrite for PROJ in past commit blobs (cross-cutting; user opt-in).
 
 **Handoff:** To Dev (Ponder Stibbons) for round-2 GREEN.
 
@@ -294,7 +294,7 @@ Secondary cleanups (Reviewer MEDIUM/LOW findings, sweep while in the area):
 | 4 | reviewer-test-analyzer | Yes | findings | 4 | confirmed 3 (F3 distinguishable, dry_run-payload-assert, walk-sanity-coverage), dismissed 1 (positive-path covered elsewhere) |
 | 5 | reviewer-comment-analyzer | Yes | findings | 8 | confirmed 5 (5 stale "Current behavior (the bug)" docstrings in fail-loud tests + module-docstring brand-bullet), dismissed 0, deferred 2 (ADR-0022 narrative — already accepted as Architect M4), confirmed 1 (test_152_1_no_company_leakage docstring missing 1898&co bullet) |
 | 6 | reviewer-type-design | Yes | findings | 4 | confirmed 3 (F1 dup, bare-except-no-comment, F1 dup at line 232), dismissed 1 (require_jira_project optional/None — low) |
-| 7 | reviewer-security | Yes | findings | 4 | confirmed 2 (F2 lowercase mssci leak, hygiene scan asymmetry), deferred 2 (git history rewrite, info-leak defense-in-depth) |
+| 7 | reviewer-security | Yes | findings | 4 | confirmed 2 (F2 lowercase proj leak, hygiene scan asymmetry), deferred 2 (git history rewrite, info-leak defense-in-depth) |
 | 8 | reviewer-simplifier | Yes | findings | 4 | confirmed 1 (concat trick unnecessary because SKIP_FILES handles self), dismissed 3 (parametrize style, walk-sanity arbitrariness, dead re-resolve branch — all minor / future cleanup) |
 | 9 | reviewer-rule-checker | Yes | findings | 4 | confirmed all 4 (rule #1 bare-except, rule #4 no-logging, rule #6 distinguishable-shorts, rule #13 fix-regression at create_epic_in_jira) |
 
@@ -312,7 +312,7 @@ The story's two stated primary deliverables — (1) fail-loud Jira project key r
 | Severity | Issue | Location | Source | Fix Required |
 |---|---|---|---|---|
 | [HIGH] | `create_epic_in_jira` builds Jira payload and JQL query with raw `JIRA_PROJECT` constant; sibling function `create_story_in_jira` in same file was patched, this one was missed. Story's own fail-loud requirement violated. [SILENT][TYPE][EDGE][RULE] | `pennyfarthing-dist/src/pf/jira/create.py:232,267` | silent-failure-hunter, type-design, edge-hunter, rule-checker (4× convergent) | Wrap `JIRA_PROJECT` use in `require_jira_project(JIRA_PROJECT)` with `JiraConfigError` catch returning `{success: False, error: str(e)}`. Mirror the pattern from `create_story_in_jira` lines 110-113. Apply to BOTH the JQL search at line 232 AND the payload at line 267. |
-| [HIGH] | Hygiene test's MSSCI scan is case-sensitive, missing the lowercase `mssci-00000` literal in `tests/python/test_sprint_story_command.py:93`. Real corporate-key leak survives the hygiene gate. Story's own scrub requirement violated. [SEC] | `pennyfarthing-dist/src/pf/tests/test_152_1_no_company_leakage.py:138` AND `tests/python/test_sprint_story_command.py:93` | security | (a) Pass `ignore_case=True` to the `_find_offenders` call for `FORBIDDEN_JIRA_KEY`, AND (b) replace `mssci-00000` in the assert with `proj-00000` (or whatever generic the surrounding fixture uses). Re-run the hygiene test — it must now fail until the assert string is fixed. |
+| [HIGH] | Hygiene test's PROJ scan is case-sensitive, missing the lowercase `proj-00000` literal in `tests/python/test_sprint_story_command.py:93`. Real corporate-key leak survives the hygiene gate. Story's own scrub requirement violated. [SEC] | `pennyfarthing-dist/src/pf/tests/test_152_1_no_company_leakage.py:138` AND `tests/python/test_sprint_story_command.py:93` | security | (a) Pass `ignore_case=True` to the `_find_offenders` call for `FORBIDDEN_JIRA_KEY`, AND (b) replace `proj-00000` in the assert with `proj-00000` (or whatever generic the surrounding fixture uses). Re-run the hygiene test — it must now fail until the assert string is fixed. |
 | [HIGH] | Test `test_jira_project_resolution_distinguishes_unset_state`'s `distinguishable` boolean short-circuits on `has_strict_helper` — which is `True` simply because the helper exists. The test passes vacuously regardless of whether `_resolve_jira_config` actually returns `None` for unset; a regression that breaks the resolver while keeping the helper would not be caught. [TEST][RULE] | `pennyfarthing-dist/src/pf/tests/test_152_1_jira_project_fail_loud.py:175-185` (the `distinguishable = ...` block, around lines 176-181) | test-analyzer, rule-checker (2× convergent) | Either (a) split into two independent tests — one asserts `hasattr(client_module, 'require_jira_project')`, the other asserts `_resolve_jira_config()` returns `(None, None)` or raises in a clean env — or (b) remove `has_strict_helper` from the `distinguishable` OR-chain so the resolver's return value actually has to be checked. |
 | [MEDIUM] | Stale docstrings in `test_152_1_jira_project_fail_loud.py` describe pre-fix behavior as "Current behavior (the bug)..." even though the fix is in this same commit. Five separate docstring locations contradict the implementation. [DOC] | `pennyfarthing-dist/src/pf/tests/test_152_1_jira_project_fail_loud.py:3,14,39,64,144` | comment-analyzer | Rewrite to describe what the code now does, not what it used to do. |
 | [MEDIUM] | `_resolve_jira_config` has `except Exception:` with no comment and no logging — Python lang-review rules #1 and #4. The pattern is now load-bearing for the new fail-loud contract (a YAML parse error becomes invisible "no project key configured"). [SILENT][TYPE][RULE] | `pennyfarthing-dist/src/pf/jira/client.py:36` | type-design, rule-checker | Add an inline comment explaining intentional swallow, e.g. `except Exception:  # config is optional; Jira ops work without it`. If a logger is introduced anywhere in `pf/jira/`, add `logger.debug("config load failed: %s", exc)`. |
@@ -351,7 +351,7 @@ Mapped to `pennyfarthing-dist/gates/lang-review/python.md` (13 numbered checks):
 
 **[VERIFIED] No unsafe deserialization or shell injection introduced** — Diff has `yaml.safe_dump` (test fixture build), no `pickle`, no `eval`, no `subprocess(..., shell=True)` interpolation. Complies with Python lang-review #8.
 
-**[VERIFIED] Test fixtures' MSSCI→PROJ rename preserves test logic** — Tests in `test_151_3_sharded_update_and_finish_loud.py` and `test_archive_epic_field_validation.py` are project-key-agnostic; Dev's `MSSCI- → PROJ-` substitution is mechanical with no behavior change. 191 pre-existing tests in those files still pass.
+**[VERIFIED] Test fixtures' PROJ→PROJ rename preserves test logic** — Tests in `test_151_3_sharded_update_and_finish_loud.py` and `test_archive_epic_field_validation.py` are project-key-agnostic; Dev's `PROJ- → PROJ-` substitution is mechanical with no behavior change. 191 pre-existing tests in those files still pass.
 
 **[VERIFIED] ADR-0022 port-number rewrite removes brand without breaking diagram structure** — Diagrams now consistently show port `2898`; the parallel-running paragraph cleanly references `2898`/`2899`. Reviewer-comment-analyzer flagged that the pre/post-migration diagrams now use the same port (erasing historical distinction); accepted as a known Architect-M4 trade-off (scrub > history).
 
@@ -363,11 +363,11 @@ N/A. This story does not introduce or modify any code paths that handle multi-te
 
 Suppose I'm a malicious or merely confused user. What would I exploit?
 
-First, the fail-loud surface is asymmetric. `create_story_in_jira` and `build_epic_payload` are guarded; `create_epic_in_jira` is not. A user who accidentally clears `JIRA_PROJECT` (env-var unset, config file rotated) and runs `pf jira create epic` will get either a malformed JQL error from Jira (the `f'project = AND ...'` query) or — worse — a created Jira issue that looks correct in CI logs but is actually filed under whatever default project the Jira API server applies when given an empty key. Story 152-1 explicitly forbids "default to MSSCI or any other key" — yet the unguarded path can do exactly that. This isn't a hypothetical: the same SM Assessment that grounds this story called this out.
+First, the fail-loud surface is asymmetric. `create_story_in_jira` and `build_epic_payload` are guarded; `create_epic_in_jira` is not. A user who accidentally clears `JIRA_PROJECT` (env-var unset, config file rotated) and runs `pf jira create epic` will get either a malformed JQL error from Jira (the `f'project = AND ...'` query) or — worse — a created Jira issue that looks correct in CI logs but is actually filed under whatever default project the Jira API server applies when given an empty key. Story 152-1 explicitly forbids "default to PROJ or any other key" — yet the unguarded path can do exactly that. This isn't a hypothetical: the same SM Assessment that grounds this story called this out.
 
-Second, the hygiene test is case-blind in one direction and case-sensitive in another. `1898&co` is matched case-insensitively (so `1898&Co` would be caught); `MSSCI` is matched case-sensitively (so `mssci` slips through). The test file at `tests/python/test_sprint_story_command.py:93` has `mssci-00000` in an assertion string — it would have been caught and removed by a uniform case-insensitive sweep, but the actual scan passes. A future dev who copies that style produces another lowercase reference, and the gate continues passing.
+Second, the hygiene test is case-blind in one direction and case-sensitive in another. `1898&co` is matched case-insensitively (so `1898&Co` would be caught); `PROJ` is matched case-sensitively (so `proj` slips through). The test file at `tests/python/test_sprint_story_command.py:93` has `proj-00000` in an assertion string — it would have been caught and removed by a uniform case-insensitive sweep, but the actual scan passes. A future dev who copies that style produces another lowercase reference, and the gate continues passing.
 
-Third, the regression test is a fair-weather contract. `distinguishable = has_strict_helper or ...` is satisfied as long as the *name* `require_jira_project` exists on the module — even if its body has been gutted to `def require_jira_project(value=None): return value or "MSSCI"`. The test claims to verify that "callers can distinguish unset from configured-empty" but does not actually verify that contract once the helper exists. A future refactor that consolidates resolvers into a single function and silently restores the empty-string default would pass this test green.
+Third, the regression test is a fair-weather contract. `distinguishable = has_strict_helper or ...` is satisfied as long as the *name* `require_jira_project` exists on the module — even if its body has been gutted to `def require_jira_project(value=None): return value or "PROJ"`. The test claims to verify that "callers can distinguish unset from configured-empty" but does not actually verify that contract once the helper exists. A future refactor that consolidates resolvers into a single function and silently restores the empty-string default would pass this test green.
 
 Fourth, the `_resolve_jira_config` fallback `except Exception: jira_cfg = {}` swallows YAML parse errors with no comment and no log. A user who edits `.pennyfarthing/config.local.yaml`, accidentally introduces a tab character or breaks the indentation, will see `JiraConfigError: Jira project key not configured` — pointing at the wrong root cause. They'll set `JIRA_PROJECT` env-var, get a different "project not found" error from the Jira API, and never realize the config file was the actual problem.
 
@@ -379,13 +379,13 @@ Each of these failures is the same class: **a clean preflight covering an incomp
 
 **Hand back to TEA (red rework)** — the failures are testable. TEA must:
 1. Strengthen `test_jira_project_resolution_distinguishes_unset_state` to actually assert the resolver's return value (split into two tests, or remove the helper-exists shortcut).
-2. Make the MSSCI hygiene scan case-insensitive (mirror the 1898&co treatment).
+2. Make the PROJ hygiene scan case-insensitive (mirror the 1898&co treatment).
 3. Tighten the walk-sanity to prove `pennyfarthing-dist/` is actually scanned.
 4. Add `Raises:` docstring entry for `build_epic_payload`.
 
 **Then to Dev (green rework)** — Dev must:
 1. Apply `require_jira_project(JIRA_PROJECT)` guard to `create_epic_in_jira` at lines 232 (JQL) and 267 (payload), with `JiraConfigError` catch returning `{success: False, error: str(e)}`.
-2. Replace `mssci-00000` in `tests/python/test_sprint_story_command.py:93` with a generic placeholder.
+2. Replace `proj-00000` in `tests/python/test_sprint_story_command.py:93` with a generic placeholder.
 3. Strip whitespace in `require_jira_project` (`if not (value and value.strip())`).
 4. Fix `config.get("jira") or {}` to handle null YAML.
 5. Update stale "Current behavior (the bug)" docstrings in `test_152_1_jira_project_fail_loud.py` to describe the implemented behavior.
@@ -402,21 +402,21 @@ Each of these failures is the same class: **a clean preflight covering an incomp
 **Round-Trip:** 1 of 3 (max)
 **Implementation Complete:** Yes
 **Tests:** 53/53 story-152-1 tests passing (GREEN). Pre-existing unrelated failures in async-config and brownfield modules untouched.
-**Branch:** `feat/152-1-remove-mssci-hardcoding` (pushed — orchestrator HEAD `ed2267aae`)
+**Branch:** `feat/152-1-remove-proj-hardcoding` (pushed — orchestrator HEAD `ed2267aae`)
 
 **Files Changed (round 2):**
 - `pennyfarthing-dist/src/pf/jira/create.py` — added `require_jira_project(JIRA_PROJECT)` resolution at the top of the non-dry-run branch in `create_epic_in_jira`; replaced raw `JIRA_PROJECT` with `project_key` at the JQL search (line 232) and the create payload (line 267). Mirrors the pattern in `create_story_in_jira` lines 110-113. On `JiraConfigError` returns `{"success": False, "error": str(e)}`.
 - `pennyfarthing-dist/src/pf/jira/client.py` — `_resolve_jira_config` now uses `config.get("jira") or {}` (handles a null-valued YAML `jira:` key cleanly) and the bare `except Exception:` carries an inline comment documenting the intentional swallow. `require_jira_project` rejects whitespace-only values and strips the returned key.
 - `pennyfarthing-dist/src/pf/jira/epic.py` — `build_epic_payload` docstring now documents `Raises: JiraConfigError`.
 - `pennyfarthing-dist/src/pf/tests/test_jira_package.py` — `test_create_epic_dry_run` now asserts `result["payload"]["fields"]["project"]["key"] == "PROJ"` so a regression that ignored the constant would not pass green.
-- `tests/python/test_sprint_story_command.py` — assertion at line 93 changed from `"mssci-00000"` to `"proj-00000"` (matches the fixture's lowercased `PROJ-00000` Jira key); removes the lowercase corporate-key leak the case-insensitive hygiene scan now catches.
+- `tests/python/test_sprint_story_command.py` — assertion at line 93 changed from `"proj-00000"` to `"proj-00000"` (matches the fixture's lowercased `PROJ-00000` Jira key); removes the lowercase corporate-key leak the case-insensitive hygiene scan now catches.
 
 **Reviewer findings addressed:**
 
 | Reviewer Finding | Severity | Status |
 |------------------|----------|--------|
 | F1 — `create_epic_in_jira` unguarded JIRA_PROJECT at lines 232,267 | HIGH | Fixed (require_jira_project guard added) |
-| F2 — case-sensitive MSSCI scan + lowercase leak in test_sprint_story_command.py | HIGH | Fixed by TEA (ignore_case=True) + Dev (proj-00000 placeholder) |
+| F2 — case-sensitive PROJ scan + lowercase leak in test_sprint_story_command.py | HIGH | Fixed by TEA (ignore_case=True) + Dev (proj-00000 placeholder) |
 | F3 — `distinguishable` shorts on helper-existence | HIGH | Fixed by TEA (split into two independent tests) |
 | MEDIUM — stale "Current behavior (the bug)" docstrings | MEDIUM | Fixed by TEA (re-RED rewrite) |
 | MEDIUM — `_resolve_jira_config` bare except no comment | MEDIUM | Fixed (inline comment added) |
@@ -431,7 +431,7 @@ Each of these failures is the same class: **a clean preflight covering an incomp
 - ✅ Tests green (53/53 story-152-1 tests; full Python suite shows only pre-existing unrelated failures)
 - ✅ Working tree clean (post-commit `git status` = clean in `pennyfarthing/`)
 - ✅ No debug code (no `print` statements added; no `breakpoint()` left)
-- ✅ Correct branch (`feat/152-1-remove-mssci-hardcoding`, gitflow base `develop`)
+- ✅ Correct branch (`feat/152-1-remove-proj-hardcoding`, gitflow base `develop`)
 - ✅ Code wired to Jira creation paths actually exercised by `pf jira create epic` and `pf jira create story`
 - ✅ Code follows project patterns (mirror of `create_story_in_jira`'s pattern for symmetry)
 - ✅ All Reviewer HIGH/MEDIUM findings addressed except the LOW deferral noted above
@@ -498,7 +498,7 @@ Each Reviewer round-1 finding mapped to round-2 code:
 | Reviewer Finding | Spec source | Code location | Match? |
 |------------------|-------------|---------------|--------|
 | F1 — `create_epic_in_jira` unguarded JIRA_PROJECT (line 232/267) | Story scope: "no silent defaults"; mirror of `create_story_in_jira` lines 110-113 | `create.py:228-231` (resolution) → `create.py:236` (JQL `project = {project_key}`) → `create.py:271` (payload `{"key": project_key}`) | ✓ Matches — three-line guard exactly mirrors the round-1 pattern |
-| F2 — case-sensitive MSSCI scan + lowercase leak | TEA test `_find_offenders(... ignore_case=True)`; `tests/python/test_sprint_story_command.py:93` use generic placeholder | TEA: `test_152_1_no_company_leakage.py:138` (`ignore_case=True` per re-RED line 249); Dev: `tests/python/test_sprint_story_command.py:93` `proj-00000` | ✓ Matches |
+| F2 — case-sensitive PROJ scan + lowercase leak | TEA test `_find_offenders(... ignore_case=True)`; `tests/python/test_sprint_story_command.py:93` use generic placeholder | TEA: `test_152_1_no_company_leakage.py:138` (`ignore_case=True` per re-RED line 249); Dev: `tests/python/test_sprint_story_command.py:93` `proj-00000` | ✓ Matches |
 | F3 — vacuous `distinguishable` test | Either split into two tests, or remove `has_strict_helper` from OR-chain | TEA split into `test_jira_project_resolution_returns_sentinel_when_unset` + `test_jira_project_strict_helper_is_exposed` (per re-RED line 254-256) | ✓ Matches |
 | MEDIUM — stale "Current behavior (the bug)" docstrings | Rewrite to describe implemented behavior | TEA: per re-RED line 258 ("Module docstring + per-test docstrings rewritten") | ✓ Matches |
 | MEDIUM — bare except no comment | Inline comment explaining intentional swallow | `client.py:36` `except Exception:  # config is optional; Jira ops work without it` | ✓ Matches |
@@ -525,7 +525,7 @@ Each Reviewer round-1 finding mapped to round-2 code:
 **Round-Trip:** 1 of 3 (verify re-engages after Reviewer REJECT → TEA re-RED → Dev round 2 → Architect round-2 spec-check)
 **Status:** simplify: clean (no high-confidence fixes auto-applied — see Decision Rationale)
 **Tests:** GREEN (Dev's round-2 testing-runner verified 53/53 story-152-1 tests passing; codebase unchanged since)
-**Branch:** `feat/152-1-remove-mssci-hardcoding` (HEAD `ed2267aae`)
+**Branch:** `feat/152-1-remove-proj-hardcoding` (HEAD `ed2267aae`)
 
 ### Files Analyzed (round-2 deltas only)
 
@@ -629,7 +629,7 @@ The dev-exit gate already ran (Dev exit) and passed. The verify gate is Step 8 o
 | 1 | reviewer-preflight | Yes | clean | none (218/218 branch tests pass; 21 unrelated baseline failures pre-exist on develop; ruff clean on changed files) | N/A |
 | 2 | reviewer-edge-hunter | Yes | findings | 5 | confirmed 4 (NBSP/non-ASCII whitespace bypass, non-string config crash, existing[0]['key'] KeyError, force-branch same KeyError), dismissed 0, deferred 1 (writeback dup with silent-failure-hunter) |
 | 3 | reviewer-silent-failure-hunter | Yes | findings | 5 | confirmed 2 (create.py:262 warnings.warn masks auth errors, epic.py:170 writeback failure invisible to CLI main), deferred 3 (client.py:272/323 pre-existing, client.py:582 pre-existing curl-return discard) |
-| 4 | reviewer-test-analyzer | Yes | findings | 6 | confirmed 2 (dead `import pytest`, `.session/` exclusion silently masks live MSSCI in session file), dismissed 4 (low-confidence implementation-coupling and missing-negative notes) |
+| 4 | reviewer-test-analyzer | Yes | findings | 6 | confirmed 2 (dead `import pytest`, `.session/` exclusion silently masks live PROJ in session file), dismissed 4 (low-confidence implementation-coupling and missing-negative notes) |
 | 5 | reviewer-comment-analyzer | Yes | findings | 4 | confirmed 1 (require_jira_project docstring slightly misleading on empty-string handling), deferred 2 (ADR-0022 port — Architect M4 already accepted; story-id reference in public docstring — low impact), confirmed 1 (test_152_1_*:619 ghost `get_jira_project` reference) |
 | 6 | reviewer-type-design | Yes | findings | 5 | confirmed 4 (JIRA_PROJECT empty-string sentinel, reconcile.py/cli.py unguarded sites — all M1 deferral re-affirmation), deferred 1 (build_epic_payload raises rather than returns — fail-loud-API by design) |
 | 7 | reviewer-security | Yes | findings | 4 | confirmed 2 (JQL injection via epic title, require_jira_project doesn't validate key format), deferred 1 (cli.py:344 — M1 deferral), deferred 1 (git history leakage — out of scope, accepted by user) |
@@ -643,7 +643,7 @@ The dev-exit gate already ran (Dev exit) and passed. The verify gate is Step 8 o
 
 **Verdict:** APPROVED
 
-The round-1 REJECT class — `create_epic_in_jira` missing the per-site `require_jira_project` guard in the same file Dev had patched — is fixed. Verified at `pennyfarthing-dist/src/pf/jira/create.py:228`: the guard is present, catches `JiraConfigError`, and returns `{success: False, error: str(e)}`. The hygiene-scan lowercase-MSSCI gap (round-1 F2) is fixed: the placeholder at `tests/python/test_sprint_story_command.py:93` is now `proj-00000` and the assertion at line 92 lowercases the captured output (`output = result.output.lower()`), so the case-sensitive scan now catches lowercase variants by construction. The vacuous distinguishability test (round-1 F3) was rewritten in TEA's re-RED to assert actual resolver behavior independently from helper-existence. All three round-1 HIGH findings are closed.
+The round-1 REJECT class — `create_epic_in_jira` missing the per-site `require_jira_project` guard in the same file Dev had patched — is fixed. Verified at `pennyfarthing-dist/src/pf/jira/create.py:228`: the guard is present, catches `JiraConfigError`, and returns `{success: False, error: str(e)}`. The hygiene-scan lowercase-PROJ gap (round-1 F2) is fixed: the placeholder at `tests/python/test_sprint_story_command.py:93` is now `proj-00000` and the assertion at line 92 lowercases the captured output (`output = result.output.lower()`), so the case-sensitive scan now catches lowercase variants by construction. The vacuous distinguishability test (round-1 F3) was rewritten in TEA's re-RED to assert actual resolver behavior independently from helper-existence. All three round-1 HIGH findings are closed.
 
 Round 2's adversarial sweep — 9 specialists across 1127 diff lines — found NO new Critical or High severity issues. The strongest new findings are Medium-severity: (a) JQL injection surface via epic title (developer-controlled sprint YAML, low practical exploitability), (b) `require_jira_project` accepts non-format-valid keys (only checks non-emptiness), (c) Unicode whitespace (NBSP, em-space) bypasses `str.strip()` and produces malformed Jira API calls instead of a clean `JiraConfigError`, (d) a non-string config value (`project: 1234`) raises `AttributeError` rather than `JiraConfigError`, breaking the result-dict contract that callers expect, (e) `existing[0]['key']` `KeyError` swallowed by the duplicate-search bare-except produces a misleading "search failed" warning while falling through to create a duplicate epic. None block the round-2 verdict; all are routed to the proposed `152-2` follow-up that already exists for M1 deferral.
 
@@ -659,7 +659,7 @@ The off-diff `JIRA_PROJECT` call sites (`cli.py:164,344`, `reconcile.py:114,139`
 | [MEDIUM] | Non-string config value (`project: 1234` in YAML) raises `AttributeError` (on `.strip()`) instead of `JiraConfigError`. Callers catch `JiraConfigError` only, so the `AttributeError` propagates uncaught and breaks the result-dict contract. [EDGE][TYPE] | `pennyfarthing-dist/src/pf/jira/client.py:38,51` | edge-hunter, type-design | **Improvement** logged for `152-2`. Coerce to `str` or add `isinstance` guard. |
 | [MEDIUM] | `existing[0]['key']` raises `KeyError` if the first search result is malformed; the outer bare `except Exception as exc:` at `create.py:262` swallows it, emits a misleading "Jira search for duplicate titles failed" warning, and falls through to create a duplicate epic. Same misbehavior in the `force=True` branch at line 258. [EDGE][SILENT] | `pennyfarthing-dist/src/pf/jira/create.py:240, 258` | edge-hunter, silent-failure-hunter | **Improvement** logged for `152-2`. Use `.get('key')` with explicit handling. |
 | [LOW] | Dead `import pytest` in hygiene-scan test file — no fixtures, no marks, no `pytest.raises`. Copy-paste artifact. [TEST] | `pennyfarthing-dist/src/pf/tests/test_152_1_no_company_leakage.py:28` | test-analyzer | **Improvement** logged for `152-2` (or trivial cleanup in any future touch of this file). |
-| [LOW] | `.session/` exclusion in `SKIP_DIRS` is correct (gitignored runtime), but the hygiene-scan green result is achieved while `.session/152-1-session.md` itself contains 31 live `MSSCI` occurrences. A future reader could mistake green for "tree is clean". [TEST] | `pennyfarthing-dist/src/pf/tests/test_152_1_no_company_leakage.py:41` | test-analyzer | **Improvement** for `152-2`: add an explanatory comment naming the gitignored-runtime exclusion in the assertion message. |
+| [LOW] | `.session/` exclusion in `SKIP_DIRS` is correct (gitignored runtime), but the hygiene-scan green result is achieved while `.session/152-1-session.md` itself contains 31 live `PROJ` occurrences. A future reader could mistake green for "tree is clean". [TEST] | `pennyfarthing-dist/src/pf/tests/test_152_1_no_company_leakage.py:41` | test-analyzer | **Improvement** for `152-2`: add an explanatory comment naming the gitignored-runtime exclusion in the assertion message. |
 | [LOW] | Test helper-existence check accepts EITHER `require_jira_project` OR `get_jira_project`; only `require_jira_project` exists on the module. Ghost reference to a never-shipped name in test body and module docstring. [DOC] | `pennyfarthing-dist/src/pf/tests/test_152_1_jira_project_fail_loud.py:427, 619` | comment-analyzer | **Improvement** for `152-2`. |
 | [LOW] | `require_jira_project` docstring says "Pass an explicit value … to avoid re-resolving config" — the description glosses over that passing `value=""` does not re-resolve (the function raises directly). Subtly misleading for downstream callers. [DOC] | `pennyfarthing-dist/src/pf/jira/client.py:44` | comment-analyzer | **Improvement** for `152-2`. Clarify three-way contract: truthy-skip, None-resolve, empty-raise. |
 | [LOW] | `test_jira_project_resolution_returns_sentinel_when_unset` has an early-return path that yields a passing test with no assertion if `_resolve_jira_config` raises for an unrelated reason. Mitigated by the separate `test_jira_project_strict_helper_is_exposed`, but the contract verification is not local. [TEST][RULE] | `pennyfarthing-dist/src/pf/tests/test_152_1_jira_project_fail_loud.py:180-188` | rule-checker | **Improvement** for `152-2`. |
@@ -688,15 +688,15 @@ Mapped to `pennyfarthing-dist/gates/lang-review/python.md` (13 numbered checks).
 
 ### Other Required Coverage
 
-**[VERIFIED] Round-1 F1 closed:** `create_epic_in_jira` per-site guard present at `pennyfarthing-dist/src/pf/jira/create.py:228` — `project_key = require_jira_project(JIRA_PROJECT)` inside try/except `JiraConfigError` returning `{success: False, error: str(e)}`. Mirrors `create_story_in_jira:111` pattern exactly. Subsequent uses of `project_key` (not raw `JIRA_PROJECT`) at lines 237 (JQL search) and 272 (create payload). Verified by direct file inspection on branch `feat/152-1-remove-mssci-hardcoding` @ `ed2267aae`.
+**[VERIFIED] Round-1 F1 closed:** `create_epic_in_jira` per-site guard present at `pennyfarthing-dist/src/pf/jira/create.py:228` — `project_key = require_jira_project(JIRA_PROJECT)` inside try/except `JiraConfigError` returning `{success: False, error: str(e)}`. Mirrors `create_story_in_jira:111` pattern exactly. Subsequent uses of `project_key` (not raw `JIRA_PROJECT`) at lines 237 (JQL search) and 272 (create payload). Verified by direct file inspection on branch `feat/152-1-remove-proj-hardcoding` @ `ed2267aae`.
 
-**[VERIFIED] Round-1 F2 closed:** Hygiene case-sensitivity reconciled. At `pennyfarthing/tests/python/test_sprint_story_command.py:93` placeholder is `proj-00000`; the surrounding assertion at line 92 lowercases the captured output via `output = result.output.lower()`. Confirmed by TEA verify round-2 (line 725 of this session): "Verified incorrect: line 92 is `output = result.output.lower()` — the assertion correctly checks the lowercased output." The simplify-quality teammate's LOW finding was correctly dismissed. The hygiene-scan in `test_152_1_no_company_leakage.py` uses `re.IGNORECASE` for `FORBIDDEN_BRAND_NUMBER` and `FORBIDDEN_BRAND_STRING` and matches `FORBIDDEN_JIRA_KEY` (`MSSCI-NNNNN`) with explicit case-insensitivity per the round-1 prescription — both lowercase and uppercase variants would now be caught by the scan if reintroduced.
+**[VERIFIED] Round-1 F2 closed:** Hygiene case-sensitivity reconciled. At `pennyfarthing/tests/python/test_sprint_story_command.py:93` placeholder is `proj-00000`; the surrounding assertion at line 92 lowercases the captured output via `output = result.output.lower()`. Confirmed by TEA verify round-2 (line 725 of this session): "Verified incorrect: line 92 is `output = result.output.lower()` — the assertion correctly checks the lowercased output." The simplify-quality teammate's LOW finding was correctly dismissed. The hygiene-scan in `test_152_1_no_company_leakage.py` uses `re.IGNORECASE` for `FORBIDDEN_BRAND_NUMBER` and `FORBIDDEN_BRAND_STRING` and matches `FORBIDDEN_JIRA_KEY` (`PROJ-NNNNN`) with explicit case-insensitivity per the round-1 prescription — both lowercase and uppercase variants would now be caught by the scan if reintroduced.
 
 **[VERIFIED] Round-1 F3 closed:** TEA re-RED (round 2) rewrote the distinguishability test family. `test_jira_project_strict_helper_is_exposed` is a separate, narrow existence check. `test_jira_project_resolution_returns_sentinel_when_unset` independently verifies `_resolve_jira_config()` returns `(None, None)` (or raises) in a clean env. The OR-chain shortcut on `has_strict_helper` is gone; the resolver's return value is now actually inspected.
 
 **[VERIFIED] Tests are GREEN at HEAD:** Preflight subagent confirmed 218/218 story-relevant tests pass. 21 pre-existing failures on `develop` baseline (test_141_20, test_143_*, test_148_23, test_peloton_pane_layout, test_pypi_packaging) are unchanged and unrelated.
 
-**[VERIFIED] No new MSSCI / 1898 leakage introduced:** All MSSCI/1898 occurrences in the diff are line removals (scrubbing) or adversarial-fixture assertion strings in the hygiene-test file itself (correctly self-excluded via `SKIP_FILES`). Preflight smell scan returned 0.
+**[VERIFIED] No new PROJ / 1898 leakage introduced:** All PROJ/1898 occurrences in the diff are line removals (scrubbing) or adversarial-fixture assertion strings in the hygiene-test file itself (correctly self-excluded via `SKIP_FILES`). Preflight smell scan returned 0.
 
 **[VERIFIED] No new forbidden patterns:** No `console.log`, no `dangerouslySetInnerHTML`, no test skips without reason, no TODOs without ref, no hardcoded secrets, no unsanitized exec.
 
@@ -714,13 +714,13 @@ Suppose I'm a malicious user, or merely a confused developer. What in round-2 ca
 
 First, the off-diff sites at `cli.py:164,344` and `reconcile.py:114,139` still read bare `JIRA_PROJECT`. If I clear my Jira config and run `pf jira create standalone "fix"`, the framework will send `{"project": {"key": ""}}` to the Jira REST API; the API returns HTTP 400 and the framework surfaces `click.ClickException("Failed to create story: ...")`. This is a VISIBLE failure (not silent), but the error message is the Jira API response — not the framework's curated `JiraConfigError` guidance pointing me to `.pennyfarthing/config.local.yaml` or the `JIRA_PROJECT` env var. A new user would see a 400 and think their Jira credentials are wrong; the actual problem is config. Architect already disposed this as M1 deferral (severity: minor; out-of-scope; follow-up to `152-2`). I confirm: the failure mode is non-silent, so it does NOT replicate the round-1 F1 class. The deferral holds.
 
-Second, can I exfiltrate the corporate identifier through a side channel? Two paths exist. (a) Git history: the `git log -p` of the framework repo includes commit `7522c99` with 33 lines of MSSCI in the committed blobs (security subagent confirmed). The hygiene test correctly scans live file content, not git history. If the repo is published publicly, anyone running `git log` recovers the corporate identifier. Round-1 Reviewer's Question finding (line 725) routed this to the user for a `git filter-repo` decision; not Reviewer's call to enforce. (b) Branch names in older merge commits: `1898andCo/feat/148-26-...` appears in merge-commit messages. Same disposition — out-of-scope, user-decision.
+Second, can I exfiltrate the corporate identifier through a side channel? Two paths exist. (a) Git history: the `git log -p` of the framework repo includes commit `7522c99` with 33 lines of PROJ in the committed blobs (security subagent confirmed). The hygiene test correctly scans live file content, not git history. If the repo is published publicly, anyone running `git log` recovers the corporate identifier. Round-1 Reviewer's Question finding (line 725) routed this to the user for a `git filter-repo` decision; not Reviewer's call to enforce. (b) Branch names in older merge commits: `slabgorb/feat/148-26-...` appears in merge-commit messages. Same disposition — out-of-scope, user-decision.
 
-Third, can I confuse the fail-loud contract with a crafted config? Yes, several ways. (i) `JIRA_PROJECT=" "` (NBSP) — `str.strip()` does not remove NBSP, so the guard accepts it. Result: a malformed Jira API call instead of a clean `JiraConfigError`. (ii) `jira.project: 1234` in YAML — the integer flows through `or` chains, `value.strip()` raises `AttributeError`, propagates uncaught past callers that expect `JiraConfigError`. (iii) `JIRA_PROJECT="PROJ AND 1=1"` — passes the non-emptiness check, lands in JQL at `create.py:237`, broadens the duplicate-search scope. None of these are explicitly forbidden by the SM Assessment's "fail-loud requirement", which says "If config is missing the project key, framework must error with a clear message — never default to MSSCI or any other key." The current implementation honors the *missing* case; it does not honor the *malformed* case. This is a meaningful gap, but it is Medium severity (the round-1 RJECT class was *silent* fallback, and the round-2 contract handles silent fallback). Logged for `152-2`.
+Third, can I confuse the fail-loud contract with a crafted config? Yes, several ways. (i) `JIRA_PROJECT=" "` (NBSP) — `str.strip()` does not remove NBSP, so the guard accepts it. Result: a malformed Jira API call instead of a clean `JiraConfigError`. (ii) `jira.project: 1234` in YAML — the integer flows through `or` chains, `value.strip()` raises `AttributeError`, propagates uncaught past callers that expect `JiraConfigError`. (iii) `JIRA_PROJECT="PROJ AND 1=1"` — passes the non-emptiness check, lands in JQL at `create.py:237`, broadens the duplicate-search scope. None of these are explicitly forbidden by the SM Assessment's "fail-loud requirement", which says "If config is missing the project key, framework must error with a clear message — never default to PROJ or any other key." The current implementation honors the *missing* case; it does not honor the *malformed* case. This is a meaningful gap, but it is Medium severity (the round-1 RJECT class was *silent* fallback, and the round-2 contract handles silent fallback). Logged for `152-2`.
 
 Fourth, can the duplicate-search idempotency check create a duplicate epic in a failure mode? Yes. If `search_issues_sync` returns a list where `existing[0]` is a dict without a `"key"` field (malformed API response, partial JSON, Jira server changes), `existing[0]["key"]` raises `KeyError` inside the bare-except at `create.py:262`. The except swallows the `KeyError`, emits "Jira search for duplicate titles failed" (a lie — the search succeeded; the parse failed), and falls through to create a new epic. The same failure mode applies to the `force=True` branch. The misleading warning makes diagnosis harder. Medium severity, logged for `152-2`.
 
-Fifth, can I trip the test gate while leaking? The hygiene test excludes `.session/` (correct — gitignored runtime), but the orchestrator session file `.session/152-1-session.md` currently contains 31 live `MSSCI` occurrences and the test passes green. A future reader could mistake "test passes" for "tree is clean of MSSCI". Low severity, but worth a comment in the test asserting the exclusion is intentional. Logged for `152-2`.
+Fifth, can I trip the test gate while leaking? The hygiene test excludes `.session/` (correct — gitignored runtime), but the orchestrator session file `.session/152-1-session.md` currently contains 31 live `PROJ` occurrences and the test passes green. A future reader could mistake "test passes" for "tree is clean of PROJ". Low severity, but worth a comment in the test asserting the exclusion is intentional. Logged for `152-2`.
 
 Sixth, can the per-site guard pattern be undone by a well-intentioned refactor? Yes — if someone reads the three duplicate try/except blocks at `create.py:110-113`, `create.py:227-230`, and `epic.py:69` and "DRYs" them into a helper, the per-site auditability is destroyed and the round-1 F1 class becomes re-introducible. TEA verify round-2 explicitly logged a decision-of-record that this extraction must not be performed in any future story without revisiting the invariant. The session-file-as-coordination-layer principle (SOUL #5) makes this future-proof: anyone considering the extraction will encounter the decision-of-record in the session archive.
 
@@ -734,7 +734,7 @@ The trajectory is good: round 1 caught the in-file gap; round 2 closed it; round
 
 Pre-finish actions for SM:
 1. Provision follow-up story `152-2` — *"Apply `require_jira_project()` to remaining `JIRA_PROJECT` call sites in `pf/jira/`; harden against malformed config (NBSP, non-string, format validation); fix duplicate-search KeyError; clean up cosmetic test gaps."* See `### Reviewer (code review)` round-2 entries below for the full scope list.
-2. Create PR for `feat/152-1-remove-mssci-hardcoding` targeting `develop` (gitflow per `pennyfarthing` repo's branch strategy).
+2. Create PR for `feat/152-1-remove-proj-hardcoding` targeting `develop` (gitflow per `pennyfarthing` repo's branch strategy).
 3. Run `pf sprint story finish 152-1` to archive session, transition Jira, clean up branch.
 
 **Handoff:** To SM for finish-story.
@@ -749,8 +749,8 @@ Each finding is one list item. Use "No upstream findings" if none.
 
 ### TEA (test design)
 
-- **Question** (non-blocking): Does the user want `benchmarks/results/**` scrubbed of MSSCI references too?
-  Affects `benchmarks/results/dpgd-116/**/pipeline.yaml` (~3 files contain `MSSCI` / `1898` from historical pipeline replays). These are committed run captures, not redistributed templates. The hygiene tests currently fail on them; Dev needs a decision: scrub them, exclude `benchmarks/results/` from the hygiene scan, or rerun the benchmarks against scrubbed input.
+- **Question** (non-blocking): Does the user want `benchmarks/results/**` scrubbed of PROJ references too?
+  Affects `benchmarks/results/dpgd-116/**/pipeline.yaml` (~3 files contain `PROJ` / `1898` from historical pipeline replays). These are committed run captures, not redistributed templates. The hygiene tests currently fail on them; Dev needs a decision: scrub them, exclude `benchmarks/results/` from the hygiene scan, or rerun the benchmarks against scrubbed input.
   *Found by TEA during test design.*
 
 - **Gap** (non-blocking): Story title says "scrub templates and docs" but no per-story or epic context file exists at `sprint/context/context-story-152-1.md` / `sprint/context/context-epic-152.md`.
@@ -775,7 +775,7 @@ Each finding is one list item. Use "No upstream findings" if none.
   Affects `pennyfarthing-dist/src/pf/jira/reconcile.py:114,139` and `pennyfarthing-dist/src/pf/jira/cli.py:164,344`. Out of scope for 152-1.
   *Found by Dev during implementation.*
 
-- **Conflict** (non-blocking): During the testing-runner subagent's verification step the working git branch silently switched from `feat/152-1-remove-mssci-hardcoding` to `feature/test`. The cause is unclear — the subagent prompt did not request a branch operation. Recovered by stashing/checking out and re-applying the in-progress edits, but a leaked-side-effect from a subagent toolchain is concerning.
+- **Conflict** (non-blocking): During the testing-runner subagent's verification step the working git branch silently switched from `feat/152-1-remove-proj-hardcoding` to `feature/test`. The cause is unclear — the subagent prompt did not request a branch operation. Recovered by stashing/checking out and re-applying the in-progress edits, but a leaked-side-effect from a subagent toolchain is concerning.
   Affects testing-runner subagent (or its tooling). Recommend the SM/orchestrator audit subagent git side-effects.
   *Found by Dev during implementation.*
 
@@ -825,8 +825,8 @@ Each finding is one list item. Use "No upstream findings" if none.
   Affects `pennyfarthing/pennyfarthing-dist/src/pf/jira/create.py:232,267` (must be patched in this story before merge).
   *Found by Reviewer during code review (3 subagents convergent: silent-failure-hunter, type-design, edge-hunter, rule-checker).*
 
-- **Gap** (blocking, addressed by REJECT): Hygiene MSSCI scan is case-sensitive while the brand scan is case-insensitive. A real lowercase corporate-key occurrence at `tests/python/test_sprint_story_command.py:93` survives the gate. Story's primary scrub deliverable is incomplete.
-  Affects `pennyfarthing/pennyfarthing-dist/src/pf/tests/test_152_1_no_company_leakage.py:138` (add `ignore_case=True`) and `pennyfarthing/tests/python/test_sprint_story_command.py:93` (replace `mssci-00000` with generic).
+- **Gap** (blocking, addressed by REJECT): Hygiene PROJ scan is case-sensitive while the brand scan is case-insensitive. A real lowercase corporate-key occurrence at `tests/python/test_sprint_story_command.py:93` survives the gate. Story's primary scrub deliverable is incomplete.
+  Affects `pennyfarthing/pennyfarthing-dist/src/pf/tests/test_152_1_no_company_leakage.py:138` (add `ignore_case=True`) and `pennyfarthing/tests/python/test_sprint_story_command.py:93` (replace `proj-00000` with generic).
   *Found by Reviewer during code review (security subagent).*
 
 - **Gap** (blocking, addressed by REJECT): The fail-loud distinguishability test passes vacuously once `require_jira_project` exists on the module — even if `_resolve_jira_config` regresses to silent empty-string. The test's stated contract is not actually enforced.
@@ -837,7 +837,7 @@ Each finding is one list item. Use "No upstream findings" if none.
   Affects `pennyfarthing/pennyfarthing-dist/src/pf/jira/reconcile.py:114,139` and `pennyfarthing/pennyfarthing-dist/src/pf/jira/cli.py:164,344`.
   *Found by Reviewer during code review.*
 
-- **Question** (non-blocking): Does the user want git history rewritten to remove MSSCI from past commit blobs? Reviewer-security flagged commit `7522c99` contains 33 lines with MSSCI in committed blobs; `git log -p | grep MSSCI` recovers the corporate identifier. Out of scope for this story unless the user opts in to a `git filter-repo` rewrite before any public push.
+- **Question** (non-blocking): Does the user want git history rewritten to remove PROJ from past commit blobs? Reviewer-security flagged commit `7522c99` contains 33 lines with PROJ in committed blobs; `git log -p | grep PROJ` recovers the corporate identifier. Out of scope for this story unless the user opts in to a `git filter-repo` rewrite before any public push.
   Affects git history of `pennyfarthing` repo (not source files).
   *Found by Reviewer during code review (security subagent).*
 
@@ -875,7 +875,7 @@ Each finding is one list item. Use "No upstream findings" if none.
   Affects `pennyfarthing-dist/src/pf/tests/test_152_1_no_company_leakage.py:28`.
   *Found by Reviewer during round-2 code review (test-analyzer subagent).*
 
-- **Improvement** (non-blocking, follow-up `152-2`): `.session/` is correctly added to `SKIP_DIRS` (gitignored runtime), but the green hygiene-scan result is achieved while `.session/152-1-session.md` itself contains 31 live `MSSCI` occurrences. A future reader could mistake "test passes" for "tree is clean of MSSCI". Recommend an inline comment naming the gitignored-runtime exclusion in the test assertion message, or a separate sanity test that confirms `.session/` IS excluded by design.
+- **Improvement** (non-blocking, follow-up `152-2`): `.session/` is correctly added to `SKIP_DIRS` (gitignored runtime), but the green hygiene-scan result is achieved while `.session/152-1-session.md` itself contains 31 live `PROJ` occurrences. A future reader could mistake "test passes" for "tree is clean of PROJ". Recommend an inline comment naming the gitignored-runtime exclusion in the test assertion message, or a separate sanity test that confirms `.session/` IS excluded by design.
   Affects `pennyfarthing-dist/src/pf/tests/test_152_1_no_company_leakage.py:41`.
   *Found by Reviewer during round-2 code review (test-analyzer subagent).*
 
@@ -921,7 +921,7 @@ Each entry: what was changed, what the spec said, and why.
 #### Round 2
 
 - **M1 deferral re-affirmed for round 2 (off-diff `JIRA_PROJECT` sites)**
-  - Spec source: SM Assessment in session file (line 67) — *"Fail-loud requirement: No silent fallbacks. If config is missing the project key, framework must error with a clear message — never default to MSSCI or any other key."*
+  - Spec source: SM Assessment in session file (line 67) — *"Fail-loud requirement: No silent fallbacks. If config is missing the project key, framework must error with a clear message — never default to PROJ or any other key."*
   - Spec text: as quoted above; story scope did not enumerate specific call sites, and TEA tests do not pin `cli.py` or `reconcile.py`.
   - Implementation: `cli.py:164` (`pf jira search` JQL), `cli.py:344` (`pf jira create standalone` payload), and `reconcile.py:114,139` (reconcile JQL) remain unguarded after round 2. The in-file sweep across changed files (`create.py`, `epic.py`, `client.py`) is complete.
   - Rationale: All four off-diff sites fail with visible Jira-API errors, not silent defaults — `cli.py:344` raises `click.ClickException` on the 400 response from `client.create_issue_sync`, the JQL paths hit Jira's malformed-query handler. None replicate the silent-empty-search-results failure mode of round-1 F1. Pulling these in-scope would require TEA re-RED + Dev round-3 + Reviewer round-3 (consuming round-trip 2 of 3 on a non-silent issue) and would change the story shape after the fact. Deferral is correctly framed as a follow-up story (proposed: 152-2) requested in `### Architect (spec-check, round 2)` under Delivery Findings.
@@ -942,9 +942,9 @@ Stamping each in-flight deviation:
 
 **Reviewer-found undocumented deviations:**
 
-- **`create_epic_in_jira` in `create.py` left unguarded despite same-file fail-loud refactor:** Spec said *"never default to MSSCI or any other key"*; code at `create.py:232,267` builds a Jira JQL search and create payload using raw `JIRA_PROJECT` without `require_jira_project()`. Architect M1 noted similar gaps in `reconcile.py`/`cli.py` and deferred them, but did NOT enumerate this in-file sibling. Severity: HIGH. Logged as F1 in Reviewer Assessment.
+- **`create_epic_in_jira` in `create.py` left unguarded despite same-file fail-loud refactor:** Spec said *"never default to PROJ or any other key"*; code at `create.py:232,267` builds a Jira JQL search and create payload using raw `JIRA_PROJECT` without `require_jira_project()`. Architect M1 noted similar gaps in `reconcile.py`/`cli.py` and deferred them, but did NOT enumerate this in-file sibling. Severity: HIGH. Logged as F1 in Reviewer Assessment.
 
-- **Hygiene scan is case-asymmetric:** Spec said *"scrub all references"*; the brand-string scan is case-insensitive but the corporate-key scan is case-sensitive. `mssci-00000` (lowercase) at `tests/python/test_sprint_story_command.py:93` survives the gate. Severity: HIGH. Logged as F2 in Reviewer Assessment.
+- **Hygiene scan is case-asymmetric:** Spec said *"scrub all references"*; the brand-string scan is case-insensitive but the corporate-key scan is case-sensitive. `proj-00000` (lowercase) at `tests/python/test_sprint_story_command.py:93` survives the gate. Severity: HIGH. Logged as F2 in Reviewer Assessment.
 
 - **Test `distinguishable` boolean shorts on helper-existence:** Test docstring claims to verify resolver returns sentinel; in fact passes vacuously once the helper is present. Severity: HIGH. Logged as F3 in Reviewer Assessment.
 
@@ -1065,7 +1065,7 @@ I reviewed every entry in `### TEA (test design)`, `### Architect (spec-check)` 
 Four Medium-severity deviations from the SM Assessment's "Fail-loud requirement" spec are NOT logged by TEA/Dev/Reviewer-as-deviations (they appear as Improvement findings under Delivery Findings but not under Design Deviations). They emerge from the round-2 adversarial sweep and represent implicit implementation choices (validate-against-emptiness only, no format/type validation) that constitute partial fulfillment of the spec. Logging them here in 6-field format so the deviation manifest is complete and self-contained.
 
 - **`require_jira_project` accepts non-ASCII whitespace, treating it as a valid project key**
-  - Spec source: SM Assessment (session line 67) — *"Fail-loud requirement: No silent fallbacks. If config is missing the project key, framework must error with a clear message — never default to MSSCI or any other key."*
+  - Spec source: SM Assessment (session line 67) — *"Fail-loud requirement: No silent fallbacks. If config is missing the project key, framework must error with a clear message — never default to PROJ or any other key."*
   - Spec text: as quoted above; "missing the project key" was implicitly broadened by Reviewer round-1 prescription (*"require_jira_project doesn't strip whitespace; a config value of `"  "` passes `if not value` and is returned as the project key"*) to include whitespace-only values.
   - Implementation: `pennyfarthing-dist/src/pf/jira/client.py:51` — `if not (value and value.strip()):` uses Python `str.strip()`, which strips ASCII whitespace (space, tab, CR, LF, FF, VT) but does NOT strip non-ASCII whitespace (U+00A0 NBSP, U+2003 EM SPACE, U+3000 IDEOGRAPHIC SPACE, etc.). A `JIRA_PROJECT=" "` env value (easy to introduce via copy-paste from rich-text sources) passes the guard, is returned as `" "`, and lands in Jira API payloads — producing a malformed REST call (likely HTTP 400 with an opaque server message) rather than a clean `JiraConfigError`.
   - Rationale: Round-1 Reviewer M-finding focused on ASCII whitespace only. The fix landed in round 2 mirrors that prescription verbatim. Extending the guard to all Unicode whitespace categories would require an `unicodedata`-aware check — a non-trivial spec extension that was not requested in round 1. Implicitly deferred during round-2 Dev; not flagged by TEA verify round 2 or by Reviewer round 1.
@@ -1082,7 +1082,7 @@ Four Medium-severity deviations from the SM Assessment's "Fail-loud requirement"
 
 - **`require_jira_project` does not validate Jira project-key format (regex)**
   - Spec source: SM Assessment (session line 67) "fail-loud requirement" + Python lang-review #11 (*"User input MUST be validated before use (length, type, range)"*).
-  - Spec text: *"never default to MSSCI or any other key"* — implies "do not accept arbitrary strings as project keys"; lang-review #11 explicitly requires input validation at boundaries.
+  - Spec text: *"never default to PROJ or any other key"* — implies "do not accept arbitrary strings as project keys"; lang-review #11 explicitly requires input validation at boundaries.
   - Implementation: `pennyfarthing-dist/src/pf/jira/client.py:43-57` — `require_jira_project` validates only non-emptiness (`if not (value and value.strip())`) and returns the stripped value. It does NOT validate that the value matches the Jira project-key format (typically `^[A-Z][A-Z0-9]+$`). A `JIRA_PROJECT="PROJ AND 1=1"` env value passes the guard, lands in JQL at `create.py:237` (`f'project = {project_key} AND issuetype = Epic AND summary ~ "{title}"'`) unescaped, and broadens the duplicate-search scope (potential JQL-injection vector — see also Reviewer round-2 security finding on `title` interpolation).
   - Rationale: TEA's test design for round 1 pinned the "empty key" case but did not pin "malformed key" cases. Dev implemented to the test, not to the broader spec intent. The spec is interpretable either way ("missing" could mean only-when-absent OR also-when-malformed); the implementation chose the narrower reading. Round-2 Reviewer flagged this as Medium severity, not blocking, because no round-1 test pinned the broader contract.
   - Severity: medium

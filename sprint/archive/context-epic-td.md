@@ -15,13 +15,13 @@ sprint:
   ...
 
 completed_epics:
-  - MSSCI-14453
-  - MSSCI-14465
+  - PROJ-14453
+  - PROJ-14465
   ...
 
 completed_stories:
   - id: 83-1
-    epic: MSSCI-14465
+    epic: PROJ-14465
     title: "Python complexity module"
     points: 2
     completed: 2026-02-08
@@ -45,23 +45,23 @@ sprint:
   goal: "..."
 
 completed_epics:
-  - MSSCI-14453       # References shard file: sprint/archive/epic-MSSCI-14453.yaml
-  - MSSCI-14465
+  - PROJ-14453       # References shard file: sprint/archive/epic-PROJ-14453.yaml
+  - PROJ-14465
   - ...
 
 completed_stories:
   # Only for orphan stories not belonging to any epic (empty in this sprint)
 ```
 
-**sprint/archive/epic-MSSCI-14465.yaml** (shard):
+**sprint/archive/epic-PROJ-14465.yaml** (shard):
 ```yaml
-id: epic-MSSCI-14465
+id: epic-PROJ-14465
 title: "Complexity + Dependencies Tools"
 status: done
 completed: 2026-02-09
 stories:
   - id: 83-1
-    epic: MSSCI-14465
+    epic: PROJ-14465
     title: "Python complexity module"
     points: 2
     completed: 2026-02-08
@@ -124,7 +124,7 @@ The issue is that the completed archive file was created **before** the shard pa
 
 **Expected outcomes:**
 - `sprint/archive/sprint-2606-completed.yaml` contains only index (epics refs + orphan stories)
-- Each epic has its own shard: `sprint/archive/epic-MSSCI-14465.yaml`, etc.
+- Each epic has its own shard: `sprint/archive/epic-PROJ-14465.yaml`, etc.
 - Total story count in archive matches original file
 - No data loss during migration
 - Archive loading and archival operations work correctly
@@ -139,9 +139,9 @@ sprint:
   ...
 
 epics:
-  - MSSCI-14510      # String refs to shard files
-  - MSSCI-14951
-  - ...              # Each epic has epic-MSSCI-14510.yaml, epic-MSSCI-14951.yaml, etc.
+  - PROJ-14510      # String refs to shard files
+  - PROJ-14951
+  - ...              # Each epic has epic-PROJ-14510.yaml, epic-PROJ-14951.yaml, etc.
 ```
 
 ### Archive Reading
@@ -157,5 +157,5 @@ The `_load_archive_file()` function (lines 93-121) already handles the index for
 ## References
 - **Issue:** Data duplication and merge conflicts in completed archive
 - **Pattern source:** sprint/current-sprint.yaml + sprint/epic-*.yaml
-- **Related epic:** MSSCI-14510 (reference validation pipeline) — includes sprint shard work
+- **Related epic:** PROJ-14510 (reference validation pipeline) — includes sprint shard work
 - **Related story:** 91-24 (Sprint shard write-time validation)

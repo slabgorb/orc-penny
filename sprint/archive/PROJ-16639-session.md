@@ -1,0 +1,112 @@
+---
+story_id: "150-14"
+jira_key: "PROJ-16639"
+epic: "PROJ-16564"
+workflow: "tdd"
+---
+# Story 150-14: TEA RED phase — add spec traceability audit step to workflow
+
+## Story Details
+- **ID:** 150-14
+- **Jira Key:** PROJ-16639
+- **Epic:** PROJ-16564 (Prove the Work — PR Explanation Quality)
+- **Workflow:** tdd
+- **Repos:** pennyfarthing
+- **Branch:** feat/150-14-tea-spec-traceability
+- **Stack Parent:** none
+
+## Story Context
+
+### Problem (GitHub #1477)
+TEA writes tests but there's no systematic check that every acceptance criterion has corresponding test coverage. Tests can pass while ACs go untested. This gap is only caught during review (if at all).
+
+### Approach — Spec Traceability Audit Function
+Create a traceability audit function that takes session content (with ACs) and test file content, and produces a coverage report mapping each AC to its covering test(s).
+
+1. `parse_acceptance_criteria(session_content: str) -> list[str]` — extract ACs from session file
+2. `map_tests_to_criteria(test_content: str, criteria: list[str]) -> dict[str, list[str]]` — map each AC to test functions that reference it (by AC number or keyword matching)
+3. `audit_spec_traceability(session_content: str, test_content: str) -> dict` — produce a coverage report with `{covered: [...], uncovered: [...], coverage_pct: float}`
+
+### Acceptance Criteria
+- [ ] AC parser extracts criteria from session file checkbox format (`- [ ] ...`)
+- [ ] Test mapper identifies which test functions cover each AC
+- [ ] Audit function produces coverage report
+- [ ] Uncovered ACs are clearly reported
+- [ ] Coverage percentage is calculated correctly
+- [ ] Tests verify all parsing and mapping scenarios
+
+## Workflow Tracking
+**Workflow:** tdd
+**Phase:** red
+**Phase Started:** 2026-03-20T23:35:02Z
+
+### Phase History
+| Phase | Started | Ended | Duration |
+|-------|---------|-------|----------|
+| setup | 2026-03-20T23:33:53Z | 2026-03-20T23:35:02Z | 1m 9s |
+| red | 2026-03-20T23:35:02Z | - | - |
+
+## Delivery Findings
+
+Agents record upstream observations discovered during their phase.
+Each finding is one list item. Use "No upstream findings" if none.
+
+**Types:** Gap, Conflict, Question, Improvement
+**Urgency:** blocking, non-blocking
+
+<!-- Agents: append findings below this line. Do not edit other agents' entries. -->
+
+## Design Deviations
+
+Agents log spec deviations as they happen — not after the fact.
+Each entry: what was changed, what the spec said, and why.
+
+<!-- Agents: append deviations below this line. Do not edit other agents' entries. -->
+
+## Reviewer Assessment
+
+**Reviewer:** Claude Opus 4.6
+**Date:** 2026-03-20
+**Diff reviewed:** `git diff develop...feat/150-14-tea-spec-traceability`
+**Files reviewed:** 3 files, 445 lines added
+
+### Checklist
+
+- [x] Functions return result objects (dict returns with clear keys)
+- [x] No exceptions thrown; pure data transforms
+- [x] Type hints on all public functions
+- [x] Docstrings with Args/Returns on all public and private functions
+- [x] `from __future__ import annotations` present
+- [x] No external dependencies added (stdlib `re` only)
+- [x] Tests cover all 12 specified scenarios
+- [x] Tests use fixtures for reusable content
+- [x] Tests organized in classes by concern (Parser, Mapper, Audit)
+- [x] All 12 tests pass; full suite unaffected (3726 passed, 37 pre-existing failures)
+
+### Keyword Matching Analysis
+
+The 60% threshold with stop-word filtering is a reasonable middle ground:
+
+- **Not too loose:** Stop words are filtered, and 60% of remaining keywords must match. An AC like "Coverage percentage is calculated correctly" yields keywords `["coverage", "percentage", "calculated", "correctly"]` -- a test needs 3 of 4 to match.
+- **Not too tight:** Substring matching (via `in`) means "widget" matches "test_widget_is_created". The threshold allows partial keyword overlap, which is appropriate since test names are abbreviations of AC text.
+- **Potential edge case:** Very short ACs (1-2 keywords after stop-word removal) could match too broadly. The `len(w) > 1` filter helps but single-keyword ACs would match on any test containing that word. This is acceptable for the current use case.
+
+### Edge Cases Handled
+
+- Empty session content (no ACs) returns vacuously true (100%)
+- Checked `[x]` and unchecked `[ ]` both parsed
+- Mixed markdown content correctly filters non-checkbox lines
+- Multiple tests mapping to same AC correctly aggregated
+- Tests with no AC reference correctly excluded
+
+### Minor Observations (Non-blocking)
+
+1. **`_extract_test_functions` regex:** The docstring regex `(?:[^"]|"(?!""))*?` handles single quotes in docstrings but would miss triple-single-quoted docstrings (`'''...'''`). Acceptable since the codebase convention is double-quoted docstrings.
+
+2. **`- [X]` (uppercase X):** The regex `[ x]` only matches lowercase `x`. Some markdown editors produce uppercase `X`. Non-blocking since session files are machine-generated by the framework.
+
+3. **Return type annotation:** `audit_spec_traceability` returns `dict` rather than a TypedDict or more specific type. Acceptable for this scope but could be tightened in a future story.
+
+### Verdict: APPROVED
+
+Clean implementation. All ACs met. Keyword matching threshold is well-calibrated for the use case. No blocking issues.

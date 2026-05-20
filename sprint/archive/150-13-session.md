@@ -1,14 +1,14 @@
 ---
 story_id: "150-13"
-jira_key: "MSSCI-16564"
-epic: "MSSCI-16564"
+jira_key: "PROJ-16564"
+epic: "PROJ-16564"
 workflow: "tdd"
 ---
 # Story 150-13: Reviewer gate template and docs for specialist tag format
 
 ## Story Details
 - **ID:** 150-13
-- **Jira Key:** MSSCI-16564
+- **Jira Key:** PROJ-16564
 - **Workflow:** tdd
 - **Repos:** pennyfarthing
 - **Branch:** feat/150-13-reviewer-gate-template

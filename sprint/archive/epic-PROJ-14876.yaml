@@ -1,0 +1,59 @@
+id: '102'
+type: epic
+title: BikeRack Follow-up — Dockview Migration and Panel Fixes
+description: Follow-up to Epic 101. Migrate BikeRack from index/StandalonePanel approach to proper Dockview layout, fix broken panels (OTEL, Git, Portrait), replace settings panel, remove TTY panel.
+priority: P1
+status: done
+repos: pennyfarthing
+jira: PROJ-14876
+stories:
+  - id: 102-1
+    title: Migrate BikeRack from index page to Dockview layout
+    points: 5
+    priority: P1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-02-12'
+    workflow: tdd
+    completed: '2026-02-12'
+    type: refactor
+  - id: 102-2
+    title: Replace settings panel for BikeRack
+    points: 3
+    priority: P1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    workflow: tdd
+    completed: '2026-02-12'
+  - id: 102-3
+    title: "Deprecate and remove TTY panel and BikeRack panel entirely"
+    points: 3
+    priority: P2
+    status: done
+    workflow: trivial
+    completed: '2026-02-13'
+    type: chore
+  - id: 102-4
+    title: Investigate and fix OTEL panels not responding in BikeRack
+    points: 2
+    priority: P1
+    status: done
+    workflow: trivial
+    type: bug
+  - id: 102-5
+    title: Fix broken Git panel in BikeRack
+    points: 2
+    priority: P1
+    status: done
+    workflow: trivial
+    type: bug
+  - id: 102-6
+    title: "BikeRack: anchor portrait panel above Dockview tab bar"
+    points: 2
+    priority: P1
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    workflow: tdd
+    completed: '2026-02-12'
+    type: feature
+completed: '2026-02-13'

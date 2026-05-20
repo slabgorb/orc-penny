@@ -4,7 +4,7 @@
 
 Generate story context documents using 3 different Architect personas for dpgd-116. Measures whether Architect persona choice affects architectural risk identification and technical guidance quality.
 
-**Points:** 3 | **Workflow:** tdd | **Jira:** MSSCI-16297
+**Points:** 3 | **Workflow:** tdd | **Jira:** PROJ-16297
 
 ## Objective
 

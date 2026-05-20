@@ -21,7 +21,7 @@ epics:
   # ===========================================================================
   # EPIC NN: Epic Title
   # ===========================================================================
-  - id: MSSCI-XXXXX           # Jira epic key (required)
+  - id: PROJ-XXXXX           # Jira epic key (required)
     type: epic
     title: "Epic: Title Here"
     description: |            # Optional multi-line description
@@ -31,8 +31,8 @@ epics:
     repos: cyclist            # Optional: cyclist | pennyfarthing | both
     stories:
       # --- Story Template ---
-      - id: MSSCI-XXXXX       # Jira story key (required)
-        jira: MSSCI-XXXXX     # Optional: explicit Jira key if different from id
+      - id: PROJ-XXXXX       # Jira story key (required)
+        jira: PROJ-XXXXX     # Optional: explicit Jira key if different from id
         title: "Story title"
         description: |        # Optional multi-line description
           Story description goes here.
@@ -47,7 +47,7 @@ epics:
           - Second acceptance criterion
 
       # --- In-Progress Story (additional fields) ---
-      - id: MSSCI-XXXXX
+      - id: PROJ-XXXXX
         title: "Active story"
         points: 2
         priority: P1
@@ -73,7 +73,7 @@ epics:
 #   status          - active or closed
 #
 # Epic fields:
-#   id          - Jira epic key (MSSCI-XXXXX)
+#   id          - Jira epic key (PROJ-XXXXX)
 #   type        - Always "epic"
 #   title       - "Epic: Title" format
 #   description - Optional multi-line description
@@ -82,7 +82,7 @@ epics:
 #   repos       - Optional target repo(s)
 #
 # Story fields:
-#   id          - Jira story key (MSSCI-XXXXX) or local ID (NN-N)
+#   id          - Jira story key (PROJ-XXXXX) or local ID (NN-N)
 #   jira        - Optional explicit Jira key
 #   title       - Story title
 #   description - Optional multi-line description

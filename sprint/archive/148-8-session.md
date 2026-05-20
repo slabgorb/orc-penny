@@ -1,7 +1,7 @@
 ---
 story_id: "148-8"
-jira_key: "MSSCI-16421"
-epic: "MSSCI-16421"
+jira_key: "PROJ-16421"
+epic: "PROJ-16421"
 workflow: "tdd"
 ---
 
@@ -11,8 +11,8 @@ workflow: "tdd"
 
 - **ID:** 148-8
 - **Title:** Peloton mode — spawn team panes and run TDD workflow through tmux
-- **Jira Key:** MSSCI-16421
-- **Epic:** MSSCI-16421
+- **Jira Key:** PROJ-16421
+- **Epic:** PROJ-16421
 - **Workflow:** tdd
 - **Stack Parent:** none
 - **Points:** 5
@@ -353,7 +353,7 @@ This is a well-structured scaffold for peloton mode. The core abstractions (Pane
 - Session file created with comprehensive story context and acceptance criteria
 - Branch `feat/148-8-peloton-mode-tmux` created from `develop` in pennyfarthing repo
 - Story moved to in_progress status
-- No Jira key found — epic 148 maps to MSSCI-16421
+- No Jira key found — epic 148 maps to PROJ-16421
 
 ### Routing Decision
 

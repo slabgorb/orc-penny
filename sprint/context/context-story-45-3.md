@@ -20,7 +20,7 @@ Gold standard responses need to be curated for scenarios where scoring is most i
 - Human-curated or best-of-N with human validation
 - Must be genuinely expert-level — not just "good enough"
 - Include reasoning, not just conclusions
-- Score assigned by human reviewer using anchored rubric (from MSSCI-16210 if available)
+- Score assigned by human reviewer using anchored rubric (from PROJ-16210 if available)
 
 **Do NOT:**
 - Use LLM-generated gold standards without human review

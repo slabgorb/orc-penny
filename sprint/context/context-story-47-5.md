@@ -4,7 +4,7 @@
 
 Score the PM and Architect context documents (from 47-3, 47-4) against the ground truth manifests (from 47-2). Quantify whether theme/persona choice produces measurably different strategic output quality.
 
-**Points:** 2 | **Workflow:** trivial | **Jira:** MSSCI-16298
+**Points:** 2 | **Workflow:** trivial | **Jira:** PROJ-16298
 
 ## Objective
 

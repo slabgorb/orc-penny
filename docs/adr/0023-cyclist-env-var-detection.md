@@ -85,7 +85,7 @@ The `CYCLIST=1` environment variable is the canonical signal for "this Claude pr
 
 ## Related
 
-- **Story:** MSSCI-14722 (98-8)
+- **Story:** PROJ-14722 (98-8)
 - **PR:** #789
 - **ADR-0004:** WheelHub consolidation (established port file pattern, now partially superseded for detection)
 - **Files:** `pennyfarthing_scripts/hooks.py`, `packages/cyclist/src/claude-service.ts`

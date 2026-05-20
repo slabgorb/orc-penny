@@ -1,6 +1,6 @@
 # Context: Story 125-8 — Event-driven Jira sync on story transitions
 
-**GitHub Issue:** 1898andCo/pennyfarthing-orchestrator (MSSCI-15429)
+**GitHub Issue:** slabgorb/pennyfarthing-orchestrator (PROJ-15429)
 **Points:** 3
 **Epic:** 125 — Sprint State Engine Consolidation
 
@@ -49,7 +49,7 @@ pf sprint story update 125-8 --status in_progress
   → update YAML
   → [NEW] sync_to_jira_async() — immediate, atomic
     → validate Jira issue exists
-    → transition_async(MSSCI-15429, "In Progress")
+    → transition_async(PROJ-15429, "In Progress")
     → handle errors, report clearly
   → return result object {success, synced_to_jira, error?}
 
@@ -90,10 +90,10 @@ Users who need to fix drift will run the report and manually decide to re-sync, 
 ## Acceptance Criteria
 
 ### AC1: Story transitions sync to Jira in real-time
-- **Given** a story with `jira: MSSCI-15429`
+- **Given** a story with `jira: PROJ-15429`
 - **When** I run `pf sprint story update 125-8 --status in_progress`
 - **Then** the YAML updates, and within 5 seconds the Jira issue is transitioned to "In Progress"
-- **And** the CLI output confirms "Synced to Jira: MSSCI-15429"
+- **And** the CLI output confirms "Synced to Jira: PROJ-15429"
 
 ### AC2: Sync failures are reported clearly
 - **Given** a story with an invalid or missing Jira key

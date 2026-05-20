@@ -14,7 +14,7 @@ sprints:
     epics:
       - id: epic-1
         title: Agentic Best Practices Implementation
-        jira: MSSCI-11116
+        jira: PROJ-11116
         points: 21
         stories:
           - { id: "1-1", title: "Expand agent command files with workflow context", points: 5 }
@@ -41,7 +41,7 @@ sprints:
     epics:
       - id: epic-2
         title: Sprint Operations Polish
-        jira: MSSCI-11142
+        jira: PROJ-11142
         points: 16
         stories:
           - { id: "2-1", title: "Automate Jira sync in SM finish workflow", points: 3, pr: 9 }
@@ -54,7 +54,7 @@ sprints:
 
       - id: epic-4
         title: Configuration & Permissions Framework
-        jira: MSSCI-11147
+        jira: PROJ-11147
         points: 13
         stories:
           - { id: "4-1", title: "Document permissions in settings.local.json", points: 2, pr: 10 }
@@ -66,7 +66,7 @@ sprints:
 
       - id: epic-5
         title: Theme Management CLI
-        jira: MSSCI-11233
+        jira: PROJ-11233
         points: 8
         stories:
           - { id: "5-1", title: "pennyfarthing theme list", points: 2, pr: 15 }
@@ -85,7 +85,7 @@ sprints:
     epics:
       - id: epic-6
         title: Interactive Theme Wizard
-        jira: MSSCI-11196
+        jira: PROJ-11196
         points: 13
         stories:
           - { id: "6-1", title: "/theme-maker command skeleton", points: 3 }
@@ -96,7 +96,7 @@ sprints:
 
       - id: epic-3
         title: Context Management & Circuit Breaker
-        jira: MSSCI-11203
+        jira: PROJ-11203
         points: 3
         stories:
           - { id: "3-2", title: "Automatic warning at 70% threshold", points: 3, pr: 20 }
@@ -113,7 +113,7 @@ sprints:
     epics:
       - id: epic-11
         title: OCEAN Personality Visualization with Chernoff Faces
-        jira: MSSCI-11269
+        jira: PROJ-11269
         points: 31
         stories:
           - { id: "11-1", title: "OCEAN → facial feature mapping spec", points: 2 }
@@ -144,7 +144,7 @@ sprints:
     epics:
       - id: epic-12
         title: Scientific Benchmarking Migration (Phase 1)
-        jira: MSSCI-11285
+        jira: PROJ-11285
         points: 18
         stories:
           - { id: "12-1", title: "Copy /solo command", points: 3, pr: 42 }

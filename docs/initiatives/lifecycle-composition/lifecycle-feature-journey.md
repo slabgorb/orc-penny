@@ -28,7 +28,7 @@ graph TD
     subgraph "PHASE 3: SPRINT INTAKE"
         direction TB
         PROMOTE["Promote to Sprint<br/><small>pf sprint promote</small>"]
-        SHARD["Epic Shard Created<br/><small>→ sprint/epic-MSSCI-XXXXX.yaml</small>"]
+        SHARD["Epic Shard Created<br/><small>→ sprint/epic-PROJ-XXXXX.yaml</small>"]
         INDEX["Sprint Index Updated<br/><small>→ sprint/current-sprint.yaml</small>"]
     end
 
@@ -43,8 +43,8 @@ graph TD
     subgraph "PHASE 5: COMPLETION"
         direction TB
         FINISH["SM Finish<br/><small>pf sprint story finish</small>"]
-        ARCHIVE_S["Session Archived<br/><small>→ sprint/archive/MSSCI-XXXXX-session.md</small>"]
-        ARCHIVE_E["Epic Archived<br/><small>(when all stories done)</small><br/><small>→ sprint/archive/epic-MSSCI-XXXXX.yaml</small>"]
+        ARCHIVE_S["Session Archived<br/><small>→ sprint/archive/PROJ-XXXXX-session.md</small>"]
+        ARCHIVE_E["Epic Archived<br/><small>(when all stories done)</small><br/><small>→ sprint/archive/epic-PROJ-XXXXX.yaml</small>"]
     end
 
     IDEA --> PB
@@ -127,17 +127,17 @@ Sprint data is **sharded** — the index file references epic shards by Jira key
 graph TD
     subgraph "sprint/"
         CSY["current-sprint.yaml<br/><small>Sprint metadata +<br/>epic refs (string list)</small>"]
-        E1["epic-MSSCI-15676.yaml<br/><small>Epic dict + stories[]</small>"]
-        E2["epic-MSSCI-15680.yaml<br/><small>Epic dict + stories[]</small>"]
-        E3["epic-MSSCI-15685.yaml<br/><small>Epic dict + stories[]</small>"]
+        E1["epic-PROJ-15676.yaml<br/><small>Epic dict + stories[]</small>"]
+        E2["epic-PROJ-15680.yaml<br/><small>Epic dict + stories[]</small>"]
+        E3["epic-PROJ-15685.yaml<br/><small>Epic dict + stories[]</small>"]
         FUT["future.yaml<br/><small>initiatives[] refs</small>"]
         I1["initiative-tech-debt.yaml<br/><small>Initiative details +<br/>standalone_stories[]</small>"]
     end
 
     subgraph "sprint/archive/"
         ARC["sprint-2608-completed.yaml<br/><small>completed_epics[] +<br/>completed_stories[]</small>"]
-        AE1["epic-MSSCI-15680.yaml<br/><small>Archived epic shard</small>"]
-        AS1["MSSCI-15695-session.md<br/><small>Archived session</small>"]
+        AE1["epic-PROJ-15680.yaml<br/><small>Archived epic shard</small>"]
+        AS1["PROJ-15695-session.md<br/><small>Archived session</small>"]
     end
 
     subgraph ".session/"
@@ -171,15 +171,15 @@ sprint:
   status: active
 
 epics:              # String refs → shard files
-  - MSSCI-15676
-  - MSSCI-15680
-  - MSSCI-15685
+  - PROJ-15676
+  - PROJ-15680
+  - PROJ-15685
 
 stories: []         # Orphan stories (not in epics)
 standalone_stories: []
 ```
 
-### Epic Shard (`epic-MSSCI-15680.yaml`)
+### Epic Shard (`epic-PROJ-15680.yaml`)
 
 ```yaml
 id: '129'
@@ -187,12 +187,12 @@ type: epic
 title: 'Epic: Hook System & Installation'
 priority: P1
 status: in_progress
-jira: MSSCI-15680
+jira: PROJ-15680
 repos: pennyfarthing
 points: 16
 stories:
   - id: 129-1
-    jira: MSSCI-15681
+    jira: PROJ-15681
     title: Story title here
     points: 2
     priority: P1
@@ -214,7 +214,7 @@ sequenceDiagram
     participant F as sprint/future.yaml
     participant I as initiative-*.yaml
     participant C as current-sprint.yaml
-    participant E as epic-MSSCI-*.yaml
+    participant E as epic-PROJ-*.yaml
     participant S as .session/{id}-session.md
     participant A as sprint/archive/
 
@@ -395,7 +395,7 @@ stateDiagram-v2
 
     state Sprint {
         [*] --> backlog
-        backlog : Epic shard created<br/>epic-MSSCI-XXXXX.yaml
+        backlog : Epic shard created<br/>epic-PROJ-XXXXX.yaml
         backlog --> in_progress : First story claimed
         in_progress : Stories being worked
         in_progress --> done : All stories done/canceled
@@ -416,12 +416,12 @@ stateDiagram-v2
     end note
 
     note right of Sprint
-        File: sprint/epic-MSSCI-XXXXX.yaml
+        File: sprint/epic-PROJ-XXXXX.yaml
         Ref: sprint/current-sprint.yaml
     end note
 
     note right of Archived
-        File: sprint/archive/epic-MSSCI-XXXXX.yaml
+        File: sprint/archive/epic-PROJ-XXXXX.yaml
         Ref: sprint/archive/sprint-YYWW-completed.yaml
     end note
 ```

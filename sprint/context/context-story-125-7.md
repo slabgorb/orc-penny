@@ -1,10 +1,10 @@
 # Context: Story 125-7 — Implement story lifecycle state machine with transition validation
 
-**Jira:** MSSCI-15428
+**Jira:** PROJ-15428
 **Points:** 3
 **Priority:** P2
 **Workflow:** tdd
-**Epic:** 125 — Sprint State Engine Consolidation (MSSCI-15421)
+**Epic:** 125 — Sprint State Engine Consolidation (PROJ-15421)
 
 ## Problem
 
@@ -82,7 +82,7 @@ backlog ──→ in_progress ──→ review ──→ done
 - **Then** the operation rejects with error code `invalid_transition` and message: `"Cannot transition from {from_state} to {to_state}. Valid transitions: {list}"`
 
 ### AC2: Single function updates YAML + Jira + session atomically
-- **Given** a story in state `backlog` with Jira key `MSSCI-15428`
+- **Given** a story in state `backlog` with Jira key `PROJ-15428`
 - **When** `transition_story("125-7", "in_progress")` is called
 - **Then** the operation:
   1. Validates `backlog → in_progress` is legal ✓
@@ -98,7 +98,7 @@ backlog ──→ in_progress ──→ review ──→ done
 - **Then** the operation returns `{success: false, error: "Cannot transition from done to in_progress. Valid targets from done: [canceled]", steps: []}` and makes no changes
 
 ### AC4: Partial failure reports which steps succeeded/failed
-- **Given** a story in `in_progress` with Jira key `MSSCI-15428` transitioning to `review`
+- **Given** a story in `in_progress` with Jira key `PROJ-15428` transitioning to `review`
 - **When** the YAML write succeeds but Jira transition fails (API error, no valid transition)
 - **Then** the operation returns:
   ```json

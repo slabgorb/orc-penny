@@ -1,6 +1,6 @@
 ```
 rm -rf <project-dir>
-git clone git@github.com:1898andCo/pennyfarthing-orchestrator.git <project-dir>
+git clone git@github.com:slabgorb/pennyfarthing-orchestrator.git <project-dir>
 cd <project-dir>
 just setup
 ```

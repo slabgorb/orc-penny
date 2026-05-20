@@ -6,7 +6,7 @@ classification:
   projectContext: brownfield
 inputDocuments:
   - docs/lifecycle-tier-work-products.md
-  - sprint/archive/MSSCI-15033-session.md
+  - sprint/archive/PROJ-15033-session.md
   - sprint/planning/prd-sprint-data-management.md
   - pennyfarthing/pennyfarthing-dist/guides/session-artifacts.md
 workflowType: 'prd'
@@ -47,7 +47,7 @@ The session file was designed as a workflow tracking artifact, not a feedback ar
 
 ### Evidence: Session File Gap
 
-From `sprint/archive/MSSCI-15033-session.md` — a completed story with TEA, Dev, and Reviewer assessments:
+From `sprint/archive/PROJ-15033-session.md` — a completed story with TEA, Dev, and Reviewer assessments:
 
 - TEA found 5 audit issues (choice casing, param naming, missing sugar, missing help text) — these are structured findings about CLI inconsistency, but they're captured only as assessment prose
 - Dev implemented fixes and noted backward-compat aliases — an architectural decision made during delivery with no formal record
@@ -137,14 +137,14 @@ Session File (existing)
 **Goal:** Understand what story 127-3 revealed about the broader system
 
 **Current flow:**
-1. Open `sprint/archive/MSSCI-15426-session.md`
+1. Open `sprint/archive/PROJ-15426-session.md`
 2. Read TEA assessment (finds 2 paragraphs about test challenges)
 3. Read Dev assessment (finds note about architecture assumption)
 4. Read Reviewer assessment (finds medium-priority observation)
 5. Mentally synthesize: "So the OCSF schema needs a new field, and the test fixtures are wrong"
 
 **New flow (Phase 1):**
-1. Open `sprint/archive/MSSCI-15426-session.md`
+1. Open `sprint/archive/PROJ-15426-session.md`
 2. Read Impact Summary section at the top:
    ```
    ## Impact Summary
@@ -510,7 +510,7 @@ Below is an annotated example showing how a completed session file would look wi
 ```markdown
 # Story 127-3: Add WebSocket broadcast for panel updates
 
-**Jira:** MSSCI-15500
+**Jira:** PROJ-15500
 **Epic:** 127 — Real-Time Panel Communication
 ...
 

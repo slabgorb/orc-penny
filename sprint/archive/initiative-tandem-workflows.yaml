@@ -5,7 +5,7 @@ completed_note: |-
   All work complete. Epic 86 (Agent Collaboration — Tandem to Teams) delivered
   17 stories, 39 points across sprints 2606-2608. Tandem consultation protocol,
   native Agent Teams, and Cyclist integration all shipped. Epic already archived
-  at sprint/archive/epic-MSSCI-14509.yaml.
+  at sprint/archive/epic-PROJ-14509.yaml.
 description: |
   ARCHIVED — Original description preserved for history.
   Scale adaptation capabilities for larger initiatives and brownfield codebases.
@@ -15,4 +15,4 @@ description: |
   Technical Debt as standalone.
 total_points: 17
 epics:
-  - MSSCI-14509  # DONE — 17/17 stories, 39 pts, completed 2026-02-18
+  - PROJ-14509  # DONE — 17/17 stories, 39 pts, completed 2026-02-18

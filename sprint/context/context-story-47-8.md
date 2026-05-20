@@ -4,7 +4,7 @@
 
 Instrument PM persona behavior during context generation to measure research question quality. Different personas may ask different types of questions during planning — this story captures and scores those patterns.
 
-**Points:** 3 | **Workflow:** tdd | **Jira:** MSSCI-16301
+**Points:** 3 | **Workflow:** tdd | **Jira:** PROJ-16301
 **Priority:** P3 — exploratory, pursue if capacity allows
 
 ## Objective

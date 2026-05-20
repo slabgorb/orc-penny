@@ -7,7 +7,7 @@ Promote sidebar sections to independent top-level tabs using existing VerticalPa
 ## Epic Details
 
 - **Epic ID**: epic-68
-- **JIRA Key**: MSSCI-12676
+- **JIRA Key**: PROJ-12676
 - **Points**: 12
 - **Priority**: P1
 - **Status**: active

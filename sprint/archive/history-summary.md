@@ -35,7 +35,7 @@
 - **Sprint 5:** Scientific benchmarking - Migrated from Thunderdome
 
 ### Jira Era (Sprints 6-10): Feature Expansion
-**244 points** | MSSCI-prefixed story IDs
+**244 points** | PROJ-prefixed story IDs
 
 - **Sprint 6:** Public showcase - Astro website, TRAIL research
 - **Sprint 7:** Monorepo consolidation - pnpm workspace, verbose mode

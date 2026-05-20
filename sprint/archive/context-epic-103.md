@@ -1,6 +1,6 @@
 # Epic 103: BikeRack TUI — Terminal-Native Dashboard
 
-**Jira:** MSSCI-14951
+**Jira:** PROJ-14951
 **ADR:** 0024
 **Repo:** pennyfarthing
 **PRDs:** `sprint/planning/bikerack-prd.md` (browser mode), `sprint/planning/tui-prd.md` (TUI mode)
@@ -130,25 +130,25 @@ theme = config.get('theme', 'default')
 
 | ID | Title | Pts | Priority | Status | Workflow | Jira |
 |----|-------|-----|----------|--------|----------|------|
-| 103-1 | Textual app scaffold with basic layout | 2 | P0 | backlog | tdd | MSSCI-14956 |
-| 103-2 | WheelHub WebSocket client with auto-reconnect | 3 | P0 | backlog | tdd | MSSCI-14957 |
-| 103-3 | `pf bikerack` launcher command | 2 | P0 | backlog | tdd | MSSCI-14958 |
-| 103-4 | Connection status indicator in TUI header | 1 | P0 | backlog | trivial | MSSCI-14959 |
-| 103-5 | Base panel abstraction (channel subscription + Rich rendering) | 3 | P0 | backlog | tdd | MSSCI-14960 |
-| 103-6 | SprintPanel implementation | 2 | P0 | backlog | tdd | MSSCI-14961 |
-| 103-7 | `/bc` slash command skill registration | 2 | P0 | backlog | tdd | MSSCI-14962 |
-| 103-8 | Panel persistence (extend ERB mechanism) | 2 | P1 | backlog | trivial | MSSCI-14963 |
-| 103-9 | Panel header chrome (current panel indicator, Nerd Font icons) | 1 | P1 | backlog | trivial | MSSCI-14964 |
-| 103-10 | GitPanel (multi-repo status) | 2 | P0 | backlog | tdd | MSSCI-14965 |
-| 103-11 | WorkflowPanel (phase diagram, agent flow) | 2 | P1 | backlog | trivial | MSSCI-14966 |
-| 103-12 | ACPanel (acceptance criteria checklist) | 1 | P1 | backlog | trivial | MSSCI-14967 |
-| 103-13 | TodoPanel (task checklist) | 1 | P1 | backlog | trivial | MSSCI-14968 |
-| 103-14 | ChangedPanel (file list with status) | 1 | P1 | backlog | trivial | MSSCI-14969 |
-| 103-15 | AuditLogPanel (scrolling event log) | 1 | P1 | backlog | trivial | MSSCI-14970 |
-| 103-16 | BackgroundPanel (task status) | 1 | P1 | backlog | trivial | MSSCI-14971 |
-| 103-17 | DebugPanel (log viewer) | 1 | P1 | backlog | trivial | MSSCI-14972 |
-| 103-18 | DiffsPanel — Rich diff rendering with syntax highlighting | 3 | P0 | backlog | tdd | MSSCI-14973 |
-| 103-19 | Large diff handling (truncation/pagination) | 2 | P1 | backlog | tdd | MSSCI-14974 |
+| 103-1 | Textual app scaffold with basic layout | 2 | P0 | backlog | tdd | PROJ-14956 |
+| 103-2 | WheelHub WebSocket client with auto-reconnect | 3 | P0 | backlog | tdd | PROJ-14957 |
+| 103-3 | `pf bikerack` launcher command | 2 | P0 | backlog | tdd | PROJ-14958 |
+| 103-4 | Connection status indicator in TUI header | 1 | P0 | backlog | trivial | PROJ-14959 |
+| 103-5 | Base panel abstraction (channel subscription + Rich rendering) | 3 | P0 | backlog | tdd | PROJ-14960 |
+| 103-6 | SprintPanel implementation | 2 | P0 | backlog | tdd | PROJ-14961 |
+| 103-7 | `/bc` slash command skill registration | 2 | P0 | backlog | tdd | PROJ-14962 |
+| 103-8 | Panel persistence (extend ERB mechanism) | 2 | P1 | backlog | trivial | PROJ-14963 |
+| 103-9 | Panel header chrome (current panel indicator, Nerd Font icons) | 1 | P1 | backlog | trivial | PROJ-14964 |
+| 103-10 | GitPanel (multi-repo status) | 2 | P0 | backlog | tdd | PROJ-14965 |
+| 103-11 | WorkflowPanel (phase diagram, agent flow) | 2 | P1 | backlog | trivial | PROJ-14966 |
+| 103-12 | ACPanel (acceptance criteria checklist) | 1 | P1 | backlog | trivial | PROJ-14967 |
+| 103-13 | TodoPanel (task checklist) | 1 | P1 | backlog | trivial | PROJ-14968 |
+| 103-14 | ChangedPanel (file list with status) | 1 | P1 | backlog | trivial | PROJ-14969 |
+| 103-15 | AuditLogPanel (scrolling event log) | 1 | P1 | backlog | trivial | PROJ-14970 |
+| 103-16 | BackgroundPanel (task status) | 1 | P1 | backlog | trivial | PROJ-14971 |
+| 103-17 | DebugPanel (log viewer) | 1 | P1 | backlog | trivial | PROJ-14972 |
+| 103-18 | DiffsPanel — Rich diff rendering with syntax highlighting | 3 | P0 | backlog | tdd | PROJ-14973 |
+| 103-19 | Large diff handling (truncation/pagination) | 2 | P1 | backlog | tdd | PROJ-14974 |
 
 **Total:** 33 points across 19 stories
 

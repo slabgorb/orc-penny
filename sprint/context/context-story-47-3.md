@@ -4,7 +4,7 @@
 
 Generate epic context documents using 3 different PM personas for the dpgd-116 scenario. Compare the output to measure whether PM persona choice affects the quality and coverage of strategic planning artifacts.
 
-**Points:** 3 | **Workflow:** tdd | **Jira:** MSSCI-16296
+**Points:** 3 | **Workflow:** tdd | **Jira:** PROJ-16296
 
 ## Objective
 

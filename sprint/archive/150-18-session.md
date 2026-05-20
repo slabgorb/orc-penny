@@ -1,7 +1,7 @@
 ---
 story_id: "150-18"
 jira_key: null
-epic: MSSCI-16564
+epic: PROJ-16564
 workflow: tdd
 ---
 
@@ -11,7 +11,7 @@ workflow: tdd
 - **ID:** 150-18
 - **Title:** Gate strictness profiles — workflow.strictness setting for strict/standard/minimal
 - **Jira Key:** Not yet created
-- **Epic:** MSSCI-16564 (Prove the Work — PR Explanation Quality)
+- **Epic:** PROJ-16564 (Prove the Work — PR Explanation Quality)
 - **Workflow:** tdd
 - **Points:** 5
 - **Stack Parent:** none

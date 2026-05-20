@@ -1,0 +1,78 @@
+id: '151'
+type: epic
+title: Sprint YAML write correctness
+description: Fix silent failures and fragile path/field resolution in the sprint YAML write paths (archive, finish, story update). Three downstream-reported bugs trace to the same subsystem.
+priority: p0
+status: done
+repos: pennyfarthing
+jira: PROJ-17079
+stories:
+  - id: 151-1
+    jira: PROJ-17080
+    title: Resolve archive filename from sprint.number when name is absent
+    points: 2
+    priority: p0
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-04-20'
+    repos: pennyfarthing
+    workflow: trivial
+    completed: '2026-04-20'
+    type: bug
+    review_verdict: approved
+  - id: 151-2
+    jira: PROJ-17081
+    title: Fail loudly on missing epic field during archive write, backfill historical entries
+    points: 3
+    priority: p2
+    status: done
+    assigned_to: keith.avery@slabgorb.io
+    started: '2026-04-20'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-04-20'
+    type: bug
+    review_verdict: approved
+  - id: 151-3
+    jira: PROJ-17082
+    title: story update locates stories across epic-*.yaml; story finish fails loudly on yaml-update error
+    points: 3
+    priority: p0
+    status: done
+    started: '2026-05-04'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-04-30'
+    type: bug
+  - id: 151-4
+    title: narrow story_finish.py read_sprint exception handler
+    points: 1
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: chore
+  - id: 151-5
+    title: SM-setup base-branch staleness preflight to detect overtaken stories
+    points: 3
+    priority: p1
+    status: done
+    assigned_to: keith.avery@gmail.com
+    started: '2026-05-04'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-05-04'
+    type: chore
+    review_findings: "Round 2: CRITICAL closed and 4 HIGH closed cleanly. New findings: [HIGH] _parse_git_log silently drops files after the first in multi-file commits (lying docstring, no test fixture); [HIGH] _PATH_HEURISTIC_RE ReDoS measured 30s on 100k chars; [HIGH] test_story_id_is_not_interpolated_into_shell_command is vacuous (subprocess never invoked). 9 MEDIUM, 11 LOW. Same silent-clean anti-pattern in adjacent code. Routing to TEA red rework."
+    review_verdict: rejected
+  - id: 151-6
+    title: Story finish refuses archive while linked PR is open and unmerged
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-04-30'
+    type: bug
+    review_verdict: approved
+completed: '2026-04-30'

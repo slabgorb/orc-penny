@@ -7,7 +7,7 @@ Developer can select the batch workflow, have an architect decompose work into u
 **Priority:** P1
 **Repo:** pennyfarthing
 **Stories:** 4 (5 points)
-**Jira:** MSSCI-16090
+**Jira:** PROJ-16090
 
 ## Planning Documents
 

@@ -1,7 +1,7 @@
 ---
 story_id: "148-12"
 jira_key: null
-epic: "MSSCI-16421"
+epic: "PROJ-16421"
 workflow: "tdd"
 repos: "pennyfarthing"
 ---
@@ -11,7 +11,7 @@ repos: "pennyfarthing"
 - **ID:** 148-12
 - **Title:** Peloton team mode integration — wire activate_next to TeamCreate and resolve tmux pane strategy
 - **Jira Key:** null (story-level Jira key not yet created)
-- **Epic:** MSSCI-16421 (148: TUI-tmux Fixer)
+- **Epic:** PROJ-16421 (148: TUI-tmux Fixer)
 - **Workflow:** tdd
 - **Points:** 3
 - **Priority:** p1
@@ -190,7 +190,7 @@ Two gaps from 148-11 plus pane cleanup:
 - CLI correctly updated: JSON output for `next`, no orphan panes from `start`
 - Test fixture extraction in verify phase was a good simplify
 
-**PR:** https://github.com/1898andCo/pennyfarthing/pull/1419 (auto-merge enabled)
+**PR:** https://github.com/slabgorb/pennyfarthing/pull/1419 (auto-merge enabled)
 **Decision:** Approved for merge.
 
 ## Subagent Results

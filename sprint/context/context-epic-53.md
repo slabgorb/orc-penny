@@ -57,7 +57,7 @@ The VS Code extension follows established VS Code patterns:
 
 ### Testing Patterns
 
-Tests follow BDD naming: `tests/MSSCI-*-*.test.ts`
+Tests follow BDD naming: `tests/PROJ-*-*.test.ts`
 - Mock WebviewView and Webview objects
 - Test HTML generation with CSP compliance
 - Test message handling round-trips

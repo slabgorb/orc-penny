@@ -36,8 +36,8 @@ The data for completed epics already exists in `sprint/archive/sprint-2606-compl
 
 ### Archive Data Sources
 - `sprint/archive/sprint-2606-completed.yaml` — Completed sprint metadata
-  - `completed_epics:` list with JIRA keys (e.g., MSSCI-14453, MSSCI-14469)
-- `sprint/archive/epic-MSSCI-14XXX.yaml` — Individual archived epic shards
+  - `completed_epics:` list with JIRA keys (e.g., PROJ-14453, PROJ-14469)
+- `sprint/archive/epic-PROJ-14XXX.yaml` — Individual archived epic shards
   - Fields: `id`, `title`, `jira`, `completed` (date string), `points`, `status`, `description`, `repos`
 
 ## Technical Approach
@@ -77,10 +77,10 @@ export interface SprintData {
 After loading current sprint epics (line 316), add:
 
 1. Read `sprint/archive/sprint-XXXX-completed.yaml` to get `completed_epics` list
-2. For each completed_epic ID (e.g., "MSSCI-14453"):
-   - Load the corresponding `sprint/archive/epic-MSSCI-14453.yaml` shard
+2. For each completed_epic ID (e.g., "PROJ-14453"):
+   - Load the corresponding `sprint/archive/epic-PROJ-14453.yaml` shard
    - Transform to ClosedEpic type (extract title, jira, completed date, points, status)
-   - Check for context file at `sprint/context/context-epic-MSSCI-14453.md`
+   - Check for context file at `sprint/context/context-epic-PROJ-14453.md`
 3. Return as `closedEpics` array in SprintData
 
 **Implementation pattern:**
@@ -115,8 +115,8 @@ Add new "Completed Epics" section after "Current Epics" section (after line 565)
 Current approach in sprint-data.ts reads from `sprint/current-sprint.yaml` for active epics. For closed epics:
 
 1. Check if `sprint/archive/sprint-2606-completed.yaml` exists (follows naming pattern)
-2. Extract `completed_epics:` list (JIRA key strings like "MSSCI-14453")
-3. Load each corresponding `sprint/archive/epic-MSSCI-14453.yaml` shard
+2. Extract `completed_epics:` list (JIRA key strings like "PROJ-14453")
+3. Load each corresponding `sprint/archive/epic-PROJ-14453.yaml` shard
 
 **Pattern matches existing code:**
 - See lines 214-239 (mergeEpicShards) for shard loading pattern
@@ -127,7 +127,7 @@ Current approach in sprint-data.ts reads from `sprint/current-sprint.yaml` for a
 - [x] ClosedEpic type defined with all necessary fields (id, title, jiraKey, points, status, completed date)
 - [x] SprintData interface extended to include closedEpics array
 - [x] getSprintData() loads completed epics from sprint/archive/ when available
-- [x] Completed epic shards (epic-MSSCI-XXXX.yaml) are loaded and transformed
+- [x] Completed epic shards (epic-PROJ-XXXX.yaml) are loaded and transformed
 - [x] Context file existence checked for each closed epic (sprint/context/context-epic-XXX.md)
 - [x] EnhancedSprintPanel displays new "Completed Epics" section
 - [x] Closed epic cards show: title, jira link, context indicator, completed date, points, status
@@ -146,7 +146,7 @@ Current approach in sprint-data.ts reads from `sprint/current-sprint.yaml` for a
 4. Update getSprintData() to load and return closed epics
 5. Update EnhancedSprintPanel to render "Completed Epics" section
 6. Add styling for closed epic cards (muted appearance)
-7. Test with existing archive data (epic-MSSCI-14453.yaml, etc.)
+7. Test with existing archive data (epic-PROJ-14453.yaml, etc.)
 8. Verify WebSocket broadcasts updated data structure
 
 ## Related Stories
@@ -155,11 +155,11 @@ Current approach in sprint-data.ts reads from `sprint/current-sprint.yaml` for a
 - **100-2**: Quick agent picker in control bar (completed)
 - **100-5**: Sprint metrics from completed/current/future (uses closedEpics data)
 - **95-7**: Bell mode observation injection
-- **Story MSSCI-14189**: Enhanced Sprint Panel with story management and epic actions (prior work)
+- **Story PROJ-14189**: Enhanced Sprint Panel with story management and epic actions (prior work)
 
 ## References
 
-- Sprint archive structure: `/sprint/archive/sprint-XXXX-completed.yaml`, `/sprint/archive/epic-MSSCI-XXXX.yaml`
+- Sprint archive structure: `/sprint/archive/sprint-XXXX-completed.yaml`, `/sprint/archive/epic-PROJ-XXXX.yaml`
 - Current-sprint data aggregation: `sprint-data.ts` lines 214-239 (shard merging pattern)
 - EnhancedSprintPanel UI: `SprintPanel.tsx` lines 417-565 (current epics section template)
 - WebSocket broadcast: `websocket.ts` lines 825-847 (sprint /ws/sprint handler)

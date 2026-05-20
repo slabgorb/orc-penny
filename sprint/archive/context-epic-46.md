@@ -71,10 +71,10 @@ extreme: control_mean < 50
 ## Cross-Epic Dependencies
 
 **Depends on:**
-- MSSCI-16214 (Multi-Judge Validation) — agreement metrics vary by difficulty; need multi-judge data to measure this
-- MSSCI-16210 (Anchored Rubric Criteria) — anchored rubrics may need difficulty-aware calibration
-- MSSCI-16211 (False Positive Traps) — red herring count is a difficulty dimension
-- MSSCI-16212 (Gold Standard References) — gold standard scores contribute to difficulty calibration
+- PROJ-16214 (Multi-Judge Validation) — agreement metrics vary by difficulty; need multi-judge data to measure this
+- PROJ-16210 (Anchored Rubric Criteria) — anchored rubrics may need difficulty-aware calibration
+- PROJ-16211 (False Positive Traps) — red herring count is a difficulty dimension
+- PROJ-16212 (Gold Standard References) — gold standard scores contribute to difficulty calibration
 
 **Depended on by:**
 - (None in current sprint — this is a terminal node in the dependency chain)

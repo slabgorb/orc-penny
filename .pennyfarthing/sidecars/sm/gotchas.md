@@ -17,7 +17,7 @@ Use `jira:` not `jira_key:` in sprint YAML.
 </gotcha>
 
 <gotcha name="no-guess-jira">
-Never fabricate MSSCI-XXXXX keys. Look up in YAML or query Jira.
+Never fabricate PROJ-XXXXX keys. Look up in YAML or query Jira.
 </gotcha>
 
 <gotcha name="symlinks">

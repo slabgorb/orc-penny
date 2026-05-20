@@ -33,9 +33,9 @@ Four BikeRack UI components carry `as any` casts that bypass TypeScript's strict
 **Test command:** `cd pennyfarthing/packages/cyclist && pnpm vitest run`
 
 **Relevant test files:**
-- `pennyfarthing/packages/cyclist/tests/MSSCI-14001-dockview-workspace.test.tsx` — covers `DockviewWorkspace` panel ID constants and `restorePanel`/`getClosedPanels` exports
-- `pennyfarthing/packages/cyclist/tests/MSSCI-14188-split-progress-panel.test.tsx` — covers `ProgressPanel` AC/todo row rendering
-- `pennyfarthing/packages/cyclist/tests/MSSCI-14189-enhanced-sprint-panel.test.tsx` — covers `SprintPanel`
+- `pennyfarthing/packages/cyclist/tests/PROJ-14001-dockview-workspace.test.tsx` — covers `DockviewWorkspace` panel ID constants and `restorePanel`/`getClosedPanels` exports
+- `pennyfarthing/packages/cyclist/tests/PROJ-14188-split-progress-panel.test.tsx` — covers `ProgressPanel` AC/todo row rendering
+- `pennyfarthing/packages/cyclist/tests/PROJ-14189-enhanced-sprint-panel.test.tsx` — covers `SprintPanel`
 
 **Key constraint:** The `SprintPanel` Electron branch already falls back to `window.open()` or a REST `fetch()` call when `electronAPI` is absent. Removing Electron references means removing the conditional `if (electronAPI?.shell?.openExternal)` guard entirely and keeping only the `window.open()` fallback (for `JiraLink`) and the REST calls (for `handleArchive`/`handlePromote`).
 
@@ -82,7 +82,7 @@ const isLeftPanel = isPanelId(panelId, LEFT_SIDEBAR_PANELS);
 const isRightPanel = isPanelId(panelId, RIGHT_SIDEBAR_PANELS);
 ```
 
-Testable: `pnpm vitest run tests/MSSCI-14001-dockview-workspace.test.tsx` still passes; `tsc --noEmit` reports no errors in this file.
+Testable: `pnpm vitest run tests/PROJ-14001-dockview-workspace.test.tsx` still passes; `tsc --noEmit` reports no errors in this file.
 
 **AC2: ProgressPanel.tsx criteria/todo filtering properly typed**
 
@@ -102,7 +102,7 @@ Then replace:
 
 All four types are already defined — no new interface needed. `criteria` is `CriteriaItem[] | null` (from `useStory`), `todos` is `TodoItem[]` (from `useTodos`), `phases` is `WorkflowPhase[] | null` (from `useStory`).
 
-Testable: `pnpm vitest run tests/MSSCI-14188-split-progress-panel.test.tsx` still passes; `tsc --noEmit` reports no errors.
+Testable: `pnpm vitest run tests/PROJ-14188-split-progress-panel.test.tsx` still passes; `tsc --noEmit` reports no errors.
 
 **AC3: MessageView.tsx message group assertion replaced with proper types**
 
@@ -139,7 +139,7 @@ Three usage sites in `SprintPanel.tsx` reference `(window as any).electronAPI`:
 
 After removal, the `try`/`catch` wrappers in `handleArchive` and `handlePromote` remain valid (they catch `fetch` errors). No `as any` references remain.
 
-Testable: `pnpm vitest run tests/MSSCI-14189-enhanced-sprint-panel.test.tsx` still passes; `tsc --noEmit` reports no errors; no runtime behavior change in the web/GUI path.
+Testable: `pnpm vitest run tests/PROJ-14189-enhanced-sprint-panel.test.tsx` still passes; `tsc --noEmit` reports no errors; no runtime behavior change in the web/GUI path.
 
 **AC5: Build passes with strict type checking**
 

@@ -11,8 +11,8 @@
 
 The BikeRack TUI sprint panel loads all epic shard YAML files from both `sprint/` and `sprint/archive/` directories without filtering. This causes:
 
-1. **Duplicate epics** — Epic 110 (active) and archived MSSCI-15184 (epic 118, done) both have the title "BikeRack TUI — Interactive Command Center" and both show in the sprint view
-2. **Completed epics appearing in active view** — MSSCI-15184 (100%), MSSCI-14697 (100%), MSSCI-15373 (100%) are archived but still rendered in the sprint panel
+1. **Duplicate epics** — Epic 110 (active) and archived PROJ-15184 (epic 118, done) both have the title "BikeRack TUI — Interactive Command Center" and both show in the sprint view
+2. **Completed epics appearing in active view** — PROJ-15184 (100%), PROJ-14697 (100%), PROJ-15373 (100%) are archived but still rendered in the sprint panel
 3. **Inflated counts** — Done/Remaining/Velocity numbers include archived epic points
 
 ## Acceptance Criteria

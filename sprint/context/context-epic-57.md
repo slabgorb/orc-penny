@@ -2,7 +2,7 @@
 
 ## Epic Overview
 - **Epic ID:** 57
-- **Jira:** MSSCI-12189
+- **Jira:** PROJ-12189
 - **Points:** 8 (3 + 3 + 2)
 - **Priority:** P0
 - **Repos:** pennyfarthing (packages/vscode-extension)
@@ -16,7 +16,7 @@ Users can see and connect with their current agent persona - portrait, name, and
 The VS Code extension already has significant persona-related infrastructure:
 
 1. **Agent Portrait Webview** (`src/providers/agent-portrait-webview.ts`, 731 lines)
-   - WebviewViewProvider implementation (MSSCI-12148)
+   - WebviewViewProvider implementation (PROJ-12148)
    - 180px portrait display from theme-specific PNGs
    - Theme/character name extraction from YAML
    - File watchers on `.pennyfarthing/config.local.yaml` and `.session/agents/*`
@@ -136,9 +136,9 @@ const defaultPortraitMap: Record<string, string> = {
 - Fallback: CDN unavailable → bundled portraits used
 
 ### Test File Naming
-- `packages/vscode-extension/tests/MSSCI-12191-persona-card-webview.test.ts`
-- `packages/vscode-extension/tests/MSSCI-12192-portrait-caching.test.ts`
-- `packages/vscode-extension/tests/MSSCI-12193-realtime-agent-updates.test.ts`
+- `packages/vscode-extension/tests/PROJ-12191-persona-card-webview.test.ts`
+- `packages/vscode-extension/tests/PROJ-12192-portrait-caching.test.ts`
+- `packages/vscode-extension/tests/PROJ-12193-realtime-agent-updates.test.ts`
 
 ## Dependencies & Risks
 

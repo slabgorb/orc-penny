@@ -4,7 +4,7 @@
 **Started:** 2026-02-14
 **Status:** Protocol v0.1 drafted. Ready for team review or RFC authoring.
 **Agent:** BA (Avasarala) — requirements discovery phase
-**RFC Ticket:** MSSCI-15086
+**RFC Ticket:** PROJ-15086
 
 ---
 
@@ -26,7 +26,7 @@
 | 12 | *(merged into #13)* | Channel taxonomy is Part I of the protocol | N/A |
 | 13 | `lifecycle-tier-comm-protocol.md` | Full protocol: channels, messages, triggers, flows, implementation mapping | **Draft complete** |
 | 14 | ADR-0027 (or next) | Architecture decision record for the composable lifecycle | **Not started** |
-| 15 | RFC (MSSCI-15086) | Full RFC for team review | **Not started** |
+| 15 | RFC (PROJ-15086) | Full RFC for team review | **Not started** |
 
 ---
 
@@ -39,7 +39,7 @@
 ### Phase 1: Product Brief (Done)
 - [x] Wrote product brief proposing Composable Lifecycle Engine
 - [x] Filed ADR-0026 (trunk-based for orchestrator repos)
-- [x] Filed MSSCI-15086 (RFC ticket)
+- [x] Filed PROJ-15086 (RFC ticket)
 
 ### Phase 2: Deep Research (Done)
 - [x] Track 1: VSM + Auftragstaktik + Cybernetic Feedback

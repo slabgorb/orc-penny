@@ -4,7 +4,7 @@
 
 Analyze existing dpgd-116 pipeline-replay results to trace defect catches back to upstream context signals. No new pipeline runs — this is pure analysis of the 20 themes × 4 runs already completed.
 
-**Points:** 2 | **Workflow:** trivial | **Jira:** MSSCI-16294
+**Points:** 2 | **Workflow:** trivial | **Jira:** PROJ-16294
 
 ## Objective
 

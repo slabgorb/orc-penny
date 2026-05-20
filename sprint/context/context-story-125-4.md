@@ -1,8 +1,8 @@
 # Context: Story 125-4 — Add sprint provenance indicator to BikeRack TUI
 
-**GitHub Issue:** [#1028](https://github.com/1898andCo/pennyfarthing-orchestrator/issues/1028)
+**GitHub Issue:** [#1028](https://github.com/slabgorb/pennyfarthing-orchestrator/issues/1028)
 **Points:** 1
-**Epic:** 125 — Sprint State Engine Consolidation (MSSCI-15421)
+**Epic:** 125 — Sprint State Engine Consolidation (PROJ-15421)
 
 ## Problem
 

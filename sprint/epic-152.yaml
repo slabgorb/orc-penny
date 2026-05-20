@@ -1,13 +1,13 @@
 id: '152'
 type: epic
 title: Jira isolation — config-driven project keys
-description: Remove MSSCI hardcoding and corporate-email leakage from the framework. Gate all jira integration on explicit config; no silent defaults; no downstream contamination.
+description: Remove PROJ hardcoding and corporate-email leakage from the framework. Gate all jira integration on explicit config; no silent defaults; no downstream contamination.
 priority: p1
 status: backlog
 repos: pennyfarthing
 stories:
   - id: 152-1
-    title: Remove MSSCI hardcoding — config-driven project key with fail-loud, scrub templates and docs
+    title: Remove PROJ hardcoding — config-driven project key with fail-loud, scrub templates and docs
     points: 5
     priority: p1
     status: done
@@ -16,7 +16,7 @@ stories:
     workflow: tdd
     completed: '2026-05-11'
     type: refactor
-    review_findings: '3 HIGH: (F1) create_epic_in_jira:232,267 unguarded JIRA_PROJECT in same file Dev modified; (F2) hygiene MSSCI scan is case-sensitive — lowercase mssci-00000 in tests/python/test_sprint_story_command.py:93 survives gate; (F3) test_jira_project_resolution_distinguishes_unset_state distinguishable boolean shorts on has_strict_helper, cannot catch resolver regression.'
+    review_findings: '3 HIGH: (F1) create_epic_in_jira:232,267 unguarded JIRA_PROJECT in same file Dev modified; (F2) hygiene PROJ scan is case-sensitive — lowercase proj-00000 in tests/python/test_sprint_story_command.py:93 survives gate; (F3) test_jira_project_resolution_distinguishes_unset_state distinguishable boolean shorts on has_strict_helper, cannot catch resolver regression.'
     review_verdict: approved
   - id: 152-2
     title: Gate jira-cli lookups on jira.enabled config; skip assignee lookup for non-jira stories

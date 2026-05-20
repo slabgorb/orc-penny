@@ -2,7 +2,7 @@
 
 **GitHub Issue:**
 **Points:** 2
-**Epic:** 125 — Sprint State Engine Consolidation (MSSCI-15421)
+**Epic:** 125 — Sprint State Engine Consolidation (PROJ-15421)
 
 ## Problem
 
@@ -41,7 +41,7 @@ Cyclist WebSocket server (websocket.ts)
 
 ```
 Python CLI: pf sprint data --json
-  → resolve_sprint_context(project_root) [MSSCI-15422]
+  → resolve_sprint_context(project_root) [PROJ-15422]
     → SprintContext dataclass
   → load_sprint() [loader.py]
     → shard_merge.merge_epic_shards() [Python impl]
@@ -162,7 +162,7 @@ Handle subprocess errors gracefully:
 Run the existing test suite:
 
 ```bash
-npm test packages/cyclist/tests/MSSCI-14189-sprint-panel.test.ts
+npm test packages/cyclist/tests/PROJ-14189-sprint-panel.test.ts
 npm test packages/cyclist/tests/100-6-sprint-metrics.test.ts
 ```
 

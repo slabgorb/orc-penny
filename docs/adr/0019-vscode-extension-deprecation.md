@@ -16,8 +16,8 @@ Pennyfarthing had two UI surfaces for agent interaction:
 2. **VS Code Extension** - Chat participant using VS Code's Chat API
 
 The VS Code extension was developed in Sprint 12 across two epics:
-- MSSCI-12042: VS Code Extension for Pennyfarthing (26 points)
-- MSSCI-12122: VS Code Extension UX/UI Pass (12 points, 6 cancelled)
+- PROJ-12042: VS Code Extension for Pennyfarthing (26 points)
+- PROJ-12122: VS Code Extension UX/UI Pass (12 points, 6 cancelled)
 
 During Sprint 12, the Cyclist React migration delivered significantly better UX:
 - Full control over message rendering and streaming
@@ -66,6 +66,6 @@ Deprecate and remove the VS Code extension entirely.
 ## References
 
 - Sprint 12 Retrospective: `sprint/archive/sprint-12-retro.md`
-- Original VS Code Epic: MSSCI-12042
-- UX Polish Epic: MSSCI-12122
+- Original VS Code Epic: PROJ-12042
+- UX Polish Epic: PROJ-12122
 - Cyclist React Migration: epic-69

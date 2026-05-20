@@ -58,7 +58,7 @@ BMAD (Phases 1-3)                    Pennyfarthing (Phase 4)
 
 2. **Developer picks up story in Pennyfarthing**
    ```bash
-   /sprint work MSSCI-12345
+   /sprint work PROJ-12345
    ```
 
 3. **Pennyfarthing agents implement it**
@@ -135,7 +135,7 @@ A: BMAD outputs to `_bmad-output/` or configured directories. Pennyfarthing read
 ```bash
 # BMAD produced stories in _bmad-output/
 # Pick one up in Pennyfarthing:
-/sprint work MSSCI-12345
+/sprint work PROJ-12345
 
 # TEA reads the BDD acceptance criteria
 /tea

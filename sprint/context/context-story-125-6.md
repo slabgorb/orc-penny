@@ -1,10 +1,10 @@
 # Context: Story 125-6 — Migrate Cyclist sprint panel to canonical data service
 
-**Jira Issue:** MSSCI-15427
+**Jira Issue:** PROJ-15427
 **Points:** 2
 **Priority:** P2
 **Workflow:** tdd
-**Epic:** 125 — Sprint State Engine Consolidation (MSSCI-15421)
+**Epic:** 125 — Sprint State Engine Consolidation (PROJ-15421)
 
 ## Problem
 

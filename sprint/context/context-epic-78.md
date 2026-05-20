@@ -4,7 +4,7 @@
 
 Wire existing permission components into a working end-to-end approval flow. When Claude Code needs permission for any tool action, Cyclist shows an approval modal, the user decides (once/session/always), and work continues. Remove legacy IPC path, consolidate on WheelHub WebSocket architecture.
 
-**Prior work:** Epic 33 (MSSCI-11705) built the components. This epic connects them.
+**Prior work:** Epic 33 (PROJ-11705) built the components. This epic connects them.
 
 ## Background
 
@@ -18,7 +18,7 @@ Claude Code's permission prompts leave users with no way to respond through Cycl
 
 ### What Already Works
 
-Epic 33 (MSSCI-11705) completed 4 of 5 stories:
+Epic 33 (PROJ-11705) completed 4 of 5 stories:
 - **33-1** Permission Request Protocol - TypeScript schema and types
 - **33-2** `/permissions` skill - CLI for list/grant/revoke
 - **33-3** Cyclist Approval Modal UI - shadcn Dialog, WebSocket, severity classification

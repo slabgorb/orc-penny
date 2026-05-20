@@ -29,3 +29,11 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+  - id: 153-4
+    title: pf sprint story remove fails to locate stories in epic shard files — only searches top-level index
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug

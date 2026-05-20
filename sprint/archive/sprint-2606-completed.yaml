@@ -9,362 +9,362 @@ sprint:
   status: active
 
 completed_epics:
-  - MSSCI-14453
-  - MSSCI-14465
-  - MSSCI-14469
-  - MSSCI-14659
-  - MSSCI-14665
-  - MSSCI-14673
-  - MSSCI-14678
-  - MSSCI-14580
-  - MSSCI-14629
-  - MSSCI-14697
-  - MSSCI-14758
-  - MSSCI-14784
-  - MSSCI-14819
-  - MSSCI-14876
-  - MSSCI-14938
-  - MSSCI-14952
+  - PROJ-14453
+  - PROJ-14465
+  - PROJ-14469
+  - PROJ-14659
+  - PROJ-14665
+  - PROJ-14673
+  - PROJ-14678
+  - PROJ-14580
+  - PROJ-14629
+  - PROJ-14697
+  - PROJ-14758
+  - PROJ-14784
+  - PROJ-14819
+  - PROJ-14876
+  - PROJ-14938
+  - PROJ-14952
   - epic-88
   - epic-89
   - td
-  - MSSCI-15015
-  - MSSCI-14951
-  - MSSCI-14999
-  - MSSCI-15003
-  - MSSCI-14662
-  - MSSCI-15008
-  - MSSCI-15012
-  - MSSCI-12414
-  - MSSCI-15237
-  - MSSCI-14509
+  - PROJ-15015
+  - PROJ-14951
+  - PROJ-14999
+  - PROJ-15003
+  - PROJ-14662
+  - PROJ-15008
+  - PROJ-15012
+  - PROJ-12414
+  - PROJ-15237
+  - PROJ-14509
 completed_stories:
   - id: 83-1
-    epic: MSSCI-14465
+    epic: PROJ-14465
     title: "Python complexity module"
     points: 2
     completed: 2026-02-08
   - id: 83-2
-    epic: MSSCI-14465
+    epic: PROJ-14465
     title: "Python dependencies module"
     points: 2
     completed: 2026-02-08
   - id: 83-3
-    epic: MSSCI-14465
+    epic: PROJ-14465
     title: "Complexity + Dependencies APIs + hooks + dialogs"
     points: 2
     completed: 2026-02-09
   - id: 87-1
-    epic: MSSCI-14784
+    epic: PROJ-14784
     title: "Extend repos.yaml schema with ownership and boundaries"
     points: 2
     completed: 2026-02-11
   - id: 87-2
-    epic: MSSCI-14784
+    epic: PROJ-14784
     title: "Wire topology into agent prime context"
     points: 2
     completed: 2026-02-11
   - id: 87-3
-    epic: MSSCI-14784
+    epic: PROJ-14784
     title: "Add topology validation to pre-edit guide"
     points: 1
     completed: 2026-02-11
   # Epic 99 — Sprint CLI Bug Fixes (3 pts)
   - id: 99-1
-    epic: MSSCI-14938
+    epic: PROJ-14938
     title: "Fix pf sprint story finish when Jira key missing from shard YAML"
     points: 2
     completed: 2026-02-12
   - id: 99-2
-    epic: MSSCI-14938
+    epic: PROJ-14938
     title: "Fix story finish archive missing required sprint fields"
     points: 1
     completed: 2026-02-11
   # Epic 100 — UI Tweak Bucket (18 pts done, 3 canceled)
   - id: 100-1
-    epic: MSSCI-14758
+    epic: PROJ-14758
     title: "Fix PersonaHeader CSS layout and throbber clipping"
     points: 2
     completed: 2026-02-10
   - id: 100-2
-    epic: MSSCI-14758
+    epic: PROJ-14758
     title: "Quick agent picker in control bar"
     points: 3
     completed: 2026-02-10
   - id: 100-3
-    epic: MSSCI-14758
+    epic: PROJ-14758
     title: "Style ACPanel with Tufte treatment"
     points: 2
     completed: 2026-02-11
   - id: 100-4
-    epic: MSSCI-14758
+    epic: PROJ-14758
     title: "Remove persona name from quick agent picker"
     points: 1
     completed: 2026-02-11
   - id: 100-5
-    epic: MSSCI-14758
+    epic: PROJ-14758
     title: "Sprint panel: show closed epics for current sprint"
     points: 2
     completed: 2026-02-11
   - id: 100-6
-    epic: MSSCI-14758
+    epic: PROJ-14758
     title: "Sprint panel: sprint metrics from completed/current/future"
     points: 3
     completed: 2026-02-11
   - id: 100-8
-    epic: MSSCI-14758
+    epic: PROJ-14758
     title: "Sprint panel: fix next-up to honor assigned_to field"
     points: 2
     completed: 2026-02-12
   - id: 100-9
-    epic: MSSCI-14758
+    epic: PROJ-14758
     title: "Sprint panel: wire archived epics into completed section"
     points: 3
     completed: 2026-02-11
   # Epic 101 — BikeRack Mode (13 pts)
   - id: 101-1
-    epic: MSSCI-14819
+    epic: PROJ-14819
     title: "isBikeRackMode() gate and bikerack.ts entry point"
     points: 2
     completed: 2026-02-11
   - id: 101-2
-    epic: MSSCI-14819
+    epic: PROJ-14819
     title: "StandalonePanel wrapper and ?panel=X client routing"
     points: 3
     completed: 2026-02-11
   - id: 101-3
-    epic: MSSCI-14819
+    epic: PROJ-14819
     title: "BikeRackIndex panel listing page"
     points: 1
     completed: 2026-02-11
   - id: 101-4
-    epic: MSSCI-14819
+    epic: PROJ-14819
     title: "PortraitPanel with tandem support"
     points: 2
     completed: 2026-02-11
   - id: 101-5
-    epic: MSSCI-14819
+    epic: PROJ-14819
     title: "BikeRack launcher CLI (pf bikerack start/stop/status)"
     points: 3
     completed: 2026-02-11
   - id: 101-6
-    epic: MSSCI-14819
+    epic: PROJ-14819
     title: "BikeRack integration test and operational verification"
     points: 2
     completed: 2026-02-11
   # Epic 102 — BikeRack Follow-up (18 pts)
   - id: 102-1
-    epic: MSSCI-14876
+    epic: PROJ-14876
     title: "Migrate BikeRack from index page to Dockview layout"
     points: 5
     completed: 2026-02-12
   - id: 102-2
-    epic: MSSCI-14876
+    epic: PROJ-14876
     title: "Replace settings panel for BikeRack"
     points: 3
     completed: 2026-02-12
     pr: 830
   - id: 102-3
-    epic: MSSCI-14876
+    epic: PROJ-14876
     title: "Remove TTY panel from BikeRack"
     points: 1
     completed: 2026-02-12
   - id: 102-4
-    epic: MSSCI-14876
+    epic: PROJ-14876
     title: "Investigate and fix OTEL panels not responding in BikeRack"
     points: 2
     completed: 2026-02-12
   - id: 102-5
-    epic: MSSCI-14876
+    epic: PROJ-14876
     title: "Fix broken Git panel in BikeRack"
     points: 2
     completed: 2026-02-12
   - id: 102-6
-    epic: MSSCI-14876
+    epic: PROJ-14876
     title: "Fix broken Portrait panel in BikeRack"
     points: 2
     completed: 2026-02-12
   - id: 102-7
-    epic: MSSCI-14876
+    epic: PROJ-14876
     title: "BikeRack interactive UX sweep: fix font colors, margins, close button spacing"
     points: 3
     completed: 2026-02-12
   # Epic 91 — Cross-File Reference & Schema Validation (43 pts done)
   - id: 91-1
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: "Productize Layer 1 file reference validator"
     points: 3
     completed: 2026-02-08
   - id: 91-7
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: "Enforce ESLint across all packages"
     points: 3
     completed: 2026-02-10
   - id: 91-8
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: "Add Ruff to CI for Python scripts"
     points: 1
     completed: 2026-02-10
   - id: 91-9
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: "Add markdownlint to CI"
     points: 2
     completed: 2026-02-10
   - id: 91-10
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: "Add yamllint for workflow and config files"
     points: 2
     completed: 2026-02-10
   - id: 91-11
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: "Workflow YAML schema validation"
     points: 5
     completed: 2026-02-10
   - id: 91-12
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: "Agent definition structural validation"
     points: 5
     completed: 2026-02-10
   - id: 91-13
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: "Skill registry and command schema validation"
     points: 3
     completed: 2026-02-10
   - id: 91-16
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: "run-ci.md references wrong path for run-ci.sh"
     points: 1
     completed: 2026-02-07
   - id: 91-17
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: "setup.md references /theme instead of /set-theme"
     points: 1
     completed: 2026-02-07
   - id: 91-18
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: "workflow skill.md broken link to BIKELANE.md"
     points: 1
     completed: 2026-02-07
   - id: 91-19
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: "workflow skill.md broken link to ADR 0005 (renumbered)"
     points: 1
     completed: 2026-02-07
   - id: 91-20
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: "workflow skill.md wrong path depth for architecture.yaml"
     points: 1
     completed: 2026-02-07
   - id: 91-21
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: "step-05 references unimplemented import-epic-to-future.sh"
     points: 1
     completed: 2026-02-07
   - id: 91-22
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: "Broken ADR link in skills/workflow/skill.md"
     points: 1
     completed: 2026-02-09
   - id: 91-23
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: "Stale guide ref in tdd-flow-pattern.md"
     points: 1
     completed: 2026-02-09
   - id: 91-24
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: "Sprint shard write-time validation and reference integrity"
     points: 5
     completed: 2026-02-10
   - id: 91-25
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: "Preserve assigned_to field through story lifecycle"
     points: 2
     completed: 2026-02-10
   - id: 91-26
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: "Enhance pf sprint info to return full sprint header"
     points: 1
     completed: 2026-02-10
   - id: 91-27
-    epic: MSSCI-14510
+    epic: PROJ-14510
     title: "Normalize stepped workflow output paths and de-collision document names"
     points: 3
     completed: 2026-02-11
   # Epic 98 — Safe Install, Upgrade, and Namespace Isolation (25 pts done)
   - id: 98-1
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: "Version sentinel file and auto-update detection"
     points: 2
     completed: 2026-02-12
   - id: 98-2
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: "Versioned migration runner infrastructure"
     points: 5
     completed: 2026-02-12
   - id: 98-3
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: "Refactor update.ts inline migrations to migration files"
     points: 3
     completed: 2026-02-12
   - id: 98-4
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: "Prefix built-in skills and commands with pf-"
     points: 5
     completed: 2026-02-14
   - id: 98-5
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: "Sprint shard migration as versioned migration"
     points: 3
     completed: 2026-02-14
   - id: 98-6
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: "Protective symlink pre-flight checks"
     points: 2
     completed: 2026-02-14
   - id: 98-7
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: "Update agent definitions and docs for pf- skill references"
     points: 2
     completed: 2026-02-14
   - id: 98-8
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: "Fix Cyclist false-positive detection in CLI mode"
     points: 3
     completed: 2026-02-10
   # Epic 93 — Benchmarking Package (3 pts from root completed file)
   - id: 93-1
-    epic: MSSCI-14629
+    epic: PROJ-14629
     title: "Create @pennyfarthing/benchmark package shell with TS modules"
     points: 3
     completed: 2026-02-09
     pr: 771
   - id: 93-2
-    epic: MSSCI-14629
+    epic: PROJ-14629
     title: "Move benchmark commands, skills, and scripts to new package"
     points: 3
     completed: 2026-02-13
   - id: 93-3
-    epic: MSSCI-14629
+    epic: PROJ-14629
     title: "Extend plugin discovery from validate-refs to core runtime loading"
     points: 3
     completed: 2026-02-13
   - id: 93-4
-    epic: MSSCI-14629
+    epic: PROJ-14629
     title: "Move benchmark docs, results, and showcase components"
     points: 2
     completed: 2026-02-13
   - id: 93-5
-    epic: MSSCI-14629
+    epic: PROJ-14629
     title: "Clean up @pennyfarthing/core: remove benchmark exports and API"
     points: 2
     completed: 2026-02-13
   - id: 93-6
-    epic: MSSCI-14629
+    epic: PROJ-14629
     title: "Update Cyclist to use benchmark plugin instead of inline API"
     points: 2
     completed: 2026-02-13
   # Top-level stories (2 pts done)
-  - id: MSSCI-14394
+  - id: PROJ-14394
     title: "[BUG] Subagent spans never clear on task completion"
     points: 2
     completed: 2026-02-06
@@ -380,417 +380,417 @@ completed_stories:
     points: 3
     completed: '2026-02-14'
   - id: 109-1
-    epic: MSSCI-15015
+    epic: PROJ-15015
     title: Story click populates AC and Workflow panels
     points: 3
     completed: '2026-02-15'
   - id: 109-2
-    epic: MSSCI-15015
-    title: Copy-to-clipboard icon for MSSCI keys in SprintPanel
+    epic: PROJ-15015
+    title: Copy-to-clipboard icon for PROJ keys in SprintPanel
     points: 1
     completed: '2026-02-14'
   - id: '103-1'
-    epic: MSSCI-14951
+    epic: PROJ-14951
     title: Textual app scaffold with basic layout
     points: 2
     completed: '2026-02-13'
   - id: '103-2'
-    epic: MSSCI-14951
+    epic: PROJ-14951
     title: WheelHub WebSocket client with auto-reconnect
     points: 3
     completed: '2026-02-13'
   - id: '103-3'
-    epic: MSSCI-14951
+    epic: PROJ-14951
     title: '`pf bikerack` launcher command'
     points: 2
     completed: '2026-02-13'
   - id: '103-4'
-    epic: MSSCI-14951
+    epic: PROJ-14951
     title: Connection status indicator in TUI header
     points: 1
     completed: '2026-02-13'
   - id: '103-5'
-    epic: MSSCI-14951
+    epic: PROJ-14951
     title: Base panel abstraction (channel subscription + Rich rendering)
     points: 3
     completed: '2026-02-13'
   - id: '103-6'
-    epic: MSSCI-14951
+    epic: PROJ-14951
     title: SprintPanel implementation
     points: 2
     completed: '2026-02-14'
   - id: '103-7'
-    epic: MSSCI-14951
+    epic: PROJ-14951
     title: '`/bc` slash command skill registration'
     points: 2
     completed: '2026-02-13'
   - id: '103-8'
-    epic: MSSCI-14951
+    epic: PROJ-14951
     title: Panel persistence (extend ERB mechanism)
     points: 2
     completed: '2026-02-14'
   - id: '103-9'
-    epic: MSSCI-14951
+    epic: PROJ-14951
     title: Panel header chrome (current panel indicator, Nerd Font icons)
     points: 1
     completed: '2026-02-14'
   - id: '103-10'
-    epic: MSSCI-14951
+    epic: PROJ-14951
     title: GitPanel (multi-repo status)
     points: 2
     completed: '2026-02-14'
   - id: '103-11'
-    epic: MSSCI-14951
+    epic: PROJ-14951
     title: ProgressPanel (at-a-glance story dashboard)
     points: 5
     completed: '2026-02-14'
   - id: '103-12'
-    epic: MSSCI-14951
+    epic: PROJ-14951
     title: ACPanel (acceptance criteria checklist)
     points: 1
     completed: '2026-02-15'
   - id: '103-13'
-    epic: MSSCI-14951
+    epic: PROJ-14951
     title: TodoPanel (task checklist)
     points: 1
     completed: '2026-02-15'
   - id: '103-14'
-    epic: MSSCI-14951
+    epic: PROJ-14951
     title: ChangedPanel (file list with status)
     points: 1
     completed: '2026-02-14'
   - id: '103-15'
-    epic: MSSCI-14951
+    epic: PROJ-14951
     title: AuditLogPanel (scrolling event log)
     points: 1
     completed: '2026-02-14'
   - id: '103-16'
-    epic: MSSCI-14951
+    epic: PROJ-14951
     title: BackgroundPanel (task status)
     points: 1
     completed: '2026-02-14'
   - id: '103-17'
-    epic: MSSCI-14951
+    epic: PROJ-14951
     title: DebugPanel (log viewer)
     points: 1
     completed: '2026-02-15'
   - id: '103-18'
-    epic: MSSCI-14951
+    epic: PROJ-14951
     title: DiffsPanel — Rich diff rendering with syntax highlighting
     points: 3
     completed: '2026-02-14'
   - id: '103-19'
-    epic: MSSCI-14951
+    epic: PROJ-14951
     title: Large diff handling (truncation/pagination)
     points: 2
     completed: '2026-02-15'
   - id: 103-20
-    epic: MSSCI-14951
+    epic: PROJ-14951
     title: TUI launcher entry point (just tui)
     points: 2
     completed: '2026-02-14'
   - id: 103-21
-    epic: MSSCI-14951
+    epic: PROJ-14951
     title: Add git fetch cooldown to prevent frequent network calls during active sessions
     points: 1
     completed: '2026-02-14'
   - id: 105-1
-    epic: MSSCI-14999
+    epic: PROJ-14999
     title: Create handoff-cli.sh with resolve-gate and complete-phase
     points: 3
     completed: '2026-02-15'
   - id: 105-2
-    epic: MSSCI-14999
+    epic: PROJ-14999
     title: Update agent exit protocol across all agent files
     points: 2
     completed: '2026-02-15'
   - id: 105-3
-    epic: MSSCI-14999
+    epic: PROJ-14999
     title: End-to-end handoff smoke test
     points: 1
     completed: '2026-02-15'
   - id: 105-4
-    epic: MSSCI-14999
+    epic: PROJ-14999
     title: Replace handoff-marker.sh with gate-aware Python CLI
     points: 2
     completed: '2026-02-15'
   - id: 106-1
-    epic: MSSCI-15003
+    epic: PROJ-15003
     title: Create tests-pass gate file with schema
     points: 1
     completed: '2026-02-15'
   - id: 106-2
-    epic: MSSCI-15003
+    epic: PROJ-15003
     title: Gate subagent runner with GATE_RESULT contract
     points: 3
     completed: '2026-02-15'
   - id: 106-3
-    epic: MSSCI-15003
+    epic: PROJ-15003
     title: Workflow YAML gate.file integration
     points: 2
     completed: '2026-02-15'
   - id: 106-4
-    epic: MSSCI-15003
+    epic: PROJ-15003
     title: Gate file discovery and resolution
     points: 1
     completed: '2026-02-15'
   - id: '90-1'
-    epic: MSSCI-14662
+    epic: PROJ-14662
     title: 'Spike: define confidence circuit breaker pattern (DONE — Gate PRD)'
     points: 2
     completed: '2026-02-13'
   - id: '90-2'
-    epic: MSSCI-14662
+    epic: PROJ-14662
     title: Implement SM confidence gate file
     points: 2
     completed: '2026-02-15'
   - id: '90-3'
-    epic: MSSCI-14662
+    epic: PROJ-14662
     title: Evaluate and document results
     points: 1
     completed: '2026-02-15'
   - id: 107-1
-    epic: MSSCI-15008
+    epic: PROJ-15008
     title: Gate schema validation at parse time
     points: 2
     completed: '2026-02-15'
   - id: 107-2
-    epic: MSSCI-15008
+    epic: PROJ-15008
     title: Acyclic validation and depth limit enforcement
     points: 2
     completed: '2026-02-15'
   - id: 107-3
-    epic: MSSCI-15008
+    epic: PROJ-15008
     title: Gate authoring guide and validation command
     points: 2
     completed: '2026-02-15'
   - id: 108-1
-    epic: MSSCI-15012
+    epic: PROJ-15012
     title: Migrate tests-fail and approval gates to files
     points: 2
     completed: '2026-02-15'
   - id: 108-2
-    epic: MSSCI-15012
+    epic: PROJ-15012
     title: Remove handoff subagents and inline fallback
     points: 2
     completed: '2026-02-15'
   - id: 40-1
-    epic: MSSCI-12414
+    epic: PROJ-12414
     title: Define scale levels
     points: 2
     completed: '2026-02-16'
   - id: 40-2
-    epic: MSSCI-12414
+    epic: PROJ-12414
     title: Quick-spec workflow
     points: 3
     completed: '2026-02-16'
   - id: 40-3
-    epic: MSSCI-12414
+    epic: PROJ-12414
     title: Enterprise workflow hooks
     points: 3
     completed: '2026-02-16'
   - id: 40-4
-    epic: MSSCI-12414
+    epic: PROJ-12414
     title: Brownfield discovery command
     points: 5
     completed: '2026-02-16'
   - id: 40-5
-    epic: MSSCI-12414
+    epic: PROJ-12414
     title: Brownfield convention adoption
     points: 2
     completed: '2026-02-16'
   - id: 40-6
-    epic: MSSCI-12414
+    epic: PROJ-12414
     title: PRD import support
     points: 2
     completed: '2026-02-16'
   - id: 98-9
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Fix uninstall data loss — replace rmSync with cleanManagedEntries for commands and skills
     points: 2
     completed: '2026-02-14'
   - id: 98-10
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Fix settings symlink crash on existing real file
     points: 2
     completed: '2026-02-14'
   - id: 98-11
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Settings.local.json shared merge model for multi-framework coexistence
     points: 5
     completed: '2026-02-14'
   - id: 98-12
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Git hook chaining with .d/ dispatcher pattern
     points: 3
     completed: '2026-02-14'
   - id: 98-13
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Cleanup migration for backward-compat symlinks
     points: 2
     completed: '2026-02-15'
   - id: 98-14
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Remove dead copy-mode code paths
     points: 2
     completed: "2026-02-14"
   - id: 98-15
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Remove TTY panel and node-pty dependency
     points: 2
     completed: '2026-02-14'
   - id: 98-16
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Absorb @pennyfarthing/shared and @pennyfarthing/benchmark into core
     points: 3
     completed: '2026-02-14'
   - id: 98-17
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Move Cyclist web server and API layer into core
     points: 8
     completed: '2026-02-14'
   - id: 98-18
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Move React UI build and static assets into core
     points: 5
     completed: '2026-02-14'
   - id: 98-19
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Add pennyfarthing web and pennyfarthing bikerack CLI commands with lazy loading
     points: 3
     completed: '2026-02-16'
   - id: 98-20
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Extract Electron shell to packages/electron with BikeShow entry point
     points: 5
     completed: '2026-02-16'
   - id: 98-21
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Standalone Electron distribution via GitHub releases
     points: 3
     completed: '2026-02-16'
   - id: 98-22
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: v11 migration automation — detect and remove old multi-package installs
     points: 3
     completed: '2026-02-15'
   - id: 98-23
-    epic: MSSCI-14697
+    epic: PROJ-14697
     title: Implement real OTLP integrations for core server stubs
     points: 5
     completed: '2026-02-16'
   - id: 92-1
-    epic: MSSCI-15237
+    epic: PROJ-15237
     title: Create quality-pass gate file
     points: 1
     completed: '2026-02-17'
   - id: 92-2
-    epic: MSSCI-15237
+    epic: PROJ-15237
     title: Add pr_mode config preference
     points: 2
     completed: '2026-02-17'
   - id: 92-3
-    epic: MSSCI-15237
+    epic: PROJ-15237
     title: Update agent definitions for PR lifecycle
     points: 2
     completed: '2026-02-17'
   - id: 92-4
-    epic: MSSCI-15237
+    epic: PROJ-15237
     title: 'Add next: directive support in resolve_gate.py'
     points: 1
     completed: '2026-02-17'
   - id: 92-5
-    epic: MSSCI-15237
+    epic: PROJ-15237
     title: Add review fields to sprint story schema
     points: 1
     completed: '2026-02-17'
   - id: 92-6
-    epic: MSSCI-15237
+    epic: PROJ-15237
     title: Validate 2party-tdd.yaml and add verify phase to tdd.yaml
     points: 2
     completed: '2026-02-17'
   - id: "86-1"
-    epic: MSSCI-14509
+    epic: PROJ-14509
     title: "Workflow schema: tandem: block"
     points: 3
     completed: '2026-02-15'
   - id: "86-2"
-    epic: MSSCI-14509
+    epic: PROJ-14509
     title: "Consultation protocol implementation"
     points: 3
     completed: '2026-02-15'
   - id: "86-3"
-    epic: MSSCI-14509
+    epic: PROJ-14509
     title: "Dialogue file management"
     points: 2
     completed: "2026-02-16"
   - id: "86-4"
-    epic: MSSCI-14509
+    epic: PROJ-14509
     title: "Agent tandem awareness"
     points: 3
     completed: '2026-02-16'
   - id: "86-5"
-    epic: MSSCI-14509
+    epic: PROJ-14509
     title: "Tandem workflow templates"
     points: 2
     completed: '2026-02-16'
   - id: "86-6"
-    epic: MSSCI-14509
+    epic: PROJ-14509
     title: "Tandem metrics and token tracking"
     points: 2
     completed: '2026-02-16'
   - id: "86-7"
-    epic: MSSCI-14509
+    epic: PROJ-14509
     title: "Feature detection: native teams capability"
     points: 2
     completed: '2026-02-16'
   - id: "86-8"
-    epic: MSSCI-14509
+    epic: PROJ-14509
     title: "Teammate activation via spawn prompts"
     points: 2
     completed: '2026-02-16'
   - id: "86-9"
-    epic: MSSCI-14509
+    epic: PROJ-14509
     title: "Workflow schema: team: block on phases"
     points: 3
     completed: "2026-02-16"
   - id: "86-10"
-    epic: MSSCI-14509
+    epic: PROJ-14509
     title: "Phase-scoped team lifecycle + gate hooks"
     points: 5
     completed: "2026-02-17"
   - id: "86-11"
-    epic: MSSCI-14509
+    epic: PROJ-14509
     title: "Cyclist: Tandem dialogue panel"
     points: 3
     completed: '2026-02-17'
   - id: "86-12"
-    epic: MSSCI-14509
+    epic: PROJ-14509
     title: "Cyclist: Native team panel"
     points: 5
     completed: '2026-02-17'
   - id: 86-13
-    epic: MSSCI-14509
+    epic: PROJ-14509
     title: Tandem backseat not activating from CLI invocation
     points: 2
     completed: '2026-02-17'
   - id: "86-14"
-    epic: MSSCI-14509
+    epic: PROJ-14509
     title: "Agent behavior: team-mode protocol"
     points: 2
     completed: "2026-02-18"
   - id: "86-15"
-    epic: MSSCI-14509
+    epic: PROJ-14509
     title: "Team-enabled workflow templates"
     points: 2
     completed: '2026-02-18'
   - id: 86-16
-    epic: MSSCI-14509
+    epic: PROJ-14509
     title: Port dialogue manager from TypeScript/bash to Python
     points: 2
     completed: '2026-02-16'
   - id: 86-17
-    epic: MSSCI-14509
+    epic: PROJ-14509
     title: 'Tandem mode portrait: ImageMagick theme variations + swap indicator'
     points: 3
     completed: '2026-02-16'

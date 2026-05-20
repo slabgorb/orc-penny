@@ -1,6 +1,6 @@
 # Context: Story 121-4 — Fix git sync cache busting for stale UI state
 
-**GitHub Issue:** 1898andCo/pennyfarthing-orchestrator#31
+**GitHub Issue:** slabgorb/pennyfarthing-orchestrator#31
 **Points:** 2
 **Epic:** 121 — Debug Panel and Brownfield Tools Fixes
 

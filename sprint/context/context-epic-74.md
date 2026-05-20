@@ -299,7 +299,7 @@ interface ToolStack {
 
 - **Epic 75:** Vanilla JS to React Hooks Migration - Affects markdown/syntax highlighting used in results
 - **Epic 70:** Flexible Workspace - Provides base component patterns
-- **MSSCI-12782:** OTEL spans display - Source of timing/status data
+- **PROJ-12782:** OTEL spans display - Source of timing/status data
 
 ## References
 

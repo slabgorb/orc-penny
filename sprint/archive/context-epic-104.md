@@ -1,6 +1,6 @@
 # Epic 104: /bc CLI Panel Focus
 
-**Jira:** MSSCI-14952
+**Jira:** PROJ-14952
 **Repo:** pennyfarthing
 **PRD:** `sprint/planning/bikerack-prd.md` (Growth Feature, Idea A)
 

@@ -2,7 +2,7 @@
 
 ## Epic
 - **ID:** epic-72
-- **Jira:** [MSSCI-12720](https://1898andco.atlassian.net/browse/MSSCI-12720)
+- **Jira:** [PROJ-12720](https://slabgorb.atlassian.net/browse/PROJ-12720)
 - **Title:** Command & Navigation
 
 ## Vision
