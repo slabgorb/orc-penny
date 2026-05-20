@@ -69,10 +69,14 @@ stories:
     title: TEA/SM workflow references missing CLI surface — pf check command and pf validate context-story validator don't exist
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-05-20'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-05-20'
     type: bug
+    review_findings: Path traversal in _validate_single_context (HIGH/SEC), or-dispatch fragility (MED), stale test docstrings (LOW), UnicodeDecodeError uncaught (LOW). Bundle to one TEA→Dev rework round.
+    review_verdict: approved
   - id: 153-6
     title: sm-setup doesn't create sprint/context/context-story-{ID}.md but TEA on-activation expects it — gate sm-setup-exit doesn't enforce; either create or stop requiring
     points: 3
