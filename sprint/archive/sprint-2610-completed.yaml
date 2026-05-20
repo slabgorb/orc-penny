@@ -1,9 +1,12 @@
 sprint:
-  name: "TO Sprint 2610"
-  number: 2610
+  name: TO Sprint 2610
   jira_sprint_id: 311
-  jira_sprint_name: "TO Sprint 2610"
+  jira_sprint_name: TO Sprint 2610
   goal: Installation, agents and workflows
+  start_date: '2026-03-02'
+  end_date: '2026-03-15'
+  status: closed
+  number: 2610
 
 completed_epics:
   - '110'
@@ -28,6 +31,16 @@ completed_epics:
   - MSSCI-16564
   - MSSCI-16421
   - MSSCI-17079
+
+epics:
+  - MSSCI-16293
+  - MSSCI-16405
+  - MSSCI-16551
+  - MSSCI-17079
+  - '152'
+  - '153'
+  - '154'
+
 completed_stories:
   - id: 110-1
     epic: '110'
@@ -389,311 +402,6 @@ completed_stories:
     title: Support Project-Level Workflow Definitions
     points: 3
     completed: '2026-03-04'
-  - id: MSSCI-16066
-    epic: ''
-    title: Remove is_gui gating from relay mode handoff
-    points: 2
-    completed: ''
-  - id: MSSCI-16146
-    epic: ''
-    title: Wire pf validate into CI + add document type validators
-    points: 5
-    completed: ''
-  - id: MSSCI-16164
-    epic: ''
-    title: Homebrew tap + shell installer
-    points: 3
-    completed: ''
-  - id: 141-10
-    epic: ''
-    title: Convert Throw to Result Objects in Cyclist File-Browser
-    points: 2
-    completed: '2026-03-05'
-  - id: 141-9
-    epic: ''
-    title: Convert Throw to Result Objects in CLI Utils
-    points: 3
-    completed: '2026-03-05'
-  - id: 141-5
-    epic: ''
-    title: Add Tests for Core API Routes (agent-load through dependencies)
-    points: 5
-    completed: '2026-03-05'
-  - id: 141-26
-    epic: ''
-    title: Wire output_style config to prime activation
-    points: 2
-    completed: '2026-03-05'
-  - id: 44-1
-    epic: ''
-    title: Add --multi-judge flag to /solo command
-    points: 3
-    completed: '2026-03-05'
-  - id: 141-6
-    epic: MSSCI-16127
-    title: Add Tests for Core API Routes (evaluation through portrait)
-    points: 5
-    completed: "2026-03-05"
-  - id: 141-7
-    epic: MSSCI-16127
-    title: Add Tests for Core API Routes (settings through welcome)
-    points: 3
-    completed: '2026-03-05'
-  - id: 141-22
-    epic: MSSCI-16127
-    title: Add pf serve — Persistent Python Server with WheelHub Reverse Proxy
-    points: 5
-    completed: '2026-03-04'
-  - id: 141-24
-    epic: MSSCI-16127
-    title: Wire pf serve into WheelHub lifecycle
-    points: 3
-    completed: '2026-03-05'
-  - id: 44-2
-    epic: ''
-    title: Implement Krippendorff Alpha calculation
-    points: 3
-    completed: '2026-03-06'
-  - id: 44-3
-    epic: ''
-    title: Update finalize-run for multi-judge storage
-    points: 2
-    completed: '2026-03-06'
-  - id: 46-1
-    epic: ''
-    title: Add difficulty_profile schema to scenarios
-    points: 2
-    completed: '2026-03-06'
-  - id: 42-1
-    epic: ''
-    title: Create rubric-anchors.md with behavioral scales
-    points: 3
-    completed: '2026-03-06'
-  - id: 42-2
-    epic: ''
-    title: Reference anchors in judge prompts
-    points: 2
-    completed: '2026-03-06'
-  - id: 42-3
-    epic: ''
-    title: 'Variance test: measure CV reduction'
-    points: 1
-    completed: '2026-03-06'
-  - id: 43-1
-    epic: ''
-    title: Add red_herrings schema to scenarios
-    points: 2
-    completed: '2026-03-06'
-  - id: 43-2
-    epic: ''
-    title: Update judge for red herring detection
-    points: 2
-    completed: '2026-03-06'
-  - id: 45-1
-    epic: ''
-    title: Add gold_standard schema to scenarios
-    points: 2
-    completed: '2026-03-06'
-  - id: 45-2
-    epic: ''
-    title: Update judge to use gold standard as calibration
-    points: 2
-    completed: '2026-03-06'
-  - id: 45-4
-    epic: ''
-    title: 'Variance comparison: with/without gold standard'
-    points: 1
-    completed: '2026-03-06'
-  - id: 46-2
-    epic: ''
-    title: Populate difficulty profiles from baseline data
-    points: 2
-    completed: '2026-03-06'
-  - id: 47-1
-    epic: ''
-    title: Cascade attribution on dpgd-116 existing results
-    points: 2
-    completed: '2026-03-08'
-  - id: 43-3
-    epic: MSSCI-16211
-    title: 'Pilot: Add red herrings to order-service scenario'
-    points: 3
-    completed: '2026-03-08'
-  - id: 44-4
-    epic: MSSCI-16214
-    title: Multi-judge test on high-variance scenarios
-    points: 2
-    completed: '2026-03-08'
-  - id: 45-3
-    epic: MSSCI-16212
-    title: Create gold standards for 5 high-variance scenarios
-    points: 3
-    completed: '2026-03-08'
-  - id: 46-3
-    epic: MSSCI-16213
-    title: Update schema.yaml with new fields documentation
-    points: 1
-    completed: '2026-03-08'
-  - id: 47-2
-    epic: ''
-    title: Write concern manifest and AC manifest for dpgd-116
-    points: 2
-    completed: '2026-03-08'
-  - id: 48-1
-    epic: ''
-    title: FastAPI skeleton + OTLP receiver + launcher switch
-    points: 3
-    completed: '2026-03-09'
-  - id: 48-2
-    epic: ''
-    title: Port core API routes to FastAPI (data proxy + state + analysis)
-    points: 3
-    completed: '2026-03-09'
-  - id: 48-3
-    epic: ''
-    title: Port all 16 WebSocket channels to FastAPI
-    points: 5
-    completed: '2026-03-09'
-  - id: 48-4
-    epic: ''
-    title: Cleanup — remove Node.js server, build scripts, update docs
-    points: 2
-    completed: '2026-03-09'
-  - id: 49-1
-    epic: ''
-    title: TirePump removal — finish React cleanup and stale references
-    points: 2
-    completed: '2026-03-09'
-  - id: 49-2
-    epic: ''
-    title: Remove legacy TypeScript — dead CLI, BMAD, Jira modules
-    points: 3
-    completed: '2026-03-09'
-  - id: 142-1
-    epic: ''
-    title: Unified context resolution in load_scenario()
-    points: 2
-    completed: '2026-03-11'
-  - id: 142-2
-    epic: ''
-    title: Fix save_result() nesting bug
-    points: 1
-    completed: '2026-03-11'
-  - id: 142-3
-    epic: ''
-    title: Worktree cleanliness verification
-    points: 1
-    completed: '2026-03-11'
-  - id: 142-4
-    epic: ''
-    title: Always capture stream-json events to disk
-    points: 3
-    completed: '2026-03-11'
-  - id: 142-5
-    epic: ''
-    title: Fix framework_version reliability
-    points: 1
-    completed: '2026-03-11'
-  - id: 142-6
-    epic: ''
-    title: Event parsing and trace/explain commands
-    points: 3
-    completed: '2026-03-11'
-  - id: 142-7
-    epic: ''
-    title: Run index with backfill
-    points: 2
-    completed: '2026-03-11'
-  - id: 142-8
-    epic: ''
-    title: Events-first storage model
-    points: 3
-    completed: '2026-03-12'
-  - id: 142-9
-    epic: ''
-    title: LLM-narrated trace
-    points: 2
-    completed: '2026-03-12'
-  - id: 143-1
-    epic: ''
-    title: Create native subagent definition for Dev in pennyfarthing-dist
-    points: 3
-    completed: '2026-03-12'
-  - id: 143-2
-    epic: ''
-    title: Create native subagent definitions for TEA and Reviewer in pennyfarthing-dist
-    points: 3
-    completed: '2026-03-12'
-  - id: 143-3
-    epic: ''
-    title: Create native subagent definitions for remaining 7 agents in pennyfarthing-dist
-    points: 3
-    completed: '2026-03-12'
-  - id: 143-4
-    epic: ''
-    title: Adapt pf prime for subagent-compatible context output
-    points: 5
-    completed: '2026-03-12'
-  - id: 143-5
-    epic: ''
-    title: Define handoff document contract format
-    points: 2
-    completed: '2026-03-12'
-  - id: 143-6
-    epic: ''
-    title: SM spawns single subagent via Agent tool
-    points: 3
-    completed: '2026-03-12'
-  - id: 143-7
-    epic: ''
-    title: SM reads handoff documents and chains phases
-    points: 3
-    completed: '2026-03-12'
-  - id: 143-8
-    epic: ''
-    title: SM enforces gates between phases
-    points: 5
-    completed: '2026-03-12'
-  - id: 143-11
-    epic: ''
-    title: Update PF activation skills for native subagents
-    points: 3
-    completed: '2026-03-12'
-  - id: 143-9
-    epic: ''
-    title: Full TDD cycle end-to-end validation
-    points: 5
-    completed: '2026-03-12'
-  - id: 143-10
-    epic: ''
-    title: Reviewer-Dev fix round-trip support
-    points: 3
-    completed: '2026-03-12'
-  - id: 144-1
-    epic: ''
-    title: Deviation format spec and gate validation upgrade
-    points: 3
-    completed: '2026-03-12'
-  - id: 144-2
-    epic: ''
-    title: Update TEA and Dev agent definitions for deviation logging
-    points: 2
-    completed: '2026-03-12'
-  - id: 144-3
-    epic: ''
-    title: Create AC-completion gate
-    points: 3
-    completed: '2026-03-12'
-  - id: 143-13
-    epic: ''
-    title: PreToolUse hooks for branch protection
-    points: 2
-    completed: '2026-03-12'
-  - id: 144-4
-    epic: ''
-    title: Add simplify toggle to repos.yaml
-    points: 1
-    completed: '2026-03-13'
   - id: 144-5
     epic: ''
     title: Add Assumptions section to story context schema
@@ -1139,3 +847,161 @@ completed_stories:
     title: Fail loudly on missing epic field during archive write, backfill historical entries
     points: 3
     completed: '2026-04-20'
+
+stories: []
+
+standalone_stories:
+  - id: MSSCI-16066
+    jira: MSSCI-16066
+    title: Remove is_gui gating from relay mode handoff
+    points: 2
+    status: done
+    repos: pennyfarthing
+    pr: 1238
+    branch: feat/MSSCI-16066-remove-isgui-relay
+  - id: MSSCI-16146
+    jira: MSSCI-16146
+    title: Wire pf validate into CI + add document type validators
+    points: 5
+    status: done
+    repos: pennyfarthing
+    pr: 1260
+    branch: feat/MSSCI-16146-pf-validate-ci-doc-validators
+  - id: MSSCI-16164
+    jira: MSSCI-16164
+    title: Homebrew tap + shell installer
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1268
+    branch: feat/MSSCI-16164-homebrew-tap-shell-installer
+  - id: MSSCI-16187
+    jira: MSSCI-16187
+    title: Rewrite onboarding docs with three user journeys and brew-first install
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1276
+    branch: feat/MSSCI-16187-rewrite-onboarding-docs
+  - id: MSSCI-16200
+    jira: MSSCI-16200
+    title: Model story statuses on Jira lifecycle — add in_review support
+    points: 5
+    status: done
+    repos: pennyfarthing
+    pr: 1281
+    branch: feat/MSSCI-16200-add-in-review-status
+  - id: MSSCI-16204
+    jira: MSSCI-16204
+    title: Consumer gate extensions via config + gate files
+    points: 2
+    status: done
+    repos: pennyfarthing
+    pr: 1283
+    branch: feat/MSSCI-16204-gate-extensions
+  - id: MSSCI-16205
+    jira: MSSCI-16205
+    title: Configurable PR title format via repos.yaml
+    points: 2
+    status: done
+    repos: pennyfarthing
+    pr: 1284
+    branch: feat/MSSCI-16205-pr-title-format
+  - id: MSSCI-16209
+    jira: MSSCI-16209
+    title: Add tests for core API routes (settings through welcome)
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1288
+    branch: feat/MSSCI-16209-add-tests-core-api-routes
+  - id: MSSCI-16233
+    jira: MSSCI-16233
+    title: Rebuild WheelHub bundle with in_review status mapping
+    points: 1
+    status: done
+    repos: pennyfarthing
+    pr: 1296
+    branch: feat/MSSCI-16233-wheelhub-in-review-bundle
+  - id: MSSCI-16302
+    jira: MSSCI-16302
+    title: Add judge versioning and partial-match rubric
+    points: 2
+    status: done
+    repos: pennyfarthing
+    pr: 1309
+    branch: feat/MSSCI-16302-judge-versioning
+  - id: MSSCI-16303
+    jira: MSSCI-16303
+    title: Fix persona tracking — eliminate CYCLIST_SESSION_ID, set SESSION_ID before WheelHub spawn
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1310
+    branch: feat/MSSCI-16303-fix-persona-session-id
+  - id: MSSCI-16323
+    jira: MSSCI-16323
+    title: Plan mode agent reload hook for ExitPlanMode
+    points: 2
+    status: done
+    repos: pennyfarthing
+    pr: 1318
+    branch: feat/MSSCI-16323-plan-exit-reload
+  - id: MSSCI-16331
+    jira: MSSCI-16331
+    title: Add startup agent auto-invoke on SessionStart
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1319
+    branch: feat/MSSCI-16331-startup-agent-autoinvoke
+  - id: MSSCI-16335
+    jira: MSSCI-16335
+    title: Add reviewer specialist subagents (silent-failure, test, comment, type-design, security, simplifier)
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1324
+    branch: feat/MSSCI-16335-reviewer-specialist-subagents
+  - id: MSSCI-16336
+    jira: MSSCI-16336
+    title: Upgrade pipeline replay benchmark to exercise full PF machinery
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1326
+    branch: feat/MSSCI-16336-pipeline-replay-pf-machinery
+  - id: MSSCI-16346
+    jira: MSSCI-16346
+    title: Add spec deviation tracking to agent session output
+    points: 3
+    status: done
+    repos: pennyfarthing
+    pr: 1331
+    branch: feat/MSSCI-16346-spec-deviation-tracking
+  - id: MSSCI-16347
+    jira: MSSCI-16347
+    title: Implement stacked PR depends_on field and Graphite health check
+    points: 3
+    status: done
+    repos: pennyfarthing
+    branch: feat/MSSCI-16347-stacked-pr-depends-on
+    review_verdict: approved
+    completed: '2026-03-12'
+  - id: MSSCI-16432
+    jira: MSSCI-16432
+    title: Enhance Architect spec-check with mismatch taxonomy
+    points: 2
+    status: done
+    repos: pennyfarthing
+    pr: 1393
+    branch: feat/MSSCI-16432-architect-spec-check
+  - id: MSSCI-16440
+    jira: MSSCI-16440
+    title: Update Jira label from pennyfarthing to product-pennyfarthing
+    points: 2
+    status: done
+    repos: pennyfarthing
+    pr: 1395
+    branch: feat/MSSCI-16440-jira-label-update
+    completed: '2026-03-13'

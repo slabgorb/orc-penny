@@ -27,8 +27,6 @@ pennyfarthing/
 *-pid
 *-port
 *.json
-!package.json
-!package-lock.json
 !tsconfig.json
 !.claude/settings.json
 

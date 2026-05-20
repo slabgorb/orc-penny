@@ -3,7 +3,7 @@ type: epic
 title: "Demo Artifact Generator — Integration & Config"
 description: CLI, skill, hook integration, and configuration for the demo artifact generator.
 priority: p1
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-16405
 stories:
@@ -62,6 +62,7 @@ stories:
     title: Playwright screenshot capture for UI stories
     points: 3
     priority: p2
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
+completed: '2026-05-04'

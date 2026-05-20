@@ -1,0 +1,145 @@
+sprint:
+  name: "TO Sprint 2618"
+  number: 2618
+  jira_sprint_id: 311
+  jira_sprint_name: "TO Sprint 2618"
+  goal: Framework reliability, jira isolation, kanban formalization
+  start_date: 2026-05-04
+  end_date: 2026-05-17
+  status: active
+
+completed_epics:
+  - MSSCI-16293
+  - MSSCI-16405
+  - MSSCI-16551
+completed_stories:
+  - id: 47-1
+    epic: MSSCI-16293
+    title: Cascade attribution on dpgd-116 existing results
+    points: 2
+    completed: '2026-03-08'
+  - id: 47-2
+    epic: MSSCI-16293
+    title: Write concern manifest and AC manifest for dpgd-116
+    points: 2
+    completed: '2026-03-08'
+  - id: 47-3
+    epic: MSSCI-16293
+    title: Run 3 PM personas through epic context for dpgd-116
+    points: 3
+    completed: '2026-05-04'
+  - id: 47-4
+    epic: MSSCI-16293
+    title: Run 3 Architect personas through story context for dpgd-116
+    points: 3
+    completed: '2026-05-04'
+  - id: 47-5
+    epic: MSSCI-16293
+    title: Score context docs against manifests — theme differentiation
+    points: 2
+    completed: '2026-05-04'
+  - id: 47-6
+    epic: MSSCI-16293
+    title: Context ablation experiment — remove sections, measure delta
+    points: 3
+    completed: '2026-05-04'
+  - id: 47-7
+    epic: MSSCI-16293
+    title: A/B pipeline run — good context vs no context
+    points: 5
+    completed: '2026-05-04'
+  - id: 47-8
+    epic: MSSCI-16293
+    title: Question quality instrumentation — PM research patterns
+    points: 3
+    completed: '2026-05-04'
+  - id: 47-9
+    epic: MSSCI-16293
+    title: Tag benchmark OTEL in native subagent pipeline
+    points: 2
+    completed: '2026-05-04'
+  - id: 47-10
+    epic: MSSCI-16293
+    title: Cleanup OTELFileCollector forwarding post-143
+    points: 1
+    completed: '2026-05-04'
+  - id: 47-11
+    epic: MSSCI-16293
+    title: Subagent transition visualization in benchmark panel
+    points: 2
+    completed: '2026-05-04'
+  - id: 146-1
+    epic: MSSCI-16405
+    title: pf demo generate CLI command + dry-run
+    points: 2
+    completed: '2026-03-13'
+  - id: 146-2
+    epic: MSSCI-16405
+    title: /pf-demo skill wrapper
+    points: 1
+    completed: '2026-03-13'
+  - id: 146-3
+    epic: MSSCI-16405
+    title: "Hook into story_finish pipeline — auto-trigger on completion"
+    points: 2
+    completed: '2026-03-13'
+  - id: 146-4
+    epic: MSSCI-16405
+    title: "demo.yaml configuration — branding, format prefs, classification rules"
+    points: 2
+    completed: '2026-03-13'
+  - id: 146-5
+    epic: MSSCI-16405
+    title: Playwright screenshot capture for UI stories
+    points: 3
+    completed: '2026-05-04'
+  - id: 149-1
+    epic: MSSCI-16551
+    title: 'Silent-failure-hunter: add unwrap_or_default/unwrap_or/.ok() heuristic for config loading paths'
+    points: 2
+    completed: '2026-03-16'
+  - id: 149-2
+    epic: MSSCI-16551
+    title: Add build-config specialist subagent for Cargo.toml workspace inheritance and package.json patterns
+    points: 2
+    completed: '2026-03-16'
+  - id: 149-3
+    epic: MSSCI-16551
+    title: "Reviewer user-intent check: for each VERIFIED, assess user's reasonable expectation vs code behavior"
+    points: 2
+    completed: '2026-03-16'
+  - id: 149-4
+    epic: MSSCI-16551
+    title: 'Judge calibration: reduce split decisions by tightening partial-match and opposite-conclusion rules'
+    points: 3
+    completed: '2026-05-04'
+  - id: 149-5
+    epic: MSSCI-16551
+    title: 'Benchmark harness: save all 3 judge YAML files consistently (run-27 only has 2)'
+    points: 1
+    completed: '2026-05-04'
+  - id: 149-6
+    epic: MSSCI-16551
+    title: Run N=5 control baseline with all fixes to establish new benchmark floor
+    points: 1
+    completed: '2026-05-04'
+  - id: 149-7
+    epic: MSSCI-16551
+    title: Save full patch diff and worktree snapshot per benchmark run for post-hoc comparison
+    points: 2
+    completed: '2026-05-04'
+  - id: 149-8
+    epic: MSSCI-16551
+    title: Benchmark pf module version gate — hard fail if harness code is from wrong project
+    points: 1
+    completed: '2026-03-16'
+  - id: 149-9
+    epic: MSSCI-16551
+    title: Subagent-before-conclusions gate — block assessment until all subagents return
+    points: 1
+    completed: '2026-03-16'
+  - id: 149-10
+    epic: MSSCI-16551
+    title: Reviewer specialist subagents should default to sonnet, not haiku
+    points: 1
+    completed: '2026-03-19'

@@ -63,97 +63,6 @@ portraits *args:
             ;;
     esac
 
-# [pf-migrated] # Start WheelHub server (API + WebSocket on port 2898)
-# [pf-migrated] # Usage: just wheelhub [start|stop|status]
-# [pf-migrated] wheelhub *args:
-# [pf-migrated]     #!/usr/bin/env bash
-# [pf-migrated]     set -euo pipefail
-
-# [pf-migrated]     project_dir="{{root}}"
-# [pf-migrated]     pid_file="$project_dir/.wheelhub-pid"
-# [pf-migrated]     port_file="$project_dir/.bikerack-port"
-# [pf-migrated]     logfile="$project_dir/.session/wheelhub.log"
-
-# [pf-migrated]     subcmd="{{args}}"
-# [pf-migrated]     case "${subcmd:-start}" in
-# [pf-migrated]         stop)
-# [pf-migrated]             if [[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null; then
-# [pf-migrated]                 kill "$(cat "$pid_file")"
-# [pf-migrated]                 rm -f "$pid_file" "$port_file"
-# [pf-migrated]                 echo "WheelHub stopped"
-# [pf-migrated]             else
-# [pf-migrated]                 rm -f "$pid_file" "$port_file"
-# [pf-migrated]                 echo "WheelHub not running"
-# [pf-migrated]             fi
-# [pf-migrated]             ;;
-# [pf-migrated]         status)
-# [pf-migrated]             if [[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null; then
-# [pf-migrated]                 port=$(cat "$port_file" 2>/dev/null || echo "?")
-# [pf-migrated]                 echo "WheelHub running (PID: $(cat "$pid_file"), port: $port)"
-# [pf-migrated]                 echo "  http://127.0.0.1:$port"
-# [pf-migrated]             else
-# [pf-migrated]                 echo "WheelHub not running"
-# [pf-migrated]             fi
-# [pf-migrated]             ;;
-# [pf-migrated]         start)
-# [pf-migrated]             # Idempotent — already running? Just report.
-# [pf-migrated]             if [[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null; then
-# [pf-migrated]                 port=$(cat "$port_file" 2>/dev/null || echo "?")
-# [pf-migrated]                 echo "WheelHub already running (port: $port)"
-# [pf-migrated]                 exit 0
-# [pf-migrated]             fi
-
-# [pf-migrated]             rm -f "$pid_file" "$port_file"
-
-# [pf-migrated]             bikerack_js="{{pennyfarthing}}/packages/cyclist/dist/bikerack.js"
-# [pf-migrated]             if [[ ! -f "$bikerack_js" ]]; then
-# [pf-migrated]                 echo "Build required..."
-# [pf-migrated]                 cd "{{pennyfarthing}}" && pnpm run build
-# [pf-migrated]             fi
-
-# [pf-migrated]             mkdir -p "$(dirname "$logfile")"
-# [pf-migrated]             IS_BIKERACK=1 CYCLIST_PROJECT_DIR="$project_dir" \
-# [pf-migrated]                 node "$bikerack_js" >> "$logfile" 2>&1 &
-# [pf-migrated]             echo $! > "$pid_file"
-
-# [pf-migrated]             # Wait for port file (up to 10s)
-# [pf-migrated]             for i in $(seq 1 20); do
-# [pf-migrated]                 if [[ -f "$port_file" ]]; then
-# [pf-migrated]                     port=$(cat "$port_file")
-# [pf-migrated]                     echo "WheelHub running at http://127.0.0.1:$port"
-# [pf-migrated]                     exit 0
-# [pf-migrated]                 fi
-# [pf-migrated]                 sleep 0.5
-# [pf-migrated]             done
-# [pf-migrated]             echo "Warning: WheelHub didn't start within 10s. Check $logfile"
-# [pf-migrated]             ;;
-# [pf-migrated]         *)
-# [pf-migrated]             echo "Usage: just wheelhub [start|stop|status]"
-# [pf-migrated]             exit 1
-# [pf-migrated]             ;;
-# [pf-migrated]     esac
-
-# [pf-migrated] # Launch TUI (starts WheelHub if needed)
-# [pf-migrated] tui:
-# [pf-migrated]     #!/usr/bin/env bash
-# [pf-migrated]     set -euo pipefail
-
-# [pf-migrated]     pid_file="{{root}}/.wheelhub-pid"
-# [pf-migrated]     port_file="{{root}}/.bikerack-port"
-
-# [pf-migrated]     # Start WheelHub if not running
-# [pf-migrated]     if ! ([[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null); then
-# [pf-migrated]         just --justfile "{{root}}/justfile" wheelhub start
-# [pf-migrated]     fi
-
-# [pf-migrated]     port=$(cat "$port_file" 2>/dev/null)
-# [pf-migrated]     if [[ -z "$port" ]]; then
-# [pf-migrated]         echo "Error: WheelHub port not found"
-# [pf-migrated]         exit 1
-# [pf-migrated]     fi
-
-# [pf-migrated]     pf launch tui --port "$port" --project-dir "{{root}}" --foreground
-
 # Launch TUI in dev mode (auto-reload on Python file changes)
 tui-dev:
     #!/usr/bin/env bash
@@ -176,74 +85,6 @@ tui-dev:
     PYTHONPATH="{{root}}/pennyfarthing/pennyfarthing-dist/src" \
         python3 -c "from pf.tui.app import dev_main; from pathlib import Path; dev_main(port=$port, project_dir=Path('{{root}}'))"
 
-# [pf-migrated]     pid_file="{{root}}/.wheelhub-pid"
-# [pf-migrated]     port_file="{{root}}/.bikerack-port"
-
-# [pf-migrated]     # Start WheelHub if not running
-# [pf-migrated]     if ! ([[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null); then
-# [pf-migrated]         just --justfile "{{root}}/justfile" wheelhub start
-# [pf-migrated]     fi
-
-# [pf-migrated]     port=$(cat "$port_file" 2>/dev/null)
-# [pf-migrated]     if [[ -z "$port" ]]; then
-# [pf-migrated]         echo "Error: WheelHub port not found"
-# [pf-migrated]         exit 1
-# [pf-migrated]     fi
-
-# [pf-migrated]     url="http://127.0.0.1:$port"
-# [pf-migrated]     echo "Opening $url"
-# [pf-migrated]     open -a "Google Chrome" "$url"
-
-# [pf-migrated] # Launch Claude with OTEL pre-configured for WheelHub/BikeRack
-# [pf-migrated] claude:
-# [pf-migrated]     #!/usr/bin/env bash
-# [pf-migrated]     set -euo pipefail
-
-# [pf-migrated]     project_dir="{{root}}"
-# [pf-migrated]     PORT=""
-
-# [pf-migrated]     # Check .cyclist-port first, then .bikerack-port (same order as session_start.py)
-# [pf-migrated]     for port_file in "$project_dir/.cyclist-port" "$project_dir/.bikerack-port"; do
-# [pf-migrated]         if [[ -f "$port_file" ]]; then
-# [pf-migrated]             candidate=$(cat "$port_file" 2>/dev/null)
-# [pf-migrated]             if [[ "$candidate" =~ ^[0-9]+$ ]]; then
-# [pf-migrated]                 # Verify port is actually listening
-# [pf-migrated]                 if (echo >/dev/tcp/localhost/"$candidate") 2>/dev/null; then
-# [pf-migrated]                     PORT="$candidate"
-# [pf-migrated]                     break
-# [pf-migrated]                 else
-# [pf-migrated]                     echo "[just claude] Stale port file $port_file (port $candidate not listening), skipping" >&2
-# [pf-migrated]                 fi
-# [pf-migrated]             fi
-# [pf-migrated]         fi
-# [pf-migrated]     done
-
-# [pf-migrated]     if [[ -n "$PORT" ]]; then
-# [pf-migrated]         echo "[just claude] OTEL configured → http://localhost:$PORT" >&2
-# [pf-migrated]         export CLAUDE_CODE_ENABLE_TELEMETRY="1"
-# [pf-migrated]         export OTEL_EXPORTER_OTLP_PROTOCOL="http/json"
-# [pf-migrated]         export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:$PORT"
-# [pf-migrated]         export OTEL_LOGS_EXPORTER="otlp"
-# [pf-migrated]         export OTEL_METRICS_EXPORTER="otlp"
-# [pf-migrated]     else
-# [pf-migrated]         echo "[just claude] No WheelHub/BikeRack running — launching without OTEL" >&2
-# [pf-migrated]         echo "[just claude] Start one first: just wheelhub start" >&2
-# [pf-migrated]     fi
-
-# [pf-migrated]     exec claude
-
-# [pf-migrated] # Launch tmux dev layout (2 columns: pf-1 + pf-2, each with Claude + TUI)
-# [pf-migrated] tmux-dev:
-# [pf-migrated]     #!/usr/bin/env bash
-# [pf-migrated]     set -euo pipefail
-# [pf-migrated]     if [[ ! -f "{{root}}/tmux-dev" ]]; then
-# [pf-migrated]         echo "No tmux-dev found. Copy from sample:"
-# [pf-migrated]         echo "  cp tmux-dev.sample tmux-dev && chmod +x tmux-dev"
-# [pf-migrated]         echo "  cp tmux.conf.sample tmux.conf"
-# [pf-migrated]         exit 1
-# [pf-migrated]     fi
-# [pf-migrated]     exec "{{root}}/tmux-dev"
-
 # =============================================================================
 # tmux — see .pennyfarthing/justfile.pf
 # =============================================================================
@@ -260,7 +101,8 @@ dev:
 # Setup
 # =============================================================================
 
-# Bootstrap workspace from scratch (fresh clone)
+# Bootstrap workspace from scratch (fresh clone).
+# Framework is Python-only (v13+); no Node/pnpm required.
 setup:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -275,24 +117,16 @@ setup:
         exit 1
     fi
 
-    # Step 1: Clone pennyfarthing repo if missing
+    # Step 1: Clone pennyfarthing repo if missing (inlined framework source)
     if [ ! -d "{{pennyfarthing}}" ]; then
-        echo "Step 1/6: Cloning pennyfarthing framework..."
+        echo "Step 1/4: Cloning pennyfarthing framework..."
         git clone git@github.com:1898andCo/pennyfarthing.git "{{pennyfarthing}}"
     else
-        echo "Step 1/6: pennyfarthing/ already exists, skipping clone"
+        echo "Step 1/4: pennyfarthing/ already exists, skipping clone"
     fi
 
-    # Step 2: Install framework dependencies
-    echo "Step 2/6: Installing framework dependencies..."
-    cd "{{pennyfarthing}}" && pnpm install
-
-    # Step 3: Build framework
-    echo "Step 3/6: Building framework..."
-    cd "{{pennyfarthing}}" && pnpm build
-
-    # Step 4: Install pf CLI (editable-install from local repo to stay current)
-    echo "Step 4/6: Installing pf CLI from local repo..."
+    # Step 2: Install pf CLI (editable install from the inlined repo — stays in sync)
+    echo "Step 2/4: Installing pf CLI from local repo..."
     if command -v uv >/dev/null 2>&1; then
         uv tool install --editable "{{pennyfarthing}}" --force --quiet 2>/dev/null \
             || uv tool install --editable "{{pennyfarthing}}" --force
@@ -313,20 +147,25 @@ setup:
     fi
     echo "  Installed: $(pf --version 2>&1)"
 
-    # Step 5: Install orchestrator deps (triggers postinstall -> pennyfarthing update)
-    echo "Step 5/6: Installing orchestrator and linking..."
-    cd "{{root}}" && npm install
+    # Step 3: Initialize project — dogfooding-aware (creates symlinks, not copies)
+    echo "Step 3/4: Initializing Pennyfarthing project..."
+    cd "{{root}}" && pf init --yes
 
-    # Step 6: Initialize project (creates settings.local.json with hooks)
-    echo "Step 6/6: Initializing Pennyfarthing project..."
-    cd "{{root}}" && pf init
+    # Step 4: Install required Claude Code plugin (idempotent; /plugin install is a no-op if present)
+    echo "Step 4/4: Checking superpowers Claude Code plugin..."
+    if [ -d "$HOME/.claude/plugins/cache/claude-plugins-official/superpowers" ]; then
+        echo "  superpowers plugin already installed"
+    else
+        echo "  superpowers plugin not found."
+        echo "  Inside Claude Code, run:  /plugin install superpowers@claude-plugins-official"
+    fi
 
     echo ""
     echo "=== Setup complete ==="
     echo ""
-    echo "Next steps:"
-    echo "  just claude       # start Claude Code"
-    echo "  /guided-tour      # interactive walkthrough"
+    echo "Verify: pf doctor"
+    echo "Next:   pf theme set <name>   # see: pf theme list"
+    echo "Then:   claude                # start Claude Code"
 
 # =============================================================================
 # Orchestrator-specific tasks

@@ -3,7 +3,7 @@ type: epic
 title: Peloton Benchmark Detection Gap Closure
 description: Close detection gaps identified by DPGD-116 pipeline replay benchmarks. Three persistent misses (C1 error swallowing, I3 workspace deps, I4 serde silent ignore), judge split decisions, and structural improvements to subagent analysis depth.
 priority: p1
-status: backlog
+status: done
 repos: pennyfarthing
 jira: MSSCI-16551
 stories:
@@ -46,21 +46,21 @@ stories:
     title: 'Benchmark harness: save all 3 judge YAML files consistently (run-27 only has 2)'
     points: 1
     priority: p1
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: trivial
   - id: 149-6
     title: Run N=5 control baseline with all fixes to establish new benchmark floor
     points: 1
     priority: p1
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: trivial
   - id: 149-7
     title: Save full patch diff and worktree snapshot per benchmark run for post-hoc comparison
     points: 2
     priority: p1
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: trivial
   - id: 149-8
@@ -90,3 +90,4 @@ stories:
     repos: pennyfarthing
     workflow: trivial
     completed: '2026-03-19'
+completed: '2026-05-04'
