@@ -3,7 +3,7 @@ type: epic
 title: Jira isolation — config-driven project keys
 description: Remove PROJ hardcoding and corporate-email leakage from the framework. Gate all jira integration on explicit config; no silent defaults; no downstream contamination.
 priority: p1
-status: backlog
+status: done
 repos: pennyfarthing
 stories:
   - id: 152-1
@@ -22,7 +22,10 @@ stories:
     title: Gate jira-cli lookups on jira.enabled config; skip assignee lookup for non-jira stories
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-05-20'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-05-20'
     type: bug
+completed: '2026-05-20'
