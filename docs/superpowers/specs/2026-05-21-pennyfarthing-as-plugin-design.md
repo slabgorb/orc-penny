@@ -357,16 +357,18 @@ SM finishes story
 
 ### 8.1 Keith's One-time Cutover
 
+> **Scope update (2026-05-21):** the `pf migrate-from-legacy` command referenced below is **not being built**. The plan-of-plans is now Plans 2–4 (scaffold + paths, content move, hooks rewrite); the originally-numbered Plan 5 is descoped. Cutover is manual — Keith deletes `.pennyfarthing/` and edits `.claude/settings.json` per repo, optionally with a throwaway shell one-off. The script below is documentation of the intended user-side workflow, not a spec for a `pf` subcommand.
+
 ```sh
 # 1. Stop running pf processes
 pf frame stop 2>/dev/null
 pkill -f "pf frame" 2>/dev/null
 
-# 2. Uninstall the global Python package
-pip uninstall pennyfarthing
+# 2. (No pip uninstall — pennyfarthing was never pip-installed in the
+#    plugin model; the legacy install path is being deleted entirely.)
 
-# 3. Clean each pennyfarthing-using project
-for proj in $(pf migrate-from-legacy --scan ~/Projects --list); do
+# 3. Clean each pennyfarthing-using project (manual loop, no pf migrate-from-legacy)
+for proj in ~/Projects/<each-pf-using-repo>; do
   cd "$proj"
   rm -rf .pennyfarthing/
   # Remove hook entries pointing into .pennyfarthing/
@@ -382,20 +384,18 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 claude plugin marketplace add slabgorb/pennyfarthing
 claude plugin install pf@pennyfarthing
 
-# 6. One-shot state migration (dry-run by default)
-pf migrate-from-legacy --scan ~/Projects --dry-run
-pf migrate-from-legacy --scan ~/Projects --apply
+# 6. Move any per-project state (sessions, config.local.yaml, sidecars)
+#    from the old .pennyfarthing/ to ~/.claude/plugins/data/pennyfarthing-pf/
+#    if it matters — also manual; no pf subcommand.
 ```
 
-`pf migrate-from-legacy` behavior:
-- For each detected legacy project under the scan root:
-  - Move `.pennyfarthing/sidecars/*` → `~/.claude/data/pf/sidecars/<origin-slug>/`
-  - Move `.pennyfarthing/config.local.yaml` → `~/.claude/data/pf/projects/<hash>/config.local.yaml`
-  - Move active `.session/*.md` (non-archived) → `~/.claude/data/pf/projects/<hash>/.session/`
+**State to migrate (manual, per repo):**
+- Move `.pennyfarthing/sidecars/*` → `~/.claude/plugins/data/pennyfarthing-pf/sidecars/<origin-slug>/`
+- Move `.pennyfarthing/config.local.yaml` → `~/.claude/plugins/data/pennyfarthing-pf/projects/<hash>/config.local.yaml`
+- Move active `.session/*.md` (non-archived) → `~/.claude/plugins/data/pennyfarthing-pf/projects/<hash>/.session/`
 - Leave `sprint/`, `docs/adr/`, `.session/archived/` in place (they stay in repo).
-- Default `--dry-run` prints the move plan; `--apply` performs it.
 
-`pf migrate-from-legacy` is removed in the v1.0.1 release (single-use, single-user).
+A bespoke shell one-off may automate the moves for the handful of repos in scope. No `pf` subcommand is provided for this — the migration is single-use and single-user.
 
 ### 8.2 Orchestrator Dogfooding
 
@@ -415,26 +415,30 @@ D2 (collapse `orc-penny/` into `pennyfarthing/`) is explicitly **not** in scope.
 ### 8.3 Release Ordering
 
 ```
-v0.x  (on a branch in pennyfarthing/ repo)
-  ├── Add .claude-plugin/{plugin.json, marketplace.json}
-  ├── Move pennyfarthing-dist/src/pf/ → runtime/src/pf/
-  ├── Move pennyfarthing-dist/agents/* → agents/* (drop pf- prefix)
-  ├── Move pennyfarthing-dist/commands/* → commands/* (drop pf- prefix)
-  ├── Move pennyfarthing-dist/skills/* → skills/* (drop pf- prefix)
-  ├── Move pennyfarthing-dist/{workflows,personas,gates,...} to repo root
-  ├── Create runtime/pyproject.toml + uv.lock from existing pyproject.toml
-  ├── Create hooks/hooks.json from current settings.json hook entries
-  ├── Rewrite scripts/hooks/*.sh as one-line uv-run wrappers
-  ├── Rewrite scripts/hooks/sprint-yaml-validation as pf hooks sprint-yaml-validate
-  ├── Add runtime/src/pf/paths.py + refactor all project-relative path lookups
-  ├── Find/replace all /pf-foo → /pf:foo references in agents, skills, commands, guides
-  ├── Write pf migrate-from-legacy
-  ├── Spike validation (§10 Gate 1)
+v0.x  (on develop in pennyfarthing/ repo)
+  Plan 1 (DONE): Gate 1 spike — validate plugin assumptions
+  Plan 2:  Add .claude-plugin/{plugin.json, marketplace.json}
+           Move pennyfarthing-dist/src/pf/ → runtime/src/pf/ (git mv)
+           Create runtime/pyproject.toml + uv.lock (hatchling)
+           Delete pennyfarthing-dist/{pyproject.toml,setup.py,src/pf_launcher.py}
+           Add runtime/src/pf/paths.py + refactor runtime-state call sites
+  Plan 3:  Move runtime/src/pf/_dist/agents/* → agents/* (drop pf- prefix on filenames)
+           Move runtime/src/pf/_dist/commands/* → commands/* (drop pf- prefix)
+           Move runtime/src/pf/_dist/skills/* → skills/* (drop pf- prefix)
+           Move runtime/src/pf/_dist/{workflows,personas,gates,scripts,
+                                       guides,output-styles,schemas,templates}
+                → corresponding plugin-root dirs
+           Update Python imports that referenced pf._dist
+           Find/replace all /pf-foo → /pf:foo in agents, skills, commands, guides
+           Delete pennyfarthing-dist/ entirely
+  Plan 4:  Create hooks/hooks.json from current settings.json hook entries (nested schema)
+           Rewrite scripts/hooks/*.sh as one-line uv-run wrappers (with nohup pattern for Frame)
+           Rewrite scripts/hooks/sprint-yaml-validation as pf hooks sprint-yaml-validate
+           Resolve Gate 1 Q4 (permissions / env merging micro-spike)
 v1.0  Cut release tag, marketplace.json points at it
   ├── claude plugin marketplace add slabgorb/pennyfarthing
-  ├── Keith runs pf migrate-from-legacy on each machine
-  ├── Delete legacy .pennyfarthing/ dirs everywhere
-v1.0.1  Remove migrate-from-legacy command
+  ├── Keith manually migrates state per repo (no pf subcommand)
+  └── Delete legacy .pennyfarthing/ dirs everywhere
 ```
 
 ## 9. Error Handling and Edge Cases
@@ -459,7 +463,7 @@ v1.0.1  Remove migrate-from-legacy command
 | Origin-slug collisions (same repo name on different hosts) | Very low | Slug includes host; different hosts → different buckets |
 | Plugin source dir looks editable | High annoyance, low danger | README + per-file header comment warns against it; `pf doctor` can checksum and warn |
 | Hook runs before cwd is set | Low | All hooks run with cwd = project root by Claude Code convention; `pf.paths.discover()` always works |
-| `pf migrate-from-legacy` damages something | Single-run, single-user | `--dry-run` default; requires explicit `--apply` |
+| Manual state migration damages something | Single-run, single-user | Migration is a manual `rm -rf .pennyfarthing/` plus jq edits of `.claude/settings.json` per repo; no `pf` subcommand. User-owned and reversible from git. |
 
 ### Open questions (spike before commit)
 
