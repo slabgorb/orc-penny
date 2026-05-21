@@ -61,10 +61,11 @@ stories:
         pf sprint epic show E                       # → works fine
     points: 5
     priority: p1
-    status: in_progress
+    status: done
     started: '2026-05-21'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-05-21'
     type: bug
   - id: 153-5
     title: TEA/SM workflow references missing CLI surface — pf check command and pf validate context-story validator don't exist
