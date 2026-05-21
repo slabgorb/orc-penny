@@ -78,28 +78,18 @@ Within the runtime-state tier, the discriminator differs by data type (paths wri
 
 | State | Discriminator | Location |
 |-------|---------------|----------|
-| **Sidecars** (agent learnings — patterns, gotchas, decisions) | `git remote get-url origin` → normalized slug | `$PF_DATA/sidecars/<origin-slug>/<agent>/{patterns,gotchas,decisions}.md` |
+| **Sidecars** (agent learnings — patterns, gotchas, decisions) | cwd → project hash | `$PF_DATA/sidecars/<hash>/<agent>/{patterns,gotchas,decisions}.md` |
 | **Active session** | cwd → project hash | `$PF_DATA/projects/<hash>/.session/` |
 | **Local config** (`config.local.yaml`) | cwd → project hash | `$PF_DATA/projects/<hash>/config.local.yaml` |
 | **Frame server state** (sockets, PIDs, panel snapshots) | cwd → project hash | `$PF_DATA/projects/<hash>/frame/` |
 
-**Rationale for split discriminators:** sidecars are properties of the codebase (two worktrees of the same repo accumulate shared learnings). Active session and Frame state are properties of the working copy (two worktrees may have different in-flight stories). Local config is preference and tied to working copy.
+**Single discriminator (amended 2026-05-21):** every runtime-state tier — sidecars included — is now keyed on `project_hash` (the working-copy directory). An earlier draft bucketed sidecars by git-origin slug so that two worktrees of the same repo would share accumulated learnings; that scheme was dropped in favor of per-folder bucketing for simplicity (one discriminator everywhere, no git-remote lookup). The trade-off: sidecars are no longer shared across worktrees of the same origin — each working copy keeps its own. The `pf.paths.origin_slug`/`project_origin_slug` helpers that supported the old scheme were removed.
 
 **The invariant:** anything in `$PF_DATA` is recreatable from the framework + the project repo. If you `rm -rf $PF_DATA`, you lose active in-flight sessions and accumulated agent learnings, but nothing canonical. Sprint history, ADRs, archived sessions — all safe in git.
 
-### 3.3 Origin Slug Normalization
+### 3.3 Origin Slug Normalization — REMOVED (2026-05-21)
 
-Sidecar bucket lookup. Given `git remote get-url origin`, produce a slug:
-
-```
-git@github.com:slabgorb/pennyfarthing.git    → github.com/slabgorb/pennyfarthing
-https://github.com/slabgorb/pennyfarthing    → github.com/slabgorb/pennyfarthing
-ssh://git@github.com/slabgorb/pennyfarthing  → github.com/slabgorb/pennyfarthing
-git@gitlab.com:foo/bar.git                   → gitlab.com/foo/bar
-(no origin / no remote)                      → _local/<project-hash>
-```
-
-Algorithm: strip protocol prefix → strip user@ → replace `:` separator (SSH form) with `/` → strip trailing `.git` → lowercase host. If `git remote get-url origin` fails or returns empty, fall back to `_local/<project-hash>` so unrooted projects still work.
+This section described a git-origin → slug normalization used to bucket sidecars across worktrees of the same repo. **It was removed** when sidecars switched to per-folder bucketing (see §3.2 amendment). Sidecars now use `project_hash` like every other runtime-state tier; there is no origin-slug lookup. The `pf.paths.origin_slug` and `pf.paths.project_origin_slug` helpers and their tests were deleted. The section heading is retained only to keep §3.4 numbering stable for existing references.
 
 ### 3.4 Project Hash
 
