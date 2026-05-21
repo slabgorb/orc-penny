@@ -70,20 +70,22 @@ Every piece of "Pennyfarthing data" lives in exactly one of three tiers. This is
 |------|----------|-------|----------|
 | **Code** (read-only) | `~/.claude/plugins/cache/pennyfarthing/pf/<version>/` | Plugin | All framework code: agents, commands, skills, hooks, gates, workflows, personas, the Python `pf` runtime |
 | **Project artifacts** (git-tracked) | `<project>/sprint/`, `<project>/docs/adr/`, `<project>/.session/archived/` | User repo | Sprint history, ADRs, archived sessions — the durable audit trail |
-| **Runtime state** (ephemeral) | `~/.claude/data/pf/...` | User home | Active sessions, sidecars, local config, Frame state |
+| **Runtime state** (ephemeral) | `${CLAUDE_PLUGIN_DATA}/...` (= `~/.claude/plugins/data/pennyfarthing-pf/`) | User home | Active sessions, sidecars, local config, Frame state |
 
-Within the runtime-state tier, the discriminator differs by data type:
+> **Spike-validated (2026-05-21):** Claude Code injects `CLAUDE_PLUGIN_DATA` into every plugin hook environment, pointing to a per-plugin writable directory under `~/.claude/plugins/data/<marketplace>-<plugin>/`. `pf.paths` resolves runtime state by reading this env var. When `pf` is invoked outside a plugin hook (the §5.2 user shim), `pf.paths` falls back to `~/.claude/data/pf/` so the two contexts agree. See `docs/superpowers/spikes/2026-05-21-plugin-spike-results.md` Q1.
+
+Within the runtime-state tier, the discriminator differs by data type (paths written below assume `$PF_DATA = ${CLAUDE_PLUGIN_DATA:-~/.claude/data/pf}`):
 
 | State | Discriminator | Location |
 |-------|---------------|----------|
-| **Sidecars** (agent learnings — patterns, gotchas, decisions) | `git remote get-url origin` → normalized slug | `~/.claude/data/pf/sidecars/<origin-slug>/<agent>/{patterns,gotchas,decisions}.md` |
-| **Active session** | cwd → project hash | `~/.claude/data/pf/projects/<hash>/.session/` |
-| **Local config** (`config.local.yaml`) | cwd → project hash | `~/.claude/data/pf/projects/<hash>/config.local.yaml` |
-| **Frame server state** (sockets, PIDs, panel snapshots) | cwd → project hash | `~/.claude/data/pf/projects/<hash>/frame/` |
+| **Sidecars** (agent learnings — patterns, gotchas, decisions) | `git remote get-url origin` → normalized slug | `$PF_DATA/sidecars/<origin-slug>/<agent>/{patterns,gotchas,decisions}.md` |
+| **Active session** | cwd → project hash | `$PF_DATA/projects/<hash>/.session/` |
+| **Local config** (`config.local.yaml`) | cwd → project hash | `$PF_DATA/projects/<hash>/config.local.yaml` |
+| **Frame server state** (sockets, PIDs, panel snapshots) | cwd → project hash | `$PF_DATA/projects/<hash>/frame/` |
 
 **Rationale for split discriminators:** sidecars are properties of the codebase (two worktrees of the same repo accumulate shared learnings). Active session and Frame state are properties of the working copy (two worktrees may have different in-flight stories). Local config is preference and tied to working copy.
 
-**The invariant:** anything in `~/.claude/data/pf/` is recreatable from the framework + the project repo. If you `rm -rf ~/.claude/data/pf/`, you lose active in-flight sessions and accumulated agent learnings, but nothing canonical. Sprint history, ADRs, archived sessions — all safe in git.
+**The invariant:** anything in `$PF_DATA` is recreatable from the framework + the project repo. If you `rm -rf $PF_DATA`, you lose active in-flight sessions and accumulated agent learnings, but nothing canonical. Sprint history, ADRs, archived sessions — all safe in git.
 
 ### 3.3 Origin Slug Normalization
 
@@ -155,6 +157,8 @@ uv run --project "${CLAUDE_PLUGIN_ROOT}/runtime" --quiet pf <subcommand> [args..
 
 `${CLAUDE_PLUGIN_ROOT}` is expanded by Claude Code at hook execution and is available as a literal token in agent markdown's Bash invocations.
 
+> **Spike-validated (2026-05-21):** For directory-source marketplace installs (the dogfooding case in §8.2), `${CLAUDE_PLUGIN_ROOT}` resolves to the **source directory** the marketplace was added from — not a cache copy. Edits to plugin source files are therefore live in the next session without any reinstall ceremony (no `--from-source` flag exists; the route is `claude plugin marketplace add <path>` followed by `claude plugin install <name>@<marketplace>`). See `docs/superpowers/spikes/2026-05-21-plugin-spike-results.md` Q1, Q2.
+
 **From a hook shell script** (`scripts/hooks/session-start.sh`):
 
 ```sh
@@ -218,8 +222,12 @@ Today, `pf init` writes hook entries into the user's `.claude/settings.json`:
 ```jsonc
 {
   "hooks": {
-    "SessionStart": [{ "command": ".pennyfarthing/scripts/hooks/session-start.sh" }],
-    "PostToolUse":  [{ "matcher": "Write", "command": ".pennyfarthing/scripts/hooks/sprint-yaml-validation.sh" }]
+    "SessionStart": [
+      { "hooks": [{ "type": "command", "command": ".pennyfarthing/scripts/hooks/session-start.sh" }] }
+    ],
+    "PostToolUse":  [
+      { "matcher": "Write", "hooks": [{ "type": "command", "command": ".pennyfarthing/scripts/hooks/sprint-yaml-validation.sh" }] }
+    ]
     // ... ~10 more
   }
 }
@@ -232,18 +240,20 @@ After: the user's `.claude/settings.json` is **never modified by Pennyfarthing**
 {
   "hooks": {
     "SessionStart": [
-      { "command": "${CLAUDE_PLUGIN_ROOT}/scripts/hooks/session-start.sh" }
+      { "hooks": [{ "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/scripts/hooks/session-start.sh" }] }
     ],
     "PostToolUse": [
-      { "matcher": "Write", "command": "${CLAUDE_PLUGIN_ROOT}/scripts/hooks/sprint-yaml-validation.sh" }
+      { "matcher": "Write", "hooks": [{ "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/scripts/hooks/sprint-yaml-validation.sh" }] }
     ],
     "PreToolUse": [
-      { "matcher": "Write", "command": "${CLAUDE_PLUGIN_ROOT}/scripts/hooks/schema-validation.sh" }
+      { "matcher": "Write", "hooks": [{ "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/scripts/hooks/schema-validation.sh" }] }
     ]
     // ... full set
   }
 }
 ```
+
+> **Spike-validated (2026-05-21):** The current Claude Code hooks schema requires the nested `{"hooks": [{"type": "command", "command": "..."}]}` form (both in user `settings.json` and plugin `hooks.json`); the older flat `{"command": "..."}` form is rejected by `claude plugin validate`. When both a user-settings SessionStart hook and a plugin SessionStart hook are registered, the **user hook fires first** (deterministic, ~14ms ahead of the plugin hook). `CLAUDE_PLUGIN_ROOT` is NOT exposed to user-settings hooks — only to plugin hooks. See `docs/superpowers/spikes/2026-05-21-plugin-spike-results.md` Q3.
 
 Plugin enable → hooks active. Plugin disable → hooks dormant. Plugin uninstall → hooks gone. Same toggle as commands.
 
@@ -392,10 +402,11 @@ pf migrate-from-legacy --scan ~/Projects --apply
 Choice: **D1 — Local-source plugin install.**
 
 ```sh
-claude plugin install --from-source ~/Projects/orc-penny/pennyfarthing
+claude plugin marketplace add ~/Projects/orc-penny/pennyfarthing
+claude plugin install pf@pennyfarthing
 ```
 
-This installs the plugin from local source (either symlinked or copied, depending on Claude Code's behavior — flagged in §10 as a spike question). Edits to `pennyfarthing/agents/architect.md` are live in the next session, preserving today's dogfooding loop.
+> **Spike-validated (2026-05-21):** The `--from-source` flag in earlier drafts does not exist. The actual incantation is `marketplace add <path>` (registers the directory as a single-plugin marketplace) followed by `install <plugin>@<marketplace>`. `${CLAUDE_PLUGIN_ROOT}` resolves to the source directory itself, so edits to `pennyfarthing/agents/architect.md` are picked up by the next session with zero reinstall ceremony — D1 is essentially free. See `docs/superpowers/spikes/2026-05-21-plugin-spike-results.md` Q2.
 
 The `orc-penny/` orchestrator repo becomes "just" a Pennyfarthing-using project. Its `.pennyfarthing/` dir goes away like everyone else's. Sprint history continues to live in `orc-penny/sprint/`.
 
@@ -433,7 +444,7 @@ v1.0.1  Remove migrate-from-legacy command
 - **Project hash collision** (theoretical — 48 bits of entropy, single user) — out of scope. `pf doctor` can add a collision check later.
 - **Two Claude Code sessions in the same working copy** — share project_hash, share active `.session/` directory. Existing per-story session-file naming (`{story-id}-session.md`) prevents collision as long as the two sessions work on different stories. This matches current behavior.
 - **Plugin update mid-session** — Claude Code's plugin update timing is its own concern. Worst case: a session continues running against the old runtime version it was started with, picks up the new version on next SessionStart. Acceptable.
-- **Frame server (long-running) outliving the session** — Frame is launched via `pf frame start --background` and is intended to outlive sessions. The hook system must tolerate this; flagged in §10 as a spike question.
+- **Frame server (long-running) outliving the session** — Frame is launched via `pf frame start --background` and is intended to outlive sessions. **Spike-validated (2026-05-21):** plain backgrounding and `setsid` are killed when the hook's process group exits on macOS, but `nohup … & disown` survives (re-parented to PID 1). The SessionStart hook wrapper must use the `nohup` pattern: `nohup uv run --project "${CLAUDE_PLUGIN_ROOT}/runtime" pf frame start --background >/dev/null 2>&1 & disown`. See `docs/superpowers/spikes/2026-05-21-plugin-spike-results.md` Q4.
 
 ## 10. Risks and Open Questions
 
@@ -452,12 +463,12 @@ v1.0.1  Remove migrate-from-legacy command
 
 ### Open questions (spike before commit)
 
-1. **Does `claude plugin install --from-source` hot-reload edits**, or does it cache and require re-install on every change? Affects D1 ergonomics. **Spike**: build a 5-file `pf-spike` plugin, install from source, edit a command file, observe whether the next session picks up the change without reinstall.
-2. **Hook ordering between plugin-registered hooks and user `.claude/settings.json` hooks** — if Keith has personal hooks, do they fire before or after plugin hooks? **Spike**: register a plugin hook and a user hook for the same event; observe order.
-3. **Long-running processes spawned by hooks** (Frame server) — does Claude Code's hook system tolerate processes that outlive the hook invocation? **Spike**: spawn `sleep 600 &` from a hook; verify Claude Code doesn't kill it on hook exit.
-4. **Plugin-declared permissions vs user settings** — verify how plugin-declared `permissions` and `env` appear and merge so we don't lose current behavior (e.g., the `gh` token unset shim noted in auto-memory). **Spike**: declare a plugin-level `env: { GITHUB_TOKEN: "" }` and check that gh works.
+1. ~~**Does `claude plugin install --from-source` hot-reload edits**~~ — **RESOLVED 2026-05-21.** Directory-source marketplace installs make `${CLAUDE_PLUGIN_ROOT}` point at the source dir; edits are live in the next session, no `--from-source` flag exists. See spike results Q2.
+2. ~~**Hook ordering between plugin-registered hooks and user `.claude/settings.json` hooks**~~ — **RESOLVED 2026-05-21.** Both fire; user-settings hook first (~14ms ahead, deterministic). `CLAUDE_PLUGIN_ROOT` not visible to user hooks. See spike results Q3.
+3. ~~**Long-running processes spawned by hooks**~~ — **RESOLVED 2026-05-21.** `setsid` does NOT survive on macOS; `nohup … & disown` DOES (re-parented to PID 1). `launchctl submit` also works but needs `KeepAlive=false` to avoid restart loops. See spike results Q4.
+4. **Plugin-declared permissions vs user settings** — STILL OPEN. Verify how plugin-declared `permissions` and `env` appear and merge so we don't lose current behavior (e.g., the `gh` token unset shim noted in auto-memory). **Micro-spike before Plan 4**: declare a plugin-level `env: { GITHUB_TOKEN: "" }` and check that `gh` works. Until validated, all `gh` invocations from inside the plugin must defensively prefix with `env -u GITHUB_TOKEN`.
 
-All four spike questions are blockers for finalizing the implementation plan but not blockers for this design.
+Q1–Q3 resolved by Gate 1 spike (`docs/superpowers/spikes/2026-05-21-plugin-spike-results.md`); Q4 remains open and is a precondition for Plan 4 (hooks rewrite).
 
 ## 11. Testing Strategy
 
@@ -465,10 +476,11 @@ The work is mechanical but pervasive — many files moved, many path lookups ref
 
 ### Gate 1 — Spike validates assumptions (do this first)
 
-- 5-file `pf-spike` plugin: `.claude-plugin/plugin.json`, `hooks/hooks.json`, `scripts/hooks/test.sh`, `runtime/pyproject.toml`, `runtime/src/pf/__init__.py`.
-- Install on a throwaway repo, confirm hook fires, confirm `uv run` from `${CLAUDE_PLUGIN_ROOT}` resolves correctly, confirm cwd is project root inside the hook.
-- Answers all four open questions in §10.
-- **If anything breaks here, redesign before committing to the migration plan.**
+**Status: PASSED 2026-05-21** (Q1–Q3); **Q4 open** (plugin permissions / env merging) — micro-spike scheduled before Plan 4.
+
+- Plan executed: `docs/superpowers/plans/2026-05-21-plugin-spike.md`
+- Results: `docs/superpowers/spikes/2026-05-21-plugin-spike-results.md`
+- Spec amendments from spike findings are applied above (§3.2, §5.1, §6.1, §8.2, §9, §10).
 
 ### Gate 2 — Full plugin works in a fresh project
 
