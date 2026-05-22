@@ -200,9 +200,11 @@ There is no `.claude/settings.json` surgery to undo — the plugin never modifie
 
 ## Caveats
 
-- **`gh` and `GITHUB_TOKEN`:** until plugin-level `env` merging is verified, a stale
-  `GITHUB_TOKEN` in the environment can shadow the `gh` keyring (causing 401s). If you
-  hit this, prefix `gh` calls with `env -u GITHUB_TOKEN`. (Tracked as spike Q4.)
+- **`gh` and `GITHUB_TOKEN`:** RESOLVED (2026-05-22). The stale `GITHUB_TOKEN` that used
+  to shadow the `gh` keyring (causing 401s) has been removed permanently — `gh` now works
+  on the keyring with no workaround, so the old `env -u GITHUB_TOKEN` prefix is no longer
+  needed. Plugin-level `env` declaration is not required for this. (Closed spike Q4 — the
+  practical `gh` concern is moot.)
 - **`statusLine`:** plugins **cannot** supply a status bar — it's a user/project-settings
   feature only, not a plugin capability. That's why Step 2 *repoints* your existing
   `statusLine` (to `pf hooks statusline`) instead of deleting it. The rendering command

@@ -111,9 +111,9 @@ PreToolUse:Bash hooks receive the **tool input JSON on stdin**, including `comma
 
 The spec's §10 lists **four** open questions; the plan only covered Q1 (added) and §10.1–3. §10.4 — "Plugin-declared permissions vs user settings — verify how plugin-declared `permissions` and `env` appear and merge so we don't lose current behavior (e.g., the `gh` token unset shim noted in auto-memory)" — was **not exercised by this spike**. This remains an open question for Gate 2 (full plugin works in fresh project) or a follow-up micro-spike.
 
-The `gh 401 — GITHUB_TOKEN shadows keyring` auto-memory note specifically requires that the plugin be able to set `env: { GITHUB_TOKEN: "" }` so that `gh` calls inside plugin hooks/agent invocations fall back to the keyring. Until §10.4 is validated, **all `gh` invocations from inside the plugin must explicitly `env -u GITHUB_TOKEN gh …`** as a defensive measure.
+**UPDATE (2026-05-22) — the `gh` driver for this question is gone.** The stale `GITHUB_TOKEN` that shadowed the keyring has been removed permanently; `gh` now works on the keyring with no workaround. The `gh 401 — GITHUB_TOKEN shadows keyring` concern that motivated declaring `env: { GITHUB_TOKEN: "" }` is therefore **moot** — no shadowing token to neutralize, and no plugin-level `env` declaration is needed for `gh`. The defensive `env -u GITHUB_TOKEN gh …` prefix is **no longer required** anywhere. The general "how do plugin-declared `permissions`/`env` merge with user settings" question remains theoretically open, but it no longer has a concrete blocker — defer to a follow-up only if a real need arises.
 
-**Recommended follow-up:** before Plan 4 (hooks rewrite), add a micro-spike that declares `env` and `permissions` in a plugin manifest and observes merging behavior with `~/.claude/settings.json`.
+~~**Recommended follow-up:** before Plan 4 (hooks rewrite), add a micro-spike that declares `env` and `permissions` in a plugin manifest and observes merging behavior with `~/.claude/settings.json`.~~ (Dropped — the `gh`/`env` micro-spike is unnecessary now that the token shadow is gone.)
 
 ---
 
@@ -212,7 +212,7 @@ Apply as a follow-up commit to `docs/superpowers/specs/2026-05-21-pennyfarthing-
    ```
    Add: "Hot-reload validated by Gate 1 spike — edits to plugin source are live in the next session with no reinstall."
 6. **§9 (Edge case row: Frame server outliving the session)** — change "flagged in §10 as a spike question" to "validated: spawn via `nohup … & disown` in SessionStart hook."
-7. **§10 (Open questions)** — mark Q1–3 as resolved with a pointer to this results doc. Leave Q4 (permissions / env merging) open, with the note that current Pennyfarthing code should defensively prefix `gh` invocations with `env -u GITHUB_TOKEN` until validated.
+7. **§10 (Open questions)** — mark Q1–3 as resolved with a pointer to this results doc. Q4 (permissions / env merging): the `gh`/`GITHUB_TOKEN` driver is **closed (2026-05-22)** — the shadowing token was removed permanently, so `gh` works on the keyring with no `env -u GITHUB_TOKEN` prefix and no plugin-level `env` declaration. The general permissions/env-merging question has no remaining concrete blocker; defer indefinitely.
 8. **§11 (Gate 1)** — mark **passed** with a pointer to this results doc.
 
 ---

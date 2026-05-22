@@ -22,7 +22,7 @@
   ```
   Suite baseline after Plan 3: **4473 passed / 0 failed / 0 errors.** It must stay at 0 failed / 0 errors.
 - **Commits:** GPG-signed, on `feat/plugin-scaffold-and-paths`, in the worktree. Never `--no-verify` or `--amend`.
-- **`gh` calls:** until Q4 (Task 1) is resolved, prefix every `gh` invocation with `env -u GITHUB_TOKEN` (auto-memory: stale PAT in the long-running tmux server env shadows the keyring).
+- **`gh` calls:** RESOLVED (2026-05-22) — the stale PAT that shadowed the keyring was removed permanently. `gh` works directly; the `env -u GITHUB_TOKEN` prefix is no longer needed and Q4's `gh` concern is moot.
 - **Symlink trap:** before moving or deleting any tree, run `find <dir> -type l`. The repo uses symlink façades.
 
 ---
@@ -60,6 +60,8 @@ The spec (`docs/superpowers/specs/2026-05-21-pennyfarthing-as-plugin-design.md` 
 ---
 
 ## Task 1: Q4 micro-spike — plugin-declared `env` / `permissions` merging
+
+> **CLOSED / MOOT (2026-05-22).** This spike's entire premise was the `gh 401 — GITHUB_TOKEN shadows keyring` problem. That stale token has been removed permanently — `gh` now works on the keyring with no `env -u GITHUB_TOKEN` prefix and no plugin-level `env` declaration. There is nothing to neutralize, so the `env: { GITHUB_TOKEN: "" }` experiment below is unnecessary and is **not being run**. The steps are retained only as a record of what was planned. The broader permissions/env-merging question has no remaining concrete blocker; defer indefinitely.
 
 **This is a precondition. Do it first. It is a spike, not TDD — investigate, then record the finding and a decision.**
 

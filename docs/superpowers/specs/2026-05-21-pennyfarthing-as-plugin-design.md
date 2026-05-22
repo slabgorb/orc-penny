@@ -460,9 +460,9 @@ v1.0  Cut release tag, marketplace.json points at it
 1. ~~**Does `claude plugin install --from-source` hot-reload edits**~~ — **RESOLVED 2026-05-21.** Directory-source marketplace installs make `${CLAUDE_PLUGIN_ROOT}` point at the source dir; edits are live in the next session, no `--from-source` flag exists. See spike results Q2.
 2. ~~**Hook ordering between plugin-registered hooks and user `.claude/settings.json` hooks**~~ — **RESOLVED 2026-05-21.** Both fire; user-settings hook first (~14ms ahead, deterministic). `CLAUDE_PLUGIN_ROOT` not visible to user hooks. See spike results Q3.
 3. ~~**Long-running processes spawned by hooks**~~ — **RESOLVED 2026-05-21.** `setsid` does NOT survive on macOS; `nohup … & disown` DOES (re-parented to PID 1). `launchctl submit` also works but needs `KeepAlive=false` to avoid restart loops. See spike results Q4.
-4. **Plugin-declared permissions vs user settings** — STILL OPEN. Verify how plugin-declared `permissions` and `env` appear and merge so we don't lose current behavior (e.g., the `gh` token unset shim noted in auto-memory). **Micro-spike before Plan 4**: declare a plugin-level `env: { GITHUB_TOKEN: "" }` and check that `gh` works. Until validated, all `gh` invocations from inside the plugin must defensively prefix with `env -u GITHUB_TOKEN`.
+4. ~~**Plugin-declared permissions vs user settings**~~ — **`gh` driver CLOSED 2026-05-22.** The motivating concern was the `gh` token-unset shim (auto-memory "gh 401 — GITHUB_TOKEN shadows keyring"). That stale token has been removed permanently, so `gh` works on the keyring with no `env -u GITHUB_TOKEN` prefix and no plugin-level `env` declaration. The planned `env: { GITHUB_TOKEN: "" }` micro-spike is therefore unnecessary. The general "how do plugin `permissions`/`env` merge with user settings" question has no remaining concrete blocker; defer indefinitely.
 
-Q1–Q3 resolved by Gate 1 spike (`docs/superpowers/spikes/2026-05-21-plugin-spike-results.md`); Q4 remains open and is a precondition for Plan 4 (hooks rewrite).
+Q1–Q3 resolved by Gate 1 spike (`docs/superpowers/spikes/2026-05-21-plugin-spike-results.md`); Q4's `gh` driver is closed (2026-05-22) — the micro-spike is no longer a precondition for Plan 4.
 
 ## 11. Testing Strategy
 
