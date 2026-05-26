@@ -110,3 +110,11 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     type: bug
+  - id: 153-9
+    title: Fix test_git_utils.py leaking a feature/test checkout onto the live repo (full pytest suite silently switches the working branch)
+    points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
