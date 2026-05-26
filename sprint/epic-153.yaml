@@ -32,9 +32,12 @@ stories:
     title: Add pf sprint story move and --epic flag; document full story lifecycle CLI surface
     points: 5
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-05-26'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-05-26'
+    review_verdict: approved
   - id: 153-4
     title: 'pf sprint story remove/update/finish all fail to locate stories in epic shard files — same root cause (BLOCKING: breaks SM finish ceremony)'
     description: |
