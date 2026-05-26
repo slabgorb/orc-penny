@@ -5,7 +5,7 @@
 - **Jira Key:** PROJ-15682
 - **Title:** Create Context Schema YAML
 - **Workflow:** trivial
-- **Assigned To:** keith.avery@slabgorb.io
+- **Assigned To:** slabgorb@gmail.com
 - **Repos:** pennyfarthing
 
 ## Workflow Tracking

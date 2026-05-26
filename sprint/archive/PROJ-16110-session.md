@@ -3,7 +3,7 @@
 **Story ID:** 136-28
 **Jira Key:** PROJ-16110
 **Date Started:** 2026-03-03
-**Assignee:** keith.avery@slabgorb.io
+**Assignee:** slabgorb@gmail.com
 **Status:** in_progress
 **Workflow:** trivial
 **Phase:** finish

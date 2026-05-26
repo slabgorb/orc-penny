@@ -7,7 +7,7 @@
 **Phase:** finish
 **Repos:** pennyfarthing
 **Branch:** story/103-5-base-panel-abstraction
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ## Description
 

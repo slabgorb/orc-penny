@@ -8,7 +8,7 @@
 **Phase:** review
 **Branch:** feature/103-4-connection-status-indicator-tui-header
 **Repos:** pennyfarthing
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ## Description
 

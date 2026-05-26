@@ -7,7 +7,7 @@
 **Branch:** feature/PROJ-16219-rubric-anchors-behavioral-scales
 **Workflow:** tdd
 **Phase:** finish
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ## Acceptance Criteria
 

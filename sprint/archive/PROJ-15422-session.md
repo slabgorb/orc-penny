@@ -9,7 +9,7 @@
 **Workflow:** tdd
 **Phase:** finish
 **Branch:** feature/125-1-sprint-context-dataclass
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ---
 

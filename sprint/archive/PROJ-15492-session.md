@@ -6,7 +6,7 @@
 **Phase:** finish
 **Repos:** pennyfarthing
 **Branch:** feature/PROJ-15492-remove-uv-pf-wrapper-chain
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ## Description
 Remove run-pf.sh, pf.sh wrapper, and all uv-based invocation logic. All hooks and scripts call pf directly (globally installed). Update settings.local.json hook commands, agent definitions, and any shell scripts that use the wrapper chain.

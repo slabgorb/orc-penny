@@ -55,7 +55,7 @@ The BMAD product lifecycle is a one-way street with one front door: it starts at
 | [Research Synthesis](lifecycle-research-synthesis.md) | Unified synthesis across five research tracks (171 sources) |
 | [BMAD Multi-Dev Lessons Learned](../../../ccmp/_bmad-output/bmad-multi-dev-lessons-learned.md) | Team-scale BMAD usage: solo tool finding, gate discovery, quality trajectory |
 | [OCSF Spike Findings](../../../poller-orchestrator/sprint/planning/spike-findings-ocsf.md) | Validated spike lifecycle model; lessons on charter-first exploration |
-| [Axiathon Divergence Analysis](../../../poller-orchestrator/sprint/planning/axiathon-ocsf-divergence-alignment-analysis.md) | Cross-project analysis of BMAD-generated architecture failures |
+| [Consumer Project Divergence Analysis](../../../poller-orchestrator/sprint/planning/consumer-project-ocsf-divergence-alignment-analysis.md) | Cross-project analysis of BMAD-generated architecture failures |
 | [Context Window Measurement Procedure](data/context-window-measurement-procedure.md) | Repeatable methodology for measuring context consumption at session start |
 | [Context Window Measurement Results](data/context-window-measurement-results.md) | Empirical data from 5 projects (3 BMAD, 2 Pennyfarthing) — grounds section 8 charts |
 
@@ -202,7 +202,7 @@ Once you decompose into epics and stories, execution fans out into parallel trac
 
 This isn't hypothetical. In the xMP infrastructure project (CCMP), Architecture Decision 8 — the 5-NIC VM model — was finalized *after* Story 2.1 was already complete with a 3-NIC interface mapping. Nobody caught the mismatch for five days, until a cross-track gap analysis surfaced it. Three downstream stories (2.2, 2.5, 3.4) had stale references that would have caused incorrect firewall macros, wrong network assignments, and wrong failover configuration on production VMs [@pursifull_2026a, Theme 1]. The parallel track model worked — but without a synchronization mechanism, the tracks silently diverged.
 
-> **Sample size caveat.** The xMP project is the primary case study for cross-track divergence, gate failures, and drift detection throughout this document. We have used BMAD for multi-developer teaming on only one project over a few rounds, and the observations from that experience — while consistent and specific — are initial findings from a small sample. These conclusions need to be confirmed or refuted through additional projects: the axiathon initiative (25 epics, pre-implementation) and ongoing Pennyfarthing development will provide additional data points. Where xMP findings are used to motivate architectural investments, they should be read as "this happened and is plausible at scale" rather than "this is statistically established."
+> **Sample size caveat.** The xMP project is the primary case study for cross-track divergence, gate failures, and drift detection throughout this document. We have used BMAD for multi-developer teaming on only one project over a few rounds, and the observations from that experience — while consistent and specific — are initial findings from a small sample. These conclusions need to be confirmed or refuted through additional projects: the consumer-project initiative (25 epics, pre-implementation) and ongoing Pennyfarthing development will provide additional data points. Where xMP findings are used to motivate architectural investments, they should be read as "this happened and is plausible at scale" rather than "this is statistically established."
 
 #### 3b. The human is the integration bus
 
@@ -487,7 +487,7 @@ xychart-beta
     line [167, 167, 167, 167, 167]
 ```
 
-> **Measured data** from five real projects (3 BMAD, 2 Pennyfarthing), each with one developer, zero implementation work. B = BMAD, P = Pennyfarthing. Lower line (100K) = estimated performance ceiling (see caveats below). Upper line (167K) = effective capacity. This test loads all project artifacts to measure total footprint — Pennyfarthing projects show higher context here because the full-load test negates selective loading; at comparable scale (7 epics, ~50 stories), Pennyfarthing's total footprint is actually 15K *higher* than BMAD's due to richer metadata (see `data/context-window-measurement-results.md`). The point is not framework comparison — it's that both frameworks, and any file-backed approach, face the same ceiling. axiathon (25 epics, 268 stories) is at 97% of effective capacity before a single line of code.
+> **Measured data** from five real projects (3 BMAD, 2 Pennyfarthing), each with one developer, zero implementation work. B = BMAD, P = Pennyfarthing. Lower line (100K) = estimated performance ceiling (see caveats below). Upper line (167K) = effective capacity. This test loads all project artifacts to measure total footprint — Pennyfarthing projects show higher context here because the full-load test negates selective loading; at comparable scale (7 epics, ~50 stories), Pennyfarthing's total footprint is actually 15K *higher* than BMAD's due to richer metadata (see `data/context-window-measurement-results.md`). The point is not framework comparison — it's that both frameworks, and any file-backed approach, face the same ceiling. consumer-project (25 epics, 268 stories) is at 97% of effective capacity before a single line of code.
 
 ```mermaid
 ---
@@ -508,7 +508,7 @@ xychart-beta
     line [60, 60, 60, 60, 60]
 ```
 
-> **Same data as % of usable capacity** (200K window minus 33K reserved buffer = 167K effective). The 60% line marks the estimated performance ceiling (conservative; frontier models may tolerate more — see caveats above). Three of five projects are at or near it. axiathon at 97% means the PM agent has 5K tokens for the entire conversation. See `data/context-window-measurement-results.md` for the full framework comparison.
+> **Same data as % of usable capacity** (200K window minus 33K reserved buffer = 167K effective). The 60% line marks the estimated performance ceiling (conservative; frontier models may tolerate more — see caveats above). Three of five projects are at or near it. consumer-project at 97% means the PM agent has 5K tokens for the entire conversation. See `data/context-window-measurement-results.md` for the full framework comparison.
 
 With a team, the picture accelerates. Each contributor doesn't just add their own work — they add cross-references, coordination context, and the overhead of tracking who is doing what. Sprint planning context alone grows with the number of parallel tracks:
 
@@ -532,7 +532,7 @@ xychart-beta
     line [167, 167, 167, 167, 167]
 ```
 
-> **PROJECTED — not measured data.** The 1-developer bar (162K) is the measured axiathon value; all other bars are estimates. Additional contributors are projected to add cross-referencing overhead, coordination context, and tracking of who is doing what — but these projections have not been validated empirically. Multi-developer measurements have not yet been taken. The chart illustrates the directional argument (more contributors = more context overhead) but the specific token values for 2+ developers are speculative. At 25 epics with one developer, the project already exceeds effective capacity — that much is measured fact.
+> **PROJECTED — not measured data.** The 1-developer bar (162K) is the measured consumer-project value; all other bars are estimates. Additional contributors are projected to add cross-referencing overhead, coordination context, and tracking of who is doing what — but these projections have not been validated empirically. Multi-developer measurements have not yet been taken. The chart illustrates the directional argument (more contributors = more context overhead) but the specific token values for 2+ developers are speculative. At 25 epics with one developer, the project already exceeds effective capacity — that much is measured fact.
 
 Think of it in web performance terms: **time to first contentful paint** measures how long a user waits before seeing anything useful. The equivalent here is **context to first useful turn** — how much of the context window is consumed by project overhead before the agent can do any actual work. In BMAD, that ratio gets worse with every epic added, every research document written, every story completed. There is no mechanism to load selectively, no way to retrieve only what's relevant, and no strategy for keeping the ratio stable as the project grows.
 
@@ -558,7 +558,7 @@ xychart-beta
     line [167, 167, 167, 167, 167, 167, 167, 167, 167]
 ```
 
-> **PROJECTED — not measured data.** Sprint 0 (73K) is the measured ccmp value: 7 epics, 51 stories, ~1/8 of the way to delivery. The growth rate (~10-15K per sprint) is an estimate based on typical story completion artifacts and has not been measured longitudinally. The directional argument — flat-file loading grows monotonically with project activity — is structural, but the specific per-sprint token values are speculative. This is a 7-epic project — not the 25-epic axiathon, which is already past effective capacity at sprint 0 (measured).
+> **PROJECTED — not measured data.** Sprint 0 (73K) is the measured ccmp value: 7 epics, 51 stories, ~1/8 of the way to delivery. The growth rate (~10-15K per sprint) is an estimate based on typical story completion artifacts and has not been measured longitudinally. The directional argument — flat-file loading grows monotonically with project activity — is structural, but the specific per-sprint token values are speculative. This is a 7-epic project — not the 25-epic consumer-project, which is already past effective capacity at sprint 0 (measured).
 
 #### The two dimensions
 

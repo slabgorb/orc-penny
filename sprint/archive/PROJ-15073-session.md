@@ -7,7 +7,7 @@
 **Phase:** finish
 **Repos:** pennyfarthing
 **Branch:** feature/98-15-remove-tty-panel
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ---
 

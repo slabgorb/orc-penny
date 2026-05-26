@@ -11,7 +11,7 @@ workflow: "tdd"
 - **Jira Key:** PROJ-16656
 - **Workflow:** tdd
 - **Stack Parent:** none
-- **Assigned To:** keith.avery@slabgorb.io
+- **Assigned To:** slabgorb@gmail.com
 
 ## Context
 This story removes hardcoded company-specific Jira configuration from the pennyfarthing framework, making it open-sourceable. The framework currently defaults to PROJ project key and slabgorb.atlassian.net Jira URL, which should be user-configurable instead.

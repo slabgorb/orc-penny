@@ -7,7 +7,7 @@
 **Phase:** finish
 **Repos:** pennyfarthing
 **Branch:** feature/104-2-wheelhub-config-watch-panel-focus
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ---
 

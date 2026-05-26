@@ -8,7 +8,7 @@
 **Status:** in_progress
 **Repos:** pennyfarthing
 **Branch:** feat/118-1-future-epics-sprint-panel
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 **Started:** 2026-02-20
 
 ## Acceptance Criteria

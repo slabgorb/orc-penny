@@ -7,7 +7,7 @@
 **Branch:** feature/PROJ-16149-delete-dead-scripts
 **Workflow:** tdd
 **Phase:** finish
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ## Story Context
 

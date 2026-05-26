@@ -6,7 +6,7 @@
 **Workflow:** tdd
 **Phase:** finish
 **Points:** 3
-**Assignee:** keith.avery@slabgorb.io
+**Assignee:** slabgorb@gmail.com
 ## Story Context
 
 Enhance the BikeRack TUI StoryDetailScreen to show a rich markdown preview panel with story information, epic/story context files (sprint/context/), and session notes (.session/). Currently the detail screen shows structured metadata but doesn't render the actual context or session markdown content. Add a scrollable markdown preview section that loads and renders context-epic-N.md, context-story-ID.md, and the session file when available.

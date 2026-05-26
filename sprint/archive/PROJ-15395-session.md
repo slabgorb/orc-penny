@@ -7,7 +7,7 @@
 **Phase:** finish
 **Repos:** pennyfarthing
 **Branch:** fix/PROJ-15395-fix-git-sync-cache-busting
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ---
 

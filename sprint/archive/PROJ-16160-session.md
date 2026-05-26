@@ -10,7 +10,7 @@
 **Phase:** finish
 **Repos:** pennyfarthing
 **Branch:** feat/validator-fix-instructions
-**Assignee:** keith.avery@slabgorb.io
+**Assignee:** slabgorb@gmail.com
 
 ## Story Description
 

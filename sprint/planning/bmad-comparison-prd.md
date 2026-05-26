@@ -68,7 +68,7 @@ If BMAD wins on some dimension, we learn. If Pennyfarthing wins, we have the dat
 |------|-------------|
 | BMAD simulator agent definitions | PF-compatible agent defs that faithfully reproduce BMAD's dev + reviewer instructions (no PF persona/sidecars) |
 | Pipeline replay adapter | Extension to build BMAD-style CLAUDE.md (BMAD instructions + checklist, no PF framework) |
-| BMAD story file translation | Convert PF scenario context → BMAD story file format (using BMAD's `template.md`) — OR document that axiathon context IS the BMAD create-story output |
+| BMAD story file translation | Convert PF scenario context → BMAD story file format (using BMAD's `template.md`) — OR document that consumer-project context IS the BMAD create-story output |
 | Baseline runs | Execute both pipelines on DPGD-116 and DPGD-117 scenarios, 3+ runs each, multi-judge |
 | Comparison report | Statistical comparison with detection heatmap, per-phase attribution, cost analysis |
 | ADR | Document methodology, fairness decisions, every translation choice |
@@ -102,9 +102,9 @@ A critical fairness question: what context does each agent receive?
 
 ### Resolution
 
-The axiathon story context docs were created directly from BMAD's create-story flow. Combining epic + story context gives equivalent or slightly richer input than BMAD's story file. **Context is already controlled.** The variable under test is the agent instructions and self-checking workflow, not context preparation.
+The consumer-project story context docs were created directly from BMAD's create-story flow. Combining epic + story context gives equivalent or slightly richer input than BMAD's story file. **Context is already controlled.** The variable under test is the agent instructions and self-checking workflow, not context preparation.
 
-This must be documented in the ADR with specific evidence (file comparison showing the axiathon context docs match BMAD story file content).
+This must be documented in the ADR with specific evidence (file comparison showing the consumer-project context docs match BMAD story file content).
 
 ## Functional Requirements
 
@@ -154,7 +154,7 @@ Translate PF scenario context into BMAD's story file format:
 
 - Use BMAD's `create-story/template.md` structure (Story, AC, Tasks/Subtasks, Dev Notes, Dev Agent Record, File List)
 - Populate from our epic context + story context documents
-- OR: document that the axiathon context docs ARE already the BMAD create-story output and no translation is needed
+- OR: document that the consumer-project context docs ARE already the BMAD create-story output and no translation is needed
 - **Acceptance Criteria**:
   - Given scenario context docs, when translated to BMAD format, then the story file contains all sections from BMAD's template
   - Given translation decisions, when reviewed, then each is documented with rationale in the ADR
@@ -226,7 +226,7 @@ No `pf agent start` is called. No PF persona, sidecars, workflow engine, or sess
 **Story file pre-staging with story_path provision.** Before the agent runs:
 
 1. Create a BMAD-format story file in the worktree at `implementation_artifacts/{story_key}.md`
-2. Create a minimal `project-context.md` from the axiathon project's coding standards
+2. Create a minimal `project-context.md` from the consumer-project project's coding standards
 3. Pass `story_path` directly in the prompt so BMAD's step 1 skips sprint-status lookup
 
 No `sprint-status.yaml` needed — BMAD's instructions have a fallback: "if story_path provided, use it directly."
@@ -256,7 +256,7 @@ Same model (Opus) for all phases in both pipelines for controlled comparison.
 - Right column: what BMAD's dev agent sees (CLAUDE.md content)
 - Annotated differences with rationale for each
 
-**Parked for follow-up if challenged:** Run BMAD's actual create-story workflow on the axiathon scenario and diff output against our context docs.
+**Parked for follow-up if challenged:** Run BMAD's actual create-story workflow on the consumer-project scenario and diff output against our context docs.
 
 ## Key Risks
 
@@ -272,7 +272,7 @@ Same model (Opus) for all phases in both pipelines for controlled comparison.
 ## Dependencies
 
 - BMAD-METHOD checked out at `/Users/keithavery/Projects/BMAD-METHOD/`
-- Existing Peloton scenarios (DPGD-116, DPGD-117) in axiathon
+- Existing Peloton scenarios (DPGD-116, DPGD-117) in consumer-project
 - Existing pipeline replay infrastructure (`pf benchmark replay`)
 - Claude API access for benchmark runs
 
@@ -283,7 +283,7 @@ Same model (Opus) for all phases in both pipelines for controlled comparison.
 | ADR + methodology | 2 | Document comparison design, fairness principles, translation decisions, context diff audit |
 | BMAD simulator CLAUDE.md template | 2 | Static template with verbatim BMAD instructions, persona, checklist injection |
 | Pipeline replay adapter + --pipeline flag | 3 | BMAD CLAUDE.md builder, story file pre-staging, phase mapping, harness integration |
-| Story file translation / verification | 1 | Verify axiathon context = BMAD create-story output, or translate to BMAD template format |
+| Story file translation / verification | 1 | Verify consumer-project context = BMAD create-story output, or translate to BMAD template format |
 | Run baselines (2 scenarios) | 2 | Execute both pipelines 3+ runs each, multi-judge scoring |
 | Comparison report | 2 | Statistical analysis, detection heatmap, cost normalization, write-up |
 | **Total** | **12** | |

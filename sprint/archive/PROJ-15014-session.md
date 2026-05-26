@@ -7,7 +7,7 @@
 **Phase:** finish
 **Repos:** pennyfarthing
 **Branch:** story/108-2-remove-handoff-subagents
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ---
 

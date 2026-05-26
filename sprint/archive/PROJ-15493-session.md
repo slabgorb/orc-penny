@@ -6,7 +6,7 @@
 **Phase:** finish
 **Repos:** pennyfarthing
 **Branch:** feature/PROJ-15493-config-consolidation-migrate-prefs
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ---
 ## Context

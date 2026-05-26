@@ -8,7 +8,7 @@
 - **Epic:** 91 (Cross-File Reference & Schema Validation Pipeline)
 - **Repos:** pennyfarthing
 - **Workflow:** tdd
-- **Assignee:** keith.avery@slabgorb.io
+- **Assignee:** slabgorb@gmail.com
 
 ## Description
 Semantic cross-refs between agents, workflows, commands, skills. Bidirectional reference consistency.

@@ -6,7 +6,7 @@
 - **Workflow:** trivial
 - **Points:** 2
 - **Priority:** p2
-- **Assigned:** keith.avery@slabgorb.io
+- **Assigned:** slabgorb@gmail.com
 
 ## Story Description
 Portrait files are stored in Git LFS. After pf init or pf-setup, the portrait files remain as LFS pointers (ASCII text) instead of actual PNGs. The BikeRack TUI persona bar shows no portrait because the images aren't real files.

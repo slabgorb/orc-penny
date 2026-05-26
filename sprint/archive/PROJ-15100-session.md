@@ -8,7 +8,7 @@
 - **Workflow:** trivial (SM → Dev → Reviewer → SM)
 - **Priority:** P1
 - **Status:** in_progress
-- **Assignee:** keithavery (keith.avery@slabgorb.io)
+- **Assignee:** keithavery (slabgorb@gmail.com)
 
 ## Description
 

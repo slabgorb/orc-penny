@@ -12,7 +12,7 @@ stories:
     points: 5
     priority: p0
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-24'
     repos: pennyfarthing
     workflow: tdd
@@ -30,7 +30,7 @@ stories:
     points: 3
     priority: p0
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-24'
     repos: pennyfarthing
     workflow: tdd
@@ -48,7 +48,7 @@ stories:
     points: 3
     priority: p0
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-24'
     repos: pennyfarthing
     workflow: tdd
@@ -68,7 +68,7 @@ stories:
     points: 3
     priority: p0
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-24'
     repos: pennyfarthing
     workflow: tdd
@@ -88,7 +88,7 @@ stories:
     points: 2
     priority: p1
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-24'
     repos: pennyfarthing
     workflow: tdd
@@ -108,7 +108,7 @@ stories:
     points: 2
     priority: p1
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-24'
     repos: pennyfarthing
     workflow: trivial

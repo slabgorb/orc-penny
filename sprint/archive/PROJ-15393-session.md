@@ -7,7 +7,7 @@
 - **Points:** 3
 - **Workflow:** tdd (SM → TEA → Dev → Reviewer → SM)
 - **Branch:** feature/PROJ-15393-tui-debug-panel-code-quality-triggers
-- **Assignee:** keith.avery@slabgorb.io
+- **Assignee:** slabgorb@gmail.com
 
 ## Acceptance Criteria
 

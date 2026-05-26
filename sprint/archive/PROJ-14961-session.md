@@ -7,7 +7,7 @@
 **Phase:** approved
 **Repos:** orchestrator, pennyfarthing
 **Branch:** feature/103-6-sprint-panel-implementation
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ---
 

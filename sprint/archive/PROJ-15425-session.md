@@ -6,7 +6,7 @@
 **Phase:** finish
 **Repos:** orchestrator
 **Branch:** feat/125-4-add-sprint-provenance-indicator-to-bikerack
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ## Story Context
 

@@ -6,7 +6,7 @@
 **Phase:** finish
 **Repos:** pennyfarthing
 **Branch:** feature/PROJ-16079-update-tea-assessment-template
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ## Story Context
 

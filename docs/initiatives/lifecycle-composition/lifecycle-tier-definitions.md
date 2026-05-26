@@ -20,7 +20,7 @@ csl: chicago-author-date.csl
 
 | Attribute | Definition |
 |-----------|-----------|
-| **Scope** | The whole system — axiathon as a SIEM platform |
+| **Scope** | The whole system — consumer-project as a SIEM platform |
 | **Cadence** | Monthly review cycle. Quarterly phase boundaries. Ad-hoc on SCR escalation. |
 | **People** | Product Manager, Product Owner, Architect (Josh) |
 | **Decisions owned** | Market positioning, phase strategy, cross-domain contracts, design rules, technology stack choices, non-functional requirements, compliance framework scope |
@@ -43,16 +43,16 @@ csl: chicago-author-date.csl
 | **Artifacts consumed** | Product Architecture, Cross-Domain Contracts, Design Rules, Delivery Findings (from Delivery tier) |
 | **Lifecycle loop** | Discover (delivery findings triage, domain backlog review) → Design (domain architecture refinement, story spec writing) → Plan (sprint planning, story assignment) → Verify (domain integration tests, code review) → Learn (delivery finding patterns, domain retro) |
 
-**Initial axiathon domain mapping:**
+**Initial consumer-project domain mapping:**
 
 | Domain | Crates | Likely Lead | Key Contracts Consumed |
 |--------|--------|-------------|----------------------|
-| Ingestion | `axiathon-ingestion`, OCSF types from `core` | Engineer with data pipeline experience | OCSF Schema, Storage API, Plugin Interface |
-| Detection | `axiathon-detection`, query integration from `axiathon-query` | Security engineer or detection-focused engineer | OCSF Schema, Alert Format, Storage API |
-| Storage | `axiathon-storage` | Performance-oriented engineer | Storage API (provider side), Config Schema |
-| OT Security | `axiathon-ot` | OT/ICS specialist | OCSF Schema, Asset Graph interface |
-| Platform | `axiathon-api`, `axiathon-core` (auth, config, tenancy) | Professional SE | TenantContext, Error Convention, Config Schema, all outward-facing APIs |
-| Interface | `axiathon-tui`, future WebUI | UI-focused engineer | API contracts (consumer side), Alert Format |
+| Ingestion | `consumer-project-ingestion`, OCSF types from `core` | Engineer with data pipeline experience | OCSF Schema, Storage API, Plugin Interface |
+| Detection | `consumer-project-detection`, query integration from `consumer-project-query` | Security engineer or detection-focused engineer | OCSF Schema, Alert Format, Storage API |
+| Storage | `consumer-project-storage` | Performance-oriented engineer | Storage API (provider side), Config Schema |
+| OT Security | `consumer-project-ot` | OT/ICS specialist | OCSF Schema, Asset Graph interface |
+| Platform | `consumer-project-api`, `consumer-project-core` (auth, config, tenancy) | Professional SE | TenantContext, Error Convention, Config Schema, all outward-facing APIs |
+| Interface | `consumer-project-tui`, future WebUI | UI-focused engineer | API contracts (consumer side), Alert Format |
 | Infrastructure | Helm, KOTS, CI/CD, Docker, monitoring | DevOps engineer | Deployment specs, monitoring contracts |
 
 **Note:** This mapping is a starting hypothesis. When someone working in Detection discovers they spend 60% of their time in Query, the domains should merge. When Platform proves too large for one person, it should split. The domain map is mutable.
@@ -74,7 +74,7 @@ csl: chicago-author-date.csl
 
 ## VSM Mapping: Beer's Five Systems at Each Tier
 
-Beer's VSM says every viable system contains the same five subsystems. Here's how they manifest at each tier of axiathon's lifecycle.
+Beer's VSM says every viable system contains the same five subsystems. Here's how they manifest at each tier of consumer-project's lifecycle.
 
 ### System 1 (Operations): The Units That Do the Work
 
@@ -128,7 +128,7 @@ S5 at each tier mediates this tension.
 
 | Tier | S5 Manifestation |
 |------|-----------------|
-| Product | The Product Brief. The non-negotiable identity of axiathon: open-source, Rust-powered, detection-as-code, unified IT/OT, MSSP-first. When S3 and S4 conflict, S5 decides based on identity. |
+| Product | The Product Brief. The non-negotiable identity of consumer-project: open-source, Rust-powered, detection-as-code, unified IT/OT, MSSP-first. When S3 and S4 conflict, S5 decides based on identity. |
 | Domain | The domain's architectural intent — the "Josh Test." When a domain engineer faces a choice between two valid approaches, the domain's stated priorities (performance over flexibility? simplicity over feature-richness?) guide the decision. |
 | Delivery | The story's acceptance criteria. When implementation could go several directions, the ACs define what "done" means. The ACs are S5 at the delivery level. |
 

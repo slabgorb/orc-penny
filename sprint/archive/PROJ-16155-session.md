@@ -5,7 +5,7 @@
 **Phase:** finish
 **Repos:** orchestrator,pennyfarthing
 **Branch:** feature/141-21-extract-hardcoded-values
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ## Story Context
 

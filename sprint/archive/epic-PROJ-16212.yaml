@@ -22,7 +22,7 @@ stories:
     points: 2
     priority: p0
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-03-06'
     repos: pennyfarthing
     workflow: tdd
@@ -42,7 +42,7 @@ stories:
     points: 1
     priority: p1
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-03-06'
     repos: pennyfarthing
     workflow: tdd

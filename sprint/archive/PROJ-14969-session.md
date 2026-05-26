@@ -7,7 +7,7 @@
 **Phase:** red
 **Repos:** pennyfarthing
 **Branch:** feature/103-14-changedpanel-file-list
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ---
 

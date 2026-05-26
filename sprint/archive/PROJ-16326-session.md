@@ -6,7 +6,7 @@
 **Phase:** finish
 **Repos:** pennyfarthing
 **Branch:** feature/142-2-bmad-simulator-template
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ## Context
 

@@ -9,7 +9,7 @@
 **Status:** in_progress
 **Workflow:** tdd
 **Phase:** finish
-**Assignee:** keith.avery@slabgorb.io
+**Assignee:** slabgorb@gmail.com
 **Repos:** pennyfarthing
 
 ## Description

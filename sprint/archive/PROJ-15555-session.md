@@ -7,7 +7,7 @@
 - **Status:** in_progress
 - **Points:** 3
 - **Priority:** p0
-- **Assigned to:** keith.avery@slabgorb.io
+- **Assigned to:** slabgorb@gmail.com
 - **Repos:** pennyfarthing
 - **Workflow:** tdd
 - **Type:** feature

@@ -10,7 +10,7 @@ Deep investigation into benchmark detection gaps. Started at 54% on DPGD-116, bu
 Runs 26-29 were executing pf-3's harness code, not pf-1's. All our pipeline_replay.py changes (post-Dev scouts, TEA validator, expanded file globs) were never running. Fixed the `.pth` file and added a version gate that hard-fails if the harness is from the wrong project.
 
 ### 2. Agents were missing the project rulebook
-`build_phase_claude_md()` was NOT including the axiathon repo's CLAUDE.md, SOUL.md, or `.claude/rules/` files. Agents didn't know about `#[non_exhaustive]`, validated constructors, private-fields-with-getters, or tenant isolation rules. Also had a hardcoded "axiathon-server" reference that was wrong for non-server scenarios. Fixed — now includes repo CLAUDE.md, SOUL.md, and all rules/*.md files.
+`build_phase_claude_md()` was NOT including the consumer-project repo's CLAUDE.md, SOUL.md, or `.claude/rules/` files. Agents didn't know about `#[non_exhaustive]`, validated constructors, private-fields-with-getters, or tenant isolation rules. Also had a hardcoded "consumer-project-server" reference that was wrong for non-server scenarios. Fixed — now includes repo CLAUDE.md, SOUL.md, and all rules/*.md files.
 
 ### 3. Haiku subagents too weak for analytical work
 DPGD-114 run 1 (Haiku): 4/16 caught. Silent-failure-hunter returned "clean" on a critical finding. Security returned "clean" on 4 tenant isolation issues. Upgraded to Sonnet: 7/16. Then Opus: 6-7/16. Model capability matters for analytical subagents. Mechanical tasks (test runner, preflight) are fine on Haiku.

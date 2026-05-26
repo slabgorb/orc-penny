@@ -7,7 +7,7 @@
 **Phase:** finish
 **Repos:** pennyfarthing
 **Branch:** feature/PROJ-14699-versioned-migration-runner
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 **Started:** 2026-02-12
 
 ---

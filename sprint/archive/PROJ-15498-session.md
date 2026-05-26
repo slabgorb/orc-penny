@@ -7,7 +7,7 @@
 - **Points:** 5
 - **Repos:** pennyfarthing
 - **Phase:** finish
-- **Assigned:** keith.avery@slabgorb.io
+- **Assigned:** slabgorb@gmail.com
 
 ## Description
 End-to-end test suite covering the full installation lifecycle. Fresh install from PyPI, upgrade from npm-based install, dry-run verification, idempotency check.

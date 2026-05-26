@@ -6,7 +6,7 @@
 **Phase:** finish
 **Repos:** pennyfarthing
 **Branch:** feat/86-9-workflow-schema-team-block-phases
-**Assignee:** keith.avery@slabgorb.io
+**Assignee:** slabgorb@gmail.com
 
 ---
 

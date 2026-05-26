@@ -20,7 +20,7 @@ stories:
     points: 1
     priority: P1
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-11'
     workflow: trivial
     completed: '2026-02-11'

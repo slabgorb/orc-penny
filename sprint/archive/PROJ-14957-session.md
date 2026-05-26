@@ -10,7 +10,7 @@
 **Phase Started:** 2026-02-13T10:15:00Z
 **Repos:** pennyfarthing
 **Branch:** feat/103-2-wheelhub-websocket-client
-**Assigned To:** keith.avery@slabgorb.io
+**Assigned To:** slabgorb@gmail.com
 
 ## Acceptance Criteria
 

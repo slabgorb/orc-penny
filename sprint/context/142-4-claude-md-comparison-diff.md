@@ -89,7 +89,7 @@ No actual benchmark runs have been executed yet (runs begin in story 142-5). Thi
 | **Coding standards** | `project-context.md` (target project standards) | Loaded via CLAUDE.md of target project | **Equivalent** |
 | **Tasks/Subtasks** | Empty (per ADR-0035 — avoids bias through our task decomposition) | Not applicable (PF agents derive tasks from ACs) | **Neutral** |
 
-**Rationale:** Both agents receive the same substantive information — the same acceptance criteria, the same technical context, the same coding standards. The packaging differs (single story file vs. separate context docs) but the content is equivalent. This is confirmed by the axiathon context verification (see companion document).
+**Rationale:** Both agents receive the same substantive information — the same acceptance criteria, the same technical context, the same coding standards. The packaging differs (single story file vs. separate context docs) but the content is equivalent. This is confirmed by the consumer-project context verification (see companion document).
 
 ---
 

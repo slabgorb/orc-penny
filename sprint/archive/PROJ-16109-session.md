@@ -108,7 +108,7 @@ This story is about fixing misnamed agent/skill references in hooks. The title s
 
   <work-log>
     <entry agent="sm" date="2026-03-03">
-      Story setup complete. Jira claimed (PROJ-16109, assigned to keith.avery@slabgorb.io), branch created.
+      Story setup complete. Jira claimed (PROJ-16109, assigned to slabgorb@gmail.com), branch created.
       Session file created with acceptance criteria.
       Story context documented with scope of audit (ALL hooks, not just auto-load-sm).
     </entry>

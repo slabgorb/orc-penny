@@ -9,7 +9,7 @@
 **Status:** in_progress
 **Repos:** pennyfarthing, orchestrator
 **Branch:** feat/PROJ-15033-normalize-pf-cli
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 **Started:** 2026-02-13
 
 ---

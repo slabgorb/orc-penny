@@ -181,7 +181,7 @@ This is what the boss reads.
 
 ### Journey 5: The Operator — Simplify Toggle (Configuration)
 
-You're setting up a new project for axiathon. You run `pf init`. The default `repos.yaml` has `simplify_enabled: false`. You leave it. When TEA hits verify phase, the workflow reads the config — no simplify teammates spawn. Verify runs quality-pass only.
+You're setting up a new project for consumer-project. You run `pf init`. The default `repos.yaml` has `simplify_enabled: false`. You leave it. When TEA hits verify phase, the workflow reads the config — no simplify teammates spawn. Verify runs quality-pass only.
 
 Later, on the pennyfarthing framework itself, you want simplify on — the framework benefits from refactoring suggestions. You set `simplify_enabled: true` in pf-1's `repos.yaml`. Simplify teammates spawn during verify.
 
@@ -271,7 +271,7 @@ Checked into git. Shared across team. Workflow engine reads it at runtime when T
 
 ### Migration Impact
 
-- Axiathon PRs already moved to draft status in anticipation of pipeline changes
+- Consumer Project PRs already moved to draft status in anticipation of pipeline changes
 - Existing `tdd.yaml` gets two new phases and stricter gates — version bump required
 - Tandem workflow files deleted — any stories referencing `tdd-tandem` workflow need reassignment to `tdd`
 - No backward compatibility shim — clean cut

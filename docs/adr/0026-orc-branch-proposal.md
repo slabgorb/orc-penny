@@ -56,8 +56,8 @@ suits their content and audience.
 | **conductor-orchestrator** | slabgorb | `develop` | Yes | Yes | `develop` (direct pushes + PRs) | `main` | FF `main` to `develop`, set default, delete `develop` |
 | **clip-orchestrator** | slabgorb | `develop` | **No** | Yes | `develop` (only branch) | `main` | Rename `develop` → `main`, set default |
 | **poller-orchestrator** | slabgorb | `main` | Yes | No | `main` | `main` | None |
-| **bmad-orc** | arcaven | `main` | Yes | No | `main` | `main` | None |
-| **i-orc** | arcaven | `main` | Yes | No | `main` | `main` | None |
+| **bmad-orc** | collaborator | `main` | Yes | No | `main` | `main` | None |
+| **i-orc** | collaborator | `main` | Yes | No | `main` | `main` | None |
 
 > `i-orc-before` (local only, not a git repo) is excluded — it is a backup directory, not
 > an orchestrator repo.
@@ -151,7 +151,7 @@ Small repo, only `develop` exists. No `main` at all. Needs a rename rather than 
 
 Already trunk-based. No changes needed.
 
-### bmad-orc (arcaven) — already compliant
+### bmad-orc (collaborator) — already compliant
 
 | Metric | Value |
 |--------|-------|
@@ -162,7 +162,7 @@ Already trunk-based. No changes needed.
 
 Already trunk-based. No changes needed.
 
-### i-orc (arcaven) — already compliant
+### i-orc (collaborator) — already compliant
 
 | Metric | Value |
 |--------|-------|

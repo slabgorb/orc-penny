@@ -1,7 +1,7 @@
 # Pipeline Replay Scenario: DPGD-114 — Story 23.1 Unified Plugin SDK Core
 #
 # Ground truth: 16 findings (1 critical + 15 important) from external review
-# that the original TDD pipeline missed. Pipeline APPROVED, then Zious11
+# that the original TDD pipeline missed. Pipeline APPROVED, then external reviewer
 # found issues in PR #53. All fixed, then re-review found 5 more.
 #
 # Rich scenario: silent failures, API security (CWE-284 tenant isolation),
@@ -16,7 +16,7 @@ story_id: "23-1"
 jira: DPGD-114
 
 repo:
-  path: axiathon
+  path: consumer-project
   base_commit: f6bdd2cf3106f624e8622853989bd0e93043552b
   branch: feature/story-23.1-unified-plugin-sdk-core
 
@@ -38,9 +38,9 @@ ground_truth:
         weight: 8
         category: silent-failure
         phase_ideal: reviewer
-        files: [crates/axiathon-plugin-sdk/ingestion/src/lib.rs]
+        files: [crates/consumer-project-plugin-sdk/ingestion/src/lib.rs]
         description: >
-          fn enrich(&self, event: &mut AxiathonEvent) -> EnrichmentResult returns a
+          fn enrich(&self, event: &mut Consumer ProjectEvent) -> EnrichmentResult returns a
           plain struct with only fields_added and source. Cannot represent errors. If
           GeoIP expires, threat intel is unreachable, or DNS times out, the enricher
           has zero mechanism to signal failure. "fields_added: 0" is indistinguishable
@@ -52,7 +52,7 @@ ground_truth:
         weight: 3
         category: type-design
         phase_ideal: reviewer
-        files: [crates/axiathon-plugin-sdk/core/src/identity.rs]
+        files: [crates/consumer-project-plugin-sdk/core/src/identity.rs]
         description: >
           pub enum PluginKind without #[non_exhaustive]. Adding a new plugin kind
           is a semver-breaking change for downstream matchers. PluginError in the
@@ -64,7 +64,7 @@ ground_truth:
         weight: 3
         category: type-design
         phase_ideal: reviewer
-        files: [crates/axiathon-plugin-sdk/core/src/health.rs]
+        files: [crates/consumer-project-plugin-sdk/core/src/health.rs]
         description: >
           Same rule as I1. Health enums commonly grow (Starting, Stopping, Unknown).
           Should have #[non_exhaustive].
@@ -75,10 +75,10 @@ ground_truth:
         weight: 5
         category: type-design
         phase_ideal: tea
-        files: [crates/axiathon-plugin-sdk/core/src/identity.rs]
+        files: [crates/consumer-project-plugin-sdk/core/src/identity.rs]
         description: >
           pub fn new(namespace, name) -> Self with no validation. TenantId::new()
-          in axiathon-core returns Result after validation. PluginId::new("", "")
+          in consumer-project-core returns Result after validation. PluginId::new("", "")
           silently creates ":". Should return Result<Self, PluginError> with
           new_unchecked() for tests.
 
@@ -88,7 +88,7 @@ ground_truth:
         weight: 5
         category: security
         phase_ideal: reviewer
-        files: [crates/axiathon-plugin-sdk/ingestion/src/lib.rs]
+        files: [crates/consumer-project-plugin-sdk/ingestion/src/lib.rs]
         description: >
           pub tenant_id: TenantId. A plugin could reassign a RawEvent to a
           different tenant, breaking tenant isolation. Should be private with getter.
@@ -99,7 +99,7 @@ ground_truth:
         weight: 5
         category: security
         phase_ideal: reviewer
-        files: [crates/axiathon-plugin-sdk/action/src/lib.rs]
+        files: [crates/consumer-project-plugin-sdk/action/src/lib.rs]
         description: >
           async fn execute(&self, params: &serde_json::Value) has no TenantId.
           Response actions can execute across tenant boundaries without compiler
@@ -111,7 +111,7 @@ ground_truth:
         weight: 5
         category: security
         phase_ideal: reviewer
-        files: [crates/axiathon-plugin-sdk/notification/src/lib.rs]
+        files: [crates/consumer-project-plugin-sdk/notification/src/lib.rs]
         description: >
           async fn send(&self, notification: &Notification) has no tenant identifier.
           Cross-tenant notification leakage risk. Should add tenant_id to Notification
@@ -123,7 +123,7 @@ ground_truth:
         weight: 5
         category: security
         phase_ideal: reviewer
-        files: [crates/axiathon-plugin-sdk/core/src/manifest.rs]
+        files: [crates/consumer-project-plugin-sdk/core/src/manifest.rs]
         description: >
           13 pub fields including id, permissions, signature. Post-construction
           mutation of permissions/signature could bypass security checks. Should
@@ -135,9 +135,9 @@ ground_truth:
         weight: 3
         category: api-design
         phase_ideal: reviewer
-        files: [crates/axiathon-plugin-sdk/src/lib.rs]
+        files: [crates/consumer-project-plugin-sdk/src/lib.rs]
         description: >
-          pub use axiathon_plugin_sdk_core as core shadows Rust's core crate.
+          pub use consumer-project_plugin_sdk_core as core shadows Rust's core crate.
           Confusing compilation errors for users who glob-import. Should rename
           to plugin_core.
 
@@ -147,7 +147,7 @@ ground_truth:
         weight: 3
         category: type-design
         phase_ideal: dev
-        files: [crates/axiathon-plugin-sdk/core/src/identity.rs]
+        files: [crates/consumer-project-plugin-sdk/core/src/identity.rs]
         description: >
           type Err = String instead of PluginError. Violates "use thiserror for
           error enums" rule. Should be type Err = PluginError.
@@ -158,7 +158,7 @@ ground_truth:
         weight: 5
         category: security
         phase_ideal: reviewer
-        files: [crates/axiathon-plugin-sdk/core/src/identity.rs]
+        files: [crates/consumer-project-plugin-sdk/core/src/identity.rs]
         description: >
           #[derive(Deserialize)] directly populates private fields without validation.
           {"namespace": "", "name": ""} silently accepted. Should use
@@ -170,10 +170,10 @@ ground_truth:
         weight: 3
         category: api-design
         phase_ideal: reviewer
-        files: [crates/axiathon-plugin-sdk/ingestion/src/lib.rs]
+        files: [crates/consumer-project-plugin-sdk/ingestion/src/lib.rs]
         description: >
           fn health(&self) -> PluginHealth is sync/infallible while
-          AxiathonPlugin::health_check() is async/fallible. Ambiguous which to call.
+          Consumer ProjectPlugin::health_check() is async/fallible. Ambiguous which to call.
           Should remove ConnectorPlugin::health() and rely on base trait.
 
       - id: I12
@@ -182,7 +182,7 @@ ground_truth:
         weight: 5
         category: silent-failure
         phase_ideal: tea
-        files: [crates/axiathon-plugin-sdk/core/src/manifest.rs]
+        files: [crates/consumer-project-plugin-sdk/core/src/manifest.rs]
         description: >
           No validation on deserialized fields. A manifest with name: "",
           version: "" is silently accepted. Should add validate() method or
@@ -194,7 +194,7 @@ ground_truth:
         weight: 3
         category: api-design
         phase_ideal: reviewer
-        files: [crates/axiathon-plugin-sdk/ingestion/src/lib.rs]
+        files: [crates/consumer-project-plugin-sdk/ingestion/src/lib.rs]
         description: >
           as_str() returns String via lossy UTF-8 conversion. Rust convention:
           as_* returns borrowed, to_* returns owned. Should rename to
@@ -206,7 +206,7 @@ ground_truth:
         weight: 5
         category: testing
         phase_ideal: tea
-        files: [crates/axiathon-plugin-sdk/ingestion/src/lib.rs]
+        files: [crates/consumer-project-plugin-sdk/ingestion/src/lib.rs]
         description: >
           let _ = raw.as_str() discards result, asserts nothing. Should add
           assertion: assert!(raw.as_str().contains('\u{FFFD}')).
@@ -217,7 +217,7 @@ ground_truth:
         weight: 3
         category: testing
         phase_ideal: tea
-        files: [crates/axiathon-plugin-sdk/core/src/manifest.rs]
+        files: [crates/consumer-project-plugin-sdk/core/src/manifest.rs]
         description: >
           ManifestInvalid error path is never exercised by tests. Docstring
           promises this behavior. Should add test with malformed schema asserting
@@ -269,7 +269,7 @@ phase_prompts:
     5. Run `cargo clippy --workspace` to check for lint issues
 
     Key implementation details:
-    - AxiathonPlugin base trait with async lifecycle methods
+    - Consumer ProjectPlugin base trait with async lifecycle methods
     - PluginManifest with 13+ fields, JSON round-trip support
     - PluginId with namespace:name format, validated constructors
     - 6 plugin kind variants with serde support

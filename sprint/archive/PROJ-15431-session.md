@@ -7,7 +7,7 @@
 **Workflow:** trivial
 **Phase:** finish
 **Repos:** pennyfarthing
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ## Acceptance Criteria
 

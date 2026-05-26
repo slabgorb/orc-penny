@@ -18,7 +18,7 @@ stories:
       - github: slabgorb/pennyfarthing-orchestrator#84
       - github: slabgorb/pennyfarthing-orchestrator#88
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     workflow: tdd
     completed: '2026-02-21'
     type: chore
@@ -33,7 +33,7 @@ stories:
     refs:
       - github: slabgorb/pennyfarthing-orchestrator#85
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     workflow: trivial
     completed: '2026-02-21'
     type: chore
@@ -48,7 +48,7 @@ stories:
     refs:
       - github: slabgorb/pennyfarthing-orchestrator#86
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-21'
     workflow: tdd
     completed: '2026-02-21'
@@ -63,7 +63,7 @@ stories:
     refs:
       - github: slabgorb/pennyfarthing-orchestrator#87
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     workflow: tdd
     completed: '2026-02-21'
     review_verdict: approved
@@ -77,7 +77,7 @@ stories:
     refs:
       - github: slabgorb/pennyfarthing-orchestrator#89
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     workflow: trivial
     completed: '2026-02-22'
     type: chore
@@ -92,7 +92,7 @@ stories:
     refs:
       - github: slabgorb/pennyfarthing-orchestrator#83
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-21'
     workflow: tdd
     completed: '2026-02-21'

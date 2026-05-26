@@ -12,7 +12,7 @@ stories:
     points: 3
     priority: P0
     status: canceled
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-14'
     workflow: tdd
   - id: 109-2

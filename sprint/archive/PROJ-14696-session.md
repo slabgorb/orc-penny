@@ -7,7 +7,7 @@
 **Phase:** finish
 **Repos:** pennyfarthing
 **Branch:** feature/90-3-evaluate-confidence-gate
-**Assignee:** keith.avery@slabgorb.io
+**Assignee:** slabgorb@gmail.com
 
 ## Acceptance Criteria
 

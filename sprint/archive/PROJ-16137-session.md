@@ -6,7 +6,7 @@ workflow: "tdd"
 phase: "setup"
 repos: "pennyfarthing"
 branch: "feature/PROJ-16137-convert-throw-result-cyclist-file-browser"
-assigned_to: "keith.avery@slabgorb.io"
+assigned_to: "slabgorb@gmail.com"
 started: "2026-03-05"
 ---
 

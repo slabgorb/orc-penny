@@ -18,7 +18,7 @@ story_id: "8-1"
 jira: DPGD-117
 
 repo:
-  path: axiathon
+  path: consumer-project
   base_commit: f6bdd2cf3106f624e8622853989bd0e93043552b
   branch: feature/story-8.1-rest-api-foundation
 
@@ -57,7 +57,7 @@ ground_truth:
         weight: 3
         category: build
         phase_ideal: dev
-        files: [crates/axiathon-server/Cargo.toml]
+        files: [crates/consumer-project-server/Cargo.toml]
         description: >
           6 dependencies specify versions inline instead of using
           workspace = true. Causes version drift risk across workspace crates.
@@ -68,7 +68,7 @@ ground_truth:
         weight: 5
         category: api-design
         phase_ideal: reviewer
-        files: [crates/axiathon-server/src/response.rs]
+        files: [crates/consumer-project-server/src/response.rs]
         description: >
           The FieldErrorCode enum lacks #[non_exhaustive], meaning downstream
           crates cannot exhaustively match on it without breaking when new
@@ -80,7 +80,7 @@ ground_truth:
         weight: 5
         category: observability
         phase_ideal: dev
-        files: [crates/axiathon-server/src/routes/health.rs]
+        files: [crates/consumer-project-server/src/routes/health.rs]
         description: >
           ResponseMeta uses a hardcoded "none" string for trace_id instead
           of deriving it from the request context. Breaks distributed tracing.
@@ -92,8 +92,8 @@ ground_truth:
         category: observability
         phase_ideal: dev
         files:
-          - crates/axiathon-server/src/error.rs
-          - crates/axiathon-server/src/middleware/tenant.rs
+          - crates/consumer-project-server/src/error.rs
+          - crates/consumer-project-server/src/middleware/tenant.rs
         description: >
           No tracing::error! or tracing::warn! calls anywhere in error
           handling or middleware. Errors returned to clients but never logged.
@@ -104,7 +104,7 @@ ground_truth:
         weight: 3
         category: documentation
         phase_ideal: reviewer
-        files: [crates/axiathon-server/src/error.rs]
+        files: [crates/consumer-project-server/src/error.rs]
         description: >
           A SECURITY comment claims errors are "logged for debugging" but
           no logging calls exist. Actively misleading documentation.
@@ -115,7 +115,7 @@ ground_truth:
         weight: 8
         category: security
         phase_ideal: tea
-        files: [crates/axiathon-server/src/middleware/tenant.rs]
+        files: [crates/consumer-project-server/src/middleware/tenant.rs]
         description: >
           When X-Tenant-ID contains non-ASCII characters, header extraction
           silently fails and the request is treated as missing the header.
@@ -127,7 +127,7 @@ ground_truth:
         weight: 5
         category: testing
         phase_ideal: tea
-        files: [crates/axiathon-server/tests/middleware_tests.rs]
+        files: [crates/consumer-project-server/tests/middleware_tests.rs]
         description: >
           The CWE-209 information exposure test checks the status code but
           does not assert on response body content. Sensitive information
@@ -139,7 +139,7 @@ ground_truth:
         weight: 5
         category: testing
         phase_ideal: tea
-        files: [crates/axiathon-server/tests/middleware_tests.rs]
+        files: [crates/consumer-project-server/tests/middleware_tests.rs]
         description: >
           The CORS preflight test sends OPTIONS but only checks status code.
           Doesn't verify Access-Control-Allow-Origin or other CORS headers
@@ -155,7 +155,7 @@ ground_truth:
         category: observability
         phase_ideal: reviewer
         fix_commit: 42a70f56725ab82abac778c0ac368107f4dd3524
-        files: [crates/axiathon-server/src/error.rs]
+        files: [crates/consumer-project-server/src/error.rs]
         description: >
           After adding structured logging (fixing I4), all errors use
           tracing::error! regardless of status code. 4xx client errors
@@ -168,7 +168,7 @@ ground_truth:
         category: security
         phase_ideal: dev
         fix_commit: eb16362d9e5d7992d5655bf182ecbd4c6ca8b858
-        files: [crates/axiathon-server/src/router.rs]
+        files: [crates/consumer-project-server/src/router.rs]
         description: >
           CORS middleware uses allow_origin(Any), allow_methods(Any), and
           allow_headers(Any). Permits any origin to make credentialed
@@ -181,7 +181,7 @@ phase_prompts:
     Your task is the RED phase of TDD:
     1. Read the epic and story context in this project's CLAUDE.md
     2. Analyze the acceptance criteria thoroughly
-    3. Write comprehensive failing tests in crates/axiathon-server/tests/
+    3. Write comprehensive failing tests in crates/consumer-project-server/tests/
     4. Run `cargo test` to verify tests compile but fail (no implementation exists yet)
 
     Write tests that cover:
@@ -198,8 +198,8 @@ phase_prompts:
 
     Your task is the GREEN phase of TDD:
     1. Read the epic and story context in this project's CLAUDE.md
-    2. Review the tests already written in crates/axiathon-server/tests/
-    3. Implement production code in crates/axiathon-server/src/ to make ALL tests pass
+    2. Review the tests already written in crates/consumer-project-server/tests/
+    3. Implement production code in crates/consumer-project-server/src/ to make ALL tests pass
     4. Run `cargo test` to verify all tests pass
     5. Run `cargo clippy` to check for lint issues
 

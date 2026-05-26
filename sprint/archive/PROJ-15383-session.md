@@ -7,7 +7,7 @@
 **Repos:** pennyfarthing
 **Branch:** fix/PROJ-15383-setup-workflow-config-local
 **Started:** 2026-02-21T00:00:00Z
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ## Story Context
 

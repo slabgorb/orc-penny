@@ -5,7 +5,7 @@
 **Phase:** finish
 **Jira:** PROJ-15185
 **Repos:** pennyfarthing
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 **Branch:** feat/110-1-cross-panel-event-bus
 **Started:** 2026-02-16
 **Epic:** 110 — BikeRack TUI — Interactive Command Center

@@ -7,7 +7,7 @@
 - **Epic:** 132 (Release Workflow Hardening (11.x Followup))
 - **Points:** 2
 - **Repos:** pennyfarthing
-- **Assignee:** keith.avery@slabgorb.io
+- **Assignee:** slabgorb@gmail.com
 
 ## Story Description
 Add package contents verification to release workflow to ensure all expected files are included in the final distribution.

@@ -25,7 +25,7 @@ stories:
     points: 3
     priority: p2
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     workflow: tdd
     completed: '2026-02-23'
     review_verdict: approved
@@ -36,7 +36,7 @@ stories:
     points: 1
     priority: p1
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     workflow: trivial
     completed: '2026-02-21'
     type: bug
@@ -53,7 +53,7 @@ stories:
     refs:
       - github: slabgorb/pennyfarthing-orchestrator#31
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     workflow: tdd
     completed: '2026-02-23'
     type: bug

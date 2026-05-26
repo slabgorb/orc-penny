@@ -26,7 +26,7 @@ stories:
       - pf --version works after install
     points: 3
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     repos: pennyfarthing
     workflow: tdd
     completed: '2026-02-23'
@@ -51,7 +51,7 @@ stories:
       - --dry-run flag shows what would be done without doing it
     points: 5
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-23'
     repos: pennyfarthing
     workflow: tdd-tandem
@@ -78,7 +78,7 @@ stories:
       - Handles partial completion and re-entry gracefully
     points: 5
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-23'
     repos: pennyfarthing
     workflow: tdd-tandem
@@ -102,7 +102,7 @@ stories:
       - All agent activation commands updated
     points: 2
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-24'
     repos: pennyfarthing
     workflow: tdd
@@ -126,7 +126,7 @@ stories:
       - Existing user settings preserved during migration
     points: 3
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-24'
     repos: pennyfarthing
     workflow: tdd
@@ -149,7 +149,7 @@ stories:
       - No functional regression — all hooks still fire correctly
     points: 5
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-24'
     repos: pennyfarthing
     workflow: tdd
@@ -174,7 +174,7 @@ stories:
       - Clear reporting of what changed
     points: 5
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-24'
     repos: pennyfarthing
     workflow: tdd
@@ -196,7 +196,7 @@ stories:
       - Removed checks for things that can no longer break
     points: 3
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-24'
     repos: pennyfarthing
     workflow: tdd
@@ -220,7 +220,7 @@ stories:
       - No Node-based init code remains
     points: 2
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-24'
     repos: pennyfarthing
     workflow: trivial
@@ -243,7 +243,7 @@ stories:
       - Tests run in CI with isolated environments
     points: 5
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-24'
     repos: pennyfarthing
     workflow: tdd
@@ -266,7 +266,7 @@ stories:
     points: 3
     priority: p1
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-24'
     workflow: tdd
     acceptance_criteria:
@@ -285,7 +285,7 @@ stories:
     points: 2
     priority: p1
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-24'
     workflow: trivial
     acceptance_criteria:
@@ -304,7 +304,7 @@ stories:
     points: 2
     priority: p2
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-24'
     workflow: trivial
     acceptance_criteria:
@@ -326,7 +326,7 @@ stories:
     points: 2
     priority: p2
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-24'
     workflow: trivial
     acceptance_criteria:
@@ -344,7 +344,7 @@ stories:
     points: 2
     priority: p1
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-24'
     workflow: trivial
     completed: '2026-02-24'

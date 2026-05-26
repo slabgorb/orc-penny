@@ -6,7 +6,7 @@
 **Phase:** finish
 **Repos:** orchestrator
 **Branch:** main
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ## Context
 
@@ -34,7 +34,7 @@ As an engineering lead, I want a documented methodology for comparing BMAD and P
 - Controlled variables (same model, same scenario, same judge, same ground truth)
 - Story file translation decisions
 
-**Given** the axiathon story context documents exist
+**Given** the consumer-project story context documents exist
 **When** context parity is analyzed
 **Then** a side-by-side appendix shows what each agent receives with annotated differences
 

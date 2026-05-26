@@ -26,7 +26,7 @@ stories:
     repos: pennyfarthing
     jira: PROJ-14467
     completed: '2026-02-08'
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
   - id: 83-3
     title: Complexity + Dependencies APIs + hooks + dialogs
     description: |

@@ -8,7 +8,7 @@
 **PR:** #786 - feat(91-26): enhance pf sprint info with full header fields
 **Repos:** pennyfarthing
 **Branch:** feat/PROJ-14720-sprint-info-header
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ---
 

@@ -1,6 +1,6 @@
 # Cascade Attribution Analysis: dpgd-116
 
-**Scenario:** dpgd-116 (Rust CLI tool — axiathon)
+**Scenario:** dpgd-116 (Rust CLI tool — consumer-project)
 **Date:** 2026-03-08
 **Data:** 19 themed themes + 1 control baseline, 2–6 runs each (85 total runs)
 **Story:** 47-1

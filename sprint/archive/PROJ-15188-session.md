@@ -7,7 +7,7 @@
 **Phase:** finish
 **Repos:** orchestrator, pennyfarthing
 **Branch:** feat/110-4-split-pane-layouts
-**Assignee:** keith.avery@slabgorb.io
+**Assignee:** slabgorb@gmail.com
 
 ---
 

@@ -6,7 +6,7 @@
 - **Title:** Team-enabled workflow templates
 - **Points:** 2
 - **Workflow:** tdd
-- **Assigned To:** keith.avery@slabgorb.io
+- **Assigned To:** slabgorb@gmail.com
 - **Repos:** pennyfarthing
 - **Branch:** feat/86-15-team-enabled-workflow-templates
 

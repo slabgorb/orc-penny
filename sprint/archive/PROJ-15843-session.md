@@ -8,7 +8,7 @@
 **Workflow:** trivial
 **Phase:** finish
 **Status:** in-progress
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ---
 

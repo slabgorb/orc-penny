@@ -71,7 +71,7 @@ BikeRack TUI connection status flickers between Connected and Reconnecting becau
 
 ### Setup — 2026-02-21
 - Story started with sprint CLI
-- Jira ticket claimed: PROJ-15400 (assigned to keith.avery@slabgorb.io)
+- Jira ticket claimed: PROJ-15400 (assigned to slabgorb@gmail.com)
 - Branch created: feature/120-4-fix-tui-reconnecting-flicker
 - Session created for development
 - Workflow: trivial (SM → Dev → Reviewer → SM)

@@ -3,7 +3,7 @@
 **Initiative:** Lifecycle Composition — Tier Communication Protocol
 **Date:** 2026-02-14
 **Agent:** BA (Avasarala)
-**Product:** Axiathon (enterprise SIEM platform)
+**Product:** Consumer Project (enterprise SIEM platform)
 **Team:** 7-12 people (PM/PO, Architect, platform engineers, professional SE)
 **Index:** `INDEX.md`
 
@@ -11,15 +11,15 @@
 
 ## The Problem This Document Solves
 
-You cannot define tiers, communication channels, or organizational structure until you know what work each tier produces. Structure follows function. This document defines the **artifacts** — what gets made at each level of the product lifecycle — grounded in the reality of axiathon: a multi-crate Rust SIEM platform being built by a team using spec-driven development with LLM tooling.
+You cannot define tiers, communication channels, or organizational structure until you know what work each tier produces. Structure follows function. This document defines the **artifacts** — what gets made at each level of the product lifecycle — grounded in the reality of consumer-project: a multi-crate Rust SIEM platform being built by a team using spec-driven development with LLM tooling.
 
 ---
 
-## The Axiathon Reality
+## The Consumer Project Reality
 
 ### What Exists Today (The Left-Shifted Artifact Stack)
 
-Axiathon's planning phase produced an enormous, detailed specification corpus:
+Consumer Project's planning phase produced an enormous, detailed specification corpus:
 
 | Artifact | Scale | Author(s) |
 |----------|-------|-----------|
@@ -56,7 +56,7 @@ BMAD's process — and by extension, early-stage spec-driven development — ass
 2. Specs are written once, then executed against
 3. The spec is correct; deviations are bugs in execution
 
-Reality at axiathon's scale:
+Reality at consumer-project's scale:
 
 1. No single person can hold 990 FRs, 28 architecture decisions, and 8 crate boundaries in working memory
 2. Specs are hypotheses that implementation validates or invalidates
@@ -72,13 +72,13 @@ The tier work products must account for both directions: specs flowing down (dec
 
 We adopt names that describe *what the tier does*, not organizational rank:
 
-| Tier | Name | Scope | Cadence | Axiathon Example |
+| Tier | Name | Scope | Cadence | Consumer Project Example |
 |------|------|-------|---------|------------------|
-| 1 | **Product** | The whole system, its market position, its boundaries | Monthly to quarterly | Axiathon as a SIEM platform |
-| 2 | **Domain** | A bounded subsystem with its own architecture and team(s) | Weekly to per-sprint | `axiathon-detection` + `axiathon-query` (the "detection domain") |
+| 1 | **Product** | The whole system, its market position, its boundaries | Monthly to quarterly | Consumer Project as a SIEM platform |
+| 2 | **Domain** | A bounded subsystem with its own architecture and team(s) | Weekly to per-sprint | `consumer-project-detection` + `consumer-project-query` (the "detection domain") |
 | 3 | **Delivery** | A single implementable unit of work | Daily to per-story | "Implement Sigma rule parser with 90% compatibility" |
 
-**Why "Domain" not "Feature" or "Tactical":** A domain is a bounded context (Evans 2003) — a subsystem where a particular model applies. Axiathon's crate structure maps naturally to domains: Ingestion, Detection, Storage, Query, OT, API, TUI. Some domains span multiple crates (Detection + Query share the detection model). Domains are the natural unit at which an architect can operate and a sub-team can own.
+**Why "Domain" not "Feature" or "Tactical":** A domain is a bounded context (Evans 2003) — a subsystem where a particular model applies. Consumer Project's crate structure maps naturally to domains: Ingestion, Detection, Storage, Query, OT, API, TUI. Some domains span multiple crates (Detection + Query share the detection model). Domains are the natural unit at which an architect can operate and a sub-team can own.
 
 **Why "Delivery" not "Execution":** The word "execution" implies following orders. Delivery implies producing something. At the delivery tier, people (with LLM tooling) make implementation decisions, discover problems, and produce code that either validates or invalidates the domain specification. Delivery is not a passive tier.
 
@@ -90,9 +90,9 @@ We adopt names that describe *what the tier does*, not organizational rank:
 
 The Product tier defines *what we are building and why*. Its artifacts bound the entire system. Changes at this tier ripple to every domain and every delivery unit.
 
-| Artifact | Current Axiathon Equivalent | Format | Lifecycle |
+| Artifact | Current Consumer Project Equivalent | Format | Lifecycle |
 |----------|---------------------------|--------|-----------|
-| **Product Brief** | `product-brief-axiathon-2026-01-02.md` | Narrative markdown | Stable. Changes quarterly or on market events. |
+| **Product Brief** | `product-brief-consumer-project-2026-01-02.md` | Narrative markdown | Stable. Changes quarterly or on market events. |
 | **Product Requirements Document** | `prd/` (14 sections) | Structured markdown with numbered FRs | Evolves per phase. Sections may be amended by domain findings. |
 | **Product Architecture** | `architecture/` (28+ decisions) | Decision records + diagrams | Evolves as domains discover constraints. Must version decisions. |
 | **Phase Strategy** | `prd/project-scoping-phased-development.md` | Phased roadmap with epic assignments | Revised per phase boundary. |
@@ -103,7 +103,7 @@ The Product tier defines *what we are building and why*. Its artifacts bound the
 
 This is the missing artifact at the Product tier. It defines the API surface between domains — not the internal implementation, but the contracts that domains must honor when they communicate.
 
-For axiathon, these contracts include:
+For consumer-project, these contracts include:
 
 | Contract | Between | What It Defines |
 |----------|---------|-----------------|
@@ -122,13 +122,13 @@ For axiathon, these contracts include:
 - Compatibility rules (what changes are breaking vs. non-breaking)
 - Verification method (how compliance is tested)
 
-**Why this matters:** When a platform engineer in `axiathon-ingestion` produces an OCSF event, and another in `axiathon-detection` consumes it, the contract is the source of truth for what that event looks like. Without this contract, both engineers are independently interpreting the architecture document and hoping they agree. With it, both can verify compliance independently (Pact-style consumer-driven contracts — Pact Foundation 2024).
+**Why this matters:** When a platform engineer in `consumer-project-ingestion` produces an OCSF event, and another in `consumer-project-detection` consumes it, the contract is the source of truth for what that event looks like. Without this contract, both engineers are independently interpreting the architecture document and hoping they agree. With it, both can verify compliance independently (Pact-style consumer-driven contracts — Pact Foundation 2024).
 
 ### New Artifact: Product Design Rules
 
 Drawing from Baldwin and Clark (2000, 63), design rules are the architectural invariants that all domains must obey. They are distinct from architecture decisions (which explain *why* a choice was made) — design rules state *what must always be true*.
 
-For axiathon:
+For consumer-project:
 
 | Rule | Scope | Rationale |
 |------|-------|-----------|
@@ -149,7 +149,7 @@ For axiathon:
 
 The Domain tier translates product-level specs into bounded subsystem designs. Its artifacts define *how a particular subsystem works* within the constraints set by product-level design rules and contracts.
 
-| Artifact | Current Axiathon Equivalent | Format | Lifecycle |
+| Artifact | Current Consumer Project Equivalent | Format | Lifecycle |
 |----------|---------------------------|--------|-----------|
 | **Domain Architecture** | **Partially exists** in crate-level architecture decisions | Decision records + component diagrams | Evolves as delivery reveals constraints |
 | **Domain Interface Spec** | **Does not exist** | Internal API definitions, module boundaries | Evolves with implementation. Versioned. |
@@ -160,18 +160,18 @@ The Domain tier translates product-level specs into bounded subsystem designs. I
 
 ### The Domain As a Bounded Context
 
-A domain in axiathon is not necessarily a single crate. It is a bounded context (Evans 2003) — a subsystem where a particular model applies and a particular sub-team can operate with relative autonomy.
+A domain in consumer-project is not necessarily a single crate. It is a bounded context (Evans 2003) — a subsystem where a particular model applies and a particular sub-team can operate with relative autonomy.
 
-Proposed domain mapping for axiathon:
+Proposed domain mapping for consumer-project:
 
 | Domain | Crates | Model | Team Size |
 |--------|--------|-------|-----------|
-| **Ingestion** | `axiathon-ingestion`, part of `axiathon-core` (OCSF types) | Event normalization, source adapters, parsing | 1-2 |
-| **Detection** | `axiathon-detection`, part of `axiathon-query` | Rules, DSL, Sigma, evaluation, alerting | 1-2 |
-| **Storage** | `axiathon-storage` | Tiered persistence, indexing, retention, query execution | 1 |
-| **OT Security** | `axiathon-ot` | Industrial protocols, asset discovery, OT-specific rules | 1 |
-| **Platform** | `axiathon-api`, `axiathon-core` (shared types, auth, config) | External API, auth, multi-tenancy, plugin system | 1-2 |
-| **Interface** | `axiathon-tui`, (future: `axiathon-webui`) | User interaction, visualization, workflow | 1-2 |
+| **Ingestion** | `consumer-project-ingestion`, part of `consumer-project-core` (OCSF types) | Event normalization, source adapters, parsing | 1-2 |
+| **Detection** | `consumer-project-detection`, part of `consumer-project-query` | Rules, DSL, Sigma, evaluation, alerting | 1-2 |
+| **Storage** | `consumer-project-storage` | Tiered persistence, indexing, retention, query execution | 1 |
+| **OT Security** | `consumer-project-ot` | Industrial protocols, asset discovery, OT-specific rules | 1 |
+| **Platform** | `consumer-project-api`, `consumer-project-core` (shared types, auth, config) | External API, auth, multi-tenancy, plugin system | 1-2 |
+| **Interface** | `consumer-project-tui`, (future: `consumer-project-webui`) | User interaction, visualization, workflow | 1-2 |
 | **Infrastructure** | Helm, KOTS, CI/CD, Docker | Deployment, monitoring, operations | 1 |
 
 **Note:** These domains will shift as the team discovers what work naturally clusters together. The domain structure is itself a hypothesis — validated or invalidated by delivery experience (double-loop learning, Argyris 1977).
@@ -219,7 +219,7 @@ This is Beer's algedonic signal formalized as a document. It is also the mechani
 
 The Delivery tier produces working, tested code that satisfies story specifications within domain boundaries. Its artifacts are the smallest units of the system — the level at which LLM tooling generates content and code.
 
-| Artifact | Current Axiathon/Pennyfarthing Equivalent | Format | Lifecycle |
+| Artifact | Current Consumer Project/Pennyfarthing Equivalent | Format | Lifecycle |
 |----------|------------------------------------------|--------|-----------|
 | **Story Spec** | Story definitions within epics | Structured: goal, ACs, constraints, domain context | Created during sprint planning. Immutable during delivery (changes go through SCR). |
 | **Test Specification** | TEA agent output | Test cases derived from ACs | Created by TEA agent before implementation (TDD red phase) |

@@ -11,7 +11,7 @@
 | **Points** | 3 |
 | **Priority** | P1 |
 | **Type** | feature |
-| **Assigned** | keith.avery@slabgorb.io |
+| **Assigned** | slabgorb@gmail.com |
 | **Workflow** | tdd |
 
 ## Description

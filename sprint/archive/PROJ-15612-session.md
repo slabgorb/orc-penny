@@ -5,7 +5,7 @@
 - **Jira:** PROJ-15612
 - **Workflow:** trivial
 - **Epic:** 126 (PROJ-15488)
-- **Assignee:** keith.avery@slabgorb.io
+- **Assignee:** slabgorb@gmail.com
 
 ## Description
 
