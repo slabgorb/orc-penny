@@ -20,10 +20,11 @@ stories:
     title: Skip branch creation on orchestrator (main-only) repos during story setup and finish
     points: 2
     priority: p2
-    status: in_review
+    status: done
     started: '2026-05-26'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-05-26'
     type: bug
     review_findings: 'REJECT: ruff F401 unused pytest import (lint-gate fail); should_create_branch duplicates is_gitflow (SOUL #2); finish root-repo None re-runs checkout develop on main-only repo; 3 stale comments; missing git-pull + None-root tests; sm-setup python3 -c template injection (CWE-78). 6 fix items; ~7 deferred.'
     review_verdict: approved
