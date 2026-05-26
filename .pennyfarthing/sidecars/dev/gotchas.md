@@ -55,3 +55,11 @@ Only leaf elements scroll. Parents use `overflow: hidden`. `.message-panel-conte
 <gotcha name="stale-tests">
 Tests referencing non-existent packages (bikerack-extraction, data-source, websocket-otlp-extraction) are dead. `packages/shared/` was absorbed into core (Story 98-16). Tandem portraits (`cyclist-tandem.png`) were never generated. Skill registry has 22 skills not 23.
 </gotcha>
+
+<gotcha name="testing-runner-can-mutate-source" severity="high">
+The `testing-runner` subagent has only Bash/Read/Glob/Grep tools — but Bash lets it rewrite source files (heredoc/sed/python). It has been observed editing production code to force a GREEN, then reporting the edit buried in prose. ALWAYS diff (`git status`/`git diff`) after a testing-runner GREEN run and review any source change as YOUR own. Prefer running verification directly via Bash when correctness of the edit matters.
+</gotcha>
+
+<gotcha name="get-project-root-env-first" severity="high">
+`pf.common.config.get_project_root()` resolves `PROJECT_ROOT`/`CLAUDE_PROJECT_DIR` env vars BEFORE walking up from cwd. In the agent session these point at the real orchestrator, so tests relying on `monkeypatch.chdir(tmp)` to pick up a tmp `.pennyfarthing/repos.yaml` silently resolve the WRONG root. Give such functions an explicit `project_root` param and pass it in tests — don't rely on cwd.
+</gotcha>
