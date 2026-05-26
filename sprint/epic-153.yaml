@@ -90,10 +90,13 @@ stories:
     title: sm-setup doesn't create sprint/context/context-story-{ID}.md but TEA on-activation expects it — gate sm-setup-exit doesn't enforce; either create or stop requiring
     points: 3
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-05-26'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-05-26'
     type: bug
+    review_verdict: approved
   - id: 153-7
     title: Cyclist sprint-yaml PostToolUse hook crashes — node yaml package unresolvable; switch to PyYAML or detect-and-skip when module missing
     points: 2
