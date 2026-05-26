@@ -8,7 +8,7 @@
 **Repos:** pennyfarthing
 **Branch:** feature/79-4-hotspot-skip-orchestrator-repos
 **PR:** #740 - feat(79-4): skip orchestrator repos by type in hotspot analysis
-**Assignee:** keith.avery@slabgorb.io
+**Assignee:** slabgorb@gmail.com
 
 ## Description
 

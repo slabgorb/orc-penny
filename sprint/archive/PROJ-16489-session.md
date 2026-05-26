@@ -37,7 +37,7 @@ workflow: "tdd"
 The current Impact Summary in PR bodies and session files lacks critical information for external reviewers (SOUL.md #14 - Prove the Work):
 - No analysis of downstream effects (what other stories/components break if this changes)
 - No justification for deviations (why we deviated from spec, with source references)
-- Incomplete for PR self-explanation to stakeholders like Jared
+- Incomplete for PR self-explanation to external reviewers
 
 ### Acceptance Criteria
 1. Impact Summary includes downstream effect analysis — identifies affected stories and components

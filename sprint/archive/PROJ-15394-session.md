@@ -8,7 +8,7 @@
 **Priority:** p1
 **Status:** backlog
 **Workflow:** trivial
-**Assignee:** keith.avery@slabgorb.io
+**Assignee:** slabgorb@gmail.com
 **Repos:** pennyfarthing
 
 ## Description

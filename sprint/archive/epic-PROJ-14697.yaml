@@ -72,7 +72,7 @@ stories:
     points: 2
     priority: p1
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     workflow: tdd
     completed: '2026-02-14'
     type: refactor
@@ -82,7 +82,7 @@ stories:
     points: 3
     priority: p1
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     workflow: tdd
     completed: '2026-02-14'
     type: refactor
@@ -92,7 +92,7 @@ stories:
     points: 8
     priority: p1
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-14'
     workflow: tdd
     completed: '2026-02-14'
@@ -103,7 +103,7 @@ stories:
     points: 5
     priority: p1
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-14'
     workflow: tdd
     completed: '2026-02-14'
@@ -131,7 +131,7 @@ stories:
     points: 3
     priority: p2
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     workflow: tdd
     completed: '2026-02-16'
   - id: 98-22
@@ -140,7 +140,7 @@ stories:
     points: 3
     priority: p1
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-15'
     workflow: tdd
     completed: '2026-02-15'
@@ -150,7 +150,7 @@ stories:
     points: 5
     priority: p2
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     workflow: tdd
     completed: '2026-02-16'
 completed: '2026-02-21'

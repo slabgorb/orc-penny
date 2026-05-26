@@ -9,7 +9,7 @@
 **Workflow:** trivial
 **Phase:** finish
 **Branch:** fix/99-1-fix-story-finish-jira-key
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ---
 

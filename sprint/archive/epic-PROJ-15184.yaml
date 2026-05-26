@@ -16,7 +16,7 @@ stories:
     points: 3
     priority: p2
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-20'
     workflow: tdd
     completed: '2026-02-20'

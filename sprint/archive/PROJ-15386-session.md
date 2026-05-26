@@ -8,7 +8,7 @@
 **Phase:** finish
 **Repos:** pennyfarthing
 **Branch:** story/117-11/fix-ehostunreach-theme-packages
-**Assignee:** keith.avery@slabgorb.io
+**Assignee:** slabgorb@gmail.com
 **Started:** 2026-02-21
 
 ---

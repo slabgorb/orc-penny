@@ -20,7 +20,7 @@ This document provides the complete epic and story breakdown for the BMAD vs Pen
 - FR-1: BMAD Simulator Agent Definitions — Create agent defs that reproduce BMAD's dev and reviewer behavior using verbatim `instructions.xml`, `checklist.md`, and "Amelia" persona from `dev.agent.yaml`. No PF persona/sidecars/tandem/workflow context.
 - FR-2: Pipeline Replay BMAD Adapter — Extend Peloton replay harness with custom CLAUDE.md builder from BMAD source files, 2-phase mapping (dev, reviewer), story file + project-context.md context injection.
 - FR-3: Scenario Configuration — Support `--pipeline bmad` flag on `pf benchmark replay run`, store results under `bmad/run-N/` directory.
-- FR-4: BMAD Story File Translation — Translate PF scenario context into BMAD story file format using BMAD's `create-story/template.md`, OR verify axiathon context docs ARE the BMAD create-story output.
+- FR-4: BMAD Story File Translation — Translate PF scenario context into BMAD story file format using BMAD's `create-story/template.md`, OR verify consumer-project context docs ARE the BMAD create-story output.
 - FR-5: Comparison Execution and Reporting — 3+ runs per pipeline per scenario, multi-judge majority voting, detection heatmap, statistical comparison (mean, std dev, 95% CI, Cohen's d, p-value), cost comparison.
 
 ### Non-Functional Requirements
@@ -35,7 +35,7 @@ This document provides the complete epic and story breakdown for the BMAD vs Pen
 - Phase mapping asymmetry (BMAD 2-phase vs PF 3-phase) documented as known asymmetry, not a flaw
 - Same model (Opus) for all phases in both pipelines
 - BMAD source at `/Users/keithavery/Projects/BMAD-METHOD/`
-- Existing Peloton scenarios DPGD-116 and DPGD-117 in axiathon
+- Existing Peloton scenarios DPGD-116 and DPGD-117 in consumer-project
 
 ### FR Coverage Map
 
@@ -87,7 +87,7 @@ So that the comparison results are defensible under adversarial review.
 - Story file translation decisions: how PF context docs map to BMAD story file format
 **And** the ADR is saved at `docs/adr/` with sequential numbering
 
-**Given** the axiathon story context documents exist
+**Given** the consumer-project story context documents exist
 **When** context parity is analyzed
 **Then** a side-by-side appendix shows what PF's dev agent sees vs what BMAD's dev agent will see
 **And** each difference is annotated with rationale
@@ -188,7 +188,7 @@ So that no one can claim the comparison is unfair due to context differences.
 **And** context differences are categorized as: "BMAD-only content", "PF-only content", "equivalent content"
 **And** each difference has an annotated rationale (e.g., "PF includes sidecars — this is a legitimate framework advantage, not an unfair addition")
 
-**Given** the axiathon story context documents
+**Given** the consumer-project story context documents
 **When** compared against BMAD's create-story template output
 **Then** a verification note confirms whether the context docs were created from BMAD's create-story flow
 **And** any gaps or extras are documented

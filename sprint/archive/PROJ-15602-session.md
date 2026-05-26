@@ -7,7 +7,7 @@
 - **Points:** 2
 - **Repos:** pennyfarthing
 - **Phase:** finish
-- **Assigned:** keith.avery@slabgorb.io
+- **Assigned:** slabgorb@gmail.com
 
 ## Description
 pf upgrade detects node_modules/@pennyfarthing but doesn't clean up npm-era artifacts. After migration, users are left with: (1) node_modules/@pennyfarthing still present, (2) old Node commands/symlinks in .claude/commands that reference npx pennyfarthing, (3) stale .pennyfarthing/manifest.json (Node-era) alongside new init-manifest.json. Upgrade should offer to remove these artifacts (with user confirmation) and produce a clean post-migration state.

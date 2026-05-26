@@ -4,7 +4,7 @@
 - **ID:** 131-1
 - **Jira Key:** PROJ-15677
 - **Workflow:** trivial
-- **Assigned:** keith.avery@slabgorb.io
+- **Assigned:** slabgorb@gmail.com
 - **Points:** 2
 - **Priority:** P1
 

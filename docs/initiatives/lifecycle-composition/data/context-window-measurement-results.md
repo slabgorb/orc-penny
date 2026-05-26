@@ -18,7 +18,7 @@ All measurements taken following the standard procedure: clean session, load PM 
 
 ### BMAD Projects
 
-| Metric | axiathon | ccmp | peu |
+| Metric | consumer-project | ccmp | peu |
 |--------|----------|------|-----|
 | **Framework** | BMAD | BMAD | BMAD |
 | **Phase** | Pre-launch (pre-code) | ~1/8 to delivery | Mature (v2.x) |
@@ -62,7 +62,7 @@ All measurements taken following the standard procedure: clean session, load PM 
 
 | Project | Framework | Fixed Overhead | % of Effective Capacity |
 |---------|-----------|---------------|------------------------|
-| axiathon | BMAD | 23.2K | 13.9% |
+| consumer-project | BMAD | 23.2K | 13.9% |
 | ccmp | BMAD | 20.5K | 12.3% |
 | peu | BMAD | 26.1K | 15.6% |
 | poller | Pennyfarthing | 21.3K | 12.8% |
@@ -74,7 +74,7 @@ All measurements taken following the standard procedure: clean session, load PM 
 
 | Project | Framework | Epics | Stories | Project Content | Content/Story | Content/Epic |
 |---------|-----------|-------|---------|----------------|---------------|-------------|
-| axiathon | BMAD | 25 | 268 | 139.7K | 521 | 5,588 |
+| consumer-project | BMAD | 25 | 268 | 139.7K | 521 | 5,588 |
 | ccmp | BMAD | 7 | 51 | 51.8K | 1,016 | 7,400 |
 | peu | BMAD | 14 | 11 | 10.7K | 973 | 764 |
 | poller | Pennyfarthing | 1 | 20 | 72.2K | 3,610 | 72,200 |
@@ -82,7 +82,7 @@ All measurements taken following the standard procedure: clean session, load PM 
 
 **Observations:**
 
-1. **axiathon has the lowest per-story cost (521 tokens/story)** because its 268 story definitions are terse and templated. But the sheer count overwhelms the window.
+1. **consumer-project has the lowest per-story cost (521 tokens/story)** because its 268 story definitions are terse and templated. But the sheer count overwhelms the window.
 2. **poller has the highest per-story cost (3,610 tokens/story)** because it has substantial research documents (spike findings, charter) loaded alongside relatively few stories. Document depth drives context, not just count.
 3. **Content per epic varies by 94x** (764 to 72,200), confirming that raw artifact counts are poor predictors. Document density and depth matter.
 4. **The base documents (PRD + architecture) are a large fixed cost.** Even peu, with minimal stories, consumes 10.7K in project content — most of which is PRD and architecture, not stories.
@@ -91,13 +91,13 @@ All measurements taken following the standard procedure: clean session, load PM 
 
 | Project | Framework | Total Used | Effective Capacity | **Effective Utilization** | Remaining for Work | Above 100K Ceiling? |
 |---------|-----------|------------|-------------------|--------------------------|--------------------|--------------------|
-| axiathon | BMAD | 162K | 167K | **97.0%** | **5K (3.0%)** | **YES (+62K)** |
+| consumer-project | BMAD | 162K | 167K | **97.0%** | **5K (3.0%)** | **YES (+62K)** |
 | poller | Pennyfarthing | 92K | 167K | **55.1%** | 75K (44.9%) | No (-8K under) |
 | bmad-community | Pennyfarthing | 88K | 167K | **52.7%** | 79K (47.3%) | No (-12K under) |
 | ccmp | BMAD | 73K | 167K | **43.7%** | 94K (56.3%) | No (-27K under) |
 | peu | BMAD | 36K | 167K | **21.6%** | 131K (78.4%) | No (-64K under) |
 
-**Critical finding:** axiathon — a BMAD project with 25 epics and 268 stories, before a single line of code is written — consumes 97% of effective capacity just loading project state. The PM agent literally cannot do useful work. This is not a theoretical projection; it is a measured fact.
+**Critical finding:** consumer-project — a BMAD project with 25 epics and 268 stories, before a single line of code is written — consumes 97% of effective capacity just loading project state. The PM agent literally cannot do useful work. This is not a theoretical projection; it is a measured fact.
 
 ---
 
@@ -122,9 +122,9 @@ All measurements taken following the standard procedure: clean session, load PM 
 
 **But this misses the point.** In actual Pennyfarthing use, the PM never loads all 49 stories at once. Prime tiers, sprint sharding, and session extraction keep the per-session load fraction. The full-load test measures the *total project footprint*, not the *per-session footprint*. For BMAD, the full-load IS the per-session footprint — there's no selective loading.
 
-### The Scale Problem: axiathon Breaks BMAD
+### The Scale Problem: consumer-project Breaks BMAD
 
-| Metric | ccmp (BMAD, 7 epics) | axiathon (BMAD, 25 epics) | Growth Factor |
+| Metric | ccmp (BMAD, 7 epics) | consumer-project (BMAD, 25 epics) | Growth Factor |
 |--------|----------------------|--------------------------|---------------|
 | Epics | 7 | 25 | 3.6x |
 | Stories | 51 | 268 | 5.3x |
@@ -153,7 +153,7 @@ Despite different architectures (BMAD loads more built-in tools; Pennyfarthing l
 
 | Project | Framework | Memory Files |
 |---------|-----------|-------------|
-| axiathon | BMAD | 3.6K (CLAUDE.md + global) |
+| consumer-project | BMAD | 3.6K (CLAUDE.md + global) |
 | ccmp | BMAD | 0.5K (global only) |
 | peu | BMAD | 6.4K (large CLAUDE.md) |
 | poller | Pennyfarthing | 1.6K (CLAUDE.md + global) |
@@ -167,7 +167,7 @@ Memory file overhead varies by project configuration, not framework. peu's 6.4K 
 
 ### 1. The Central Organizer Cannot Function at Scale
 
-The axiathon measurement proves the core argument: a PM/SM agent that needs the full project picture — all epics, all stories, the PRD, the architecture — cannot fit it in the context window for a project of even moderate size (25 epics). This agent role exists in both BMAD and Pennyfarthing. Without selective retrieval, the central organizer hits a hard wall.
+The consumer-project measurement proves the core argument: a PM/SM agent that needs the full project picture — all epics, all stories, the PRD, the architecture — cannot fit it in the context window for a project of even moderate size (25 epics). This agent role exists in both BMAD and Pennyfarthing. Without selective retrieval, the central organizer hits a hard wall.
 
 ### 2. The Problem Is Document Volume, Not Framework Overhead
 
@@ -189,7 +189,7 @@ These are not enhancements. They are architectural prerequisites for continued o
 
 ### 5. The Performance Ceiling Makes the Problem Worse Than It Looks
 
-Research shows LLM performance degrades at ~50% of context window capacity [@an_etal_2024; @hsieh_etal_2024]. For a 200K window, the effective performance ceiling is ~100K. Three of five tested projects (axiathon, poller, bmad-community) are at or near this ceiling at session start — before any work begins. The agent is already impaired before it writes a line of code or makes a planning decision.
+Research shows LLM performance degrades at ~50% of context window capacity [@an_etal_2024; @hsieh_etal_2024]. For a 200K window, the effective performance ceiling is ~100K. Three of five tested projects (consumer-project, poller, bmad-community) are at or near this ceiling at session start — before any work begins. The agent is already impaired before it writes a line of code or makes a planning decision.
 
 ---
 
@@ -222,7 +222,7 @@ Show what makes up the context for each project — fixed overhead vs project co
 | ccmp (B) | 21 | 52 | 95 | 33 |
 | bmad-comm (P) | 21 | 67 | 78 | 33 |
 | poller (P) | 21 | 72 | 74 | 33 |
-| axiathon (B) | 23 | 140 | 4 | 33 |
+| consumer-project (B) | 23 | 140 | 4 | 33 |
 
 **Key message:** Fixed overhead is roughly constant; project content is what drives the budget collapse.
 
@@ -239,7 +239,7 @@ Simple bar chart showing % of effective capacity (167K) consumed before work beg
 **Y-axis:** % of effective capacity
 **Bars:** [22, 44, 53, 55, 97]
 **Line:** 60% (performance ceiling as % of effective = 100K/167K)
-**Caption:** "Percentage of effective context capacity consumed before any implementation work. The 60% line marks the performance ceiling (100K of 167K effective tokens). axiathon is at 97% — the agent cannot function."
+**Caption:** "Percentage of effective context capacity consumed before any implementation work. The 60% line marks the performance ceiling (100K of 167K effective tokens). consumer-project is at 97% — the agent cannot function."
 
 ### Chart 5 (REPLACE existing team-size chart): Team Size Projection
 

@@ -6,7 +6,7 @@
 **Repos:** pennyfarthing
 **Workflow:** tdd
 **Phase:** finish
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 **Sprint:** 2606
 
 ---

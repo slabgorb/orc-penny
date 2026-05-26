@@ -6,7 +6,7 @@
 **Workflow:** tdd
 **Phase:** finish
 **Points:** 3
-**Assignee:** keith.avery@slabgorb.io
+**Assignee:** slabgorb@gmail.com
 
 ## Story Context
 

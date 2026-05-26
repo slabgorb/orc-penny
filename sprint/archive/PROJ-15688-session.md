@@ -4,7 +4,7 @@
 - **ID:** 130-3
 - **Jira Key:** PROJ-15688
 - **Workflow:** tdd
-- **Assignee:** keith.avery@slabgorb.io
+- **Assignee:** slabgorb@gmail.com
 
 ## Workflow Tracking
 **Workflow:** tdd

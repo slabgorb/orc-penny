@@ -10,7 +10,7 @@
 - **Description:** BikeRack panels (the standalone panel viewer mode in Cyclist) are not saving state properly. We need to add a mechanism for panel state persistence. BikeRack is the standalone panel viewer — key files: `packages/cyclist/src/bikerack.ts` (entry), `BikeRackWorkspace.tsx` (layout), `StandalonePanel.tsx` (routing).
 - **Repos:** pennyfarthing
 - **Branch:** chore/td-3-bikerack-panel-state
-- **Assigned:** keith.avery@slabgorb.io
+- **Assigned:** slabgorb@gmail.com
 
 ## Workflow Tracking
 **Workflow:** trivial

@@ -9,7 +9,7 @@
 - **Epic:** 134 (Impact Summary & Boss-Readable PR)
 - **Repos:** pennyfarthing
 - **Type:** feature
-- **Assigned to:** keith.avery@slabgorb.io
+- **Assigned to:** slabgorb@gmail.com
 
 ## Workflow Tracking
 **Workflow:** tdd

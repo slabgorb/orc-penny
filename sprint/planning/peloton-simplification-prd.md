@@ -185,7 +185,7 @@ Make pipeline replay benchmarks reliable, self-documenting, and debuggable so we
 ```yaml
 # New optional field — backward compatible
 roots:
-  repo: ../axiathon       # relative to scenario file, not --project-dir
+  repo: ../consumer-project       # relative to scenario file, not --project-dir
   context: ../             # defaults to --project-dir
 ```
 

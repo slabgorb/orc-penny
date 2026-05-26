@@ -8,7 +8,7 @@
 **Phase:** approved
 **Branch:** feature/PROJ-14455-deprecated-detection-caller-xref
 **Repos:** pennyfarthing
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ## Description
 

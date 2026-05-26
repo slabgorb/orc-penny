@@ -1,8 +1,8 @@
-# Axiathon Context Verification Note
+# Consumer Project Context Verification Note
 
 **Story:** 142-4 (Context Parity Verification)
 **Date:** 2026-03-10
-**Purpose:** Verify that axiathon story context documents match BMAD's create-story template output, confirming context parity between pipelines.
+**Purpose:** Verify that consumer-project story context documents match BMAD's create-story template output, confirming context parity between pipelines.
 
 ## BMAD Create-Story Template Structure
 
@@ -49,20 +49,20 @@ PF context documents use this structure:
 | `## Dev Agent Record` | *Not applicable* | **Neutral** | BMAD-specific bookkeeping section populated during execution. PF uses session file + Dev Assessment instead. |
 | `## File List` | *Not applicable* | **Neutral** | BMAD-specific tracking. PF relies on git for file tracking. |
 
-## Verification: Were Axiathon Context Docs Created from BMAD's Create-Story Flow?
+## Verification: Were Consumer Project Context Docs Created from BMAD's Create-Story Flow?
 
 ### Finding: **Yes — confirmed**
 
-The axiathon scenario context documents (used in DPGD-116, DPGD-117) were created using BMAD's create-story planning workflow. Evidence:
+The consumer-project scenario context documents (used in DPGD-116, DPGD-117) were created using BMAD's create-story planning workflow. Evidence:
 
 1. **PRD states explicitly** (from `sprint/planning/bmad-comparison-prd.md`, Context Parity Analysis section):
-   > "The axiathon story context docs were created directly from BMAD's create-story flow."
+   > "The consumer-project story context docs were created directly from BMAD's create-story flow."
 
 2. **Epic context confirms** (from `sprint/context/context-epic-142.md`, Key Fairness Decisions):
-   > "Context parity: The axiathon story context docs were created from BMAD's create-story flow. Combining PF's epic + story context gives equivalent input to BMAD's story file."
+   > "Context parity: The consumer-project story context docs were created from BMAD's create-story flow. Combining PF's epic + story context gives equivalent input to BMAD's story file."
 
 3. **ADR-0035 documents** (Appendix A, Story File Translation section):
-   > "BMAD's dev workflow expects a story file in a specific format (from create-story/template.md). The axiathon scenario context documents were created from BMAD's planning workflow, so translation is minimal."
+   > "BMAD's dev workflow expects a story file in a specific format (from create-story/template.md). The consumer-project scenario context documents were created from BMAD's planning workflow, so translation is minimal."
 
 4. **Structural alignment**: The `translate_story_file()` function in `bmad_adapter.py` performs only lightweight reformatting (prose → user story format, section name mapping) rather than substantive content transformation, confirming the source content is already equivalent.
 
@@ -86,7 +86,7 @@ The axiathon scenario context documents (used in DPGD-116, DPGD-117) were create
 
 ## Conclusion
 
-**Context is already controlled.** The axiathon story context documents were created from BMAD's create-story flow. The `translate_story_file()` function performs minimal reformatting to map PF's context structure back to BMAD's template format. Combining epic + story context gives equivalent or slightly richer input than BMAD's story file.
+**Context is already controlled.** The consumer-project story context documents were created from BMAD's create-story flow. The `translate_story_file()` function performs minimal reformatting to map PF's context structure back to BMAD's template format. Combining epic + story context gives equivalent or slightly richer input than BMAD's story file.
 
 The single intentional gap (empty Tasks/Subtasks) is documented in ADR-0035 with rationale. All other differences are structural (section naming, metadata) rather than substantive.
 

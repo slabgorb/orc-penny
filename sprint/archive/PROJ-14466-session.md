@@ -7,7 +7,7 @@
 **Repos:** pennyfarthing
 **Branch:** feat/83-1-python-complexity-module
 **Points:** 2
-**Assignee:** keith.avery@slabgorb.io
+**Assignee:** slabgorb@gmail.com
 
 ## Acceptance Criteria
 

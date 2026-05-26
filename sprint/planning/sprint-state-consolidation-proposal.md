@@ -172,8 +172,8 @@ sprints:
     session_root: ../spike-ocsf-rs1/.session/
     repos: [spike-ocsf-rs1]
     created: '2026-02-10'
-    owner: michael.pursifull@slabgorb.io    # Who initiated the focus
-    participants: [michael.pursifull]         # Who's currently focused here
+    owner: dev@example.com    # Who initiated the focus
+    participants: [dev]         # Who's currently focused here
     status: active                            # active | completed | abandoned
     parent_epic: PROJ-15200                  # Links back to orchestrator planning
 ```

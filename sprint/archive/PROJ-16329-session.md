@@ -14,7 +14,7 @@ This story executes the baseline comparison runs that drive the entire BMAD vs P
 
 Story 142-5 focuses on the execution phase: running DPGD-116 and DPGD-117 through both the BMAD and Pennyfarthing dev pipelines, with multiple runs per pipeline per scenario and multi-judge scoring for each run. The output is a set of scored results that become the foundation for the comparative analysis report in story 142-6.
 
-The baseline runs represent the critical data-collection milestone. Management approved BMAD as the framework, but the team has encountered limitations in its dev loop. These runs will provide quantitative evidence to support or refute the case for Pennyfarthing adoption. Fairness is paramount: both pipelines run the same scenarios, are scored by the same judge, and their results are measured against the same ground truth (the axiathon findings for DPGD-116 and DPGD-117).
+The baseline runs represent the critical data-collection milestone. Management approved BMAD as the framework, but the team has encountered limitations in its dev loop. These runs will provide quantitative evidence to support or refute the case for Pennyfarthing adoption. Fairness is paramount: both pipelines run the same scenarios, are scored by the same judge, and their results are measured against the same ground truth (the consumer-project findings for DPGD-116 and DPGD-117).
 
 ## Acceptance Criteria
 
@@ -43,8 +43,8 @@ Story 142-5 depends on:
 ### Baseline Run Scope
 
 **Scenarios:**
-- DPGD-116: Existing axiathon scenario with ground truth findings
-- DPGD-117: Existing axiathon scenario with ground truth findings
+- DPGD-116: Existing consumer-project scenario with ground truth findings
+- DPGD-117: Existing consumer-project scenario with ground truth findings
 
 **Runs per scenario per pipeline:** 3+ (minimum 6 per scenario, 12+ total)
 - BMAD pipeline on DPGD-116: 3 runs

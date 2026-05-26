@@ -6,7 +6,7 @@
 **Phase:** finish
 **Repos:** pennyfarthing
 **Branch:** feature/126-6-frontmatter-hooks-agents-skills
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ## Acceptance Criteria
 - All agent .md files have frontmatter hooks for their lifecycle

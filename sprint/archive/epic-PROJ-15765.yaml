@@ -13,7 +13,7 @@ stories:
     points: 2
     priority: p1
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-26'
     workflow: trivial
     completed: '2026-02-26'
@@ -25,7 +25,7 @@ stories:
     points: 2
     priority: p2
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-27'
     workflow: tdd
     completed: '2026-02-27'
@@ -36,7 +36,7 @@ stories:
     points: 1
     priority: p2
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-27'
     workflow: trivial
     completed: '2026-02-27'
@@ -48,7 +48,7 @@ stories:
     points: 3
     priority: p2
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-27'
     workflow: tdd
     completed: '2026-02-27'
@@ -59,7 +59,7 @@ stories:
     points: 2
     priority: p0
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-27'
     workflow: trivial
     completed: '2026-02-27'

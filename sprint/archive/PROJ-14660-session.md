@@ -8,7 +8,7 @@
 **PR:** #788 - feat(94-1): extend usePersona hook with streaming state
 **Repos:** pennyfarthing
 **Branch:** feat/PROJ-14660-persona-streaming-state
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ---
 

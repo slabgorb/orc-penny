@@ -14,7 +14,7 @@ stories:
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-10'
     completed: '2026-02-10'
   - id: 97-2

@@ -7,7 +7,7 @@
 **Phase:** finish
 **Repos:** pennyfarthing
 **Branch:** feature/PROJ-15424-replace-ts-sprint-data-with-sprintcontext
-**Assignee:** keith.avery@slabgorb.io
+**Assignee:** slabgorb@gmail.com
 
 ## Acceptance Criteria
 - sprint-data.ts uses SprintContext (via subprocess or shared logic)

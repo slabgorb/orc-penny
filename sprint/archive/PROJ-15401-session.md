@@ -7,7 +7,7 @@
 **Phase:** sm
 **Repos:** pennyfarthing
 **Branch:** fix-npm-path-resolution
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ---
 

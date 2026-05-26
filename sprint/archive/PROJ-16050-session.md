@@ -7,7 +7,7 @@
 - **Points:** 2
 - **Priority:** p2
 - **Workflow:** tdd (SM → TEA → Dev → Reviewer → SM)
-- **Assigned to:** keith.avery@slabgorb.io
+- **Assigned to:** slabgorb@gmail.com
 
 ## Context
 This story unifies guidance from Stories 136-19 (Context7 API) and 136-20 (Perplexity MCP) into a single Research Tools section in the agent-coordination guide. After those stories land independently, this story consolidates their contributions into a coherent decision framework with:

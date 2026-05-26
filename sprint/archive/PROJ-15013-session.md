@@ -7,7 +7,7 @@
 **Phase:** finish
 **Repos:** orchestrator, pennyfarthing
 **Branch:** feature/108-1-migrate-gates-to-files
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ---
 

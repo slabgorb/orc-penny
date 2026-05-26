@@ -9,7 +9,7 @@
 - **Priority:** P2
 - **Type:** chore
 - **Repos:** pennyfarthing
-- **Assigned To:** keith.avery@slabgorb.io
+- **Assigned To:** slabgorb@gmail.com
 - **Started:** 2026-02-25
 
 ## Workflow Tracking

@@ -6,7 +6,7 @@
 - **Points:** 3
 - **Workflow:** tdd (SM → TEA → Dev → Reviewer → SM)
 - **Branch:** feature/123-3-add-pf-release-deprecate-command
-- **Assignee:** keith.avery@slabgorb.io
+- **Assignee:** slabgorb@gmail.com
 - **Repos:** pennyfarthing
 
 ## Context

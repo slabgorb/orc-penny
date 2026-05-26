@@ -1,7 +1,7 @@
 # Pipeline Replay Scenario: DPGD-116 — Story 6.1 CLI Framework & Structure
 #
 # Ground truth: 7 findings (1 critical + 6 important) from external review
-# that the original TDD pipeline missed. Pipeline APPROVED, then Zious11
+# that the original TDD pipeline missed. Pipeline APPROVED, then external reviewer
 # found issues in PR #51. All fixed in re-review.
 #
 # 3-point story — lighter than dpgd-117 (5pt). Faster Dev phase.
@@ -18,7 +18,7 @@ story_id: "6-1"
 jira: DPGD-116
 
 repo:
-  path: axiathon
+  path: consumer-project
   base_commit: f6bdd2cf3106f624e8622853989bd0e93043552b
   branch: feature/story-6.1-cli-framework-structure
 
@@ -40,7 +40,7 @@ ground_truth:
         weight: 8
         category: security
         phase_ideal: dev
-        files: [crates/axiathon-client/src/config.rs]
+        files: [crates/consumer-project-client/src/config.rs]
         description: >
           Self::from_file(path).unwrap_or_default() catches every error type —
           permission denied, TOML parse errors, disk I/O, encoding errors — and
@@ -55,7 +55,7 @@ ground_truth:
         weight: 5
         category: security
         phase_ideal: reviewer
-        files: [crates/axiathon-client/src/main.rs, crates/axiathon-client/src/error.rs]
+        files: [crates/consumer-project-client/src/main.rs, crates/consumer-project-client/src/error.rs]
         description: >
           eprintln!("error: {e}") prints Display impl directly to stderr.
           Io(#[error(transparent)]) forwards full OS error details. Internal
@@ -68,11 +68,11 @@ ground_truth:
         weight: 5
         category: security
         phase_ideal: tea
-        files: [crates/axiathon-client/src/client.rs]
+        files: [crates/consumer-project-client/src/client.rs]
         description: >
-          set_tenant_id accepts any string including CRLF. axiathon-core provides
+          set_tenant_id accepts any string including CRLF. consumer-project-core provides
           validated TenantId but it's unused. Bypasses type-safe tenant isolation.
-          Should use Option<TenantId> from axiathon-core.
+          Should use Option<TenantId> from consumer-project-core.
 
       - id: I3
         title: "Dependencies use direct version strings instead of workspace = true"
@@ -80,7 +80,7 @@ ground_truth:
         weight: 3
         category: build
         phase_ideal: dev
-        files: [crates/axiathon-client/Cargo.toml]
+        files: [crates/consumer-project-client/Cargo.toml]
         description: >
           6 deps (clap_complete, comfy-table, csv, dirs, reqwest, toml) use direct
           versions despite being in [workspace.dependencies]. Causes version drift
@@ -92,7 +92,7 @@ ground_truth:
         weight: 5
         category: security
         phase_ideal: reviewer
-        files: [crates/axiathon-client/src/config.rs]
+        files: [crates/consumer-project-client/src/config.rs]
         description: >
           Serde silently ignores unknown fields. A user putting token = "sk-secret..."
           in config believes they're authenticated when they're not, with their secret
@@ -104,7 +104,7 @@ ground_truth:
         weight: 5
         category: testing
         phase_ideal: tea
-        files: [crates/axiathon-client/tests/config_loading.rs]
+        files: [crates/consumer-project-client/tests/config_loading.rs]
         description: >
           assert!(config.server().is_none() || ...) — first branch always true,
           OR always passes. Should be assert_eq!(config.server(), None).
@@ -115,7 +115,7 @@ ground_truth:
         weight: 5
         category: testing
         phase_ideal: tea
-        files: [crates/axiathon-client/tests/config_loading.rs]
+        files: [crates/consumer-project-client/tests/config_loading.rs]
         description: >
           let _ = config; — test has no assertions on return value. Should add
           assert_eq! checks for server() and token() on the default config.
@@ -134,8 +134,8 @@ phase_prompts:
     Your task is the RED phase of TDD:
     1. Read the epic and story context in this project's CLAUDE.md
     2. Design and write comprehensive failing tests for the CLI framework
-    3. Tests go in crates/axiathon-client/tests/
-    4. Run `cargo test -p axiathon-client` to verify tests fail (RED state)
+    3. Tests go in crates/consumer-project-client/tests/
+    4. Run `cargo test -p consumer-project-client` to verify tests fail (RED state)
 
     Cover all acceptance criteria:
     - Top-level command groups (query, rules, alerts, ingest, config, status, tenant, login, completion, init)
@@ -145,7 +145,7 @@ phase_prompts:
     - Global flags (-v, --quiet, --server with AXIATHON_SERVER env var)
     - Clap derive macros (declarative only)
     - SiemClient HTTP wrapper with tenant/auth headers
-    - Config file loading from ~/.config/axiathon/cli.toml
+    - Config file loading from ~/.config/consumer-project/cli.toml
     - Shell completion generation (bash/zsh/fish/powershell)
     - Stub handlers printing "not yet implemented"
 
@@ -158,10 +158,10 @@ phase_prompts:
 
     Your task is the GREEN phase of TDD:
     1. Read the epic and story context in this project's CLAUDE.md
-    2. Review the tests already written in crates/axiathon-client/tests/
-    3. Implement production code in crates/axiathon-client/src/ to make ALL tests pass
-    4. Run `cargo test -p axiathon-client` to verify all tests pass
-    5. Run `cargo clippy -p axiathon-client` to check for lint issues
+    2. Review the tests already written in crates/consumer-project-client/tests/
+    3. Implement production code in crates/consumer-project-client/src/ to make ALL tests pass
+    4. Run `cargo test -p consumer-project-client` to verify all tests pass
+    5. Run `cargo clippy -p consumer-project-client` to check for lint issues
 
     Key implementation details:
     - Clap 4.x with derive macros only

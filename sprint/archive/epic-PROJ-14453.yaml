@@ -43,7 +43,7 @@ stories:
     repos: pennyfarthing
     jira: PROJ-14456
     completed: '2026-02-08'
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
 id: epic-80
 title: Code Markers Tool (TODOs, FIXMEs, Deprecations)
 jira: PROJ-14453

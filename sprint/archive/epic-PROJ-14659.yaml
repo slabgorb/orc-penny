@@ -13,7 +13,7 @@ stories:
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-10'
     completed: '2026-02-10'
   - id: 94-2
@@ -32,7 +32,7 @@ stories:
     workflow: tdd
     acceptance_criteria: []
     started: '2026-02-10'
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     completed: '2026-02-10'
 id: epic-94
 jira: PROJ-14659

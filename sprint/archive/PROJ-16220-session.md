@@ -7,7 +7,7 @@
 **Branch:** feature/PROJ-16220-reference-anchors-judge-prompts
 **Workflow:** tdd
 **Phase:** finish
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ## Acceptance Criteria
 

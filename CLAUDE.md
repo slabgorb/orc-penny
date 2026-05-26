@@ -123,9 +123,6 @@ Workflow definitions live in `pennyfarthing/pennyfarthing-dist/workflows/*.yaml`
 | Person | GitHub | Role |
 |--------|--------|------|
 | Keith Avery | slabgorb | Developer (user) |
-| Jared | zious11 | Immediate boss, external reviewer |
-| Josh | drbothen | Jared's boss |
-| Michael | arcaven | Collaborator |
 </info>
 
 <context>

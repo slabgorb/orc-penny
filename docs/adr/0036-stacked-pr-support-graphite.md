@@ -38,8 +38,8 @@ Standard repos are unaffected — `pr_strategy: standard` remains the default.
 
 ```yaml
 repos:
-  axiathon:
-    path: axiathon
+  consumer-project:
+    path: consumer-project
     type: platform
     pr_strategy: stacked        # "standard" (default) or "stacked"
     stack_tool: graphite         # Tool managing the stack (only "graphite" supported)

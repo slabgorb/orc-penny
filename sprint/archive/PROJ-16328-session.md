@@ -25,9 +25,9 @@ The verification happens after 142-3 (Pipeline Replay BMAD Adapter) is complete 
 **And** context differences are categorized as: "BMAD-only content", "PF-only content", "equivalent content"
 **And** each difference has an annotated rationale (e.g., "PF includes sidecars — this is a legitimate framework advantage, not an unfair addition")
 
-### AC2: Axiathon Context Verification
+### AC2: Consumer Project Context Verification
 
-**Given** the axiathon story context documents
+**Given** the consumer-project story context documents
 **When** compared against BMAD's create-story template output
 **Then** a verification note confirms whether the context docs were created from BMAD's create-story flow
 **And** any gaps or extras are documented
@@ -51,10 +51,10 @@ The verification happens after 142-3 (Pipeline Replay BMAD Adapter) is complete 
    - **Equivalent**: Epic context, story AC, technical notes, project-context.md (these should be substantively similar)
    - Add rationale for why each difference exists and whether it biases results
 
-3. **Verify axiathon context source**:
-   - Reference the axiathon context documents at `sprint/context/context-epic-142.md` and `sprint/context/context-story-142-*.md`
+3. **Verify consumer-project context source**:
+   - Reference the consumer-project context documents at `sprint/context/context-epic-142.md` and `sprint/context/context-story-142-*.md`
    - Document whether these docs match BMAD's `create-story/template.md` structure
-   - Resolution (from epic context): "The axiathon story context docs were created directly from BMAD's create-story flow. Combining epic + story context gives equivalent or slightly richer input than BMAD's story file. **Context is already controlled.** The variable under test is the agent instructions and self-checking workflow, not context preparation."
+   - Resolution (from epic context): "The consumer-project story context docs were created directly from BMAD's create-story flow. Combining epic + story context gives equivalent or slightly richer input than BMAD's story file. **Context is already controlled.** The variable under test is the agent instructions and self-checking workflow, not context preparation."
 
 4. **Create verification artifacts**:
    - **Diff document**: Side-by-side CLAUDE.md comparison with annotations
@@ -73,7 +73,7 @@ The verification happens after 142-3 (Pipeline Replay BMAD Adapter) is complete 
 - [ ] CLAUDE.md files extracted from both BMAD and PF pipeline runs on same scenario
 - [ ] Diff document created with categories (BMAD-only, PF-only, equivalent)
 - [ ] Each difference annotated with rationale and fairness justification
-- [ ] Axiathon context docs verified against BMAD create-story template
+- [ ] Consumer Project context docs verified against BMAD create-story template
 - [ ] Verification note confirms or documents gaps in context parity
 - [ ] Artifacts committed to `sprint/context/` directory
 - [ ] Story marked complete; 142-5 unblocked for baseline runs
@@ -90,14 +90,14 @@ The verification happens after 142-3 (Pipeline Replay BMAD Adapter) is complete 
 **Implementation Complete:** Yes
 **Files Changed:**
 - `sprint/context/142-4-claude-md-comparison-diff.md` — Annotated CLAUDE.md comparison showing BMAD vs PF dev agent context, categorized as equivalent (8), equivalent mechanism (6), BMAD-only (5), PF-only (8), intentional difference (3)
-- `sprint/context/142-4-axiathon-context-verification.md` — Verification that axiathon context docs were created from BMAD's create-story flow, with gap/extra analysis
+- `sprint/context/142-4-consumer-project-context-verification.md` — Verification that consumer-project context docs were created from BMAD's create-story flow, with gap/extra analysis
 
 **Tests:** N/A (documentation-only story, no code changes)
 **Branch:** main (no feature branch needed — orchestrator repo, trivial workflow)
 
 **AC1 (CLAUDE.md Comparison Diff):** Complete. Section-by-section comparison of BMAD and PF dev agent CLAUDE.md content with categorization and fairness rationale. Based on adapter templates (deterministic output, no randomization). Conclusion: context is controlled, differences are the variables under test.
 
-**AC2 (Axiathon Context Verification):** Complete. Confirmed axiathon context docs were created from BMAD's create-story flow (evidenced by PRD, epic context, and ADR-0035). One intentional gap (empty Tasks/Subtasks per ADR-0035). No unfair advantages.
+**AC2 (Consumer Project Context Verification):** Complete. Confirmed consumer-project context docs were created from BMAD's create-story flow (evidenced by PRD, epic context, and ADR-0035). One intentional gap (empty Tasks/Subtasks per ADR-0035). No unfair advantages.
 
 **Handoff:** To reviewer
 
@@ -108,7 +108,7 @@ The verification happens after 142-3 (Pipeline Replay BMAD Adapter) is complete 
 **Observations:**
 1. [VERIFIED] `build_bmad_dev_claude_md()` at `bmad_adapter.py:83` and `translate_story_file()` at `bmad_adapter.py:173` exist — references are not fabricated.
 2. [VERIFIED] ADR-0035 quote (line 144) and PRD quote (line 105) match cited text verbatim.
-3. [VERIFIED] Both artifacts delivered: comparison diff (142 lines, 30 categorized items) and axiathon verification (95 lines, 4-point evidence chain).
+3. [VERIFIED] Both artifacts delivered: comparison diff (142 lines, 30 categorized items) and consumer-project verification (95 lines, 4-point evidence chain).
 4. [VERIFIED] AC1 and AC2 fully satisfied. Categories (equivalent/BMAD-only/PF-only/intentional difference) are well-defined with rationale.
 5. [LOW] Methodology adapts AC1's "Given a completed run" to template-based comparison — acceptable since builders are deterministic and deviation is documented.
 
@@ -131,4 +131,4 @@ The verification happens after 142-3 (Pipeline Replay BMAD Adapter) is complete 
 
 ## SM Assessment
 
-Story 142-4 is a 1-point trivial verification task. Context parity between BMAD and PF pipelines must be documented before baseline runs (142-5) can proceed. Dependencies are met — 142-3 (BMAD adapter) is complete. The Dev agent should extract CLAUDE.md files from both pipeline runs, produce a categorized diff document, verify axiathon context sources, and commit artifacts to `sprint/context/`. No implementation code — documentation and analysis only.
+Story 142-4 is a 1-point trivial verification task. Context parity between BMAD and PF pipelines must be documented before baseline runs (142-5) can proceed. Dependencies are met — 142-3 (BMAD adapter) is complete. The Dev agent should extract CLAUDE.md files from both pipeline runs, produce a categorized diff document, verify consumer-project context sources, and commit artifacts to `sprint/context/`. No implementation code — documentation and analysis only.

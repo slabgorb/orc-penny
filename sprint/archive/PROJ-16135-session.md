@@ -6,7 +6,7 @@
 - **Title:** Convert Throw to Result Objects in Scripts and Generators
 - **Points:** 3
 - **Epic:** PROJ-16127 (Tech Debt Audit)
-- **Assignee:** keith.avery@slabgorb.io
+- **Assignee:** slabgorb@gmail.com
 
 ## Acceptance Criteria
 1. scripts/generate-report.ts returns result objects instead of throwing

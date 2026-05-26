@@ -199,16 +199,16 @@ Bobbie joins the team. She generates an SSH keypair and sends her public key to 
 
 Drummer opens the BikeShop ShowRoom on a Wednesday morning. The ShowRoom header shows the shop status: 7 BikeRacks connected, 2 ShopOwners present (Drummer and Amos), 2 active BikeShows, 0 pending BikeShopPass requests. Below the header, the ShowRoom lists the two active BikeShows as cards:
 
-- **Axiathon** — 3 connected sessions (Holden, Naomi, Alex). Created by Drummer yesterday for the hackathon push.
+- **Consumer Project** — 3 connected sessions (Holden, Naomi, Alex). Created by Drummer yesterday for the hackathon push.
 - **ProductX Sprint 49** — 4 connected sessions (Bobbie, Amos, Clarissa, Prax). The ongoing sprint work.
 
-Drummer taps into the Axiathon BikeShow.
+Drummer taps into the Consumer Project BikeShow.
 
 The view opens to a three-column layout — one column per developer. Each column is a session card showing, top to bottom:
 
 **Identity block:** The persona portrait centered at the top — Holden's White Rabbit, Naomi's Granny Weatherwax, Alex's Ponder Stibbons. Below each portrait, the developer's name and the active agent role.
 
-**Work context:** Story number, sprint, repo, and branch. Holden is on `HACK-042` in `axiathon-repo` on `feature/hack-042-realtime-feed`, branch created 6 hours ago. Naomi is on `HACK-043`, same repo, `feature/hack-043-auth-layer`. Alex is on `HACK-041`, different repo (`axiathon-shared`), `feature/hack-041-schema`.
+**Work context:** Story number, sprint, repo, and branch. Holden is on `HACK-042` in `consumer-project-repo` on `feature/hack-042-realtime-feed`, branch created 6 hours ago. Naomi is on `HACK-043`, same repo, `feature/hack-043-auth-layer`. Alex is on `HACK-041`, different repo (`consumer-project-shared`), `feature/hack-041-schema`.
 
 **Context window:** A gauge showing current context usage — Holden at 62%, Naomi at 34%, Alex at 78%. Below each gauge, a sparkline showing context trend over the last hour. Holden's line is climbing steadily. Alex's shows a sawtooth — he's had two compactions already, recovering each time to ~20% before climbing again. Naomi's is flat and low; she compacts proactively.
 

@@ -8,7 +8,7 @@
 **Phase:** approved
 **Branch:** feature/PROJ-14472-per-dimension-drill-through
 **Repos:** pennyfarthing
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ---
 ## Description

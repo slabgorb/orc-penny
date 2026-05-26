@@ -6,7 +6,7 @@
 - **Workflow:** trivial
 - **Points:** 2
 - **Priority:** p1
-- **Assigned:** keith.avery@slabgorb.io
+- **Assigned:** slabgorb@gmail.com
 
 ## Story Description
 ~30 string references to pennyfarthing init and npx pennyfarthing remain after init.ts removal in 126-9. Users hitting these error paths are told to run a command that no longer exists. ACs: All pennyfarthing init refs updated to pf setup. All npx pennyfarthing refs updated to pf. No user-facing message references a nonexistent command.

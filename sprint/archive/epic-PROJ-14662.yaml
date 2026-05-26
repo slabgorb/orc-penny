@@ -35,7 +35,7 @@ stories:
     points: 2
     priority: P1
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     repos: pennyfarthing
     completed: '2026-02-15'
   - id: "90-3"
@@ -50,7 +50,7 @@ stories:
     points: 1
     priority: P1
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     repos: pennyfarthing
     completed: '2026-02-15'
 completed: '2026-02-15'

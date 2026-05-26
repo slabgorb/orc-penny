@@ -12,7 +12,7 @@ stories:
     points: 5
     priority: P1
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-12'
     workflow: tdd
     completed: '2026-02-12'
@@ -22,7 +22,7 @@ stories:
     points: 3
     priority: P1
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     workflow: tdd
     completed: '2026-02-12'
   - id: 102-3
@@ -52,7 +52,7 @@ stories:
     points: 2
     priority: P1
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     workflow: tdd
     completed: '2026-02-12'
     type: feature

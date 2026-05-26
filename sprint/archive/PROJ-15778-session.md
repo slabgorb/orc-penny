@@ -11,7 +11,7 @@ repos: "pennyfarthing"
 workflow: "tdd"
 phase: setup
 branch: "feat/134-2-boss-readable-pr-body"
-assigned_to: "keith.avery@slabgorb.io"
+assigned_to: "slabgorb@gmail.com"
 date_started: "2026-02-27"
 ---
 

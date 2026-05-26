@@ -7,7 +7,7 @@ phase: setup
 repos: pennyfarthing
 branch: feat/133-1-delivery-findings-session-template
 sprint: TO Sprint 2608
-assignee: keith.avery@slabgorb.io
+assignee: slabgorb@gmail.com
 ---
 
 # Story 133-1: Add Delivery Findings section to session template

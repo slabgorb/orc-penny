@@ -84,8 +84,8 @@ sprints:
 
     # NEW FIELDS (this story)
     created: '2026-02-10'                          # When the focus started
-    owner: michael.pursifull@slabgorb.io          # Who initiated the focus
-    participants: [michael.pursifull]              # Who's currently focused here
+    owner: dev@example.com          # Who initiated the focus
+    participants: [dev]              # Who's currently focused here
     status: active                                 # active | completed | abandoned
     parent_epic: PROJ-15200                       # Links back to orchestrator planning
 ```

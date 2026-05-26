@@ -10,7 +10,7 @@
 **Tandem:** ux-designer (file-watch)
 **Repos:** pennyfarthing
 **Branch:** feature/100-3-style-acpanel-tufte
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ## Context
 

@@ -5,7 +5,7 @@
 **Phase:** finish
 **Repos:** pennyfarthing
 **Branch:** feat/PROJ-16130-audit-unexported-hooks
-**Assignee:** keith.avery@slabgorb.io
+**Assignee:** slabgorb@gmail.com
 
 ## Summary
 Audit the hooks directory — 33 hook files but only 13 exported from index.ts. Delete dead code (useMessageStream, usePlanModeExit), export all remaining active hooks, and add an audit test to prevent regression.

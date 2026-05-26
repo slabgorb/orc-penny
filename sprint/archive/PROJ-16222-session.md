@@ -8,7 +8,7 @@
 **Branch:** feature/43-1-red-herrings-schema
 **Workflow:** tdd
 **Phase:** finish
-**Assigned:** keith.avery@slabgorb.io
+**Assigned:** slabgorb@gmail.com
 
 ## Acceptance Criteria
 

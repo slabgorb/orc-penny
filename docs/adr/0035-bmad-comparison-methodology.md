@@ -68,7 +68,7 @@ BMAD and Pennyfarthing structure their dev loops differently. This is a legitima
 | Variable | Value | Rationale |
 |----------|-------|-----------|
 | Model | Claude Opus (same version) for all phases, both pipelines | Eliminates model capability as a confound |
-| Scenarios | DPGD-116, DPGD-117 (existing axiathon scenarios) | Pre-existing ground truth, tested infrastructure |
+| Scenarios | DPGD-116, DPGD-117 (existing consumer-project scenarios) | Pre-existing ground truth, tested infrastructure |
 | Judge | Same Peloton judge prompt and scoring rubric | Eliminates judge variation |
 | Ground truth | Same findings list per scenario | Single source of truth for what the pipeline should catch |
 | Runs per pipeline | 3+ per scenario (6+ per scenario total) | Statistical significance with majority voting |
@@ -141,7 +141,7 @@ The BMAD simulator builds a CLAUDE.md by injecting source files verbatim. No Pen
 
 ### Story File Translation
 
-BMAD's dev workflow expects a story file in a specific format (from `create-story/template.md`). The axiathon scenario context documents were created from BMAD's planning workflow, so translation is minimal.
+BMAD's dev workflow expects a story file in a specific format (from `create-story/template.md`). The consumer-project scenario context documents were created from BMAD's planning workflow, so translation is minimal.
 
 **BMAD story file sections → PF context mapping:**
 

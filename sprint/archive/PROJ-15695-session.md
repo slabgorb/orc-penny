@@ -4,7 +4,7 @@
 - **ID:** 129-6
 - **Jira:** PROJ-15695
 - **Workflow:** tdd
-- **Assigned to:** keith.avery@slabgorb.io
+- **Assigned to:** slabgorb@gmail.com
 
 ## Description
 Detect when a project's Claude Code hooks are outdated compared to what the current pennyfarthing version ships, and prompt the user to upgrade.

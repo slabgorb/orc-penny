@@ -14,7 +14,7 @@ stories:
     points: 3
     priority: p1
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-21'
     workflow: tdd
     completed: '2026-02-21'
@@ -26,7 +26,7 @@ stories:
     points: 2
     priority: p2
     status: canceled
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     workflow: trivial
   - id: 120-3
     jira: PROJ-15399
@@ -35,7 +35,7 @@ stories:
     points: 3
     priority: p1
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     workflow: trivial
     completed: '2026-02-22'
     review_verdict: approved
@@ -49,7 +49,7 @@ stories:
     refs:
       - github: slabgorb/pennyfarthing#1020
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     workflow: trivial
     completed: '2026-02-21'
     type: bug
@@ -64,7 +64,7 @@ stories:
     refs:
       - github: slabgorb/pennyfarthing#1024
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     workflow: tdd
     completed: '2026-02-21'
     type: bug
@@ -80,7 +80,7 @@ stories:
     refs:
       - github: slabgorb/pennyfarthing#1028
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: ''
     workflow: tdd
     completed: '2026-02-21'
@@ -93,7 +93,7 @@ stories:
     points: 2
     priority: p2
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-21'
     workflow: trivial
     completed: '2026-02-21'
@@ -104,7 +104,7 @@ stories:
     points: 3
     priority: p2
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-21'
     workflow: bdd
     completed: '2026-02-21'
@@ -115,7 +115,7 @@ stories:
     points: 1
     priority: p1
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-22'
     workflow: trivial
     completed: '2026-02-22'
@@ -141,7 +141,7 @@ stories:
     points: 3
     priority: p1
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     workflow: tdd
     completed: '2026-02-22'
     review_verdict: approved
@@ -151,7 +151,7 @@ stories:
     points: 2
     priority: p1
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-21'
     workflow: tdd
     completed: '2026-02-21'
@@ -170,7 +170,7 @@ stories:
     points: 1
     priority: p1
     status: done
-    assigned_to: keith.avery@slabgorb.io
+    assigned_to: slabgorb@gmail.com
     started: '2026-02-22'
     workflow: trivial
     completed: '2026-02-22'
