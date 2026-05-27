@@ -1,9 +1,15 @@
 # ADR-0034: Post-Migration Architecture — Python Runtime with React GUI
 
-**Status:** Accepted
+**Status:** Superseded by [ADR-0039](0039-react-gui-removal-python-only.md)
 **Date:** 2026-03-09
 **Author:** Architect Agent (Paul Atreides)
 **Context:** ADR-0022 (Python WheelHub) implemented, ADR-0028 (Python-First Install) accepted
+
+> **Superseded (2026-03-11):** The React presentation layer this ADR documents was
+> removed entirely two days after acceptance — see
+> [ADR-0039: React GUI Removal](0039-react-gui-removal-python-only.md). The
+> "React layer" sections below describe a state that no longer exists; they are
+> retained as the historical record of the intermediate two-layer architecture.
 
 ## Context
 

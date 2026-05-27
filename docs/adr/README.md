@@ -68,7 +68,8 @@ What becomes easier or more difficult because of this change?
 | [0031](./0031-session-feedback-system.md) | Session Feedback System | Accepted | 2026-02-25 |
 | [0032](./0032-stepped-workflow-switch-gate-output-tags.md) | Stepped Workflow Switch/Gate Output Tags | Accepted | 2026-02-26 |
 | [0033](./0033-multi-repo-worktree-safety.md) | Multi-Repo Worktree Safety | Accepted | 2026-02-28 |
-| [0034](./0034-post-migration-architecture.md) | Post-Migration Architecture — Python Runtime with React GUI | Accepted | 2026-03-09 |
+| [0034](./0034-post-migration-architecture.md) | Post-Migration Architecture — Python Runtime with React GUI | Superseded by 0039 | 2026-03-09 |
+| [0039](./0039-react-gui-removal-python-only.md) | React GUI Removal — Python-Only Architecture | Accepted | 2026-03-11 |
 
 ## Creating a New ADR
 
