@@ -13,6 +13,24 @@ just claude       # launches Claude Code with OTEL pre-configured
 
 Prerequisites: Node 18+, [pnpm](https://pnpm.io/) 9+, Python 3.11+, [just](https://github.com/casey/just), [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI, Git SSH access to `slabgorb`.
 
+## Benchmark Dashboard
+
+Interactive D3.js visualization of pipeline-replay benchmark results — how the
+agent pipeline (TEA → Dev → Reviewer) performs across themes, with per-finding
+catch rates, phase attribution, and pipeline-version comparisons.
+
+[![Benchmark dashboard](benchmark-dashboard-final.png)](internal/results/benchmark-dashboard.html)
+
+The dashboard is self-contained — open it straight from the repo, no build step:
+
+```bash
+open internal/results/benchmark-dashboard.html
+```
+
+Or serve it (avoids `file://` quirks): `cd internal/results && python3 -m http.server 8765`, then visit `http://localhost:8765/benchmark-dashboard.html`.
+
+> Data is embedded in the HTML. `scripts/benchmark-viz-data.py` regenerates it from a `internal/results/pipeline-replay/` tree, which is not checked in.
+
 ## What's in this repo
 
 | Directory | Purpose |
@@ -27,17 +45,6 @@ Prerequisites: Node 18+, [pnpm](https://pnpm.io/) 9+, Python 3.11+, [just](https
 ## Two repos
 
 This workspace contains two git repos. The orchestrator (`orc-penny/`) is trunk-based on `main` — sprint files, sessions, docs. The framework (`pennyfarthing/`) uses gitflow on `develop` — source code, packages, tests. Orchestrator commits stay here; framework commits go into `pennyfarthing/`.
-
-## Benchmark Dashboard
-
-Pipeline replay benchmark results with interactive D3.js visualization:
-
-```bash
-python3 scripts/benchmark-viz-data.py   # regenerate data
-open internal/results/benchmark-dashboard.html
-```
-
-Or serve it: `cd internal/results && python3 -m http.server 8765` then visit `http://localhost:8765/benchmark-dashboard.html`
 
 ## Learn more
 

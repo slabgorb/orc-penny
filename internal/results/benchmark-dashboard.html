@@ -1511,6 +1511,13 @@ loadData().then(data => {
     document.body.innerHTML = '<p style="color:#ff5252;padding:40px">Failed to load data. Serve via HTTP: <code>python3 -m http.server</code> from internal/results/</p>';
     return;
   }
+  // Scenarios hidden from all views. Data is retained in the embedded JSON /
+  // companion file — these only render empty (null aggregate mean), so they
+  // are excluded here rather than deleted. Remove an id to surface it again.
+  const HIDDEN_SCENARIOS = ['dpgd-114', 'dpgd-117'];
+  if (data.scenarios) {
+    HIDDEN_SCENARIOS.forEach(id => delete data.scenarios[id]);
+  }
   DATA = data;
   buildFilters();
   renderAll();
