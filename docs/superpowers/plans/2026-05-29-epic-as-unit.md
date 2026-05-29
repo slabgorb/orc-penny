@@ -4,7 +4,7 @@
 
 **Goal:** Wire superpowers plans into the Pennyfarthing epic/story ledger so one plan Task = one PF story, materialized via `pf epic from-plan` and closed via `pf sprint story complete`.
 
-**Architecture:** Three new Python modules in the `pf.sprint` package (`repo_map`, `plan_parser`, `epic_from_plan`, `story_complete`) plus two small edits to existing files (`story_add` gains a `refs` param + a `superpowers` workflow choice; the `epic`/`story` CLI groups register the new verbs). The plan markdown stays the source of truth; the epic YAML is generated through the existing `add_story` path. A final task repurposes the `pf-epic` command doc into the conductor.
+**Architecture:** Three new Python modules in the `pf.sprint` package (`repo_map`, `plan_parser`, `epic_from_plan`, `story_complete`) plus small edits to existing files (`story_add` gains a `plan_ref` param + a `superpowers` workflow choice, `yaml_io` adds `plan_ref` to the key order; the `epic`/`story` CLI groups register the new verbs). The plan markdown stays the source of truth; the epic YAML is generated through the existing `add_story` path. A final task repurposes the `pf-epic` command doc into the conductor.
 
 **Tech Stack:** Python 3.14, Click (CLI), ruamel.yaml (`CommentedMap`), pytest. Framework source lives in the inlined `pennyfarthing/` repo (gitflow, base branch `develop`).
 
@@ -39,7 +39,8 @@ All paths below are relative to the `pennyfarthing/` repo root.
 | `pennyfarthing-dist/src/pf/sprint/plan_parser.py` | Parse a superpowers plan markdown → list of `PlanTask` | new |
 | `pennyfarthing-dist/src/pf/sprint/epic_from_plan.py` | Generate epic stories from a plan + annotate the plan with closing steps; CLI verb | new |
 | `pennyfarthing-dist/src/pf/sprint/story_complete.py` | Flip story → done + check the plan box; CLI verb | new |
-| `pennyfarthing-dist/src/pf/sprint/story_add.py` | Add optional `refs` param; add `superpowers` to workflow Choice | modify |
+| `pennyfarthing-dist/src/pf/sprint/story_add.py` | Add optional `plan_ref` param; add `superpowers` to workflow Choice | modify |
+| `pennyfarthing-dist/src/pf/sprint/yaml_io.py` | Add `plan_ref` to `STORY_KEY_ORDER` (after `refs`) | modify |
 | `pennyfarthing-dist/src/pf/epic/cli.py` | Register `from-plan` on the `epic` group | modify |
 | `pennyfarthing-dist/src/pf/sprint/cli.py` | Register `complete` on the `story` group | modify |
 | `pennyfarthing-dist/commands/pf-epic.md` | Repurpose into the conductor doc | modify |
@@ -289,12 +290,21 @@ def parse_plan(text: str) -> list[PlanTask]:
 
     A Task block runs from its ``### Task N:`` header until the next ``### ``
     or ``## `` header (or EOF). File paths come from ``- Create:``/``- Modify:``/
-    ``- Test:`` bullets; any ``:line-range`` suffix is stripped.
+    ``- Test:`` bullets; any ``:line-range`` suffix is stripped. Lines inside fenced
+    code blocks (``` or ~~~) are ignored, so example task headers in code samples are
+    not mistaken for real tasks.
     """
     tasks: list[PlanTask] = []
     current: PlanTask | None = None
+    in_fence = False
 
     for line in text.splitlines():
+        stripped = line.lstrip()
+        if stripped.startswith("```") or stripped.startswith("~~~"):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
         m = _TASK_RE.match(line)
         if m:
             current = PlanTask(number=int(m.group(1)), title=m.group(2))
@@ -307,7 +317,7 @@ def parse_plan(text: str) -> list[PlanTask]:
         if current is not None:
             fm = _FILE_RE.match(line)
             if fm:
-                path = fm.group(1).split(":")[0].strip()
+                path = fm.group(1).split(":")[0].strip()  # strip optional :line-range suffix
                 if path and path not in current.files:
                     current.files.append(path)
 
@@ -329,7 +339,9 @@ git commit -m "feat(sprint): add plan_parser for superpowers plan tasks"
 
 ---
 
-### Task 3: `add_story` gains a `refs` param + `superpowers` workflow choice
+### Task 3: `add_story` gains a `plan_ref` param + `superpowers` workflow choice
+
+> **Note:** Use a distinct `plan_ref` string field — do NOT reuse `refs`, which is an existing list-of-objects field (e.g. `refs: [{github: ...}]`). Add `plan_ref` to `STORY_KEY_ORDER` in `yaml_io.py` (after `refs`).
 
 **Files:**
 - Modify: `pennyfarthing-dist/src/pf/sprint/story_add.py`
@@ -363,29 +375,29 @@ def _write_sprint(tmp_path: Path) -> Path:
     return sprint_file
 
 
-def test_add_story_persists_refs_and_superpowers_workflow(tmp_path):
+def test_add_story_persists_plan_ref_and_superpowers_workflow(tmp_path):
     sprint_file = _write_sprint(tmp_path)
     res = add_story(
         sprint_file, "99", "Build the thing", 1,
         workflow="superpowers", repos="ui,server",
-        refs="plan:docs/superpowers/plans/p.md#task-1",
+        plan_ref="plan:docs/superpowers/plans/p.md#task-1",
     )
     assert res["success"], res
     saved = yaml.safe_load(sprint_file.read_text())
     story = saved["epics"][0]["stories"][0]
     assert story["workflow"] == "superpowers"
     assert story["repos"] == "ui,server"
-    assert story["refs"] == "plan:docs/superpowers/plans/p.md#task-1"
+    assert story["plan_ref"] == "plan:docs/superpowers/plans/p.md#task-1"
 ```
 
 - [ ] **Step 2: Run test to verify it fails**
 
 Run: `cd /Users/slabgorb/Projects/orc-penny/pennyfarthing/pennyfarthing-dist && uv run pytest src/pf/tests/test_story_add_refs.py -v`
-Expected: FAIL — `TypeError: add_story() got an unexpected keyword argument 'refs'`
+Expected: FAIL — `TypeError: add_story() got an unexpected keyword argument 'plan_ref'`
 
-- [ ] **Step 3a: Add the `refs` parameter to `add_story`**
+- [ ] **Step 3a: Add the `plan_ref` parameter to `add_story` + key order**
 
-In `pennyfarthing-dist/src/pf/sprint/story_add.py`, change the `add_story` signature (the keyword-only block) to include `refs` and populate it into the `fields` dict.
+In `pennyfarthing-dist/src/pf/sprint/story_add.py`, change the `add_story` signature (the keyword-only block) to include `plan_ref` and populate it into the `fields` dict. Also add `"plan_ref"` to `STORY_KEY_ORDER` in `pennyfarthing-dist/src/pf/sprint/yaml_io.py`, immediately after `"refs"`.
 
 Find the signature:
 ```python
@@ -404,7 +416,7 @@ def add_story(
 ) -> dict[str, Any]:
 ```
 
-Add `refs`:
+Add `plan_ref`:
 ```python
 def add_story(
     sprint_path: Path,
@@ -418,7 +430,7 @@ def add_story(
     jira: str | None = None,
     repos: str | None = None,
     depends_on: str | None = None,
-    refs: str | None = None,
+    plan_ref: str | None = None,
 ) -> dict[str, Any]:
 ```
 
@@ -434,7 +446,7 @@ Find the optional-fields block:
         fields["type"] = story_type
 ```
 
-Add the `refs` assignment (note: `refs` is already in `STORY_KEY_ORDER`, so it lands in canonical position):
+Add the `plan_ref` assignment (after adding `"plan_ref"` to `STORY_KEY_ORDER`, it lands in canonical position):
 ```python
     if jira is not None:
         fields["jira"] = jira
@@ -444,8 +456,8 @@ Add the `refs` assignment (note: `refs` is already in `STORY_KEY_ORDER`, so it l
         fields["depends_on"] = depends_on
     if story_type is not None:
         fields["type"] = story_type
-    if refs is not None:
-        fields["refs"] = refs
+    if plan_ref is not None:
+        fields["plan_ref"] = plan_ref
 ```
 
 - [ ] **Step 3b: Add `superpowers` to the CLI workflow choice**
@@ -539,7 +551,7 @@ def test_creates_one_story_per_task(tmp_path):
     stories = saved["epics"][0]["stories"]
     assert [s["title"] for s in stories] == ["Add the widget", "Wire the widget"]
     assert all(s["workflow"] == "superpowers" for s in stories)
-    assert stories[0]["refs"] == "plan:plan.md#task-1"
+    assert stories[0]["plan_ref"] == "plan:plan.md#task-1"
 
 
 def test_annotates_plan_with_closing_step(tmp_path):
@@ -622,7 +634,7 @@ def _rel_plan(plan_path: Path, root: Path) -> str:
 
 def _story_with_ref(epic: dict[str, Any], ref: str) -> dict[str, Any] | None:
     for s in epic.get("stories", []) or []:
-        if isinstance(s, dict) and s.get("refs") == ref:
+        if isinstance(s, dict) and s.get("plan_ref") == ref:
             return s
     return None
 
@@ -703,7 +715,8 @@ def epic_from_plan(
 
         res = add_story(
             sprint_path, epic_id, task.title, default_points,
-            workflow="superpowers", repos=repos_str, refs=ref,
+            workflow="superpowers", repos=repos_str, plan_ref=ref,
+            priority="p1",
         )
         if not res.get("success"):
             return {"success": False, "error": f"Task {task.number}: {res.get('error')}"}
@@ -855,12 +868,12 @@ import yaml
 from pf.sprint.story_complete import complete_story
 
 
-def _sprint_with_story(tmp_path: Path, refs: str | None) -> Path:
+def _sprint_with_story(tmp_path: Path, plan_ref: str | None) -> Path:
     sprint_file = tmp_path / "current-sprint.yaml"
     story = {"id": "99-1", "title": "Do it", "points": 1,
              "status": "in_progress", "workflow": "superpowers"}
-    if refs:
-        story["refs"] = refs
+    if plan_ref:
+        story["plan_ref"] = plan_ref
     data = {
         "sprint": {"name": "T", "number": 1, "status": "active",
                    "start_date": "2026-01-01", "end_date": "2026-01-14", "goal": "g"},
@@ -872,7 +885,7 @@ def _sprint_with_story(tmp_path: Path, refs: str | None) -> Path:
 
 
 def test_flips_status_to_done(tmp_path):
-    sprint_file = _sprint_with_story(tmp_path, refs=None)
+    sprint_file = _sprint_with_story(tmp_path, plan_ref=None)
     res = complete_story(sprint_file, "99-1", project_root=tmp_path)
     assert res["success"], res
     saved = yaml.safe_load(sprint_file.read_text())
@@ -889,7 +902,7 @@ def test_checks_plan_box_when_ref_present(tmp_path):
         "- [ ] Step 1\n\n"
         "- [ ] **Story 99-1 complete** — run `pf sprint story complete 99-1`\n"
     )
-    sprint_file = _sprint_with_story(tmp_path, refs="plan:plan.md#task-1")
+    sprint_file = _sprint_with_story(tmp_path, plan_ref="plan:plan.md#task-1")
     res = complete_story(sprint_file, "99-1", project_root=tmp_path)
     assert res["success"]
     assert res["plan_checked"] is True
@@ -899,7 +912,7 @@ def test_checks_plan_box_when_ref_present(tmp_path):
 
 
 def test_missing_story_returns_error(tmp_path):
-    sprint_file = _sprint_with_story(tmp_path, refs=None)
+    sprint_file = _sprint_with_story(tmp_path, plan_ref=None)
     res = complete_story(sprint_file, "99-404", project_root=tmp_path)
     assert not res["success"]
 ```
@@ -930,7 +943,9 @@ from pf.sprint.yaml_io import read_sprint
 
 def _check_complete_box(plan_file: Path, story_id: str, *, dry_run: bool) -> bool:
     """Flip the `- [ ]` -> `- [x]` on the line invoking complete for this story."""
-    needle = f"pf sprint story complete {story_id}"
+    # Anchored on the bold marker, not the command, to avoid id-prefix
+    # collisions (e.g. "99-1" being a substring of "99-10").
+    needle = f"**Story {story_id} complete**"
     lines = plan_file.read_text().splitlines()
     for i, ln in enumerate(lines):
         if needle in ln and "- [ ]" in ln:
@@ -962,7 +977,7 @@ def complete_story(
 
     plan_checked = False
     if story:
-        ref = story.get("refs")
+        ref = story.get("plan_ref")
         if isinstance(ref, str) and ref.startswith("plan:"):
             rel = ref[len("plan:"):].split("#", 1)[0]
             root = Path(project_root) if project_root else get_project_root()
@@ -1181,7 +1196,7 @@ Expected: reports the number of stories it would create.
 
 **Out-of-scope items confirmed absent:** no per-task agent dispatch, no two-way sync, no historical-plan retrofit, no migration tooling.
 
-**Type consistency:** `add_story(..., refs=...)`, `epic_from_plan(...) -> {created, skipped}`,
+**Type consistency:** `add_story(..., plan_ref=...)`, `epic_from_plan(...) -> {created, skipped}`,
 `complete_story(...) -> {plan_checked}`, `map_path_to_repo(file_path, repos)`,
 `PlanTask.anchor == "task-N"`, ref format `plan:<relpath>#task-N` — used identically in
 producer (Task 4) and consumer (Task 6).
