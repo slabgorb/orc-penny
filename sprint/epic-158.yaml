@@ -1,0 +1,48 @@
+id: '158'
+type: epic
+title: Session/handoff/agent-start robustness
+description: 'Agent activation, session files, and handoff protocol crash or corrupt state on edge cases. Issues #63, #53, #61, #49, #48.'
+priority: p1
+status: backlog
+repos: pennyfarthing
+stories:
+  - id: 158-1
+    title: 'pf agent start crashes with stack trace when .session symlink target is missing (gh #63)'
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 158-2
+    title: 'testing-runner clobbers the live workflow session file (gh #53)'
+    points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 158-3
+    title: 'complete-phase setup→red passes without context files; RED then hard-blocks (gh #61)'
+    points: 3
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 158-4
+    title: 'SM handoff exit protocol: undocumented required args + missing Sm Assessment precondition (gh #49)'
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 158-5
+    title: "pf sprint story claim fails on Jira-less projects with cryptic 'assigned to unknown' (gh #48)"
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug

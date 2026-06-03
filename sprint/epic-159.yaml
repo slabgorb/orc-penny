@@ -1,0 +1,32 @@
+id: '159'
+type: epic
+title: Smaller standalone fixes
+description: 'Independent small fixes: theme dict-data, SM TodoWrite ban review, tmux conf loading. Issues #34, #46, #32.'
+priority: p3
+status: backlog
+repos: pennyfarthing
+stories:
+  - id: 159-1
+    title: 'theme_characters: accept dict-shaped agent_data, not just character name (gh #34)'
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 159-2
+    title: 'SM agent: reconsider TodoWrite ban (or document the reasoning) (gh #46)'
+    points: 1
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: chore
+  - id: 159-3
+    title: "tmux bare-server auto-start doesn't load project tmux.conf (gh #32)"
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug

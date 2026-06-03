@@ -1,0 +1,46 @@
+id: '157'
+type: epic
+title: Plugin-consumer init & config paths
+description: 'pf init and config tooling misbehave in plugin-consumer repos: double-dispatch, path mismatch, unregistered skills/agents. Issues #51, #62, #35, #36, #37.'
+priority: p2
+status: backlog
+repos: pennyfarthing
+stories:
+  - id: 157-1
+    title: 'pf init double-dispatches in plugin-consumer repos (copies + re-registers) (gh #51)'
+    points: 3
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 157-2
+    title: 'config path mismatch: CLI writes hashed dir, doctor reads .pennyfarthing/config.local.yaml (gh #62)'
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 157-3
+    title: 'pf init: mirror agents-local/*.md into .claude/agents/ for native subagent dispatch (gh #35)'
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 157-4
+    title: 'Skill template at templates/skills/pf-{name}.md not registered as Claude Code skill (gh #36)'
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 157-5
+    title: 'pf agent doctor: detect misplaced custom agents and flat sidecars (gh #37)'
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd

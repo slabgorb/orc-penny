@@ -1,0 +1,40 @@
+id: '155'
+type: epic
+title: Finish/merge/archive truthfulness
+description: "Finish flow silently lies about 'done' state: marks stories done while PRs stay open, creates wrong branches, and writes broken archive YAML. Issues #71/#60, #15, #28, #16."
+priority: p1
+status: backlog
+repos: pennyfarthing
+stories:
+  - id: 155-1
+    title: 'Finish flow marks story done while PR stays open — merge_pr no-op (gh #71/#60)'
+    points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 155-2
+    title: 'Finish creates feat/ branch on orchestrator, breaking main-only topology (gh #15)'
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 155-3
+    title: 'Archive looks for sprint-unknown-*.yaml not sprint-{number}-*.yaml (gh #28)'
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 155-4
+    title: 'Completed YAML writes empty epic field instead of actual epic ID (gh #16)'
+    points: 1
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug

@@ -10,6 +10,11 @@ sprint:
 epics:
   - '153'
   - '154'
+  - '155'
+  - '156'
+  - '157'
+  - '158'
+  - '159'
 stories: []
 standalone_stories:
   - id: PROJ-16066
