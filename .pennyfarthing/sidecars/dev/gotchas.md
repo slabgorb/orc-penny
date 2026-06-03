@@ -1,5 +1,13 @@
 # Dev Agent Gotchas
 
+<gotcha name="cdn-blocks-python-urllib-ua" severity="high">
+The portraits CDN (`portraits.darkatelier.org`, Cloudflare) returns **403 Forbidden** to the default `Python-urllib/x.y` User-Agent — `curl` works because it sends its own UA. Any HTTP client hitting this CDN MUST set an explicit `User-Agent` header on EVERY request (manifest AND pack). `urllib.request.urlretrieve` can't carry headers — use `urlopen(Request(url, headers={"User-Agent": ...}))` + `shutil.copyfileobj`. Story 154-1: 38 mock-only tests were green while the feature was 100% broken against the real bucket; only `pf portraits fetch <theme>` against live R2 caught it. **When a feature talks to real external infra, smoke-test against the real endpoint before claiming GREEN — mocks model your assumptions, not the server's rules.**
+</gotcha>
+
+<gotcha name="local-portraits-shadow-cdn">
+`resolve_portrait_path` priority: `~/.pennyfarthing/portraits/` override → local theme dirs (`themes_dir.parent/portraits/{theme}`) → R2 CDN cache (`~/.local/share/pennyfarthing/portraits/{theme}`, lazy `ensure_portraits`) → legacy LFS/cyclist. In dogfood repos that bundle portraits locally (e.g. discworld in the orchestrator), local wins and the CDN branch never runs — that's correct. To exercise the CDN path, test a theme NOT bundled locally (e.g. neuromancer).
+</gotcha>
+
 <gotcha name="install">
 Install from GitHub: `npm install github:slabgorb/pennyfarthing`. Not published to npm. `npm link` won't work.
 </gotcha>

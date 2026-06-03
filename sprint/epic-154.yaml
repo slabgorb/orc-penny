@@ -10,6 +10,16 @@ stories:
     title: Implement portrait_cdn module with SHA256-verified theme packs and local cache
     points: 8
     priority: p3
+    status: done
+    started: '2026-06-03'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-06-03'
+  - id: 154-2
+    title: 'portrait_cdn hardening: path-traversal in clean()/ensure_portraits, manifest SSRF + KeyError guards, py3.11 filter, test isolation (Reviewer C1-C8)'
+    points: 5
+    priority: p1
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    type: bug

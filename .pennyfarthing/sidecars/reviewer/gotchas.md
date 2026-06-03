@@ -24,6 +24,14 @@ When ACs say "automatically" or "on [event]", verify the trigger is wired to the
 When `createManifest()` is called in update flows, it creates a FRESH manifest without preserving accumulated state fields. Trace what fields the old manifest carries and verify they survive the write-read-write cycle. Any field added to Manifest interface must also be preserved across `createManifest()` calls.
 </gotcha>
 
+<gotcha name="drop-in-reference-module-security-debt" severity="high">
+When a story adopts a "drop-in" reference module pasted into an issue/spec, audit it for security debt the spec author skipped — mock-heavy tests and "it works live" verification both pass while CWE-class bugs slip through. Story 154-1's #17 reference module shipped: arbitrary-dir deletion via unsanitized `theme` in `clean()`→`rmtree` (CWE-22), `theme` path-traversal into cache paths, SSRF via trusting `manifest['base_url']` for the download URL (CWE-918), and unguarded dict keys that broke its own "never raises" contract. Always: sanitize any external string used in a `Path` join or URL; never trust a downloaded manifest's URLs (build from a hardcoded base); `tarfile filter="data"` is necessary-not-sufficient (it guards members, not the destination dir, and TypeErrors on Python <3.11.4).
+</gotcha>
+
+<gotcha name="test-claims-no-network-but-falls-through" severity="high">
+A fixture docstring saying "no network — sentinel pre-seeded" only holds for tests that seed the sentinel. The "returns None when nothing cached" sibling test deliberately omits the sentinel, so a lazy `ensure_portraits()` inside the resolver falls through to a real `urlopen`. Check each test's setup individually against the lazy-download path — don't trust the fixture's blanket claim.
+</gotcha>
+
 <gotcha name="deletion-story-test-diffs" severity="medium">
 When a story removes or absorbs a package, verify source→destination symbol parity by comparing original barrel exports with migrated barrel exports line-by-line. Glob may fail on symlinked directories — fall back to `ls` for verification.
 </gotcha>
