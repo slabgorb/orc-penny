@@ -141,3 +141,22 @@ stories:
       - Missing/old manifest copies (existing behavior preserved)
       - Manifest records source_fingerprint
       - Unit tests cover all three guard branches (currently _install_portraits is only mocked, never run)
+  - id: 153-11
+    title: pf doctor doesn't verify the project-local .pennyfarthing/bin/pf shim — stays green while every 'just pf' recipe and the statusline hook are broken
+    description: |-
+      Surfaced in oq-2 (2026-06-03): `just pf launch frame` failed with "/Users/slabgorb/Projects/oq-2/.pennyfarthing/bin/pf: No such file or directory". The project-local shim (.pennyfarthing/bin/pf, written by pf init via write_shim in init/core.py:409) was absent — gitignored (.gitignore:51) so never committed; a git clean or a clone that never ran init leaves it gone. Every `just pf *` recipe (justfile.pf) and the Claude statusline hook (init/core.py:34,885 → ".pennyfarthing/bin/pf hooks statusline") depend on it.
+
+      The blind spot: `pf doctor` checks python_install = "pf CLI found on PATH" (the GLOBAL binary) but never the project shim, so doctor reported "All checks passed" while every just-pf recipe and the statusline were broken. Doctor is the first thing a confused downstream user runs; it must catch this.
+
+      Fix: add a doctor check (e.g. project_shim) that verifies .pennyfarthing/bin/pf exists, is executable, and successfully execs (pf --version via the shim). On failure, emit a clear remediation pointing at `pf init` (which is idempotent and regenerates the shim). Audit of all local consumers found oq-1/2/3/4, orc-penny, words, cards-lib, thecat, slabgorb.github.io healthy; only oq-2 (now hand-fixed) and the dormant python-sidequest reference repo were missing it.
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria:
+      - pf doctor adds a check that verifies .pennyfarthing/bin/pf exists, is executable, and execs successfully (pf --version through the shim)
+      - When the shim is missing/broken/stale, doctor FAILS (non-green) with remediation pointing at `pf init`
+      - When the shim is present and working, the check passes; idempotent with existing doctor output
+      - 'Regression test covers all three states: missing, present-but-not-executable, and present-and-working'
+    type: bug
