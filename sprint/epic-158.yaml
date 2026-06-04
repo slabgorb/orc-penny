@@ -10,10 +10,13 @@ stories:
     title: 'pf agent start crashes with stack trace when .session symlink target is missing (gh #63)'
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-06-04'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-04'
     type: bug
+    review_verdict: approved
   - id: 158-2
     title: 'testing-runner clobbers the live workflow session file (gh #53)'
     points: 3
