@@ -35,3 +35,7 @@ A fixture docstring saying "no network — sentinel pre-seeded" only holds for t
 <gotcha name="deletion-story-test-diffs" severity="medium">
 When a story removes or absorbs a package, verify source→destination symbol parity by comparing original barrel exports with migrated barrel exports line-by-line. Glob may fail on symlinked directories — fall back to `ls` for verification.
 </gotcha>
+
+<gotcha name="false-green-guard-string-not-returncode" severity="high">
+A test that runs another test runner in a subprocess and tries to prevent a false green by string-matching stdout (e.g. `assert "no tests ran" not in result.stdout`) is almost always vacuous — VERIFY the actual output/exit codes before trusting it. Empirically (story 153-9): pytest prints `"N deselected"` and exits **5** when `-k` matches nothing, exits **4** on collection/import error, and exits **0** only when tests actually ran and passed — it never prints "no tests ran" for the deselection case. So the only robust liveness check is `assert result.returncode == 0` (plus optionally `"passed" in stdout`). When a meta-test's whole job is to keep a regression alive, a guard that can't detect "zero tests ran" is a blocking defect, not a nit — the regression can silently stop guarding on a rename or broken import.
+</gotcha>

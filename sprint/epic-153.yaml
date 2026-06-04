@@ -118,7 +118,8 @@ stories:
     description: "Running the full pytest suite (`pytest pennyfarthing-dist/src/pf/tests/`) silently switches the live working tree onto a stale branch named 'feature/test'. Root cause: test_git_utils.py exercises git_utils.create_or_checkout_branch / create_feature_branches with branch 'feature/test'; despite isolated temp_git_repo / sample_repos (tmp_path) fixtures, a checkout leaks onto the process cwd (the real repo). The leaked branch predates recent work (e.g. loader.py without find_story_in_data), breaking imports and cascading bogus failures across unrelated modules. Discovered during 153-3, where it corrupted the branch mid-implementation twice; full incident account in sprint/archive/153-3-session.md (Dev Incident section). Fix: pin every git operation in the helper to the explicitly-passed repo path (never fall back to cwd), and add a regression test asserting the helper never mutates the outer/live repository's checked-out branch."
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-06-04'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
@@ -126,7 +127,10 @@ stories:
       - create_or_checkout_branch and create_feature_branches pin all git subprocess calls to the passed repo path; none rely on process cwd
       - A regression test asserts the helper does not change the branch of a repository other than the one explicitly passed in
       - The git_utils tests run hermetically against tmp_path fixtures only, with no side effects on the surrounding repository
+    completed: '2026-06-04'
     type: bug
+    review_findings: "Rework merged in PR #87; all 5 rejection findings addressed (returncode==0 liveness gate, _make_repo git-checked + develop assert, subprocess timeout, AST-based static guard, partial-failure outcome assertions). Re-review skipped per author."
+    review_verdict: approved
   - id: 153-10
     title: Refresh XDG portrait cache on content change, not just pf version bump
     description: "Re-rendering or resizing portraits within the same pf version never propagates to consumer projects. _install_portraits (init/core.py:1158) skips the copy whenever manifest.pf_version == __version__, so the shared cache at ~/.local/share/pennyfarthing/portraits/ goes stale until manually mirrored (rsync). Any co-* project symlinked to that cache shows stale/blank portraits. Root cause: freshness is keyed on the version string, but portrait content changes independently of version (renders, resizes, restyles all land without a bump). Fix: add a cheap stat-only source fingerprint (sha256 over sorted '{relpath}\\t{size}' for *.png under the source; optionally include mtime_ns to catch same-size re-renders) to the manifest, and re-copy when EITHER pf_version OR source_fingerprint differs. Add a pf init --force-portraits escape hatch and consider surfacing staleness in pf health-check. Note: _install_portraits is currently only mocked in tests (test_init_custom_agents.py:456), never exercised."

@@ -71,3 +71,7 @@ The `testing-runner` subagent has only Bash/Read/Glob/Grep tools — but Bash le
 <gotcha name="get-project-root-env-first" severity="high">
 `pf.common.config.get_project_root()` resolves `PROJECT_ROOT`/`CLAUDE_PROJECT_DIR` env vars BEFORE walking up from cwd. In the agent session these point at the real orchestrator, so tests relying on `monkeypatch.chdir(tmp)` to pick up a tmp `.pennyfarthing/repos.yaml` silently resolve the WRONG root. Give such functions an explicit `project_root` param and pass it in tests — don't rely on cwd.
 </gotcha>
+
+<gotcha name="static-guard-trips-on-comments">
+A static-lint-style test that does a naive whole-file substring match (e.g. `assert 'Path(".")' not in file.read_text()`) trips on the token appearing in a *comment or docstring*, not just in code. When making such a guard pass, reword your comments to avoid the literal token rather than weakening the test — gaming the guard is wrong, and the comment isn't the anti-pattern it's hunting. Cost a verification cycle in 153-9 GREEN.
+</gotcha>

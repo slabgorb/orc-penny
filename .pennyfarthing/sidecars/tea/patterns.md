@@ -40,3 +40,11 @@ Verify RED with a single-file scoped run, never the full suite (full suite leaks
 <pattern name="gate-admonition">
 Frame all mandatory steps as blocking admonitions, never suggestions. Use "Do not proceed with [next action] until [condition]" — not "you MUST", "please check", or "you should". Models treat suggestions as optional under pressure; admonitions define a precondition that blocks progression.
 </pattern>
+
+<pattern name="suite-side-effect-meta-test">
+When the bug is a test *leaking* a side effect onto the real repo/filesystem (not a source defect), the source-level fix is often already in place — verify it first. The faithful RED test then has to observe the offending test's behavior, so write a **meta-test**: spawn `sys.executable -m pytest <abs path to offending file> -k <selector> -q` in a `subprocess` with `cwd=` and `PROJECT_ROOT=` pinned to a `tmp_path` sandbox repo (mimic enough of the real layout — e.g. a `develop` branch and a `.pennyfarthing/` marker — that the leak path actually fires), then assert the sandbox is unchanged (e.g. branch still `main`). Guard against false-green by asserting the inner run actually executed ("no tests ran" not in stdout). RED now / green once the offending test uses `tmp_path`. Pair it with a cheap **static guard** (`assert 'Path(".")' not in offending_file.read_text()`). Drives a test-hygiene fix WITHOUT forcing a spurious source guard. Story 153-9.
+</pattern>
+
+<pattern name="ac-already-satisfied">
+Before writing RED tests, check whether the literal ACs already hold in source — if AC says "pin git calls to passed path / none rely on cwd" and every call already passes `cwd=path`, an AC-literal test is green-on-arrival and won't drive the fix. Reframe to the property that is actually broken (here: suite hermeticity), and log the gap as a Design Deviation so the Reviewer/Dev know the AC wording trails the real root cause. Story 153-9: real leak was `test_git_utils.py` feeding `Path(".")` (the live repo) into `create_feature_branches`; `should_create_branch(None)` is permissive for unknown repos, so a real checkout ran on cwd.
+</pattern>
