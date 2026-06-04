@@ -10,10 +10,13 @@ stories:
     title: 'Finish flow marks story done while PR stays open — merge_pr no-op (gh #71/#60)'
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-06-04'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-04'
     type: bug
+    review_verdict: approved
   - id: 155-2
     title: 'Finish creates feat/ branch on orchestrator, breaking main-only topology (gh #15)'
     points: 2

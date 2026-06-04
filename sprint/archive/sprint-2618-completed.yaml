@@ -14,6 +14,7 @@ completed_epics:
   - PROJ-16551
   - '152'
   - '154'
+  - '156'
 completed_stories:
   - id: 47-1
     epic: PROJ-16293
@@ -164,4 +165,29 @@ completed_stories:
     epic: '154'
     title: 'portrait_cdn hardening: path-traversal in clean()/ensure_portraits, manifest SSRF + KeyError guards, py3.11 filter, test isolation (Reviewer C1-C8)'
     points: 5
+    completed: '2026-06-04'
+  - id: 156-1
+    epic: '156'
+    title: 'story update fails for stories in epic-*.yaml shards (no sprint wrapper) (gh #10)'
+    points: 3
+    completed: '2026-06-04'
+  - id: 156-2
+    epic: '156'
+    title: 'story update leaks jira-cli email into personal-project YAMLs (gh #12)'
+    points: 2
+    completed: '2026-06-04'
+  - id: 156-3
+    epic: '156'
+    title: 'Clarify sprint command surface; add story move-between-epics (gh #13)'
+    points: 3
+    completed: '2026-06-04'
+  - id: 156-4
+    epic: '156'
+    title: 'TUI sprint panel silently drops inline-dict epics — fetch_sprint shard-only (gh #50)'
+    points: 2
+    completed: '2026-06-04'
+  - id: 156-5
+    epic: '156'
+    title: "sprint new crashes FileNotFoundError when sprint/ dir doesn't exist (gh #52)"
+    points: 2
     completed: '2026-06-04'
