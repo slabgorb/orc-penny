@@ -132,7 +132,7 @@ stories:
     description: "Re-rendering or resizing portraits within the same pf version never propagates to consumer projects. _install_portraits (init/core.py:1158) skips the copy whenever manifest.pf_version == __version__, so the shared cache at ~/.local/share/pennyfarthing/portraits/ goes stale until manually mirrored (rsync). Any co-* project symlinked to that cache shows stale/blank portraits. Root cause: freshness is keyed on the version string, but portrait content changes independently of version (renders, resizes, restyles all land without a bump). Fix: add a cheap stat-only source fingerprint (sha256 over sorted '{relpath}\\t{size}' for *.png under the source; optionally include mtime_ns to catch same-size re-renders) to the manifest, and re-copy when EITHER pf_version OR source_fingerprint differs. Add a pf init --force-portraits escape hatch and consider surfacing staleness in pf health-check. Note: _install_portraits is currently only mocked in tests (test_init_custom_agents.py:456), never exercised."
     points: 2
     priority: p3
-    status: in_review
+    status: done
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
@@ -141,6 +141,7 @@ stories:
       - Missing/old manifest copies (existing behavior preserved)
       - Manifest records source_fingerprint
       - Unit tests cover all three guard branches (currently _install_portraits is only mocked, never run)
+    completed: '2026-06-03'
   - id: 153-11
     title: pf doctor doesn't verify the project-local .pennyfarthing/bin/pf shim — stays green while every 'just pf' recipe and the statusline hook are broken
     description: |-

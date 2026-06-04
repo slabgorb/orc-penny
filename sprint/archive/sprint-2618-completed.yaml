@@ -13,6 +13,7 @@ completed_epics:
   - PROJ-16405
   - PROJ-16551
   - '152'
+  - '154'
 completed_stories:
   - id: 47-1
     epic: PROJ-16293
@@ -154,3 +155,13 @@ completed_stories:
     title: Gate jira-cli lookups on jira.enabled config; skip assignee lookup for non-jira stories
     points: 3
     completed: '2026-05-20'
+  - id: 154-1
+    epic: '154'
+    title: Implement portrait_cdn module with SHA256-verified theme packs and local cache
+    points: 8
+    completed: '2026-06-03'
+  - id: 154-2
+    epic: '154'
+    title: 'portrait_cdn hardening: path-traversal in clean()/ensure_portraits, manifest SSRF + KeyError guards, py3.11 filter, test isolation (Reviewer C1-C8)'
+    points: 5
+    completed: '2026-06-04'
