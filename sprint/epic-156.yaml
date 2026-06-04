@@ -3,45 +3,55 @@ type: epic
 title: Sharded sprint YAML CRUD
 description: 'Story/sprint commands break on sharded epic-*.yaml files and inline-dict epics. Issues #10, #12, #13, #50, #52.'
 priority: p2
-status: backlog
+status: done
 repos: pennyfarthing
 stories:
   - id: 156-1
     title: 'story update fails for stories in epic-*.yaml shards (no sprint wrapper) (gh #10)'
     points: 3
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-06-04'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-04'
     type: bug
   - id: 156-2
     title: 'story update leaks jira-cli email into personal-project YAMLs (gh #12)'
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-06-04'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-04'
     type: bug
   - id: 156-3
     title: 'Clarify sprint command surface; add story move-between-epics (gh #13)'
     points: 3
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-06-04'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-04'
   - id: 156-4
     title: 'TUI sprint panel silently drops inline-dict epics — fetch_sprint shard-only (gh #50)'
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-06-04'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-04'
     type: bug
   - id: 156-5
     title: "sprint new crashes FileNotFoundError when sprint/ dir doesn't exist (gh #52)"
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-06-04'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-04'
     type: bug
