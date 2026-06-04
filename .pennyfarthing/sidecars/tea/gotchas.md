@@ -23,3 +23,11 @@ Integration tests need running containers. Check: `docker ps | grep "$TEST_CONTA
 <gotcha name="missing-context-story-file" severity="high">
 sm-setup may create `.session/{id}-session.md` but NOT `sprint/context/context-story-{id}.md`, so `pf validate context-story {id}` returns exit 2 and the TEA context-gate blocks RED. Do NOT auto-create it as TEA — relay back to SM to author it (validator only checks presence/bytes; model on a sibling `context-story-*.md`). Tracked by story 153-6.
 </gotcha>
+
+<gotcha name="dont-run-the-SUT-runner" severity="critical">
+When the story is a bug IN `testing-runner` itself (e.g. 158-2/gh #53: it clobbers `.session/{STORY_ID}-session.md`), NEVER verify RED by spawning `testing-runner` with the active `STORY_ID` — it will reproduce the bug on your OWN live session and erase your assessment. Verify RED with a direct scoped `uv run pytest <one file> -q` (the `scoped-red-run` pattern) and test the durable helper contract + a static guard on the agent `.md` instead of driving the non-deterministic subagent. Log both as Design Deviations.
+</gotcha>
+
+<gotcha name="testing-runner-sources-deleted-scripts" severity="high">
+`agents/testing-runner.md` (and `agents/README.md`, `scripts/test/README.md`) still `source` bash helpers `test-cache.sh` / `test-setup.sh` that have been DELETED — only README stubs remain. The silent `source` failure is exactly why the haiku agent improvises and clobbers the session. Don't trust the markdown's bash flow; the real test runner is `pf check` / `scripts/workflow/check.py`.
+</gotcha>

@@ -75,3 +75,7 @@ The `testing-runner` subagent has only Bash/Read/Glob/Grep tools — but Bash le
 <gotcha name="static-guard-trips-on-comments">
 A static-lint-style test that does a naive whole-file substring match (e.g. `assert 'Path(".")' not in file.read_text()`) trips on the token appearing in a *comment or docstring*, not just in code. When making such a guard pass, reword your comments to avoid the literal token rather than weakening the test — gaming the guard is wrong, and the comment isn't the anti-pattern it's hunting. Cost a verification cycle in 153-9 GREEN.
 </gotcha>
+
+<gotcha name="testrun-cache-entrypoint">
+Test-result caching for `testing-runner` lives in `pf.session.test_cache` (story 158-2). The bash agent routes through `printf '%s' "$SUMMARY" | python -m pf.session.test_cache "$RUN_ID"` → writes `.session/test-runs/${RUN_ID}.md` (keyed on RUN_ID, never STORY_ID; refuses to touch a live session). The old `scripts/test/test-cache.sh` / `test-setup.sh` were DELETED — don't resurrect them. NOTE: `testing-runner.md`'s **Setup** section still `source`s the deleted `test-setup.sh` (for `ensure_test_containers`/`generate_run_id`) — a SEPARATE pre-existing breakage (container setup, not data-loss), left for a follow-up.
+</gotcha>
