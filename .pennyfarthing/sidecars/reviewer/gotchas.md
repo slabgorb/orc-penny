@@ -39,3 +39,11 @@ When a story removes or absorbs a package, verify source→destination symbol pa
 <gotcha name="false-green-guard-string-not-returncode" severity="high">
 A test that runs another test runner in a subprocess and tries to prevent a false green by string-matching stdout (e.g. `assert "no tests ran" not in result.stdout`) is almost always vacuous — VERIFY the actual output/exit codes before trusting it. Empirically (story 153-9): pytest prints `"N deselected"` and exits **5** when `-k` matches nothing, exits **4** on collection/import error, and exits **0** only when tests actually ran and passed — it never prints "no tests ran" for the deselection case. So the only robust liveness check is `assert result.returncode == 0` (plus optionally `"passed" in stdout`). When a meta-test's whole job is to keep a regression alive, a guard that can't detect "zero tests ran" is a blocking defect, not a nit — the regression can silently stop guarding on a rename or broken import.
 </gotcha>
+
+<gotcha name="stale-local-develop-pollutes-diff" severity="high">
+`git diff develop...HEAD` can show DOZENS of unrelated files (other merged stories' changes) when local `develop` is behind `origin/develop` — the merge-base is then an old commit. sm-setup cuts branches from `origin/develop`, so ALWAYS `git fetch origin develop` then diff `git diff origin/develop...HEAD` (verify `git merge-base origin/develop HEAD == origin/develop`). Story 158-2: local develop showed portrait_cdn/test_154/git_utils churn that wasn't in the branch at all.
+</gotcha>
+
+<gotcha name="severity-by-blast-radius-for-bugfix-PRs">
+When reviewing a fix FOR a data-loss/corruption bug, judge residual-finding severity by whether it REINTRODUCES the loss, not by the finding's intrinsic class. Failure modes that are loud (traceback + non-zero exit), benign (a missing cache vs the old clobber), or threat-model-inapplicable (CWE-59 needing pre-existing FS write on a single-user local tool) are MEDIUM/LOW even when a subagent rates them "high confidence" — confidence ≠ severity. Confirm them (don't dismiss, esp. rule-matching ones like python.md #5/#6), downgrade with explicit rationale, capture as non-blocking Delivery Findings. Story 158-2 approved with 13 such findings because none could reintroduce the gh #53 clobber.
+</gotcha>
