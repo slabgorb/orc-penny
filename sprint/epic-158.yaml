@@ -32,10 +32,14 @@ stories:
     title: 'complete-phase setup→red passes without context files; RED then hard-blocks (gh #61)'
     points: 3
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-06-04'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-04'
     type: bug
+    review_findings: '16 e2e tests in test_143_9_tdd_cycle_e2e.py fail: fixture seeds no sprint/context/ but drives complete_phase(...,sm_setup_exit). Seed context-epic-e2e.md + context-story-e2e-full-1.md + context-story-e2e-fm-1.md, re-run all 5 sm_setup_exit callers green.'
+    review_verdict: approved
   - id: 158-4
     title: 'SM handoff exit protocol: undocumented required args + missing Sm Assessment precondition (gh #49)'
     points: 2

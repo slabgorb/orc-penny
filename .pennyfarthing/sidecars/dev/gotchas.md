@@ -1,5 +1,9 @@
 # Dev Agent Gotchas
 
+<gotcha name="baseline-prove-preexisting-failures" severity="high">
+When a behavior change breaks tests and a rework fixes SOME but not all, ALWAYS establish the develop baseline before claiming the rest are "pre-existing": `git stash push <test-file>` + `git checkout origin/develop -- <changed-source>`, run the still-failing tests, then restore (`git checkout HEAD -- <source>` + `git stash pop`). If they fail on clean develop too, they're pre-existing (this repo has NO CI — develop carries stale failures) and out of scope; document with the reproducible baseline command and capture as a Delivery Finding for a separate story. Do NOT absorb an unrelated bug to make a file fully green — that's scope creep with its own untested risk. Story 158-3: the context guard took test_143_9 from 16→4 failures; the 4 residual were a pre-existing `detect_workflow_state` verify-phase-ownership bug (pf/prime/workflow.py), proven red on develop with the guard reverted.
+</gotcha>
+
 <gotcha name="cdn-blocks-python-urllib-ua" severity="high">
 The portraits CDN (`portraits.darkatelier.org`, Cloudflare) returns **403 Forbidden** to the default `Python-urllib/x.y` User-Agent — `curl` works because it sends its own UA. Any HTTP client hitting this CDN MUST set an explicit `User-Agent` header on EVERY request (manifest AND pack). `urllib.request.urlretrieve` can't carry headers — use `urlopen(Request(url, headers={"User-Agent": ...}))` + `shutil.copyfileobj`. Story 154-1: 38 mock-only tests were green while the feature was 100% broken against the real bucket; only `pf portraits fetch <theme>` against live R2 caught it. **When a feature talks to real external infra, smoke-test against the real endpoint before claiming GREEN — mocks model your assumptions, not the server's rules.**
 </gotcha>
