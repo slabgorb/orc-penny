@@ -19,11 +19,14 @@ stories:
     review_verdict: approved
   - id: 155-2
     title: 'Finish creates feat/ branch on orchestrator, breaking main-only topology (gh #15)'
+    description: "DUPLICATE — delivered_in: 153-2 (commit 934ce2880, 'skip branch creation on trunk-based repos in setup & finish'). gh #15's full scope is implemented + tested: repos.should_create_branch (trunk-based->False), create_feature_branches skip, story_finish._git_cleanup skip (trunk-based + unresolved-root), agents/sm-setup.md branch_strategy read+skip. Covered by test_153_2_skip_branch_creation.py (11 passing). TEA (155-2 RED) verified no code change needed and no finish-side path creates a branch."
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-06-05'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-05'
     type: bug
   - id: 155-3
     title: 'Archive looks for sprint-unknown-*.yaml not sprint-{number}-*.yaml (gh #28)'
