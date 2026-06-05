@@ -44,10 +44,14 @@ stories:
     title: 'SM handoff exit protocol: undocumented required args + missing Sm Assessment precondition (gh #49)'
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-06-05'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-05'
     type: bug
+    review_findings: '8 confirmed findings, all MEDIUM/LOW, all cheap fixes: validate inferred workflow name (CWE-22 via session content), narrow broad except in _infer_session_args, distinguish unreadable-vs-missing session, OSError guard at CLI boundary, exit 1 on resolve-gate status=error, encoding= on read_text, stale test class docstring, marker phase-name fallback. No Critical/High.'
+    review_verdict: approved
   - id: 158-5
     title: "pf sprint story claim fails on Jira-less projects with cryptic 'assigned to unknown' (gh #48)"
     points: 2

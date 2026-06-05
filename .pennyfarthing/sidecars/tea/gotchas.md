@@ -8,6 +8,10 @@ Verify tests actually fail. Run them and grep for FAIL/failed. "RED state" means
 Tests must fail due to missing implementation, not syntax errors or import failures.
 </gotcha>
 
+<gotcha name="dedent-defeated-by-interpolated-block">
+`textwrap.dedent(f"...{multi_line_block}...")` silently dedents NOTHING when the interpolated block has column-0 lines — dedent sees no common prefix and the whole fixture keeps its source indentation. Symptom: regex-based code under test copes (unanchored patterns) while the test's own `line.startswith(...)` reader returns '' → a regression pin fails for the wrong reason. Fix: dedent a template with an `@PLACEHOLDER@` line first, then `.replace()` the block in. Story 158-4.
+</gotcha>
+
 <gotcha name="git-add-symlinks">
 `git add` fails beyond symlinks. Commit to `pennyfarthing-dist/`, not `.claude/` or `scripts/`.
 </gotcha>
