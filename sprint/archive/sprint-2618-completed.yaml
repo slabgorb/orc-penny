@@ -15,6 +15,7 @@ completed_epics:
   - '152'
   - '154'
   - '156'
+  - '158'
 completed_stories:
   - id: 47-1
     epic: PROJ-16293
@@ -191,3 +192,28 @@ completed_stories:
     title: "sprint new crashes FileNotFoundError when sprint/ dir doesn't exist (gh #52)"
     points: 2
     completed: '2026-06-04'
+  - id: 158-1
+    epic: '158'
+    title: 'pf agent start crashes with stack trace when .session symlink target is missing (gh #63)'
+    points: 2
+    completed: '2026-06-04'
+  - id: 158-2
+    epic: '158'
+    title: 'testing-runner clobbers the live workflow session file (gh #53)'
+    points: 3
+    completed: '2026-06-04'
+  - id: 158-3
+    epic: '158'
+    title: 'complete-phase setup→red passes without context files; RED then hard-blocks (gh #61)'
+    points: 3
+    completed: '2026-06-04'
+  - id: 158-4
+    epic: '158'
+    title: 'SM handoff exit protocol: undocumented required args + missing Sm Assessment precondition (gh #49)'
+    points: 2
+    completed: '2026-06-05'
+  - id: 158-5
+    epic: '158'
+    title: "pf sprint story claim fails on Jira-less projects with cryptic 'assigned to unknown' (gh #48)"
+    points: 2
+    completed: '2026-06-05'

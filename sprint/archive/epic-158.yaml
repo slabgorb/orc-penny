@@ -3,7 +3,7 @@ type: epic
 title: Session/handoff/agent-start robustness
 description: 'Agent activation, session files, and handoff protocol crash or corrupt state on edge cases. Issues #63, #53, #61, #49, #48.'
 priority: p1
-status: backlog
+status: done
 repos: pennyfarthing
 stories:
   - id: 158-1
@@ -56,7 +56,11 @@ stories:
     title: "pf sprint story claim fails on Jira-less projects with cryptic 'assigned to unknown' (gh #48)"
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-06-05'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-05'
     type: bug
+    review_verdict: approved
+completed: '2026-06-05'

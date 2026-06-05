@@ -1,5 +1,17 @@
 # Reviewer Agent Gotchas
 
+<gotcha name="jira-less-fallback-check-the-symmetric-op" severity="medium">
+When a story adds a Jira-less (local-YAML) fallback to ONE operation, always check the SYMMETRIC/sibling operation in the same module — it usually still hits the network unconditionally and reproduces the exact bug being fixed. Story 158-5 gated `claim_issue` on `is_jira_enabled()` but `unclaim_issue` (same file) still calls `get_client()` directly → `pf sprint story claim --unclaim` stays broken on kanban-only projects. Capture as a non-blocking Delivery Finding (out of AC scope) rather than blocking, but ALWAYS name it — it's the highest-value gap a focused-on-the-diff review misses. Same lens applies to any add-a-local-path story: grep the module for other `get_client()`/network callers.
+</gotcha>
+
+<gotcha name="inline-fixture-vs-sharded-repo-transitively-covered" severity="low">
+A claim/transition story's tests often use an INLINE-epic sprint YAML fixture while the real dogfood repo (orc-penny) is SHARDED (epics as string refs + `epic-*.yaml`). Don't reflexively block on "tests don't exercise sharded write-back" — if the new code reuses the production `transition_story` / `write_sprint` round-trip (read_sprint→find_story_in_data→mutate→write_sprint), the shard write-back is covered transitively by `test_156_1_*` and by transition_story being the live workflow path. Verify the reuse (not a reimplementation of YAML mutation), then rate it a LOW coverage-thinness note, not a bug. Story 158-5.
+</gotcha>
+
+<gotcha name="confidence-not-severity-on-edge-findings" severity="medium">
+reviewer-edge-hunter/test-analyzer rate findings by CONFIDENCE (does it exist?), not SEVERITY (does it matter?). On a bugfix PR, an edge they rate "HIGH confidence" (e.g. 158-5: re-claiming your own already-in_progress story returns cryptic exit_code 3) is frequently a MEDIUM/LOW non-blocking UX wart — out-of-AC, loud failure, no corruption, and the pre-fix behavior also blocked. Confirm it (don't dismiss), downgrade severity with explicit rationale (judge by blast radius / can-it-reintroduce-the-bug), capture as a non-blocking Delivery Finding. Don't let a subagent's confidence score drive a reject.
+</gotcha>
+
 <gotcha name="subset-green-hides-regressions" severity="critical">
 When a story changes the BEHAVIOR of a shared function, a Dev/preflight "GREEN" on a hand-picked subset of test files routinely misses regressions in OTHER callers. ALWAYS enumerate every caller of the changed symbol and run THEIR tests before trusting any GREEN: `grep -rln "<symbol_or_gate_type>" src/pf/tests/`, then run each file scoped. Story 158-3: the guard keyed on `gate_type == "sm_setup_exit"`; Dev + preflight ran `test_handoff_cli/e2e/108_2` (92 green) but never ran `test_143_9_tdd_cycle_e2e.py`, whose e2e `project` fixture seeds no `sprint/context/` and drives `complete_phase(..., "sm_setup_exit")` ~16 times → `16 failed, 41 passed`. The reviewer-test-analyzer subagent flagged it HIGH; I verified by running the file. A new mandatory precondition on a function invalidates every fixture that modeled the old precondition — find them by symbol search, not by trusting the author's regression list.
 </gotcha>
