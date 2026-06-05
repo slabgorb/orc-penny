@@ -165,3 +165,10 @@ stories:
       - When the shim is present and working, the check passes; idempotent with existing doctor output
       - 'Regression test covers all three states: missing, present-but-not-executable, and present-and-working'
     type: bug
+  - id: 153-12
+    title: 'Portraits: R2 is the only source — resolver fetches via portrait_cdn only (kill init _install_portraits/symlink/--force-portraits, ~/.pennyfarthing/portraits override, theme-sibling + cyclist fallbacks, LFS self-heal); fetch_portrait validates PNG magic on cache hit so stub poisoning self-heals'
+    points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
