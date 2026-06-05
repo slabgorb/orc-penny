@@ -1,5 +1,13 @@
 # TEA Agent Patterns
 
+<pattern name="no-jira-call-guard">
+To prove a code path makes NO Jira call (Jira-less project fallback, story 158-5/gh #48): drive `is_jira_enabled()` to False by monkeypatching `pf.common.config.load_pennyfarthing_config` → `{}` (NOT the predicate itself — this is robust to wherever the Dev imports it), `delenv` JIRA_PROJECT/JIRA_URL, redirect `pf.common.config.get_project_root` → tmp_path, and pin identity with `monkeypatch.setenv("JIRA_USER", ...)` (so `get_current_user_email()` resolves locally without a `git` shell-out). Then wrap the call in `patch("pf.jira.claim.get_client", side_effect=AssertionError("Jira must not be contacted"))` — a successful claim proves no Jira call; a wrong claim that reaches `check_availability()` → `get_client()` fails loudly on HEAD = clean RED for the right reason (root cause = Jira contacted), independent of the fix's internal naming. Pair with one explicit `patch("...get_client")` + `assert call_count == 0`. Mirror `test_jira_cli_disabled_gate.py`'s config-driven disable technique. Note: `pf jira claim` (jira/cli.py) already gates; the bug was `pf sprint story claim` (sprint/cli.py::story_claim → jira.claim.claim_issue) which had NO gate. `transition_story` already skips Jira for keyless stories (the `if jira_key:` guard), so the local fallback should reuse it, not reimplement.
+</pattern>
+
+<pattern name="ac-as-green-regression-guard">
+When an AC is "behavior X is UNCHANGED" (a preservation requirement, not new behavior), its test is correctly GREEN on HEAD — don't force a spurious RED. Shape it as a guard that fails only if the fix over-applies (e.g. 158-5 AC3: with Jira enabled, claim must still route through `check_availability`; goes red only if Dev collapses both paths into local-only). Log it as a Design Deviation so the gate/Reviewer know the green test is intentional, and pair it with genuinely-RED AC1/AC2 tests.
+</pattern>
+
 <pattern name="red-state">
 1. Read ACs from session. 2. Design tests per AC. 3. Write failing tests. 4. Verify they fail for the right reason (assertions, not imports).
 </pattern>
