@@ -1,5 +1,13 @@
 # Reviewer Agent Gotchas
 
+<gotcha name="subset-green-hides-regressions" severity="critical">
+When a story changes the BEHAVIOR of a shared function, a Dev/preflight "GREEN" on a hand-picked subset of test files routinely misses regressions in OTHER callers. ALWAYS enumerate every caller of the changed symbol and run THEIR tests before trusting any GREEN: `grep -rln "<symbol_or_gate_type>" src/pf/tests/`, then run each file scoped. Story 158-3: the guard keyed on `gate_type == "sm_setup_exit"`; Dev + preflight ran `test_handoff_cli/e2e/108_2` (92 green) but never ran `test_143_9_tdd_cycle_e2e.py`, whose e2e `project` fixture seeds no `sprint/context/` and drives `complete_phase(..., "sm_setup_exit")` ~16 times → `16 failed, 41 passed`. The reviewer-test-analyzer subagent flagged it HIGH; I verified by running the file. A new mandatory precondition on a function invalidates every fixture that modeled the old precondition — find them by symbol search, not by trusting the author's regression list.
+</gotcha>
+
+<gotcha name="reproduce-preexisting-before-approving-red" severity="high">
+If you APPROVE a PR while tests are still red, you MUST independently reproduce the "pre-existing" claim — never take Dev's word. Revert the change to `origin/develop` (`git checkout origin/develop -- <changed files>`), run the still-red tests, confirm they fail on clean develop, then restore (`git checkout HEAD -- <files>`). Only then is "pre-existing, out of scope" a defensible approval. This repo has NO CI, so develop genuinely carries stale failures — but "stale" must be PROVEN, not assumed. Story 158-3 Round 2: approved with 4 red verify-phase tests after reproducing `4 failed` on develop with the guard+fixture reverted (a `detect_workflow_state` bug in pf/prime/workflow.py, unrelated to the context gate). Pair this with scoping discipline: don't force the current story to absorb an unrelated module's bug.
+</gotcha>
+
 <gotcha name="failing-tests" severity="critical">
 Tests MUST pass before approval. No exceptions.
 </gotcha>

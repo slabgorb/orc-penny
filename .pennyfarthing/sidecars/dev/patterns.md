@@ -1,5 +1,9 @@
 # Dev Agent Patterns
 
+<pattern name="complete-phase-subgate">
+To make a markdown gate's check mechanically enforced, add a subgate in `complete_phase()` (`pennyfarthing-dist/src/pf/handoff/complete_phase.py`), keyed on `gate_type`, placed AFTER the assessment guard but BEFORE `now = datetime.now(...)` and the session-mutation block — so a failed check returns `{"status": "error", "session_file": str(session_path), "error": <actionable msg>}` and leaves the session untouched (the half-mutated-session corruption is what these stories are usually about). Mirror the existing `_check_subagent_completion`/assessment return shape. Story 158-3: `gate_type == "sm_setup_exit"` now requires `sprint/context/context-epic-{N}.md` + `context-story-{N-N}.md` (epic `N = story_id.split("-")[0]`) to exist and be non-empty; presence+non-empty mirrors the gate's documented Fallback — don't couple the hot handoff path to the full `pf validate context-*` schema validator. `complete_phase` already receives an explicit `project_root`, so tests pass a `tmp_path` project cleanly (no env/cwd root-resolution trap). Verify GREEN with the scoped `uv run pytest src/pf/tests/test_X.py -q` + re-run `test_handoff_cli.py test_handoff_e2e.py` for regressions — never the full suite (branch leak).
+</pattern>
+
 <pattern name="paths">
 Always use `$CLAUDE_PROJECT_DIR` as base. Multi-repo: `source $CLAUDE_PROJECT_DIR/scripts/repo-utils.sh`.
 </pattern>
