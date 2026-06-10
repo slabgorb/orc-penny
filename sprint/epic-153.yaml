@@ -156,7 +156,8 @@ stories:
       Fix: add a doctor check (e.g. project_shim) that verifies .pennyfarthing/bin/pf exists, is executable, and successfully execs (pf --version via the shim). On failure, emit a clear remediation pointing at `pf init` (which is idempotent and regenerates the shim). Audit of all local consumers found oq-1/2/3/4, orc-penny, words, cards-lib, thecat, slabgorb.github.io healthy; only oq-2 (now hand-fixed) and the dormant python-sidequest reference repo were missing it.
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-06-10'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
@@ -164,7 +165,9 @@ stories:
       - When the shim is missing/broken/stale, doctor FAILS (non-green) with remediation pointing at `pf init`
       - When the shim is present and working, the check passes; idempotent with existing doctor output
       - 'Regression test covers all three states: missing, present-but-not-executable, and present-and-working'
+    completed: '2026-06-10'
     type: bug
+    review_verdict: approved
   - id: 153-12
     title: 'Portraits: R2 is the only source — resolver fetches via portrait_cdn only (kill init _install_portraits/symlink/--force-portraits, ~/.pennyfarthing/portraits override, theme-sibling + cyclist fallbacks, LFS self-heal); fetch_portrait validates PNG magic on cache hit so stub poisoning self-heals'
     points: 3
