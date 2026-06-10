@@ -75,3 +75,11 @@ stories:
     completed: '2026-06-10'
     type: bug
     review_verdict: approved
+  - id: 160-9
+    title: Narrow blanket except in _get_archived_story_ids to OSError/YAMLError + logger.warning (160-8 review finding)
+    points: 1
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: chore

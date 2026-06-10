@@ -55,3 +55,11 @@ stories:
     completed: '2026-06-10'
     type: bug
     review_verdict: approved
+  - id: 157-7
+    title: Complete repos.yaml symlinks map (10/14 declared) — cover .claude/commands, .claude/skills, .pennyfarthing/data, .pennyfarthing/gates; pin _DOGFOODING_SYMLINKS ⊆ declared topology
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug

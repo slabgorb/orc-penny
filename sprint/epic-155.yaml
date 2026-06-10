@@ -44,3 +44,11 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     type: bug
+  - id: 155-5
+    title: "sm-finish preflight false-blocks: stale repos.yaml language:javascript drives npm lint on Python-only root; 'No PR found' on already-merged PRs"
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
