@@ -13,7 +13,6 @@ epics:
   - '157'
   - '159'
   - '160'
-  - '161'
 stories: []
 standalone_stories:
   - id: PROJ-16066

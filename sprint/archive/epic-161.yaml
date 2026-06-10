@@ -3,14 +3,18 @@ type: epic
 title: Frame GUI server resource hygiene — runaway Mach-message memory
 description: 'Frame GUI server leaks ~3.3GB footprint per instance (206k+ Mach regions). Investigate, fix, and add memory regression guard. Issue #97.'
 priority: p1
-status: backlog
+status: done
 repos: pennyfarthing
 stories:
   - id: 161-1
     title: 'Diagnose & fix Frame GUI runaway Mach-message memory (~3.3GB/instance, 206k+ regions) (gh #97)'
     points: 5
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-06-10'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-10'
     type: bug
+    review_verdict: approved
+completed: '2026-06-10'
