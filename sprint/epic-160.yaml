@@ -10,9 +10,11 @@ stories:
     title: validate_epic_shard skips per-story value checks (status enum, points numeric) — shard updates validate weaker than inline/indexed (from 156-1 M2)
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-06-10'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-10'
     type: bug
   - id: 160-2
     title: validator._validate_depends_on only validates epics[].stories, not standalone_stories/top-level — dangling deps there pass (from 156-3 review)
@@ -77,6 +79,14 @@ stories:
     review_verdict: approved
   - id: 160-9
     title: Narrow blanket except in _get_archived_story_ids to OSError/YAMLError + logger.warning (160-8 review finding)
+    points: 1
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: chore
+  - id: 160-10
+    title: "Harden validate_epic_shard per-story loop: guard non-dict story entries (AttributeError at validator.py:409) + replace 'Missing required field' string-match filter with structured marker (160-1 review deferrals)"
     points: 1
     priority: p3
     status: backlog
