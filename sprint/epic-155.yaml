@@ -52,3 +52,11 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     type: bug
+  - id: 155-6
+    title: Wire format_story_not_found_error into story_finish + correct hooks.md PR-create claim (153-8 review deferrals)
+    description: "From 153-8 Reviewer deferred findings (PR pennyfarthing#107): (1) story_finish.py (lookups at ~190,332,402) uses find_story_in_data but silently proceeds on unknown story id — wire format_story_not_found_error (loader.py) into its not-found paths so finish lists candidate IDs like update/remove do; AC for 153-8 named finish but it was never wired. (2) guides/hooks.md overstates 'pf sprint story finish' as a gh pr create site — it only merges a pre-existing PR; real create sites are sm-finish (agent md) and the standalone flow. Also sweep: --title '' accepted on required field (LOW, consistent with other string fields); ruff I001 in test_153_8_agent_start_brief.py:30 (auto-fixable)."
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
