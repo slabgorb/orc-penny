@@ -1,1 +1,6 @@
-{}
+{
+  "enabledPlugins": {
+    "brm@brm": false,
+    "zeitgoose@zeitgoose": false
+  }
+}
