@@ -40,10 +40,14 @@ stories:
     title: 'fetch_sprint _load_file silently drops malformed-but-present shards (catch->None->silent continue) — warn/surface per #50 fail-loud (from 156-4 M1)'
     points: 1
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-06-10'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-10'
     type: bug
+    review_findings: "HIGH: non-UTF-8 shard raises UnicodeDecodeError out of fetch_sprint (read_text outside parse-catch; except OSError misses ValueError) — develop silently dropped it, branch blanks whole panel; regression vs AC2 warn-don't-crash. Fix: encoding='utf-8' + route decode failure into parse-warning branch; TEA pins with write_bytes RED test. MEDIUM (non-blocking): PermissionError on present shard still silent. LOWs: encoding param, exc-snippet truncation, pre-existing ref containment."
+    review_verdict: approved
   - id: 160-5
     title: sprint new/update --dry-run doesn't exercise the write path — false-positive masks failures; make dry-run reach or assert the write (from 156-5/156-4)
     points: 2
@@ -105,3 +109,17 @@ stories:
     repos: pennyfarthing
     workflow: trivial
     type: chore
+  - id: 160-12
+    title: 'ws_push read hygiene sweep: archive loop + benchmark/persona fetchers silently swallow read/parse errors and lack encoding= (6 read_text sites) — surface per #50 fail-loud (from 160-4 Dev/Reviewer findings)'
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 160-13
+    title: 'Shard-ref path containment: epic refs from sprint YAML build paths without resolve()/containment check (CWE-22) in shard_merge.py and ws_push.py (from 160-4 review finding)'
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
