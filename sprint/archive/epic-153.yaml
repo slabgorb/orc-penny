@@ -3,7 +3,7 @@ type: epic
 title: Framework reliability fixes from downstream reports
 description: 'Three independent framework bugs surfaced while using pennyfarthing in external projects (oq-1, oq-2): wrong session-file path, stray branches on main-only orchestrators, missing CLI story-move operation.'
 priority: p1
-status: backlog
+status: done
 repos: pennyfarthing
 stories:
   - id: 153-1
@@ -101,17 +101,21 @@ stories:
     title: Cyclist sprint-yaml PostToolUse hook crashes — node yaml package unresolvable; switch to PyYAML or detect-and-skip when module missing
     points: 2
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-06-10'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-10'
     type: bug
   - id: 153-8
     title: DX bundle — pf sprint story update --title, error messages list candidate IDs on not-found, --brief agent activation mode, document auto-PR behavior on git push
     points: 3
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-06-10'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-10'
     type: bug
   - id: 153-9
     title: Fix test_git_utils.py leaking a feature/test checkout onto the live repo (full pytest suite silently switches the working branch)
@@ -156,7 +160,8 @@ stories:
       Fix: add a doctor check (e.g. project_shim) that verifies .pennyfarthing/bin/pf exists, is executable, and successfully execs (pf --version via the shim). On failure, emit a clear remediation pointing at `pf init` (which is idempotent and regenerates the shim). Audit of all local consumers found oq-1/2/3/4, orc-penny, words, cards-lib, thecat, slabgorb.github.io healthy; only oq-2 (now hand-fixed) and the dormant python-sidequest reference repo were missing it.
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-06-10'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
@@ -164,7 +169,9 @@ stories:
       - When the shim is missing/broken/stale, doctor FAILS (non-green) with remediation pointing at `pf init`
       - When the shim is present and working, the check passes; idempotent with existing doctor output
       - 'Regression test covers all three states: missing, present-but-not-executable, and present-and-working'
+    completed: '2026-06-10'
     type: bug
+    review_verdict: approved
   - id: 153-12
     title: 'Portraits: R2 is the only source — resolver fetches via portrait_cdn only (kill init _install_portraits/symlink/--force-portraits, ~/.pennyfarthing/portraits override, theme-sibling + cyclist fallbacks, LFS self-heal); fetch_portrait validates PNG magic on cache hit so stub poisoning self-heals'
     points: 3
@@ -176,3 +183,4 @@ stories:
     workflow: tdd
     completed: '2026-06-05'
     review_verdict: approved
+completed: '2026-06-10'

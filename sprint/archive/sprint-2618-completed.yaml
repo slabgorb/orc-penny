@@ -17,6 +17,7 @@ completed_epics:
   - '156'
   - '158'
   - '161'
+  - '153'
 completed_stories:
   - id: 47-1
     epic: PROJ-16293
@@ -223,3 +224,63 @@ completed_stories:
     title: 'Diagnose & fix Frame GUI runaway Mach-message memory (~3.3GB/instance, 206k+ regions) (gh #97)'
     points: 5
     completed: '2026-06-10'
+  - id: 153-1
+    epic: '153'
+    title: sm-setup writes session files to .session/ (not sprint/); migrate legacy session files
+    points: 2
+    completed: '2026-05-20'
+  - id: 153-2
+    epic: '153'
+    title: Skip branch creation on orchestrator (main-only) repos during story setup and finish
+    points: 2
+    completed: '2026-05-26'
+  - id: 153-3
+    epic: '153'
+    title: Add pf sprint story move and --epic flag; document full story lifecycle CLI surface
+    points: 5
+    completed: '2026-05-26'
+  - id: 153-4
+    epic: '153'
+    title: 'pf sprint story remove/update/finish all fail to locate stories in epic shard files — same root cause (BLOCKING: breaks SM finish ceremony)'
+    points: 5
+    completed: '2026-05-21'
+  - id: 153-5
+    epic: '153'
+    title: TEA/SM workflow references missing CLI surface — pf check command and pf validate context-story validator don't exist
+    points: 2
+    completed: '2026-05-20'
+  - id: 153-6
+    epic: '153'
+    title: sm-setup doesn't create sprint/context/context-story-{ID}.md but TEA on-activation expects it — gate sm-setup-exit doesn't enforce; either create or stop requiring
+    points: 3
+    completed: '2026-05-26'
+  - id: 153-7
+    epic: '153'
+    title: Cyclist sprint-yaml PostToolUse hook crashes — node yaml package unresolvable; switch to PyYAML or detect-and-skip when module missing
+    points: 2
+    completed: '2026-06-10'
+  - id: 153-8
+    epic: '153'
+    title: DX bundle — pf sprint story update --title, error messages list candidate IDs on not-found, --brief agent activation mode, document auto-PR behavior on git push
+    points: 3
+    completed: '2026-06-10'
+  - id: 153-9
+    epic: '153'
+    title: Fix test_git_utils.py leaking a feature/test checkout onto the live repo (full pytest suite silently switches the working branch)
+    points: 3
+    completed: '2026-06-04'
+  - id: 153-10
+    epic: '153'
+    title: Refresh XDG portrait cache on content change, not just pf version bump
+    points: 2
+    completed: '2026-06-03'
+  - id: 153-11
+    epic: '153'
+    title: pf doctor doesn't verify the project-local .pennyfarthing/bin/pf shim — stays green while every 'just pf' recipe and the statusline hook are broken
+    points: 2
+    completed: '2026-06-10'
+  - id: 153-12
+    epic: '153'
+    title: 'Portraits: R2 is the only source — resolver fetches via portrait_cdn only (kill init _install_portraits/symlink/--force-portraits, ~/.pennyfarthing/portraits override, theme-sibling + cyclist fallbacks, LFS self-heal); fetch_portrait validates PNG magic on cache hit so stub poisoning self-heals'
+    points: 3
+    completed: '2026-06-05'
