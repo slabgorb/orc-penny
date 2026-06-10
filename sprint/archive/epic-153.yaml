@@ -3,7 +3,7 @@ type: epic
 title: Framework reliability fixes from downstream reports
 description: 'Three independent framework bugs surfaced while using pennyfarthing in external projects (oq-1, oq-2): wrong session-file path, stray branches on main-only orchestrators, missing CLI story-move operation.'
 priority: p1
-status: backlog
+status: done
 repos: pennyfarthing
 stories:
   - id: 153-1
@@ -111,9 +111,11 @@ stories:
     title: DX bundle — pf sprint story update --title, error messages list candidate IDs on not-found, --brief agent activation mode, document auto-PR behavior on git push
     points: 3
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-06-10'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-10'
     type: bug
   - id: 153-9
     title: Fix test_git_utils.py leaking a feature/test checkout onto the live repo (full pytest suite silently switches the working branch)
@@ -181,3 +183,4 @@ stories:
     workflow: tdd
     completed: '2026-06-05'
     review_verdict: approved
+completed: '2026-06-10'
