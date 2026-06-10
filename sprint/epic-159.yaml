@@ -30,3 +30,11 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     type: bug
+  - id: 159-4
+    title: "sm-setup writes non-ISO 'Phase Started' timestamp → crashes pf handoff complete-phase (gh #74)"
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug

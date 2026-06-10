@@ -64,3 +64,11 @@ stories:
     repos: pennyfarthing
     workflow: trivial
     type: chore
+  - id: 160-8
+    title: 'Dangling depends_on to a completed/archived story fails whole-sprint validation, blocking ALL story update & finish (gh #90)'
+    points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug

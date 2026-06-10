@@ -44,3 +44,11 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+  - id: 157-6
+    title: 'Setup gap: repos.yaml-declared repos never checked on disk; init materializes over broken symlinks; add remote: field + doctor topology check + relink (gh #98)'
+    points: 5
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
