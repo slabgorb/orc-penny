@@ -68,7 +68,10 @@ stories:
     title: 'Dangling depends_on to a completed/archived story fails whole-sprint validation, blocking ALL story update & finish (gh #90)'
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-06-10'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-10'
     type: bug
+    review_verdict: approved
