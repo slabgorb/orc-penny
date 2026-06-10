@@ -20,9 +20,11 @@ stories:
     title: validator._validate_depends_on only validates epics[].stories, not standalone_stories/top-level — dangling deps there pass (from 156-3 review)
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-06-10'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-10'
     type: bug
   - id: 160-3
     title: Gate raw-truthy story.get('jira') in story_transition.py:75 + story_finish.py:174 via shared _has_real_jira_key + extract NO_JIRA_SENTINELS constant (from 156-2 review)
