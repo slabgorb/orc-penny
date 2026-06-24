@@ -87,3 +87,11 @@ stories:
     completed: '2026-06-24'
     type: bug
     review_verdict: approved
+  - id: 159-9
+    title: 'Frame OTLP + subagent-event handlers fail-loud: replace silent except-pass with logging'
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: refactor
