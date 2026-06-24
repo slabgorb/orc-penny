@@ -120,6 +120,16 @@ stories:
     title: 'Shard-ref path containment: epic refs from sprint YAML build paths without resolve()/containment check (CWE-22) in shard_merge.py and ws_push.py (from 160-4 review finding)'
     points: 1
     priority: p1
+    status: done
+    started: '2026-06-24'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-06-24'
+    review_verdict: approved
+  - id: 160-14
+    title: 'Sweep remaining CWE-22 shard-ref read sites with is_safe_shard_path: loader.py:326 get_archived_stories, archive_epic.py:193 load_archive + :144 backfill, and shard_merge orphan-scan/detect_orphan_shards glob loops (from 160-13 review)'
+    points: 2
+    priority: p2
     status: backlog
     repos: pennyfarthing
     workflow: tdd
