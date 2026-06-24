@@ -10,10 +10,13 @@ stories:
     title: 'theme_characters: accept dict-shaped agent_data, not just character name (gh #34)'
     points: 2
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-06-23'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-24'
     type: bug
+    review_verdict: approved
   - id: 159-2
     title: 'SM agent: reconsider TodoWrite ban (or document the reasoning) (gh #46)'
     points: 1
@@ -57,3 +60,11 @@ stories:
     repos: pennyfarthing
     workflow: trivial
     type: bug
+  - id: 159-7
+    title: 'Harden dict-shaped theme_characters overrides: guard non-dict helper (AttributeError persona.py:150) + non-list catchphrases (TypeError persona.py:146) + get_crew_manifest character-fallback parity with load_persona (persona.py:191) + reset _quote_cache module global between tests (persona.py:25) + document str|dict override shape in config guide (159-1 review deferrals)'
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: chore
