@@ -15,21 +15,28 @@ Prerequisites: Node 18+, [pnpm](https://pnpm.io/) 9+, Python 3.11+, [just](https
 
 ## Benchmark Dashboard
 
-Interactive D3.js visualization of pipeline-replay benchmark results — how the
+Interactive D3 visualization of pipeline-replay benchmark results — how the
 agent pipeline (TEA → Dev → Reviewer) performs across themes, with per-finding
-catch rates, phase attribution, and pipeline-version comparisons.
+catch rates and phase attribution.
 
-[![Benchmark dashboard](benchmark-dashboard-final.png)](internal/results/benchmark-dashboard.html)
+**Published — renders in the browser** (GitHub Pages, no clone, no build):
+[Overview](https://slabgorb.github.io/pennyfarthing/benchmarks/) ·
+[Score vs Consistency](https://slabgorb.github.io/pennyfarthing/benchmarks/scatter.html) ·
+[Finding Hit Rate](https://slabgorb.github.io/pennyfarthing/benchmarks/hit-rate.html) ·
+[Phase Attribution](https://slabgorb.github.io/pennyfarthing/benchmarks/phase-attribution.html)
 
-The dashboard is self-contained — open it straight from the repo, no build step:
+[![Benchmark dashboard](benchmark-dashboard-final.png)](https://slabgorb.github.io/pennyfarthing/benchmarks/)
+
+**Full local dashboard** — the complete view (adds pipeline-version comparison and a
+score timeline), regenerated in this workspace from your local results tree:
 
 ```bash
 open internal/results/benchmark-dashboard.html
+# or serve it (avoids file:// quirks):
+cd internal/results && python3 -m http.server 8765   # → http://localhost:8765/benchmark-dashboard.html
 ```
 
-Or serve it (avoids `file://` quirks): `cd internal/results && python3 -m http.server 8765`, then visit `http://localhost:8765/benchmark-dashboard.html`.
-
-> Data is embedded in the HTML. `scripts/benchmark-viz-data.py` regenerates it from a `internal/results/pipeline-replay/` tree, which is not checked in.
+> Data is embedded in the HTML. `scripts/benchmark-viz-data.py` regenerates it from the `internal/results/pipeline-replay/` tree, which is not checked in. The published Pages charts live in `pennyfarthing/docs/benchmarks/` and use a manual snapshot of that data.
 
 ## What's in this repo
 
