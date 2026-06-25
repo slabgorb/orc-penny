@@ -150,6 +150,23 @@ stories:
     title: 'ws_push/data_proxy fail-loud sweep part 3: warn on present-but-broken in data_proxy._get_git_info (subprocess int-parse silent->None) + _get_repos_config (repos.yaml parse swallow) + the fetch_persona inner portrait-resolver except Exception: pass (ws_push ~L497, AC-3) — from 160-15 TEA/Dev/Reviewer findings'
     points: 1
     priority: p1
+    status: done
+    started: '2026-06-25'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-06-25'
+    review_verdict: approved
+  - id: 160-17
+    title: 'ws_push/data_proxy fail-loud sweep part 4: warn-then-degrade the remaining data_proxy silent swallows — get_theme_agents (~L314 except Exception: return JSONResponse({})) + _get_identity jira/gh os.popen probes (~L372/L382 except Exception: pass) — from 160-16 TEA/Dev/Reviewer findings'
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 160-18
+    title: 'Frame fail-loud sweep: sanitize the warnings sink before any network exposure — the 160-4/12/15/16 warns interpolate raw {exc} + local paths (repo_path) into warnings.warn (low-sev info-leak if Frame ever forwards warnings to a network client); emit type(exc).__name__ + fixed description, or confirm stderr-only sink — from 160-16 Reviewer finding'
+    points: 2
+    priority: p1
     status: backlog
     repos: pennyfarthing
     workflow: tdd
