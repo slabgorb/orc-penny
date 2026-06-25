@@ -140,6 +140,16 @@ stories:
     title: 'ws_push fail-loud sweep part 2: extend warn-on-present-but-broken to remaining pre-existing silent swallows (fetch_git subprocess-parse, fetch_context degraded-shape, outer fetch_persona catch-all) + add L171 main-sprint-read behavioral test and read-vs-parse warning wording (from 160-12 Reviewer findings)'
     points: 1
     priority: p1
+    status: done
+    started: '2026-06-25'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-06-25'
+    review_verdict: approved
+  - id: 160-16
+    title: 'ws_push/data_proxy fail-loud sweep part 3: warn on present-but-broken in data_proxy._get_git_info (subprocess int-parse silent->None) + _get_repos_config (repos.yaml parse swallow) + the fetch_persona inner portrait-resolver except Exception: pass (ws_push ~L497, AC-3) — from 160-15 TEA/Dev/Reviewer findings'
+    points: 1
+    priority: p1
     status: backlog
     repos: pennyfarthing
     workflow: tdd
