@@ -113,9 +113,12 @@ stories:
     title: 'ws_push read hygiene sweep: archive loop + benchmark/persona fetchers silently swallow read/parse errors and lack encoding= (6 read_text sites) — surface per #50 fail-loud (from 160-4 Dev/Reviewer findings)'
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-06-25'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-25'
+    review_verdict: approved
   - id: 160-13
     title: 'Shard-ref path containment: epic refs from sprint YAML build paths without resolve()/containment check (CWE-22) in shard_merge.py and ws_push.py (from 160-4 review finding)'
     points: 1
@@ -130,6 +133,13 @@ stories:
     title: 'Sweep remaining CWE-22 shard-ref read sites with is_safe_shard_path: loader.py:326 get_archived_stories, archive_epic.py:193 load_archive + :144 backfill, and shard_merge orphan-scan/detect_orphan_shards glob loops (from 160-13 review)'
     points: 2
     priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 160-15
+    title: 'ws_push fail-loud sweep part 2: extend warn-on-present-but-broken to remaining pre-existing silent swallows (fetch_git subprocess-parse, fetch_context degraded-shape, outer fetch_persona catch-all) + add L171 main-sprint-read behavioral test and read-vs-parse warning wording (from 160-12 Reviewer findings)'
+    points: 1
+    priority: p1
     status: backlog
     repos: pennyfarthing
     workflow: tdd
