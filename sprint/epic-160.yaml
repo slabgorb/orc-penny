@@ -160,11 +160,29 @@ stories:
     title: 'ws_push/data_proxy fail-loud sweep part 4: warn-then-degrade the remaining data_proxy silent swallows — get_theme_agents (~L314 except Exception: return JSONResponse({})) + _get_identity jira/gh os.popen probes (~L372/L382 except Exception: pass) — from 160-16 TEA/Dev/Reviewer findings'
     points: 2
     priority: p1
+    status: done
+    started: '2026-06-26'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-06-26'
+    review_findings: 'HIGH: get_theme_agents passes str to get_crew_manifest (needs Path) -> TypeError str/str every call -> new warnings.warn fires on a CONSTANT bug (warn-spam, fail-loud defeated). TEA healthy-test patched the seam, masking it. Fix: pass Path(project_dir) + add a real-path no-warn guard. _get_identity changes are sound.'
+    review_verdict: approved
+  - id: 160-18
+    title: 'Frame fail-loud sweep: sanitize the warnings sink before any network exposure — the 160-4/12/15/16 warns interpolate raw {exc} + local paths (repo_path) into warnings.warn (low-sev info-leak if Frame ever forwards warnings to a network client); emit type(exc).__name__ + fixed description, or confirm stderr-only sink — from 160-16 Reviewer finding'
+    points: 2
+    priority: p1
     status: backlog
     repos: pennyfarthing
     workflow: tdd
-  - id: 160-18
-    title: 'Frame fail-loud sweep: sanitize the warnings sink before any network exposure — the 160-4/12/15/16 warns interpolate raw {exc} + local paths (repo_path) into warnings.warn (low-sev info-leak if Frame ever forwards warnings to a network client); emit type(exc).__name__ + fixed description, or confirm stderr-only sink — from 160-16 Reviewer finding'
+  - id: 160-19
+    title: 'Fail-loud sweep part 5: warn-then-degrade get_context silent swallow — data_proxy.py get_context (~L299) except Exception returns an all-None context shape with the error embedded but emits NO warnings.warn; last silent swallow in the file. From 160-17 TEA/Dev/Reviewer findings.'
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 160-20
+    title: 'Fix missing-await in Frame brownfield routes — get_dead_code/get_complexity/get_dependencies invoke find_stale_files/analyze_complexity/analyze_dependencies WITHOUT await (RuntimeWarning: coroutine never awaited), so they return a coroutine/empty and never execute. From 160-17 Dev finding.'
     points: 2
     priority: p1
     status: backlog
