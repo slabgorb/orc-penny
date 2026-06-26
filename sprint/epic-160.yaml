@@ -185,6 +185,16 @@ stories:
     title: 'Fix missing-await in Frame brownfield routes — get_dead_code/get_complexity/get_dependencies invoke find_stale_files/analyze_complexity/analyze_dependencies WITHOUT await (RuntimeWarning: coroutine never awaited), so they return a coroutine/empty and never execute. From 160-17 Dev finding.'
     points: 2
     priority: p1
+    status: done
+    started: '2026-06-26'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-06-26'
+    review_verdict: approved
+  - id: 160-21
+    title: "Fix remaining Frame brownfield routes (hotspots/health-score/code-markers): same to_thread(async_fn) shape as 160-20 but DISTINCT deeper arg bugs — get_hotspots/get_code_markers call analyze_repo(name, path) with only project_dir (missing required 'path'); get_health_score passes a non-existent use_cache kwarg to analyze_healthscore. Each needs a design decision (name/path source, use_cache removal) + Path() + await. Also tighten test_frame_routes.py analysis-route tests which accept status_code in (200,500) and masked 160-20. From 160-20 TEA/Dev/Reviewer findings."
+    points: 3
+    priority: p2
     status: backlog
     repos: pennyfarthing
     workflow: tdd

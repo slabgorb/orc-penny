@@ -294,3 +294,8 @@ completed_stories:
     title: 'ws_push/data_proxy fail-loud sweep part 4: warn-then-degrade the remaining data_proxy silent swallows — get_theme_agents (~L314 except Exception: return JSONResponse({})) + _get_identity jira/gh os.popen probes (~L372/L382 except Exception: pass) — from 160-16 TEA/Dev/Reviewer findings'
     points: 2
     completed: '2026-06-26'
+  - id: 160-20
+    epic: '160'
+    title: 'Fix missing-await in Frame brownfield routes — get_dead_code/get_complexity/get_dependencies invoke find_stale_files/analyze_complexity/analyze_dependencies WITHOUT await (RuntimeWarning: coroutine never awaited), so they return a coroutine/empty and never execute. From 160-17 Dev finding.'
+    points: 2
+    completed: '2026-06-26'
