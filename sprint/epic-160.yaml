@@ -10,34 +10,44 @@ stories:
     title: validate_epic_shard skips per-story value checks (status enum, points numeric) — shard updates validate weaker than inline/indexed (from 156-1 M2)
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-06-10'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-10'
     type: bug
   - id: 160-2
     title: validator._validate_depends_on only validates epics[].stories, not standalone_stories/top-level — dangling deps there pass (from 156-3 review)
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-06-10'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-10'
     type: bug
   - id: 160-3
     title: Gate raw-truthy story.get('jira') in story_transition.py:75 + story_finish.py:174 via shared _has_real_jira_key + extract NO_JIRA_SENTINELS constant (from 156-2 review)
     points: 2
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-06-10'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-10'
     type: bug
   - id: 160-4
     title: 'fetch_sprint _load_file silently drops malformed-but-present shards (catch->None->silent continue) — warn/surface per #50 fail-loud (from 156-4 M1)'
     points: 1
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-06-10'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-10'
     type: bug
+    review_findings: "HIGH: non-UTF-8 shard raises UnicodeDecodeError out of fetch_sprint (read_text outside parse-catch; except OSError misses ValueError) — develop silently dropped it, branch blanks whole panel; regression vs AC2 warn-don't-crash. Fix: encoding='utf-8' + route decode failure into parse-warning branch; TEA pins with write_bytes RED test. MEDIUM (non-blocking): PermissionError on present shard still silent. LOWs: encoding param, exc-snippet truncation, pre-existing ref containment."
+    review_verdict: approved
   - id: 160-5
     title: sprint new/update --dry-run doesn't exercise the write path — false-positive masks failures; make dry-run reach or assert the write (from 156-5/156-4)
     points: 2
@@ -83,3 +93,80 @@ stories:
     repos: pennyfarthing
     workflow: trivial
     type: chore
+  - id: 160-10
+    title: "Harden validate_epic_shard per-story loop: guard non-dict story entries (AttributeError at validator.py:409) + replace 'Missing required field' string-match filter with structured marker (160-1 review deferrals)"
+    points: 1
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: chore
+  - id: 160-11
+    title: Promote _has_real_jira_key to public in loader.py + remove dead _NO_JIRA_SENTINELS alias in story_update.py (160-3 review deferrals)
+    points: 1
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: chore
+  - id: 160-12
+    title: 'ws_push read hygiene sweep: archive loop + benchmark/persona fetchers silently swallow read/parse errors and lack encoding= (6 read_text sites) — surface per #50 fail-loud (from 160-4 Dev/Reviewer findings)'
+    points: 2
+    priority: p1
+    status: done
+    started: '2026-06-25'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-06-25'
+    review_verdict: approved
+  - id: 160-13
+    title: 'Shard-ref path containment: epic refs from sprint YAML build paths without resolve()/containment check (CWE-22) in shard_merge.py and ws_push.py (from 160-4 review finding)'
+    points: 1
+    priority: p1
+    status: done
+    started: '2026-06-24'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-06-24'
+    review_verdict: approved
+  - id: 160-14
+    title: 'Sweep remaining CWE-22 shard-ref read sites with is_safe_shard_path: loader.py:326 get_archived_stories, archive_epic.py:193 load_archive + :144 backfill, and shard_merge orphan-scan/detect_orphan_shards glob loops (from 160-13 review)'
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 160-15
+    title: 'ws_push fail-loud sweep part 2: extend warn-on-present-but-broken to remaining pre-existing silent swallows (fetch_git subprocess-parse, fetch_context degraded-shape, outer fetch_persona catch-all) + add L171 main-sprint-read behavioral test and read-vs-parse warning wording (from 160-12 Reviewer findings)'
+    points: 1
+    priority: p1
+    status: done
+    started: '2026-06-25'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-06-25'
+    review_verdict: approved
+  - id: 160-16
+    title: 'ws_push/data_proxy fail-loud sweep part 3: warn on present-but-broken in data_proxy._get_git_info (subprocess int-parse silent->None) + _get_repos_config (repos.yaml parse swallow) + the fetch_persona inner portrait-resolver except Exception: pass (ws_push ~L497, AC-3) — from 160-15 TEA/Dev/Reviewer findings'
+    points: 1
+    priority: p1
+    status: done
+    started: '2026-06-25'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-06-25'
+    review_verdict: approved
+  - id: 160-17
+    title: 'ws_push/data_proxy fail-loud sweep part 4: warn-then-degrade the remaining data_proxy silent swallows — get_theme_agents (~L314 except Exception: return JSONResponse({})) + _get_identity jira/gh os.popen probes (~L372/L382 except Exception: pass) — from 160-16 TEA/Dev/Reviewer findings'
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 160-18
+    title: 'Frame fail-loud sweep: sanitize the warnings sink before any network exposure — the 160-4/12/15/16 warns interpolate raw {exc} + local paths (repo_path) into warnings.warn (low-sev info-leak if Frame ever forwards warnings to a network client); emit type(exc).__name__ + fixed description, or confirm stderr-only sink — from 160-16 Reviewer finding'
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd

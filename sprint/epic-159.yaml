@@ -10,10 +10,13 @@ stories:
     title: 'theme_characters: accept dict-shaped agent_data, not just character name (gh #34)'
     points: 2
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-06-23'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-24'
     type: bug
+    review_verdict: approved
   - id: 159-2
     title: 'SM agent: reconsider TodoWrite ban (or document the reasoning) (gh #46)'
     points: 1
@@ -57,3 +60,38 @@ stories:
     repos: pennyfarthing
     workflow: trivial
     type: bug
+  - id: 159-7
+    title: 'Harden dict-shaped theme_characters overrides: guard non-dict helper (AttributeError persona.py:150) + non-list catchphrases (TypeError persona.py:146) + get_crew_manifest character-fallback parity with load_persona (persona.py:191) + reset _quote_cache module global between tests (persona.py:25) + document str|dict override shape in config guide (159-1 review deferrals)'
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: chore
+  - id: 159-8
+    title: 'Frame kills live sessions (161-1 regression): ephemeral owner PID on hook/launch auto-start + idle-timeout blind to OTLP/HTTP traffic'
+    description: "161-1 (commit 9c882af, gh #97) added in-process self-termination to the Frame (lifecycle.py monitor_and_shutdown → app.py _trigger_shutdown SIGTERM). Two wiring defects cause it to kill LIVE sessions. Defect 1: start_frame() stamps FRAME_OWNER_PID = os.getpid() of its CALLER; correct only on the 'pf frame start' exec path (PID preserved via os.execvpe into claude). On the SessionStart-hook auto-start (session_start.py:186, the path 'just claude' relies on) and on 'pf launch tui/frame' (launch/cli.py), the caller is ephemeral — owner PID is a dead/recycled PID within seconds → monitor self-terminates the frame (~30s, or randomly via PID reuse). Defect 2: idle-timeout treats a frame with zero WebSocket clients as idle even while it is actively serving OTLP telemetry + HTTP API (POST /api/subagent-event etc.); _touch_activity() only fires on WS connect/disconnect, so a CLI-only session's frame dies ~30min in. Evidence: frame.log shows a graceful self-SIGTERM ('Shutting down'), NOT a memory/OOM kill. COORDINATION: sibling 159-5 hardens the SAME monitor against silent death (orphans surviving); landing 159-5 first would make THIS random-death more reliable. Do 159-8 first (or together). Design recorded in docs/adr/0040."
+    points: 3
+    priority: p1
+    status: done
+    started: '2026-06-24'
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria:
+      - A Frame auto-started by the SessionStart hook survives the full duration of its owning Claude session and does not self-terminate while that session is alive and producing telemetry (regression test simulates an ephemeral launcher exiting while the session lives).
+      - A Frame whose owning session has ended — normally OR via SIGKILL — still self-terminates within a bounded window (preserves 161-1 orphan-reaping intent; default window may be shortened).
+      - 'Inbound OTLP telemetry and HTTP API requests count as liveness activity: a Frame with zero WebSocket clients but live telemetry is NOT judged idle.'
+      - Any owner-PID liveness check is robust against PID reuse (identity verified beyond bare os.kill(pid,0) — e.g. PID+create-time or ancestry), OR owner-PID gating is removed in favor of the traffic signal per the ADR. Chosen design must neither kill a live session nor be fooled by a recycled PID.
+      - All three start paths (pf frame start, pf launch tui/frame, SessionStart-hook auto-start) register a correct long-lived owner; a test asserts owner correctness per path.
+      - "The self-termination path emits a log line stating the reason (e.g. 'idle: 0 clients, no traffic Ns' vs 'owner <pid> dead'); 161-1 lifecycle test baseline stays green."
+    completed: '2026-06-24'
+    type: bug
+    review_verdict: approved
+  - id: 159-9
+    title: 'Frame OTLP + subagent-event handlers fail-loud: replace silent except-pass with logging'
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: refactor
