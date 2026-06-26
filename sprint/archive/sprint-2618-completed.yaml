@@ -289,3 +289,8 @@ completed_stories:
     title: 'Completed YAML writes empty epic field instead of actual epic ID (gh #16)'
     points: 1
     completed: '2026-06-25'
+  - id: 160-17
+    epic: '160'
+    title: 'ws_push/data_proxy fail-loud sweep part 4: warn-then-degrade the remaining data_proxy silent swallows — get_theme_agents (~L314 except Exception: return JSONResponse({})) + _get_identity jira/gh os.popen probes (~L372/L382 except Exception: pass) — from 160-16 TEA/Dev/Reviewer findings'
+    points: 2
+    completed: '2026-06-26'
