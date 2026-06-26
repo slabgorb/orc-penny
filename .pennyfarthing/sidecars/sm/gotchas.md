@@ -47,3 +47,11 @@ A sm-finish preflight subagent once FIXED ruff issues and committed to local dev
 <gotcha name="hook-cwd-protected-branch">
 PreToolUse git hooks evaluate against the shell's CURRENT cwd (and pattern-match command text), not the cd target inside a compound command. Running orchestrator git ops while the shell sits in pennyfarthing/ on develop gets blocked as "protected branch". Split into separate Bash calls; cd first, standalone.
 </gotcha>
+
+<gotcha name="epic-yaml-id-collision-off-premerge-main" severity="warning">
+Branching a new story's orchestrator branch off CLEAN origin/main while a prior sprint PR (that adds stories to the same epic) is still UNMERGED → `pf sprint story add` auto-increments from the stale epic shard and re-assigns an ID the pending PR already claimed (e.g. both add `155-7`) — a semantic ID collision, not just a git conflict. Fix: do the orchestrator finish/follow-up bookkeeping AFTER the pending PR merges, then rebase onto post-merge main so `story add` sees the real max ID. The pennyfarthing CODE PR is independent of epic-YAML and can ship first.
+</gotcha>
+
+<gotcha name="backfill-epic-refs-live-data-only">
+`archive_epic.backfill_epic_refs` resolves empty `epic: ''` archive rows ONLY from LIVE sprint data (`load_sprint` → current epics). Historical rows whose epics are long-archived (e.g. 77 rows in sprint-2610-completed.yaml from epics 143/144/145) are ALL marked "irrecoverable" and the file is never rewritten (it only rewrites when every row resolves). So it CANNOT backfill old archives — those need a prefix-parse migration (`144-5 → 144`), which is the opposite of the no-prefix-parse rule in the live finish path (155-4). Treat historical backfill as its own follow-up, not "straightforward."
+</gotcha>
