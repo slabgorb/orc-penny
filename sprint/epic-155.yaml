@@ -43,9 +43,11 @@ stories:
     title: 'Completed YAML writes empty epic field instead of actual epic ID (gh #16)'
     points: 1
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-06-25'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-25'
     type: bug
   - id: 155-5
     title: "sm-finish preflight false-blocks: stale repos.yaml language:javascript drives npm lint on Python-only root; 'No PR found' on already-merged PRs"
@@ -71,3 +73,30 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+  - id: 155-8
+    title: Delegate epic-ref resolution to canonical _get_epic_ref (155-4 review deferral)
+    description: "From 155-4 Reviewer deferred finding (MEDIUM, PR pennyfarthing#126): _resolve_epic_ref (story_finish.py:59) and backfill_epic_refs (archive_epic.py:330) both reimplement 'str(epic.get(\"jira\") or epic.get(\"id\"))' instead of delegating to the canonical _get_epic_ref (yaml_io.py:312). The local formula diverges for sentinel-jira epics and 'epic-'-prefixed no-jira epics → could write epic:'epic-94' → orphan misgrouping + epic-epic-94.yaml double-prefix (the ADR-0022 trap). Latent only today: every live epic has a real PROJ-* jira so all three resolvers currently agree. Fix: delegate both call sites to _get_epic_ref so there is one canonical epic-ref formula. AC: both resolvers call _get_epic_ref; regression test pins sentinel-jira and epic-prefixed-no-jira epics resolve identically across all three paths."
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: refactor
+  - id: 155-9
+    title: 'Harden finish archive epic-field: test caller-wiring/edges, tighten vacuous assertion, guard step-4b read_sprint (155-4 review deferrals)'
+    description: "From 155-4 Reviewer deferred findings (LOW, PR pennyfarthing#126). 155-4 tests hit only the _add_story_to_completed seam. Gaps: (1) the step-4b de-swallow in finish_story (the other half of the bug) is uncovered; (2) the jira-keyed-epic priority branch uncovered; (3) the standalone-story explicit-fallback uncovered; (4) the except ValueError branch (story_finish.py:112-118) uncovered. Also: (5) vacuous assertion at test_155_4_finish_archive_epic_field.py:177 ('assert ghost is None or ...strip()') accepts a fabricated non-empty epic on the raise-path — tighten to 'assert ghost is None'. And (6, finding 4) story_finish.py:464 step-4b read_sprint is unwrapped — an unexpected I/O error there now crashes finish AFTER merge/transition (steps 4c-7 skipped); add a graceful-degrade guard (near-nil window since read succeeded earlier same run, but defensible). Note finding 5 (non-blocking, accepted): 4b {success:False} prints but top-level finish exit code stays 0 — invisible to non-interactive $? callers; acceptable per documented non-fatal intent, revisit only if finish gains hard-fail semantics."
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: chore
+  - id: 155-10
+    title: Backfill 77 historical epic:'' rows in sprint-2610-completed.yaml via prefix-parse migration (155-4 AC3)
+    description: "From 155-4 AC3 (PR pennyfarthing#126). grep -rn \"epic: ''\" sprint/archive/ surfaces 77 rows in sprint/archive/sprint-2610-completed.yaml (historical stories from epics 143/144/145/147, all numeric {epic}-{seq} ids). The existing backfill_epic_refs helper (archive_epic.py:299) resolves epics ONLY from LIVE sprint data (load_sprint -> current epics), so these long-archived epics are all marked 'irrecoverable' and the file is never rewritten — the helper CANNOT fix historical rows. A correct backfill is a one-time prefix-parse migration (e.g. 144-5 -> epic '144'), which is safe HERE because every offender is unambiguous numeric {epic}-{seq}. Scope: add a prefix-parse fallback path for historical/archived ids (guarded so it does NOT weaken the live finish path's no-prefix-parse rule from 155-4), backfill the 77 rows, and verify the rewrite passes the _write_archive_file non-empty-epic guard. Data lives in the orchestrator repo (sprint/archive/), tooling in pennyfarthing."
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: chore
