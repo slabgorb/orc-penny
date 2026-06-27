@@ -304,3 +304,8 @@ completed_stories:
     title: 'Frame fail-loud sweep: sanitize the warnings sink before any network exposure — the 160-4/12/15/16 warns interpolate raw {exc} + local paths (repo_path) into warnings.warn (low-sev info-leak if Frame ever forwards warnings to a network client); emit type(exc).__name__ + fixed description, or confirm stderr-only sink — from 160-16 Reviewer finding'
     points: 2
     completed: '2026-06-27'
+  - id: 160-19
+    epic: '160'
+    title: 'Fail-loud sweep part 5: warn-then-degrade get_context silent swallow — data_proxy.py get_context (~L299) except Exception returns an all-None context shape with the error embedded but emits NO warnings.warn; last silent swallow in the file. From 160-17 TEA/Dev/Reviewer findings.'
+    points: 2
+    completed: '2026-06-27'
