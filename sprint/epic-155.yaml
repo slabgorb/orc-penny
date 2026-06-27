@@ -100,3 +100,26 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     type: chore
+  - id: 155-11
+    title: 'sm-finish runs pf.* with project .venv -> ModuleNotFoundError + subagent retry storm (gh #112)'
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 155-12
+    title: 'Finish completes ceremony when merge_pr fails on a CONFLICTING/DIRTY PR - done-but-unmerged (gh #113)'
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 155-13
+    title: 'Auto-suggest follow-up stories at finish for deferred Delivery Findings (gh #114)'
+    points: 3
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd

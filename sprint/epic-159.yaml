@@ -95,3 +95,19 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     type: refactor
+  - id: 159-10
+    title: 'Project-local workflows only honored by router, not execution engine (gh #115)'
+    points: 3
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 159-11
+    title: 'TUI crash in textual widget._compose - needs triage (gh #131)'
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
