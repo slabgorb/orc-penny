@@ -112,10 +112,13 @@ stories:
     title: 'Finish completes ceremony when merge_pr fails on a CONFLICTING/DIRTY PR - done-but-unmerged (gh #113)'
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-06-27'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-27'
     type: bug
+    review_verdict: approved
   - id: 155-13
     title: 'Auto-suggest follow-up stories at finish for deferred Delivery Findings (gh #114)'
     points: 3
