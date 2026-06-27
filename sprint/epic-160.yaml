@@ -171,9 +171,12 @@ stories:
     title: 'Frame fail-loud sweep: sanitize the warnings sink before any network exposure — the 160-4/12/15/16 warns interpolate raw {exc} + local paths (repo_path) into warnings.warn (low-sev info-leak if Frame ever forwards warnings to a network client); emit type(exc).__name__ + fixed description, or confirm stderr-only sink — from 160-16 Reviewer finding'
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-06-27'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-27'
+    review_verdict: approved
   - id: 160-19
     title: 'Fail-loud sweep part 5: warn-then-degrade get_context silent swallow — data_proxy.py get_context (~L299) except Exception returns an all-None context shape with the error embedded but emits NO warnings.warn; last silent swallow in the file. From 160-17 TEA/Dev/Reviewer findings.'
     points: 2
@@ -195,6 +198,13 @@ stories:
     title: "Fix remaining Frame brownfield routes (hotspots/health-score/code-markers): same to_thread(async_fn) shape as 160-20 but DISTINCT deeper arg bugs — get_hotspots/get_code_markers call analyze_repo(name, path) with only project_dir (missing required 'path'); get_health_score passes a non-existent use_cache kwarg to analyze_healthscore. Each needs a design decision (name/path source, use_cache removal) + Path() + await. Also tighten test_frame_routes.py analysis-route tests which accept status_code in (200,500) and masked 160-20. From 160-20 TEA/Dev/Reviewer findings."
     points: 3
     priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 160-22
+    title: 'Sanitize Frame response-body info-leaks (data_proxy.py): get_project_info (L466) returns the raw absolute project_dir (OS username + filesystem layout) and get_git_all (L274) returns repo-relative paths directly in JSON response bodies — sanitize to basename/omit. get_context str(e) (L322) overlaps 160-19. Pre-existing leaks surfaced by 160-18 Reviewer (reviewer-security).'
+    points: 2
+    priority: p1
     status: backlog
     repos: pennyfarthing
     workflow: tdd

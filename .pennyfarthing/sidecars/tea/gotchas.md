@@ -32,6 +32,10 @@ sm-setup may create `.session/{id}-session.md` but NOT `sprint/context/context-s
 When the story is a bug IN `testing-runner` itself (e.g. 158-2/gh #53: it clobbers `.session/{STORY_ID}-session.md`), NEVER verify RED by spawning `testing-runner` with the active `STORY_ID` — it will reproduce the bug on your OWN live session and erase your assessment. Verify RED with a direct scoped `uv run pytest <one file> -q` (the `scoped-red-run` pattern) and test the durable helper contract + a static guard on the agent `.md` instead of driving the non-deterministic subagent. Log both as Design Deviations.
 </gotcha>
 
+<gotcha name="testing-runner-hallucinates-failure-reasons" severity="high">
+The `testing-runner` subagent (haiku) can correctly report the VERDICT (e.g. "VALID RED — all 6 AssertionError, file collects clean") yet HALLUCINATE the per-test details: 160-18 it invented exception types (KeyError/FileNotFoundError/URLError) that were NOT what the test seams injected (ValueError/RuntimeError), and misquoted a regex subject pattern. For security/contract RED where the *reason* a test fails IS the deliverable (sanitization, info-leak, fail-loud), do NOT trust the spy's prose — confirm ground truth yourself with a direct scoped run: `python3 -m pytest src/pf/tests/test_X.py -p no:cacheprovider -rA 2>&1 | grep -E "FAILED|AssertionError|assert |message ="`. Branch-safe as long as you name the single file (only `test_git_utils.py` hijacks the branch). The spy is fine for "did N tests fail"; it is NOT a source of truth for "WHY each failed".
+</gotcha>
+
 <gotcha name="testing-runner-sources-deleted-scripts" severity="high">
 `agents/testing-runner.md` (and `agents/README.md`, `scripts/test/README.md`) still `source` bash helpers `test-cache.sh` / `test-setup.sh` that have been DELETED — only README stubs remain. The silent `source` failure is exactly why the haiku agent improvises and clobbers the session. Don't trust the markdown's bash flow; the real test runner is `pf check` / `scripts/workflow/check.py`.
 </gotcha>
