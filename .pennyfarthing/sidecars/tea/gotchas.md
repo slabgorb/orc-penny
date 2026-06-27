@@ -4,6 +4,26 @@
 Verify tests actually fail. Run them and grep for FAIL/failed. "RED state" means tests run and fail on assertions.
 </gotcha>
 
+<gotcha name="fail-loud-swallow-hides-constant-bug" severity="high">
+On a fail-loud sweep story ("add warnings.warn to a silent except"), ALWAYS drive the
+real code path first — a silent `except` very often masks a CONSTANT bug (the try-body
+is 100% broken, not occasionally). Seen 160-15, 160-17 round-2, and 160-19:
+`get_context` did `ContextConfig(project_dir=...)` — a field that doesn't exist — so it
+raised `TypeError` on EVERY request and the swallow returned all-None silently;
+`/api/context` never showed real data. A warn-ONLY fix over a constant bug makes the
+warning fire every request (warn-spam) — the exact blocking defect 160-17 round-2 was
+rejected for. So the story's REAL scope includes fixing the constant bug, so the warn is
+reserved for genuine failures (SOUL #1). TEST TECHNIQUE that forces both: (1) monkeypatch
+the seam to RETURN a healthy result and assert the real values reach the body + NO warn
+fires — RED today (constant bug short-circuits before the seam) and RED on a naive
+warn-only fix (it warns on a healthy call); (2) a `pytest.warns` test with the seam
+raising, for the genuine-exception path; (3) optionally a real-wiring test patching a
+deeper seam (e.g. `context_window.find_transcript`→None) to assert a graceful sentinel,
+not a crash string. Confirm the constant bug with a 3-line `python3 -c` driving the live
+route BEFORE designing tests. Log it as a blocking Delivery Finding + a scope-expansion
+Design Deviation.
+</gotcha>
+
 <gotcha name="wrong-failure">
 Tests must fail due to missing implementation, not syntax errors or import failures.
 </gotcha>

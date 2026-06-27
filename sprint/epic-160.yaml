@@ -181,9 +181,13 @@ stories:
     title: 'Fail-loud sweep part 5: warn-then-degrade get_context silent swallow — data_proxy.py get_context (~L299) except Exception returns an all-None context shape with the error embedded but emits NO warnings.warn; last silent swallow in the file. From 160-17 TEA/Dev/Reviewer findings.'
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-06-27'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-06-27'
+    branch: feat/160-19
+    review_verdict: approved
   - id: 160-20
     title: 'Fix missing-await in Frame brownfield routes — get_dead_code/get_complexity/get_dependencies invoke find_stale_files/analyze_complexity/analyze_dependencies WITHOUT await (RuntimeWarning: coroutine never awaited), so they return a coroutine/empty and never execute. From 160-17 Dev finding.'
     points: 2
