@@ -309,3 +309,8 @@ completed_stories:
     title: 'Fail-loud sweep part 5: warn-then-degrade get_context silent swallow — data_proxy.py get_context (~L299) except Exception returns an all-None context shape with the error embedded but emits NO warnings.warn; last silent swallow in the file. From 160-17 TEA/Dev/Reviewer findings.'
     points: 2
     completed: '2026-06-27'
+  - id: 160-22
+    epic: '160'
+    title: 'Sanitize Frame response-body info-leaks (data_proxy.py): get_project_info (L466) returns the raw absolute project_dir (OS username + filesystem layout) and get_git_all (L274) returns repo-relative paths directly in JSON response bodies — sanitize to basename/omit. get_context str(e) (L322) overlaps 160-19. Pre-existing leaks surfaced by 160-18 Reviewer (reviewer-security).'
+    points: 2
+    completed: '2026-06-27'
