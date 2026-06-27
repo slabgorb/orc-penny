@@ -299,3 +299,8 @@ completed_stories:
     title: 'Fix missing-await in Frame brownfield routes — get_dead_code/get_complexity/get_dependencies invoke find_stale_files/analyze_complexity/analyze_dependencies WITHOUT await (RuntimeWarning: coroutine never awaited), so they return a coroutine/empty and never execute. From 160-17 Dev finding.'
     points: 2
     completed: '2026-06-26'
+  - id: 160-18
+    epic: '160'
+    title: 'Frame fail-loud sweep: sanitize the warnings sink before any network exposure — the 160-4/12/15/16 warns interpolate raw {exc} + local paths (repo_path) into warnings.warn (low-sev info-leak if Frame ever forwards warnings to a network client); emit type(exc).__name__ + fixed description, or confirm stderr-only sink — from 160-16 Reviewer finding'
+    points: 2
+    completed: '2026-06-27'
