@@ -314,3 +314,8 @@ completed_stories:
     title: 'Sanitize Frame response-body info-leaks (data_proxy.py): get_project_info (L466) returns the raw absolute project_dir (OS username + filesystem layout) and get_git_all (L274) returns repo-relative paths directly in JSON response bodies — sanitize to basename/omit. get_context str(e) (L322) overlaps 160-19. Pre-existing leaks surfaced by 160-18 Reviewer (reviewer-security).'
     points: 2
     completed: '2026-06-27'
+  - id: 155-12
+    epic: '155'
+    title: 'Finish completes ceremony when merge_pr fails on a CONFLICTING/DIRTY PR - done-but-unmerged (gh #113)'
+    points: 2
+    completed: '2026-06-27'
