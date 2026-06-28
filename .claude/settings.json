@@ -2,5 +2,8 @@
   "enabledPlugins": {
     "brm@brm": false,
     "zeitgoose@zeitgoose": false
+  },
+  "worktree": {
+    "bgIsolation": "none"
   }
 }

@@ -1,5 +1,9 @@
 # SM Agent Gotchas
 
+<gotcha name="finish-needs-bare-session-name" severity="high">
+`pf sprint story finish` is internally inconsistent on the story-id form, and a slug-named session breaks it mid-run. When `sm-setup` is given a multi-word SLUG it names the session `.session/{id}-{slug}-session.md` (e.g. `160-18-frame-warnings-sink-sanitize-session.md`), but finish wants the BARE `{epic-num}-session.md` and a bare story-id arg: `finish 160-18` → "Session file not found: .session/160-18-session.md" (constructs path from the bare arg), while `finish 160-18-frame-...` → "Invalid story ID format" (yaml-update rejects the slug). WORSE: the slug-arg attempt gets PAST session lookup and ARCHIVES the session (a COPY to `sprint/archive/{slug}-session.md`) BEFORE failing at yaml-update → a half-finished state (story still `backlog`, stray slug-named archive, .session intact). RECOVERY: (1) `rm sprint/archive/{id}-{slug}-session.md` (the premature stray), (2) `mv .session/{id}-{slug}-session.md .session/{id}-session.md` (rename to the canonical BARE name every prior archive uses — `ls sprint/archive/*-session.md` confirms all are bare), (3) `pf sprint story finish {bare-id}` — now session lookup AND yaml-update both accept it. Systemic fix candidate (own story): sm-setup should name the session bare `{id}-session.md`, OR finish should glob `.session/{id}-*session.md` + validate only the leading `{epic}-{num}`.
+</gotcha>
+
 <gotcha name="no-code" severity="critical">
 SM never writes implementation code. Read-only for context. Create session → handoff.
 </gotcha>
