@@ -319,3 +319,8 @@ completed_stories:
     title: 'Finish completes ceremony when merge_pr fails on a CONFLICTING/DIRTY PR - done-but-unmerged (gh #113)'
     points: 2
     completed: '2026-06-27'
+  - id: 159-11
+    epic: '159'
+    title: 'TUI crash in textual widget._compose - needs triage (gh #131)'
+    points: 2
+    completed: '2026-06-28'
