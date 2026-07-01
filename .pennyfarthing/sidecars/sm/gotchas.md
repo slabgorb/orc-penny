@@ -63,3 +63,20 @@ Branching a new story's orchestrator branch off CLEAN origin/main while a prior 
 <gotcha name="sm-setup-phase-red-complete-phase-overshoots" severity="warning">
 sm-setup MODE=setup writes `**Phase:** red` (the first WORK phase) into the new session, NOT `**Phase:** setup`. So if SM then runs the documented setup-exit `complete-phase` → `marker`, `complete-phase` completes the phase named in the `**Phase:**` FIELD (red), advances to green, and `marker` emits `/pf-dev` — routing past TEA's RED phase. Root cause: complete-phase keys off the `**Phase:**` field value, not the open phase-history row (setup). CLEANEST EXIT after sm-setup in a phased TDD workflow: emit `pf handoff marker` ONLY (Phase already = red → marker emits `/pf-tea`); do NOT run complete-phase, since SM doesn't own the red phase it would be "completing". NOTE: archived 160-16 shipped with the same lossy stamping (`red`: no Started, has Ended) yet still routed through TEA — the underlying routing reaches TEA fine; the phase-history Started/Ended stamps are just cosmetically dropped on the setup→red hop. Recovery if you already over-advanced to green: `pf workflow fix-phase` only moves FORWARD (refuses green→red), so hand-edit the Workflow Tracking block — set `**Phase:** red`, close the `setup` row, make `red` the open row, delete any duplicate `green` placeholder — then verify `pf handoff phase-check tea` (→ `agent: tea, action: start`) and emit `marker` (→ `/pf-tea`). Seen 160-17 (2026-06-26).
 </gotcha>
+
+<gotcha name="finish-marks-done-when-merge-blocked" severity="high">
+155-5 finish (2026-07-01): `pf sprint story finish` ran all steps (archive_session,
+merge_pr, jira_done, yaml_update, ..., remove_session) and marked the story `done`,
+but PR #137 stayed **OPEN** — the `merge_pr` step was a silent no-op. Root cause in
+THIS env: the Claude Code auto-mode classifier DENIES `gh pr merge` (AI-reviewed PR to
+a protected branch with no human approval), so finish's merge subprocess never landed —
+yet finish did NOT abort; it archived + removed the session and flipped to `done`
+(the exact "done while PR open" 155-1 class, in the finish-truthfulness epic 155). This
+is the accepted-over-reach path from 155-1 (`test_no_pr_finish_still_succeeds`) firing on
+a blocked/denied merge rather than a genuinely absent PR. RECOVERY: verify PR state
+(`gh pr view <n> --json state,mergedAt`); if OPEN+MERGEABLE, get human merge authorization
+(the classifier blocks agent merge — do NOT work around it), merge, THEN commit the sprint
+bookkeeping. HOLD the `chore(sprint): complete` commit until the PR actually merges — never
+record `done` before the merge lands (SOUL #14). Also: orchestrator `main` push is
+classifier-gated (trunk-based-with-PRs) — needs explicit human authorization even though
+history shows direct `chore(sprint): complete` commits. Filed follow-up in epic 155.
