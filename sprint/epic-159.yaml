@@ -119,7 +119,8 @@ stories:
     description: "Implement ADR-0041 Phase 1: a new *advisory* (inform-only) PreToolUse hook that fires the instant Claude is about to edit a path in a repos.yaml never-edit zone, injecting a short reminder pointing at the correct source (e.g. edit pennyfarthing-dist/ source, not the .pennyfarthing/ symlink). Reads never-edit zones from repos.yaml (single source of truth — no restated rule file). Returns additionalContext ONLY, never a permission decision: enforcement stays with pre-edit-check/branch-protection. Steal live-rules' design (gitignore-style glob match, fail-soft). No Node; no every-prompt UserPromptSubmit hammer (that fights prime's deliberate shrink-to-MINIMAL tier — see ADR-0041 Defect 1). Wire into pf.hooks dispatch alongside existing PreToolUse handlers. Touch points: new handler sibling to hooks/pre_edit_check.py, existing repos.yaml loader, hooks/dispatch.py + hooks/cli.py."
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-07-01'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
@@ -129,5 +130,6 @@ stories:
       - 'Fail-soft: a malformed or absent repos.yaml causes exit 0 with no output and the edit is NOT blocked'
       - Never-edit zones are read from repos.yaml (single source of truth); the hook does NOT introduce a parallel rule file
       - The hook is registered in the pf.hooks dispatch as a PreToolUse handler (matcher covers Edit|Write|MultiEdit) without disturbing existing PreToolUse handlers
+    completed: '2026-07-01'
     review_findings: 'ReDoS hardening: collapse adjacent ** in _translate (37s PoC on edit hot path). Also normalize relative-path branch + add AC4 length test.'
     review_verdict: approved

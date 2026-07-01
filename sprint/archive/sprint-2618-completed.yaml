@@ -324,3 +324,8 @@ completed_stories:
     title: 'TUI crash in textual widget._compose - needs triage (gh #131)'
     points: 2
     completed: '2026-06-28'
+  - id: 159-12
+    epic: '159'
+    title: Advisory never-edit-zone PreToolUse hook (ADR-0041 Phase 1)
+    points: 3
+    completed: '2026-07-01'
