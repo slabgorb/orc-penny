@@ -83,3 +83,18 @@ A static-lint-style test that does a naive whole-file substring match (e.g. `ass
 <gotcha name="testrun-cache-entrypoint">
 Test-result caching for `testing-runner` lives in `pf.session.test_cache` (story 158-2). The bash agent routes through `printf '%s' "$SUMMARY" | python -m pf.session.test_cache "$RUN_ID"` → writes `.session/test-runs/${RUN_ID}.md` (keyed on RUN_ID, never STORY_ID; refuses to touch a live session). The old `scripts/test/test-cache.sh` / `test-setup.sh` were DELETED — don't resurrect them. NOTE: `testing-runner.md`'s **Setup** section still `source`s the deleted `test-setup.sh` (for `ensure_test_containers`/`generate_run_id`) — a SEPARATE pre-existing breakage (container setup, not data-loss), left for a follow-up.
 </gotcha>
+
+<gotcha name="preflight-lint-detect-not-repos-yaml" severity="medium">
+Story 155-5: `pf.preflight.finish.check_lint` hardcoded `npm run lint`, false-blocking
+finish on the Python-only orchestrator root. The story FRAMED this as "stale repos.yaml
+language:javascript", but the self-contained fix does NOT read repos.yaml — the
+orchestrator root has neither package.json NOR pyproject.toml (its Python lives in the
+inlined `pennyfarthing/` subdir), and preflight runs from that root (`python -m
+pf.preflight finish`, no --project-root). So layout detection (package.json→npm, else
+pyproject.toml→ruff, else skip-clean) fixes the false-block within the pennyfarthing repo
+alone and dissolves the "blocking cross-repo repos.yaml edit" TEA flagged. Lesson: when a
+bug is framed around a CONFIG value, check whether the code even READS that config before
+scoping a cross-repo change — often the code is just hardcoded and a self-contained code
+fix is cleaner. Companion fix in same story: `check_pr_status` must fall back to `gh pr
+list --state merged --head <branch>` when `gh pr view <branch>` returns "no pull requests
+found" (merged PRs whose branch was deleted), mirroring 155-1's head-branch resolution.

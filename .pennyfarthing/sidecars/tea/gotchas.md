@@ -56,6 +56,25 @@ When the story is a bug IN `testing-runner` itself (e.g. 158-2/gh #53: it clobbe
 The `testing-runner` subagent (haiku) can correctly report the VERDICT (e.g. "VALID RED — all 6 AssertionError, file collects clean") yet HALLUCINATE the per-test details: 160-18 it invented exception types (KeyError/FileNotFoundError/URLError) that were NOT what the test seams injected (ValueError/RuntimeError), and misquoted a regex subject pattern. For security/contract RED where the *reason* a test fails IS the deliverable (sanitization, info-leak, fail-loud), do NOT trust the spy's prose — confirm ground truth yourself with a direct scoped run: `python3 -m pytest src/pf/tests/test_X.py -p no:cacheprovider -rA 2>&1 | grep -E "FAILED|AssertionError|assert |message ="`. Branch-safe as long as you name the single file (only `test_git_utils.py` hijacks the branch). The spy is fine for "did N tests fail"; it is NOT a source of truth for "WHY each failed".
 </gotcha>
 
+<gotcha name="preflight-lint-hardcodes-npm-not-repos-yaml" severity="high">
+Story 155-5: the "stale repos.yaml language:javascript DRIVES npm lint" framing is
+inaccurate — `pf.preflight.finish.check_lint` never reads repos.yaml at all; it
+hardcodes `asyncio.create_subprocess_exec("npm","run","lint")` regardless of
+language. So the code fix is "make check_lint language-aware" (reuse
+`scripts/workflow/check.py::detect_project_type` / `repo_config.lint_cmd`), and it
+lives in the pennyfarthing repo. The repos.yaml `language: python` config edit is a
+SEPARATE concern in the ORCHESTRATOR repo at `.pennyfarthing/repos.yaml` — a REAL
+file, NOT a symlink to pennyfarthing-dist (story context lied about "trace the
+symlink"). AC split across two repos → flag as blocking Delivery Finding + minor
+Design Deviation (framework pytest can only test the code half). TEST TECHNIQUE for
+async subprocess dispatch: patch BOTH `asyncio.create_subprocess_exec` AND
+`create_subprocess_shell` (robust to exec-vs-shell); assert on the captured command
+tokens ("npm" not run on a Python project) AND the outcome (`LintResult.clean` True
+when the Python linter passes). Always pair the RED with an over-reach guard (Node
+project must STILL npm-lint; genuinely-missing PR must STILL block) so the fix can't
+cheat by flipping the default.
+</gotcha>
+
 <gotcha name="testing-runner-sources-deleted-scripts" severity="high">
 `agents/testing-runner.md` (and `agents/README.md`, `scripts/test/README.md`) still `source` bash helpers `test-cache.sh` / `test-setup.sh` that have been DELETED — only README stubs remain. The silent `source` failure is exactly why the haiku agent improvises and clobbers the session. Don't trust the markdown's bash flow; the real test runner is `pf check` / `scripts/workflow/check.py`.
 </gotcha>

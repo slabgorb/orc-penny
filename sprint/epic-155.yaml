@@ -53,10 +53,14 @@ stories:
     title: "sm-finish preflight false-blocks: stale repos.yaml language:javascript drives npm lint on Python-only root; 'No PR found' on already-merged PRs"
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-07-01'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-07-01'
     type: bug
+    review_findings: "Incomplete fix: aggregate_results still hardcodes 'Run npm run lint' remediation (finish.py:400) — Python ruff failure emits npm guidance (AC1 gap). Bug-1 lint tests one-sided — pass even when Python linting disabled (AC3 gap). Plus non-blocking: fallback masks gh infra failure, CWE-88 branch/repo validation, LintResult.clean overload."
+    review_verdict: approved
   - id: 155-6
     title: Wire format_story_not_found_error into story_finish + correct hooks.md PR-create claim (153-8 review deferrals)
     description: "From 153-8 Reviewer deferred findings (PR pennyfarthing#107): (1) story_finish.py (lookups at ~190,332,402) uses find_story_in_data but silently proceeds on unknown story id — wire format_story_not_found_error (loader.py) into its not-found paths so finish lists candidate IDs like update/remove do; AC for 153-8 named finish but it was never wired. (2) guides/hooks.md overstates 'pf sprint story finish' as a gh pr create site — it only merges a pre-existing PR; real create sites are sm-finish (agent md) and the standalone flow. Also sweep: --title '' accepted on required field (LOW, consistent with other string fields); ruff I001 in test_153_8_agent_start_brief.py:30 (auto-fixable)."
@@ -126,3 +130,11 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+  - id: 155-14
+    title: 'Preflight hardening: gh arg-injection guard, LintResult.skipped truthful reporting, async stat, skip-branch test coverage'
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: chore

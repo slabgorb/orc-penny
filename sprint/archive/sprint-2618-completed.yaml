@@ -329,3 +329,8 @@ completed_stories:
     title: Advisory never-edit-zone PreToolUse hook (ADR-0041 Phase 1)
     points: 3
     completed: '2026-07-01'
+  - id: 155-5
+    epic: '155'
+    title: "sm-finish preflight false-blocks: stale repos.yaml language:javascript drives npm lint on Python-only root; 'No PR found' on already-merged PRs"
+    points: 2
+    completed: '2026-07-01'
