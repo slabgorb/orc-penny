@@ -196,6 +196,11 @@ Resulting tier-map changes are one-line edits; that is the point of the design.
 - Fable-tier membership (Keith, 2026-07-02): architect, reviewer, pm, tea(red).
 - Opus retained as heavyweight tier (Dev green, judges) pending replay evidence;
   Sonnet 5 may take the slot later via one-line map change.
+- Behavior change (final review, 2026-07-02): pipeline-replay reviewer-fanout
+  subagents were pinned to `claude-opus-4-6`; map resolution now gives
+  `reviewer-*` → analytical → sonnet (matching their frontmatter — the pinned
+  opus was the drift). The replay harness itself changed: pre-branch replay
+  scores are a separate baseline era, not comparable to post-branch runs.
 - Deviation (plan, 2026-07-02): peloton panes do not spawn `claude` processes
   (pane content is driven by the team/subagent substrate), so the spec's
   "pane spawns `claude --model <alias>`" line is inoperative. Model policy
