@@ -196,3 +196,14 @@ Resulting tier-map changes are one-line edits; that is the point of the design.
 - Fable-tier membership (Keith, 2026-07-02): architect, reviewer, pm, tea(red).
 - Opus retained as heavyweight tier (Dev green, judges) pending replay evidence;
   Sonnet 5 may take the slot later via one-line map change.
+- Deviation (plan, 2026-07-02): peloton panes do not spawn `claude` processes
+  (pane content is driven by the team/subagent substrate), so the spec's
+  "pane spawns `claude --model <alias>`" line is inoperative. Model policy
+  reaches peloton through native-agent frontmatter, subagent spawns, and the
+  `result_aggregator` judge default (all map-driven). `spawn_agent_panes`'s
+  unused `model` param left as-is.
+- Deviation (plan, 2026-07-02): current-model detection uses statusline
+  persistence (`.pennyfarthing/.runtime/current-model`, written on every
+  render from the statusline input's `model` field) instead of the spec's
+  transcript parsing — statusline receives the model id directly from
+  Claude Code, so no transcript format coupling. Advisory behavior unchanged.

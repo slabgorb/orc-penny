@@ -18,7 +18,7 @@ Orchestrator for Pennyfarthing framework development. Manages sprint tracking, a
 4. **Modify `pennyfarthing/pennyfarthing-dist/`** — single source of truth for all distributed files
 5. **Use `.js` extensions** in relative TypeScript imports
 6. **Return result objects** `{success, data?, error?}` — don't throw
-7. **Match model to task** — Haiku for mechanical tasks, Sonnet/Opus for analytical subagents
+7. **Match model to task** — tiers live in `pennyfarthing/pennyfarthing-dist/models.yaml`: haiku=mechanical, sonnet=analytical, opus=heavyweight, best(Fable/Opus)=judgment
 8. **Runtime scripts use `.pennyfarthing/` paths** — never `pennyfarthing-dist/`
 9. **Dogfood symlinks** — `.claude/commands/` and `.claude/skills/` symlink to `pennyfarthing-dist/`. Edit source, not targets.
 </critical>

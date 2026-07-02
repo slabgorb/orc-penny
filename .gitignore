@@ -93,3 +93,8 @@ axiathon
 .frame-port
 frame-pid
 tui-pid
+
+# pennyfarthing model-tier advisory state
+.pennyfarthing/.runtime/
+.session/.expected-model
+.session/.model-advised
