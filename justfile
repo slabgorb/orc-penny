@@ -127,16 +127,7 @@ setup:
 
     # Step 2: Install pf CLI (editable install from the inlined repo — stays in sync)
     echo "Step 2/4: Installing pf CLI from local repo..."
-    if command -v uv >/dev/null 2>&1; then
-        uv tool install --editable "{{pennyfarthing}}" --force --quiet 2>/dev/null \
-            || uv tool install --editable "{{pennyfarthing}}" --force
-    elif command -v pipx >/dev/null 2>&1; then
-        pipx install --editable "{{pennyfarthing}}" --force --quiet 2>/dev/null \
-            || pipx install --editable "{{pennyfarthing}}" --force
-    else
-        pip3 install -e "{{pennyfarthing}}" --quiet 2>/dev/null \
-            || pip3 install -e "{{pennyfarthing}}" --break-system-packages
-    fi
+    just --justfile "{{root}}/justfile" update-pf
     if ! command -v pf >/dev/null 2>&1; then
         echo ""
         echo "Warning: pf installed but not on PATH."
@@ -166,6 +157,28 @@ setup:
     echo "Verify: pf doctor"
     echo "Next:   pf theme set <name>   # see: pf theme list"
     echo "Then:   claude                # start Claude Code"
+
+# Update the global pf CLI from the local framework source.
+# Editable install keeps pure-Python changes live automatically; --force re-resolves
+# dependencies and refreshes entry points. Run after pulling pennyfarthing/ when
+# dependencies or the pf entry point change (a plain code pull needs no reinstall).
+update-pf:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo "Updating pf CLI (editable) from {{pennyfarthing}}..."
+    if command -v uv >/dev/null 2>&1; then
+        uv tool install --editable "{{pennyfarthing}}" --force --quiet 2>/dev/null \
+            || uv tool install --editable "{{pennyfarthing}}" --force
+    elif command -v pipx >/dev/null 2>&1; then
+        pipx install --editable "{{pennyfarthing}}" --force --quiet 2>/dev/null \
+            || pipx install --editable "{{pennyfarthing}}" --force
+    else
+        pip3 install -e "{{pennyfarthing}}" --quiet 2>/dev/null \
+            || pip3 install -e "{{pennyfarthing}}" --break-system-packages
+    fi
+    hash -r 2>/dev/null || true
+    # Non-fatal: setup handles the not-on-PATH case with a friendlier message.
+    echo "  Installed: $(pf --version 2>&1 || echo 'pf not yet on PATH')"
 
 # =============================================================================
 # Orchestrator-specific tasks
