@@ -66,9 +66,13 @@ stories:
     description: "From 153-8 Reviewer deferred findings (PR pennyfarthing#107): (1) story_finish.py (lookups at ~190,332,402) uses find_story_in_data but silently proceeds on unknown story id — wire format_story_not_found_error (loader.py) into its not-found paths so finish lists candidate IDs like update/remove do; AC for 153-8 named finish but it was never wired. (2) guides/hooks.md overstates 'pf sprint story finish' as a gh pr create site — it only merges a pre-existing PR; real create sites are sm-finish (agent md) and the standalone flow. Also sweep: --title '' accepted on required field (LOW, consistent with other string fields); ruff I001 in test_153_8_agent_start_brief.py:30 (auto-fixable)."
     points: 2
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-07-06'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-07-07'
+    review_findings: 'SOUL #10: unwrapped read_sprint at story_finish.py:282 can raise instead of returning a result dict (removed the try/except that guarded it). Wrap it; add throw-path + jira-key + zero-candidate tests.'
+    review_verdict: approved
   - id: 155-7
     title: 'Harden get_archive_path: path-traversal containment + sprint_id sanitization + encoding= on archive append (155-3 review deferral)'
     description: 'From 155-3 Reviewer deferred finding (PR pennyfarthing#119): archive_epic.get_archive_path builds sprint-{id}-completed.yaml from raw sprint-YAML metadata (name token via split, or str(number)) with no resolve()/containment check (CWE-22; lang-review python.md #5/#11), and archive.py opens the archive file for append without encoding=. LOW severity — sprint YAML is local self-authored config (no trust boundary) and the downstream archive_file.exists() guard fails loud. Fix CENTRALLY in get_archive_path so both story- and epic-archive callers benefit: add archive_path.resolve() plus a containment assertion under sprint/archive/, restrict sprint_id to word/dot/dash characters, and pass encoding=utf-8 to the append open().'

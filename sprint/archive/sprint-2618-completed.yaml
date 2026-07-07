@@ -334,3 +334,8 @@ completed_stories:
     title: "sm-finish preflight false-blocks: stale repos.yaml language:javascript drives npm lint on Python-only root; 'No PR found' on already-merged PRs"
     points: 2
     completed: '2026-07-01'
+  - id: 155-6
+    epic: '155'
+    title: Wire format_story_not_found_error into story_finish + correct hooks.md PR-create claim (153-8 review deferrals)
+    points: 2
+    completed: '2026-07-07'
