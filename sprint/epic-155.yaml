@@ -150,3 +150,17 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     type: bug
+  - id: 155-16
+    title: 'Wrap remaining read_sprint calls in finish path (SOUL #10) + 155-6 LOW test-polish deferrals'
+    description: "From 155-6 Reviewer deferred findings (PR pennyfarthing#142, epic-155 finish-truthfulness). The 155-6 SOUL #10 fix wrapped only the primary read_sprint call in finish_story; other reads on the finish path still throw raw tracebacks instead of returning {success: False}. (1) Wrap the step-4b read (add_completed_story path) and the status-transition read in story_finish.py in try/except (FileNotFoundError, ValueError) returning a result dict — same narrow catch as the 155-6 guard (story_finish.py:290-297), NOT a broad except Exception (lang-review rule #1). (2) LOW test-polish deferrals from 155-6: assert the 4b demo-hook step's epic value (not just error-absence); add a positive jira-key finish test if not already covered elsewhere. Keep catches narrow; mutation-verify each new guard."
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria:
+      - 'Step-4b read and status-transition read in finish_story return {success: False, story_id, error} on FileNotFoundError/ValueError instead of raising'
+      - New guards use narrow (FileNotFoundError, ValueError) catch, not broad except Exception; 0 rule-checker violations
+      - Each new guard is mutation-verified (deleting it fails a test)
+      - Demo-hook 4b test asserts the epic value; positive jira-key finish path has coverage
+    type: refactor
