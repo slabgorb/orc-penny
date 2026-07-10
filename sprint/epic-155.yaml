@@ -138,10 +138,13 @@ stories:
     title: 'Preflight hardening: gh arg-injection guard, LintResult.skipped truthful reporting, async stat, skip-branch test coverage'
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-07-10'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-07-10'
     type: chore
+    review_verdict: approved
   - id: 155-15
     title: finish marks story done + archives when auto-merge is blocked/denied (e.g. review-required guardrail) instead of aborting or holding in_review
     points: 3
@@ -184,3 +187,17 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     type: bug
+  - id: 155-19
+    title: 'Preflight hardening follow-ups: enforce LintResult skipped-invariant, unify lint/jira skipped to_dict shape, belt-and-suspenders _lookup arg-guard, symmetric jira over-reach + single-dash tests (155-14 review deferrals)'
+    description: "From 155-14 Reviewer deferred findings (PR pennyfarthing#144, epic-155 finish-truthfulness; all non-blocking Medium/Low). Target: pennyfarthing-dist/src/pf/preflight/finish.py + test_155_14_preflight_hardening.py. (1) [TYPE-M] LintResult permits contradictory skipped=True + error/clean=False; the skipped-implies-clean invariant is convention-only (only check_lint maintains it). Enforce via __post_init__ or model skip as a sum type. (2) [TYPE-M] to_dict() serializes lint.skipped as a nested key only while jira_skipped also emits a top-level flag + collapsed dict — unify the two 'not checked' wire shapes so downstream gates have one convention. (3) [SEC-L] _lookup_merged_pr_by_branch (finish.py:155) has no internal arg-guard, safe only by the check_pr_status caller invariant; add belt-and-suspenders _reject_option_like(branch,'branch') or an assert so a future second caller can't silently reopen CWE-88. (4) [TEST-M/L] add symmetric over-reach test (legit jira_key still reaches jira issue view), a single-dash '-R' injection case, and assert clean is True alongside skipped in test_check_lint_marks_skipped_when_no_lintable_project. Also consider folding in the check_acceptance_criteria blocking exists()/read_text() async-I/O (lang-review #9) TEA flagged during 155-14 — same file, same theme as AC3, but distinct from the CWE-22 path-traversal owned by 155-7."
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria:
+      - LintResult rejects or normalizes contradictory skipped+error states (mutation-verified test)
+      - lint and jira skipped states serialize with one consistent to_dict convention
+      - _lookup_merged_pr_by_branch guards its branch arg independently of the caller (test proves a direct call with option-shaped branch is neutralized)
+      - Symmetric jira over-reach test + single-dash injection case added; skip test asserts clean is True
+    type: refactor
