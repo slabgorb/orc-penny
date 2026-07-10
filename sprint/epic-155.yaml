@@ -86,10 +86,13 @@ stories:
     description: "From 155-4 Reviewer deferred finding (MEDIUM, PR pennyfarthing#126): _resolve_epic_ref (story_finish.py:59) and backfill_epic_refs (archive_epic.py:330) both reimplement 'str(epic.get(\"jira\") or epic.get(\"id\"))' instead of delegating to the canonical _get_epic_ref (yaml_io.py:312). The local formula diverges for sentinel-jira epics and 'epic-'-prefixed no-jira epics → could write epic:'epic-94' → orphan misgrouping + epic-epic-94.yaml double-prefix (the ADR-0022 trap). Latent only today: every live epic has a real PROJ-* jira so all three resolvers currently agree. Fix: delegate both call sites to _get_epic_ref so there is one canonical epic-ref formula. AC: both resolvers call _get_epic_ref; regression test pins sentinel-jira and epic-prefixed-no-jira epics resolve identically across all three paths."
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-07-10'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-07-10'
     type: refactor
+    review_verdict: approved
   - id: 155-9
     title: 'Harden finish archive epic-field: test caller-wiring/edges, tighten vacuous assertion, guard step-4b read_sprint (155-4 review deferrals)'
     description: "From 155-4 Reviewer deferred findings (LOW, PR pennyfarthing#126). 155-4 tests hit only the _add_story_to_completed seam. Gaps: (1) the step-4b de-swallow in finish_story (the other half of the bug) is uncovered; (2) the jira-keyed-epic priority branch uncovered; (3) the standalone-story explicit-fallback uncovered; (4) the except ValueError branch (story_finish.py:112-118) uncovered. Also: (5) vacuous assertion at test_155_4_finish_archive_epic_field.py:177 ('assert ghost is None or ...strip()') accepts a fabricated non-empty epic on the raise-path — tighten to 'assert ghost is None'. And (6, finding 4) story_finish.py:464 step-4b read_sprint is unwrapped — an unexpected I/O error there now crashes finish AFTER merge/transition (steps 4c-7 skipped); add a graceful-degrade guard (near-nil window since read succeeded earlier same run, but defensible). Note finding 5 (non-blocking, accepted): 4b {success:False} prints but top-level finish exit code stays 0 — invisible to non-interactive $? callers; acceptable per documented non-fatal intent, revisit only if finish gains hard-fail semantics."
