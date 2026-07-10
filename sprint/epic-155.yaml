@@ -146,10 +146,14 @@ stories:
     title: finish marks story done + archives when auto-merge is blocked/denied (e.g. review-required guardrail) instead of aborting or holding in_review
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-07-10'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-07-10'
     type: bug
+    review_findings: 'HIGH: unguarded shutil.copy2 moved past irreversible gh pr merge --delete-branch (story_finish.py:482) throws past no-throw contract at cli.py:468 -> merged/branch-deleted but story in_review (SOUL #10). MED: dialogue-archive path + unverified-merge abort class both under-tested. Route: TEA red rework (add failing tests) then Dev wrap archive in try/except.'
+    review_verdict: approved
   - id: 155-16
     title: 'Wrap remaining read_sprint calls in finish path (SOUL #10) + 155-6 LOW test-polish deferrals'
     description: "From 155-6 Reviewer deferred findings (PR pennyfarthing#142, epic-155 finish-truthfulness). The 155-6 SOUL #10 fix wrapped only the primary read_sprint call in finish_story; other reads on the finish path still throw raw tracebacks instead of returning {success: False}. (1) Wrap the step-4b read (add_completed_story path) and the status-transition read in story_finish.py in try/except (FileNotFoundError, ValueError) returning a result dict — same narrow catch as the 155-6 guard (story_finish.py:290-297), NOT a broad except Exception (lang-review rule #1). (2) LOW test-polish deferrals from 155-6: assert the 4b demo-hook step's epic value (not just error-absence); add a positive jira-key finish test if not already covered elsewhere. Keep catches narrow; mutation-verify each new guard."
@@ -164,3 +168,19 @@ stories:
       - Each new guard is mutation-verified (deleting it fails a test)
       - Demo-hook 4b test asserts the epic value; positive jira-key finish path has coverage
     type: refactor
+  - id: 155-17
+    title: 'finish: partial session archive left on dialogue-copy OSError + misattributed step in archive except (155-15 review)'
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 155-18
+    title: finish_story runs gh pr merge/view from orchestrator root, cannot merge/verify PRs in the inlined pennyfarthing sub-repo (repo-context bug)
+    points: 3
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
