@@ -339,3 +339,8 @@ completed_stories:
     title: Wire format_story_not_found_error into story_finish + correct hooks.md PR-create claim (153-8 review deferrals)
     points: 2
     completed: '2026-07-07'
+  - id: 155-15
+    epic: '155'
+    title: finish marks story done + archives when auto-merge is blocked/denied (e.g. review-required guardrail) instead of aborting or holding in_review
+    points: 3
+    completed: '2026-07-10'
