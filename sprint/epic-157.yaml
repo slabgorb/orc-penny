@@ -63,3 +63,17 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     type: bug
+  - id: 157-8
+    title: 'project-setup writes repos.yaml to root but runtime reads .pennyfarthing/repos.yaml (gh #133)'
+    description: "From gh #133. The project-setup workflow writes repos.yaml to the PROJECT ROOT, but the pf runtime only reads it from .pennyfarthing/repos.yaml — so a faithful /setup run produces a repos.yaml that pf silently ignores (pf doctor reports 'No repos.yaml — no topology to verify' even though the file exists). Workflow side: workflows/project-setup/workflow.yaml:20 (output_repos: repos.yaml) + step-03-repos-yaml.md (lines 11/15/175 say 'project root') + downstream steps re-read from root. Runtime side: src/pf/git/repos.py:108/213/235/341 and scripts/misc/repo-utils.sh:31 all read .pennyfarthing/repos.yaml. Confirmed pf 13.3.0. Fix (lowest-risk): align the workflow to the runtime's canonical path — set output_repos to .pennyfarthing/repos.yaml, update step-03 wording + the {output_repos} switch case, and sweep other setup steps that re-read repos.yaml. Also check the no_repos_yaml trigger (workflow.yaml:32) keys off the runtime location."
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria:
+      - project-setup workflow writes repos.yaml to .pennyfarthing/repos.yaml (output_repos + step-03 wording + switch case updated)
+      - All setup steps that re-read repos.yaml read from the .pennyfarthing/ path
+      - "Regression: a faithful workflow run produces a repos.yaml that pf doctor recognizes ('All declared repo paths and symlinks intact', not 'No repos.yaml')"
+      - no_repos_yaml trigger condition verified to key off the runtime location
+    type: bug
