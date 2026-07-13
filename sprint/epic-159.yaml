@@ -133,3 +133,29 @@ stories:
     completed: '2026-07-01'
     review_findings: 'ReDoS hardening: collapse adjacent ** in _translate (37s PoC on edit hot path). Also normalize relative-path branch + add AC4 length test.'
     review_verdict: approved
+  - id: 159-13
+    title: 'pf context validate rejects the markdown docs pf context create emits (gh #140)'
+    description: "From gh #140. 'pf context validate <file>' parses its input as YAML, but 'pf context create' emits MARKDOWN (sprint/context/context-*.md). So validate rejects the very documents create generates — every epic/story context doc fails with a raw PyYAML error ('Invalid YAML: expected <document start>...') at the first prose paragraph, making the validate workflow a no-op on real projects. The handoff gate (pf/handoff/complete_phase.py) only checks existence + non-emptiness, so stories are NOT blocked (low severity), but the raw parse error sends users down a false 'my context doc is malformed' path. Confirmed pf 13.3.0. Fix (preferred): pf context validate understands the markdown context documents create emits and checks the structural contract (required sections: ## Title, ## Overview, ## Metadata, non-empty ## Background, etc.). Minimum acceptable: detect .md / non-YAML input and fail with an actionable message naming the format mismatch instead of a PyYAML traceback fragment."
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria:
+      - 'pf context validate succeeds against the markdown docs pf context create emits (round-trip: create then validate passes)'
+      - 'validate checks the markdown structural contract (required sections present + non-empty ## Background)'
+      - On genuinely malformed/non-context input, validate fails with an actionable message about the format, not a raw PyYAML traceback fragment
+    type: bug
+  - id: 159-14
+    title: 'Sprint board TUI: story rows show em-dash instead of their jira key (gh #141)'
+    description: "From gh #141. In the pennyfarthing sprint board TUI, child STORY rows show em-dash in the Jira-key column instead of their actual jira: value, even though the key is present in current-sprint.yaml. Epic rows render their Jira key correctly; story rows do not. Likely cause: the TUI renders the Jira column from the story id (or only populates it for epics) and doesn't fall back to the story jira: field when id != jira. Affects epics that use short-form story ids (40-1, 40-6, ...) with a separate jira: field (MSSCI-*); older epics whose story id IS the MSSCI key render fine. Data is correct — purely a rendering gap. Impact: users can't cross-reference short-form-id stories to Jira from the board. Fix: render the story Jira column from the story jira: field, falling back to id only when jira is absent (mirror how epic rows resolve it)."
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria:
+      - 'Story rows render their jira: value in the Jira-key column when present'
+      - 'When a story has no jira: field, the column falls back to the story id (no regression for id==jira epics)'
+      - Regression covering a short-form-id epic (e.g. 40-1 with jira MSSCI-18070) asserts the key renders, not em-dash
+    type: bug
