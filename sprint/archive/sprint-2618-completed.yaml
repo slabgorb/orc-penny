@@ -354,3 +354,8 @@ completed_stories:
     title: Delegate epic-ref resolution to canonical _get_epic_ref (155-4 review deferral)
     points: 2
     completed: '2026-07-10'
+  - id: 155-7
+    epic: '155'
+    title: 'Harden get_archive_path: path-traversal containment + sprint_id sanitization + encoding= on archive append (155-3 review deferral)'
+    points: 2
+    completed: '2026-07-14'
