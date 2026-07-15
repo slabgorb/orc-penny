@@ -222,3 +222,27 @@ stories:
       - help text clarifies USER means GitHub username or Jira account email, and that non-Jira emails will not resolve
       - Audit + fix sibling --dry-run false-positive paths (at minimum pf jira sprint add)
     type: bug
+  - id: 155-21
+    title: 'Harden epic-shard archive paths: sanitize _get_epic_ref output + containment; close pf-sprint-new guard bypass (155-7 follow-up)'
+    description: 'From 155-7 Reviewer Delivery Findings (session archive sprint/archive/155-7-session.md; PR pennyfarthing#147): epic-shard paths are a parallel unguarded CWE-22 surface. _get_epic_ref (yaml_io.py) returns the raw id/jira string with no charset check (only an epic- prefix strip) and feeds archive_dir / f"epic-{epic_ref}.yaml" at migrate_completed_archive, load_archive, archive_epic, and the yaml_io shard write/delete sites — no resolve()/containment. Also fold in: (a) pf sprint new (sprint/cli.py ~2207) builds sprint-{yyww}-completed.yaml directly from the CLI arg, bypassing the central guard; (b) Reviewer Question — dry-run in archive_epic() returns before the hoisted guard, so an unsafe sprint id still previews success; consider hoisting validation above the dry-run branch for preview fidelity. Same LOW trust model as 155-7 (local self-authored config). Suggest extracting the 155-7 charset+containment guard into a shared validator both filename families call (SOUL #2).'
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 155-22
+    title: 'Guard whitespace-only sprint name in get_archive_path: IndexError → clean ValueError (155-7 follow-up)'
+    description: "From 155-7 Reviewer Delivery Finding (Gap, non-blocking; proven on develop baseline): a whitespace-only sprint name (truthy, .split() → []) raises IndexError at archive_epic.py get_archive_path's name-token split, upstream of the 155-7 sanitization — a malformed-input shape that bypasses the guard entirely and escapes the ValueError-only wraps added in 155-7 round 2 (crashes pf sprint epic archive / story finish with a traceback). Fix: guard the empty-token case → raise the same actionable ValueError shape ('Check sprint/current-sprint.yaml'). One test alongside (name='   ')."
+    points: 1
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+  - id: 155-23
+    title: Extend encoding= sweep to archive_epic.py text I/O + test polish (155-7 follow-up)
+    description: "From 155-7 Dev Delivery Finding (CWE-838, same class as 155-7 AC4): archive_epic.py still has bare text I/O — ensure_archive_file's archive_path.write_text(template), _load_archive_file's open(archive_path), _write_archive_file's archive_path.write_text(result), and the raw index re-read open(sprint_path) in archive_epic(). Add encoding='utf-8' to each. Fold in Reviewer round-2 cosmetic finding: collapse the now-dead try/except ValueError: pass in test_archive_epic_unsafe_sprint_id_leaves_no_stray_shard (test_155_7_archive_path_hardening.py:341) to a plain call."
+    points: 1
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
