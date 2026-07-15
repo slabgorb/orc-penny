@@ -78,9 +78,13 @@ stories:
     description: 'From 155-3 Reviewer deferred finding (PR pennyfarthing#119): archive_epic.get_archive_path builds sprint-{id}-completed.yaml from raw sprint-YAML metadata (name token via split, or str(number)) with no resolve()/containment check (CWE-22; lang-review python.md #5/#11), and archive.py opens the archive file for append without encoding=. LOW severity — sprint YAML is local self-authored config (no trust boundary) and the downstream archive_file.exists() guard fails loud. Fix CENTRALLY in get_archive_path so both story- and epic-archive callers benefit: add archive_path.resolve() plus a containment assertion under sprint/archive/, restrict sprint_id to word/dot/dash characters, and pass encoding=utf-8 to the append open().'
     points: 2
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-07-13'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-07-14'
+    review_findings: "HIGH: new ValueError from get_archive_path unwrapped in archive_epic() (archive_epic.py:548) and _add_story_to_completed (story_finish.py:103) — punctuated sprint names crash 'pf sprint epic archive' and 'pf sprint story finish' mid-flow (after merge step); wrap at both result-object boundaries + RED tests. MEDIUM: vacuous leak assert (wrong key message vs error, test:208). LOW: inert escape-guard assert (add a..b case), ruff UP012 test:274 (AC7), missing Raises: docstring, containment error should echo resolved path."
+    review_verdict: approved
   - id: 155-8
     title: Delegate epic-ref resolution to canonical _get_epic_ref (155-4 review deferral)
     description: "From 155-4 Reviewer deferred finding (MEDIUM, PR pennyfarthing#126): _resolve_epic_ref (story_finish.py:59) and backfill_epic_refs (archive_epic.py:330) both reimplement 'str(epic.get(\"jira\") or epic.get(\"id\"))' instead of delegating to the canonical _get_epic_ref (yaml_io.py:312). The local formula diverges for sentinel-jira epics and 'epic-'-prefixed no-jira epics → could write epic:'epic-94' → orphan misgrouping + epic-epic-94.yaml double-prefix (the ADR-0022 trap). Latent only today: every live epic has a real PROJ-* jira so all three resolvers currently agree. Fix: delegate both call sites to _get_epic_ref so there is one canonical epic-ref formula. AC: both resolvers call _get_epic_ref; regression test pins sentinel-jira and epic-prefixed-no-jira epics resolve identically across all three paths."
