@@ -63,9 +63,12 @@ stories:
     title: 'Add --epic to pf sprint story update (delegate to move_story) + group/clarify update flags in --help (from 156-3, gh #13 deferred)'
     points: 2
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-07-16'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-07-16'
+    review_verdict: approved
   - id: 160-7
     title: 'Test hygiene: add pytest.warns for fetch_sprint warn-on-missing-ref (AC4); strengthen/drop near-vacuous test_substring_decoy_story_id_intact (from 156-4 L1 / 156-3)'
     points: 1
@@ -223,3 +226,16 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     type: bug
+  - id: 160-24
+    title: 'Harden update --epic: uniform result shape (story_id) + docstring, tighten 2 weak tests, add same-epic/dry-run+field/empty-epic edge tests, move_story same-epic no-op (160-6 reviewer follow-ups)'
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria:
+      - update_story --epic path returns a uniform result shape including story_id (e.g. from move_result.story.new_id); Returns docstring documents both shapes
+      - test_update_epic_flag_documented_in_help asserts distinguishing help text (e.g. 'delegates'), not the tautological 'epic' in output
+      - test_update_delegates_not_reimplemented tightened to an AST call-site check (or removed in favor of the behavioral delegation tests)
+      - New tests cover same-epic --epic, --epic + --dry-run + field-flag (reject-under-dry-run), and --epic '' (empty string)
+      - move_story detects to_epic == source_epic and no-ops or reports instead of silently renumbering

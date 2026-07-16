@@ -359,3 +359,8 @@ completed_stories:
     title: 'Harden get_archive_path: path-traversal containment + sprint_id sanitization + encoding= on archive append (155-3 review deferral)'
     points: 2
     completed: '2026-07-14'
+  - id: 160-6
+    epic: '160'
+    title: 'Add --epic to pf sprint story update (delegate to move_story) + group/clarify update flags in --help (from 156-3, gh #13 deferred)'
+    points: 2
+    completed: '2026-07-16'
