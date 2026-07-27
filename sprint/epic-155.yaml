@@ -102,10 +102,13 @@ stories:
     description: "From 155-4 Reviewer deferred findings (LOW, PR pennyfarthing#126). 155-4 tests hit only the _add_story_to_completed seam. Gaps: (1) the step-4b de-swallow in finish_story (the other half of the bug) is uncovered; (2) the jira-keyed-epic priority branch uncovered; (3) the standalone-story explicit-fallback uncovered; (4) the except ValueError branch (story_finish.py:112-118) uncovered. Also: (5) vacuous assertion at test_155_4_finish_archive_epic_field.py:177 ('assert ghost is None or ...strip()') accepts a fabricated non-empty epic on the raise-path — tighten to 'assert ghost is None'. And (6, finding 4) story_finish.py:464 step-4b read_sprint is unwrapped — an unexpected I/O error there now crashes finish AFTER merge/transition (steps 4c-7 skipped); add a graceful-degrade guard (near-nil window since read succeeded earlier same run, but defensible). Note finding 5 (non-blocking, accepted): 4b {success:False} prints but top-level finish exit code stays 0 — invisible to non-interactive $? callers; acceptable per documented non-fatal intent, revisit only if finish gains hard-fail semantics."
     points: 2
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-07-27'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-07-27'
     type: chore
+    review_verdict: approved
   - id: 155-10
     title: Backfill 77 historical epic:'' rows in sprint-2610-completed.yaml via prefix-parse migration (155-4 AC3)
     description: "From 155-4 AC3 (PR pennyfarthing#126). grep -rn \"epic: ''\" sprint/archive/ surfaces 77 rows in sprint/archive/sprint-2610-completed.yaml (historical stories from epics 143/144/145/147, all numeric {epic}-{seq} ids). The existing backfill_epic_refs helper (archive_epic.py:299) resolves epics ONLY from LIVE sprint data (load_sprint -> current epics), so these long-archived epics are all marked 'irrecoverable' and the file is never rewritten — the helper CANNOT fix historical rows. A correct backfill is a one-time prefix-parse migration (e.g. 144-5 -> epic '144'), which is safe HERE because every offender is unambiguous numeric {epic}-{seq}. Scope: add a prefix-parse fallback path for historical/archived ids (guarded so it does NOT weaken the live finish path's no-prefix-parse rule from 155-4), backfill the 77 rows, and verify the rewrite passes the _write_archive_file non-empty-epic guard. Data lives in the orchestrator repo (sprint/archive/), tooling in pennyfarthing."
@@ -243,6 +246,13 @@ stories:
     description: "From 155-7 Dev Delivery Finding (CWE-838, same class as 155-7 AC4): archive_epic.py still has bare text I/O — ensure_archive_file's archive_path.write_text(template), _load_archive_file's open(archive_path), _write_archive_file's archive_path.write_text(result), and the raw index re-read open(sprint_path) in archive_epic(). Add encoding='utf-8' to each. Fold in Reviewer round-2 cosmetic finding: collapse the now-dead try/except ValueError: pass in test_archive_epic_unsafe_sprint_id_leaves_no_stray_shard (test_155_7_archive_path_hardening.py:341) to a plain call."
     points: 1
     priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+  - id: 155-24
+    title: '155-9 review follow-ups: record 4b step on completed_story-None path, rename stale step-4b data binding, pin guard-test error-text fidelity'
+    points: 1
+    priority: p1
     status: backlog
     repos: pennyfarthing
     workflow: trivial
