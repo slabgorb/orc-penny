@@ -230,7 +230,8 @@ stories:
     title: 'Harden update --epic: uniform result shape (story_id) + docstring, tighten 2 weak tests, add same-epic/dry-run+field/empty-epic edge tests, move_story same-epic no-op (160-6 reviewer follow-ups)'
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-07-27'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
@@ -239,3 +240,6 @@ stories:
       - test_update_delegates_not_reimplemented tightened to an AST call-site check (or removed in favor of the behavioral delegation tests)
       - New tests cover same-epic --epic, --epic + --dry-run + field-flag (reject-under-dry-run), and --epic '' (empty string)
       - move_story detects to_epic == source_epic and no-ops or reports instead of silently renumbering
+    completed: '2026-07-27'
+    review_findings: 'r2 APPROVED: all 4 rework findings closed with mutation-verified evidence; 106/106 scoped tests, 16/16 rules, ruff clean.'
+    review_verdict: approved

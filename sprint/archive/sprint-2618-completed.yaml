@@ -364,3 +364,8 @@ completed_stories:
     title: 'Add --epic to pf sprint story update (delegate to move_story) + group/clarify update flags in --help (from 156-3, gh #13 deferred)'
     points: 2
     completed: '2026-07-16'
+  - id: 160-24
+    epic: '160'
+    title: 'Harden update --epic: uniform result shape (story_id) + docstring, tighten 2 weak tests, add same-epic/dry-run+field/empty-epic edge tests, move_story same-epic no-op (160-6 reviewer follow-ups)'
+    points: 2
+    completed: '2026-07-27'
