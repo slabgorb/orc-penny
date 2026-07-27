@@ -31,6 +31,45 @@ test-gui:
     just --justfile "{{pennyfarthing}}/justfile" --working-directory "{{pennyfarthing}}" test-gui
 
 # =============================================================================
+# Git
+# =============================================================================
+
+# Pull orchestrator + pennyfarthing onto their default branches (feature branches left alone)
+pull:
+    #!/usr/bin/env bash
+    set -uo pipefail
+    failed=""
+    pull_one() {
+      dir="$1"; name="$2"; target="$3"
+      echo "==> $name"
+      if ! cur=$(git -C "$dir" rev-parse --abbrev-ref HEAD 2>/dev/null); then
+        echo "    !! not a git checkout — skipped"
+        failed="$failed $name"
+        return
+      fi
+      if [ "$cur" = "$target" ]; then
+        git -C "$dir" pull --rebase --autostash origin "$target" || failed="$failed $name"
+      else
+        echo "    on '$cur', not '$target' — your checkout is left alone; advancing $target"
+        if ! git -C "$dir" fetch origin "$target:$target"; then
+          echo "    !! could not fast-forward $target — it has diverged from origin."
+          echo "       Fetched anyway; reconcile by hand: git -C $dir log $target..origin/$target"
+          git -C "$dir" fetch origin "$target"
+          failed="$failed $name"
+        fi
+      fi
+    }
+    pull_one {{root}} "orc-penny (orchestrator)" main
+    pull_one {{pennyfarthing}} "pennyfarthing" develop
+    if [ -n "$failed" ]; then
+      echo
+      echo "!! pull incomplete:$failed"
+      exit 1
+    fi
+    echo
+    echo "pull complete."
+
+# =============================================================================
 # Portraits
 # =============================================================================
 
