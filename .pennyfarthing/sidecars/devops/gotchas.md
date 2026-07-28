@@ -35,3 +35,11 @@ Dev environment portrait files are LFS pointers (130-byte ASCII text). Run `git 
 <gotcha name="frame-project-dir-env" severity="info">
 The Python Frame server (`pf frame start`) uses `FRAME_PROJECT_DIR` with fallback to `PF_PROJECT_DIR`. These env vars tell Frame which project root to serve.
 </gotcha>
+
+<gotcha name="release-workflow-vs-branch-protection" severity="high">
+The release stepped workflow (v13.4.0 run, 2026-07-27) conflicts with the branch-protection hook: step 9's `git push origin develop` is BLOCKED (explicit push target on a gitflow default branch), so the user must push develop themselves (`! git -C <path> push origin develop`). Pushes to main/tags are allowed (hook only protects the gitflow repo's default_branch = develop). Note the hook evaluates the CURRENT branch at command submission, so `git checkout develop && git merge ...` slips through _COMMIT_PATTERNS (TOCTOU gap) — the release's merge-to-develop worked only by that accident. Candidate framework fix: release-context bypass in `pf/hooks/branch_protection.py`.
+</gotcha>
+
+<gotcha name="release-entry-point" severity="info">
+`pf git release` does NOT exist (skill doc stale) — start the release with `pf workflow start release`, advance with `pf workflow complete-step release`. Step 10's pipx instructions are stale too: use `just update-pf` (editable uv-tool install).
+</gotcha>
