@@ -359,3 +359,18 @@ completed_stories:
     title: 'Harden get_archive_path: path-traversal containment + sprint_id sanitization + encoding= on archive append (155-3 review deferral)'
     points: 2
     completed: '2026-07-14'
+  - id: 160-6
+    epic: '160'
+    title: 'Add --epic to pf sprint story update (delegate to move_story) + group/clarify update flags in --help (from 156-3, gh #13 deferred)'
+    points: 2
+    completed: '2026-07-16'
+  - id: 160-24
+    epic: '160'
+    title: 'Harden update --epic: uniform result shape (story_id) + docstring, tighten 2 weak tests, add same-epic/dry-run+field/empty-epic edge tests, move_story same-epic no-op (160-6 reviewer follow-ups)'
+    points: 2
+    completed: '2026-07-27'
+  - id: 155-9
+    epic: '155'
+    title: 'Harden finish archive epic-field: test caller-wiring/edges, tighten vacuous assertion, guard step-4b read_sprint (155-4 review deferrals)'
+    points: 2
+    completed: '2026-07-27'
