@@ -384,3 +384,8 @@ completed_stories:
     title: '155-9 review follow-ups: record 4b step on completed_story-None path, rename stale step-4b data binding, pin guard-test error-text fidelity'
     points: 1
     completed: '2026-07-30'
+  - id: 155-11
+    epic: '155'
+    title: 'sm-finish runs pf.* with project .venv -> ModuleNotFoundError + subagent retry storm (gh #112)'
+    points: 2
+    completed: '2026-07-30'

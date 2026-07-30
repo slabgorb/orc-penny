@@ -125,10 +125,15 @@ stories:
     title: 'sm-finish runs pf.* with project .venv -> ModuleNotFoundError + subagent retry storm (gh #112)'
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    assigned_to: slabgorb
+    started: '2026-07-30'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-07-30'
     type: bug
+    branch: fix/155-11-sm-finish-venv
+    review_verdict: approved
   - id: 155-12
     title: 'Finish completes ceremony when merge_pr fails on a CONFLICTING/DIRTY PR - done-but-unmerged (gh #113)'
     points: 2
