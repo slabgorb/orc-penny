@@ -114,10 +114,13 @@ stories:
     description: "From 155-4 AC3 (PR pennyfarthing#126). grep -rn \"epic: ''\" sprint/archive/ surfaces 77 rows in sprint/archive/sprint-2610-completed.yaml (historical stories from epics 143/144/145/147, all numeric {epic}-{seq} ids). The existing backfill_epic_refs helper (archive_epic.py:299) resolves epics ONLY from LIVE sprint data (load_sprint -> current epics), so these long-archived epics are all marked 'irrecoverable' and the file is never rewritten — the helper CANNOT fix historical rows. A correct backfill is a one-time prefix-parse migration (e.g. 144-5 -> epic '144'), which is safe HERE because every offender is unambiguous numeric {epic}-{seq}. Scope: add a prefix-parse fallback path for historical/archived ids (guarded so it does NOT weaken the live finish path's no-prefix-parse rule from 155-4), backfill the 77 rows, and verify the rewrite passes the _write_archive_file non-empty-epic guard. Data lives in the orchestrator repo (sprint/archive/), tooling in pennyfarthing."
     points: 2
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-07-30'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-07-30'
     type: chore
+    review_verdict: approved
   - id: 155-11
     title: 'sm-finish runs pf.* with project .venv -> ModuleNotFoundError + subagent retry storm (gh #112)'
     points: 2
