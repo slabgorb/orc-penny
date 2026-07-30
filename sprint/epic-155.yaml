@@ -256,6 +256,9 @@ stories:
     title: '155-9 review follow-ups: record 4b step on completed_story-None path, rename stale step-4b data binding, pin guard-test error-text fidelity'
     points: 1
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-07-30'
     repos: pennyfarthing
     workflow: trivial
+    completed: '2026-07-30'
+    review_verdict: approved

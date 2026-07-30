@@ -379,3 +379,8 @@ completed_stories:
     title: Backfill 77 historical epic:'' rows in sprint-2610-completed.yaml via prefix-parse migration (155-4 AC3)
     points: 2
     completed: '2026-07-30'
+  - id: 155-24
+    epic: '155'
+    title: '155-9 review follow-ups: record 4b step on completed_story-None path, rename stale step-4b data binding, pin guard-test error-text fidelity'
+    points: 1
+    completed: '2026-07-30'
