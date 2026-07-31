@@ -394,3 +394,8 @@ completed_stories:
     title: 'Auto-suggest follow-up stories at finish for deferred Delivery Findings (gh #114)'
     points: 3
     completed: '2026-07-31'
+  - id: 155-16
+    epic: '155'
+    title: 'Wrap remaining read_sprint calls in finish path (SOUL #10) + 155-6 LOW test-polish deferrals'
+    points: 2
+    completed: '2026-07-31'

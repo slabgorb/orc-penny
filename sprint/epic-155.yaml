@@ -184,7 +184,8 @@ stories:
     description: "From 155-6 Reviewer deferred findings (PR pennyfarthing#142, epic-155 finish-truthfulness). The 155-6 SOUL #10 fix wrapped only the primary read_sprint call in finish_story; other reads on the finish path still throw raw tracebacks instead of returning {success: False}. (1) Wrap the step-4b read (add_completed_story path) and the status-transition read in story_finish.py in try/except (FileNotFoundError, ValueError) returning a result dict — same narrow catch as the 155-6 guard (story_finish.py:290-297), NOT a broad except Exception (lang-review rule #1). (2) LOW test-polish deferrals from 155-6: assert the 4b demo-hook step's epic value (not just error-absence); add a positive jira-key finish test if not already covered elsewhere. Keep catches narrow; mutation-verify each new guard."
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-07-31'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
@@ -192,7 +193,9 @@ stories:
       - New guards use narrow (FileNotFoundError, ValueError) catch, not broad except Exception; 0 rule-checker violations
       - Each new guard is mutation-verified (deleting it fails a test)
       - Demo-hook 4b test asserts the epic value; positive jira-key finish path has coverage
+    completed: '2026-07-31'
     type: refactor
+    review_verdict: approved
   - id: 155-17
     title: 'finish: partial session archive left on dialogue-copy OSError + misattributed step in archive except (155-15 review)'
     points: 2
@@ -298,6 +301,20 @@ stories:
     title: '155-13 followups.py hardening: promote _parse_session_deviations to public, CWE-22 session_path containment, TypedDict candidate/suggestion modeling, extend dedup to future.yaml (155-13 review)'
     points: 2
     priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 155-29
+    title: 'finish_story: make post-merge aborts retryable — short-circuit Step 2 when _pr_is_merged() is already true (from 155-16 review)'
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 155-30
+    title: 'Test polish: pin jira_key/steps key presence in 155-16 failure-result tests (from 155-16 review)'
+    points: 1
+    priority: p1
     status: backlog
     repos: pennyfarthing
     workflow: tdd
