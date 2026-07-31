@@ -287,3 +287,17 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     type: bug
+  - id: 155-27
+    title: Add --description/body option to pf sprint story add so minted follow-ups carry provenance in the story body (155-13 review)
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 155-28
+    title: '155-13 followups.py hardening: promote _parse_session_deviations to public, CWE-22 session_path containment, TypedDict candidate/suggestion modeling, extend dedup to future.yaml (155-13 review)'
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
