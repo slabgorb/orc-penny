@@ -159,3 +159,10 @@ stories:
       - 'When a story has no jira: field, the column falls back to the story id (no regression for id==jira epics)'
       - Regression covering a short-form-id epic (e.g. 40-1 with jira MSSCI-18070) asserts the key renders, not em-dash
     type: bug
+  - id: 159-15
+    title: 'Triage pre-existing test-failure baseline: ~30 failures across 6 modules (143-9/143-10 e2e, 153-4 jira-sync, independence, init-justfile, peloton portrait panes) — repair or quarantine so story-scoped green claims need no per-story re-proof'
+    points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd

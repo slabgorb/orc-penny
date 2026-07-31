@@ -318,11 +318,14 @@ stories:
     title: 'Test polish: pin jira_key/steps key presence in 155-16 failure-result tests (from 155-16 review)'
     points: 1
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-07-31'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
       - 'From 155-29 review: pin the already_merged step-record key with its own assertion in test_155_29 (OR-form lets a delete-key mutation survive) and add a branch-resolved-PR x already-merged combo test'
+    completed: '2026-07-31'
+    review_verdict: approved
   - id: 155-31
     title: "finish dry-run: preview 'already merged — will skip' instead of 'Merge PR #N' for a merged PR (from 155-29 review)"
     points: 1
