@@ -149,9 +149,13 @@ stories:
     title: 'Auto-suggest follow-up stories at finish for deferred Delivery Findings (gh #114)'
     points: 3
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-07-31'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-07-31'
+    review_findings: '[HIGH-A] story_id/provenance spliced into double-quoted title unsanitized — reproduced arbitrary command execution (followups.py:234,244); [HIGH-B] _SAFE_EPIC_RE accepts leading-dash epic → Click argument injection on unquoted first positional (followups.py:100); both need story_id sanitization + non-dash-anchored epic pattern, and the test SAFE_COMMAND grammar has the same epic gap'
+    review_verdict: approved
   - id: 155-14
     title: 'Preflight hardening: gh arg-injection guard, LintResult.skipped truthful reporting, async stat, skip-branch test coverage'
     points: 2
