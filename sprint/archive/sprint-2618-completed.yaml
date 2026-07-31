@@ -399,3 +399,13 @@ completed_stories:
     title: 'Wrap remaining read_sprint calls in finish path (SOUL #10) + 155-6 LOW test-polish deferrals'
     points: 2
     completed: '2026-07-31'
+  - id: 155-29
+    epic: '155'
+    title: 'finish_story: make post-merge aborts retryable — short-circuit Step 2 when _pr_is_merged() is already true (from 155-16 review)'
+    points: 2
+    completed: '2026-07-31'
+  - id: 155-30
+    epic: '155'
+    title: 'Test polish: pin jira_key/steps key presence in 155-16 failure-result tests (from 155-16 review)'
+    points: 1
+    completed: '2026-07-31'
