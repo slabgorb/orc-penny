@@ -80,3 +80,7 @@ bookkeeping. HOLD the `chore(sprint): complete` commit until the PR actually mer
 record `done` before the merge lands (SOUL #14). Also: orchestrator `main` push is
 classifier-gated (trunk-based-with-PRs) — needs explicit human authorization even though
 history shows direct `chore(sprint): complete` commits. Filed follow-up in epic 155.
+
+<gotcha name="branch-create-inherits-shell-cwd" severity="low">
+155-10 finish: after running framework git ops, the shell cwd was still pennyfarthing/ — a bare `git checkout -b chore/sprint-...` for the ORCHESTRATOR bookkeeping branch landed in the WRONG repo (pennyfarthing, off develop). Same family as hook-cwd-protected-branch: every repo-targeted git op needs its own root-anchored `cd <abs-path> && git ...` call. Recovery is cheap if caught immediately (`git checkout develop && git branch -d <branch>`). Also: clean-run datapoint — `pf sprint story finish` from pennyfarthing/ merged PR #155 without the 155-5 classifier denial (PR was pre-created by SM with a full prove-the-work body before finish ran); verify merge landed anyway (`gh pr view --json state,mergedAt`) before committing bookkeeping.
+</gotcha>
