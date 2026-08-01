@@ -351,9 +351,12 @@ stories:
     title: sm-setup session template omits Branch/PR fields, so finish silently skips the merge and marks the story done (hit live on 155-32)
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-08-01'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-01'
+    review_verdict: approved
   - id: 155-34
     title: finish must not mark a story done when no PR resolves but the branch has unmerged commits (155-1 guarantee only covers the resolved-PR path)
     points: 2
@@ -393,6 +396,37 @@ stories:
     title: "finish dry-run preview polish: human-mode already-merged message + guard step-6 'Delete local branch: None' (from 155-31 review)"
     points: 1
     priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 155-40
+    title: "Session field parsing: anchor SESSION_FIELD_RE to line start and scope Branch/PR resolution to Story Details — prose mentions poisoned finish live on 155-33 (parsed branch='field like the gitflow arm', silent no-PR skip, done-while-PR-open)"
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 155-41
+    title: '_extract_branch: iterate annotation/backtick strips to a fixed point (annotation-inside-backticks residual) + document sentinel-set tradeoff (from 155-33 review)'
+    points: 1
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 155-42
+    title: 'Finish-family test conftest: autouse patch for finish_story Step 4c demo-generation subprocesses (pre-existing isolation gap, from 155-33 review)'
+    points: 1
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: chore
+  - id: 155-43
+    title: 'schema-validation hook: require Branch/PR session fields on session writes (mechanical backstop for the 155-33 template contract, from 155-33 review)'
+    points: 2
+    priority: p2
     status: backlog
     repos: pennyfarthing
     workflow: tdd
