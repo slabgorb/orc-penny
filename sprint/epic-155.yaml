@@ -364,6 +364,8 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria:
+      - 'Cover the placeholder-shape no-resolution world (from 155-40): a placeholder or empty Branch/PR value in Story Details now blocks later-section fallback (security-correct), so the placeholder-plus-hand-written-recovery session resolves nothing — the loud abort must fire for this shape instead of the accepted no-PR done path'
   - id: 155-35
     title: finish evaluates the conflict gate before the already-merged short-circuit, so a MERGED PR with stale DIRTY mergeability aborts with un-actionable rebase advice (from 155-32 review)
     points: 1
@@ -403,10 +405,13 @@ stories:
     title: "Session field parsing: anchor SESSION_FIELD_RE to line start and scope Branch/PR resolution to Story Details — prose mentions poisoned finish live on 155-33 (parsed branch='field like the gitflow arm', silent no-PR skip, done-while-PR-open)"
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-08-01'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-01'
     type: bug
+    review_verdict: approved
   - id: 155-41
     title: '_extract_branch: iterate annotation/backtick strips to a fixed point (annotation-inside-backticks residual) + document sentinel-set tradeoff (from 155-33 review)'
     points: 1
@@ -427,6 +432,27 @@ stories:
     title: 'schema-validation hook: require Branch/PR session fields on session writes (mechanical backstop for the 155-33 template contract, from 155-33 review)'
     points: 2
     priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 155-44
+    title: 'Harden _parse_session section tracker: skip fenced code blocks and let only the FIRST Story Details heading populate the branch/pr overlay (from 155-40 review)'
+    points: 1
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 155-45
+    title: "Wrap finish_story's _parse_session call site against UnicodeDecodeError per the sibling read_sprint guard (SOUL #10, from 155-40 review)"
+    points: 1
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 155-46
+    title: 'Consolidate session-field parsing onto the anchored story_finish parser: demo/collector.py + findings/aggregate.py copies, audit tui/story_detail_data.py and bmad/sync.py (SOUL #2, from 155-40 review)'
+    points: 2
+    priority: p3
     status: backlog
     repos: pennyfarthing
     workflow: tdd
