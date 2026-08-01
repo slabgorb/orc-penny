@@ -409,3 +409,8 @@ completed_stories:
     title: 'Test polish: pin jira_key/steps key presence in 155-16 failure-result tests (from 155-16 review)'
     points: 1
     completed: '2026-07-31'
+  - id: 155-32
+    epic: '155'
+    title: 'finish Step 2: consolidate the back-to-back gh pr view probes (_pr_block_reason + _pr_is_merged pre-check) into one shared call (from 155-29 review)'
+    points: 1
+    completed: '2026-07-31'

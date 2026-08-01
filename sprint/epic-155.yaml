@@ -1,7 +1,7 @@
 id: '155'
 type: epic
 title: Finish/merge/archive truthfulness
-description: "Finish flow silently lies about 'done' state: marks stories done while PRs stay open, creates wrong branches, and writes broken archive YAML. Issues #71/#60, #15, #28, #16."
+description: 'Finish flow silently lies about ''done'' state: marks stories done while PRs stay open, creates wrong branches, and writes broken archive YAML. Issues #71/#60, #15, #28, #16.'
 priority: p1
 status: backlog
 repos: pennyfarthing
@@ -19,7 +19,7 @@ stories:
     review_verdict: approved
   - id: 155-2
     title: 'Finish creates feat/ branch on orchestrator, breaking main-only topology (gh #15)'
-    description: "DUPLICATE — delivered_in: 153-2 (commit 934ce2880, 'skip branch creation on trunk-based repos in setup & finish'). gh #15's full scope is implemented + tested: repos.should_create_branch (trunk-based->False), create_feature_branches skip, story_finish._git_cleanup skip (trunk-based + unresolved-root), agents/sm-setup.md branch_strategy read+skip. Covered by test_153_2_skip_branch_creation.py (11 passing). TEA (155-2 RED) verified no code change needed and no finish-side path creates a branch."
+    description: 'DUPLICATE — delivered_in: 153-2 (commit 934ce2880, ''skip branch creation on trunk-based repos in setup & finish''). gh #15''s full scope is implemented + tested: repos.should_create_branch (trunk-based->False), create_feature_branches skip, story_finish._git_cleanup skip (trunk-based + unresolved-root), agents/sm-setup.md branch_strategy read+skip. Covered by test_153_2_skip_branch_creation.py (11 passing). TEA (155-2 RED) verified no code change needed and no finish-side path creates a branch.'
     points: 2
     priority: p1
     status: done
@@ -50,7 +50,7 @@ stories:
     completed: '2026-06-25'
     type: bug
   - id: 155-5
-    title: "sm-finish preflight false-blocks: stale repos.yaml language:javascript drives npm lint on Python-only root; 'No PR found' on already-merged PRs"
+    title: 'sm-finish preflight false-blocks: stale repos.yaml language:javascript drives npm lint on Python-only root; ''No PR found'' on already-merged PRs'
     points: 2
     priority: p2
     status: done
@@ -59,11 +59,11 @@ stories:
     workflow: tdd
     completed: '2026-07-01'
     type: bug
-    review_findings: "Incomplete fix: aggregate_results still hardcodes 'Run npm run lint' remediation (finish.py:400) — Python ruff failure emits npm guidance (AC1 gap). Bug-1 lint tests one-sided — pass even when Python linting disabled (AC3 gap). Plus non-blocking: fallback masks gh infra failure, CWE-88 branch/repo validation, LintResult.clean overload."
+    review_findings: 'Incomplete fix: aggregate_results still hardcodes ''Run npm run lint'' remediation (finish.py:400) — Python ruff failure emits npm guidance (AC1 gap). Bug-1 lint tests one-sided — pass even when Python linting disabled (AC3 gap). Plus non-blocking: fallback masks gh infra failure, CWE-88 branch/repo validation, LintResult.clean overload.'
     review_verdict: approved
   - id: 155-6
     title: Wire format_story_not_found_error into story_finish + correct hooks.md PR-create claim (153-8 review deferrals)
-    description: "From 153-8 Reviewer deferred findings (PR pennyfarthing#107): (1) story_finish.py (lookups at ~190,332,402) uses find_story_in_data but silently proceeds on unknown story id — wire format_story_not_found_error (loader.py) into its not-found paths so finish lists candidate IDs like update/remove do; AC for 153-8 named finish but it was never wired. (2) guides/hooks.md overstates 'pf sprint story finish' as a gh pr create site — it only merges a pre-existing PR; real create sites are sm-finish (agent md) and the standalone flow. Also sweep: --title '' accepted on required field (LOW, consistent with other string fields); ruff I001 in test_153_8_agent_start_brief.py:30 (auto-fixable)."
+    description: 'From 153-8 Reviewer deferred findings (PR pennyfarthing#107): (1) story_finish.py (lookups at ~190,332,402) uses find_story_in_data but silently proceeds on unknown story id — wire format_story_not_found_error (loader.py) into its not-found paths so finish lists candidate IDs like update/remove do; AC for 153-8 named finish but it was never wired. (2) guides/hooks.md overstates ''pf sprint story finish'' as a gh pr create site — it only merges a pre-existing PR; real create sites are sm-finish (agent md) and the standalone flow. Also sweep: --title '''' accepted on required field (LOW, consistent with other string fields); ruff I001 in test_153_8_agent_start_brief.py:30 (auto-fixable).'
     points: 2
     priority: p3
     status: done
@@ -83,11 +83,11 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     completed: '2026-07-14'
-    review_findings: "HIGH: new ValueError from get_archive_path unwrapped in archive_epic() (archive_epic.py:548) and _add_story_to_completed (story_finish.py:103) — punctuated sprint names crash 'pf sprint epic archive' and 'pf sprint story finish' mid-flow (after merge step); wrap at both result-object boundaries + RED tests. MEDIUM: vacuous leak assert (wrong key message vs error, test:208). LOW: inert escape-guard assert (add a..b case), ruff UP012 test:274 (AC7), missing Raises: docstring, containment error should echo resolved path."
+    review_findings: 'HIGH: new ValueError from get_archive_path unwrapped in archive_epic() (archive_epic.py:548) and _add_story_to_completed (story_finish.py:103) — punctuated sprint names crash ''pf sprint epic archive'' and ''pf sprint story finish'' mid-flow (after merge step); wrap at both result-object boundaries + RED tests. MEDIUM: vacuous leak assert (wrong key message vs error, test:208). LOW: inert escape-guard assert (add a..b case), ruff UP012 test:274 (AC7), missing Raises: docstring, containment error should echo resolved path.'
     review_verdict: approved
   - id: 155-8
     title: Delegate epic-ref resolution to canonical _get_epic_ref (155-4 review deferral)
-    description: "From 155-4 Reviewer deferred finding (MEDIUM, PR pennyfarthing#126): _resolve_epic_ref (story_finish.py:59) and backfill_epic_refs (archive_epic.py:330) both reimplement 'str(epic.get(\"jira\") or epic.get(\"id\"))' instead of delegating to the canonical _get_epic_ref (yaml_io.py:312). The local formula diverges for sentinel-jira epics and 'epic-'-prefixed no-jira epics → could write epic:'epic-94' → orphan misgrouping + epic-epic-94.yaml double-prefix (the ADR-0022 trap). Latent only today: every live epic has a real PROJ-* jira so all three resolvers currently agree. Fix: delegate both call sites to _get_epic_ref so there is one canonical epic-ref formula. AC: both resolvers call _get_epic_ref; regression test pins sentinel-jira and epic-prefixed-no-jira epics resolve identically across all three paths."
+    description: 'From 155-4 Reviewer deferred finding (MEDIUM, PR pennyfarthing#126): _resolve_epic_ref (story_finish.py:59) and backfill_epic_refs (archive_epic.py:330) both reimplement ''str(epic.get("jira") or epic.get("id"))'' instead of delegating to the canonical _get_epic_ref (yaml_io.py:312). The local formula diverges for sentinel-jira epics and ''epic-''-prefixed no-jira epics → could write epic:''epic-94'' → orphan misgrouping + epic-epic-94.yaml double-prefix (the ADR-0022 trap). Latent only today: every live epic has a real PROJ-* jira so all three resolvers currently agree. Fix: delegate both call sites to _get_epic_ref so there is one canonical epic-ref formula. AC: both resolvers call _get_epic_ref; regression test pins sentinel-jira and epic-prefixed-no-jira epics resolve identically across all three paths.'
     points: 2
     priority: p2
     status: done
@@ -99,7 +99,7 @@ stories:
     review_verdict: approved
   - id: 155-9
     title: 'Harden finish archive epic-field: test caller-wiring/edges, tighten vacuous assertion, guard step-4b read_sprint (155-4 review deferrals)'
-    description: "From 155-4 Reviewer deferred findings (LOW, PR pennyfarthing#126). 155-4 tests hit only the _add_story_to_completed seam. Gaps: (1) the step-4b de-swallow in finish_story (the other half of the bug) is uncovered; (2) the jira-keyed-epic priority branch uncovered; (3) the standalone-story explicit-fallback uncovered; (4) the except ValueError branch (story_finish.py:112-118) uncovered. Also: (5) vacuous assertion at test_155_4_finish_archive_epic_field.py:177 ('assert ghost is None or ...strip()') accepts a fabricated non-empty epic on the raise-path — tighten to 'assert ghost is None'. And (6, finding 4) story_finish.py:464 step-4b read_sprint is unwrapped — an unexpected I/O error there now crashes finish AFTER merge/transition (steps 4c-7 skipped); add a graceful-degrade guard (near-nil window since read succeeded earlier same run, but defensible). Note finding 5 (non-blocking, accepted): 4b {success:False} prints but top-level finish exit code stays 0 — invisible to non-interactive $? callers; acceptable per documented non-fatal intent, revisit only if finish gains hard-fail semantics."
+    description: 'From 155-4 Reviewer deferred findings (LOW, PR pennyfarthing#126). 155-4 tests hit only the _add_story_to_completed seam. Gaps: (1) the step-4b de-swallow in finish_story (the other half of the bug) is uncovered; (2) the jira-keyed-epic priority branch uncovered; (3) the standalone-story explicit-fallback uncovered; (4) the except ValueError branch (story_finish.py:112-118) uncovered. Also: (5) vacuous assertion at test_155_4_finish_archive_epic_field.py:177 (''assert ghost is None or ...strip()'') accepts a fabricated non-empty epic on the raise-path — tighten to ''assert ghost is None''. And (6, finding 4) story_finish.py:464 step-4b read_sprint is unwrapped — an unexpected I/O error there now crashes finish AFTER merge/transition (steps 4c-7 skipped); add a graceful-degrade guard (near-nil window since read succeeded earlier same run, but defensible). Note finding 5 (non-blocking, accepted): 4b {success:False} prints but top-level finish exit code stays 0 — invisible to non-interactive $? callers; acceptable per documented non-fatal intent, revisit only if finish gains hard-fail semantics.'
     points: 2
     priority: p3
     status: done
@@ -111,7 +111,7 @@ stories:
     review_verdict: approved
   - id: 155-10
     title: Backfill 77 historical epic:'' rows in sprint-2610-completed.yaml via prefix-parse migration (155-4 AC3)
-    description: "From 155-4 AC3 (PR pennyfarthing#126). grep -rn \"epic: ''\" sprint/archive/ surfaces 77 rows in sprint/archive/sprint-2610-completed.yaml (historical stories from epics 143/144/145/147, all numeric {epic}-{seq} ids). The existing backfill_epic_refs helper (archive_epic.py:299) resolves epics ONLY from LIVE sprint data (load_sprint -> current epics), so these long-archived epics are all marked 'irrecoverable' and the file is never rewritten — the helper CANNOT fix historical rows. A correct backfill is a one-time prefix-parse migration (e.g. 144-5 -> epic '144'), which is safe HERE because every offender is unambiguous numeric {epic}-{seq}. Scope: add a prefix-parse fallback path for historical/archived ids (guarded so it does NOT weaken the live finish path's no-prefix-parse rule from 155-4), backfill the 77 rows, and verify the rewrite passes the _write_archive_file non-empty-epic guard. Data lives in the orchestrator repo (sprint/archive/), tooling in pennyfarthing."
+    description: 'From 155-4 AC3 (PR pennyfarthing#126). grep -rn "epic: ''''" sprint/archive/ surfaces 77 rows in sprint/archive/sprint-2610-completed.yaml (historical stories from epics 143/144/145/147, all numeric {epic}-{seq} ids). The existing backfill_epic_refs helper (archive_epic.py:299) resolves epics ONLY from LIVE sprint data (load_sprint -> current epics), so these long-archived epics are all marked ''irrecoverable'' and the file is never rewritten — the helper CANNOT fix historical rows. A correct backfill is a one-time prefix-parse migration (e.g. 144-5 -> epic ''144''), which is safe HERE because every offender is unambiguous numeric {epic}-{seq}. Scope: add a prefix-parse fallback path for historical/archived ids (guarded so it does NOT weaken the live finish path''s no-prefix-parse rule from 155-4), backfill the 77 rows, and verify the rewrite passes the _write_archive_file non-empty-epic guard. Data lives in the orchestrator repo (sprint/archive/), tooling in pennyfarthing.'
     points: 2
     priority: p3
     status: done
@@ -181,7 +181,7 @@ stories:
     review_verdict: approved
   - id: 155-16
     title: 'Wrap remaining read_sprint calls in finish path (SOUL #10) + 155-6 LOW test-polish deferrals'
-    description: "From 155-6 Reviewer deferred findings (PR pennyfarthing#142, epic-155 finish-truthfulness). The 155-6 SOUL #10 fix wrapped only the primary read_sprint call in finish_story; other reads on the finish path still throw raw tracebacks instead of returning {success: False}. (1) Wrap the step-4b read (add_completed_story path) and the status-transition read in story_finish.py in try/except (FileNotFoundError, ValueError) returning a result dict — same narrow catch as the 155-6 guard (story_finish.py:290-297), NOT a broad except Exception (lang-review rule #1). (2) LOW test-polish deferrals from 155-6: assert the 4b demo-hook step's epic value (not just error-absence); add a positive jira-key finish test if not already covered elsewhere. Keep catches narrow; mutation-verify each new guard."
+    description: 'From 155-6 Reviewer deferred findings (PR pennyfarthing#142, epic-155 finish-truthfulness). The 155-6 SOUL #10 fix wrapped only the primary read_sprint call in finish_story; other reads on the finish path still throw raw tracebacks instead of returning {success: False}. (1) Wrap the step-4b read (add_completed_story path) and the status-transition read in story_finish.py in try/except (FileNotFoundError, ValueError) returning a result dict — same narrow catch as the 155-6 guard (story_finish.py:290-297), NOT a broad except Exception (lang-review rule #1). (2) LOW test-polish deferrals from 155-6: assert the 4b demo-hook step''s epic value (not just error-absence); add a positive jira-key finish test if not already covered elsewhere. Keep catches narrow; mutation-verify each new guard.'
     points: 2
     priority: p2
     status: done
@@ -214,7 +214,7 @@ stories:
     type: bug
   - id: 155-19
     title: 'Preflight hardening follow-ups: enforce LintResult skipped-invariant, unify lint/jira skipped to_dict shape, belt-and-suspenders _lookup arg-guard, symmetric jira over-reach + single-dash tests (155-14 review deferrals)'
-    description: "From 155-14 Reviewer deferred findings (PR pennyfarthing#144, epic-155 finish-truthfulness; all non-blocking Medium/Low). Target: pennyfarthing-dist/src/pf/preflight/finish.py + test_155_14_preflight_hardening.py. (1) [TYPE-M] LintResult permits contradictory skipped=True + error/clean=False; the skipped-implies-clean invariant is convention-only (only check_lint maintains it). Enforce via __post_init__ or model skip as a sum type. (2) [TYPE-M] to_dict() serializes lint.skipped as a nested key only while jira_skipped also emits a top-level flag + collapsed dict — unify the two 'not checked' wire shapes so downstream gates have one convention. (3) [SEC-L] _lookup_merged_pr_by_branch (finish.py:155) has no internal arg-guard, safe only by the check_pr_status caller invariant; add belt-and-suspenders _reject_option_like(branch,'branch') or an assert so a future second caller can't silently reopen CWE-88. (4) [TEST-M/L] add symmetric over-reach test (legit jira_key still reaches jira issue view), a single-dash '-R' injection case, and assert clean is True alongside skipped in test_check_lint_marks_skipped_when_no_lintable_project. Also consider folding in the check_acceptance_criteria blocking exists()/read_text() async-I/O (lang-review #9) TEA flagged during 155-14 — same file, same theme as AC3, but distinct from the CWE-22 path-traversal owned by 155-7."
+    description: 'From 155-14 Reviewer deferred findings (PR pennyfarthing#144, epic-155 finish-truthfulness; all non-blocking Medium/Low). Target: pennyfarthing-dist/src/pf/preflight/finish.py + test_155_14_preflight_hardening.py. (1) [TYPE-M] LintResult permits contradictory skipped=True + error/clean=False; the skipped-implies-clean invariant is convention-only (only check_lint maintains it). Enforce via __post_init__ or model skip as a sum type. (2) [TYPE-M] to_dict() serializes lint.skipped as a nested key only while jira_skipped also emits a top-level flag + collapsed dict — unify the two ''not checked'' wire shapes so downstream gates have one convention. (3) [SEC-L] _lookup_merged_pr_by_branch (finish.py:155) has no internal arg-guard, safe only by the check_pr_status caller invariant; add belt-and-suspenders _reject_option_like(branch,''branch'') or an assert so a future second caller can''t silently reopen CWE-88. (4) [TEST-M/L] add symmetric over-reach test (legit jira_key still reaches jira issue view), a single-dash ''-R'' injection case, and assert clean is True alongside skipped in test_check_lint_marks_skipped_when_no_lintable_project. Also consider folding in the check_acceptance_criteria blocking exists()/read_text() async-I/O (lang-review #9) TEA flagged during 155-14 — same file, same theme as AC3, but distinct from the CWE-22 path-traversal owned by 155-7.'
     points: 2
     priority: p3
     status: backlog
@@ -228,14 +228,14 @@ stories:
     type: refactor
   - id: 155-20
     title: 'pf jira assign --dry-run false-positive success + ambiguous identifier contract (gh #146)'
-    description: "From gh #146. Two distinct truthfulness bugs in 'pf jira assign KEY USER'. (1) --dry-run reports FALSE-POSITIVE SUCCESS: it echoes the input verbatim and prints 'Assigned ...' without resolving the user against Jira, so 'pf jira assign MSSCI-18553 slabgorb@gmail.com --dry-run' prints success while the real call then fails 'User not found'. The dry-run is useless for validating an identifier before a live call. Same false-positive-success pattern reportedly exists in 'pf jira sprint add' — audit other --dry-run paths. (2) The 'email or GitHub username' contract is ambiguous: 'email' must be the Jira ACCOUNT email (corporate SSO, e.g. keith.avery@1898andco.io), not any personal email; a non-Jira email looks valid until the real call. Only the GitHub username resolved in the live session. Fix: make --dry-run perform the real user lookup and fail loudly (User not found: X) without mutating the issue; print the RESOLVED Jira account (email + display name) it will assign to in both dry-run and real output; clarify help text ('USER: GitHub username, or the user Jira account email; non-Jira emails will not resolve')."
+    description: 'From gh #146. Two distinct truthfulness bugs in ''pf jira assign KEY USER''. (1) --dry-run reports FALSE-POSITIVE SUCCESS: it echoes the input verbatim and prints ''Assigned ...'' without resolving the user against Jira, so ''pf jira assign MSSCI-18553 slabgorb@gmail.com --dry-run'' prints success while the real call then fails ''User not found''. The dry-run is useless for validating an identifier before a live call. Same false-positive-success pattern reportedly exists in ''pf jira sprint add'' — audit other --dry-run paths. (2) The ''email or GitHub username'' contract is ambiguous: ''email'' must be the Jira ACCOUNT email (corporate SSO, e.g. keith.avery@1898andco.io), not any personal email; a non-Jira email looks valid until the real call. Only the GitHub username resolved in the live session. Fix: make --dry-run perform the real user lookup and fail loudly (User not found: X) without mutating the issue; print the RESOLVED Jira account (email + display name) it will assign to in both dry-run and real output; clarify help text (''USER: GitHub username, or the user Jira account email; non-Jira emails will not resolve'').'
     points: 3
     priority: p2
     status: backlog
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
-      - "pf jira assign --dry-run performs the real user lookup and fails loudly (non-zero, 'User not found: X') for unresolvable identifiers, without mutating the issue"
+      - 'pf jira assign --dry-run performs the real user lookup and fails loudly (non-zero, ''User not found: X'') for unresolvable identifiers, without mutating the issue'
       - dry-run and real output both print the resolved Jira account (email + display name) that will be assigned
       - help text clarifies USER means GitHub username or Jira account email, and that non-Jira emails will not resolve
       - Audit + fix sibling --dry-run false-positive paths (at minimum pf jira sprint add)
@@ -250,7 +250,7 @@ stories:
     workflow: tdd
   - id: 155-22
     title: 'Guard whitespace-only sprint name in get_archive_path: IndexError → clean ValueError (155-7 follow-up)'
-    description: "From 155-7 Reviewer Delivery Finding (Gap, non-blocking; proven on develop baseline): a whitespace-only sprint name (truthy, .split() → []) raises IndexError at archive_epic.py get_archive_path's name-token split, upstream of the 155-7 sanitization — a malformed-input shape that bypasses the guard entirely and escapes the ValueError-only wraps added in 155-7 round 2 (crashes pf sprint epic archive / story finish with a traceback). Fix: guard the empty-token case → raise the same actionable ValueError shape ('Check sprint/current-sprint.yaml'). One test alongside (name='   ')."
+    description: 'From 155-7 Reviewer Delivery Finding (Gap, non-blocking; proven on develop baseline): a whitespace-only sprint name (truthy, .split() → []) raises IndexError at archive_epic.py get_archive_path''s name-token split, upstream of the 155-7 sanitization — a malformed-input shape that bypasses the guard entirely and escapes the ValueError-only wraps added in 155-7 round 2 (crashes pf sprint epic archive / story finish with a traceback). Fix: guard the empty-token case → raise the same actionable ValueError shape (''Check sprint/current-sprint.yaml''). One test alongside (name=''   '').'
     points: 1
     priority: p3
     status: backlog
@@ -258,7 +258,7 @@ stories:
     workflow: trivial
   - id: 155-23
     title: Extend encoding= sweep to archive_epic.py text I/O + test polish (155-7 follow-up)
-    description: "From 155-7 Dev Delivery Finding (CWE-838, same class as 155-7 AC4): archive_epic.py still has bare text I/O — ensure_archive_file's archive_path.write_text(template), _load_archive_file's open(archive_path), _write_archive_file's archive_path.write_text(result), and the raw index re-read open(sprint_path) in archive_epic(). Add encoding='utf-8' to each. Fold in Reviewer round-2 cosmetic finding: collapse the now-dead try/except ValueError: pass in test_archive_epic_unsafe_sprint_id_leaves_no_stray_shard (test_155_7_archive_path_hardening.py:341) to a plain call."
+    description: 'From 155-7 Dev Delivery Finding (CWE-838, same class as 155-7 AC4): archive_epic.py still has bare text I/O — ensure_archive_file''s archive_path.write_text(template), _load_archive_file''s open(archive_path), _write_archive_file''s archive_path.write_text(result), and the raw index re-read open(sprint_path) in archive_epic(). Add encoding=''utf-8'' to each. Fold in Reviewer round-2 cosmetic finding: collapse the now-dead try/except ValueError: pass in test_archive_epic_unsafe_sprint_id_leaves_no_stray_shard (test_155_7_archive_path_hardening.py:341) to a plain call.'
     points: 1
     priority: p3
     status: backlog
@@ -283,7 +283,7 @@ stories:
     workflow: tdd
     type: bug
   - id: 155-26
-    title: "Harden -c payload interpolation: format_pr_title '${title}' bash-into-Python-literal splice in sm-finish.md + pf-standalone.md (CWE-94 class, 155-11 review)"
+    title: 'Harden -c payload interpolation: format_pr_title ''${title}'' bash-into-Python-literal splice in sm-finish.md + pf-standalone.md (CWE-94 class, 155-11 review)'
     points: 2
     priority: p3
     status: backlog
@@ -327,7 +327,7 @@ stories:
     completed: '2026-07-31'
     review_verdict: approved
   - id: 155-31
-    title: "finish dry-run: preview 'already merged — will skip' instead of 'Merge PR #N' for a merged PR (from 155-29 review)"
+    title: 'finish dry-run: preview ''already merged — will skip'' instead of ''Merge PR #N'' for a merged PR (from 155-29 review)'
     points: 1
     priority: p1
     status: backlog
@@ -335,6 +335,45 @@ stories:
     workflow: tdd
   - id: 155-32
     title: 'finish Step 2: consolidate the back-to-back gh pr view probes (_pr_block_reason + _pr_is_merged pre-check) into one shared call (from 155-29 review)'
+    points: 1
+    priority: p1
+    status: done
+    assigned_to: slabgorb
+    started: '2026-07-31'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-07-31'
+    branch: feat/155-32-consolidate-pr-view-probes
+  - id: 155-33
+    title: sm-setup session template omits Branch/PR fields, so finish silently skips the merge and marks the story done (hit live on 155-32)
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 155-34
+    title: finish must not mark a story done when no PR resolves but the branch has unmerged commits (155-1 guarantee only covers the resolved-PR path)
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 155-35
+    title: finish evaluates the conflict gate before the already-merged short-circuit, so a MERGED PR with stale DIRTY mergeability aborts with un-actionable rebase advice (from 155-32 review)
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 155-36
+    title: test_155_15 clean-merge tests never invoke gh pr merge — stateless MERGED fake trips the 155-29 short-circuit (from 155-32 review)
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 155-37
+    title: _view_is_merged case-folds PR state, loosening the boolean that authorises the done transition; pin or revert (from 155-32 review)
     points: 1
     priority: p1
     status: backlog
