@@ -243,3 +243,11 @@ stories:
     completed: '2026-07-27'
     review_findings: 'r2 APPROVED: all 4 rework findings closed with mutation-verified evidence; 106/106 scoped tests, 16/16 rules, ruff clean.'
     review_verdict: approved
+  - id: 160-25
+    title: pf sprint work next ignores priority — picker recommended p3 155-17 over six available p1 stories (found during 155-33 setup)
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug

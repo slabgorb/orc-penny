@@ -39,3 +39,43 @@ Sprint YAML is sharded. `current-sprint.yaml` has epics as string refs (e.g. `PR
 <pattern name="single-session-full-pipeline-datapoint-4" date="2026-07-31">
 155-29 (2 pts, tdd): fourth clean single-session relay pipeline (SM→TEA→Dev→Reviewer→SM, zero rejections, ~26 min setup-to-finish) and FIFTH clean pre-create-then-finish datapoint (PR #160 ready with full prove-the-work body BEFORE finish; merge_pr landed; verified state=MERGED). Notes: (1) the story itself fixed the finish retry wedge (already-merged short-circuit) — future post-merge aborts are now retryable, which de-risks this whole ceremony. (2) sm-finish preflight with the report-don't-fix leash + false-blocker list returned ready:true with ZERO false-blocker noise and a paste-ready Impact Summary — second clean run of that spawn shape; keep it verbatim. (3) Follow-up routing: when a review finding's class matches an EXISTING backlog story, fold via `pf sprint story update <id> --add-ac "..."` (there is NO --notes option) instead of filing a duplicate; new stories only for distinct work (155-31 dry-run preview, 155-32 probe consolidation). (4) Reviewer Questions that need Keith's product call (no-PR acceptance revisit, human-mode resume path) stay as findings in the archived session + surfaced in the final report — not auto-filed as stories.
 </pattern>
+
+<pattern name="single-session-full-pipeline-datapoint-5" date="2026-08-01">
+155-33 (2 pts, tdd): fifth clean single-session relay pipeline (SM→TEA→Dev→Reviewer→SM,
+zero rejections, ~36 min setup-to-merge) and SIXTH pre-create-then-finish datapoint —
+but the first where the standing verify-after-finish rule caught a LIVE false-done
+(see gotcha session-prose-poisons-finish-field-parse; do not skip the verify, ever).
+Working notes: (1) `pf sprint work next` picked a p3 over six p1s — filed 160-25;
+pick priority manually until fixed. (2) sm-setup wrote `**Workflow:** tdd (phased)`
+into the tracking block — resolve-gate rejects the parenthetical; trim to the bare
+identifier before the exit protocol. (3) Follow-up routing this run: five stories
+filed AFTER the code PR merged, on the already-open chore branch (its shards carried
+the latest IDs, no id-collision risk); accumulate pattern retitles the chore PR to
+list all completed stories. (4) Reviewer ran with only preflight+security enabled —
+covering the 7 disabled domains personally with tagged observations satisfied the
+gate; adversarial-verify both subagent claims first-hand before confirming (both
+security claims reproduced exactly). (5) zsh eats a bare `===` echo separator —
+use '---'.
+</pattern>
+
+<pattern name="single-session-full-pipeline-datapoint-6" date="2026-08-01">
+155-40 (2 pts, tdd, p1): sixth clean single-session relay pipeline (SM→TEA→Dev→Reviewer→SM,
+zero rejections, ~32 min setup-to-merge) and SEVENTH clean pre-create-then-finish datapoint
+(PR #166 ready with full prove-the-work body BEFORE finish; merge landed; verified
+state=MERGED at 13:42Z before bookkeeping). Notable: this story WAS the finish-parser fix,
+and the finish ran with the fix live (editable pf follows the working tree) — the anchored
+parser resolved its own `- **PR:** #166` field from a session deliberately written with
+poison-token discipline (backticks-only in prose); first live outing clean, but the
+verify-after-finish rule stays MANDATORY regardless. Working notes: (1) the poison-token
+spawn instruction to sm-setup (never write bold field tokens in session prose; backticks
+only) is now proven end-to-end and belongs in every spawn for stories touching the session
+parser. (2) sm-setup again honored bare session name + `**Phase:** setup` + bare `tdd` —
+third clean run of that spawn shape; keep it verbatim. (3) sm-finish preflight with
+report-don't-fix + false-blocker list: third consecutive zero-noise run, paste-ready
+Impact Summary. (4) Follow-up routing: 3 new stories (155-44 fence/first-heading hardening,
+155-45 decode-raise wrap, 155-46 parser consolidation) filed on the accumulate chore branch
+AFTER the code PR merged; Reviewer's placeholder-shape Question folded into 155-34 via
+--add-ac (fold-don't-duplicate rule). (5) Manual p1 pick from the backlog (155-40 over five
+other p1s) keyed on the critical-gotcha linkage — until 160-25 fixes `work next`, keep
+picking manually and prefer the story that de-risks the ceremony itself.
+</pattern>

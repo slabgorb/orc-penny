@@ -84,3 +84,20 @@ history shows direct `chore(sprint): complete` commits. Filed follow-up in epic 
 <gotcha name="branch-create-inherits-shell-cwd" severity="low">
 155-10 finish: after running framework git ops, the shell cwd was still pennyfarthing/ — a bare `git checkout -b chore/sprint-...` for the ORCHESTRATOR bookkeeping branch landed in the WRONG repo (pennyfarthing, off develop). Same family as hook-cwd-protected-branch: every repo-targeted git op needs its own root-anchored `cd <abs-path> && git ...` call. Recovery is cheap if caught immediately (`git checkout develop && git branch -d <branch>`). Also: clean-run datapoint — `pf sprint story finish` from pennyfarthing/ merged PR #155 without the 155-5 classifier denial (PR was pre-created by SM with a full prove-the-work body before finish ran); verify merge landed anyway (`gh pr view --json state,mergedAt`) before committing bookkeeping.
 </gotcha>
+
+<gotcha name="session-prose-poisons-finish-field-parse" severity="critical">
+155-33 finish (2026-08-01): `pf sprint story finish` reported `merge_pr` but ran the
+no-PR SKIPPED arm and marked the story done while PR #165 was OPEN — even though the
+session's Story Details carried correct `**Branch:**` and `**PR:** #165` fields.
+Root cause (proven by parsing the archived session): `SESSION_FIELD_RE` is an
+UNANCHORED `search` and `_parse_session` is LAST-WINS, so any later prose that merely
+MENTIONS the tokens (`**Branch:**`/`**PR:**` inside TEA/Dev/Reviewer assessment text,
+deviation entries, findings) overrides the real fields — finish parsed
+branch='field like the gitflow arm' (a Dev-deviation prose fragment) and pr=None.
+A rich, well-documented session is MORE likely to trip this than a sparse one.
+Until 155-40 ships (anchor regex + scope to Story Details): ALWAYS verify
+`gh pr view <n> --json state,mergedAt` after EVERY finish (the standing rule caught
+this within one command), and recovery = merge manually, verify, append a truthful
+addendum to the archived session, file/point to 155-40. Avoid writing the literal
+bold field tokens in session prose when possible.
+</gotcha>
