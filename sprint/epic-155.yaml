@@ -330,9 +330,12 @@ stories:
     title: 'finish dry-run: preview ''already merged — will skip'' instead of ''Merge PR #N'' for a merged PR (from 155-29 review)'
     points: 1
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-08-01'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-01'
+    review_verdict: approved
   - id: 155-32
     title: 'finish Step 2: consolidate the back-to-back gh pr view probes (_pr_block_reason + _pr_is_merged pre-check) into one shared call (from 155-29 review)'
     points: 1
@@ -376,6 +379,20 @@ stories:
     title: _view_is_merged case-folds PR state, loosening the boolean that authorises the done transition; pin or revert (from 155-32 review)
     points: 1
     priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 155-38
+    title: 'finish robustness: pass a bounded timeout to _run gh subprocess calls (from 155-31 review)'
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 155-39
+    title: "finish dry-run preview polish: human-mode already-merged message + guard step-6 'Delete local branch: None' (from 155-31 review)"
+    points: 1
+    priority: p3
     status: backlog
     repos: pennyfarthing
     workflow: tdd

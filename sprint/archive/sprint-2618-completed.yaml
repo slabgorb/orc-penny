@@ -414,3 +414,8 @@ completed_stories:
     title: 'finish Step 2: consolidate the back-to-back gh pr view probes (_pr_block_reason + _pr_is_merged pre-check) into one shared call (from 155-29 review)'
     points: 1
     completed: '2026-07-31'
+  - id: 155-31
+    epic: '155'
+    title: 'finish dry-run: preview ''already merged — will skip'' instead of ''Merge PR #N'' for a merged PR (from 155-29 review)'
+    points: 1
+    completed: '2026-08-01'
