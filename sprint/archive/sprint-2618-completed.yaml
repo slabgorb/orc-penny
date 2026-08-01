@@ -429,3 +429,8 @@ completed_stories:
     title: "Session field parsing: anchor SESSION_FIELD_RE to line start and scope Branch/PR resolution to Story Details — prose mentions poisoned finish live on 155-33 (parsed branch='field like the gitflow arm', silent no-PR skip, done-while-PR-open)"
     points: 2
     completed: '2026-08-01'
+  - id: 155-34
+    epic: '155'
+    title: finish must not mark a story done when no PR resolves but the branch has unmerged commits (155-1 guarantee only covers the resolved-PR path)
+    points: 2
+    completed: '2026-08-01'

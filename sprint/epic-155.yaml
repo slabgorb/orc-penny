@@ -211,6 +211,8 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria:
+      - Route the 155-34 git merge-state probe to the story's code repo alongside the gh calls — probing project_root makes multi-repo no-PR finishes read unknown and abort (from 155-34 review)
     type: bug
   - id: 155-19
     title: 'Preflight hardening follow-ups: enforce LintResult skipped-invariant, unify lint/jira skipped to_dict shape, belt-and-suspenders _lookup arg-guard, symmetric jira over-reach + single-dash tests (155-14 review deferrals)'
@@ -225,6 +227,7 @@ stories:
       - lint and jira skipped states serialize with one consistent to_dict convention
       - _lookup_merged_pr_by_branch guards its branch arg independently of the caller (test proves a direct call with option-shaped branch is neutralized)
       - Symmetric jira over-reach test + single-dash injection case added; skip test asserts clean is True
+      - Warn on the 155-34 unmerged-branch-no-PR world before the ceremony starts, so the abort surfaces at preflight (from 155-34 review)
     type: refactor
   - id: 155-20
     title: 'pf jira assign --dry-run false-positive success + ambiguous identifier contract (gh #146)'
@@ -361,11 +364,15 @@ stories:
     title: finish must not mark a story done when no PR resolves but the branch has unmerged commits (155-1 guarantee only covers the resolved-PR path)
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-08-01'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
       - 'Cover the placeholder-shape no-resolution world (from 155-40): a placeholder or empty Branch/PR value in Story Details now blocks later-section fallback (security-correct), so the placeholder-plus-hand-written-recovery session resolves nothing — the loud abort must fire for this shape instead of the accepted no-PR done path'
+    completed: '2026-08-01'
+    branch: feat/155-34-finish-no-pr-unmerged-commits
+    review_verdict: approved
   - id: 155-35
     title: finish evaluates the conflict gate before the already-merged short-circuit, so a MERGED PR with stale DIRTY mergeability aborts with un-actionable rebase advice (from 155-32 review)
     points: 1
@@ -401,6 +408,8 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria:
+      - Dry-run preview must predict the 155-34 no-PR abort worlds instead of promising the full done plan (preview/reality parity, from 155-34 review)
   - id: 155-40
     title: "Session field parsing: anchor SESSION_FIELD_RE to line start and scope Branch/PR resolution to Story Details — prose mentions poisoned finish live on 155-33 (parsed branch='field like the gitflow arm', silent no-PR skip, done-while-PR-open)"
     points: 2
@@ -427,6 +436,8 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: trivial
+    acceptance_criteria:
+      - "Pin 155-34's three unpinned defensive probe paths: origin/<base> preference over a stale local base, the origin/<branch> fallback candidate, and the backticked/annotated sentinel variant (from 155-34 review)"
     type: chore
   - id: 155-43
     title: 'schema-validation hook: require Branch/PR session fields on session writes (mechanical backstop for the 155-33 template contract, from 155-33 review)'
@@ -449,10 +460,19 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria:
+      - Also wrap finish's load_repos_config consumers (_resolve_base_branch ~line 342 and step-6 ~line 1045) — malformed repos.yaml currently raises through the no-throw boundary; the step-6 site strands a merged story post-merge (from 155-34 review)
   - id: 155-46
     title: 'Consolidate session-field parsing onto the anchored story_finish parser: demo/collector.py + findings/aggregate.py copies, audit tui/story_detail_data.py and bmad/sync.py (SOUL #2, from 155-40 review)'
     points: 2
     priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 155-47
+    title: Harden _branch_merge_state probe candidates via ref-prefixing — refs/heads/ and refs/remotes/origin/ resolve correctly and cannot be flag-parsed; the naive -- separator breaks rev-parse --verify (probed rc=1) (from 155-34 review)
+    points: 1
+    priority: p1
     status: backlog
     repos: pennyfarthing
     workflow: tdd
