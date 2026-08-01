@@ -79,3 +79,26 @@ AFTER the code PR merged; Reviewer's placeholder-shape Question folded into 155-
 other p1s) keyed on the critical-gotcha linkage — until 160-25 fixes `work next`, keep
 picking manually and prefer the story that de-risks the ceremony itself.
 </pattern>
+
+<pattern name="single-session-full-pipeline-datapoint-7" date="2026-08-01">
+155-34 (2 pts, tdd, p1): seventh clean single-session relay pipeline (SM→TEA→Dev→Reviewer→SM,
+zero rejections, ~46 min setup-to-merge) and EIGHTH clean pre-create-then-finish datapoint
+(PR #167 ready with full prove-the-work body BEFORE finish; merge landed; verified
+state=MERGED at 17:45Z + merge commit == origin/develop tip before bookkeeping). Landmark:
+this finish ran with the story's OWN no-PR verification gate live (editable pf, working
+tree) — the PR path resolved #167 from Story Details under the 155-40 authority parser
+with Dev-assessment field lines present and correctly outranked. Working notes:
+(1) manual p1 pick again (155-34 over four 1-pt p1 siblings + a 3-pt triage) keyed on
+de-risk-the-ceremony — the heuristic keeps paying; 160-25 still open. (2) TEA's per-FILE
+field-count sibling sweep missed 4 multi-session fixtures (no_jira, 160-3, 155-6, 153-4
+inline) that Dev caught at green — the sweep recipe is now count-per-SESSION-fixture
+(recorded in TEA sidecar). (3) Reviewer probed the security subagent's SUGGESTED fix and
+found it broken (`--` separator kills rev-parse --verify) — follow-up stories must carry
+the PROBED fix shape, not the subagent's guess (155-47 filed with the refs-prefix shape).
+(4) Follow-up routing: 1 new story + 5 folds via --add-ac (155-45/42/39/19/18), all filed
+on the fresh chore branch cut from post-merge main — fold-don't-duplicate held; only the
+genuinely-new hardening got a story. (5) sm-finish preflight with report-don't-fix +
+false-blocker list: FOURTH consecutive zero-noise run, paste-ready Impact Summary.
+(6) Poison-token discipline held through four agents' session writes; the finish parsed
+branch/PR correctly from a session dense with field-token prose in backtick form.
+</pattern>
