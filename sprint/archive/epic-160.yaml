@@ -3,7 +3,7 @@ type: epic
 title: Sprint CRUD & validator hardening (epic 156 follow-ups)
 description: 'Follow-ups surfaced while completing epic 156: validator coverage gaps, jira-sentinel gating in sibling commands, silent-drop / dry-run false-positives, and a DX gap on story update. From Reviewer findings on PRs #76-#80.'
 priority: p2
-status: backlog
+status: done
 repos: pennyfarthing
 stories:
   - id: 160-1
@@ -69,14 +69,6 @@ stories:
     workflow: tdd
     completed: '2026-07-16'
     review_verdict: approved
-  - id: 160-7
-    title: 'Test hygiene: add pytest.warns for fetch_sprint warn-on-missing-ref (AC4); strengthen/drop near-vacuous test_substring_decoy_story_id_intact (from 156-4 L1 / 156-3)'
-    points: 1
-    priority: p3
-    status: backlog
-    repos: pennyfarthing
-    workflow: trivial
-    type: chore
   - id: 160-8
     title: 'Dangling depends_on to a completed/archived story fails whole-sprint validation, blocking ALL story update & finish (gh #90)'
     points: 3
@@ -88,30 +80,6 @@ stories:
     completed: '2026-06-10'
     type: bug
     review_verdict: approved
-  - id: 160-9
-    title: Narrow blanket except in _get_archived_story_ids to OSError/YAMLError + logger.warning (160-8 review finding)
-    points: 1
-    priority: p3
-    status: backlog
-    repos: pennyfarthing
-    workflow: trivial
-    type: chore
-  - id: 160-10
-    title: "Harden validate_epic_shard per-story loop: guard non-dict story entries (AttributeError at validator.py:409) + replace 'Missing required field' string-match filter with structured marker (160-1 review deferrals)"
-    points: 1
-    priority: p3
-    status: backlog
-    repos: pennyfarthing
-    workflow: trivial
-    type: chore
-  - id: 160-11
-    title: Promote _has_real_jira_key to public in loader.py + remove dead _NO_JIRA_SENTINELS alias in story_update.py (160-3 review deferrals)
-    points: 1
-    priority: p3
-    status: backlog
-    repos: pennyfarthing
-    workflow: trivial
-    type: chore
   - id: 160-12
     title: 'ws_push read hygiene sweep: archive loop + benchmark/persona fetchers silently swallow read/parse errors and lack encoding= (6 read_text sites) — surface per #50 fail-loud (from 160-4 Dev/Reviewer findings)'
     points: 2
@@ -132,13 +100,6 @@ stories:
     workflow: tdd
     completed: '2026-06-24'
     review_verdict: approved
-  - id: 160-14
-    title: 'Sweep remaining CWE-22 shard-ref read sites with is_safe_shard_path: loader.py:326 get_archived_stories, archive_epic.py:193 load_archive + :144 backfill, and shard_merge orphan-scan/detect_orphan_shards glob loops (from 160-13 review)'
-    points: 2
-    priority: p2
-    status: backlog
-    repos: pennyfarthing
-    workflow: tdd
   - id: 160-15
     title: 'ws_push fail-loud sweep part 2: extend warn-on-present-but-broken to remaining pre-existing silent swallows (fetch_git subprocess-parse, fetch_context degraded-shape, outer fetch_persona catch-all) + add L171 main-sprint-read behavioral test and read-vs-parse warning wording (from 160-12 Reviewer findings)'
     points: 1
@@ -201,13 +162,6 @@ stories:
     workflow: tdd
     completed: '2026-06-26'
     review_verdict: approved
-  - id: 160-21
-    title: "Fix remaining Frame brownfield routes (hotspots/health-score/code-markers): same to_thread(async_fn) shape as 160-20 but DISTINCT deeper arg bugs — get_hotspots/get_code_markers call analyze_repo(name, path) with only project_dir (missing required 'path'); get_health_score passes a non-existent use_cache kwarg to analyze_healthscore. Each needs a design decision (name/path source, use_cache removal) + Path() + await. Also tighten test_frame_routes.py analysis-route tests which accept status_code in (200,500) and masked 160-20. From 160-20 TEA/Dev/Reviewer findings."
-    points: 3
-    priority: p2
-    status: backlog
-    repos: pennyfarthing
-    workflow: tdd
   - id: 160-22
     title: 'Sanitize Frame response-body info-leaks (data_proxy.py): get_project_info (L466) returns the raw absolute project_dir (OS username + filesystem layout) and get_git_all (L274) returns repo-relative paths directly in JSON response bodies — sanitize to basename/omit. get_context str(e) (L322) overlaps 160-19. Pre-existing leaks surfaced by 160-18 Reviewer (reviewer-security).'
     points: 2
@@ -218,14 +172,6 @@ stories:
     workflow: tdd
     completed: '2026-06-27'
     review_verdict: approved
-  - id: 160-23
-    title: 'Sprint validator rejects list-form depends_on (treats list as scalar) (gh #116)'
-    points: 2
-    priority: p2
-    status: backlog
-    repos: pennyfarthing
-    workflow: tdd
-    type: bug
   - id: 160-24
     title: 'Harden update --epic: uniform result shape (story_id) + docstring, tighten 2 weak tests, add same-epic/dry-run+field/empty-epic edge tests, move_story same-epic no-op (160-6 reviewer follow-ups)'
     points: 2
@@ -243,11 +189,4 @@ stories:
     completed: '2026-07-27'
     review_findings: 'r2 APPROVED: all 4 rework findings closed with mutation-verified evidence; 106/106 scoped tests, 16/16 rules, ruff clean.'
     review_verdict: approved
-  - id: 160-25
-    title: pf sprint work next ignores priority — picker recommended p3 155-17 over six available p1 stories (found during 155-33 setup)
-    points: 2
-    priority: p2
-    status: backlog
-    repos: pennyfarthing
-    workflow: tdd
-    type: bug
+completed: '2026-08-04'

@@ -18,6 +18,10 @@ completed_epics:
   - '158'
   - '161'
   - '153'
+  - '155'
+  - '157'
+  - '159'
+  - '160'
 completed_stories:
   - id: 47-1
     epic: PROJ-16293
@@ -434,3 +438,183 @@ completed_stories:
     title: finish must not mark a story done when no PR resolves but the branch has unmerged commits (155-1 guarantee only covers the resolved-PR path)
     points: 2
     completed: '2026-08-01'
+  - id: 155-1
+    epic: '155'
+    title: 'Finish flow marks story done while PR stays open — merge_pr no-op (gh #71/#60)'
+    points: 3
+    completed: '2026-06-04'
+  - id: 155-2
+    epic: '155'
+    title: 'Finish creates feat/ branch on orchestrator, breaking main-only topology (gh #15)'
+    points: 2
+    completed: '2026-06-05'
+  - id: 155-3
+    epic: '155'
+    title: 'Archive looks for sprint-unknown-*.yaml not sprint-{number}-*.yaml (gh #28)'
+    points: 2
+    completed: '2026-06-24'
+  - id: 157-6
+    epic: '157'
+    title: 'Setup gap: repos.yaml-declared repos never checked on disk; init materializes over broken symlinks; add remote: field + doctor topology check + relink (gh #98)'
+    points: 5
+    completed: '2026-06-10'
+  - id: 159-1
+    epic: '159'
+    title: 'theme_characters: accept dict-shaped agent_data, not just character name (gh #34)'
+    points: 2
+    completed: '2026-06-24'
+  - id: 159-4
+    epic: '159'
+    title: "sm-setup writes non-ISO 'Phase Started' timestamp → crashes pf handoff complete-phase (gh #74)"
+    points: 2
+    completed: '2026-06-10'
+  - id: 159-8
+    epic: '159'
+    title: 'Frame kills live sessions (161-1 regression): ephemeral owner PID on hook/launch auto-start + idle-timeout blind to OTLP/HTTP traffic'
+    points: 3
+    completed: '2026-06-24'
+  - id: 160-1
+    epic: '160'
+    title: validate_epic_shard skips per-story value checks (status enum, points numeric) — shard updates validate weaker than inline/indexed (from 156-1 M2)
+    points: 2
+    completed: '2026-06-10'
+  - id: 160-2
+    epic: '160'
+    title: validator._validate_depends_on only validates epics[].stories, not standalone_stories/top-level — dangling deps there pass (from 156-3 review)
+    points: 2
+    completed: '2026-06-10'
+  - id: 160-3
+    epic: '160'
+    title: Gate raw-truthy story.get('jira') in story_transition.py:75 + story_finish.py:174 via shared _has_real_jira_key + extract NO_JIRA_SENTINELS constant (from 156-2 review)
+    points: 2
+    completed: '2026-06-10'
+  - id: 160-4
+    epic: '160'
+    title: 'fetch_sprint _load_file silently drops malformed-but-present shards (catch->None->silent continue) — warn/surface per #50 fail-loud (from 156-4 M1)'
+    points: 1
+    completed: '2026-06-10'
+  - id: 160-5
+    epic: '160'
+    title: sprint new/update --dry-run doesn't exercise the write path — false-positive masks failures; make dry-run reach or assert the write (from 156-5/156-4)
+    points: 2
+    completed: '2026-06-05'
+  - id: 160-8
+    epic: '160'
+    title: 'Dangling depends_on to a completed/archived story fails whole-sprint validation, blocking ALL story update & finish (gh #90)'
+    points: 3
+    completed: '2026-06-10'
+  - id: 160-12
+    epic: '160'
+    title: 'ws_push read hygiene sweep: archive loop + benchmark/persona fetchers silently swallow read/parse errors and lack encoding= (6 read_text sites) — surface per #50 fail-loud (from 160-4 Dev/Reviewer findings)'
+    points: 2
+    completed: '2026-06-25'
+  - id: 160-13
+    epic: '160'
+    title: 'Shard-ref path containment: epic refs from sprint YAML build paths without resolve()/containment check (CWE-22) in shard_merge.py and ws_push.py (from 160-4 review finding)'
+    points: 1
+    completed: '2026-06-24'
+  - id: 160-15
+    epic: '160'
+    title: 'ws_push fail-loud sweep part 2: extend warn-on-present-but-broken to remaining pre-existing silent swallows (fetch_git subprocess-parse, fetch_context degraded-shape, outer fetch_persona catch-all) + add L171 main-sprint-read behavioral test and read-vs-parse warning wording (from 160-12 Reviewer findings)'
+    points: 1
+    completed: '2026-06-25'
+  - id: 160-16
+    epic: '160'
+    title: 'ws_push/data_proxy fail-loud sweep part 3: warn on present-but-broken in data_proxy._get_git_info (subprocess int-parse silent->None) + _get_repos_config (repos.yaml parse swallow) + the fetch_persona inner portrait-resolver except Exception: pass (ws_push ~L497, AC-3) — from 160-15 TEA/Dev/Reviewer findings'
+    points: 1
+    completed: '2026-06-25'
+  - id: PROJ-16066
+    epic: 
+    title: "Remove is_gui gating from relay mode handoff"
+    points: 2
+    completed: 2026-08-04
+  - id: PROJ-16146
+    epic: 
+    title: "Wire pf validate into CI + add document type validators"
+    points: 5
+    completed: 2026-08-04
+  - id: PROJ-16164
+    epic: 
+    title: "Homebrew tap + shell installer"
+    points: 3
+    completed: 2026-08-04
+  - id: PROJ-16187
+    epic: 
+    title: "Rewrite onboarding docs with three user journeys and brew-first install"
+    points: 3
+    completed: 2026-08-04
+  - id: PROJ-16200
+    epic: 
+    title: "Model story statuses on Jira lifecycle — add in_review support"
+    points: 5
+    completed: 2026-08-04
+  - id: PROJ-16204
+    epic: 
+    title: "Consumer gate extensions via config + gate files"
+    points: 2
+    completed: 2026-08-04
+  - id: PROJ-16205
+    epic: 
+    title: "Configurable PR title format via repos.yaml"
+    points: 2
+    completed: 2026-08-04
+  - id: PROJ-16209
+    epic: 
+    title: "Add tests for core API routes (settings through welcome)"
+    points: 3
+    completed: 2026-08-04
+  - id: PROJ-16233
+    epic: 
+    title: "Rebuild WheelHub bundle with in_review status mapping"
+    points: 1
+    completed: 2026-08-04
+  - id: PROJ-16302
+    epic: 
+    title: "Add judge versioning and partial-match rubric"
+    points: 2
+    completed: 2026-08-04
+  - id: PROJ-16303
+    epic: 
+    title: "Fix persona tracking — eliminate CYCLIST_SESSION_ID, set SESSION_ID before WheelHub spawn"
+    points: 3
+    completed: 2026-08-04
+  - id: PROJ-16323
+    epic: 
+    title: "Plan mode agent reload hook for ExitPlanMode"
+    points: 2
+    completed: 2026-08-04
+  - id: PROJ-16331
+    epic: 
+    title: "Add startup agent auto-invoke on SessionStart"
+    points: 3
+    completed: 2026-08-04
+  - id: PROJ-16335
+    epic: 
+    title: "Add reviewer specialist subagents (silent-failure, test, comment, type-design, security, simplifier)"
+    points: 3
+    completed: 2026-08-04
+  - id: PROJ-16336
+    epic: 
+    title: "Upgrade pipeline replay benchmark to exercise full PF machinery"
+    points: 3
+    completed: 2026-08-04
+  - id: PROJ-16346
+    epic: 
+    title: "Add spec deviation tracking to agent session output"
+    points: 3
+    completed: 2026-08-04
+  - id: PROJ-16347
+    epic: 
+    title: "Implement stacked PR depends_on field and Graphite health check"
+    points: 3
+    completed: 2026-08-04
+  - id: PROJ-16432
+    epic: 
+    title: "Enhance Architect spec-check with mismatch taxonomy"
+    points: 2
+    completed: 2026-08-04
+  - id: PROJ-16440
+    epic: 
+    title: "Update Jira label from pennyfarthing to product-pennyfarthing"
+    points: 2
+    completed: 2026-08-04

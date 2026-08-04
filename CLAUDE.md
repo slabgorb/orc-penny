@@ -21,6 +21,7 @@ Orchestrator for Pennyfarthing framework development. Manages sprint tracking, a
 7. **Match model to task** — tiers live in `pennyfarthing/pennyfarthing-dist/models.yaml`: haiku=mechanical, sonnet=analytical, opus=heavyweight, best(Fable/Opus)=judgment
 8. **Runtime scripts use `.pennyfarthing/` paths** — never `pennyfarthing-dist/`
 9. **Dogfood symlinks** — `.claude/commands/` and `.claude/skills/` symlink to `pennyfarthing-dist/`. Edit source, not targets.
+10. **Concise answers** no overexplaining and internal narration
 </critical>
 
 <git-operations>

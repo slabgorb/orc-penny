@@ -98,3 +98,4 @@ tui-pid
 .pennyfarthing/.runtime/
 .session/.expected-model
 .session/.model-advised
+# Statusline runtime state (current model, etc.)

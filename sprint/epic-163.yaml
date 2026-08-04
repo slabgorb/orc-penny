@@ -1,0 +1,98 @@
+id: '163'
+type: epic
+title: Consumer install & config correctness
+description: 'Everything a plugin-consumer repo hits on day one: init double-dispatch (gh #51), broken generated files (gh #149), config path mismatch (gh #62), repos.yaml topology (gh #133), project-local workflows (gh #115), context validate (gh #140), agent/skill registration (gh #35/#36/#37). Carried from epics 157/159.'
+priority: p2
+status: backlog
+repos: pennyfarthing
+stories:
+  - id: 163-1
+    title: 'pf init double-dispatches in plugin-consumer repos (copies + re-registers) (gh #51)'
+    points: 3
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 163-2
+    title: 'config path mismatch: CLI writes hashed dir, doctor reads .pennyfarthing/config.local.yaml (gh #62)'
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 163-3
+    title: Complete repos.yaml symlinks map (10/14 declared) — cover .claude/commands, .claude/skills, .pennyfarthing/data, .pennyfarthing/gates; pin _DOGFOODING_SYMLINKS ⊆ declared topology
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 163-4
+    title: 'project-setup writes repos.yaml to root but runtime reads .pennyfarthing/repos.yaml (gh #133)'
+    description: "From gh #133. The project-setup workflow writes repos.yaml to the PROJECT ROOT, but the pf runtime only reads it from .pennyfarthing/repos.yaml — so a faithful /setup run produces a repos.yaml that pf silently ignores (pf doctor reports 'No repos.yaml — no topology to verify' even though the file exists). Workflow side: workflows/project-setup/workflow.yaml:20 (output_repos: repos.yaml) + step-03-repos-yaml.md (lines 11/15/175 say 'project root') + downstream steps re-read from root. Runtime side: src/pf/git/repos.py:108/213/235/341 and scripts/misc/repo-utils.sh:31 all read .pennyfarthing/repos.yaml. Confirmed pf 13.3.0. Fix (lowest-risk): align the workflow to the runtime's canonical path — set output_repos to .pennyfarthing/repos.yaml, update step-03 wording + the {output_repos} switch case, and sweep other setup steps that re-read repos.yaml. Also check the no_repos_yaml trigger (workflow.yaml:32) keys off the runtime location."
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria:
+      - project-setup workflow writes repos.yaml to .pennyfarthing/repos.yaml (output_repos + step-03 wording + switch case updated)
+      - All setup steps that re-read repos.yaml read from the .pennyfarthing/ path
+      - "Regression: a faithful workflow run produces a repos.yaml that pf doctor recognizes ('All declared repo paths and symlinks intact', not 'No repos.yaml')"
+      - no_repos_yaml trigger condition verified to key off the runtime location
+    type: bug
+  - id: 163-5
+    title: 'Project-local workflows only honored by router, not execution engine (gh #115)'
+    points: 3
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 163-6
+    title: 'pf context validate rejects the markdown docs pf context create emits (gh #140)'
+    description: "From gh #140. 'pf context validate <file>' parses its input as YAML, but 'pf context create' emits MARKDOWN (sprint/context/context-*.md). So validate rejects the very documents create generates — every epic/story context doc fails with a raw PyYAML error ('Invalid YAML: expected <document start>...') at the first prose paragraph, making the validate workflow a no-op on real projects. The handoff gate (pf/handoff/complete_phase.py) only checks existence + non-emptiness, so stories are NOT blocked (low severity), but the raw parse error sends users down a false 'my context doc is malformed' path. Confirmed pf 13.3.0. Fix (preferred): pf context validate understands the markdown context documents create emits and checks the structural contract (required sections: ## Title, ## Overview, ## Metadata, non-empty ## Background, etc.). Minimum acceptable: detect .md / non-YAML input and fail with an actionable message naming the format mismatch instead of a PyYAML traceback fragment."
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria:
+      - 'pf context validate succeeds against the markdown docs pf context create emits (round-trip: create then validate passes)'
+      - 'validate checks the markdown structural contract (required sections present + non-empty ## Background)'
+      - On genuinely malformed/non-context input, validate fails with an actionable message about the format, not a raw PyYAML traceback fragment
+    type: bug
+  - id: 163-7
+    title: 'pf init: mirror agents-local/*.md into .claude/agents/ for native subagent dispatch (gh #35)'
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 163-8
+    title: 'Skill template at templates/skills/pf-{name}.md not registered as Claude Code skill (gh #36)'
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 163-9
+    title: 'pf agent doctor: detect misplaced custom agents and flat sidecars (gh #37)'
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 163-10
+    title: 'pf init ships broken generated files: justfile.pf references undeclared {{root}} (every just invocation fails at parse); question-reflector-check.sh calls removed reflector-check subcommand (gh #149)'
+    description: "From gh #149 (observed pf 13.3.0). Two package-managed files generated into .pennyfarthing/ are broken on arrival: (1) justfile.pf references {{root}} in five recipes but its contract ('Requires root := justfile_directory() in the parent justfile') is neither satisfied by pf init nor verified — just fails at PARSE time, breaking every just invocation, not only pf recipes. (2) question-reflector-check.sh calls the removed 'reflector-check' CLI subcommand. Class root cause: .pennyfarthing/ is overwritten on every pf update, so hand-fixes silently regress — generated-file contracts must be satisfied by the generator. Fix both files upstream + add a doctor/init check that generated-file contracts hold."
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
