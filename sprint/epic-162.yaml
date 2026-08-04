@@ -28,9 +28,11 @@ stories:
     title: _view_is_merged case-folds PR state, loosening the boolean that authorises the done transition; pin or revert (from 155-32 review)
     points: 1
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-08-04'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-04'
   - id: 162-4
     title: Harden _branch_merge_state probe candidates via ref-prefixing — refs/heads/ and refs/remotes/origin/ resolve correctly and cannot be flag-parsed; the naive -- separator breaks rev-parse --verify (probed rc=1) (from 155-34 review)
     points: 1
@@ -163,6 +165,9 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria:
+      - 'Step one: fix the test fixture that derives mergedAt via case-fold (test_162_3 file line ~208) — inert now, becomes a false-pass generator once mergedAt corroboration lands (162-3 review R3)'
+      - Add a whitespace-padded MERGED spelling to the 162-3 parametrize lists — a .strip() mutant currently passes all 49 (162-3 review R1); also add a lowercase input pair to TestConflictGateStillBlocksCanonicalMergeability, which is currently decorative (both blocking-side folds removable with zero failures — 162-3 review R2, mutation-confirmed)
     type: bug
   - id: 162-19
     title: Consolidate _pr_block_reason/_view_is_merged into a _classify_pr(view) precedence-ordered verdict — gate/short-circuit ordering is positional and unenforced; also sweep _result_blob to include message/detail keys and add _pr_view field-type validation (from 162-1 review, flagged by TEA+Dev+Reviewer)
@@ -171,6 +176,8 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria:
+      - 'Consider a parsed-enum at the _pr_view boundary (working precedent: pf/preflight/finish.py:193 is already strict and mergedAt-corroborated) — fixes the stringly-typed state class, not just instances (162-3 review)'
     type: refactor
   - id: 162-20
     title: 'finish --dry-run never evaluates _pr_block_reason: OPEN+CONFLICTING previews a merge the real run aborts — 155-31 parity broken in the opposite direction (from 162-1 review)'
@@ -206,3 +213,11 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     type: refactor
+  - id: 162-24
+    title: Decide de-fold vs pin for the mergeable/mergeStateStatus case-folds in _pr_block_reason (~321-322) — they feed a BLOCKING predicate so folding biases toward blocking (opposite risk profile from 162-3's authorization-side revert); decide deliberately and pin with lowercase test inputs (from 162-3 review)
+    points: 1
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: chore
