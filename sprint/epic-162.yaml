@@ -176,3 +176,11 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     type: bug
+  - id: 162-21
+    title: "resolve-gate ignores REJECTED reviewer verdict: returned next_agent=sm/next_phase=finish and complete-phase advanced to finish despite the gate's own recovery_config declaring reviewer-verdict {action: rework, target_phase: green} (observed live in 162-2 review)"
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
