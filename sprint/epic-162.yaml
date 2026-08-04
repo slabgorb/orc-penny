@@ -19,9 +19,11 @@ stories:
     title: test_155_15 clean-merge tests never invoke gh pr merge — stateless MERGED fake trips the 155-29 short-circuit (from 155-32 review)
     points: 1
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-08-04'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-04'
   - id: 162-3
     title: _view_is_merged case-folds PR state, loosening the boolean that authorises the done transition; pin or revert (from 155-32 review)
     points: 1
@@ -43,6 +45,8 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria:
+      - Stub the Jira boundary in test_153_4_story_mutation_on_sharded_yaml (TestFinishStorySuccessOnShardedYaml fails without Jira credentials — permanently red locally, hides finish regressions; endorsed by TEA+Reviewer in 162-2)
   - id: 162-6
     title: finish_story runs gh pr merge/view from orchestrator root, cannot merge/verify PRs in the inlined pennyfarthing sub-repo (repo-context bug)
     points: 3
@@ -183,4 +187,22 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria:
+      - Gate emits the identical result regardless of verdict — confirmed twice in 162-2 (REJECTED round 1, APPROVED round 2 both returned next_agent=sm/next_phase=finish); on approval the routing is right only by accident
     type: bug
+  - id: 162-22
+    title: 'Port the 162-2 stateful gh-pr-merge fake to test_155_1_finish_verifies_merge.py:489 — its clean-merge happy-path test uses a fixed MERGED view, trips the 155-29 short-circuit, and never invokes gh pr merge (ironic: 155-1 made the merge load-bearing) (from 162-2 review)'
+    points: 1
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 162-23
+    title: Consolidate four duplicated _make_fake_run gh-PR fakes (155-1/12/15, 162-1) into shared pf/tests/helpers/gh_pr_fake.py as a callable dataclass — kills two type:ignore escapes and the MagicMock(side_effect=fake) ledger footgun live in test_155_29; use parts[:3]==[gh,pr,merge] dispatch; add shared Literal aliases for gh PR states imported by production and fakes (from 162-2 review)
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: refactor

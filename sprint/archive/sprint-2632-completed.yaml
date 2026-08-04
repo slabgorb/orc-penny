@@ -15,3 +15,8 @@ completed_stories:
     title: finish evaluates the conflict gate before the already-merged short-circuit, so a MERGED PR with stale DIRTY mergeability aborts with un-actionable rebase advice (from 155-32 review)
     points: 1
     completed: '2026-08-04'
+  - id: 162-2
+    epic: '162'
+    title: test_155_15 clean-merge tests never invoke gh pr merge — stateless MERGED fake trips the 155-29 short-circuit (from 155-32 review)
+    points: 1
+    completed: '2026-08-04'
