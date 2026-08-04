@@ -25,3 +25,8 @@ completed_stories:
     title: _view_is_merged case-folds PR state, loosening the boolean that authorises the done transition; pin or revert (from 155-32 review)
     points: 1
     completed: '2026-08-04'
+  - id: 162-4
+    epic: '162'
+    title: Harden _branch_merge_state probe candidates via ref-prefixing — refs/heads/ and refs/remotes/origin/ resolve correctly and cannot be flag-parsed; the naive -- separator breaks rev-parse --verify (probed rc=1) (from 155-34 review)
+    points: 1
+    completed: '2026-08-04'

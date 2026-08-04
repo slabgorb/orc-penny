@@ -37,9 +37,11 @@ stories:
     title: Harden _branch_merge_state probe candidates via ref-prefixing — refs/heads/ and refs/remotes/origin/ resolve correctly and cannot be flag-parsed; the naive -- separator breaks rev-parse --verify (probed rc=1) (from 155-34 review)
     points: 1
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-08-04'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-04'
   - id: 162-5
     title: 'Triage pre-existing test-failure baseline: ~30 failures across 6 modules (143-9/143-10 e2e, 153-4 jira-sync, independence, init-justfile, peloton portrait panes) — repair or quarantine so story-scoped green claims need no per-story re-proof'
     points: 3
@@ -98,6 +100,8 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria:
+      - 'Defense in depth: reject or ref-qualify dash-leading values at _extract_branch — the sentinel accepts only a lone dash, so dash-leading values reach all downstream git calls (from 162-4 review)'
     type: bug
   - id: 162-11
     title: 'schema-validation hook: require Branch/PR session fields on session writes (mechanical backstop for the 155-33 template contract, from 155-33 review)'
@@ -215,6 +219,30 @@ stories:
     type: refactor
   - id: 162-24
     title: Decide de-fold vs pin for the mergeable/mergeStateStatus case-folds in _pr_block_reason (~321-322) — they feed a BLOCKING predicate so folding biases toward blocking (opposite risk profile from 162-3's authorization-side revert); decide deliberately and pin with lowercase test inputs (from 162-3 review)
+    points: 1
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: chore
+  - id: 162-25
+    title: "Git revision operators survive ref-prefixing in _branch_merge_state: refs/heads/feat~2, @{0}, caret forms all resolve (probed rc=0) to an ANCESTOR of the real tip — count 0 ahead reads merged, the 155-34 false-done from a direction prefixing doesn't cover; pre-existing on bare names too. Probed fix: validate with git check-ref-format --branch (rejects rc=128) and route invalid names to the existing unknown-aborts path (from 162-4 review)"
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 162-26
+    title: "Ref-qualified Branch values (origin/x, refs/heads/x) double-prefix in _branch_merge_state and abort where the old bare probe verified — fails closed but needs design: strip-prefix is UNSOUND (collides with the look-alike-branch threat 162-4 defends against); consider candidate widening or rejection at the extractor. Also document the base field's dual shape at story_finish.py:371 (prefixed on definitive arms, bare on not-found arms) (from 162-4 review)"
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 162-27
+    title: 'Ref-prefix sweep of remaining bare-ref probe sites: staleness.py:443 (tag-shadow residue only — upstream literal table blocks flag/typo vectors; advisory consequence) and frame/routes/data_proxy.py:189 (HEAD..origin/develop range, DWIM-shadowable). Note probe candidates hardcode the origin remote — decide whether to honor configured remote names in the same pass (from 162-4 review)'
     points: 1
     priority: p3
     status: backlog
