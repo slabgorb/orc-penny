@@ -1,0 +1,11 @@
+name: "Deferred Hardening Tail"
+description: |
+  P3 review-deferral follow-ups parked at the close of sprint 2618 (originally
+  epics 155/159/160): finish-flow polish, archive-path hardening, parse-session
+  consolidation, Frame fail-loud leftovers, test hygiene. Not sprint work —
+  promote selectively via `pf sprint epic promote 164` if any resurface.
+status: backlog
+blocked_by:
+total_points: 39
+epics:
+  - '164'

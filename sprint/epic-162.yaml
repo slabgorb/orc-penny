@@ -1,0 +1,150 @@
+id: '162'
+type: epic
+title: Finish & sprint-tooling truthfulness
+description: 'Remaining truthfulness hardening: finish-flow correctness (155-3x tail, repo-context PR resolution incl. gh #150 multi-repo), dishonest dry-runs (gh #146), validator gaps (gh #116), priority-blind picker, test-baseline triage. Carried from epics 155/159/160.'
+priority: p1
+status: backlog
+repos: pennyfarthing
+stories:
+  - id: 162-1
+    title: finish evaluates the conflict gate before the already-merged short-circuit, so a MERGED PR with stale DIRTY mergeability aborts with un-actionable rebase advice (from 155-32 review)
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-2
+    title: test_155_15 clean-merge tests never invoke gh pr merge — stateless MERGED fake trips the 155-29 short-circuit (from 155-32 review)
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-3
+    title: _view_is_merged case-folds PR state, loosening the boolean that authorises the done transition; pin or revert (from 155-32 review)
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-4
+    title: Harden _branch_merge_state probe candidates via ref-prefixing — refs/heads/ and refs/remotes/origin/ resolve correctly and cannot be flag-parsed; the naive -- separator breaks rev-parse --verify (probed rc=1) (from 155-34 review)
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-5
+    title: 'Triage pre-existing test-failure baseline: ~30 failures across 6 modules (143-9/143-10 e2e, 153-4 jira-sync, independence, init-justfile, peloton portrait panes) — repair or quarantine so story-scoped green claims need no per-story re-proof'
+    points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-6
+    title: finish_story runs gh pr merge/view from orchestrator root, cannot merge/verify PRs in the inlined pennyfarthing sub-repo (repo-context bug)
+    points: 3
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria:
+      - Route the 155-34 git merge-state probe to the story's code repo alongside the gh calls — probing project_root makes multi-repo no-PR finishes read unknown and abort (from 155-34 review)
+      - "Multi-repo (repos: both/multi) stories: finish verifies EVERY repo's PR is merged before marking done — one merged + one open must abort loudly and leave the story in_review (from gh #150)"
+    type: bug
+  - id: 162-7
+    title: 'pf jira assign --dry-run false-positive success + ambiguous identifier contract (gh #146)'
+    description: 'From gh #146. Two distinct truthfulness bugs in ''pf jira assign KEY USER''. (1) --dry-run reports FALSE-POSITIVE SUCCESS: it echoes the input verbatim and prints ''Assigned ...'' without resolving the user against Jira, so ''pf jira assign MSSCI-18553 slabgorb@gmail.com --dry-run'' prints success while the real call then fails ''User not found''. The dry-run is useless for validating an identifier before a live call. Same false-positive-success pattern reportedly exists in ''pf jira sprint add'' — audit other --dry-run paths. (2) The ''email or GitHub username'' contract is ambiguous: ''email'' must be the Jira ACCOUNT email (corporate SSO, e.g. keith.avery@1898andco.io), not any personal email; a non-Jira email looks valid until the real call. Only the GitHub username resolved in the live session. Fix: make --dry-run perform the real user lookup and fail loudly (User not found: X) without mutating the issue; print the RESOLVED Jira account (email + display name) it will assign to in both dry-run and real output; clarify help text (''USER: GitHub username, or the user Jira account email; non-Jira emails will not resolve'').'
+    points: 3
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria:
+      - 'pf jira assign --dry-run performs the real user lookup and fails loudly (non-zero, ''User not found: X'') for unresolvable identifiers, without mutating the issue'
+      - dry-run and real output both print the resolved Jira account (email + display name) that will be assigned
+      - help text clarifies USER means GitHub username or Jira account email, and that non-Jira emails will not resolve
+      - Audit + fix sibling --dry-run false-positive paths (at minimum pf jira sprint add)
+    type: bug
+  - id: 162-8
+    title: 'Sibling-template PF_PY sweep: sm-setup, testing-runner, pf-standalone still run pf.* via project .venv; add ${PF_PY:?} fail-loud guards uniformly (155-11 follow-up)'
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 162-9
+    title: 'finish robustness: pass a bounded timeout to _run gh subprocess calls (from 155-31 review)'
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-10
+    title: '_extract_branch: iterate annotation/backtick strips to a fixed point (annotation-inside-backticks residual) + document sentinel-set tradeoff (from 155-33 review)'
+    points: 1
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 162-11
+    title: 'schema-validation hook: require Branch/PR session fields on session writes (mechanical backstop for the 155-33 template contract, from 155-33 review)'
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-12
+    title: 'Sweep remaining CWE-22 shard-ref read sites with is_safe_shard_path: loader.py:326 get_archived_stories, archive_epic.py:193 load_archive + :144 backfill, and shard_merge orphan-scan/detect_orphan_shards glob loops (from 160-13 review)'
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-13
+    title: 'Sprint validator rejects list-form depends_on (treats list as scalar) (gh #116)'
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 162-14
+    title: pf sprint work next ignores priority — picker recommended p3 155-17 over six available p1 stories (found during 155-33 setup)
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 162-15
+    title: 'Revert Ghostty tab-title feature (PR #154): inert under Claude Code'
+    description: "Revert the merged Ghostty tab-title sync feature (framework PR #154, merge commit a2d96e282, base develop). ROOT CAUSE (confirmed live): the statusline hook writes an OSC 2 title escape to a tty, but (1) /dev/tty is unavailable in the hook subprocess (Errno 6) so it falls back to _resolve_ancestor_tty (resolves the claude process tty /dev/ttys001 correctly), and (2) Claude Code itself writes the terminal title per-turn to that same tty and the hook's change-detection cache suppresses re-writes after the first, so Claude Code is always the last writer standing. No supported fix: CLAUDE_CODE_DISABLE_TERMINAL_TITLE=1 is broken for ongoing updates (upstream open bug anthropics/claude-code#47397; feature request #56933). Feature fails INVISIBLY (caches success while doing nothing). Decision: revert rather than ship inert."
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    acceptance_criteria:
+      - 'Revert framework PR #154 on develop: remove _get_phase/_compose_tab_title/_write_title_to_tty/_resolve_ancestor_tty/_set_terminal_title and the main() wiring from pennyfarthing-dist/src/pf/hooks/statusline.py'
+      - Remove pennyfarthing-dist/src/pf/tests/test_statusline_tab_title.py; full pytest suite stays green (no regressions in test_statusline_model_persist.py / test_advisory_model_tier.py)
+      - Delete stale plan doc docs/superpowers/plans/2026-07-27-ghostty-tab-title.md in the ORCHESTRATOR repo (separate commit, targets main)
+      - 'Leave a tracking note referencing upstream anthropics/claude-code#47397 and #56933 so the feature can be revisited if Claude Code ships a working title-disable toggle'
+  - id: 162-16
+    title: "schema-validation hook mis-dispatches initiative-*.yaml as sprint index — demands 'sprint:' section on files pf sprint validate accepts (hook/validator divergence, SOUL #2)"
+    points: 1
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 162-17
+    title: "pf sprint archive --apply false-success: removal filters only epics[].stories (misses standalone_stories; no-op on sharded index where epics are ID strings) yet unconditionally reports 'removed from current-sprint.yaml'"
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug

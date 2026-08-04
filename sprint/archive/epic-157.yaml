@@ -1,0 +1,20 @@
+id: '157'
+type: epic
+title: Plugin-consumer init & config paths
+description: 'pf init and config tooling misbehave in plugin-consumer repos: double-dispatch, path mismatch, unregistered skills/agents. Issues #51, #62, #35, #36, #37.'
+priority: p2
+status: done
+repos: pennyfarthing
+stories:
+  - id: 157-6
+    title: 'Setup gap: repos.yaml-declared repos never checked on disk; init materializes over broken symlinks; add remote: field + doctor topology check + relink (gh #98)'
+    points: 5
+    priority: p1
+    status: done
+    started: '2026-06-10'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-06-10'
+    type: bug
+    review_verdict: approved
+completed: '2026-08-04'
