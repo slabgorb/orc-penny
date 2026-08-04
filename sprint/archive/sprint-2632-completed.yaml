@@ -1,0 +1,17 @@
+sprint:
+  name: "Frontier Model Changes 2632"
+  number: 2632
+  jira_sprint_id: 311
+  jira_sprint_name: "Frontier Model Changes 2632"
+  goal: Frontier model changes
+  start_date: 2026-08-03
+  end_date: 2026-08-16
+  status: active
+
+completed_epics: []
+completed_stories:
+  - id: 162-1
+    epic: '162'
+    title: finish evaluates the conflict gate before the already-merged short-circuit, so a MERGED PR with stale DIRTY mergeability aborts with un-actionable rebase advice (from 155-32 review)
+    points: 1
+    completed: '2026-08-04'
