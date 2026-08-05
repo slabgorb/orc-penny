@@ -35,3 +35,8 @@ completed_stories:
     title: 'Triage pre-existing test-failure baseline: ~30 failures across 6 modules (143-9/143-10 e2e, 153-4 jira-sync, independence, init-justfile, peloton portrait panes) — repair or quarantine so story-scoped green claims need no per-story re-proof'
     points: 3
     completed: '2026-08-05'
+  - id: 162-6
+    epic: '162'
+    title: finish_story runs gh pr merge/view from orchestrator root, cannot merge/verify PRs in the inlined pennyfarthing sub-repo (repo-context bug)
+    points: 3
+    completed: '2026-08-05'
