@@ -65,3 +65,8 @@ completed_stories:
     title: 'schema-validation hook: require Branch/PR session fields on session writes (mechanical backstop for the 155-33 template contract, from 155-33 review)'
     points: 2
     completed: '2026-08-05'
+  - id: 162-12
+    epic: '162'
+    title: 'Sweep remaining CWE-22 shard-ref read sites with is_safe_shard_path: loader.py:326 get_archived_stories, archive_epic.py:193 load_archive + :144 backfill, and shard_merge orphan-scan/detect_orphan_shards glob loops (from 160-13 review)'
+    points: 2
+    completed: '2026-08-05'
