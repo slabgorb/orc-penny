@@ -60,3 +60,8 @@ completed_stories:
     title: '_extract_branch: iterate annotation/backtick strips to a fixed point (annotation-inside-backticks residual) + document sentinel-set tradeoff (from 155-33 review)'
     points: 1
     completed: '2026-08-05'
+  - id: 162-11
+    epic: '162'
+    title: 'schema-validation hook: require Branch/PR session fields on session writes (mechanical backstop for the 155-33 template contract, from 155-33 review)'
+    points: 2
+    completed: '2026-08-05'
