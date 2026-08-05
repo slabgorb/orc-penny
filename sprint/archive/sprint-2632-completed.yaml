@@ -55,3 +55,8 @@ completed_stories:
     title: 'finish robustness: pass a bounded timeout to _run gh subprocess calls (from 155-31 review)'
     points: 2
     completed: '2026-08-05'
+  - id: 162-10
+    epic: '162'
+    title: '_extract_branch: iterate annotation/backtick strips to a fixed point (annotation-inside-backticks residual) + document sentinel-set tradeoff (from 155-33 review)'
+    points: 1
+    completed: '2026-08-05'

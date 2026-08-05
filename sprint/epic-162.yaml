@@ -107,11 +107,13 @@ stories:
     title: '_extract_branch: iterate annotation/backtick strips to a fixed point (annotation-inside-backticks residual) + document sentinel-set tradeoff (from 155-33 review)'
     points: 1
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-08-05'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
       - 'Defense in depth: reject or ref-qualify dash-leading values at _extract_branch — the sentinel accepts only a lone dash, so dash-leading values reach all downstream git calls (from 162-4 review)'
+    completed: '2026-08-05'
     type: bug
   - id: 162-11
     title: 'schema-validation hook: require Branch/PR session fields on session writes (mechanical backstop for the 155-33 template contract, from 155-33 review)'
@@ -244,6 +246,8 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria:
+      - 'Extractor-adjacent from 162-10 review: parenthesized-tail values are silently REWRITTEN not refused (a command-substitution-shaped tail reduces to its first char — the one arm where the extractor changes a value instead of accepting/refusing); control characters pass the validator into argv (git aborts loudly today) — close both in the same syntactic-validation pass'
     type: bug
   - id: 162-26
     title: "Ref-qualified Branch values (origin/x, refs/heads/x) double-prefix in _branch_merge_state and abort where the old bare probe verified — fails closed but needs design: strip-prefix is UNSOUND (collides with the look-alike-branch threat 162-4 defends against); consider candidate widening or rejection at the extractor. Also document the base field's dual shape at story_finish.py:371 (prefixed on definitive arms, bare on not-found arms) (from 162-4 review)"
@@ -375,4 +379,6 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria:
+      - '162-10 test polish: depth parametrization is depth-invariant (str.strip collapses all ticks in one call — pins performance, not iteration depth); dry-run abort test drops the four invariants its sibling asserts; _BRANCH_SENTINELS should be frozenset (from 162-10 review)'
     type: chore
