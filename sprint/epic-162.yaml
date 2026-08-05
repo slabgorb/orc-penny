@@ -96,11 +96,13 @@ stories:
     title: 'finish robustness: pass a bounded timeout to _run gh subprocess calls (from 155-31 review)'
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-08-05'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
       - Narrow or log the bare 'except Exception' at story_finish.py ~897 that degrades to in_progress unlogged AFTER the irreversible merge (pre-existing from 155-16, resurfaced in 162-1 review)
+    completed: '2026-08-05'
   - id: 162-10
     title: '_extract_branch: iterate annotation/backtick strips to a fixed point (annotation-inside-backticks residual) + document sentinel-set tradeoff (from 155-33 review)'
     points: 1
@@ -198,6 +200,8 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria:
+      - '162-9 WIDENED the dry-run parity gap: reality now aborts on a hung gate probe while the preview still routes through permissive _pr_view and promises a merge it cannot promise — same arm, same fix (from 162-9 review)'
     type: bug
   - id: 162-21
     title: "resolve-gate ignores REJECTED reviewer verdict: returned next_agent=sm/next_phase=finish and complete-phase advanced to finish despite the gate's own recovery_config declaring reviewer-verdict {action: rework, target_phase: green} (observed live in 162-2 review)"
@@ -360,6 +364,14 @@ stories:
     title: 'Decide scripts/hooks/pre-commit.sh contract: runs pf.sprint.validate_cmd on bare python3 with PYTHONPATH fallback and SKIPS validation when no python found — a git hook that must degrade gracefully without pf installed, so the fail-loud guard is the wrong instrument; decide + document the degradation contract (from 162-8 TEA)'
     points: 1
     priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: chore
+  - id: 162-41
+    title: "162-9 timeout-hardening tail: change truthiness tests on the timeout signal to 'is not None' (story_finish.py ~913, ~1088 — empty message collapses a hung probe into the permissive arm; unreachable today); stop discarding non-timeout exits in steps 5/6 (step 5 reports it ran when it failed); catch OSError in _run and extract the bounded-run/_TimedOutProcess trio into a shared helper (unbounded-subprocess pattern recurs in other modules); add a merge-didn't-run assertion to the gate-timeout test (its hang-all-views predicate would pass a fell-through gate) (from 162-9 review)"
+    points: 2
+    priority: p2
     status: backlog
     repos: pennyfarthing
     workflow: tdd

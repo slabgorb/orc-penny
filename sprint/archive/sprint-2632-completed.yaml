@@ -50,3 +50,8 @@ completed_stories:
     title: 'Sibling-template PF_PY sweep: sm-setup, testing-runner, pf-standalone still run pf.* via project .venv; add ${PF_PY:?} fail-loud guards uniformly (155-11 follow-up)'
     points: 2
     completed: '2026-08-05'
+  - id: 162-9
+    epic: '162'
+    title: 'finish robustness: pass a bounded timeout to _run gh subprocess calls (from 155-31 review)'
+    points: 2
+    completed: '2026-08-05'
