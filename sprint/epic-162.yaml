@@ -86,9 +86,11 @@ stories:
     title: 'Sibling-template PF_PY sweep: sm-setup, testing-runner, pf-standalone still run pf.* via project .venv; add ${PF_PY:?} fail-loud guards uniformly (155-11 follow-up)'
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-08-05'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-05'
     type: bug
   - id: 162-9
     title: 'finish robustness: pass a bounded timeout to _run gh subprocess calls (from 155-31 review)'
@@ -280,6 +282,8 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria:
+      - There is NO CI workflow config anywhere in the repo — nothing enforces either test root; add CI (or document why not) as part of deciding the second tree's fate (from 162-8 review)
     type: chore
   - id: 162-31
     title: 'Quarantine exit-loudness + meta-guard hardening: strict=False xfails XPASS silently when B1/B2/B4 land — add a forcing function (strict where safe, or extend test_162_5_quarantine_policy to fail on XPASS); tighten the gameable tracking-reference regex; close the pytestmark/runtime-xfail discovery bypass; fix the two remaining vacuous portrait tests (:274, :372, same if-called pattern 162-5 fixed at :397); dedup the 4x 15-line quarantine comment in test_143_9 (from 162-5 review)'
@@ -332,6 +336,30 @@ stories:
     title: 'Test-gate hygiene: leakage gate SKIP_DIRS lists .venv but not venv (a stray venv/ trips it on pip RECORD byte counts — hit twice on 2026-08-05); test_frame_routes has an order-dependent flake (4 tests fail in full runs, pass in isolation) that survived the 162-5 triage (from 162-7)'
     points: 1
     priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: chore
+  - id: 162-38
+    title: "PF_PY policy hardening (162-8 tail): add gate-fence sentinels to SENTINEL_TEMPLATES (the unswept-root failure mode is one rename from recurring — highest-value); note the script-path blind spot (fence invoking a .py that imports pf is invisible to the predicate); pin the sweep blind-spot shapes (dash-less heredoc, python3.12, untagged fence); document deviations.py's Spec-source specificity rule in guides/deviation-format.md (from 162-8 review)"
+    points: 1
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: chore
+  - id: 162-39
+    title: "CWE-78 sweep: nine template fences interpolate agent-assembled data into double-quoted Python source strings (sm-finish.md:31,41 format_pr_title with JIRA_KEY/TITLE; pf-standalone.md:155; git-cleanup step-03:157; five gate fences interpolating session/context paths) — an apostrophe in a PR title breaks them today, a crafted one injects Python. Apply sm-setup's documented positional-argv + single-quoted-heredoc defense uniformly (from 162-8 review)"
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 162-40
+    title: 'Decide scripts/hooks/pre-commit.sh contract: runs pf.sprint.validate_cmd on bare python3 with PYTHONPATH fallback and SKIPS validation when no python found — a git hook that must degrade gracefully without pf installed, so the fail-loud guard is the wrong instrument; decide + document the degradation contract (from 162-8 TEA)'
+    points: 1
+    priority: p3
     status: backlog
     repos: pennyfarthing
     workflow: tdd

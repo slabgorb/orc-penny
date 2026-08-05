@@ -45,3 +45,8 @@ completed_stories:
     title: 'pf jira assign --dry-run false-positive success + ambiguous identifier contract (gh #146)'
     points: 3
     completed: '2026-08-05'
+  - id: 162-8
+    epic: '162'
+    title: 'Sibling-template PF_PY sweep: sm-setup, testing-runner, pf-standalone still run pf.* via project .venv; add ${PF_PY:?} fail-loud guards uniformly (155-11 follow-up)'
+    points: 2
+    completed: '2026-08-05'
