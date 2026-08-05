@@ -40,3 +40,8 @@ completed_stories:
     title: finish_story runs gh pr merge/view from orchestrator root, cannot merge/verify PRs in the inlined pennyfarthing sub-repo (repo-context bug)
     points: 3
     completed: '2026-08-05'
+  - id: 162-7
+    epic: '162'
+    title: 'pf jira assign --dry-run false-positive success + ambiguous identifier contract (gh #146)'
+    points: 3
+    completed: '2026-08-05'
