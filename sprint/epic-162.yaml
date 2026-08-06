@@ -254,11 +254,13 @@ stories:
     title: "Git revision operators survive ref-prefixing in _branch_merge_state: refs/heads/feat~2, @{0}, caret forms all resolve (probed rc=0) to an ANCESTOR of the real tip — count 0 ahead reads merged, the 155-34 false-done from a direction prefixing doesn't cover; pre-existing on bare names too. Probed fix: validate with git check-ref-format --branch (rejects rc=128) and route invalid names to the existing unknown-aborts path (from 162-4 review)"
     points: 1
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-08-06'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
       - 'Extractor-adjacent from 162-10 review: parenthesized-tail values are silently REWRITTEN not refused (a command-substitution-shaped tail reduces to its first char — the one arm where the extractor changes a value instead of accepting/refusing); control characters pass the validator into argv (git aborts loudly today) — close both in the same syntactic-validation pass'
+    completed: '2026-08-06'
     type: bug
   - id: 162-26
     title: "Ref-qualified Branch values (origin/x, refs/heads/x) double-prefix in _branch_merge_state and abort where the old bare probe verified — fails closed but needs design: strip-prefix is UNSOUND (collides with the look-alike-branch threat 162-4 defends against); consider candidate widening or rejection at the extractor. Also document the base field's dual shape at story_finish.py:371 (prefixed on definitive arms, bare on not-found arms) (from 162-4 review)"
@@ -437,6 +439,13 @@ stories:
   - id: 162-47
     title: 'Verdict-parse and gate follow-ups from 162-21 review (cycle-5 findings): CommonMark fence-length correctness in mask_illustrative_regions, near-miss heading \b gap, parse_round_trip_count masking, tri-state invariant, complete_phase heading literals + missing encoding=, test polish; plus rework recovery for the six approval-gate workflows still carrying the 162-2 defect, and the approval-only subagent check (rejections skip specialist verification)'
     points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-48
+    title: '162-25 follow-ups: guard _git_cleanup bare base argv (checkout/pull at story_finish.py:815-816, last unguarded argv in file, 162-4 class); de-hardcode origin remote (third deferral); harden timeout-arm test to subprocess-level patching asserting state==timeout; precise diagnosis for refname-legal non-branches (HEAD, @, self-prefixed)'
+    points: 2
     priority: p1
     status: backlog
     repos: pennyfarthing

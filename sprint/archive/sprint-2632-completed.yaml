@@ -80,3 +80,8 @@ completed_stories:
     title: "resolve-gate ignores REJECTED reviewer verdict: returned next_agent=sm/next_phase=finish and complete-phase advanced to finish despite the gate's own recovery_config declaring reviewer-verdict {action: rework, target_phase: green} (observed live in 162-2 review)"
     points: 2
     completed: '2026-08-06'
+  - id: 162-25
+    epic: '162'
+    title: "Git revision operators survive ref-prefixing in _branch_merge_state: refs/heads/feat~2, @{0}, caret forms all resolve (probed rc=0) to an ANCESTOR of the real tip — count 0 ahead reads merged, the 155-34 false-done from a direction prefixing doesn't cover; pre-existing on bare names too. Probed fix: validate with git check-ref-format --branch (rejects rc=128) and route invalid names to the existing unknown-aborts path (from 162-4 review)"
+    points: 1
+    completed: '2026-08-06'
