@@ -75,3 +75,8 @@ completed_stories:
     title: 'Sprint validator rejects list-form depends_on (treats list as scalar) (gh #116)'
     points: 2
     completed: '2026-08-06'
+  - id: 162-21
+    epic: '162'
+    title: "resolve-gate ignores REJECTED reviewer verdict: returned next_agent=sm/next_phase=finish and complete-phase advanced to finish despite the gate's own recovery_config declaring reviewer-verdict {action: rework, target_phase: green} (observed live in 162-2 review)"
+    points: 2
+    completed: '2026-08-06'

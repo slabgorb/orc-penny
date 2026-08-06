@@ -216,12 +216,16 @@ stories:
     title: "resolve-gate ignores REJECTED reviewer verdict: returned next_agent=sm/next_phase=finish and complete-phase advanced to finish despite the gate's own recovery_config declaring reviewer-verdict {action: rework, target_phase: green} (observed live in 162-2 review)"
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-08-06'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
       - Gate emits the identical result regardless of verdict — confirmed twice in 162-2 (REJECTED round 1, APPROVED round 2 both returned next_agent=sm/next_phase=finish); on approval the routing is right only by accident
+    completed: '2026-08-06'
     type: bug
+    review_findings: "APPROVED (cycle 5, round-trip 3, specialist-informed). The authorized ambiguity-blocking design landed as specified and all three cycle-4 fail-open classes are verified closed by execution: fence desync now typed, quoted-prior-verdict blocks as ambiguous, and all six suffix-shadowing forms block. Legitimate flows intact (single verdict resolves, repeated exact heading selects the last cycle, stale suffixed heading before it is harmless); zero/fenced-only/unterminated-fence all block. Dev's unprescribed near-miss-blocking addition prevents a wedge my prescription would have caused on this very session file - accepted as the best part of the commit. Verdict corpus unchanged through the full new pipeline: 22 approved / 10 rework / 18 blocked, zero misclassifications. All 6 deliberately-changed tests audited HONEST. Suite 5931 passed / 4 pre-existing persona failures / ruff clean; 86 story tests, 908 gate-scoped. 6 non-blocking findings filed for the follow-up story, the highest-value being CommonMark fence-length correctness (downgraded from two specialists' HIGH on reachability, with reasoning recorded)."
+    review_verdict: approved
   - id: 162-22
     title: 'Port the 162-2 stateful gh-pr-merge fake to test_155_1_finish_verifies_merge.py:489 — its clean-merge happy-path test uses a fixed MERGED view, trips the 155-29 short-circuit, and never invokes gh pr merge (ironic: 155-1 made the merge load-bearing) (from 162-2 review)'
     points: 1
@@ -430,3 +434,10 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     type: chore
+  - id: 162-47
+    title: 'Verdict-parse and gate follow-ups from 162-21 review (cycle-5 findings): CommonMark fence-length correctness in mask_illustrative_regions, near-miss heading \b gap, parse_round_trip_count masking, tri-state invariant, complete_phase heading literals + missing encoding=, test polish; plus rework recovery for the six approval-gate workflows still carrying the 162-2 defect, and the approval-only subagent check (rejections skip specialist verification)'
+    points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
