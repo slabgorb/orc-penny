@@ -104,3 +104,23 @@ branch/PR correctly from a session dense with field-token prose in backtick form
 <pattern name="single-session-full-pipeline-datapoint-5-155-30" date="2026-07-31">
 155-30 (1 pt, tdd, test-polish): fifth clean single-session relay pipeline (SM→TEA→Dev→Reviewer→SM, zero rejections, ~23 min setup-to-finish) and SIXTH clean pre-create-then-finish datapoint (PR #161 ready with full body BEFORE finish; merge_pr landed; verified MERGED). New wrinkles: (1) TEST-POLISH story shape: no RED state exists — SM assessment should pre-authorize green-on-arrival ("if pins FAIL against production, that's a blocking finding, stop") so TEA logs one clean deviation instead of agonizing; Dev green = verification-only + prove pre-existing failures on clean develop (branch-switch probe was permitted this run). (2) Bookkeeping stacked onto the ALREADY-OPEN chore/sprint PR (#59, now 155-29+155-30) — the accumulate pattern works fine while Keith's merge is pending, and `story add` on this branch sees the branch's own epic state (no id collision within the branch). (3) Reviewer follow-up finding routed to a DIFFERENT epic (159-15 baseline triage) — cross-epic story add while an epic-155 PR is pending is collision-safe. (4) reviewer subagents idle-without-filing ~40% of the time; one SendMessage nudge recovers them.
 </pattern>
+
+<pattern name="peloton-inline-epic-162-run" date="2026-08-05">
+Epic 162 run (peloton-inline, one story at a time, merge between): 162-1..7 clean, one Reviewer
+rejection (162-2) recovered via hand-rollback of the tracking block + SendMessage rework loop.
+Key datapoints: (1) resolve-gate IGNORES reviewer verdict (162-21 filed) — SM must read the
+verdict from the Reviewer's returned summary, never from gate routing; warn Reviewer spawns
+about it. (2) Since 162-6 merged, `pf sprint story finish` works from the ORCHESTRATOR ROOT
+(first live outing on 162-7 finish, clean) — the run-from-pennyfarthing/ ritual is retired,
+but verify-after-finish stays MANDATORY. (3) 503-killed subagents resume cleanly via
+SendMessage to the agentId — work was intact on disk both times (162-5 TEA). (4) Since 162-5,
+the suite exits 0 with 7 loud xfails — spawn prompts should say "suite stays exit 0" instead
+of carrying a false-blocker baseline list. (5) Stray `venv/` (not .venv) created by a subagent
+trips the leakage gate (162-37) — check for it when the leakage test fails mysteriously.
+(6) Reviewer-recommended one-line pre-merge folds (162-7 F2): send Dev back via SendMessage,
+no full re-review needed for a fold the Reviewer already specified.
+</pattern>
+
+<pattern name="out-of-sprint-epic-shard-fold-via-sprint-file" date="2026-08-06">
+162-13 finish: folding a review finding into a story on an epic shard NOT registered in current-sprint.yaml (epic-164 "Deferred hardening tail") — `pf sprint story update 164-5 --add-ac ...` fails with story-not-found because update reads the sprint index, but `--sprint-file sprint/epic-164.yaml` targets the shard directly and works (dry-run confirmed first). No manual YAML edit needed. Rest of the run: fifth+ clean relay pipeline (TEA→Dev→Reviewer→SM, zero rejections), seventh clean pre-create-then-finish datapoint (PR pennyfarthing#185 ready with prove-the-work body before finish; merge verified state=MERGED at 48694f824). Follow-up routing shape held: new stories (162-45 multi-parent consumers, 162-46 polish) to the in-sprint epic via story add + --description in a second update call (add takes no description flag); class-matching finding folded into existing backlog story via --add-ac.
+</pattern>

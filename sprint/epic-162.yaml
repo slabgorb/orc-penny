@@ -137,10 +137,13 @@ stories:
     title: 'Sprint validator rejects list-form depends_on (treats list as scalar) (gh #116)'
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-08-05'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-06'
     type: bug
+    review_verdict: approved
   - id: 162-14
     title: pf sprint work next ignores priority — picker recommended p3 155-17 over six available p1 stories (found during 155-33 setup)
     points: 2
@@ -410,3 +413,20 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     type: bug
+  - id: 162-45
+    title: 'Multi-parent depends_on consumer support: stack-ready gate, story field machine-readable emission, sm-setup/sm templates, story_add authoring (162-13 follow-up)'
+    description: '162-13 shipped list-form depends_on validation but consumers stay scalar-only (pinned by two boundary tests in test_162_13_list_depends_on.py — changing them is part of this story). Scope: (1) stack-ready gate (pennyfarthing-dist/gates/stack-ready.md) iterates refs and requires ALL parents done; (2) pf sprint story field (sprint/cli.py:1931) gains a machine-readable emission for list values (str(list) bracketed repr is not a story id); (3) same shell-capture class in agents/sm-setup.md:340 and agents/sm.md:112 (found in 162-13 review); (4) story_add: repeatable --depends-on option + widen str|None hint to str|list[str]|None (TEA finding). Sources: TEA + Reviewer Delivery Findings in archived 162-13 session.'
+    points: 3
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-46
+    title: 'Validator/story_move polish from 162-13 review: int-entry rewrite, container-check unify, cycle-test hardening, ref sanitization'
+    description: "Non-blocking confirmed findings from the 162-13 review (all MEDIUM or below): (1) _rewrite_dependencies strict equality misses int-valued deps (162 == '162' False) — compare str(entry) == old_id on both list and scalar paths, WITH a pin test since it changes scalar semantics (loud post-move abort today, no corruption); (2) unify container detection — validator accepts (list, tuple), story_move checks list only (SOUL #2 drift); (3) test hardening: assert len(_dep_errors)==2 in test_two_bad_refs_are_reported_separately (coincidentally green pre-fix) and add a second acyclic-graph guard beside test_diamond_is_not_a_cycle (mutation testing proved it is the sole direct guard against a shared-visited-set regression); (4) sanitize refs before embedding in validator error messages (CWE-117, pre-existing local-stdout sink); (5) optional: iterative DFS to remove the ~990-story RecursionError ceiling (CWE-674, loud crash pre-write) + duplicate-entry WARNING in _normalize_depends_on (Dev findings). Sources: Reviewer + Dev Delivery Findings in archived 162-13 session."
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: chore

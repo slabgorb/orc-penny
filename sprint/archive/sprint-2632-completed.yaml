@@ -70,3 +70,8 @@ completed_stories:
     title: 'Sweep remaining CWE-22 shard-ref read sites with is_safe_shard_path: loader.py:326 get_archived_stories, archive_epic.py:193 load_archive + :144 backfill, and shard_merge orphan-scan/detect_orphan_shards glob loops (from 160-13 review)'
     points: 2
     completed: '2026-08-05'
+  - id: 162-13
+    epic: '162'
+    title: 'Sprint validator rejects list-form depends_on (treats list as scalar) (gh #116)'
+    points: 2
+    completed: '2026-08-06'
