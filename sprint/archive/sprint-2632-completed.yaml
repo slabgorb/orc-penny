@@ -90,3 +90,8 @@ completed_stories:
     title: 'B1: phase-approval gate FAILS OPEN on rework sessions — complete_phase.py approval subchecks locate sections via bare re.search and the truncation lookahead SKIPS same-named headings, so rework cycles (which append headings) get read as stale/concatenated sections; a session whose latest cycle dispatched zero specialists was approved. Fix must scope by rework cycle, not last-match. Pinned as loud xfail in test_143_12 (from 162-5 triage)'
     points: 2
     completed: '2026-08-07'
+  - id: 162-29
+    epic: '162'
+    title: 'B2: project workflow overrides unreachable — get_phase_owner reads the installed dist root BEFORE {project_root}/.pennyfarthing/workflows/, so phases are written from project YAML but owners/redirects resolve from the packaged one (the two-readers disagreement complete_phase.py:99 forbids). Fixing this alone turns the four 143-9 verify-phase xfails green — flip them from xfail as part of this story (from 162-5 triage)'
+    points: 2
+    completed: '2026-08-07'

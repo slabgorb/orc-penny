@@ -294,10 +294,12 @@ stories:
     title: 'B2: project workflow overrides unreachable — get_phase_owner reads the installed dist root BEFORE {project_root}/.pennyfarthing/workflows/, so phases are written from project YAML but owners/redirects resolve from the packaged one (the two-readers disagreement complete_phase.py:99 forbids). Fixing this alone turns the four 143-9 verify-phase xfails green — flip them from xfail as part of this story (from 162-5 triage)'
     points: 2
     priority: p1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-07'
     type: bug
+    branch: feat/162-29-project-workflow-overrides-unreachable
   - id: 162-30
     title: 'Triage the second test tree: tests/python/ fails 287 + 22 errors (309 unmarked), invisible to bare pytest (pyproject testpaths excludes it) but run by just test (justfile:19) — triage, delete, or stop referencing; same disposition discipline as 162-5 (from 162-5 triage)'
     points: 3
@@ -453,7 +455,7 @@ stories:
     repos: pennyfarthing
     workflow: tdd
   - id: 162-49
-    title: "Investigate 4 environment-dependent test_frame_routes.py failures (TestPersonaRoute x3: load_persona() unexpected kwarg 'session_id'; TestBackwardCompatibility::test_error_responses_have_error_field) — 162-21/162-25/162-28 baselines saw them fail, but 162-28's reviewer measured 5993/0 clean on the same tip: premise is environment-dependent, characterize before fixing"
+    title: "Fix live break in persona route: data_proxy.py:72 calls load_persona(project_dir, session_id=...) vs persona.py:93 signature load_persona(agent_name, project_root=None) → TypeError. The 4 test_frame_routes failures are cwd-dependent-VACUOUS elsewhere: data_proxy.py:35-42 takes project dir from os.getcwd(), so from pennyfarthing-dist/ the route 404s before line 72 and tests pass vacuously (6123/0 vs 6119/4). Include conftest PF_PROJECT_DIR fixture so suite numbers can't depend on cwd (162-29 reviewer finding)"
     points: 2
     priority: p1
     status: backlog
@@ -466,3 +468,19 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+  - id: 162-51
+    title: 'Stepped-workflow resolution sweep (162-29 deferral): eight single-tier get_workflows_dir() sites in workflow/cli.py (145,263,462,569,735,906,1033,1353) miss project/workflows AND dist; plus two sites the deferral inventory missed — workflow/cli.py:341 (pf workflow list enumerates [] in npm layout while tdd resolves; include_dist default is the unsafe value) and prime/loader.py:391-403 (hand-rolled two-tier resolver, unsanitized workflow_name path join). Also guard _resolve_path (helpers.py:219-226) absolute-path sink feeding iterdir. Decide enumeration semantics deliberately (from 162-29 review)'
+    points: 3
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: refactor
+  - id: 162-52
+    title: "162-29 polish tail: harden the recurrence guard (single-quoted 'workflows' evades the double-quote string match; two-statement refactor evades the collapsed-token find_workflow_file(get_all_workflows_dirs match) and extend PHASE_OWNERSHIP_MODULES to the three modules the rework swept (peloton/live.py, workflow/cli.py, prime/loader.py); unify _load_workflow_phases nullability (list|None vs []) and _get_phase_agent str-as-failure-proxy; add dist-only regression test for complete_phase._get_phase_tandem (only writer callsite without one) + fix None==None tautology risk in the parametrized reader-vs-writer test; move peloton/live.py:23 import above logger to zero its E402 (from 162-29 review)"
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: chore
