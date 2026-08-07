@@ -1,0 +1,103 @@
+id: '165'
+type: epic
+title: Web GUI Resurrection
+priority: p1
+status: backlog
+repos: pennyfarthing
+stories:
+  - id: 165-1
+    title: Frame serves the static web UI
+    points: 1
+    priority: p1
+    plan_ref: plan:docs/superpowers/plans/2026-08-07-web-gui-resurrection.md#task-1
+    status: backlog
+    repos: pennyfarthing
+    workflow: superpowers
+  - id: 165-2
+    title: Web scaffold — Vite + React + TypeScript + Tailwind + Vitest
+    points: 1
+    priority: p1
+    plan_ref: plan:docs/superpowers/plans/2026-08-07-web-gui-resurrection.md#task-2
+    status: backlog
+    repos: pennyfarthing
+    workflow: superpowers
+  - id: 165-3
+    title: WebSocket client, useChannel hook, connection registry, payload types
+    points: 1
+    priority: p1
+    plan_ref: plan:docs/superpowers/plans/2026-08-07-web-gui-resurrection.md#task-3
+    status: backlog
+    repos: orchestrator
+    workflow: superpowers
+  - id: 165-4
+    title: PanelShell + Sprint Board panel
+    points: 1
+    priority: p1
+    plan_ref: plan:docs/superpowers/plans/2026-08-07-web-gui-resurrection.md#task-4
+    status: backlog
+    repos: orchestrator
+    workflow: superpowers
+  - id: 165-5
+    title: Frame routes — persona portrait file + workflow phases
+    points: 1
+    priority: p1
+    plan_ref: plan:docs/superpowers/plans/2026-08-07-web-gui-resurrection.md#task-5
+    status: backlog
+    repos: pennyfarthing
+    workflow: superpowers
+  - id: 165-6
+    title: Workflow Activity panel
+    points: 1
+    priority: p1
+    plan_ref: plan:docs/superpowers/plans/2026-08-07-web-gui-resurrection.md#task-6
+    status: backlog
+    repos: orchestrator
+    workflow: superpowers
+  - id: 165-7
+    title: Open PRs in the git payload (Frame, Python)
+    points: 1
+    priority: p1
+    plan_ref: plan:docs/superpowers/plans/2026-08-07-web-gui-resurrection.md#task-7
+    status: backlog
+    repos: pennyfarthing
+    workflow: superpowers
+  - id: 165-8
+    title: Git Status panel
+    points: 1
+    priority: p1
+    plan_ref: plan:docs/superpowers/plans/2026-08-07-web-gui-resurrection.md#task-8
+    status: backlog
+    repos: orchestrator
+    workflow: superpowers
+  - id: 165-9
+    title: Settings persistence (Frame) + header strip with theme/toggles + disconnect banner
+    points: 1
+    priority: p1
+    plan_ref: plan:docs/superpowers/plans/2026-08-07-web-gui-resurrection.md#task-9
+    status: backlog
+    repos: pennyfarthing,orchestrator
+    workflow: superpowers
+  - id: 165-10
+    title: Packaging — ship the built UI in the wheel
+    points: 1
+    priority: p1
+    plan_ref: plan:docs/superpowers/plans/2026-08-07-web-gui-resurrection.md#task-10
+    status: backlog
+    repos: pennyfarthing
+    workflow: superpowers
+  - id: 165-11
+    title: Isolated frontend CI job
+    points: 1
+    priority: p1
+    plan_ref: plan:docs/superpowers/plans/2026-08-07-web-gui-resurrection.md#task-11
+    status: backlog
+    repos: pennyfarthing
+    workflow: superpowers
+  - id: 165-12
+    title: ADR + documentation updates
+    points: 1
+    priority: p1
+    plan_ref: plan:docs/superpowers/plans/2026-08-07-web-gui-resurrection.md#task-12
+    status: backlog
+    repos: orchestrator,pennyfarthing
+    workflow: superpowers
