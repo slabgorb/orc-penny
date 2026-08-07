@@ -95,3 +95,8 @@ completed_stories:
     title: 'B2: project workflow overrides unreachable — get_phase_owner reads the installed dist root BEFORE {project_root}/.pennyfarthing/workflows/, so phases are written from project YAML but owners/redirects resolve from the packaged one (the two-readers disagreement complete_phase.py:99 forbids). Fixing this alone turns the four 143-9 verify-phase xfails green — flip them from xfail as part of this story (from 162-5 triage)'
     points: 2
     completed: '2026-08-07'
+  - id: 162-49
+    epic: '162'
+    title: "Fix live break in persona route: data_proxy.py:72 calls load_persona(project_dir, session_id=...) vs persona.py:93 signature load_persona(agent_name, project_root=None) → TypeError. The 4 test_frame_routes failures are cwd-dependent-VACUOUS elsewhere: data_proxy.py:35-42 takes project dir from os.getcwd(), so from pennyfarthing-dist/ the route 404s before line 72 and tests pass vacuously (6123/0 vs 6119/4). Include conftest PF_PROJECT_DIR fixture so suite numbers can't depend on cwd (162-29 reviewer finding)"
+    points: 2
+    completed: '2026-08-07'

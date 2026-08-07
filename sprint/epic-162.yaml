@@ -447,6 +447,10 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria:
+      - "Approval-gate ergonomics (162-49 cycle 2): resolve-gate reports format requirements ONE per attempt (H2 Subagent Results heading, column format, literal 'All received: Yes', attribution tags, Cycle-N line — five sequential failures to discover); report all unmet requirements at once or document the full set in the gates guide"
+      - "Cycle-N tag wording invites silent false attestation (162-49 cycle 2): error text says add it 'after re-running all enabled subagents', but targeted re-probes of already-characterized findings are stronger evidence than a fresh generalist sweep — a reviewer under context pressure would add the tag without re-running; reword the requirement or add a re-run-vs-targeted-verification disclosure field"
+      - 'resolve-gate reads the STALE round-1 REJECTED verdict after rework completes (162-49): returned approval_rework/dev/green while the session sat at review with rework pushed — nearly caused a double phase-advance; gate must recognize a completed rework round (round-trip counter vs verdict staleness) or require the cycle-2 verdict before re-resolving'
   - id: 162-48
     title: '162-25 follow-ups: guard _git_cleanup bare base argv (checkout/pull at story_finish.py:815-816, last unguarded argv in file, 162-4 class); de-hardcode origin remote (third deferral); harden timeout-arm test to subprocess-level patching asserting state==timeout; precise diagnosis for refname-legal non-branches (HEAD, @, self-prefixed)'
     points: 2
@@ -458,9 +462,12 @@ stories:
     title: "Fix live break in persona route: data_proxy.py:72 calls load_persona(project_dir, session_id=...) vs persona.py:93 signature load_persona(agent_name, project_root=None) → TypeError. The 4 test_frame_routes failures are cwd-dependent-VACUOUS elsewhere: data_proxy.py:35-42 takes project dir from os.getcwd(), so from pennyfarthing-dist/ the route 404s before line 72 and tests pass vacuously (6123/0 vs 6119/4). Include conftest PF_PROJECT_DIR fixture so suite numbers can't depend on cwd (162-29 reviewer finding)"
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-08-07'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-07'
+    branch: feat/162-49-persona-route-live-break
   - id: 162-50
     title: '162-28 follow-ups: derive rework counter from Phase History or sidecar (counter deletion/near-miss/case/line-break recognition gap — regex cannot converge, 3 cycles of evidence); counter WRITER tri-state (collapses absent/unreadable, resets round-trip budget via hidden counter, complete_phase.py:208-228); intent-named masker wrappers; pin unreadable-real-alongside-readable-legacy + fenced-tag e2e; doc sweep (handoff-cli.md stale shared-policy claim, 8-vs-9 subagent counts, [RULE] omission)'
     points: 3
@@ -484,3 +491,49 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     type: chore
+  - id: 162-53
+    title: Unify project-dir resolution across the five duplicated _get_project_dir() copies (data_proxy, analysis, repos, state, ws_push) into one resolver honoring FRAME_PROJECT_DIR → PF_PROJECT_DIR → cwd — 162-49's B1 aligned only data_proxy; analysis.py:35, repos.py:24, state.py:27 remain blind to the variable production actually sets (launcher.py:128), so those routes still 404 under production-shaped env. Closes B1's root cause for all 7 data-proxy routes (162-49 review follow-up 1)
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: refactor
+  - id: 162-54
+    title: get_project_root() must validate a candidate .pennyfarthing/ (require workflows) instead of stopping at the first one it sees — a stray gitignored incomplete pennyfarthing/.pennyfarthing/ (.cache + config.local.yaml only) breaks 9 workflow tests from two of three cwds locally. Separately add a two-cwd CI run diffing suite counts (would NOT have caught these 9 — local untracked dir — but guards the 162-49 vacuity class); CI must run the two suites SERIALLY (concurrent pytest races the wheel-build dir in test_pypi_packaging) (162-49 review follow-up 2)
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-55
+    title: "De-vacuum the remaining test_frame_routes.py assertions: five surviving disjunctive in (200, 4xx/5xx) assertions and if status == 200: guards (the rewired hermetic fixture hollowed /api/git and /api/theme-agents neighbours — same defect class 162-49 fixed, opposite direction); make the two remaining 404-expecting tests cwd-robust via run_from_cwd into a known non-PF dir so an expected 404 can't be satisfied accidentally by invocation cwd; fixture nits: active_agent iterdir/unlink loop raises on subdirectories, prime/persona.py _quote_cache keyed (agent,theme) makes quote values order-dependent for themes with catchphrases (162-49 review follow-ups 3+8)"
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: chore
+  - id: 162-56
+    title: "Persona route product/architecture tail: decide /api/persona/full contract — write it down or delete the endpoint (still no confirmed live consumer; TUI reads the WebSocket channel — confirm whether IDE sidebar uses HTTP); make persona resolution session-aware via canonical statusline._resolve_agent and fix the stale 'same logic as statusline' comment at ws_push.py:483 (no session-id keying, no 1-hour window); relocate build_persona_payload to neutral frame/persona.py breaking the data_proxy ↔ ws_push lazy-import cycle (162-49 review follow-ups 4+5+7)"
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-57
+    title: "Frame security posture: no auth + allow_origins=['*'] with allow_credentials=True (frame/app.py:151-152) means any page in the developer's browser can read API responses; portraitPath stringifies a Path.home()-rooted absolute path, leaking the OS username — return a basename or opaque handle (nothing serves files by that path); WebSocket channel has no origin check either (162-49 review follow-up 6, [SEC])"
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 162-58
+    title: "portrait_cdn/portrait_resolver hardening: fetch_portrait never caches negative results, so every cache-missing persona request costs four serial urlopen(timeout=30) attempts (~120s) — now off the event loop post-162-49 but against a bounded thread pool that sustained requests to an unreachable CDN can saturate; add negative caching or a circuit breaker. portrait_resolver.py:86-90 wraps fetch_portrait in except Exception: return None, making build_persona_payload's 'Failed to resolve portrait' warn unreachable via CDN failure — same silent-swallow class epic 160 swept from ws_push/data_proxy, in a module the sweep didn't reach (162-49 review follow-ups 9+10)"
+    points: 2
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
