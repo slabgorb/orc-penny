@@ -124,3 +124,53 @@ no full re-review needed for a fold the Reviewer already specified.
 <pattern name="out-of-sprint-epic-shard-fold-via-sprint-file" date="2026-08-06">
 162-13 finish: folding a review finding into a story on an epic shard NOT registered in current-sprint.yaml (epic-164 "Deferred hardening tail") — `pf sprint story update 164-5 --add-ac ...` fails with story-not-found because update reads the sprint index, but `--sprint-file sprint/epic-164.yaml` targets the shard directly and works (dry-run confirmed first). No manual YAML edit needed. Rest of the run: fifth+ clean relay pipeline (TEA→Dev→Reviewer→SM, zero rejections), seventh clean pre-create-then-finish datapoint (PR pennyfarthing#185 ready with prove-the-work body before finish; merge verified state=MERGED at 48694f824). Follow-up routing shape held: new stories (162-45 multi-parent consumers, 162-46 polish) to the in-sprint epic via story add + --description in a second update call (add takes no description flag); class-matching finding folded into existing backlog story via --add-ac.
 </pattern>
+
+<pattern name="peloton-inline-named-agents-162-49" date="2026-08-07">
+162-49 (2 pts, p1, tdd): first peloton-inline run using NAMED background agents (Agent tool with
+name:, SendMessage routing) instead of foreground spawns. One Reviewer rejection (4 measured
+blockers), rework via SendMessage, cycle-2 approve — ~90 min setup-to-merge. Key datapoints:
+(1) MESSAGE RACES ARE THE NORM: three message crossings this run (nudge vs work-in-flight,
+gate answer vs gate question). ALWAYS check disk state (session file, git log) before nudging
+an idle agent — "idle" often means "already done, report in flight". A no-op-looking resume
+may be a stale view on YOUR side. (2) Idle-without-filing still ~40%: reviewer needed 2 nudges
+before its (already-complete) report arrived; the assessment was on disk the whole time — grep
+the session BEFORE assuming lost work. (3) GATE/POISON-TOKEN COLLISION: resolve-gate requires
+a literal bold Verdict field line; the poison-token discipline forbids bold field tokens in
+prose. Reviewer threaded it (one bold line, backticks elsewhere) — tell Reviewer spawns
+explicitly. (4) STALE-VERDICT GATE TRAP: after rework, resolve-gate re-reads the round-1
+REJECTED verdict and returns approval_rework/dev/green even though the session is at review —
+Dev running complete-phase there would double-advance past the re-review. Rework spawns must
+be told: after round-1 exit already advanced the phase, do NOT re-run the exit protocol; SM
+verifies with pf handoff phase-check. Filed as AC on 162-47. (5) Reviewer pre-declaring its
+cycle-2 probes (re-run the exact establishing probes + mutation checks, not a fresh sweep)
+made re-review fast and decisive — ask for that shape explicitly. (6) Dev racing SM's addendum
+relay: forward reviewer addenda to Dev IMMEDIATELY, not after digesting — Dev finished rework
+before two of my messages arrived. (7) approval gate enforces 5 format requirements the rework
+gate doesn't, discovered one-per-attempt (162-47 AC). (8) Two-cwd suite runs must be SERIAL
+(concurrent pytest races test_pypi_packaging's wheel-build dir) — put it in every preflight
+spawn for two-cwd stories.
+</pattern>
+
+<pattern name="dogfooding-the-gate-you-just-built-162-47" date="2026-08-07">
+162-47 (3 pts, p1, tdd): the story CHANGED the review gate's own requirements, so the Reviewer
+was the first live consumer of the shape it had just reviewed into existence. Datapoints worth
+repeating: (1) SELF-REFERENTIAL TRAP: B3 (reviewer sections must outnumber round-trips) means a
+cycle-2 reviewer must APPEND a second `## Reviewer Assessment` rather than edit in place. SM
+wrongly warned that this forces neutralizing cycle-1's bold verdict line to avoid "two verdicts";
+the Reviewer MEASURED it instead of obeying: the one-verdict rule is PER-SECTION (select_last_section
+returns only the last; read_agent_verdict scans only that), so two sections with one bold verdict
+line each is unambiguous and cycle-1's rejection record stays INTACT. Lesson: never instruct a
+lossy session edit to satisfy a gate without measuring the gate's actual scope first — the
+safe-looking fix was the destructive one. Filed as a doc-clarification AC (162-63).
+(2) REVIEWER'S SUGGESTED FIX WAS WRONG, TWICE, AND BOTH AGENTS PROVED IT: Dev measured that both
+of the Reviewer's proposed F1 remedies break an AC test, and implemented a third shape; the
+Reviewer then implemented both of its OWN proposals in cycle 2, confirmed 3 and 4 failures
+respectively, and withdrew them. Rework briefs should say "if the Reviewer's suggested fix
+doesn't work, measure and propose your own" — carrying the PROBED shape beats the suggested one
+(same lesson as 155-47). (3) The Cycle tag tracks completed ROUND-TRIPS, not review rounds —
+cycle 2 requires `Cycle: 1`. Warn Reviewer spawns. (4) Two rejections this run (162-49, 162-47),
+both recovered in one rework round via SendMessage with a per-finding disposition requirement
+(FIXED/DEFERRED per item) — that requirement is what made cycle 2 fast both times; make it
+standard in every rework brief. (5) sm-finish preflight must be told the two-section state is
+BY DESIGN or it may flag it.
+</pattern>
