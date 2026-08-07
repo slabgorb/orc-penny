@@ -105,3 +105,8 @@ completed_stories:
     title: 'Verdict-parse and gate follow-ups from 162-21 review (cycle-5 findings): CommonMark fence-length correctness in mask_illustrative_regions, near-miss heading \b gap, parse_round_trip_count masking, tri-state invariant, complete_phase heading literals + missing encoding=, test polish; plus rework recovery for the six approval-gate workflows still carrying the 162-2 defect, and the approval-only subagent check (rejections skip specialist verification)'
     points: 3
     completed: '2026-08-07'
+  - id: 162-59
+    epic: '162'
+    title: "parse_round_trip_count discards the 'unreadable' tri-state, so a corrupt counter buys unlimited rework rounds — read_round_trip_count distinguishes unreadable from absent precisely because (its own words) 'I cannot read the counter' is not 'there was no rework' (162-28), but parse_round_trip_count returns only ['count'], which is 0 for unreadable. MEASURED: replacing '1' with 'one' in the counter line makes a completed rework round resolve ready→green again, defeating BOTH 162-47's new B3 freshness guard AND the pre-existing max_attempts ceiling. Fix: resolve_gate must block on status == 'unreadable'. Ranked FIRST by both Dev and Reviewer (162-47 review F4, [SEC][EDGE])"
+    points: 2
+    completed: '2026-08-07'
