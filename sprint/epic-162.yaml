@@ -444,13 +444,15 @@ stories:
     title: 'Verdict-parse and gate follow-ups from 162-21 review (cycle-5 findings): CommonMark fence-length correctness in mask_illustrative_regions, near-miss heading \b gap, parse_round_trip_count masking, tri-state invariant, complete_phase heading literals + missing encoding=, test polish; plus rework recovery for the six approval-gate workflows still carrying the 162-2 defect, and the approval-only subagent check (rejections skip specialist verification)'
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-08-07'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
       - "Approval-gate ergonomics (162-49 cycle 2): resolve-gate reports format requirements ONE per attempt (H2 Subagent Results heading, column format, literal 'All received: Yes', attribution tags, Cycle-N line — five sequential failures to discover); report all unmet requirements at once or document the full set in the gates guide"
       - "Cycle-N tag wording invites silent false attestation (162-49 cycle 2): error text says add it 'after re-running all enabled subagents', but targeted re-probes of already-characterized findings are stronger evidence than a fresh generalist sweep — a reviewer under context pressure would add the tag without re-running; reword the requirement or add a re-run-vs-targeted-verification disclosure field"
       - 'resolve-gate reads the STALE round-1 REJECTED verdict after rework completes (162-49): returned approval_rework/dev/green while the session sat at review with rework pushed — nearly caused a double phase-advance; gate must recognize a completed rework round (round-trip counter vs verdict staleness) or require the cycle-2 verdict before re-resolving'
+    completed: '2026-08-07'
   - id: 162-48
     title: '162-25 follow-ups: guard _git_cleanup bare base argv (checkout/pull at story_finish.py:815-816, last unguarded argv in file, 162-4 class); de-hardcode origin remote (third deferral); harden timeout-arm test to subprocess-level patching asserting state==timeout; precise diagnosis for refname-legal non-branches (HEAD, @, self-prefixed)'
     points: 2
@@ -537,3 +539,41 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     type: bug
+  - id: 162-59
+    title: "parse_round_trip_count discards the 'unreadable' tri-state, so a corrupt counter buys unlimited rework rounds — read_round_trip_count distinguishes unreadable from absent precisely because (its own words) 'I cannot read the counter' is not 'there was no rework' (162-28), but parse_round_trip_count returns only ['count'], which is 0 for unreadable. MEASURED: replacing '1' with 'one' in the counter line makes a completed rework round resolve ready→green again, defeating BOTH 162-47's new B3 freshness guard AND the pre-existing max_attempts ceiling. Fix: resolve_gate must block on status == 'unreadable'. Ranked FIRST by both Dev and Reviewer (162-47 review F4, [SEC][EDGE])"
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 162-60
+    title: "Reviewer-heading case inconsistency is a verdict-supersession fail-open (162-47 F3/F5, verified PRE-EXISTING against a develop worktree, byte-identical): _ASSESSMENT_RE is case-sensitive so a lowercase-only heading blocks with 'No assessment found', BUT a lowercase '## reviewer assessment' carrying APPROVED appended after a correctly-cased REJECTED resolves ready→finish — the rejection silently superseded, and A2's straggler rule does not catch a case variant. 162-47 documented this as an open defect rather than fixing it (out of scope) and left TEA's Question open. Travel with F5: _PREAMBLE_END_RE is case-sensitive while every sibling heading match is IGNORECASE, so a lowercase first assessment heading makes preamble_end return len(content) and any column-0 counter line in agent prose becomes operative (measured: reads a forged 9 instead of the real 1). Decide the case policy once and apply it to every heading regex (162-47 review F3+F5, [SEC])"
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 162-61
+    title: "Approval subgates are reviewer-specific but keyed on gate TYPE, not on the phase's agent (162-47 F9, verified PRE-EXISTING on develop): agent-docs' review phase is owned by tech-writer and kitchen-sink's accept phase by pm, yet both carry type: approval, so both demand a '## Reviewer Assessment' section plus nine reviewer subagents those agents never dispatch — blocked on BOTH verdicts before 162-47, which strictly improved agent-docs' routing (REJECTED → implement instead of finish) without fixing the keying. This is the escape TEA predicted in its A7 deviation, now demonstrated twice: the discriminator should be the phase's AGENT, not the gate's name. Also F14: the aggregate can count one problem twice (no results section → '3 requirements' where 1 and 3 are the same problem with different remedies) (162-47 review F9+F14, [EDGE])"
+    points: 3
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-62
+    title: 'Session-file encoding sweep beyond pf/handoff/ (162-47 F12 tail): 162-47 declared encoding= on all bare text I/O in pf/handoff/ and enforced it with an AST sweep, but the same rule #5 and the same trust boundary apply to session reads at patch_mode.py:386,407; gates/spec_check.py:60; peloton/workflow_driver.py:215,217; findings/aggregate.py:177,255; findings/capture.py:134; findings/pr_body.py:33; bmad/sync.py:332,393. Same crash shape 162-47 measured: UnicodeDecodeError on an em dash under a non-UTF-8 default encoding, i.e. on every assessment in this repo. Extend the AST sweep to cover the package, not one module (162-47 review F12, [SEC][RULE])'
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-63
+    title: "Gate ergonomics + verdict-machinery polish (162-47 tail): add 'pf handoff requirements <story> <gate-type>' dry-run so an agent can discover its gate requirements WITHOUT tripping them — B1 halved the discovery cost but the Reviewer still had to call _get_enabled_subagents/_check_rework_freshness directly to size its own exit (F13). Clarify in guides/handoff-cli.md that the one-verdict rule is PER-SECTION not file-wide — the ambiguity nearly caused a lossy workaround defacing a cycle-1 rejection record (Reviewer corrected SM's wrong premise mid-run). Fix the Cycle tag off-by-one: it tracks completed round-trips, not review rounds, while agents/reviewer.md says 'tag the new table with the cycle number' — invites writing the round number. Plus: B3 counts headings not rulings, so a reviewer appending a corrected assessment earns a free rework round (F6 — count only sections containing a verdict line); ReworkRecovery(total=False) does not deliver the checkability its docstring claims and '... or {}' presents an empty dict as one (F8 — two-TypedDict discriminated union); the bare assert in resolve_gate should be _stop('error', ...) per rule 6 so it survives python -O (F7); candidate_section_region is public with an unenforced precondition (F15); _ANY_SECTION_HEADING_RE matches only ## so an intervening H1 does not terminate the region (F16); test_heading_matching_is_case_insensitive pins behaviour the guide calls an open defect — docstring should say so (F17); two test-quality gaps: test_a_missing_table_and_missing_tags_are_reported_together asserts only [SEC] so a first-tag-wins impl would satisfy it, and the B2 tests couple to the literal word 'targeted' (F11) (162-47 review F6/F7/F8/F11/F13/F15/F16/F17)"
+    points: 3
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: chore
