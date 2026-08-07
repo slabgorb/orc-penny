@@ -282,11 +282,13 @@ stories:
     title: 'B1: phase-approval gate FAILS OPEN on rework sessions — complete_phase.py approval subchecks locate sections via bare re.search and the truncation lookahead SKIPS same-named headings, so rework cycles (which append headings) get read as stale/concatenated sections; a session whose latest cycle dispatched zero specialists was approved. Fix must scope by rework cycle, not last-match. Pinned as loud xfail in test_143_12 (from 162-5 triage)'
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-08-07'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
       - "Also fix B4, B1's dead safety net: _check_rework_freshness reads 'Rework Cycle' (complete_phase.py:530) while the writer only emits 'Round-Trip Count' (:182-194) — the freshness guard is unreachable on every real session; pinned in test_143_12"
+    completed: '2026-08-07'
     type: bug
   - id: 162-29
     title: 'B2: project workflow overrides unreachable — get_phase_owner reads the installed dist root BEFORE {project_root}/.pennyfarthing/workflows/, so phases are written from project YAML but owners/redirects resolve from the packaged one (the two-readers disagreement complete_phase.py:99 forbids). Fixing this alone turns the four 143-9 verify-phase xfails green — flip them from xfail as part of this story (from 162-5 triage)'
@@ -446,6 +448,20 @@ stories:
   - id: 162-48
     title: '162-25 follow-ups: guard _git_cleanup bare base argv (checkout/pull at story_finish.py:815-816, last unguarded argv in file, 162-4 class); de-hardcode origin remote (third deferral); harden timeout-arm test to subprocess-level patching asserting state==timeout; precise diagnosis for refname-legal non-branches (HEAD, @, self-prefixed)'
     points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-49
+    title: "Investigate 4 environment-dependent test_frame_routes.py failures (TestPersonaRoute x3: load_persona() unexpected kwarg 'session_id'; TestBackwardCompatibility::test_error_responses_have_error_field) — 162-21/162-25/162-28 baselines saw them fail, but 162-28's reviewer measured 5993/0 clean on the same tip: premise is environment-dependent, characterize before fixing"
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-50
+    title: '162-28 follow-ups: derive rework counter from Phase History or sidecar (counter deletion/near-miss/case/line-break recognition gap — regex cannot converge, 3 cycles of evidence); counter WRITER tri-state (collapses absent/unreadable, resets round-trip budget via hidden counter, complete_phase.py:208-228); intent-named masker wrappers; pin unreadable-real-alongside-readable-legacy + fenced-tag e2e; doc sweep (handoff-cli.md stale shared-policy claim, 8-vs-9 subagent counts, [RULE] omission)'
+    points: 3
     priority: p1
     status: backlog
     repos: pennyfarthing
