@@ -457,9 +457,12 @@ stories:
     title: '162-25 follow-ups: guard _git_cleanup bare base argv (checkout/pull at story_finish.py:815-816, last unguarded argv in file, 162-4 class); de-hardcode origin remote (third deferral); harden timeout-arm test to subprocess-level patching asserting state==timeout; precise diagnosis for refname-legal non-branches (HEAD, @, self-prefixed)'
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-08-08'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-08'
+    review_verdict: approved
   - id: 162-49
     title: "Fix live break in persona route: data_proxy.py:72 calls load_persona(project_dir, session_id=...) vs persona.py:93 signature load_persona(agent_name, project_root=None) → TypeError. The 4 test_frame_routes failures are cwd-dependent-VACUOUS elsewhere: data_proxy.py:35-42 takes project dir from os.getcwd(), so from pennyfarthing-dist/ the route 404s before line 72 and tests pass vacuously (6123/0 vs 6119/4). Include conftest PF_PROJECT_DIR fixture so suite numbers can't depend on cwd (162-29 reviewer finding)"
     points: 2

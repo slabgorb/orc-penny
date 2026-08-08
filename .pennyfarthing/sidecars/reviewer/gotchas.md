@@ -1,5 +1,42 @@
 # Reviewer Agent Gotchas
 
+<gotcha name="mutation-subagent-corrupts-working-tree" severity="critical">
+162-48 review (2026-08-08): `reviewer-test-analyzer` ran a 10-mutation battery
+including "M8: remove the HEAD/@ alias check in `_classify_branch_name`". It has
+tools Read/Bash/Glob/Grep — NO Edit — so it mutated the source ON DISK via Bash
+(sed/python) and DID NOT restore M8. The working tree was left with
+`_classify_branch_name`'s `if value in _NON_BRANCH_ALIASES` guard DELETED. The
+subagent's returned prose said "8 killed / 2 survived" — it reported the battery
+as if restored. I only caught it because a pre-merge fold I was verifying failed
+4 existing tests; `git diff HEAD` proved the two lines were deleted by neither of
+my edits. Had I approved on the specialists' prose without re-running the suite,
+the git-checkout hardening would have shipped with its central alias guard
+silently removed. LESSONS: (1) ALWAYS re-run the full touched-suite yourself
+after subagents return and BEFORE writing the verdict — never trust a mutation
+subagent restored the tree. (2) `git diff HEAD --stat` + eyeball the deletions
+(`git diff HEAD | grep '^-'`) is a mandatory pre-verdict step: the only `-` lines
+should be intended changes. (3) Mutation-testing subagents must be told to work
+on a scratch COPY or a `git worktree`, never the working tree — filed as a
+follow-up against the reviewer-test-analyzer definition. The self-restoring
+in-memory mutation approach (patch the module object, inject under its own name)
+is the safe pattern; on-disk sed is not.
+</gotcha>
+
+<gotcha name="reviewer-in-main-session-spawns-specialists" severity="medium">
+162-48 (2026-08-08): when a peloton-INLINE reviewer subagent can't spawn the
+`reviewer-*` specialists (they aren't spawnable from within a subagent), the fix
+that worked was the Client stopping the peloton and invoking `/pf-reviewer` in
+the MAIN session — there the 5 enabled specialists (preflight, test_analyzer,
+type_design, security, rule_checker; edge/silent/comment/simplifier disabled via
+`workflow.reviewer_subagents`) spawn fine as background analysts. They are
+fire-and-forget (return findings, no message-passing), so they don't have the
+message-race problem that stalls a TEA/Dev/Reviewer inline relay. Check toggles
+with `pf settings get workflow.reviewer_subagents`; pre-fill disabled rows as
+Skipped and cover those lanes yourself with tagged observations. Idle
+notifications arrive as each returns; they took 2–14 min each (security + test
+run execution/mutation batteries — longest).
+</gotcha>
+
 <gotcha name="subagent-relay-lossy-and-spawn-fork-failures" severity="medium">
 155-7 review, two infra failure modes in one story — the completion gate's "errors are not skips" clause handles both, plan for them: (1) reviewer-preflight completed but its report BODY never reached the lead (only idle notifications with a 1-line summary); two SendMessage nudges didn't fix delivery. (2) Later same-session Agent spawns failed outright with `Failed to send command to pane %N: respawn pane failed: fork failed: Device not configured` — retry once, but the second attempt failed identically (tmux resource exhaustion, not transient). FALLBACK that keeps the gate satisfiable: run the specialist's domain YOURSELF and document it in the Subagent Results row — preflight mechanics are one Bash line (scoped pytest + ruff + git status + debug-grep); security/rule-checker domains are tractable on a small DELTA when round 1 established the baseline (the key rule-#13 closure is a single exhaustive `grep -rn "fn_a(\|fn_b("` caller enumeration + reading each site). Mark the row `Received: No — spawn failed (reason)` with the direct-assessment summary in the Decision column, and count it honestly in the "All received" parenthetical ("2 returned, 2 errored with domains covered directly"). Do NOT silently drop the row or claim subagent coverage you didn't get.
 </gotcha>

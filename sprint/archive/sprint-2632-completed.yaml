@@ -110,3 +110,8 @@ completed_stories:
     title: "parse_round_trip_count discards the 'unreadable' tri-state, so a corrupt counter buys unlimited rework rounds — read_round_trip_count distinguishes unreadable from absent precisely because (its own words) 'I cannot read the counter' is not 'there was no rework' (162-28), but parse_round_trip_count returns only ['count'], which is 0 for unreadable. MEASURED: replacing '1' with 'one' in the counter line makes a completed rework round resolve ready→green again, defeating BOTH 162-47's new B3 freshness guard AND the pre-existing max_attempts ceiling. Fix: resolve_gate must block on status == 'unreadable'. Ranked FIRST by both Dev and Reviewer (162-47 review F4, [SEC][EDGE])"
     points: 2
     completed: '2026-08-07'
+  - id: 162-48
+    epic: '162'
+    title: '162-25 follow-ups: guard _git_cleanup bare base argv (checkout/pull at story_finish.py:815-816, last unguarded argv in file, 162-4 class); de-hardcode origin remote (third deferral); harden timeout-arm test to subprocess-level patching asserting state==timeout; precise diagnosis for refname-legal non-branches (HEAD, @, self-prefixed)'
+    points: 2
+    completed: '2026-08-08'
