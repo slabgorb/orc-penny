@@ -77,7 +77,7 @@ repos:
       - "*.tsbuildinfo"
     symlinks: {}
     ui_layer: react
-    components_path: packages/cyclist/src/components
+    components_path: web/src
 
 gates:
   extensions:

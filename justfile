@@ -132,6 +132,10 @@ tui-dev:
 # Development
 # =============================================================================
 
+# Build the web dashboard (React/Vite) and write assets into pf/frame/webui/dist/
+web-build:
+    cd {{pennyfarthing}}/web && npm ci && npm run build
+
 # Watch pennyfarthing for changes and auto-rebuild (runs pnpm dev)
 dev:
     cd {{pennyfarthing}} && pnpm dev
