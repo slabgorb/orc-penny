@@ -17,7 +17,7 @@ repos:
     path: .
     type: orchestrator
     description: Sprint management and framework development coordination
-    language: javascript
+    languages: [python]
     build_command: npm install
     branch_strategy: trunk-based
     default_branch: main
@@ -55,7 +55,7 @@ repos:
     path: pennyfarthing
     type: framework
     description: Inlined pennyfarthing framework source (for development)
-    language: typescript
+    languages: [python]
     test_command: pnpm test
     build_command: pnpm build
     lint_command: pnpm lint
