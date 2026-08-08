@@ -2,7 +2,7 @@ id: '165'
 type: epic
 title: Web GUI Resurrection
 priority: p1
-status: backlog
+status: done
 repos: pennyfarthing
 stories:
   - id: 165-1
@@ -113,3 +113,4 @@ stories:
     repos: orchestrator,pennyfarthing
     workflow: superpowers
     completed: '2026-08-08'
+completed: '2026-08-08'

@@ -1,0 +1,73 @@
+sprint:
+  name: "Frontier Model Changes 2632"
+  number: 2632
+  jira_sprint_id: 311
+  jira_sprint_name: "Frontier Model Changes 2632"
+  goal: Frontier model changes
+  start_date: 2026-08-03
+  end_date: 2026-08-16
+  status: active
+
+completed_epics:
+  - '165'
+completed_stories:
+  - id: 165-1
+    epic: '165'
+    title: Frame serves the static web UI
+    points: 2
+    completed: '2026-08-07'
+  - id: 165-2
+    epic: '165'
+    title: Web scaffold — Vite + React + TypeScript + Tailwind + Vitest
+    points: 2
+    completed: '2026-08-07'
+  - id: 165-3
+    epic: '165'
+    title: WebSocket client, useChannel hook, connection registry, payload types
+    points: 3
+    completed: '2026-08-07'
+  - id: 165-4
+    epic: '165'
+    title: PanelShell + Sprint Board panel
+    points: 3
+    completed: '2026-08-08'
+  - id: 165-5
+    epic: '165'
+    title: Frame routes — persona portrait file + workflow phases
+    points: 2
+    completed: '2026-08-08'
+  - id: 165-6
+    epic: '165'
+    title: Workflow Activity panel
+    points: 3
+    completed: '2026-08-08'
+  - id: 165-7
+    epic: '165'
+    title: Open PRs in the git payload (Frame, Python)
+    points: 2
+    completed: '2026-08-08'
+  - id: 165-8
+    epic: '165'
+    title: Git Status panel
+    points: 2
+    completed: '2026-08-08'
+  - id: 165-9
+    epic: '165'
+    title: Settings persistence (Frame) + header strip with theme/toggles + disconnect banner
+    points: 3
+    completed: '2026-08-08'
+  - id: 165-10
+    epic: '165'
+    title: Packaging — ship the built UI in the wheel
+    points: 1
+    completed: '2026-08-08'
+  - id: 165-11
+    epic: '165'
+    title: Isolated frontend CI job
+    points: 1
+    completed: '2026-08-08'
+  - id: 165-12
+    epic: '165'
+    title: ADR + documentation updates
+    points: 2
+    completed: '2026-08-08'
