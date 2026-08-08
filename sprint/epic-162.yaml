@@ -610,3 +610,24 @@ stories:
     repos: pennyfarthing
     workflow: tdd
     type: chore
+  - id: 162-67
+    title: "reviewer-test-analyzer mutation battery corrupts the working tree: it runs on-disk source mutations via Bash (no Edit tool) and can leave a mutation applied (162-48 review left _classify_branch_name's _NON_BRANCH_ALIASES guard deleted; caught only by re-running the suite). Mutation-testing subagents must operate on a scratch copy or a git worktree, never the live working tree; add a post-subagent working-tree audit to the reviewer flow"
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-68
+    title: 'Fix stale repos.yaml language config so the lang-review gate attaches python.md: .pennyfarthing/repos.yaml declares language javascript/typescript for a Python-only framework (ADR-0034), so resolve_lang_review_extensions never attaches python.md — every Python review this epic ran checklist-blind (162-48 review F3). Set languages: [python] on both repos and verify the resolver picks it up'
+    points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-69
+    title: "162-48 polish tail (Reviewer follow-ups): pin the checkout-conflict cleanup arm directly (base exists but checkout fails on a dirty tree) and assert the existence probe runs before any mutation — the two are mutually masking today (mutation battery M1/M2); type _classify_branch_name's verdict as a Literal so a 4th verdict is a static error not a silent mutation-proceeds; fix the docstring overclaim 'ZERO git subprocesses' (refusal costs one read-only check-ref-format)"
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
