@@ -153,7 +153,7 @@ git commit -m "feat(frame): serve static web UI from webui/dist when present"
 
 ---
 
-- [ ] **Story 165-1 complete** — run `pf sprint story complete 165-1`
+- [x] **Story 165-1 complete** — run `pf sprint story complete 165-1`
 
 ### Task 2: Web scaffold — Vite + React + TypeScript + Tailwind + Vitest
 
@@ -302,7 +302,7 @@ git commit -m "feat(web): scaffold Vite+React+Tailwind web UI with vitest toolch
 
 ---
 
-- [ ] **Story 165-2 complete** — run `pf sprint story complete 165-2`
+- [x] **Story 165-2 complete** — run `pf sprint story complete 165-2`
 
 ### Task 3: WebSocket client, useChannel hook, connection registry, payload types
 
@@ -693,7 +693,7 @@ git commit -m "feat(web): WebSocket channel client with reconnect, useChannel ho
 
 ---
 
-- [ ] **Story 165-3 complete** — run `pf sprint story complete 165-3`
+- [x] **Story 165-3 complete** — run `pf sprint story complete 165-3`
 
 ### Task 4: PanelShell + Sprint Board panel
 
@@ -985,7 +985,7 @@ git commit -m "feat(web): PanelShell chrome and Sprint Board panel with copyable
 
 ---
 
-- [ ] **Story 165-4 complete** — run `pf sprint story complete 165-4`
+- [x] **Story 165-4 complete** — run `pf sprint story complete 165-4`
 
 ### Task 5: Frame routes — persona portrait file + workflow phases
 
@@ -1155,7 +1155,7 @@ git commit -m "feat(frame): persona portrait file route and workflow phases rout
 
 ---
 
-- [ ] **Story 165-5 complete** — run `pf sprint story complete 165-5`
+- [x] **Story 165-5 complete** — run `pf sprint story complete 165-5`
 
 ### Task 6: Workflow Activity panel
 
@@ -1415,7 +1415,7 @@ git commit -m "feat(web): Workflow Activity panel with phase sequence and person
 
 ---
 
-- [ ] **Story 165-6 complete** — run `pf sprint story complete 165-6`
+- [x] **Story 165-6 complete** — run `pf sprint story complete 165-6`
 
 ### Task 7: Open PRs in the git payload (Frame, Python)
 
@@ -1572,7 +1572,7 @@ git commit -m "feat(frame): enrich git channel with TTL-cached open PR list via 
 
 ---
 
-- [ ] **Story 165-7 complete** — run `pf sprint story complete 165-7`
+- [x] **Story 165-7 complete** — run `pf sprint story complete 165-7`
 
 ### Task 8: Git Status panel
 
@@ -1721,7 +1721,7 @@ git commit -m "feat(web): Git Status panel with per-repo branch, dirty state, an
 
 ---
 
-- [ ] **Story 165-8 complete** — run `pf sprint story complete 165-8`
+- [x] **Story 165-8 complete** — run `pf sprint story complete 165-8`
 
 ### Task 9: Settings persistence (Frame) + header strip with theme/toggles + disconnect banner
 
@@ -2034,7 +2034,7 @@ git commit -m "feat(web): header settings controls and disconnect banner"
 
 ---
 
-- [ ] **Story 165-9 complete** — run `pf sprint story complete 165-9`
+- [x] **Story 165-9 complete** — run `pf sprint story complete 165-9`
 
 ### Task 10: Packaging — ship the built UI in the wheel
 
@@ -2096,7 +2096,7 @@ git commit -m "chore(build): ship built web UI as pf.frame package data with jus
 
 ---
 
-- [ ] **Story 165-10 complete** — run `pf sprint story complete 165-10`
+- [x] **Story 165-10 complete** — run `pf sprint story complete 165-10`
 
 ### Task 11: Isolated frontend CI job
 
@@ -2155,7 +2155,7 @@ git commit -m "ci(web): isolated frontend job gated on web/** paths only"
 
 ---
 
-- [ ] **Story 165-11 complete** — run `pf sprint story complete 165-11`
+- [x] **Story 165-11 complete** — run `pf sprint story complete 165-11`
 
 ### Task 12: ADR + documentation updates
 
@@ -2180,7 +2180,7 @@ Create `docs/adr/0042-web-gui-resurrection.md` in the orchestrator repo:
 **Author:** PM (Lord Vetinari) / Architect review
 **Amends:** [ADR-0039: React GUI Removal — Python-Only Architecture](0039-react-gui-removal-python-only.md)
 
-- [ ] **Story 165-12 complete** — run `pf sprint story complete 165-12`
+- [x] **Story 165-12 complete** — run `pf sprint story complete 165-12`
 
 ## Context
 
