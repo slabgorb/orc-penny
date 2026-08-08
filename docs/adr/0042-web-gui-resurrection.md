@@ -5,8 +5,6 @@
 **Author:** PM (Lord Vetinari) / Architect review
 **Amends:** [ADR-0039: React GUI Removal — Python-Only Architecture](0039-react-gui-removal-python-only.md)
 
-- [ ] **Story 165-12 complete** — run `pf sprint story complete 165-12`
-
 ## Context
 
 ADR-0039 removed the React GUI because it carried three specific costs: a second
