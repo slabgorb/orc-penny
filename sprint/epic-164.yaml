@@ -71,10 +71,12 @@ stories:
     title: "Harden -c payload interpolation: format_pr_title '${title}' bash-into-Python-literal splice in sm-finish.md + pf-standalone.md (CWE-94 class, 155-11 review)"
     points: 2
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-08-10'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
+    completed: '2026-08-10'
     type: bug
   - id: 164-7
     title: Add --description/body option to pf sprint story add so minted follow-ups carry provenance in the story body (155-13 review)
