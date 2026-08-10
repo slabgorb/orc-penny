@@ -246,9 +246,11 @@ stories:
     title: Consolidate four duplicated _make_fake_run gh-PR fakes (155-1/12/15, 162-1) into shared pf/tests/helpers/gh_pr_fake.py as a callable dataclass — kills two type:ignore escapes and the MagicMock(side_effect=fake) ledger footgun live in test_155_29; use parts[:3]==[gh,pr,merge] dispatch; add shared Literal aliases for gh PR states imported by production and fakes (from 162-2 review)
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-08-10'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-10'
     type: refactor
   - id: 162-24
     title: Decide de-fold vs pin for the mergeable/mergeStateStatus case-folds in _pr_block_reason (~321-322) — they feed a BLOCKING predicate so folding biases toward blocking (opposite risk profile from 162-3's authorization-side revert); decide deliberately and pin with lowercase test inputs (from 162-3 review)

@@ -135,3 +135,8 @@ completed_stories:
     title: Consolidate _pr_block_reason/_view_is_merged into a _classify_pr(view) precedence-ordered verdict — gate/short-circuit ordering is positional and unenforced; also sweep _result_blob to include message/detail keys and add _pr_view field-type validation (from 162-1 review, flagged by TEA+Dev+Reviewer)
     points: 2
     completed: '2026-08-10'
+  - id: 162-23
+    epic: '162'
+    title: Consolidate four duplicated _make_fake_run gh-PR fakes (155-1/12/15, 162-1) into shared pf/tests/helpers/gh_pr_fake.py as a callable dataclass — kills two type:ignore escapes and the MagicMock(side_effect=fake) ledger footgun live in test_155_29; use parts[:3]==[gh,pr,merge] dispatch; add shared Literal aliases for gh PR states imported by production and fakes (from 162-2 review)
+    points: 2
+    completed: '2026-08-10'
