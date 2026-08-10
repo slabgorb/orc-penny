@@ -107,15 +107,10 @@ tui-dev:
     #!/usr/bin/env bash
     set -euo pipefail
 
-    pid_file="{{root}}/.frame-pid"
-    port_file="{{root}}/.frame-port"
+    # pf launch frame is idempotent — probes /health and reuses a live instance
+    just --justfile "{{root}}/justfile" frame
 
-    # Start Frame server if not running
-    if ! ([[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null); then
-        just --justfile "{{root}}/justfile" frame
-    fi
-
-    port=$(cat "$port_file" 2>/dev/null)
+    port=$(cat "{{root}}/.frame-port" 2>/dev/null)
     if [[ -z "$port" ]]; then
         echo "Error: Frame server port not found"
         exit 1
@@ -135,6 +130,41 @@ tui-dev:
 # Build the web dashboard (React/Vite) and write assets into pf/frame/webui/dist/
 web-build:
     cd {{pennyfarthing}}/web && npm ci && npm run build
+
+# Launch the web GUI — builds if needed, starts Frame if needed, opens browser
+gui:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    # Frame mounts the webui dir at startup, so ensure the build exists first
+    if [[ ! -f "{{pennyfarthing}}/pennyfarthing-dist/src/pf/frame/webui/dist/index.html" ]]; then
+        echo "No web build found — running web-build..."
+        just --justfile "{{root}}/justfile" web-build
+    fi
+
+    # pf launch frame is idempotent — probes /health and reuses a live instance
+    just --justfile "{{root}}/justfile" frame
+
+    port=$(cat "{{root}}/.frame-port" 2>/dev/null)
+    if [[ -z "$port" ]]; then
+        echo "Error: Frame server port not found (.frame-port missing)" >&2
+        exit 1
+    fi
+    open "http://localhost:$port"
+
+# Launch the web GUI in dev mode (vite hot reload, proxies API/WS to Frame)
+gui-dev:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    just --justfile "{{root}}/justfile" frame
+
+    port=$(cat "{{root}}/.frame-port" 2>/dev/null || true)
+    if [[ "$port" != "2898" ]]; then
+        echo "Warning: Frame is on port ${port:-unknown} but vite proxies to 2898 (web/vite.config.ts)" >&2
+        echo "Restart Frame on the default port: just frame-stop && FRAME_PORT=2898 just frame" >&2
+    fi
+    cd "{{pennyfarthing}}/web" && npm run dev -- --open
 
 # Watch pennyfarthing for changes and auto-rebuild (runs pnpm dev)
 dev:
