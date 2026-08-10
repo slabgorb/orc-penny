@@ -106,3 +106,8 @@ completed_stories:
     title: Add --description/body option to pf sprint story add so minted follow-ups carry provenance in the story body (155-13 review)
     points: 2
     completed: '2026-08-10'
+  - id: 164-8
+    epic: '164'
+    title: '155-13 followups.py hardening: promote _parse_session_deviations to public, CWE-22 session_path containment, TypedDict candidate/suggestion modeling, extend dedup to future.yaml (155-13 review)'
+    points: 2
+    completed: '2026-08-10'
