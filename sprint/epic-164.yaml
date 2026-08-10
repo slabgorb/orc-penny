@@ -136,11 +136,13 @@ stories:
     title: "Wrap finish_story's _parse_session call site against UnicodeDecodeError per the sibling read_sprint guard (SOUL #10, from 155-40 review)"
     points: 1
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-08-10'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
       - Also wrap finish's load_repos_config consumers (_resolve_base_branch ~line 342 and step-6 ~line 1045) — malformed repos.yaml currently raises through the no-throw boundary; the step-6 site strands a merged story post-merge (from 155-34 review)
+    completed: '2026-08-10'
   - id: 164-13
     title: 'Consolidate session-field parsing onto the anchored story_finish parser: demo/collector.py + findings/aggregate.py copies, audit tui/story_detail_data.py and bmad/sync.py (SOUL #2, from 155-40 review)'
     points: 2
