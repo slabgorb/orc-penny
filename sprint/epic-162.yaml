@@ -200,11 +200,13 @@ stories:
     title: Consolidate _pr_block_reason/_view_is_merged into a _classify_pr(view) precedence-ordered verdict — gate/short-circuit ordering is positional and unenforced; also sweep _result_blob to include message/detail keys and add _pr_view field-type validation (from 162-1 review, flagged by TEA+Dev+Reviewer)
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-08-10'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
       - 'Consider a parsed-enum at the _pr_view boundary (working precedent: pf/preflight/finish.py:193 is already strict and mergedAt-corroborated) — fixes the stringly-typed state class, not just instances (162-3 review)'
+    completed: '2026-08-10'
     type: refactor
   - id: 162-20
     title: 'finish --dry-run never evaluates _pr_block_reason: OPEN+CONFLICTING previews a merge the real run aborts — 155-31 parity broken in the opposite direction (from 162-1 review)'
