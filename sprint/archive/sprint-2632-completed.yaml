@@ -120,3 +120,8 @@ completed_stories:
     title: pf sprint work next ignores priority — picker recommended p3 155-17 over six available p1 stories (found during 155-33 setup)
     points: 2
     completed: '2026-08-10'
+  - id: 162-18
+    epic: '162'
+    title: Add mergedAt corroboration to the MERGED bypass in story_finish — single-snapshot state field gates conflict-gate exemption, merge short-circuit, and post-merge re-verify with no corroborating field; add mergedAt to _PR_VIEW_FIELDS (from 162-1 review)
+    points: 1
+    completed: '2026-08-10'
