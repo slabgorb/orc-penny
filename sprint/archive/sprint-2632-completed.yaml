@@ -86,3 +86,8 @@ completed_stories:
     title: 'Harden epic-shard archive paths: sanitize _get_epic_ref output + containment; close pf-sprint-new guard bypass (155-7 follow-up)'
     points: 2
     completed: '2026-08-10'
+  - id: 164-4
+    epic: '164'
+    title: 'Guard whitespace-only sprint name in get_archive_path: IndexError → clean ValueError (155-7 follow-up)'
+    points: 1
+    completed: '2026-08-10'

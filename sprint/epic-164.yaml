@@ -50,10 +50,12 @@ stories:
     description: "From 155-7 Reviewer Delivery Finding (Gap, non-blocking; proven on develop baseline): a whitespace-only sprint name (truthy, .split() → []) raises IndexError at archive_epic.py get_archive_path's name-token split, upstream of the 155-7 sanitization — a malformed-input shape that bypasses the guard entirely and escapes the ValueError-only wraps added in 155-7 round 2 (crashes pf sprint epic archive / story finish with a traceback). Fix: guard the empty-token case → raise the same actionable ValueError shape ('Check sprint/current-sprint.yaml'). One test alongside (name='   ')."
     points: 1
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-08-10'
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
+    completed: '2026-08-10'
   - id: 164-5
     title: Extend encoding= sweep to archive_epic.py text I/O + test polish (155-7 follow-up)
     description: "From 155-7 Dev Delivery Finding (CWE-838, same class as 155-7 AC4): archive_epic.py still has bare text I/O — ensure_archive_file's archive_path.write_text(template), _load_archive_file's open(archive_path), _write_archive_file's archive_path.write_text(result), and the raw index re-read open(sprint_path) in archive_epic(). Add encoding='utf-8' to each. Fold in Reviewer round-2 cosmetic finding: collapse the now-dead try/except ValueError: pass in test_archive_epic_unsafe_sprint_id_leaves_no_stray_shard (test_155_7_archive_path_hardening.py:341) to a plain call."
