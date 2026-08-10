@@ -261,3 +261,8 @@ completed_stories:
     title: "Wrap finish_story's _parse_session call site against UnicodeDecodeError per the sibling read_sprint guard (SOUL #10, from 155-40 review)"
     points: 1
     completed: '2026-08-10'
+  - id: 164-13
+    epic: '164'
+    title: 'Consolidate session-field parsing onto the anchored story_finish parser: demo/collector.py + findings/aggregate.py copies, audit tui/story_detail_data.py and bmad/sync.py (SOUL #2, from 155-40 review)'
+    points: 2
+    completed: '2026-08-10'
