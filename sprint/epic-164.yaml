@@ -22,7 +22,8 @@ stories:
     description: "From 155-14 Reviewer deferred findings (PR pennyfarthing#144, epic-155 finish-truthfulness; all non-blocking Medium/Low). Target: pennyfarthing-dist/src/pf/preflight/finish.py + test_155_14_preflight_hardening.py. (1) [TYPE-M] LintResult permits contradictory skipped=True + error/clean=False; the skipped-implies-clean invariant is convention-only (only check_lint maintains it). Enforce via __post_init__ or model skip as a sum type. (2) [TYPE-M] to_dict() serializes lint.skipped as a nested key only while jira_skipped also emits a top-level flag + collapsed dict — unify the two 'not checked' wire shapes so downstream gates have one convention. (3) [SEC-L] _lookup_merged_pr_by_branch (finish.py:155) has no internal arg-guard, safe only by the check_pr_status caller invariant; add belt-and-suspenders _reject_option_like(branch,'branch') or an assert so a future second caller can't silently reopen CWE-88. (4) [TEST-M/L] add symmetric over-reach test (legit jira_key still reaches jira issue view), a single-dash '-R' injection case, and assert clean is True alongside skipped in test_check_lint_marks_skipped_when_no_lintable_project. Also consider folding in the check_acceptance_criteria blocking exists()/read_text() async-I/O (lang-review #9) TEA flagged during 155-14 — same file, same theme as AC3, but distinct from the CWE-22 path-traversal owned by 155-7."
     points: 2
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-08-10'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
@@ -31,6 +32,7 @@ stories:
       - _lookup_merged_pr_by_branch guards its branch arg independently of the caller (test proves a direct call with option-shaped branch is neutralized)
       - Symmetric jira over-reach test + single-dash injection case added; skip test asserts clean is True
       - Warn on the 155-34 unmerged-branch-no-PR world before the ceremony starts, so the abort surfaces at preflight (from 155-34 review)
+    completed: '2026-08-10'
     type: refactor
   - id: 164-3
     title: 'Harden epic-shard archive paths: sanitize _get_epic_ref output + containment; close pf-sprint-new guard bypass (155-7 follow-up)'
