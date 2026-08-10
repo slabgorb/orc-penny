@@ -210,11 +210,13 @@ stories:
     title: 'finish --dry-run never evaluates _pr_block_reason: OPEN+CONFLICTING previews a merge the real run aborts — 155-31 parity broken in the opposite direction (from 162-1 review)'
     points: 1
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-08-10'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
       - '162-9 WIDENED the dry-run parity gap: reality now aborts on a hung gate probe while the preview still routes through permissive _pr_view and promises a merge it cannot promise — same arm, same fix (from 162-9 review)'
+    completed: '2026-08-10'
     type: bug
   - id: 162-21
     title: "resolve-gate ignores REJECTED reviewer verdict: returned next_agent=sm/next_phase=finish and complete-phase advanced to finish despite the gate's own recovery_config declaring reviewer-verdict {action: rework, target_phase: green} (observed live in 162-2 review)"
