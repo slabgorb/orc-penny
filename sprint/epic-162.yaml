@@ -148,9 +148,11 @@ stories:
     title: pf sprint work next ignores priority — picker recommended p3 155-17 over six available p1 stories (found during 155-33 setup)
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-08-10'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-10'
     type: bug
   - id: 162-15
     title: 'Revert Ghostty tab-title feature (PR #154): inert under Claude Code'

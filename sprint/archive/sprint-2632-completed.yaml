@@ -115,3 +115,8 @@ completed_stories:
     title: '162-25 follow-ups: guard _git_cleanup bare base argv (checkout/pull at story_finish.py:815-816, last unguarded argv in file, 162-4 class); de-hardcode origin remote (third deferral); harden timeout-arm test to subprocess-level patching asserting state==timeout; precise diagnosis for refname-legal non-branches (HEAD, @, self-prefixed)'
     points: 2
     completed: '2026-08-08'
+  - id: 162-14
+    epic: '162'
+    title: pf sprint work next ignores priority — picker recommended p3 155-17 over six available p1 stories (found during 155-33 setup)
+    points: 2
+    completed: '2026-08-10'
