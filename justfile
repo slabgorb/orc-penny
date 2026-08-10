@@ -159,12 +159,13 @@ gui-dev:
 
     just --justfile "{{root}}/justfile" frame
 
-    port=$(cat "{{root}}/.frame-port" 2>/dev/null || true)
-    if [[ "$port" != "2898" ]]; then
-        echo "Warning: Frame is on port ${port:-unknown} but vite proxies to 2898 (web/vite.config.ts)" >&2
-        echo "Restart Frame on the default port: just frame-stop && FRAME_PORT=2898 just frame" >&2
+    port=$(cat "{{root}}/.frame-port" 2>/dev/null)
+    if [[ -z "$port" ]]; then
+        echo "Error: Frame server port not found (.frame-port missing)" >&2
+        exit 1
     fi
-    cd "{{pennyfarthing}}/web" && npm run dev -- --open
+    # vite proxies /api, /health, /ws to whatever FRAME_PORT says
+    cd "{{pennyfarthing}}/web" && FRAME_PORT="$port" npm run dev -- --open
 
 # Watch pennyfarthing for changes and auto-rebuild (runs pnpm dev)
 dev:
