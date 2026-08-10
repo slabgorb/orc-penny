@@ -1,5 +1,39 @@
 # SM Agent Patterns
 
+<pattern name="peloton-inline-p2p3-run-162" date="2026-08-10">
+Epic-162 p2/p3 backlog run (peloton-inline, named background agents, one story at a time,
+merge between). Landed 162-14, 162-18 clean. Key NEW datapoints:
+(1) `gh pr merge <n> --merge --delete-branch` to `develop` NOW WORKS with no classifier
+denial (merged #195 batch, #196, #198 all clean) — the old 155-5 "classifier denies agent
+merge to protected branch" gotcha did NOT recur this session. SM owns PR create + merge +
+finish as usual; still verify state=MERGED before bookkeeping.
+(2) REVIEWER-REQUESTED HARDENING MUST BE PINNED OR DON'T ADD IT. On 162-18 I relayed the
+reviewer's own "cheap isinstance hardening" suggestion to Dev; the reviewer then REJECTED
+cycle-2 because the guard landed as unpinned dead code (deletable with zero test failures),
+violating the story's tdd constraint — and the guard only defended JSON-unreachable inputs.
+Lesson: when relaying a reviewer's "while you're in the file" hardening, require a failing
+test for it, or decline it. An unpinned guard in trust machinery is itself the defect class.
+Recovered via option-(b) revert in one round. (Same family as 155-47/162-47 "probe the
+suggested fix" — reviewer suggestions are not automatically correct.)
+(3) 503 AUTH WAVES: Dev and Reviewer both died mid-phase on transient 503s. Work was intact
+on disk every time; resume via SendMessage to the named agent. If it dies again immediately,
+back off ~75s (bash sleep) before re-nudging — hammering a flapping auth service just re-dies.
+Dev had even committed + written its assessment before dying at the handoff; I advanced the
+phase myself (SM owns routing in inline mode) rather than resuming just for the transition.
+(4) IDLE-WITHOUT-FILING held ~50% this run: reviewer completed its assessment + ran
+resolve-gate/complete-phase but sent NO summary message twice. ALWAYS grep the session for
+`**Verdict:**` + check `**Phase:**` before nudging — the verdict is on disk.
+(5) MERGE --STAT SHOWS BOTH PARENTS: `gh pr merge` prints the combined two-parent delta, so
+unrelated files (vite.config.ts, a 164-prefixed test) appeared in the stat. Benign — confirm
+your branch's real contribution via `PR headRefOid == local HEAD` + your known commit list;
+no need to git-diff on the protected branch (the develop-cwd hook blocks reads too).
+(6b) APPROVAL-GATE FORMAT (enforced at Reviewer's complete-phase, NOT resolve-gate — resolve-gate returns ready then complete-phase errors). In peloton-inline the Reviewer spawns no subagents, so it must MANUALLY satisfy these or complete-phase blocks (discovered one-per-attempt on 162-20 — bake ALL into the Reviewer spawn prompt upfront): (a) a `## Subagent Results` section with a table row per enabled specialist (preflight, rule-checker[RULE], security[SEC], test-analyzer[TEST], type-design[TYPE]) marked "self (inline)"; (b) a literal `**All received:** Yes` line after that table; (c) inline `[RULE] [SEC] [TEST] [TYPE]` tags in the Reviewer Assessment prose. The single bold `**Verdict:**` line still required. Tell every Reviewer spawn to write these as part of its assessment BEFORE running complete-phase.
+(7) Clean setup→red every time with the proven sm-setup spawn (bare session name, `**Phase:**
+setup`, bare `tdd`, poison-token discipline); SM adds `## SM Assessment` then resolve-gate →
+complete-phase advances setup→red with no overshoot. Model tiers: sonnet TEA/Dev, opus
+Reviewer for high-blast-radius (finish/merge machinery) diffs, sonnet Reviewer for trivial.
+</pattern>
+
 <pattern name="routing">
 | Points | Workflow |
 |--------|----------|
@@ -103,4 +137,74 @@ false-blocker list: FOURTH consecutive zero-noise run, paste-ready Impact Summar
 branch/PR correctly from a session dense with field-token prose in backtick form.
 <pattern name="single-session-full-pipeline-datapoint-5-155-30" date="2026-07-31">
 155-30 (1 pt, tdd, test-polish): fifth clean single-session relay pipeline (SM→TEA→Dev→Reviewer→SM, zero rejections, ~23 min setup-to-finish) and SIXTH clean pre-create-then-finish datapoint (PR #161 ready with full body BEFORE finish; merge_pr landed; verified MERGED). New wrinkles: (1) TEST-POLISH story shape: no RED state exists — SM assessment should pre-authorize green-on-arrival ("if pins FAIL against production, that's a blocking finding, stop") so TEA logs one clean deviation instead of agonizing; Dev green = verification-only + prove pre-existing failures on clean develop (branch-switch probe was permitted this run). (2) Bookkeeping stacked onto the ALREADY-OPEN chore/sprint PR (#59, now 155-29+155-30) — the accumulate pattern works fine while Keith's merge is pending, and `story add` on this branch sees the branch's own epic state (no id collision within the branch). (3) Reviewer follow-up finding routed to a DIFFERENT epic (159-15 baseline triage) — cross-epic story add while an epic-155 PR is pending is collision-safe. (4) reviewer subagents idle-without-filing ~40% of the time; one SendMessage nudge recovers them.
+</pattern>
+
+<pattern name="peloton-inline-epic-162-run" date="2026-08-05">
+Epic 162 run (peloton-inline, one story at a time, merge between): 162-1..7 clean, one Reviewer
+rejection (162-2) recovered via hand-rollback of the tracking block + SendMessage rework loop.
+Key datapoints: (1) resolve-gate IGNORES reviewer verdict (162-21 filed) — SM must read the
+verdict from the Reviewer's returned summary, never from gate routing; warn Reviewer spawns
+about it. (2) Since 162-6 merged, `pf sprint story finish` works from the ORCHESTRATOR ROOT
+(first live outing on 162-7 finish, clean) — the run-from-pennyfarthing/ ritual is retired,
+but verify-after-finish stays MANDATORY. (3) 503-killed subagents resume cleanly via
+SendMessage to the agentId — work was intact on disk both times (162-5 TEA). (4) Since 162-5,
+the suite exits 0 with 7 loud xfails — spawn prompts should say "suite stays exit 0" instead
+of carrying a false-blocker baseline list. (5) Stray `venv/` (not .venv) created by a subagent
+trips the leakage gate (162-37) — check for it when the leakage test fails mysteriously.
+(6) Reviewer-recommended one-line pre-merge folds (162-7 F2): send Dev back via SendMessage,
+no full re-review needed for a fold the Reviewer already specified.
+</pattern>
+
+<pattern name="out-of-sprint-epic-shard-fold-via-sprint-file" date="2026-08-06">
+162-13 finish: folding a review finding into a story on an epic shard NOT registered in current-sprint.yaml (epic-164 "Deferred hardening tail") — `pf sprint story update 164-5 --add-ac ...` fails with story-not-found because update reads the sprint index, but `--sprint-file sprint/epic-164.yaml` targets the shard directly and works (dry-run confirmed first). No manual YAML edit needed. Rest of the run: fifth+ clean relay pipeline (TEA→Dev→Reviewer→SM, zero rejections), seventh clean pre-create-then-finish datapoint (PR pennyfarthing#185 ready with prove-the-work body before finish; merge verified state=MERGED at 48694f824). Follow-up routing shape held: new stories (162-45 multi-parent consumers, 162-46 polish) to the in-sprint epic via story add + --description in a second update call (add takes no description flag); class-matching finding folded into existing backlog story via --add-ac.
+</pattern>
+
+<pattern name="peloton-inline-named-agents-162-49" date="2026-08-07">
+162-49 (2 pts, p1, tdd): first peloton-inline run using NAMED background agents (Agent tool with
+name:, SendMessage routing) instead of foreground spawns. One Reviewer rejection (4 measured
+blockers), rework via SendMessage, cycle-2 approve — ~90 min setup-to-merge. Key datapoints:
+(1) MESSAGE RACES ARE THE NORM: three message crossings this run (nudge vs work-in-flight,
+gate answer vs gate question). ALWAYS check disk state (session file, git log) before nudging
+an idle agent — "idle" often means "already done, report in flight". A no-op-looking resume
+may be a stale view on YOUR side. (2) Idle-without-filing still ~40%: reviewer needed 2 nudges
+before its (already-complete) report arrived; the assessment was on disk the whole time — grep
+the session BEFORE assuming lost work. (3) GATE/POISON-TOKEN COLLISION: resolve-gate requires
+a literal bold Verdict field line; the poison-token discipline forbids bold field tokens in
+prose. Reviewer threaded it (one bold line, backticks elsewhere) — tell Reviewer spawns
+explicitly. (4) STALE-VERDICT GATE TRAP: after rework, resolve-gate re-reads the round-1
+REJECTED verdict and returns approval_rework/dev/green even though the session is at review —
+Dev running complete-phase there would double-advance past the re-review. Rework spawns must
+be told: after round-1 exit already advanced the phase, do NOT re-run the exit protocol; SM
+verifies with pf handoff phase-check. Filed as AC on 162-47. (5) Reviewer pre-declaring its
+cycle-2 probes (re-run the exact establishing probes + mutation checks, not a fresh sweep)
+made re-review fast and decisive — ask for that shape explicitly. (6) Dev racing SM's addendum
+relay: forward reviewer addenda to Dev IMMEDIATELY, not after digesting — Dev finished rework
+before two of my messages arrived. (7) approval gate enforces 5 format requirements the rework
+gate doesn't, discovered one-per-attempt (162-47 AC). (8) Two-cwd suite runs must be SERIAL
+(concurrent pytest races test_pypi_packaging's wheel-build dir) — put it in every preflight
+spawn for two-cwd stories.
+</pattern>
+
+<pattern name="dogfooding-the-gate-you-just-built-162-47" date="2026-08-07">
+162-47 (3 pts, p1, tdd): the story CHANGED the review gate's own requirements, so the Reviewer
+was the first live consumer of the shape it had just reviewed into existence. Datapoints worth
+repeating: (1) SELF-REFERENTIAL TRAP: B3 (reviewer sections must outnumber round-trips) means a
+cycle-2 reviewer must APPEND a second `## Reviewer Assessment` rather than edit in place. SM
+wrongly warned that this forces neutralizing cycle-1's bold verdict line to avoid "two verdicts";
+the Reviewer MEASURED it instead of obeying: the one-verdict rule is PER-SECTION (select_last_section
+returns only the last; read_agent_verdict scans only that), so two sections with one bold verdict
+line each is unambiguous and cycle-1's rejection record stays INTACT. Lesson: never instruct a
+lossy session edit to satisfy a gate without measuring the gate's actual scope first — the
+safe-looking fix was the destructive one. Filed as a doc-clarification AC (162-63).
+(2) REVIEWER'S SUGGESTED FIX WAS WRONG, TWICE, AND BOTH AGENTS PROVED IT: Dev measured that both
+of the Reviewer's proposed F1 remedies break an AC test, and implemented a third shape; the
+Reviewer then implemented both of its OWN proposals in cycle 2, confirmed 3 and 4 failures
+respectively, and withdrew them. Rework briefs should say "if the Reviewer's suggested fix
+doesn't work, measure and propose your own" — carrying the PROBED shape beats the suggested one
+(same lesson as 155-47). (3) The Cycle tag tracks completed ROUND-TRIPS, not review rounds —
+cycle 2 requires `Cycle: 1`. Warn Reviewer spawns. (4) Two rejections this run (162-49, 162-47),
+both recovered in one rework round via SendMessage with a per-finding disposition requirement
+(FIXED/DEFERRED per item) — that requirement is what made cycle 2 fast both times; make it
+standard in every rework brief. (5) sm-finish preflight must be told the two-section state is
+BY DESIGN or it may flag it.
 </pattern>

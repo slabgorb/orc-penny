@@ -65,7 +65,8 @@ stories:
     started: '2026-08-10'
     repos: pennyfarthing
     workflow: trivial
-    acceptance_criteria: []
+    acceptance_criteria:
+      - "162-13 review fold-in (same CWE-838 class): add encoding='utf-8' to open() at src/pf/tests/test_162_13_list_depends_on.py:271 (_write_archive fixture)"
     completed: '2026-08-10'
   - id: 164-6
     title: "Harden -c payload interpolation: format_pr_title '${title}' bash-into-Python-literal splice in sm-finish.md + pf-standalone.md (CWE-94 class, 155-11 review)"

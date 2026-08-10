@@ -101,3 +101,30 @@ this within one command), and recovery = merge manually, verify, append a truthf
 addendum to the archived session, file/point to 155-40. Avoid writing the literal
 bold field tokens in session prose when possible.
 </gotcha>
+
+<gotcha name="pf-cli-runs-from-op-1-checkout" severity="high">
+162-59 review (2026-08-07): the installed `pf` CLI (`~/.local/bin/pf`) runs interpreter
+`~/.local/share/uv/tools/pennyfarthing-scripts/bin/python`, which imports `pf` from
+`/Users/keithavery/Projects/op-1/pennyfarthing/pennyfarthing-dist/src/pf/` — a DIFFERENT
+workspace checkout than `orc-penny/pennyfarthing/`. So every `pf resolve-gate` /
+`complete-phase` / `sprint story finish` exercises op-1's source, NOT the workspace under
+edit. `pf --version` reports 13.4.0 either way, so it is invisible. THIS run was benign —
+verified op-1 sat at the same develop-tip (4b8035d2d) WITH 162-47's preamble scoping, so the
+reviewer's "predates 162-47" claim was overstated — but a divergent/dirty op-1 checkout would
+silently validate the WRONG code for every gate. To verify which code a gate op actually ran:
+`PFPY=$(head -1 ~/.local/bin/pf | sed 's/^#!//'); "$PFPY" -c "import pf; print(pf.__file__)"`.
+Filed as 162-64 (pf doctor should assert pf.__file__ is inside the operating workspace).
+Until it ships: trust finish/gate EFFECTS (gh PR state, YAML, archive — all in the
+orchestrator workspace + GitHub, independent of which pf ran), not the CLI's self-report.
+</gotcha>
+
+<gotcha name="finish-completed-despite-tool-rejection" severity="warning">
+162-59 (2026-08-07): my `pf sprint story finish` Bash call returned a "tool use rejected"
+error, but state showed the finish had fully completed anyway (PR #192 MERGED, story `done`,
+session removed, archive written, develop tip = the merge). The user had interrupted/re-run
+around the same moment. LESSON: a rejected/errored finish call does NOT mean finish didn't
+run — ALWAYS verify by EFFECTS before re-running (a blind retry could double-merge or corrupt
+bookkeeping): `gh pr view <n> --json state,mergedAt` + `pf sprint story field <id> status` +
+`ls sprint/archive/<id>-session.md`. All three consistent = finish landed; proceed to
+bookkeeping. This is the verify-after-finish rule doing exactly its job.
+</gotcha>
