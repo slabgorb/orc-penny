@@ -113,11 +113,13 @@ stories:
     title: 'Finish-family test conftest: autouse patch for finish_story Step 4c demo-generation subprocesses (pre-existing isolation gap, from 155-33 review)'
     points: 1
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-08-10'
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria:
       - "Pin 155-34's three unpinned defensive probe paths: origin/<base> preference over a stale local base, the origin/<branch> fallback candidate, and the backticked/annotated sentinel variant (from 155-34 review)"
+    completed: '2026-08-10'
     type: chore
   - id: 164-11
     title: 'Harden _parse_session section tracker: skip fenced code blocks and let only the FIRST Story Details heading populate the branch/pr overlay (from 155-40 review)'
