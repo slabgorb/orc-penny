@@ -61,10 +61,12 @@ stories:
     description: "From 155-7 Dev Delivery Finding (CWE-838, same class as 155-7 AC4): archive_epic.py still has bare text I/O — ensure_archive_file's archive_path.write_text(template), _load_archive_file's open(archive_path), _write_archive_file's archive_path.write_text(result), and the raw index re-read open(sprint_path) in archive_epic(). Add encoding='utf-8' to each. Fold in Reviewer round-2 cosmetic finding: collapse the now-dead try/except ValueError: pass in test_archive_epic_unsafe_sprint_id_leaves_no_stray_shard (test_155_7_archive_path_hardening.py:341) to a plain call."
     points: 1
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-08-10'
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
+    completed: '2026-08-10'
   - id: 164-6
     title: "Harden -c payload interpolation: format_pr_title '${title}' bash-into-Python-literal splice in sm-finish.md + pf-standalone.md (CWE-94 class, 155-11 review)"
     points: 2

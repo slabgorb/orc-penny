@@ -91,3 +91,8 @@ completed_stories:
     title: 'Guard whitespace-only sprint name in get_archive_path: IndexError → clean ValueError (155-7 follow-up)'
     points: 1
     completed: '2026-08-10'
+  - id: 164-5
+    epic: '164'
+    title: Extend encoding= sweep to archive_epic.py text I/O + test polish (155-7 follow-up)
+    points: 1
+    completed: '2026-08-10'
