@@ -101,3 +101,8 @@ completed_stories:
     title: "Harden -c payload interpolation: format_pr_title '${title}' bash-into-Python-literal splice in sm-finish.md + pf-standalone.md (CWE-94 class, 155-11 review)"
     points: 2
     completed: '2026-08-10'
+  - id: 164-7
+    epic: '164'
+    title: Add --description/body option to pf sprint story add so minted follow-ups carry provenance in the story body (155-13 review)
+    points: 2
+    completed: '2026-08-10'
