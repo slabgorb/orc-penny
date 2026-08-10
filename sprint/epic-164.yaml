@@ -102,11 +102,13 @@ stories:
     title: "finish dry-run preview polish: human-mode already-merged message + guard step-6 'Delete local branch: None' (from 155-31 review)"
     points: 1
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-08-10'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
       - Dry-run preview must predict the 155-34 no-PR abort worlds instead of promising the full done plan (preview/reality parity, from 155-34 review)
+    completed: '2026-08-10'
   - id: 164-10
     title: 'Finish-family test conftest: autouse patch for finish_story Step 4c demo-generation subprocesses (pre-existing isolation gap, from 155-33 review)'
     points: 1

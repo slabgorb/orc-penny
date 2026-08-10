@@ -111,3 +111,8 @@ completed_stories:
     title: '155-13 followups.py hardening: promote _parse_session_deviations to public, CWE-22 session_path containment, TypedDict candidate/suggestion modeling, extend dedup to future.yaml (155-13 review)'
     points: 2
     completed: '2026-08-10'
+  - id: 164-9
+    epic: '164'
+    title: "finish dry-run preview polish: human-mode already-merged message + guard step-6 'Delete local branch: None' (from 155-31 review)"
+    points: 1
+    completed: '2026-08-10'
