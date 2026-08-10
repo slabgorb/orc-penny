@@ -477,7 +477,7 @@ stories:
     title: '162-28 follow-ups: derive rework counter from Phase History or sidecar (counter deletion/near-miss/case/line-break recognition gap — regex cannot converge, 3 cycles of evidence); counter WRITER tri-state (collapses absent/unreadable, resets round-trip budget via hidden counter, complete_phase.py:208-228); intent-named masker wrappers; pin unreadable-real-alongside-readable-legacy + fenced-tag e2e; doc sweep (handoff-cli.md stale shared-policy claim, 8-vs-9 subagent counts, [RULE] omission)'
     points: 3
     priority: p1
-    status: backlog
+    status: in_review
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
@@ -558,7 +558,7 @@ stories:
     title: "Reviewer-heading case inconsistency is a verdict-supersession fail-open (162-47 F3/F5, verified PRE-EXISTING against a develop worktree, byte-identical): _ASSESSMENT_RE is case-sensitive so a lowercase-only heading blocks with 'No assessment found', BUT a lowercase '## reviewer assessment' carrying APPROVED appended after a correctly-cased REJECTED resolves ready→finish — the rejection silently superseded, and A2's straggler rule does not catch a case variant. 162-47 documented this as an open defect rather than fixing it (out of scope) and left TEA's Question open. Travel with F5: _PREAMBLE_END_RE is case-sensitive while every sibling heading match is IGNORECASE, so a lowercase first assessment heading makes preamble_end return len(content) and any column-0 counter line in agent prose becomes operative (measured: reads a forged 9 instead of the real 1). Decide the case policy once and apply it to every heading regex (162-47 review F3+F5, [SEC])"
     points: 2
     priority: p1
-    status: backlog
+    status: in_review
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
@@ -614,20 +614,20 @@ stories:
     title: "reviewer-test-analyzer mutation battery corrupts the working tree: it runs on-disk source mutations via Bash (no Edit tool) and can leave a mutation applied (162-48 review left _classify_branch_name's _NON_BRANCH_ALIASES guard deleted; caught only by re-running the suite). Mutation-testing subagents must operate on a scratch copy or a git worktree, never the live working tree; add a post-subagent working-tree audit to the reviewer flow"
     points: 2
     priority: p1
-    status: backlog
+    status: in_review
     repos: pennyfarthing
     workflow: tdd
   - id: 162-68
     title: 'Fix stale repos.yaml language config so the lang-review gate attaches python.md: .pennyfarthing/repos.yaml declares language javascript/typescript for a Python-only framework (ADR-0034), so resolve_lang_review_extensions never attaches python.md — every Python review this epic ran checklist-blind (162-48 review F3). Set languages: [python] on both repos and verify the resolver picks it up'
     points: 1
     priority: p1
-    status: backlog
+    status: in_review
     repos: pennyfarthing
     workflow: tdd
   - id: 162-69
     title: "162-48 polish tail (Reviewer follow-ups): pin the checkout-conflict cleanup arm directly (base exists but checkout fails on a dirty tree) and assert the existence probe runs before any mutation — the two are mutually masking today (mutation battery M1/M2); type _classify_branch_name's verdict as a Literal so a 4th verdict is a static error not a silent mutation-proceeds; fix the docstring overclaim 'ZERO git subprocesses' (refusal costs one read-only check-ref-format)"
     points: 2
     priority: p1
-    status: backlog
+    status: in_review
     repos: pennyfarthing
     workflow: tdd
