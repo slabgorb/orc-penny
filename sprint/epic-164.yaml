@@ -10,10 +10,12 @@ stories:
     title: 'finish: partial session archive left on dialogue-copy OSError + misattributed step in archive except (155-15 review)'
     points: 2
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-08-10'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
+    completed: '2026-08-10'
     type: bug
   - id: 164-2
     title: 'Preflight hardening follow-ups: enforce LintResult skipped-invariant, unify lint/jira skipped to_dict shape, belt-and-suspenders _lookup arg-guard, symmetric jira over-reach + single-dash tests (155-14 review deferrals)'

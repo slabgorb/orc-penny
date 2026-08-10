@@ -71,3 +71,8 @@ completed_stories:
     title: ADR + documentation updates
     points: 2
     completed: '2026-08-08'
+  - id: 164-1
+    epic: '164'
+    title: 'finish: partial session archive left on dialogue-copy OSError + misattributed step in archive except (155-15 review)'
+    points: 2
+    completed: '2026-08-10'
