@@ -8,7 +8,8 @@ sprint:
   end_date: 2026-08-16
   status: active
 
-completed_epics: []
+completed_epics:
+  - '165'
 completed_stories:
   - id: 162-1
     epic: '162'
@@ -139,4 +140,119 @@ completed_stories:
     epic: '162'
     title: Consolidate four duplicated _make_fake_run gh-PR fakes (155-1/12/15, 162-1) into shared pf/tests/helpers/gh_pr_fake.py as a callable dataclass — kills two type:ignore escapes and the MagicMock(side_effect=fake) ledger footgun live in test_155_29; use parts[:3]==[gh,pr,merge] dispatch; add shared Literal aliases for gh PR states imported by production and fakes (from 162-2 review)
     points: 2
+    completed: '2026-08-10'
+  - id: 165-1
+    epic: '165'
+    title: Frame serves the static web UI
+    points: 2
+    completed: '2026-08-07'
+  - id: 165-2
+    epic: '165'
+    title: Web scaffold — Vite + React + TypeScript + Tailwind + Vitest
+    points: 2
+    completed: '2026-08-07'
+  - id: 165-3
+    epic: '165'
+    title: WebSocket client, useChannel hook, connection registry, payload types
+    points: 3
+    completed: '2026-08-07'
+  - id: 165-4
+    epic: '165'
+    title: PanelShell + Sprint Board panel
+    points: 3
+    completed: '2026-08-08'
+  - id: 165-5
+    epic: '165'
+    title: Frame routes — persona portrait file + workflow phases
+    points: 2
+    completed: '2026-08-08'
+  - id: 165-6
+    epic: '165'
+    title: Workflow Activity panel
+    points: 3
+    completed: '2026-08-08'
+  - id: 165-7
+    epic: '165'
+    title: Open PRs in the git payload (Frame, Python)
+    points: 2
+    completed: '2026-08-08'
+  - id: 165-8
+    epic: '165'
+    title: Git Status panel
+    points: 2
+    completed: '2026-08-08'
+  - id: 165-9
+    epic: '165'
+    title: Settings persistence (Frame) + header strip with theme/toggles + disconnect banner
+    points: 3
+    completed: '2026-08-08'
+  - id: 165-10
+    epic: '165'
+    title: Packaging — ship the built UI in the wheel
+    points: 1
+    completed: '2026-08-08'
+  - id: 165-11
+    epic: '165'
+    title: Isolated frontend CI job
+    points: 1
+    completed: '2026-08-08'
+  - id: 165-12
+    epic: '165'
+    title: ADR + documentation updates
+    points: 2
+    completed: '2026-08-08'
+  - id: 164-1
+    epic: '164'
+    title: 'finish: partial session archive left on dialogue-copy OSError + misattributed step in archive except (155-15 review)'
+    points: 2
+    completed: '2026-08-10'
+  - id: 164-2
+    epic: '164'
+    title: 'Preflight hardening follow-ups: enforce LintResult skipped-invariant, unify lint/jira skipped to_dict shape, belt-and-suspenders _lookup arg-guard, symmetric jira over-reach + single-dash tests (155-14 review deferrals)'
+    points: 2
+    completed: '2026-08-10'
+  - id: 164-3
+    epic: '164'
+    title: 'Harden epic-shard archive paths: sanitize _get_epic_ref output + containment; close pf-sprint-new guard bypass (155-7 follow-up)'
+    points: 2
+    completed: '2026-08-10'
+  - id: 164-4
+    epic: '164'
+    title: 'Guard whitespace-only sprint name in get_archive_path: IndexError → clean ValueError (155-7 follow-up)'
+    points: 1
+    completed: '2026-08-10'
+  - id: 164-5
+    epic: '164'
+    title: Extend encoding= sweep to archive_epic.py text I/O + test polish (155-7 follow-up)
+    points: 1
+    completed: '2026-08-10'
+  - id: 164-6
+    epic: '164'
+    title: "Harden -c payload interpolation: format_pr_title '${title}' bash-into-Python-literal splice in sm-finish.md + pf-standalone.md (CWE-94 class, 155-11 review)"
+    points: 2
+    completed: '2026-08-10'
+  - id: 164-7
+    epic: '164'
+    title: Add --description/body option to pf sprint story add so minted follow-ups carry provenance in the story body (155-13 review)
+    points: 2
+    completed: '2026-08-10'
+  - id: 164-8
+    epic: '164'
+    title: '155-13 followups.py hardening: promote _parse_session_deviations to public, CWE-22 session_path containment, TypedDict candidate/suggestion modeling, extend dedup to future.yaml (155-13 review)'
+    points: 2
+    completed: '2026-08-10'
+  - id: 164-9
+    epic: '164'
+    title: "finish dry-run preview polish: human-mode already-merged message + guard step-6 'Delete local branch: None' (from 155-31 review)"
+    points: 1
+    completed: '2026-08-10'
+  - id: 164-10
+    epic: '164'
+    title: 'Finish-family test conftest: autouse patch for finish_story Step 4c demo-generation subprocesses (pre-existing isolation gap, from 155-33 review)'
+    points: 1
+    completed: '2026-08-10'
+  - id: 164-11
+    epic: '164'
+    title: 'Harden _parse_session section tracker: skip fenced code blocks and let only the FIRST Story Details heading populate the branch/pr overlay (from 155-40 review)'
+    points: 1
     completed: '2026-08-10'

@@ -1,6 +1,6 @@
 # ADR-0039: React GUI Removal — Python-Only Architecture
 
-**Status:** Accepted
+**Status:** Accepted · "No browser GUI" consequence amended by [ADR-0042](0042-web-gui-resurrection.md)
 **Date:** 2026-03-11 (decision) · recorded retroactively 2026-05-27
 **Author:** Architect Agent (Leonard of Quirm)
 **Supersedes:** [ADR-0034: Post-Migration Architecture — Python Runtime with React GUI](0034-post-migration-architecture.md)

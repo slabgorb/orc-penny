@@ -43,3 +43,11 @@ The release stepped workflow (v13.4.0 run, 2026-07-27) conflicts with the branch
 <gotcha name="release-entry-point" severity="info">
 `pf git release` does NOT exist (skill doc stale) — start the release with `pf workflow start release`, advance with `pf workflow complete-step release`. Step 10's pipx instructions are stale too: use `just update-pf` (editable uv-tool install).
 </gotcha>
+
+<gotcha name="frame-pid-file-name" severity="high">
+Frame's pid file is `frame-pid` (NO dot prefix) per `pf/frame/launcher.py`; only the port file is dot-prefixed (`.frame-port`). Recipes checking `.frame-pid` always think Frame is down. Don't hand-roll liveness checks anyway — `pf launch frame` is idempotent (probes `/health`, reuses live instance); just call it unconditionally.
+</gotcha>
+
+<gotcha name="frame-stale-code" severity="medium">
+Frame runs from an editable install, so a long-lived Frame process serves OLD code (e.g. 404 on `/` webui despite dist existing) and `pf launch frame` happily reuses it via the health probe. If Frame behavior doesn't match source, restart it: `lsof -ti tcp:$(cat .frame-port) -sTCP:LISTEN | xargs kill`, rm `.frame-port`, relaunch. Orphaned Frames (no pid file) can't be stopped by `pf frame stop`.
+</gotcha>

@@ -1,6 +1,6 @@
 id: '164'
 type: epic
-title: Deferred hardening tail
+title: 'Epic: Deferred hardening tail'
 description: P3 review-deferral follow-ups parked from sprint 2618 (epics 155/159/160). Not sprint work — promote selectively via pf sprint epic promote.
 priority: p3
 status: backlog
@@ -10,16 +10,20 @@ stories:
     title: 'finish: partial session archive left on dialogue-copy OSError + misattributed step in archive except (155-15 review)'
     points: 2
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-08-10'
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria: []
+    completed: '2026-08-10'
     type: bug
   - id: 164-2
     title: 'Preflight hardening follow-ups: enforce LintResult skipped-invariant, unify lint/jira skipped to_dict shape, belt-and-suspenders _lookup arg-guard, symmetric jira over-reach + single-dash tests (155-14 review deferrals)'
-    description: 'From 155-14 Reviewer deferred findings (PR pennyfarthing#144, epic-155 finish-truthfulness; all non-blocking Medium/Low). Target: pennyfarthing-dist/src/pf/preflight/finish.py + test_155_14_preflight_hardening.py. (1) [TYPE-M] LintResult permits contradictory skipped=True + error/clean=False; the skipped-implies-clean invariant is convention-only (only check_lint maintains it). Enforce via __post_init__ or model skip as a sum type. (2) [TYPE-M] to_dict() serializes lint.skipped as a nested key only while jira_skipped also emits a top-level flag + collapsed dict — unify the two ''not checked'' wire shapes so downstream gates have one convention. (3) [SEC-L] _lookup_merged_pr_by_branch (finish.py:155) has no internal arg-guard, safe only by the check_pr_status caller invariant; add belt-and-suspenders _reject_option_like(branch,''branch'') or an assert so a future second caller can''t silently reopen CWE-88. (4) [TEST-M/L] add symmetric over-reach test (legit jira_key still reaches jira issue view), a single-dash ''-R'' injection case, and assert clean is True alongside skipped in test_check_lint_marks_skipped_when_no_lintable_project. Also consider folding in the check_acceptance_criteria blocking exists()/read_text() async-I/O (lang-review #9) TEA flagged during 155-14 — same file, same theme as AC3, but distinct from the CWE-22 path-traversal owned by 155-7.'
+    description: "From 155-14 Reviewer deferred findings (PR pennyfarthing#144, epic-155 finish-truthfulness; all non-blocking Medium/Low). Target: pennyfarthing-dist/src/pf/preflight/finish.py + test_155_14_preflight_hardening.py. (1) [TYPE-M] LintResult permits contradictory skipped=True + error/clean=False; the skipped-implies-clean invariant is convention-only (only check_lint maintains it). Enforce via __post_init__ or model skip as a sum type. (2) [TYPE-M] to_dict() serializes lint.skipped as a nested key only while jira_skipped also emits a top-level flag + collapsed dict — unify the two 'not checked' wire shapes so downstream gates have one convention. (3) [SEC-L] _lookup_merged_pr_by_branch (finish.py:155) has no internal arg-guard, safe only by the check_pr_status caller invariant; add belt-and-suspenders _reject_option_like(branch,'branch') or an assert so a future second caller can't silently reopen CWE-88. (4) [TEST-M/L] add symmetric over-reach test (legit jira_key still reaches jira issue view), a single-dash '-R' injection case, and assert clean is True alongside skipped in test_check_lint_marks_skipped_when_no_lintable_project. Also consider folding in the check_acceptance_criteria blocking exists()/read_text() async-I/O (lang-review #9) TEA flagged during 155-14 — same file, same theme as AC3, but distinct from the CWE-22 path-traversal owned by 155-7."
     points: 2
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-08-10'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
@@ -28,81 +32,106 @@ stories:
       - _lookup_merged_pr_by_branch guards its branch arg independently of the caller (test proves a direct call with option-shaped branch is neutralized)
       - Symmetric jira over-reach test + single-dash injection case added; skip test asserts clean is True
       - Warn on the 155-34 unmerged-branch-no-PR world before the ceremony starts, so the abort surfaces at preflight (from 155-34 review)
+    completed: '2026-08-10'
     type: refactor
   - id: 164-3
     title: 'Harden epic-shard archive paths: sanitize _get_epic_ref output + containment; close pf-sprint-new guard bypass (155-7 follow-up)'
     description: 'From 155-7 Reviewer Delivery Findings (session archive sprint/archive/155-7-session.md; PR pennyfarthing#147): epic-shard paths are a parallel unguarded CWE-22 surface. _get_epic_ref (yaml_io.py) returns the raw id/jira string with no charset check (only an epic- prefix strip) and feeds archive_dir / f"epic-{epic_ref}.yaml" at migrate_completed_archive, load_archive, archive_epic, and the yaml_io shard write/delete sites — no resolve()/containment. Also fold in: (a) pf sprint new (sprint/cli.py ~2207) builds sprint-{yyww}-completed.yaml directly from the CLI arg, bypassing the central guard; (b) Reviewer Question — dry-run in archive_epic() returns before the hoisted guard, so an unsafe sprint id still previews success; consider hoisting validation above the dry-run branch for preview fidelity. Same LOW trust model as 155-7 (local self-authored config). Suggest extracting the 155-7 charset+containment guard into a shared validator both filename families call (SOUL #2).'
     points: 2
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-08-10'
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria: []
+    completed: '2026-08-10'
   - id: 164-4
     title: 'Guard whitespace-only sprint name in get_archive_path: IndexError → clean ValueError (155-7 follow-up)'
-    description: 'From 155-7 Reviewer Delivery Finding (Gap, non-blocking; proven on develop baseline): a whitespace-only sprint name (truthy, .split() → []) raises IndexError at archive_epic.py get_archive_path''s name-token split, upstream of the 155-7 sanitization — a malformed-input shape that bypasses the guard entirely and escapes the ValueError-only wraps added in 155-7 round 2 (crashes pf sprint epic archive / story finish with a traceback). Fix: guard the empty-token case → raise the same actionable ValueError shape (''Check sprint/current-sprint.yaml''). One test alongside (name=''   '').'
+    description: "From 155-7 Reviewer Delivery Finding (Gap, non-blocking; proven on develop baseline): a whitespace-only sprint name (truthy, .split() → []) raises IndexError at archive_epic.py get_archive_path's name-token split, upstream of the 155-7 sanitization — a malformed-input shape that bypasses the guard entirely and escapes the ValueError-only wraps added in 155-7 round 2 (crashes pf sprint epic archive / story finish with a traceback). Fix: guard the empty-token case → raise the same actionable ValueError shape ('Check sprint/current-sprint.yaml'). One test alongside (name='   ')."
     points: 1
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-08-10'
     repos: pennyfarthing
     workflow: trivial
+    acceptance_criteria: []
+    completed: '2026-08-10'
   - id: 164-5
     title: Extend encoding= sweep to archive_epic.py text I/O + test polish (155-7 follow-up)
-    description: 'From 155-7 Dev Delivery Finding (CWE-838, same class as 155-7 AC4): archive_epic.py still has bare text I/O — ensure_archive_file''s archive_path.write_text(template), _load_archive_file''s open(archive_path), _write_archive_file''s archive_path.write_text(result), and the raw index re-read open(sprint_path) in archive_epic(). Add encoding=''utf-8'' to each. Fold in Reviewer round-2 cosmetic finding: collapse the now-dead try/except ValueError: pass in test_archive_epic_unsafe_sprint_id_leaves_no_stray_shard (test_155_7_archive_path_hardening.py:341) to a plain call.'
+    description: "From 155-7 Dev Delivery Finding (CWE-838, same class as 155-7 AC4): archive_epic.py still has bare text I/O — ensure_archive_file's archive_path.write_text(template), _load_archive_file's open(archive_path), _write_archive_file's archive_path.write_text(result), and the raw index re-read open(sprint_path) in archive_epic(). Add encoding='utf-8' to each. Fold in Reviewer round-2 cosmetic finding: collapse the now-dead try/except ValueError: pass in test_archive_epic_unsafe_sprint_id_leaves_no_stray_shard (test_155_7_archive_path_hardening.py:341) to a plain call."
     points: 1
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-08-10'
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria:
       - "162-13 review fold-in (same CWE-838 class): add encoding='utf-8' to open() at src/pf/tests/test_162_13_list_depends_on.py:271 (_write_archive fixture)"
+    completed: '2026-08-10'
   - id: 164-6
-    title: 'Harden -c payload interpolation: format_pr_title ''${title}'' bash-into-Python-literal splice in sm-finish.md + pf-standalone.md (CWE-94 class, 155-11 review)'
+    title: "Harden -c payload interpolation: format_pr_title '${title}' bash-into-Python-literal splice in sm-finish.md + pf-standalone.md (CWE-94 class, 155-11 review)"
     points: 2
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-08-10'
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria: []
+    completed: '2026-08-10'
     type: bug
   - id: 164-7
     title: Add --description/body option to pf sprint story add so minted follow-ups carry provenance in the story body (155-13 review)
     points: 2
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-08-10'
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria: []
+    completed: '2026-08-10'
   - id: 164-8
     title: '155-13 followups.py hardening: promote _parse_session_deviations to public, CWE-22 session_path containment, TypedDict candidate/suggestion modeling, extend dedup to future.yaml (155-13 review)'
     points: 2
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-08-10'
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria: []
+    completed: '2026-08-10'
   - id: 164-9
     title: "finish dry-run preview polish: human-mode already-merged message + guard step-6 'Delete local branch: None' (from 155-31 review)"
     points: 1
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-08-10'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
       - Dry-run preview must predict the 155-34 no-PR abort worlds instead of promising the full done plan (preview/reality parity, from 155-34 review)
+    completed: '2026-08-10'
   - id: 164-10
     title: 'Finish-family test conftest: autouse patch for finish_story Step 4c demo-generation subprocesses (pre-existing isolation gap, from 155-33 review)'
     points: 1
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-08-10'
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria:
       - "Pin 155-34's three unpinned defensive probe paths: origin/<base> preference over a stale local base, the origin/<branch> fallback candidate, and the backticked/annotated sentinel variant (from 155-34 review)"
+    completed: '2026-08-10'
     type: chore
   - id: 164-11
     title: 'Harden _parse_session section tracker: skip fenced code blocks and let only the FIRST Story Details heading populate the branch/pr overlay (from 155-40 review)'
     points: 1
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-08-10'
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria: []
+    completed: '2026-08-10'
   - id: 164-12
     title: "Wrap finish_story's _parse_session call site against UnicodeDecodeError per the sibling read_sprint guard (SOUL #10, from 155-40 review)"
     points: 1
@@ -119,6 +148,7 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria: []
   - id: 164-14
     title: 'SM agent: reconsider TodoWrite ban (or document the reasoning) (gh #46)'
     points: 1
@@ -126,6 +156,7 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria: []
     type: chore
   - id: 164-15
     title: "tmux bare-server auto-start doesn't load project tmux.conf (gh #32)"
@@ -134,6 +165,7 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria: []
     type: bug
   - id: 164-16
     title: 'Frame hardening from 161-1 review: guard monitor_and_shutdown loop body (silent monitor death re-opens orphan mode) + shutdown shared executor on lifespan exit'
@@ -142,6 +174,7 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria: []
     type: chore
   - id: 164-17
     title: complete_phase.py:178 Phase-Started header rewrite uses \S+ — partial rewrite on timestamps with spaces (159-4 review finding)
@@ -150,6 +183,7 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: trivial
+    acceptance_criteria: []
     type: bug
   - id: 164-18
     title: 'Harden dict-shaped theme_characters overrides: guard non-dict helper (AttributeError persona.py:150) + non-list catchphrases (TypeError persona.py:146) + get_crew_manifest character-fallback parity with load_persona (persona.py:191) + reset _quote_cache module global between tests (persona.py:25) + document str|dict override shape in config guide (159-1 review deferrals)'
@@ -158,6 +192,7 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria: []
     type: chore
   - id: 164-19
     title: 'Frame OTLP + subagent-event handlers fail-loud: replace silent except-pass with logging'
@@ -166,6 +201,7 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria: []
     type: refactor
   - id: 164-20
     title: 'Sprint board TUI: story rows show em-dash instead of their jira key (gh #141)'
@@ -187,6 +223,7 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: trivial
+    acceptance_criteria: []
     type: chore
   - id: 164-22
     title: Narrow blanket except in _get_archived_story_ids to OSError/YAMLError + logger.warning (160-8 review finding)
@@ -195,6 +232,7 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: trivial
+    acceptance_criteria: []
     type: chore
   - id: 164-23
     title: "Harden validate_epic_shard per-story loop: guard non-dict story entries (AttributeError at validator.py:409) + replace 'Missing required field' string-match filter with structured marker (160-1 review deferrals)"
@@ -203,6 +241,7 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: trivial
+    acceptance_criteria: []
     type: chore
   - id: 164-24
     title: Promote _has_real_jira_key to public in loader.py + remove dead _NO_JIRA_SENTINELS alias in story_update.py (160-3 review deferrals)
@@ -211,6 +250,7 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: trivial
+    acceptance_criteria: []
     type: chore
   - id: 164-25
     title: "Fix remaining Frame brownfield routes (hotspots/health-score/code-markers): same to_thread(async_fn) shape as 160-20 but DISTINCT deeper arg bugs — get_hotspots/get_code_markers call analyze_repo(name, path) with only project_dir (missing required 'path'); get_health_score passes a non-existent use_cache kwarg to analyze_healthscore. Each needs a design decision (name/path source, use_cache removal) + Path() + await. Also tighten test_frame_routes.py analysis-route tests which accept status_code in (200,500) and masked 160-20. From 160-20 TEA/Dev/Reviewer findings."
@@ -219,3 +259,20 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria: []
+  - id: 164-26
+    title: Web GUI follow-up hardening — deferred final-review items (epic 165)
+    description: Bundled deferrals from epic 165's final whole-branch review (see archived ledger in git history of PR orc-penny#65 and ADR-0042). Security notes + test/doc hygiene; no behavior changes to the shipped dashboard.
+    points: 3
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    acceptance_criteria:
+      - WS endpoints validate Origin header (localhost origins only) — mitigates cross-site WebSocket hijacking of /ws/* data
+      - 'PATCH /api/settings validates value types for whitelisted keys (theme: str, bell_mode/relay_mode: bool) before YAML write'
+      - _resolve_webui_dir warns when FRAME_WEBUI_DIR is set but nonexistent (fail-loud)
+      - GitStatus tests cover behind-badge, isDraft marker, and null-data guard; SprintBoard tests get afterEach state/clipboard cleanup
+      - WorkflowInfo type deduplicated into web/src/api/types.ts
+      - conftest isolate_frame_webui docstring corrected; test_topology_loader stale packages/cyclist fixture path updated
+      - web.yml gains a concurrency group (cancel-in-progress)
