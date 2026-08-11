@@ -201,10 +201,12 @@ stories:
     title: 'Harden dict-shaped theme_characters overrides: guard non-dict helper (AttributeError persona.py:150) + non-list catchphrases (TypeError persona.py:146) + get_crew_manifest character-fallback parity with load_persona (persona.py:191) + reset _quote_cache module global between tests (persona.py:25) + document str|dict override shape in config guide (159-1 review deferrals)'
     points: 2
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-08-11'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
+    completed: '2026-08-11'
     type: chore
   - id: 164-19
     title: 'Frame OTLP + subagent-event handlers fail-loud: replace silent except-pass with logging'
