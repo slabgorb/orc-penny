@@ -240,9 +240,11 @@ stories:
     title: 'Port the 162-2 stateful gh-pr-merge fake to test_155_1_finish_verifies_merge.py:489 — its clean-merge happy-path test uses a fixed MERGED view, trips the 155-29 short-circuit, and never invokes gh pr merge (ironic: 155-1 made the merge load-bearing) (from 162-2 review)'
     points: 1
     priority: p2
-    status: backlog
+    status: in_progress
+    started: '2026-08-11'
     repos: pennyfarthing
     workflow: tdd
+    branch: feat/162-22-port-stateful-ghpr-fake-to-155-1
     type: bug
   - id: 162-23
     title: Consolidate four duplicated _make_fake_run gh-PR fakes (155-1/12/15, 162-1) into shared pf/tests/helpers/gh_pr_fake.py as a callable dataclass — kills two type:ignore escapes and the MagicMock(side_effect=fake) ledger footgun live in test_155_29; use parts[:3]==[gh,pr,merge] dispatch; add shared Literal aliases for gh PR states imported by production and fakes (from 162-2 review)
