@@ -240,10 +240,11 @@ stories:
     title: 'Port the 162-2 stateful gh-pr-merge fake to test_155_1_finish_verifies_merge.py:489 — its clean-merge happy-path test uses a fixed MERGED view, trips the 155-29 short-circuit, and never invokes gh pr merge (ironic: 155-1 made the merge load-bearing) (from 162-2 review)'
     points: 1
     priority: p2
-    status: in_progress
+    status: done
     started: '2026-08-11'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-11'
     branch: feat/162-22-port-stateful-ghpr-fake-to-155-1
     type: bug
   - id: 162-23
