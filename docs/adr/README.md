@@ -71,6 +71,8 @@ What becomes easier or more difficult because of this change?
 | [0034](./0034-post-migration-architecture.md) | Post-Migration Architecture — Python Runtime with React GUI | Superseded by 0039 | 2026-03-09 |
 | [0039](./0039-react-gui-removal-python-only.md) | React GUI Removal — Python-Only Architecture | Accepted | 2026-03-11 |
 | [0041](./0041-live-context-injection-layer.md) | Live Context Injection Layer (UserPromptSubmit + advisory PreToolUse) | Proposed | 2026-07-01 |
+| [0042](./0042-web-gui-resurrection.md) | Web GUI Resurrection — Browser Client of the Frame API | Accepted | 2026-08-07 |
+| [0043](./0043-review-finding-disposition-gate.md) | Review-Finding Disposition Gate — Stop the Follow-Up Fan-Out | Proposed | 2026-08-11 |
 
 ## Creating a New ADR
 
