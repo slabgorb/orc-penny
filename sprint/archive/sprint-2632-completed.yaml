@@ -301,3 +301,8 @@ completed_stories:
     title: 'Sprint board TUI: story rows show em-dash instead of their jira key (gh #141)'
     points: 2
     completed: '2026-08-11'
+  - id: 162-79
+    epic: '162'
+    title: Extend pf sprint story update with --type and --depends-on
+    points: 3
+    completed: '2026-08-11'
