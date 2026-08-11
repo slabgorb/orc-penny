@@ -353,9 +353,11 @@ stories:
     title: "Multi-repo session schema + finish edge-cases: document per-repo PR-field syntax in schemas/session-schema.md + agents/sm-setup.md (single PR line is single-repo-only since 162-6); move no-PR repo verification OUT of the merge loop (mixed multi-repo can land one PR then refuse); test + name-the-landed-repo recovery for second-merge-fails-after-first-landed; fix dry-run pairing first resolved PR with first repo (the 162-6 bug class in the preview path); reconcile the docstring's degradation claim for stories omitting repos: and decide epic-level repos: inheritance (from 162-6 review M3-M6)"
     points: 3
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-08-11'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-11'
   - id: 162-34
     title: 'Fix remaining false-positive jira dry-runs: claim (pure echo, no lookup — highest-frequency agent-facing path), move (missing issue OR nonexistent target transition both preview as success), create story (parent epic key never validated) — same truthful-dry-run contract as 162-7 (from 162-7 AC4 audit)'
     points: 2
