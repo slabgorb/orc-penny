@@ -296,3 +296,8 @@ completed_stories:
     title: 'Frame OTLP + subagent-event handlers fail-loud: replace silent except-pass with logging'
     points: 2
     completed: '2026-08-11'
+  - id: 164-20
+    epic: '164'
+    title: 'Sprint board TUI: story rows show em-dash instead of their jira key (gh #141)'
+    points: 2
+    completed: '2026-08-11'

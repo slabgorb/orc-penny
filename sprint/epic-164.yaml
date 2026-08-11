@@ -224,13 +224,15 @@ stories:
     description: "From gh #141. In the pennyfarthing sprint board TUI, child STORY rows show em-dash in the Jira-key column instead of their actual jira: value, even though the key is present in current-sprint.yaml. Epic rows render their Jira key correctly; story rows do not. Likely cause: the TUI renders the Jira column from the story id (or only populates it for epics) and doesn't fall back to the story jira: field when id != jira. Affects epics that use short-form story ids (40-1, 40-6, ...) with a separate jira: field (MSSCI-*); older epics whose story id IS the MSSCI key render fine. Data is correct — purely a rendering gap. Impact: users can't cross-reference short-form-id stories to Jira from the board. Fix: render the story Jira column from the story jira: field, falling back to id only when jira is absent (mirror how epic rows resolve it)."
     points: 2
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-08-11'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
       - 'Story rows render their jira: value in the Jira-key column when present'
       - 'When a story has no jira: field, the column falls back to the story id (no regression for id==jira epics)'
       - Regression covering a short-form-id epic (e.g. 40-1 with jira MSSCI-18070) asserts the key renders, not em-dash
+    completed: '2026-08-11'
     type: bug
   - id: 164-21
     title: 'Test hygiene: add pytest.warns for fetch_sprint warn-on-missing-ref (AC4); strengthen/drop near-vacuous test_substring_decoy_story_id_intact (from 156-4 L1 / 156-3)'
