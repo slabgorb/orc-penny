@@ -679,3 +679,10 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+  - id: 162-73
+    title: '162-31 meta-guard hardening follow-ups (reviewer): find_xpasses ignores subprocess returncode (stubbed empty stays green); regex accepts UTF-8/SHA-256-style false refs + is case-sensitive; class-level pytestmark inside a class body not discovered; add xfail_strict=true to pytest ini as the tree-wide forcing knob'
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
