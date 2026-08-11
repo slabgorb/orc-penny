@@ -321,11 +321,13 @@ stories:
     title: 'Triage the second test tree: tests/python/ fails 287 + 22 errors (309 unmarked), invisible to bare pytest (pyproject testpaths excludes it) but run by just test (justfile:19) — triage, delete, or stop referencing; same disposition discipline as 162-5 (from 162-5 triage)'
     points: 3
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-08-11'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
       - There is NO CI workflow config anywhere in the repo — nothing enforces either test root; add CI (or document why not) as part of deciding the second tree's fate (from 162-8 review)
+    completed: '2026-08-11'
     type: chore
   - id: 162-31
     title: 'Quarantine exit-loudness + meta-guard hardening: strict=False xfails XPASS silently when B1/B2/B4 land — add a forcing function (strict where safe, or extend test_162_5_quarantine_policy to fail on XPASS); tighten the gameable tracking-reference regex; close the pytestmark/runtime-xfail discovery bypass; fix the two remaining vacuous portrait tests (:274, :372, same if-called pattern 162-5 fixed at :397); dedup the 4x 15-line quarantine comment in test_143_9 (from 162-5 review)'

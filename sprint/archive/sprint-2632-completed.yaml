@@ -271,3 +271,8 @@ completed_stories:
     title: "Ref-qualified Branch values (origin/x, refs/heads/x) double-prefix in _branch_merge_state and abort where the old bare probe verified — fails closed but needs design: strip-prefix is UNSOUND (collides with the look-alike-branch threat 162-4 defends against); consider candidate widening or rejection at the extractor. Also document the base field's dual shape at story_finish.py:371 (prefixed on definitive arms, bare on not-found arms) (from 162-4 review)"
     points: 2
     completed: '2026-08-11'
+  - id: 162-30
+    epic: '162'
+    title: 'Triage the second test tree: tests/python/ fails 287 + 22 errors (309 unmarked), invisible to bare pytest (pyproject testpaths excludes it) but run by just test (justfile:19) — triage, delete, or stop referencing; same disposition discipline as 162-5 (from 162-5 triage)'
+    points: 3
+    completed: '2026-08-11'
