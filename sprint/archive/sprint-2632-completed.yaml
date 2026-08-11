@@ -256,3 +256,8 @@ completed_stories:
     title: 'Harden _parse_session section tracker: skip fenced code blocks and let only the FIRST Story Details heading populate the branch/pr overlay (from 155-40 review)'
     points: 1
     completed: '2026-08-10'
+  - id: 162-17
+    epic: '162'
+    title: "pf sprint archive --apply false-success: removal filters only epics[].stories (misses standalone_stories; no-op on sharded index where epics are ID strings) yet unconditionally reports 'removed from current-sprint.yaml'"
+    points: 2
+    completed: '2026-08-11'
