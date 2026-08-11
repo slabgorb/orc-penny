@@ -276,3 +276,8 @@ completed_stories:
     title: "tmux bare-server auto-start doesn't load project tmux.conf (gh #32)"
     points: 2
     completed: '2026-08-11'
+  - id: 164-16
+    epic: '164'
+    title: 'Frame hardening from 161-1 review: guard monitor_and_shutdown loop body (silent monitor death re-opens orphan mode) + shutdown shared executor on lifespan exit'
+    points: 2
+    completed: '2026-08-11'
