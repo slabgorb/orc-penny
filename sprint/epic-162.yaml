@@ -343,9 +343,11 @@ stories:
     title: 'Resolver guards for _resolve_story_repos: existence-check the resolved cwd (uncloned topology entry currently raises out of the result contract — rule 6; precedent guard at git/repos.py:141) and dedup the repos: list (duplicate name merges the same PR twice → second non-zero exit → false abort on landed work). Also stop discarding the three git return codes in _git_cleanup while reporting clean (from 162-6 review)'
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-08-11'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-11'
     type: bug
   - id: 162-33
     title: "Multi-repo session schema + finish edge-cases: document per-repo PR-field syntax in schemas/session-schema.md + agents/sm-setup.md (single PR line is single-repo-only since 162-6); move no-PR repo verification OUT of the merge loop (mixed multi-repo can land one PR then refuse); test + name-the-landed-repo recovery for second-merge-fails-after-first-landed; fix dry-run pairing first resolved PR with first repo (the 162-6 bug class in the preview path); reconcile the docstring's degradation claim for stories omitting repos: and decide epic-level repos: inheritance (from 162-6 review M3-M6)"
