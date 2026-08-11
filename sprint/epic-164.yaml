@@ -190,10 +190,12 @@ stories:
     title: complete_phase.py:178 Phase-Started header rewrite uses \S+ — partial rewrite on timestamps with spaces (159-4 review finding)
     points: 1
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-08-11'
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria: []
+    completed: '2026-08-11'
     type: bug
   - id: 164-18
     title: 'Harden dict-shaped theme_characters overrides: guard non-dict helper (AttributeError persona.py:150) + non-list catchphrases (TypeError persona.py:146) + get_crew_manifest character-fallback parity with load_persona (persona.py:191) + reset _quote_cache module global between tests (persona.py:25) + document str|dict override shape in config guide (159-1 review deferrals)'

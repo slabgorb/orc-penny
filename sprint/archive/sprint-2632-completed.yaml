@@ -281,3 +281,8 @@ completed_stories:
     title: 'Frame hardening from 161-1 review: guard monitor_and_shutdown loop body (silent monitor death re-opens orphan mode) + shutdown shared executor on lifespan exit'
     points: 2
     completed: '2026-08-11'
+  - id: 164-17
+    epic: '164'
+    title: complete_phase.py:178 Phase-Started header rewrite uses \S+ — partial rewrite on timestamps with spaces (159-4 review finding)
+    points: 1
+    completed: '2026-08-11'
