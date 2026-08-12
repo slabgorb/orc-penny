@@ -316,3 +316,8 @@ completed_stories:
     title: "PF_PY policy hardening (162-8 tail): add gate-fence sentinels to SENTINEL_TEMPLATES (the unswept-root failure mode is one rename from recurring — highest-value); note the script-path blind spot (fence invoking a .py that imports pf is invisible to the predicate); pin the sweep blind-spot shapes (dash-less heredoc, python3.12, untagged fence); document deviations.py's Spec-source specificity rule in guides/deviation-format.md (from 162-8 review)"
     points: 1
     completed: '2026-08-12'
+  - id: 162-39
+    epic: '162'
+    title: "CWE-78 sweep: nine template fences interpolate agent-assembled data into double-quoted Python source strings (sm-finish.md:31,41 format_pr_title with JIRA_KEY/TITLE; pf-standalone.md:155; git-cleanup step-03:157; five gate fences interpolating session/context paths) — an apostrophe in a PR title breaks them today, a crafted one injects Python. Apply sm-setup's documented positional-argv + single-quoted-heredoc defense uniformly (from 162-8 review)"
+    points: 2
+    completed: '2026-08-12'

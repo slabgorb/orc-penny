@@ -412,9 +412,11 @@ stories:
     title: "CWE-78 sweep: nine template fences interpolate agent-assembled data into double-quoted Python source strings (sm-finish.md:31,41 format_pr_title with JIRA_KEY/TITLE; pf-standalone.md:155; git-cleanup step-03:157; five gate fences interpolating session/context paths) — an apostrophe in a PR title breaks them today, a crafted one injects Python. Apply sm-setup's documented positional-argv + single-quoted-heredoc defense uniformly (from 162-8 review)"
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-08-12'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-12'
     type: bug
   - id: 162-40
     title: 'Decide scripts/hooks/pre-commit.sh contract: runs pf.sprint.validate_cmd on bare python3 with PYTHONPATH fallback and SKIPS validation when no python found — a git hook that must degrade gracefully without pf installed, so the fail-loud guard is the wrong instrument; decide + document the degradation contract (from 162-8 TEA)'
