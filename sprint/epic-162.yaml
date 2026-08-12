@@ -462,9 +462,11 @@ stories:
     title: "Complete the CWE-22 shard-path sweep (162-12 tail): archive_epic.archive_epic() ~547 FIRST (unguarded read + write + shutil.move — strictly worse than anything fixed, missed by every prior inventory); then validate/adapters/sprint.py:25-26, story_add.py:242, findings/aggregate.py x4, sprint/cli.py x5, epic_reindex.py:39, epic_add.py:88, yaml_io.py x3 (one write). Ship the architectural fix in the same pass: safe_shards() guarded iterator + safe_ref_path() helper so the invariant lives in the API, not convention. Also: add the warn convention to ws_push's three silent guard sites together; positive-path coverage for migrate_completed_archive; note TOCTOU/O_NOFOLLOW as an architect decision (from 162-12 review)"
     points: 3
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-08-12'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-12'
     type: bug
   - id: 162-45
     title: 'Multi-parent depends_on consumer support: stack-ready gate, story field machine-readable emission, sm-setup/sm templates, story_add authoring (162-13 follow-up)'
@@ -753,6 +755,13 @@ stories:
   - id: 162-80
     title: "162-42 follow-up: agents/native/*.md carries 5 Write-capable definitions (dev, devops, orchestrator, tea, tech-writer) that declare no schema-validation PreToolUse hook — same gap class as 162-42. Inert today (frontmatter collector globs agents/*.md top-level only and subagent loader ignores that dir), but extend the class-invariant test to cover agents/native/ and add the hook block so the gap can't activate on a future loader/collector change (from 162-42 review, Medium)"
     points: 1
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-81
+    title: "162-43 follow-up (hook/consumer heading+session parity — ONE story, four members from 162-43 review): (a) DUPLICATE '## Story Details' sections still allow placeholder shadowing — the hook flips in_details on every matching heading and passes, but the consumer's seen_story_details denies authority to the 2nd block so first-wins hands PR to an earlier placeholder (pre-existing, confirmed on develop, MEDIUM); (b) fenced/column-0 <session> examples still mis-route (2 gaps TEA flagged); (c) session/append_only.py:20 matches 'Story Details' exactly+case-sensitively and would miss the colon heading — but validate_session_append_only has ZERO callers: OPEN QUESTION for Keith — is 150-10 abandoned (delete the dead code) or dropped wiring (reconnect)? do NOT delete without Keith's call; (d) add '## Story Details :' (space-before-colon) to the parity corpus — one-line test gap. Unify heading normalization via a lazy __getattr__ in pf/sprint/__init__ so hook+consumer share one impl instead of byte-twin duplication"
+    points: 3
     priority: p1
     status: backlog
     repos: pennyfarthing
