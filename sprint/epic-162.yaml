@@ -372,9 +372,11 @@ stories:
     title: '162-7 truthfulness tail: real assign path resolves the user TWICE (second stage re-looks-up by substituted email — second-stage failures report the substituted email, breaking the raw-input rule; preview/write divergence window); email-withheld display puts the input string in the email slot (echo-the-input dressed as resolved); add the credentials guard to sprint-add/link dry-runs (applied to 1 of 3 paths); URL-encode find_user_sync query (curl exit 3 on spaces makes display-name lookups unresolvable) (from 162-7 review F1/F3/F4/F5)'
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-08-12'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-12'
     type: bug
   - id: 162-36
     title: 'Jira transport truthfulness: _call_api_sync cannot distinguish a 204 empty body from a curl failure, so assign_issue_sync/transition_sync return unconditional success for writes — the real write a truthful dry-run validates can still lie. Shared-transport change (from 162-7)'
@@ -688,6 +690,13 @@ stories:
   - id: 162-73
     title: '162-31 meta-guard hardening follow-ups (reviewer): find_xpasses ignores subprocess returncode (stubbed empty stays green); regex accepts UTF-8/SHA-256-style false refs + is case-sensitive; class-level pytestmark inside a class body not discovered; add xfail_strict=true to pytest ini as the tree-wide forcing knob'
     points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-74
+    title: "Truthful jira dry-run tail (162-34 follow-up): create_story dry-run validates epic.get('jira') or epic_jira_key but real create POSTs raw epic_jira_key -> passing a local epic id previews success but real create sends parent:{key:'162'} and fails; also create_epic_in_jira dry-run fabricates PROJ-XXXXX and previews children with no lookup (same false-positive class one level up)"
+    points: 1
     priority: p1
     status: backlog
     repos: pennyfarthing
