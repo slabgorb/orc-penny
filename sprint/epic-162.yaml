@@ -730,3 +730,55 @@ stories:
     completed: '2026-08-11'
     review_findings: "REJECTED (round 1): F1 --type help omits 'docs' (3 subagents); F2 tautological sibling test assertion (162-3 fixture already 'feature'); F3 --type lacks click.Choice + case normalization (inconsistent with --status). Rework to RED: TEA fixes F2, adds failing tests for case-insensitivity/help-enumeration (F3) + coverage (F4 CLI message assert, F5 depends_on merged-view), then Dev re-greens. Deferred: cycle detection, canceled-target semantics, Literal/frozenset."
     review_verdict: approved
+  - id: 162-80
+    title: Add --clear-depends-on to pf sprint story update
+    description: "Follow-up from 162-79 review (Reviewer finding E4). --depends-on can set or re-point a dependency but there is no way to REMOVE one without hand-editing sharded YAML (which project rules forbid). Add a --clear-depends-on flag parallel to --clear-ac: sets story.pop('depends_on', None). Mutually exclusive with --depends-on. Honor --dry-run and the --epic conflict guard like sibling flags."
+    points: 1
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-81
+    title: Detect transitive dependency cycles in story depends_on
+    description: Follow-up from 162-79 review (Reviewer finding D1). update_story guards only the trivial self-loop (depends_on == story_id); a 2-hop cycle (A->B, B->A) is undetected, and the shard-file validation route (validate_epic_shard) never invokes _validate_depends_on. An agent walking depends_on to find unblocked work can spin. Add transitive cycle detection and wire it into the shard-file validation path. Epic-162 sequencing/truthfulness charter.
+    points: 2
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-82
+    title: Validate --depends-on target in pf sprint story add (parity with update)
+    description: Follow-up from 162-79 review (TEA finding). story add --depends-on (story_add.py) writes depends_on unvalidated, while update now rejects self/nonexistent targets. Back-port the same target-existence + self-reference guard to add so the truthfulness contract is uniform across both entry points.
+    points: 1
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: chore
+  - id: 162-83
+    title: Decide and enforce depends_on semantics for canceled/done/archived targets
+    description: "Follow-up from 162-79 review (Reviewer finding D2 — NEEDS PRODUCT DECISION FIRST). --depends-on currently accepts a target whose status is canceled/done/archived. Decide the policy consistent with epic-160's 'archived dependencies treated as satisfied': reject, warn, or allow. Then enforce in update_story (and add, per 162-82). Blocked on Keith's product call before implementation."
+    points: 1
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: chore
+  - id: 162-84
+    title: 'Polish 162-79 --type: scope comment parity claim + word-boundary help test'
+    description: "Follow-up from 162-79 review (Reviewer findings C2 + TA1, both trivial/non-blocking). (a) story_update.py --type option comment bundles case-normalisation into a 'matching --status/--review-verdict' claim, but those siblings are case-SENSITIVE — scope the parity to exit-2 only. (b) test_cli_help_enumerates_all_valid_types uses a bare 'value in flattened' substring check, so 'doc' passes vacuously off 'docs' — use a word-boundary regex so each value is independently falsifiable. Non-blocking: help is derived from the set, so drift is structurally impossible."
+    points: 1
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: chore
+  - id: 162-85
+    title: Harden VALID_STORY_TYPES/VALID_STORY_STATUSES as frozenset + Literal
+    description: Follow-up from 162-79 review (Reviewer/type-design finding D3, optional, no behavior change). VALID_STORY_TYPES and pre-existing VALID_STORY_STATUSES are mutable sets; frozenset[str] encodes the closed-set invariant and surfaces intent in the annotation. Optionally express the type contract as Literal[...] once the alias-normalization pass (ADR-0043) lands.
+    points: 1
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: chore
