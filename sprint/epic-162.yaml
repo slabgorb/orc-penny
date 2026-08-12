@@ -430,11 +430,13 @@ stories:
     title: "162-9 timeout-hardening tail: change truthiness tests on the timeout signal to 'is not None' (story_finish.py ~913, ~1088 — empty message collapses a hung probe into the permissive arm; unreachable today); stop discarding non-timeout exits in steps 5/6 (step 5 reports it ran when it failed); catch OSError in _run and extract the bounded-run/_TimedOutProcess trio into a shared helper (unbounded-subprocess pattern recurs in other modules); add a merge-didn't-run assertion to the gate-timeout test (its hang-all-views predicate would pass a fell-through gate) (from 162-9 review)"
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-08-12'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
       - '162-10 test polish: depth parametrization is depth-invariant (str.strip collapses all ticks in one call — pins performance, not iteration depth); dry-run abort test drops the four invariants its sibling asserts; _BRANCH_SENTINELS should be frozenset (from 162-10 review)'
+    completed: '2026-08-12'
     type: chore
   - id: 162-42
     title: 'Wire sm-setup to the schema-validation backstop: it carries no PreToolUse frontmatter, unlike the eleven top-level agents — the 155-32 producer (the subagent that writes the session from the template) is not guarded by the very hook 162-11 built for its write (from 162-11 review)'
@@ -718,6 +720,13 @@ stories:
     workflow: tdd
   - id: 162-76
     title: "Jira write-truthfulness tail (162-36 follow-up): create_issue_sync callers now print 'Failed: None' (error body dropped by the None-returning reader wrapper — surface _request_sync's error instead); and add_to_sprint_sync/link_issues_sync/add_comment_sync still return unconditional success ignoring the PUT/POST outcome — route them through _request_sync too"
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-77
+    title: 'sm-finish PR-title CWE-78 residual (162-39 follow-up MEDIUM SEC): the 3 sm-finish.md {PLACEHOLDER} sites (REPOS/STORY_ID) still allow shell-word injection — the agent substitutes the literal into a double-quoted shell word so $(...)/backticks execute before python. Promote to a pf CLI subcommand (164-6 pf git format-title precedent) so no agent-assembled data reaches a shell word'
     points: 2
     priority: p1
     status: backlog
