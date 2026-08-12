@@ -362,9 +362,11 @@ stories:
     title: 'Fix remaining false-positive jira dry-runs: claim (pure echo, no lookup — highest-frequency agent-facing path), move (missing issue OR nonexistent target transition both preview as success), create story (parent epic key never validated) — same truthful-dry-run contract as 162-7 (from 162-7 AC4 audit)'
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-08-11'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-12'
     type: bug
   - id: 162-35
     title: '162-7 truthfulness tail: real assign path resolves the user TWICE (second stage re-looks-up by substituted email — second-stage failures report the substituted email, breaking the raw-input rule; preview/write divergence window); email-withheld display puts the input string in the email slot (echo-the-input dressed as resolved); add the credentials guard to sprint-add/link dry-runs (applied to 1 of 3 paths); URL-encode find_user_sync query (curl exit 3 on spaces makes display-name lookups unresolvable) (from 162-7 review F1/F3/F4/F5)'
