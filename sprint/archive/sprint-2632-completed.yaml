@@ -331,3 +331,8 @@ completed_stories:
     title: 'Wire sm-setup to the schema-validation backstop: it carries no PreToolUse frontmatter, unlike the eleven top-level agents — the 155-32 producer (the subagent that writes the session from the template) is not guarded by the very hook 162-11 built for its write (from 162-11 review)'
     points: 1
     completed: '2026-08-12'
+  - id: 162-43
+    epic: '162'
+    title: "Schema-hook hardening tail (162-11 review): allow .session/archive/ writes (real archive location globbed by migration/session.py:368 — currently denied); accept the trailing-colon Story Details heading variant (finish reads it via fallback, hook over-blocks with a misleading message); fix XML routing's whole-body substring test (a markdown session QUOTING the session tag in prose mis-routes to the XML arm and denies — live artifact in the 162-11 session); add a behavioral round-trip test beside the pattern-string equality pin; per-field round-trip guard (joined messages mask per-field regressions)"
+    points: 2
+    completed: '2026-08-12'

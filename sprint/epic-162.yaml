@@ -452,9 +452,11 @@ stories:
     title: "Schema-hook hardening tail (162-11 review): allow .session/archive/ writes (real archive location globbed by migration/session.py:368 — currently denied); accept the trailing-colon Story Details heading variant (finish reads it via fallback, hook over-blocks with a misleading message); fix XML routing's whole-body substring test (a markdown session QUOTING the session tag in prose mis-routes to the XML arm and denies — live artifact in the 162-11 session); add a behavioral round-trip test beside the pattern-string equality pin; per-field round-trip guard (joined messages mask per-field regressions)"
     points: 2
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-08-12'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-12'
     type: bug
   - id: 162-44
     title: "Complete the CWE-22 shard-path sweep (162-12 tail): archive_epic.archive_epic() ~547 FIRST (unguarded read + write + shutil.move — strictly worse than anything fixed, missed by every prior inventory); then validate/adapters/sprint.py:25-26, story_add.py:242, findings/aggregate.py x4, sprint/cli.py x5, epic_reindex.py:39, epic_add.py:88, yaml_io.py x3 (one write). Ship the architectural fix in the same pass: safe_shards() guarded iterator + safe_ref_path() helper so the invariant lives in the API, not convention. Also: add the warn convention to ws_push's three silent guard sites together; positive-path coverage for migrate_completed_archive; note TOCTOU/O_NOFOLLOW as an architect decision (from 162-12 review)"
@@ -744,6 +746,13 @@ stories:
   - id: 162-79
     title: '162-41 follow-up: adopt the new pf/common/bounded_run helper at the remaining unbounded-subprocess sites — patch_mode.py (5 sites) and benchmark/pipeline_replay.py (~20 sites) — each with a deliberate per-call timeout tier (from 162-41 review, non-blocking)'
     points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-80
+    title: "162-42 follow-up: agents/native/*.md carries 5 Write-capable definitions (dev, devops, orchestrator, tea, tech-writer) that declare no schema-validation PreToolUse hook — same gap class as 162-42. Inert today (frontmatter collector globs agents/*.md top-level only and subagent loader ignores that dir), but extend the class-invariant test to cover agents/native/ and add the hook block so the gap can't activate on a future loader/collector change (from 162-42 review, Medium)"
+    points: 1
     priority: p1
     status: backlog
     repos: pennyfarthing
