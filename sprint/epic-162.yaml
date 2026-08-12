@@ -659,9 +659,12 @@ stories:
     description: 'Combines backlog follow-ups from the 162-4/162-3 lineage. 162-24: decide de-fold vs pin for the mergeable/mergeStateStatus case-folds (~321-322) — they feed a BLOCKING predicate so folding biases toward blocking; pin with lowercase test inputs. 162-26: ref-qualified Branch values (origin/x, refs/heads/x) double-prefix in _branch_merge_state and abort — strip-prefix is UNSOUND (collides with 162-4 look-alike threat); decide widening vs extractor rejection; document base field dual shape at story_finish.py:371. 162-27: ref-prefix sweep of remaining bare-ref probe sites (staleness.py:443, frame/routes/data_proxy.py:189); decide configured-remote honoring. Absorbs 162-24, 162-26, 162-27.'
     points: 3
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-08-12'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-12'
+    review_verdict: approved
   - id: 162-72
     title: Jira dry-run and transport truthfulness completion
     description: 'Completes the 162-7 truthful-dry-run contract. 162-34: false-positive dry-runs for claim (pure echo, no lookup), move (missing issue OR bad transition both preview success), create story (parent epic key never validated). 162-35: assign path resolves user TWICE (second-stage failures report substituted email, breaking raw-input rule); email-withheld display echoes input as resolved; add credentials guard to sprint-add/link dry-runs; URL-encode find_user_sync query. 162-36: _call_api_sync cannot distinguish a 204 empty body from a curl failure, so assign/transition writes return unconditional success. Absorbs 162-34, 162-35, 162-36.'

@@ -168,3 +168,31 @@ A follow-up story sourced from a prior Reviewer's prose can NAME the wrong symbo
 <pattern name="real-git-fixture-probe-agnostic-red" date="2026-08-01">
 155-34 (no-PR finish must verify the branch actually landed): when the fix Dev will write is a GIT PROBE whose exact command you cannot predict (rev-list --count / merge-base --is-ancestor / cherry / branch --no-merged all plausible), do NOT fake git answers — make the fixture project a REAL throwaway repo (git init -b develop, local config user.*, commit.gpgsign=false, core.hooksPath=.git/hooks to defeat host GPG/global hooks, bare origin at tmp_path + push so origin/develop and origin/<branch> resolve too) and patch story_finish._run with a DISPATCHER: gh → canned, sys.executable (step-5 CLI) → rc0 no-op, everything else → real subprocess.run(cmd, ..., **kwargs). Any probe shape then gets the true answer, and kwargs pass-through honors Dev's cwd=. CWD-FORCING PAIR: name the fixture branch something that does NOT exist in the test-runner's repo — a probe that forgets cwd=project_root interrogates the runner repo and fails either the abort-world or the merged-world test whichever way its error path leans; the pair is the enforcement, no mechanism pin needed. Pair it with an AST convention guard (all subprocess calls inside _run) because two dozen sibling suites use _run as THE hermetic seam — a probe that shells out directly would escape every sibling fake. SIBLING PRE-ADJUSTMENT (the 155-29/155-16 move, now at family scale): grep the family for no-PR worlds with INCIDENTAL real branch names (here 155-1 overreach, 155-15 no-PR, 147-12 x3, 151-3, 153-4) — post-fix those meet the probe with generic rc0/stdout='' mocks and the outcome becomes a parse-shape lottery. Convert them to the AFFIRMED none-sentinel shape (`- **Branch:** none`), which stays on the accepted arm before AND after the fix, and move the real-branch-no-PR world into the new suite with the real repo. Contract three-way the tests force via RAW field values (extraction collapses all to None): sentinel = affirmative absence → accepted; empty/placeholder = unrecorded → abort; fields ABSENT entirely = deliberately unpinned (Question finding, Dev's call). Result: 4 red + 3 green-guards, 0 errored; 379 family tests green on HEAD after 5-file pre-adjustment.
 </pattern>
+
+<pattern name="verify-the-sweep-is-not-already-done-before-redding" date="2026-08-12">
+162-71 ("final sweep" absorbing 162-24/162-26/162-27): a consolidation/sweep story's cited line
+numbers are usually STALE and 1+ of its sub-items already landed under its own banner. Before
+writing a single test, PROVE current state per sub-item: (a) `git log -S"<the fix's literal string>"
+-- <file>` to see if the fix already shipped (162-26 widen landed in d3357227f/#218), and (b)
+`grep` the test dir for the pin (162-24's lowercase-conflicting→BLOCKED was already at
+test_162_19_classify_pr.py + test_162_3). Here 2 of 3 sub-areas were DONE+PINNED, so RED shrank to
+one sub-area (162-27) and the 3pt estimate was ~1pt of real work — surfaced as a scope Delivery
+Finding + a "no new tests for X/Y" Design Deviation (SOUL #2: don't duplicate existing pins).
+ARGV-OBSERVATION RED beats value-assertion when the fix's OUTPUT FIELD may be renamed: data_proxy
+hardcoded `HEAD..origin/develop`; the decision honored per-repo default_branch AND flagged a
+`developBehind`→`baseBehind` rename. Asserting the JSON field would break on the rename; instead
+monkeypatch `subprocess.run` (delegate non-git calls to the captured real_run so app startup is
+unaffected), record git argv, and assert `not any("develop" in probe)` + `any("main" in probe)` for
+a repos.yaml default_branch=main fixture. Fully rename-proof and fix-agnostic on how config is
+threaded. Frame-route seam: TestClient(create_app()) + monkeypatch.setenv("FRAME_PROJECT_DIR", ...)
+(FRAME_ is checked before PF_PROJECT_DIR — 162-49); _detect_pf_project needs a `.pennyfarthing/` dir;
+_get_git_info needs a `.git/` marker dir (it only stat()s it) + a real `git` on PATH (calls are faked).
+CLEAN-FAIL vs ERRORED interface-RED: when "honor configured X" forces a NEW param, calling with the
+kwarg TypeErrors (reads as errored, not failed). Gate it with `inspect.signature(fn).parameters`
+assert FIRST → clean AssertionError today, and the behavioral pin (revision == "upstream/develop")
+runs after the fix. Log the param as an interface-definition Design Deviation so Dev/Reviewer know the
+name is a tripwire, not a hard contract. LATENT-BUG honesty: staleness's origin/-hardcode bites only
+non-origin remotes and neither configured repo has one — no end-to-end demonstrable case, so the RED
+is unit-level (_resolve_revision) and the caller-wiring gap is a Delivery Finding, not a faked
+integration test. Result: 4 red + 3 green-on-arrival guards, 0 errored.
+</pattern>
