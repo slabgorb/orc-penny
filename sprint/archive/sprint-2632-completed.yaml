@@ -301,3 +301,8 @@ completed_stories:
     title: '162-7 truthfulness tail: real assign path resolves the user TWICE (second stage re-looks-up by substituted email — second-stage failures report the substituted email, breaking the raw-input rule; preview/write divergence window); email-withheld display puts the input string in the email slot (echo-the-input dressed as resolved); add the credentials guard to sprint-add/link dry-runs (applied to 1 of 3 paths); URL-encode find_user_sync query (curl exit 3 on spaces makes display-name lookups unresolvable) (from 162-7 review F1/F3/F4/F5)'
     points: 2
     completed: '2026-08-12'
+  - id: 162-36
+    epic: '162'
+    title: 'Jira transport truthfulness: _call_api_sync cannot distinguish a 204 empty body from a curl failure, so assign_issue_sync/transition_sync return unconditional success for writes — the real write a truthful dry-run validates can still lie. Shared-transport change (from 162-7)'
+    points: 2
+    completed: '2026-08-12'
