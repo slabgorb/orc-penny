@@ -311,3 +311,8 @@ completed_stories:
     title: 'Test-gate hygiene: leakage gate SKIP_DIRS lists .venv but not venv (a stray venv/ trips it on pip RECORD byte counts — hit twice on 2026-08-05); test_frame_routes has an order-dependent flake (4 tests fail in full runs, pass in isolation) that survived the 162-5 triage (from 162-7)'
     points: 1
     completed: '2026-08-12'
+  - id: 162-38
+    epic: '162'
+    title: "PF_PY policy hardening (162-8 tail): add gate-fence sentinels to SENTINEL_TEMPLATES (the unswept-root failure mode is one rename from recurring — highest-value); note the script-path blind spot (fence invoking a .py that imports pf is invisible to the predicate); pin the sweep blind-spot shapes (dash-less heredoc, python3.12, untagged fence); document deviations.py's Spec-source specificity rule in guides/deviation-format.md (from 162-8 review)"
+    points: 1
+    completed: '2026-08-12'
