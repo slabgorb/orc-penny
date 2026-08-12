@@ -306,3 +306,8 @@ completed_stories:
     title: 'Jira transport truthfulness: _call_api_sync cannot distinguish a 204 empty body from a curl failure, so assign_issue_sync/transition_sync return unconditional success for writes — the real write a truthful dry-run validates can still lie. Shared-transport change (from 162-7)'
     points: 2
     completed: '2026-08-12'
+  - id: 162-37
+    epic: '162'
+    title: 'Test-gate hygiene: leakage gate SKIP_DIRS lists .venv but not venv (a stray venv/ trips it on pip RECORD byte counts — hit twice on 2026-08-05); test_frame_routes has an order-dependent flake (4 tests fail in full runs, pass in isolation) that survived the 162-5 triage (from 162-7)'
+    points: 1
+    completed: '2026-08-12'
