@@ -442,9 +442,11 @@ stories:
     title: 'Wire sm-setup to the schema-validation backstop: it carries no PreToolUse frontmatter, unlike the eleven top-level agents — the 155-32 producer (the subagent that writes the session from the template) is not guarded by the very hook 162-11 built for its write (from 162-11 review)'
     points: 1
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-08-12'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-12'
     type: bug
   - id: 162-43
     title: "Schema-hook hardening tail (162-11 review): allow .session/archive/ writes (real archive location globbed by migration/session.py:368 — currently denied); accept the trailing-colon Story Details heading variant (finish reads it via fallback, hook over-blocks with a misleading message); fix XML routing's whole-body substring test (a markdown session QUOTING the session tag in prose mis-routes to the XML arm and denies — live artifact in the 162-11 session); add a behavioral round-trip test beside the pattern-string equality pin; per-field round-trip guard (joined messages mask per-field regressions)"
@@ -728,6 +730,20 @@ stories:
   - id: 162-77
     title: 'sm-finish PR-title CWE-78 residual (162-39 follow-up MEDIUM SEC): the 3 sm-finish.md {PLACEHOLDER} sites (REPOS/STORY_ID) still allow shell-word injection — the agent substitutes the literal into a double-quoted shell word so $(...)/backticks execute before python. Promote to a pf CLI subcommand (164-6 pf git format-title precedent) so no agent-assembled data reaches a shell word'
     points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-78
+    title: "162-41 follow-up: OSError/spawn-failure at the pre-merge gate probe maps to rc=127 → _classify_pr(None) → UNREADABLE permissive arm → attempts the irreversible 'gh pr merge'. Fail-open on the irreversible path (before the diff this crashed BEFORE the merge). Add a SpawnFailedProcess type + spawn_failed() predicate in bounded_run so the gate can route a never-started child to the fail-CLOSED arm instead of the permissive one (from 162-41 review, Medium)"
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-79
+    title: '162-41 follow-up: adopt the new pf/common/bounded_run helper at the remaining unbounded-subprocess sites — patch_mode.py (5 sites) and benchmark/pipeline_replay.py (~20 sites) — each with a deliberate per-call timeout tier (from 162-41 review, non-blocking)'
+    points: 3
     priority: p1
     status: backlog
     repos: pennyfarthing

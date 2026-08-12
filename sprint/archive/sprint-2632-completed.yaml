@@ -326,3 +326,8 @@ completed_stories:
     title: "162-9 timeout-hardening tail: change truthiness tests on the timeout signal to 'is not None' (story_finish.py ~913, ~1088 — empty message collapses a hung probe into the permissive arm; unreachable today); stop discarding non-timeout exits in steps 5/6 (step 5 reports it ran when it failed); catch OSError in _run and extract the bounded-run/_TimedOutProcess trio into a shared helper (unbounded-subprocess pattern recurs in other modules); add a merge-didn't-run assertion to the gate-timeout test (its hang-all-views predicate would pass a fell-through gate) (from 162-9 review)"
     points: 2
     completed: '2026-08-12'
+  - id: 162-42
+    epic: '162'
+    title: 'Wire sm-setup to the schema-validation backstop: it carries no PreToolUse frontmatter, unlike the eleven top-level agents — the 155-32 producer (the subagent that writes the session from the template) is not guarded by the very hook 162-11 built for its write (from 162-11 review)'
+    points: 1
+    completed: '2026-08-12'
