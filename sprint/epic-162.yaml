@@ -690,12 +690,15 @@ stories:
     workflow: tdd
     type: refactor
   - id: 162-71
-    title: 'get_dist_root scope leak: config.py fallback #4 (bundled pf._dist) fires even with explicit project_root (unlike #2); guard it. Also 17 npm-layout canonical tests in test_dist_root.py pass ONLY because of the leak (masking the defect) — re-disposition them (162-30 review MEDIUM)'
+    title: 'test_dist_root: re-disposition npm call-site tests to hermetic patch-pattern (get_dist_root #4 guard superseded by 162-29''s TestDistFallbackPreserved)'
+    description: "Originally scoped (from 162-30 review, MEDIUM) to guard get_dist_root() fallback #4 so the bundled pf._dist would not fire under an explicit project_root, and to re-disposition 17 'masking' npm tests. During GREEN the guard was found to directly contradict shipped story 162-29's TestDistFallbackPreserved / TestWritersSeeDistTier contracts (17 regressions): fallback #4 is a deliberate, load-bearing capability that pip/npm/dist-only consumers depend on for workflow resolution — not an accidental leak like fallback #2 (__file__-relative). The 162-30 finding conflated #2 with #4. Per Keith's decision (2026-08-13), the guard is DROPPED (config.py unchanged) and 162-71's guard directive is superseded by 162-29. Delivered: test-hygiene only — 13 npm call-site/integration tests in test_dist_root.py re-dispositioned to the patch-pattern (patch get_dist_root -> fixture dist) so they assert the call-site contract hermetically instead of depending on real bundled _dist content; plus an npm_layout sm.md fixture enrichment. No production behavior change. Reviewer: APPROVED (5/5 specialists; 3 non-blocking pre-existing test findings)."
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-08-13'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-13'
   - id: 162-72
     title: 'Wire the canonical pytest suite into CI: pennyfarthing/.github/workflows holds only web.yml, so nothing runs the 9947-test Python suite on PRs — this is how tests/python rotted to 311 failures (162-30 review follow-up)'
     points: 2
@@ -761,6 +764,34 @@ stories:
     workflow: tdd
   - id: 162-81
     title: "162-43 follow-up (hook/consumer heading+session parity — ONE story, four members from 162-43 review): (a) DUPLICATE '## Story Details' sections still allow placeholder shadowing — the hook flips in_details on every matching heading and passes, but the consumer's seen_story_details denies authority to the 2nd block so first-wins hands PR to an earlier placeholder (pre-existing, confirmed on develop, MEDIUM); (b) fenced/column-0 <session> examples still mis-route (2 gaps TEA flagged); (c) session/append_only.py:20 matches 'Story Details' exactly+case-sensitively and would miss the colon heading — but validate_session_append_only has ZERO callers: OPEN QUESTION for Keith — is 150-10 abandoned (delete the dead code) or dropped wiring (reconnect)? do NOT delete without Keith's call; (d) add '## Story Details :' (space-before-colon) to the parity corpus — one-line test gap. Unify heading normalization via a lazy __getattr__ in pf/sprint/__init__ so hook+consumer share one impl instead of byte-twin duplication"
+    points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-82
+    title: "162-44 follow-up (CWE-22, HIGH): story_finish.py:1334/:1479 build .session/{story_id}-session.md and {story_id}-dialogue.md (+ {jira_key}-* archive names) from a RAW CLI arg with no charset/containment guard, then READ and MOVE them into sprint/archive/. Same CWE-22 class as the sites 162-44 closed, different domain (.session not sprint shards). Route through safe_ref_path (prefix='', suffix='-session.md'/'-dialogue.md') + guard the archive-name build; needs its own RED symlink tests. Found by Dev during 162-44 round-2 rework"
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-83
+    title: '162-44 follow-up (architect decision, LOW): TOCTOU/O_NOFOLLOW hardening for the resolve()-then-open shard containment check — deliberately deferred in 162-44 (threat model is local metadata-derived refs, not a concurrent attacker with write access to sprint/). Decide: accept the documented deferral as-is, or harden via O_NOFOLLOW + openat/dir-fd or a post-open re-check. Documented in is_safe_shard_path docstring'
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-84
+    title: '162-44 follow-up (cleanup, LOW): (a) the safe_ref_path-wrap-and-return-None adapter now exists 3x (findings/aggregate, sprint/cli, tui/story_detail_data) — extract one shared helper; (b) safe_shards warns per-skip inside tui _check_context_files which runs on every TUI repaint, so one symlinked shard warns on every render — dedupe/throttle; (c) archive_epic.py:177/:235 + loader.py:336 still use the hand-rolled is_safe_shard_path+warn pattern rather than safe_shards (de-dup only, functionally guarded) (from 162-44 review)'
+    points: 2
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+  - id: 162-85
+    title: "Framework integrity (surfaced during 162-44 review, HIGH): (1) the reviewer approval gate is satisfied by grepping for the literal string 'All received: Yes' in the assessment — a review that never ran its specialists can pass simply by typing it; make the gate verify actual specialist results (e.g. structured per-dimension records / tool-call evidence), not a substring. (2) All 9 reviewer specialist subagents timed out on both 162-44 review rounds (~18min), forcing the lead Reviewer to run every category first-hand; investigate the reviewer-specialist subagent transport/timeout. Both observed live, twice"
     points: 3
     priority: p1
     status: backlog

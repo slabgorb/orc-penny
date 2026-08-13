@@ -341,3 +341,8 @@ completed_stories:
     title: "Complete the CWE-22 shard-path sweep (162-12 tail): archive_epic.archive_epic() ~547 FIRST (unguarded read + write + shutil.move — strictly worse than anything fixed, missed by every prior inventory); then validate/adapters/sprint.py:25-26, story_add.py:242, findings/aggregate.py x4, sprint/cli.py x5, epic_reindex.py:39, epic_add.py:88, yaml_io.py x3 (one write). Ship the architectural fix in the same pass: safe_shards() guarded iterator + safe_ref_path() helper so the invariant lives in the API, not convention. Also: add the warn convention to ws_push's three silent guard sites together; positive-path coverage for migrate_completed_archive; note TOCTOU/O_NOFOLLOW as an architect decision (from 162-12 review)"
     points: 3
     completed: '2026-08-12'
+  - id: 162-71
+    epic: '162'
+    title: 'test_dist_root: re-disposition npm call-site tests to hermetic patch-pattern (get_dist_root #4 guard superseded by 162-29''s TestDistFallbackPreserved)'
+    points: 2
+    completed: '2026-08-13'
