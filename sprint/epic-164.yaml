@@ -274,10 +274,13 @@ stories:
     title: "Fix remaining Frame brownfield routes (hotspots/health-score/code-markers): same to_thread(async_fn) shape as 160-20 but DISTINCT deeper arg bugs — get_hotspots/get_code_markers call analyze_repo(name, path) with only project_dir (missing required 'path'); get_health_score passes a non-existent use_cache kwarg to analyze_healthscore. Each needs a design decision (name/path source, use_cache removal) + Path() + await. Also tighten test_frame_routes.py analysis-route tests which accept status_code in (200,500) and masked 160-20. From 160-20 TEA/Dev/Reviewer findings."
     points: 3
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-08-13'
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria: []
+    completed: '2026-08-13'
+    review_verdict: approved
   - id: 164-26
     title: Web GUI follow-up hardening — deferred final-review items (epic 165)
     description: Bundled deferrals from epic 165's final whole-branch review (see archived ledger in git history of PR orc-penny#65 and ADR-0042). Security notes + test/doc hygiene; no behavior changes to the shipped dashboard.
