@@ -789,9 +789,11 @@ stories:
     title: 'Finish staleness configured-remote honoring: consolidate base/remote repo maps into one guarded lookup and thread remote into print_human_summary (162-71 review follow-up)'
     points: 2
     priority: p1
-    status: backlog
+    status: done
+    started: '2026-08-17'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-17'
   - id: 162-87
     title: 'data_proxy git-panel base/remote polish: non-origin remote_name test coverage, honest _get_repos_config type/docstring, get_git root-repo edge handling, developBehind to baseBehind rename (162-71 review follow-up)'
     points: 3

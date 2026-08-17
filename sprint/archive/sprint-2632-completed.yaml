@@ -316,3 +316,8 @@ completed_stories:
     title: "Fix remaining Frame brownfield routes (hotspots/health-score/code-markers): same to_thread(async_fn) shape as 160-20 but DISTINCT deeper arg bugs — get_hotspots/get_code_markers call analyze_repo(name, path) with only project_dir (missing required 'path'); get_health_score passes a non-existent use_cache kwarg to analyze_healthscore. Each needs a design decision (name/path source, use_cache removal) + Path() + await. Also tighten test_frame_routes.py analysis-route tests which accept status_code in (200,500) and masked 160-20. From 160-20 TEA/Dev/Reviewer findings."
     points: 3
     completed: '2026-08-13'
+  - id: 162-86
+    epic: '162'
+    title: 'Finish staleness configured-remote honoring: consolidate base/remote repo maps into one guarded lookup and thread remote into print_human_summary (162-71 review follow-up)'
+    points: 2
+    completed: '2026-08-17'
