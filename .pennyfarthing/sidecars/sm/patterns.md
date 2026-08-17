@@ -1,5 +1,60 @@
 # SM Agent Patterns
 
+<pattern name="tdd-to-trivial-reclassification-162-88" date="2026-08-17">
+162-88 (1pt p1, pennyfarthing; 162-87 F3/F4 test-hardening follow-up): first
+RECLASSIFICATION run — a story filed `tdd` that could not honestly satisfy the tdd
+`tests-fail` gate, switched to `trivial` mid-flight. Full single-session relay
+(SM→TEA→Dev→Reviewer→SM) with ONE rework cycle; pre-create-then-finish clean (PR
+pennyfarthing#249 MERGED @ 9f3f97894, verified state=MERGED + develop tip == merge before
+bookkeeping; story=done; session archived). Datapoints worth repeating:
+(1) GREEN-ON-ARRIVAL-ONLY STORY vs tdd RED gate: TEA baseline (11/11 green) proved ALL
+three ACs were green-on-arrival hardening of already-correct 162-87 code — there was NO
+honest RED to satisfy tdd's `tests-fail` gate (which hard-requires ≥1 failing test). Unlike
+162-87 (mix of green-on-arrival + true-RED ACs), here EVERY AC was green. Do NOT fabricate a
+fake failing test (violates the epic's own truthfulness theme). Correct move: ASK the Client,
+then reclassify to `trivial` (matches the 1-2pt routing rule). This is the SOUL#1
+fix-the-system call, not a workaround.
+(2) RECLASSIFICATION MECHANICS (lightweight, no re-setup — branch already existed):
+`pf sprint story update <id> --workflow trivial` (updates story YAML) + hand-edit the
+session's frontmatter `workflow:` AND the `**Workflow:**`/`**Phase:**` tracking-block lines to
+`trivial`/`implement`. `pf workflow fix-phase` CANNOT bridge workflows — it validates the
+CURRENT phase against the TARGET workflow, so `red` (a tdd phase) is rejected as "not found in
+trivial"; set the phase field by hand and record a Reclassification Note in phase history.
+Then emit `pf handoff marker dev` (trivial is SM→Dev, skips TEA). `pf workflow check` confirmed
+trivial/implement/owner=dev.
+(3) STATUS-SYNC ENTRY GATE on review: reclassification bypassed the normal in_progress bump, so
+the story sat at `backlog`; `pf sprint story update <id> --status in_review` before the reviewer
+entry gate (no Jira on this story → YAML-only, no jira side-effect).
+(4) REVIEWER EARNED ITS KEEP on a trivial test-only diff: cycle-0 REJECTED on a `[TYPE]`
+finding — the new AC2 test used `entry["base"]` subscript on `total=False` RepoConfig keys
+(type-unsound, and inconsistent with its OWN `.get()` failure message). Runtime-safe + no
+mypy/pyright in-repo (I verified — so no gate broke), but it's the SAME type-honesty defect class
+as 162-87's F1 blocker; this project rejects on type-honesty even when cheap (SOUL#14). Fix was
+2 lines (`[...]`→`.get(...)`), cycle-1 APPROVED. Lesson: adversarial review pays even on 41-line
+test diffs; don't rubber-stamp trivial.
+(5) CYCLE-1 APPROVAL-GATE TABLE TRAP (NEW, recorded in reviewer sidecar too): complete-phase
+review→finish parses the LAST `## Subagent Results` table and requires a row per ENABLED
+specialist. A targeted-re-verification cycle-1 table with a single "self" row was REJECTED
+("no row at all for: reviewer-preflight..."). Fix: carry all 9 rows forward (enabled with
+"(cycle-0, re-verified)", disabled pre-filled). The full cycle-0 table earlier in the file does
+NOT satisfy it.
+(6) WEB TYPECHECK AC needs deps: AC3 "confirm the web type compiles" required `pnpm install` in
+`pennyfarthing/web` first (node_modules absent → `tsc: command not found`, NOT a type error);
+`pnpm install` left an untracked `web/pnpm-lock.yaml` that dirtied the tree — `rm -f` it after
+(node_modules is gitignored). Recorded in dev sidecar.
+(7) audit-tree FALSE POSITIVE recurred (162-86/162-87): DIRTY on orchestrator-repo files only
+(both sidecars, sprint/epic-162.yaml, context-story artifact); reviewed repo pennyfarthing/ clean
+(`git -C pennyfarthing status --porcelain` empty). Never `git clean -fd`.
+(8) Pre-existing unrelated full-suite failure recurred (162-87 dp8): same
+`test_162_5_quarantine_policy` / offender `test_162_83_toctou_decision`. Proven pre-existing by
+diff-scope (branch touched ONLY test_162_87_*.py; checker+offender byte-identical to develop) —
+report-not-block through every gate/preflight.
+(9) Bookkeeping PR #72 to main awaits Keith; 2 deferred follow-ups (empty-string default-fill
+edge medium; actionable-warning-text pin low) NOT filed yet — hold until #72 lands (id-collision
+hygiene). sm-finish preflight with report-don't-fix + false-blocker list: clean, only the
+expected no-PR pre-create block.
+</pattern>
+
 <pattern name="single-session-relay-one-rework-162-87" date="2026-08-17">
 162-87 (3pt p1 tdd, pennyfarthing; 162-71 review follow-up): second clean single-session relay
 pipeline in a row (SM→TEA→Dev→Reviewer→SM via /pf-* markers), ONE rework cycle, then

@@ -326,3 +326,8 @@ completed_stories:
     title: 'data_proxy git-panel base/remote polish: non-origin remote_name test coverage, honest _get_repos_config type/docstring, get_git root-repo edge handling, developBehind to baseBehind rename (162-71 review follow-up)'
     points: 3
     completed: '2026-08-17'
+  - id: 162-88
+    epic: '162'
+    title: "data_proxy 162-87 test-hardening: tighten test_get_git_warns_on_empty_repos_config assertion to pin 'root'; add AC2 default-fill coverage (repos.yaml entry omitting default_branch/remote_name -> base=develop/remote=origin); confirm web baseBehind type rename compiles under the web toolchain"
+    points: 1
+    completed: '2026-08-17'

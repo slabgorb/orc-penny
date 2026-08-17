@@ -1,5 +1,19 @@
 # Reviewer Agent Gotchas
 
+<gotcha name="cycle1-subagent-table-needs-all-specialist-rows" severity="high">
+162-88 (2026-08-17): the `approval` gate at `complete-phase review→finish` parses the
+LAST `## Subagent Results` table and REQUIRES a row for EVERY enabled specialist. On a
+cycle-1 re-review done as TARGETED re-verification (no fresh subagent sweep), I wrote a
+cycle-1 table with a single "targeted re-verification (self)" row — complete-phase
+REJECTED it: "no row at all for: reviewer-preflight, reviewer-rule-checker,
+reviewer-security, reviewer-test-analyzer, reviewer-type-design (a name mentioned in prose
+is not a row)." Fix: the cycle-1 table must carry all 9 rows (enabled specialists with
+their cycle-0 outcome CARRIED FORWARD + "(cycle-0, re-verified)" in the Received cell,
+disabled ones pre-filled "Skipped/disabled"). The gate checks the LAST table, so a full
+cycle-0 table earlier in the file does NOT satisfy it. Corroborates 162-86 dp2 (specialist
+tags checked at complete-phase) — but this is specifically about the TABLE ROWS on re-review.
+</gotcha>
+
 <gotcha name="mutation-subagent-corrupts-working-tree" severity="critical">
 162-48 review (2026-08-08): `reviewer-test-analyzer` ran a 10-mutation battery
 including "M8: remove the HEAD/@ alias check in `_classify_branch_name`". It has
