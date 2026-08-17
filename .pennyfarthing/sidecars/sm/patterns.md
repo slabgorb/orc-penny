@@ -1,5 +1,91 @@
 # SM Agent Patterns
 
+<pattern name="single-session-relay-one-rework-162-87" date="2026-08-17">
+162-87 (3pt p1 tdd, pennyfarthing; 162-71 review follow-up): second clean single-session relay
+pipeline in a row (SM→TEA→Dev→Reviewer→SM via /pf-* markers), ONE rework cycle, then
+pre-create-then-finish (PR pennyfarthing#248 created ready BEFORE finish; finish merged it; verified
+state=MERGED @ merge 1644d08ae + origin/develop tip == merge before bookkeeping; story=done;
+session archived). Datapoints worth repeating:
+(1) SETUP PHASE-FIELD: the poison-token spawn instruction to sm-setup worked, BUT sm-setup still
+wrote a stray `**Workflow:** TDD (RED first)...` bold token in the Technical-Approach PROSE (line ~40)
+— resolve-gate can trip on a non-bare workflow token (datapoint-5 gotcha). SM must grep the fresh
+session for stray bold `**Workflow:**`/`**Phase:**` prose tokens and de-bold them BEFORE resolve-gate.
+This run sm-setup DID write `**Phase:** setup` (not red) as instructed, so the documented setup-exit
+(resolve-gate→complete-phase setup→red→marker) worked with no overshoot.
+(2) CWD DISCIPLINE bit twice: after a `cd pennyfarthing && git commit`, the shell stays in
+pennyfarthing/, so the next `pf handoff resolve-gate` looked for `.session/` there and returned
+"session file not found / no assessment". ALWAYS `cd /abs/orc-penny-root` in its OWN Bash call before
+any session-relative pf handoff command (same family as hook-cwd-protected-branch).
+(3) GREEN-ON-ARRIVAL ACs are normal for polish stories: AC1 (coverage pin) + AC2 (docstring/type)
+passed on arrival by design; only AC3 (fail-loud warning) + AC4 (rename) were true RED. TEA logged the
+green-on-arrival deviations up front so the tests-fail gate (needs ≥1 failing) still passed on the RED
+ACs. Tell TEA to state green-on-arrival explicitly so the reviewer/gate don't read it as vacuous.
+(4) ADVERSARIAL REVIEW EARNED ITS KEEP: reviewer REJECTED cycle-0 on a type-honesty finding the AC
+itself had sanctioned — AC2 explicitly offered `TypedDict(total=False)`, but total=False marks the
+always-present name/path optional, so it did NOT meet AC2's headline "accurately describe the shape"
+(SOUL #14; corroborated independently by reviewer-type-design AND reviewer-rule-checker, HIGH each).
+Lesson: a finding matching a stated principle (SOUL #14) cannot be dismissed even when an AC's
+parenthetical example permitted the weaker form — the AC's GOAL outranks its suggested mechanism. Fix
+was a 4-line two-level TypedDict (_RepoConfigBase required + total=False extension); one green rework
+cycle, cycle-1 APPROVED. Routed rework to GREEN (dev) because the blocking fix was an impl type edit;
+deferred the two Medium test-hardening findings (F3/F4) to a follow-up rather than bloating the rework.
+(5) CYCLE-1 RE-REVIEW SHAPE that passed clean (matches 162-86 dp3): appended a NEW `## Subagent Results`
+with a column-0 `**Cycle: 1**` line + a NEW verbatim `## Reviewer Assessment` (APPROVED, no suffix);
+used TARGETED re-verification (re-read the fixed code + re-ran ruff/tests) not a fresh subagent sweep,
+and STATED so. resolve-gate parsed the LAST (cycle-1 APPROVED) section → approval/sm/finish; the
+cycle-0 REJECTED stayed intact. 2 reviewer sections with Round-Trip Count 1 is the expected shape.
+(6) DISABLED SUBAGENTS: edge_hunter/silent_failure_hunter/comment_analyzer/simplifier were off; SM/
+Reviewer covered [EDGE][SILENT][DOC][SIMPLE] first-hand with tagged observations (155-33 pattern) and
+the approval gate accepted it. Enabled set this repo: preflight, test_analyzer, type_design, security,
+rule_checker.
+(7) audit-tree FALSE POSITIVE recurred (162-86 dp6) and GREW: after `--review-verdict` it also flags
+`sprint/epic-162.yaml` (the bookkeeping write) on top of the pre-existing sidecar edit + the sm-setup
+`context-story-*.md` artifact — ALL orchestrator-repo files. Verify the REVIEWED repo with
+`git -C pennyfarthing status --porcelain` (clean); never `git clean -fd`.
+(8) Pre-existing unrelated suite failure (`test_162_5_quarantine_policy::test_every_xfail_cites_a_tracking_reference`,
+offender test_162_83_toctou_decision) — PROVE pre-existing by stashing impl + re-running the one test on
+baseline (measure-before-claiming); then it's a report-not-block item through every gate/preflight.
+(9) Bookkeeping PR to main (chore/sprint-162-87) awaits Keith; follow-up 162-88 (F3/F4 test-hardening
++ web-typecheck confirm) filed on the chore branch AFTER #248 merged and after #70 had landed — no
+id-collision. gh hit a transient 503 once (retry worked).
+</pattern>
+
+<pattern name="single-session-relay-one-rework-162-86" date="2026-08-17">
+162-86 (2pt p1 tdd, pennyfarthing): clean single-session relay pipeline (SM→TEA→Dev→Reviewer→SM
+via /pf-* markers) with ONE rework cycle, then pre-create-then-finish (PR pennyfarthing#247 created
+ready BEFORE finish; finish merged it; verified state=MERGED @ 0d33cb209 + develop tip == merge
+before bookkeeping). Datapoints worth repeating:
+(1) resolve-gate CORRECTLY parsed BOTH verdicts this run — the older 162-49 "resolve-gate IGNORES
+reviewer verdict" concern did NOT recur: a REJECTED `**Verdict:**` routed to `approval_rework`/dev/green,
+and the cycle-1 APPROVED routed to `approval`/sm/finish. The verdict-first-token parse works; keep
+writing `REJECTED`/`APPROVED` as the first token of a single unindented Verdict line per section.
+(2) APPROVAL-GATE SPECIALIST TAGS ARE CHECKED ON THE WAY TO REWORK TOO. complete-phase for the
+`approval_rework` gate REJECTED my first attempt: "Reviewer Assessment missing specialist subagent tags:
+[RULE][SEC][TEST][TYPE]." The tags must live INSIDE the `## Reviewer Assessment` section prose, not
+only in a separate Observations/Subagent-Results block. Bake a "Specialist findings incorporated: [TEST]…
+[RULE]… [SEC]… [TYPE]…" line into the assessment for EVERY verdict (reject and approve).
+(3) CYCLE RE-REVIEW SHAPE that passed clean: append a NEW `## Subagent Results` with a column-0
+`**Cycle: 1**` line + a NEW verbatim `## Reviewer Assessment` (no suffix); used targeted re-verification
+(not a fresh subagent sweep) and stated so. Both `complete-phase approval_rework` (reject) and
+`complete-phase approval` (approve) accepted these.
+(4) Dev-rework did NOT skip the exit protocol — because the reviewer's reject had ALREADY advanced
+review→green (its complete-phase ran), the rework Dev legitimately runs the green-exit protocol
+(dev_exit gate, NOT the review gate) to advance green→review again. The 162-49 STALE-VERDICT trap only
+bites when the session is still stuck at review; here it wasn't. No double-advance.
+(5) MUTATION PROBE to kill a tautology: Reviewer's cycle-0 blocker was a tautological pin (asserted
+result["remote"]=="origin" where origin was the only config value — a hardcode would pass). Dev's fix
+monkeypatched a NON-origin value ("upstream") that can only reach the result via the real thread; Reviewer
+confirmed non-tautology by temporarily hardcoding origin → `assert 'origin'=='upstream'` FAIL, then
+`git checkout --` restore. Clean, decisive, tree restored. This project treats fixture-induced tautologies
+on the headline behavior as real blockers (151-5 added impl_repo_feature_checkout for the same reason).
+(6) audit-tree FALSE POSITIVE: `pf reviewer audit-tree` flags the untracked orchestrator
+`sprint/context/context-story-<id>.md` (sm-setup artifact) as "DIRTY mutation." The reviewed repo
+(pennyfarthing/) source tree is what matters — verify it with `git -C pennyfarthing status --porcelain`.
+Do NOT run the suggested `git clean -fd`; it would delete sm-setup's legitimate context doc.
+(7) Bookkeeping PR #70 to main awaits Keith; no follow-up stories filed (all 3 review findings FIXED
+in-cycle, zero deferrals). gh pr create hit a transient 503 once — retry after ~5s worked.
+</pattern>
+
 <pattern name="peloton-inline-p2p3-run-162" date="2026-08-10">
 Epic-162 p2/p3 backlog run (peloton-inline, named background agents, one story at a time,
 merge between). Landed 162-14, 162-18 clean. Key NEW datapoints:
