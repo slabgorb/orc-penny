@@ -798,6 +798,17 @@ stories:
     title: 'data_proxy git-panel base/remote polish: non-origin remote_name test coverage, honest _get_repos_config type/docstring, get_git root-repo edge handling, developBehind to baseBehind rename (162-71 review follow-up)'
     points: 3
     priority: p1
+    status: done
+    started: '2026-08-17'
+    repos: pennyfarthing
+    workflow: tdd
+    completed: '2026-08-17'
+    review_findings: 'F1(blocking): RepoConfig TypedDict(total=False) marks always-present name/path optional -> not an honest contract (AC2/SOUL#14, 2 specialists); use required base + total=False extension. F5: ruff I001 import sort. F2 folds into F1. F3/F4 test-hardening deferred to follow-up.'
+    review_verdict: approved
+  - id: 162-88
+    title: "data_proxy 162-87 test-hardening: tighten test_get_git_warns_on_empty_repos_config assertion to pin 'root'; add AC2 default-fill coverage (repos.yaml entry omitting default_branch/remote_name -> base=develop/remote=origin); confirm web baseBehind type rename compiles under the web toolchain"
+    points: 1
+    priority: p1
     status: backlog
     repos: pennyfarthing
     workflow: tdd
