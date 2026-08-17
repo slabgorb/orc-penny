@@ -1,5 +1,17 @@
 # Dev Agent Gotchas
 
+<gotcha name="web-typecheck-needs-pnpm-install" severity="medium">
+An AC that says "confirm the web type compiles under the web toolchain" (162-88 AC3)
+requires `pennyfarthing/web/node_modules` to exist — a fresh clone/agent won't have it,
+so `pnpm run typecheck` (`tsc -b --noEmit`) fails with `sh: tsc: command not found` /
+`node_modules missing`, NOT a real type error. Run `pnpm install` in `pennyfarthing/web`
+first (~6s), THEN typecheck (exit 0 = compiles). Gotcha: `pnpm install` writes an
+untracked `web/pnpm-lock.yaml` — the web dir had none tracked — which dirties the tree
+and would trip dev-exit's working-tree check + audit-tree. `rm -f web/pnpm-lock.yaml`
+after the typecheck to keep the branch to just your intended change (`node_modules` is
+already gitignored). Story 162-88.
+</gotcha>
+
 <gotcha name="baseline-prove-preexisting-failures" severity="high">
 When a behavior change breaks tests and a rework fixes SOME but not all, ALWAYS establish the develop baseline before claiming the rest are "pre-existing": `git stash push <test-file>` + `git checkout origin/develop -- <changed-source>`, run the still-failing tests, then restore (`git checkout HEAD -- <source>` + `git stash pop`). If they fail on clean develop too, they're pre-existing (this repo has NO CI — develop carries stale failures) and out of scope; document with the reproducible baseline command and capture as a Delivery Finding for a separate story. Do NOT absorb an unrelated bug to make a file fully green — that's scope creep with its own untested risk. Story 158-3: the context guard took test_143_9 from 16→4 failures; the 4 residual were a pre-existing `detect_workflow_state` verify-phase-ownership bug (pf/prime/workflow.py), proven red on develop with the guard reverted.
 </gotcha>
