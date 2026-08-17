@@ -814,3 +814,12 @@ stories:
     workflow: trivial
     completed: '2026-08-17'
     review_verdict: approved
+  - id: 162-89
+    title: "162-88 review follow-up: data_proxy default-fill test-hardening tail — (1) add default_branch:\"\"/remote_name:\"\" explicit-empty-string coverage to _get_repos_config (key-present-but-empty distinct from key-absent; guards a future 'is None' refactor); (2) tighten the two root-warning tests to also pin actionable fix text (path '.' / repos.yaml), not just the trigger word 'root'"
+    description: 'Non-blocking Reviewer deferrals from 162-88 (test-only, green-on-arrival). Target: pennyfarthing-dist/src/pf/tests/test_162_87_data_proxy_polish.py. AC2 empty-string edge = reviewer-test-analyzer medium; actionable-text pin = low. Use trivial workflow (green-on-arrival hardening, no honest RED — same class as 162-88).'
+    points: 1
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: chore
