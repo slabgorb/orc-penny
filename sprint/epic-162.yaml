@@ -159,7 +159,8 @@ stories:
     description: "Revert the merged Ghostty tab-title sync feature (framework PR #154, merge commit a2d96e282, base develop). ROOT CAUSE (confirmed live): the statusline hook writes an OSC 2 title escape to a tty, but (1) /dev/tty is unavailable in the hook subprocess (Errno 6) so it falls back to _resolve_ancestor_tty (resolves the claude process tty /dev/ttys001 correctly), and (2) Claude Code itself writes the terminal title per-turn to that same tty and the hook's change-detection cache suppresses re-writes after the first, so Claude Code is always the last writer standing. No supported fix: CLAUDE_CODE_DISABLE_TERMINAL_TITLE=1 is broken for ongoing updates (upstream open bug anthropics/claude-code#47397; feature request #56933). Feature fails INVISIBLY (caches success while doing nothing). Decision: revert rather than ship inert."
     points: 2
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-08-18'
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria:
@@ -167,6 +168,8 @@ stories:
       - Remove pennyfarthing-dist/src/pf/tests/test_statusline_tab_title.py; full pytest suite stays green (no regressions in test_statusline_model_persist.py / test_advisory_model_tier.py)
       - Delete stale plan doc docs/superpowers/plans/2026-07-27-ghostty-tab-title.md in the ORCHESTRATOR repo (separate commit, targets main)
       - 'Leave a tracking note referencing upstream anthropics/claude-code#47397 and #56933 so the feature can be revisited if Claude Code ships a working title-disable toggle'
+    completed: '2026-08-18'
+    review_verdict: approved
   - id: 162-16
     title: "schema-validation hook mis-dispatches initiative-*.yaml as sprint index — demands 'sprint:' section on files pf sprint validate accepts (hook/validator divergence, SOUL #2)"
     points: 1
