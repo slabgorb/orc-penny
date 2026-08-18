@@ -1,7 +1,8 @@
 # ADR-0043: Review-Finding Disposition Gate — Stop the Follow-Up Fan-Out
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-08-11
+**Accepted:** 2026-08-18 (Keith / product owner — Architect+PM review satisfied)
 **Author:** DevOps (Lu-Tze) / process improvement
 **Relates to:** [SOUL #1 Fix the System](../../SOUL.md), [SOUL #6 Gates Over Goodwill], [SOUL #13 Excellence Over Optimization]
 
@@ -93,6 +94,9 @@ sprint*. The gate works if that ratio crosses ≤ 1.0 and stays there.
 
 ## Status Notes
 
-Proposed as a draft during the epic-162 consolidation (2026-08-11). Not yet
-accepted — needs Architect + PM review of the auto-promotion rule and budget cap
-before the reviewer.md / gate changes are implemented.
+Proposed as a draft during the epic-162 consolidation (2026-08-11).
+
+**Accepted 2026-08-18** by the product owner. The auto-promotion rule
+(`[SEC]`/correctness only) and the budget cap (N=10) are accepted as drafted;
+the cap is explicitly provisional and to be tuned against real epics per the
+Measurement section. Unblocks story 162-78 (reviewer.md + gate implementation).
