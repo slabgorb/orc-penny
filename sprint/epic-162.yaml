@@ -718,9 +718,11 @@ stories:
     description: 'Make the review-triage fix real (see docs/adr/0043). Add a disposition classification (fix-now / fold / defer / drop) to the reviewer exit protocol in pennyfarthing-dist/agents/reviewer.md: every confirmed finding gets exactly one disposition, only [SEC]/correctness findings auto-promote to defer stories, everything else defaults to drop unless justified, chore-grade never gets a story. Extend the reviewer exit gate under gates/ to require a disposition per confirmed finding and reject an unjustified defer for non-[SEC]/non-correctness findings. Add per-epic follow-up budget (default N=10) collapsing overflow into a single review-debt story. BLOCKED ON: ADR-0043 acceptance (Architect+PM review of the auto-promotion rule and budget cap). Measurement per SOUL #12: review-spawned stories created-vs-closed per sprint <= 1.0.'
     points: 5
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-08-18'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-18'
   - id: 162-79
     title: Extend pf sprint story update with --type and --depends-on
     description: "Close two CLI gaps surfaced by the epic-162 consolidation (docs/adr/0043 Implementation Sketch). (1) --type: the schema already carries a story type field (bug/chore/refactor/test/feature/doc in use) but update cannot set it — expose it so stories can be tagged comment/test/doc/feature/fix after creation (the original 162 tagging request). (2) --depends-on: only add can set depends_on today, so sequencing an existing cluster (e.g. 162-61/63/66 behind the 162-65 design pass) fell back to priority ordering; let update set/clear it. Both are field additions to sprint/story_update.py with the same result-object + --dry-run + --jira plumbing as sibling flags. Also note: no 'merge stories' command exists (consolidation is manual add+cancel) — decide whether that warrants a helper."
