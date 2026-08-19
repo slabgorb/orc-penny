@@ -670,9 +670,10 @@ stories:
     description: 'Completes the 162-7 truthful-dry-run contract. 162-34: false-positive dry-runs for claim (pure echo, no lookup), move (missing issue OR bad transition both preview success), create story (parent epic key never validated). 162-35: assign path resolves user TWICE (second-stage failures report substituted email, breaking raw-input rule); email-withheld display echoes input as resolved; add credentials guard to sprint-add/link dry-runs; URL-encode find_user_sync query. 162-36: _call_api_sync cannot distinguish a 204 empty body from a curl failure, so assign/transition writes return unconditional success. Absorbs 162-34, 162-35, 162-36.'
     points: 5
     priority: p1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-19'
   - id: 162-73
     title: Schema-validation hook hardening
     description: 'From the 162-11 review lineage. 162-16: hook mis-dispatches initiative-*.yaml as sprint index (demands sprint: section on files pf sprint validate accepts — hook/validator divergence). 162-42: sm-setup carries no PreToolUse frontmatter, so the 155-32 session producer is unguarded by the very hook 162-11 built. 162-43: allow .session/archive/ writes; accept trailing-colon Story Details heading; fix XML routing whole-body substring mis-route; add behavioral round-trip + per-field regression tests. Absorbs 162-16, 162-42, 162-43.'
