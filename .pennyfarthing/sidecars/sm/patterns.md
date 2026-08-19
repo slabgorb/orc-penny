@@ -1,5 +1,60 @@
 # SM Agent Patterns
 
+<pattern name="single-session-relay-one-rework-162-89" date="2026-08-19">
+162-89 (5pt p2 tdd, pennyfarthing; largest consolidation to date — 8 folded epic-162 tails
+in ONE story). Clean single-session relay (SM→TEA→Dev→Reviewer→SM via /pf-* markers), ONE
+rework cycle, cycle-1 APPROVED, pre-create-then-finish (PR pennyfarthing#257 created ready BEFORE
+finish; finish merged it; verified state=MERGED @ 7b9364ce7 + origin/develop tip == merge before
+bookkeeping; story=done; session archived). Bookkeeping PR #78 to main awaits Keith. Datapoints:
+(1) CLIENT-DECISION-AT-SETUP for a flagged "DECISION NEEDED" AC: 162-83 asked for canceled/done/
+archived depends_on semantics. SM surfaced it to Keith BEFORE sm-setup (framed 3 options against
+the existing gh#90 archived-satisfied policy read from validator.py). Keith chose done=satisfied,
+archived=satisfied, canceled=WARNING. Recorded verbatim in the session so TEA/Dev built to it. Do
+this for any "DECISION NEEDED" punchlist item — don't let the pipeline guess a product call.
+(2) SECOND CLIENT DECISION SURFACED BY THE REVIEWER (new): Reviewer (me) found the merge-gate
+consumer (evaluate_stack_ready) blocked on a canceled parent, silently diverging from the 162-83
+VALIDATION ruling. Because the two surfaces (validation vs merge-ordering gate) could legitimately
+differ, I asked Keith mid-review rather than force a behavior — he chose "mirror 162-83 (canceled
+warns, doesn't block)". Lesson: a Client decision made for one surface does NOT auto-extend to a
+sibling surface; when a finding turns on that, ASK rather than assume, and do it DURING review so
+the rework instruction is unambiguous (saved a second rework cycle).
+(3) HONEST-RED ON A HUGE PUNCHLIST: 6 of 8 tails were true RED (stack_ready module absent, --clear-
+depends-on absent, shard-route skipped _validate_depends_on, add-parity messages, canceled-WARNING,
+frozenset); 162-46 (int-entry rewrite is DEFENSIVE — dashed ids can't stringify-match an int old_id,
+so behaviorally green-on-arrival) and 162-84 (word-boundary help already passes) were green-on-arrival
+regression pins. TEA stated this up front so tests-fail read on the true-RED tails; reviewer/gate did
+not read the pins as vacuous. 19 failing at RED. Don't fabricate RED for a defensive-refactor tail.
+(4) NEW-MODULE RED without collection errors: the net-new pf.sprint.stack_ready import was placed
+METHOD-LOCAL in the tests (not module-top) so the suite still COLLECTS and the other tails' RED is
+observable; ModuleNotFoundError then fails those tests at execution = honest RED for a to-be-created
+module. testing-runner mislabeled it "collection error / test bug" — it's intended RED; say so.
+(5) REVIEWER EARNED ITS KEEP (cycle-0 REJECT, 3 blockers, all corroborated or AC-fidelity):
+B1 fail-open on unknown story id at a MERGE gate (evaluate_stack_ready returned ready=True for an
+unresolvable id — corroborated by security[auth-bypass] + type-design + test-analyzer, THREE hits;
+real via stale/renumbered ids). B2 canceled-gate divergence (above). B3 the 162-85 AC said "Literal
+type hints" but the delivered Literals annotated NOTHING (decorative) — same type-honesty class as
+162-87 dp4; fix = annotate update_story(status:StoryStatus, story_type:StoryType) + a
+get_args(Literal)==frozenset drift-guard test. Enabled subagents this repo: preflight, test_analyzer,
+type_design, security, rule_checker (edge/silent/comment/simplifier OFF → covered first-hand with
+[EDGE][SILENT][DOC][SIMPLE] tags). Note: silent_failure_hunter being OFF is why B1 (a silent
+permissive fallback) slipped past Dev — logged in the review-correlation table as PROCESS.
+(6) DEFER-DON'T-BLOCK on pre-existing PARITY: reviewer-security flagged --sprint-file path-traversal
+but EXPLICITLY noted it's identical across stack-ready/update/add (no regression); rule-checker's 9×
+open()-without-encoding matched suite convention (siblings 0/4 use encoding). Both → follow-ups, not
+blockers. Verify "is this new or pre-existing?" before blocking (grep siblings) — a replicated
+existing pattern is report-not-block, filed as a suite-wide follow-up.
+(7) audit-tree FALSE POSITIVE recurred BOTH review cycles (162-86/87/88 dp7): flags untracked
+orchestrator sprint/context/context-story-162-89.md; reviewed repo pennyfarthing/ clean via
+`git -C pennyfarthing status --porcelain`. Never `git clean -fd`. Recorded the audit result in the
+session both cycles as the gate requires.
+(8) STATUS-SYNC before finish: YAML-only story (no Jira) sat at backlog through the whole relay
+(no in_progress bump); bumped to in_review before finish (YAML-only, no jira side-effect) per
+162-88 dp3. finish merged clean; full suite 7641 pass w/ the known pre-existing
+test_162_5_quarantine_policy failure (report-not-block, proven pre-existing by diff-scope).
+(9) DEFERRED FOLLOW-UPS (D1 path-traversal parity, D2 encoding sweep+ruff rule, D3 _resolve_depends_on
+diagnostics) NOT filed yet — hold until bookkeeping PR #78 lands (epic-yaml id-collision hygiene).
+</pattern>
+
 <pattern name="tdd-to-trivial-reclassification-162-88" date="2026-08-17">
 162-88 (1pt p1, pennyfarthing; 162-87 F3/F4 test-hardening follow-up): first
 RECLASSIFICATION run — a story filed `tdd` that could not honestly satisfy the tdd
