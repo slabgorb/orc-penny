@@ -346,3 +346,8 @@ completed_stories:
     title: depends_on & story-tooling completion (162-79/162-13 review tails)
     points: 5
     completed: '2026-08-19'
+  - id: 162-74
+    epic: '162'
+    title: Workflow-dir resolution sweep
+    points: 5
+    completed: '2026-08-19'
