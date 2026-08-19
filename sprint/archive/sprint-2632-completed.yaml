@@ -341,3 +341,8 @@ completed_stories:
     title: 'Revert Ghostty tab-title feature (PR #154): inert under Claude Code'
     points: 2
     completed: '2026-08-18'
+  - id: 162-89
+    epic: '162'
+    title: depends_on & story-tooling completion (162-79/162-13 review tails)
+    points: 5
+    completed: '2026-08-19'
