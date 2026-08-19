@@ -75,6 +75,22 @@ project must STILL npm-lint; genuinely-missing PR must STILL block) so the fix c
 cheat by flipping the default.
 </gotcha>
 
+<gotcha name="dist-only-fixture-must-use-project-root-pennyfarthing-dist" severity="high" date="2026-08-19">
+To inject a custom workflow onto the DIST floor in a test fixture, write it to
+`{tmp_root}/pennyfarthing-dist/workflows/…` — NOT `node_modules/@pennyfarthing/core/pennyfarthing-dist/…`.
+`common.config.get_dist_root(project_root=root)` (162-74) resolves, in order:
+(1) `{root}/pennyfarthing-dist/`, (2) relative-to-__file__ only when project_root
+is None, (3) `{root}/pennyfarthing/pennyfarthing-dist/`, (4) the BUNDLED `pf._dist`.
+There is NO node_modules branch, so a `node_modules/...` dir is silently ignored
+and resolution falls through to the real bundled package — your custom YAML is
+never seen and the pin returns None (looks like a real defect but is a fixture
+bug). test_162_29's `npm_workflows_project` "works" only because it asserts the
+REAL bundled tdd.yaml; its node_modules dir is functionally inert (it just proves
+"project ships no workflows"). For a non-ambiguous "resolved from dist" pin, put
+the file at `{root}/pennyfarthing-dist/workflows/` and ship NO `.pennyfarthing/workflows`
+tier. Caught 3 green-on-arrival pins that failed as false-RED on first run.
+</gotcha>
+
 <gotcha name="testing-runner-sources-deleted-scripts" severity="high">
 `agents/testing-runner.md` (and `agents/README.md`, `scripts/test/README.md`) still `source` bash helpers `test-cache.sh` / `test-setup.sh` that have been DELETED — only README stubs remain. The silent `source` failure is exactly why the haiku agent improvises and clobbers the session. Don't trust the markdown's bash flow; the real test runner is `pf check` / `scripts/workflow/check.py`.
 </gotcha>

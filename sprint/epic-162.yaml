@@ -690,9 +690,10 @@ stories:
     description: 'From the 162-29 review. 162-51: eight single-tier get_workflows_dir() sites in workflow/cli.py miss project AND dist; cli.py:341 enumerates [] in npm layout; prime/loader.py:391-403 hand-rolled two-tier resolver with unsanitized path join; guard _resolve_path absolute-path sink; decide enumeration semantics. 162-52: harden recurrence guard (single-quote/refactor evasion); extend PHASE_OWNERSHIP_MODULES to peloton/live.py, workflow/cli.py, prime/loader.py; unify _load_workflow_phases nullability and _get_phase_agent proxy; dist-only regression for _get_phase_tandem; fix peloton/live.py E402. Absorbs 162-51, 162-52.'
     points: 5
     priority: p1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-19'
   - id: 162-75
     title: Frame project-dir resolution and route de-vacuum
     description: 'Root cause + tests for the 162-49 route-vacuity class. 162-53: unify five duplicated _get_project_dir() copies (data_proxy, analysis, repos, state, ws_push) into one resolver honoring FRAME_PROJECT_DIR then PF_PROJECT_DIR then cwd — analysis/repos/state remain blind to the var launcher.py:128 sets, so those routes still 404 under production env. 162-54: get_project_root() must validate a candidate .pennyfarthing/ (require workflows) instead of first-seen; add two-cwd CI run, serial to avoid wheel-build race. 162-55: de-vacuum surviving test_frame_routes disjunctive in-(200,4xx) assertions; make 404-expecting tests cwd-robust; fixture nits (iterdir on subdirs, _quote_cache ordering). Absorbs 162-53, 162-54, 162-55.'

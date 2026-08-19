@@ -1,5 +1,55 @@
 # SM Agent Patterns
 
+<pattern name="reviewer-caught-dev-security-regression-162-74" date="2026-08-19">
+162-74 (5pt p1 tdd, pennyfarthing; absorbs 162-51/162-52 from the 162-29 review —
+workflow-dir resolution sweep). Clean single-session relay (SM→TEA→Dev→Reviewer→SM via
+/pf-* markers) with ONE rework cycle; cycle-1 APPROVED; pre-create-then-finish (PR
+pennyfarthing#258 created ready BEFORE finish; finish merged it; verified develop tip ==
+#258 merge @ 80bfc64b7; story=done; session archived). Bookkeeping PR #80 to main awaits Keith.
+Datapoints worth repeating:
+(1) REVIEWER EARNED ITS KEEP ON THE DEV'S OWN WORK (strongest case in this run-series): a
+security-hardening story whose Dev fix was INCOMPLETE. cycle-0 REJECT, 3 HIGH: (F1) Dev
+widened `_get_phase_agent` str→str|None (correct per AC7) but did NOT guard the call sites
+despite TEA's EXPLICIT forward-impact warning — `missing_assessment_error(None)` →
+AttributeError in the error handler (type-design found it; I empirically confirmed the crash).
+(F2/F3) the `_resolve_path` CWE-22 guard only handled clean absolutes: `/../../tmp` (abs+..)
+AND `../evil` (relative) both still escaped — empirically confirmed `contained=False`; the
+Dev's own test used a CLEAN absolute so it passed green while the sink stayed open. security
++ test_analyzer independently corroborated. Lesson: on a hardening story, adversarially TEST
+THE GUARD (feed it `..`, absolute, symlink), don't trust a green test that only exercised the
+easy input. TEA's "Dev must handle None at its call sites" note being ignored = a PROCESS miss
+the review must catch.
+(2) DEV+REVIEWER SAME SESSION still finds real bugs: being the author did not blunt the
+adversarial pass — reading own diff with the [SEC]/[EDGE] lenses + empirical probes (python -c
+on _resolve_path) surfaced the escapes before writing the verdict. Measure, don't assume.
+(3) get_dist_root FIXTURE GOTCHA (also in TEA sidecar): to inject a workflow onto the DIST
+floor in a test, write `{root}/pennyfarthing-dist/workflows/…` — NOT `node_modules/@pennyfarthing/
+core/…` (get_dist_root has NO node_modules branch; it checks {root}/pennyfarthing-dist, then
+{root}/pennyfarthing/pennyfarthing-dist, then bundled pf._dist). node_modules dirs are inert;
+3 green-on-arrival pins first failed as false-RED until fixtures were corrected. test_162_29's
+npm_workflows_project "works" only because it asserts the REAL bundled tdd.yaml.
+(4) ENUMERATION-SEMANTICS "DECISION NEEDED" resolved WITHOUT a Client ask: story said "decide
+enumeration semantics" for cli.py:341. 162-29 had ALREADY settled it (get_all_workflows_dirs
+default OFF) — resolution paths (route, the 8 resolver sites) take the dist floor
+(include_dist=True), pure listing (pf workflow list) stays project-only. An engineering-
+correctness call with code precedent as authority, NOT a product policy call — so no Client
+surface needed (contrast 162-83/89 depends_on semantics which DID need Keith). Know the difference.
+(5) DISPOSITION DISCIPLINE (ADR-0043): all 9 findings fix-now (1 dropped), 0 defer → NO follow-up
+stories. sm-finish preflight's heuristic scraped the Design-Deviations section and SUGGESTED 6
+follow-up `story add` commands — IGNORED them: those are ACCEPTED deviations, not deferred debt;
+the Reviewer's explicit 0-defer disposition governs. Don't let the preflight heuristic mint
+backlog from accepted design choices.
+(6) YAML-ONLY STATUS-SYNC recurred (162-88 dp3 / 162-89 dp8): complete-phase's review-entry
+transition_story(in_review) did NOT stick for a Jira-less story — it sat at `backlog` through the
+whole relay. Bumped to in_review before finish (`pf sprint story update 162-74 --status
+in_review`, no jira side-effect). finish clean; full suite 7687 pass w/ the known pre-existing
+test_162_5_quarantine_policy failure (report-not-block).
+(7) audit-tree FALSE POSITIVE recurred BOTH review cycles (162-86..89 dp7): flags orchestrator
+.pennyfarthing/sidecars/tea/gotchas.md + sprint/context/context-story-162-74.md; reviewed repo
+pennyfarthing/ clean via `git -C pennyfarthing status --porcelain`. Never `git clean -fd`.
+Recorded the audit determination in the session both cycles.
+</pattern>
+
 <pattern name="tdd-to-trivial-reclassification-162-88" date="2026-08-17">
 162-88 (1pt p1, pennyfarthing; 162-87 F3/F4 test-hardening follow-up): first
 RECLASSIFICATION run — a story filed `tdd` that could not honestly satisfy the tdd
