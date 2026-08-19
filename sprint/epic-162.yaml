@@ -838,9 +838,10 @@ stories:
       - 162-85: harden VALID_STORY_TYPES/VALID_STORY_STATUSES as frozenset+Literal (optional, no behavior change).
     points: 5
     priority: p2
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-19'
     type: chore
   - id: 162-90
     title: Gate, handoff & framework-plumbing polish (162-47/162-59 review tails)
