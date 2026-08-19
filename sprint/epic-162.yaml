@@ -859,6 +859,8 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria:
+      - "162-89 D2: add encoding='utf-8' to open(...,'w') calls in the tests dir (started with test_162_89 fixtures) and add a ruff rule to enforce it suite-wide (CWE-838; suite currently omits encoding by convention)."
     type: chore
   - id: 162-91
     title: Injection & path-traversal hardening sweep (CWE-78 / CWE-22 / PF_PY)
@@ -872,6 +874,8 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria:
+      - "162-89 D1: add resolve_path=True + project-root containment to the --sprint-file option on 'story stack-ready', 'story update', and 'story add' (CWE-22 parity — all three share the unguarded Path(sprint_file)->read_sprint pattern today)."
     type: bug
   - id: 162-92
     title: finish multi-repo hardening + PR-view typing
@@ -895,3 +899,12 @@ stories:
     repos: pennyfarthing
     workflow: trivial
     type: chore
+  - id: 162-94
+    title: '162-89 D3: surface _resolve_depends_on normalization diagnostics'
+    description: 162-89 review deferral D3 (low). pf.sprint.stack_ready._resolve_depends_on passes a throwaway ValidationResult to _normalize_depends_on and discards its degenerate-form diagnostics, so a malformed depends_on (e.g. a blank/nested entry) is silently dropped from the parent list and the stack-ready verdict can read falsely clean. Surface these normalization diagnostics (return them or add to verdict['warnings']) so a malformed dep doesn't produce a silently-truncated parent set. Only bites if a malformed depends_on reaches the gate.
+    points: 1
+    priority: p3
+    status: backlog
+    repos: pennyfarthing
+    workflow: trivial
+    type: refactor
