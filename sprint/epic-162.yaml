@@ -159,7 +159,8 @@ stories:
     description: "Revert the merged Ghostty tab-title sync feature (framework PR #154, merge commit a2d96e282, base develop). ROOT CAUSE (confirmed live): the statusline hook writes an OSC 2 title escape to a tty, but (1) /dev/tty is unavailable in the hook subprocess (Errno 6) so it falls back to _resolve_ancestor_tty (resolves the claude process tty /dev/ttys001 correctly), and (2) Claude Code itself writes the terminal title per-turn to that same tty and the hook's change-detection cache suppresses re-writes after the first, so Claude Code is always the last writer standing. No supported fix: CLAUDE_CODE_DISABLE_TERMINAL_TITLE=1 is broken for ongoing updates (upstream open bug anthropics/claude-code#47397; feature request #56933). Feature fails INVISIBLY (caches success while doing nothing). Decision: revert rather than ship inert."
     points: 2
     priority: p3
-    status: backlog
+    status: done
+    started: '2026-08-18'
     repos: pennyfarthing
     workflow: trivial
     acceptance_criteria:
@@ -167,6 +168,8 @@ stories:
       - Remove pennyfarthing-dist/src/pf/tests/test_statusline_tab_title.py; full pytest suite stays green (no regressions in test_statusline_model_persist.py / test_advisory_model_tier.py)
       - Delete stale plan doc docs/superpowers/plans/2026-07-27-ghostty-tab-title.md in the ORCHESTRATOR repo (separate commit, targets main)
       - 'Leave a tracking note referencing upstream anthropics/claude-code#47397 and #56933 so the feature can be revisited if Claude Code ships a working title-disable toggle'
+    completed: '2026-08-18'
+    review_verdict: approved
   - id: 162-16
     title: "schema-validation hook mis-dispatches initiative-*.yaml as sprint index — demands 'sprint:' section on files pf sprint validate accepts (hook/validator divergence, SOUL #2)"
     points: 1
@@ -238,7 +241,7 @@ stories:
     title: 'Port the 162-2 stateful gh-pr-merge fake to test_155_1_finish_verifies_merge.py:489 — its clean-merge happy-path test uses a fixed MERGED view, trips the 155-29 short-circuit, and never invokes gh pr merge (ironic: 155-1 made the merge load-bearing) (from 162-2 review)'
     points: 1
     priority: p2
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     type: bug
@@ -332,7 +335,7 @@ stories:
     title: 'Resolver guards for _resolve_story_repos: existence-check the resolved cwd (uncloned topology entry currently raises out of the result contract — rule 6; precedent guard at git/repos.py:141) and dedup the repos: list (duplicate name merges the same PR twice → second non-zero exit → false abort on landed work). Also stop discarding the three git return codes in _git_cleanup while reporting clean (from 162-6 review)'
     points: 2
     priority: p2
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     type: bug
@@ -340,7 +343,7 @@ stories:
     title: "Multi-repo session schema + finish edge-cases: document per-repo PR-field syntax in schemas/session-schema.md + agents/sm-setup.md (single PR line is single-repo-only since 162-6); move no-PR repo verification OUT of the merge loop (mixed multi-repo can land one PR then refuse); test + name-the-landed-repo recovery for second-merge-fails-after-first-landed; fix dry-run pairing first resolved PR with first repo (the 162-6 bug class in the preview path); reconcile the docstring's degradation claim for stories omitting repos: and decide epic-level repos: inheritance (from 162-6 review M3-M6)"
     points: 3
     priority: p2
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
   - id: 162-34
@@ -379,7 +382,7 @@ stories:
     title: "PF_PY policy hardening (162-8 tail): add gate-fence sentinels to SENTINEL_TEMPLATES (the unswept-root failure mode is one rename from recurring — highest-value); note the script-path blind spot (fence invoking a .py that imports pf is invisible to the predicate); pin the sweep blind-spot shapes (dash-less heredoc, python3.12, untagged fence); document deviations.py's Spec-source specificity rule in guides/deviation-format.md (from 162-8 review)"
     points: 1
     priority: p2
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     type: chore
@@ -387,7 +390,7 @@ stories:
     title: "CWE-78 sweep: nine template fences interpolate agent-assembled data into double-quoted Python source strings (sm-finish.md:31,41 format_pr_title with JIRA_KEY/TITLE; pf-standalone.md:155; git-cleanup step-03:157; five gate fences interpolating session/context paths) — an apostrophe in a PR title breaks them today, a crafted one injects Python. Apply sm-setup's documented positional-argv + single-quoted-heredoc defense uniformly (from 162-8 review)"
     points: 2
     priority: p2
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     type: bug
@@ -395,7 +398,7 @@ stories:
     title: 'Decide scripts/hooks/pre-commit.sh contract: runs pf.sprint.validate_cmd on bare python3 with PYTHONPATH fallback and SKIPS validation when no python found — a git hook that must degrade gracefully without pf installed, so the fail-loud guard is the wrong instrument; decide + document the degradation contract (from 162-8 TEA)'
     points: 1
     priority: p3
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     type: chore
@@ -403,7 +406,7 @@ stories:
     title: "162-9 timeout-hardening tail: change truthiness tests on the timeout signal to 'is not None' (story_finish.py ~913, ~1088 — empty message collapses a hung probe into the permissive arm; unreachable today); stop discarding non-timeout exits in steps 5/6 (step 5 reports it ran when it failed); catch OSError in _run and extract the bounded-run/_TimedOutProcess trio into a shared helper (unbounded-subprocess pattern recurs in other modules); add a merge-didn't-run assertion to the gate-timeout test (its hang-all-views predicate would pass a fell-through gate) (from 162-9 review)"
     points: 2
     priority: p2
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     acceptance_criteria:
@@ -429,7 +432,7 @@ stories:
     title: "Complete the CWE-22 shard-path sweep (162-12 tail): archive_epic.archive_epic() ~547 FIRST (unguarded read + write + shutil.move — strictly worse than anything fixed, missed by every prior inventory); then validate/adapters/sprint.py:25-26, story_add.py:242, findings/aggregate.py x4, sprint/cli.py x5, epic_reindex.py:39, epic_add.py:88, yaml_io.py x3 (one write). Ship the architectural fix in the same pass: safe_shards() guarded iterator + safe_ref_path() helper so the invariant lives in the API, not convention. Also: add the warn convention to ws_push's three silent guard sites together; positive-path coverage for migrate_completed_archive; note TOCTOU/O_NOFOLLOW as an architect decision (from 162-12 review)"
     points: 3
     priority: p2
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     type: bug
@@ -438,7 +441,7 @@ stories:
     description: '162-13 shipped list-form depends_on validation but consumers stay scalar-only (pinned by two boundary tests in test_162_13_list_depends_on.py — changing them is part of this story). Scope: (1) stack-ready gate (pennyfarthing-dist/gates/stack-ready.md) iterates refs and requires ALL parents done; (2) pf sprint story field (sprint/cli.py:1931) gains a machine-readable emission for list values (str(list) bracketed repr is not a story id); (3) same shell-capture class in agents/sm-setup.md:340 and agents/sm.md:112 (found in 162-13 review); (4) story_add: repeatable --depends-on option + widen str|None hint to str|list[str]|None (TEA finding). Sources: TEA + Reviewer Delivery Findings in archived 162-13 session.'
     points: 3
     priority: p2
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
   - id: 162-46
@@ -446,7 +449,7 @@ stories:
     description: "Non-blocking confirmed findings from the 162-13 review (all MEDIUM or below): (1) _rewrite_dependencies strict equality misses int-valued deps (162 == '162' False) — compare str(entry) == old_id on both list and scalar paths, WITH a pin test since it changes scalar semantics (loud post-move abort today, no corruption); (2) unify container detection — validator accepts (list, tuple), story_move checks list only (SOUL #2 drift); (3) test hardening: assert len(_dep_errors)==2 in test_two_bad_refs_are_reported_separately (coincidentally green pre-fix) and add a second acyclic-graph guard beside test_diamond_is_not_a_cycle (mutation testing proved it is the sole direct guard against a shared-visited-set regression); (4) sanitize refs before embedding in validator error messages (CWE-117, pre-existing local-stdout sink); (5) optional: iterative DFS to remove the ~990-story RecursionError ceiling (CWE-674, loud crash pre-write) + duplicate-entry WARNING in _normalize_depends_on (Dev findings). Sources: Reviewer + Dev Delivery Findings in archived 162-13 session."
     points: 2
     priority: p3
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     type: chore
@@ -543,7 +546,7 @@ stories:
     title: "Frame security posture: no auth + allow_origins=['*'] with allow_credentials=True (frame/app.py:151-152) means any page in the developer's browser can read API responses; portraitPath stringifies a Path.home()-rooted absolute path, leaking the OS username — return a basename or opaque handle (nothing serves files by that path); WebSocket channel has no origin check either (162-49 review follow-up 6, [SEC])"
     points: 2
     priority: p2
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     type: bug
@@ -580,21 +583,21 @@ stories:
     title: "Approval subgates are reviewer-specific but keyed on gate TYPE, not on the phase's agent (162-47 F9, verified PRE-EXISTING on develop): agent-docs' review phase is owned by tech-writer and kitchen-sink's accept phase by pm, yet both carry type: approval, so both demand a '## Reviewer Assessment' section plus nine reviewer subagents those agents never dispatch — blocked on BOTH verdicts before 162-47, which strictly improved agent-docs' routing (REJECTED → implement instead of finish) without fixing the keying. This is the escape TEA predicted in its A7 deviation, now demonstrated twice: the discriminator should be the phase's AGENT, not the gate's name. Also F14: the aggregate can count one problem twice (no results section → '3 requirements' where 1 and 3 are the same problem with different remedies) (162-47 review F9+F14, [EDGE])"
     points: 3
     priority: p3
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
   - id: 162-62
     title: 'Session-file encoding sweep beyond pf/handoff/ (162-47 F12 tail): 162-47 declared encoding= on all bare text I/O in pf/handoff/ and enforced it with an AST sweep, but the same rule #5 and the same trust boundary apply to session reads at patch_mode.py:386,407; gates/spec_check.py:60; peloton/workflow_driver.py:215,217; findings/aggregate.py:177,255; findings/capture.py:134; findings/pr_body.py:33; bmad/sync.py:332,393. Same crash shape 162-47 measured: UnicodeDecodeError on an em dash under a non-UTF-8 default encoding, i.e. on every assessment in this repo. Extend the AST sweep to cover the package, not one module (162-47 review F12, [SEC][RULE])'
     points: 2
     priority: p2
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
   - id: 162-63
     title: "Gate ergonomics + verdict-machinery polish (162-47 tail): add 'pf handoff requirements <story> <gate-type>' dry-run so an agent can discover its gate requirements WITHOUT tripping them — B1 halved the discovery cost but the Reviewer still had to call _get_enabled_subagents/_check_rework_freshness directly to size its own exit (F13). Clarify in guides/handoff-cli.md that the one-verdict rule is PER-SECTION not file-wide — the ambiguity nearly caused a lossy workaround defacing a cycle-1 rejection record (Reviewer corrected SM's wrong premise mid-run). Fix the Cycle tag off-by-one: it tracks completed round-trips, not review rounds, while agents/reviewer.md says 'tag the new table with the cycle number' — invites writing the round number. Plus: B3 counts headings not rulings, so a reviewer appending a corrected assessment earns a free rework round (F6 — count only sections containing a verdict line); ReworkRecovery(total=False) does not deliver the checkability its docstring claims and '... or {}' presents an empty dict as one (F8 — two-TypedDict discriminated union); the bare assert in resolve_gate should be _stop('error', ...) per rule 6 so it survives python -O (F7); candidate_section_region is public with an unenforced precondition (F15); _ANY_SECTION_HEADING_RE matches only ## so an intervening H1 does not terminate the region (F16); test_heading_matching_is_case_insensitive pins behaviour the guide calls an open defect — docstring should say so (F17); two test-quality gaps: test_a_missing_table_and_missing_tags_are_reported_together asserts only [SEC] so a first-tag-wins impl would satisfy it, and the B2 tests couple to the literal word 'targeted' (F11) (162-47 review F6/F7/F8/F11/F13/F15/F16/F17)"
     points: 3
     priority: p3
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     type: chore
@@ -602,7 +605,7 @@ stories:
     title: "pf doctor must assert the resolved pf package path is inside the operating workspace (162-59 review, environment finding — SM-verified): the installed CLI at ~/.local/bin/pf runs interpreter ~/.local/share/uv/tools/pennyfarthing-scripts/bin/python which imports pf from /Users/keithavery/Projects/op-1/pennyfarthing/pennyfarthing-dist/src/pf/ — a DIFFERENT workspace checkout than orc-penny/pennyfarthing/. So resolve-gate/complete-phase/story finish exercise op-1's source, not the workspace under edit. THIS session was benign (SM verified op-1 was at the same develop-tip 4b8035d2d and DID carry 162-47's preamble scoping — the reviewer's 'predates 162-47' claim was overstated), but the failure mode is severe-and-invisible: version reports 13.4.0 either way, and a divergent/dirty external checkout would silently validate the wrong code for every gate in every story with no signal. Fix: pf doctor asserts the imported pf.__file__ resolves inside the current workspace's pennyfarthing-dist/src (or warns loudly with both paths). Pipeline-honesty (SOUL #12/#14)"
     points: 2
     priority: p2
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     type: chore
@@ -610,7 +613,7 @@ stories:
     title: "Architect review of the round-trip-counter seam (162-59 review follow-up 4): three structural asymmetries in the counter/verdict machinery now warrant a design pass before a third consumer path is added. (1) exact-match vs prefix-match asymmetry on gate_type == 'approval' — the tri-state check in _check_approval_requirements is scoped to the BARE approval type, so the approval_rework path routes around it; 162-59 added a second check for the rework path, leaving the tri-state enforced in TWO places for TWO paths (routing vs attestation-freshness — different questions, documented deliberate at complete_phase.py:316-322, but fragile). (2) mutation-point vs enforcement-point split: the writer (complete_phase) mutates the counter, resolve_gate enforces on it, and the reader's first-match 'found' preference sits between them (see 162-50). (3) make the locator (find_operative_round_trip_line) the SINGLE tri-state producer so no consumer can flatten it — the flat accessors kept-but-marked in 162-59 are a repeatable trap (VerdictReading avoided it by shipping no flat accessor at all)"
     points: 3
     priority: p1
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     type: refactor
@@ -618,7 +621,7 @@ stories:
     title: "162-59 polish tail (Reviewer follow-ups 5-8, all chore-grade): (5) extract ONE shared remedy/'To fix:' constant — the diagnostic text is now hand-duplicated between resolve_gate and complete_phase and the two copies disagree on three axes (the older complete_phase copy is the deficient one; 162-59's is better). (6) test hardening: pin reading['detail'] propagation into the block message; replace the inherited module-skip on the discovered-workflow set with a LOCAL non-empty assertion; add a scanned-count floor + positive control to the AC4 AST sweep so it can't pass vacuously; delete the vacuous 'next_phase != finish' assertion line TEA de-vacuumed around. (7) rename the two flat accessors with a leading underscore (zero production callers) AND add the lang-review checklist entry: 'a tri-state reader must not ship a flattening convenience accessor'. (8) small sweep: add 'To fix:' to the four non-compliant error sites across resolve_gate/gate_file that lack it (from 162-59 review)"
     points: 2
     priority: p3
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     type: chore
@@ -650,7 +653,7 @@ stories:
     title: TypedDict snapshot for PR-view fields so the registry and its consumers are type-connected (162-18 review R5) — _PR_VIEW_FIELDS is a comma-joined str and the snapshot is dict[str, Any], so a field read-without-request (the exact origin of the 162-18 mergedAt gap) is invisible to any checker; introduce a TypedDict (state, mergeable, mergeStateStatus, baseRefName, mergedAt) with the field list derived from its keys so read-without-request becomes a type error
     points: 2
     priority: p3
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     type: refactor
@@ -670,9 +673,10 @@ stories:
     description: 'Completes the 162-7 truthful-dry-run contract. 162-34: false-positive dry-runs for claim (pure echo, no lookup), move (missing issue OR bad transition both preview success), create story (parent epic key never validated). 162-35: assign path resolves user TWICE (second-stage failures report substituted email, breaking raw-input rule); email-withheld display echoes input as resolved; add credentials guard to sprint-add/link dry-runs; URL-encode find_user_sync query. 162-36: _call_api_sync cannot distinguish a 204 empty body from a curl failure, so assign/transition writes return unconditional success. Absorbs 162-34, 162-35, 162-36.'
     points: 5
     priority: p1
-    status: backlog
+    status: done
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-19'
   - id: 162-73
     title: Schema-validation hook hardening
     description: 'From the 162-11 review lineage. 162-16: hook mis-dispatches initiative-*.yaml as sprint index (demands sprint: section on files pf sprint validate accepts — hook/validator divergence). 162-42: sm-setup carries no PreToolUse frontmatter, so the 155-32 session producer is unguarded by the very hook 162-11 built. 162-43: allow .session/archive/ writes; accept trailing-colon Story Details heading; fix XML routing whole-body substring mis-route; add behavioral round-trip + per-field regression tests. Absorbs 162-16, 162-42, 162-43.'
@@ -697,6 +701,8 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria:
+      - "Also absorbs 162-57 (epic-162 consolidation): Frame security posture — no auth + allow_origins=['*'] with allow_credentials=True at frame/app.py:151-152. Lock down as part of the Frame route work."
   - id: 162-76
     title: Persona and portrait route tail
     description: "From 162-49 review follow-ups. 162-56: decide /api/persona/full contract (document or delete — no confirmed live consumer); make persona resolution session-aware via canonical statusline._resolve_agent; relocate build_persona_payload to neutral frame/persona.py to break the data_proxy<->ws_push lazy-import cycle. 162-58: portrait_cdn fetch_portrait never caches negative results (four serial urlopen(timeout=30) per miss against unreachable CDN can saturate the bounded pool) — add negative caching or circuit breaker; portrait_resolver except:return None makes the 'Failed to resolve portrait' warn unreachable (silent-swallow class epic 160 swept elsewhere). Absorbs 162-56, 162-58."
@@ -713,14 +719,18 @@ stories:
     status: backlog
     repos: pennyfarthing
     workflow: tdd
+    acceptance_criteria:
+      - "Also absorbs 162-22 (port the 162-2 stateful gh-pr-merge fake into test_155_1_finish_verifies_merge.py:489) and 162-41 (162-9 timeout-hardening tail: 'is not None' truthiness tests in story_finish.py) — epic-162 consolidation."
   - id: 162-78
     title: Implement ADR-0043 review-finding disposition gate
     description: 'Make the review-triage fix real (see docs/adr/0043). Add a disposition classification (fix-now / fold / defer / drop) to the reviewer exit protocol in pennyfarthing-dist/agents/reviewer.md: every confirmed finding gets exactly one disposition, only [SEC]/correctness findings auto-promote to defer stories, everything else defaults to drop unless justified, chore-grade never gets a story. Extend the reviewer exit gate under gates/ to require a disposition per confirmed finding and reject an unjustified defer for non-[SEC]/non-correctness findings. Add per-epic follow-up budget (default N=10) collapsing overflow into a single review-debt story. BLOCKED ON: ADR-0043 acceptance (Architect+PM review of the auto-promotion rule and budget cap). Measurement per SOUL #12: review-spawned stories created-vs-closed per sprint <= 1.0.'
     points: 5
     priority: p2
-    status: backlog
+    status: done
+    started: '2026-08-18'
     repos: pennyfarthing
     workflow: tdd
+    completed: '2026-08-18'
   - id: 162-79
     title: Extend pf sprint story update with --type and --depends-on
     description: "Close two CLI gaps surfaced by the epic-162 consolidation (docs/adr/0043 Implementation Sketch). (1) --type: the schema already carries a story type field (bug/chore/refactor/test/feature/doc in use) but update cannot set it — expose it so stories can be tagged comment/test/doc/feature/fix after creation (the original 162 tagging request). (2) --depends-on: only add can set depends_on today, so sequencing an existing cluster (e.g. 162-61/63/66 behind the 162-65 design pass) fell back to priority ordering; let update set/clear it. Both are field additions to sprint/story_update.py with the same result-object + --dry-run + --jira plumbing as sibling flags. Also note: no 'merge stories' command exists (consolidation is manual add+cancel) — decide whether that warrants a helper."
@@ -738,7 +748,7 @@ stories:
     description: "Follow-up from 162-79 review (Reviewer finding E4). --depends-on can set or re-point a dependency but there is no way to REMOVE one without hand-editing sharded YAML (which project rules forbid). Add a --clear-depends-on flag parallel to --clear-ac: sets story.pop('depends_on', None). Mutually exclusive with --depends-on. Honor --dry-run and the --epic conflict guard like sibling flags."
     points: 1
     priority: p2
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
   - id: 162-81
@@ -746,7 +756,7 @@ stories:
     description: Follow-up from 162-79 review (Reviewer finding D1). update_story guards only the trivial self-loop (depends_on == story_id); a 2-hop cycle (A->B, B->A) is undetected, and the shard-file validation route (validate_epic_shard) never invokes _validate_depends_on. An agent walking depends_on to find unblocked work can spin. Add transitive cycle detection and wire it into the shard-file validation path. Epic-162 sequencing/truthfulness charter.
     points: 2
     priority: p2
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
   - id: 162-82
@@ -754,7 +764,7 @@ stories:
     description: Follow-up from 162-79 review (TEA finding). story add --depends-on (story_add.py) writes depends_on unvalidated, while update now rejects self/nonexistent targets. Back-port the same target-existence + self-reference guard to add so the truthfulness contract is uniform across both entry points.
     points: 1
     priority: p2
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     type: chore
@@ -763,7 +773,7 @@ stories:
     description: "Follow-up from 162-79 review (Reviewer finding D2 — NEEDS PRODUCT DECISION FIRST). --depends-on currently accepts a target whose status is canceled/done/archived. Decide the policy consistent with epic-160's 'archived dependencies treated as satisfied': reject, warn, or allow. Then enforce in update_story (and add, per 162-82). Blocked on Keith's product call before implementation."
     points: 1
     priority: p2
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: tdd
     type: chore
@@ -772,7 +782,7 @@ stories:
     description: "Follow-up from 162-79 review (Reviewer findings C2 + TA1, both trivial/non-blocking). (a) story_update.py --type option comment bundles case-normalisation into a 'matching --status/--review-verdict' claim, but those siblings are case-SENSITIVE — scope the parity to exit-2 only. (b) test_cli_help_enumerates_all_valid_types uses a bare 'value in flattened' substring check, so 'doc' passes vacuously off 'docs' — use a word-boundary regex so each value is independently falsifiable. Non-blocking: help is derived from the set, so drift is structurally impossible."
     points: 1
     priority: p3
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: trivial
     type: chore
@@ -781,7 +791,7 @@ stories:
     description: Follow-up from 162-79 review (Reviewer/type-design finding D3, optional, no behavior change). VALID_STORY_TYPES and pre-existing VALID_STORY_STATUSES are mutable sets; frozenset[str] encodes the closed-set invariant and surfaces intent in the annotation. Optionally express the type contract as Literal[...] once the alias-normalization pass (ADR-0043) lands.
     points: 1
     priority: p3
-    status: backlog
+    status: canceled
     repos: pennyfarthing
     workflow: trivial
     type: chore
@@ -815,6 +825,67 @@ stories:
     completed: '2026-08-17'
     review_verdict: approved
   - id: 162-89
+    title: depends_on & story-tooling completion (162-79/162-13 review tails)
+    description: |-
+      Consolidation punchlist folding eight granular story-tooling tails (epic-162 consolidation). All touch pf sprint story_update.py / story_add.py / validate. Punchlist:
+      - 162-45: multi-parent depends_on consumer support (stack-ready gate, machine-readable emission; unpins the two boundary tests in test_162_13_list_depends_on.py).
+      - 162-46: validator/story_move polish (int-entry rewrite str(entry)==old_id, container-check unify, cycle-test hardening).
+      - 162-80: add --clear-depends-on to story update (remove a dep without hand-editing YAML).
+      - 162-81: detect transitive/2-hop depends_on cycles (A->B,B->A) in update_story AND the shard validation route.
+      - 162-82: validate --depends-on target in story add (parity with update: target-existence + self-ref guard).
+      - 162-83: DECISION NEEDED — depends_on semantics for canceled/done/archived targets (align with epic-160 archived-dep policy).
+      - 162-84: polish 162-79 --type (scope comment parity, word-boundary help test).
+      - 162-85: harden VALID_STORY_TYPES/VALID_STORY_STATUSES as frozenset+Literal (optional, no behavior change).
+    points: 5
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: chore
+  - id: 162-90
+    title: Gate, handoff & framework-plumbing polish (162-47/162-59 review tails)
+    description: |-
+      Consolidation punchlist folding seven framework-plumbing tails (epic-162 consolidation). Punchlist:
+      - 162-40: DECISION + fix — scripts/hooks/pre-commit.sh contract (runs pf.sprint.validate_cmd on bare python3 with PYTHONPATH fallback).
+      - 162-61: approval subgates are reviewer-specific but keyed on gate TYPE not the phase's agent (162-47 F9).
+      - 162-62: session-file encoding sweep beyond pf/handoff/ (162-47 F12 tail): add encoding= on remaining bare text I/O.
+      - 162-63: gate ergonomics + verdict-machinery polish (162-47 tail): 'pf handoff requirements <story> <gate-type>' dry-run, etc.
+      - 162-64: pf doctor must assert the resolved pf package path is inside the operating workspace (162-59 review).
+      - 162-65: architect review of the round-trip-counter seam (162-59 follow-up 4): three structural asymmetries.
+      - 162-66: 162-59 polish tail (Reviewer follow-ups 5-8, all chore-grade): shared remedy/'To fix:' constant, etc.
+    points: 5
+    priority: p2
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: chore
+  - id: 162-91
+    title: Injection & path-traversal hardening sweep (CWE-78 / CWE-22 / PF_PY)
+    description: |-
+      Consolidation punchlist folding three security-hardening tails (epic-162 consolidation). Punchlist:
+      - 162-38: PF_PY policy hardening (162-8 tail): add gates/ entry to SENTINEL_TEMPLATES (unswept-root tripwire); close dash-less-heredoc / version-suffixed-interpreter / untagged-fence blind spots.
+      - 162-39: CWE-78 sweep — nine template fences interpolate agent-assembled data into double-quoted Python source strings.
+      - 162-44: complete the CWE-22 shard-path sweep (162-12 tail): archive_epic.archive_epic() ~547 unguarded read+write; is_safe_shard_path on remaining sites.
+    points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 162-92
+    title: finish multi-repo hardening + PR-view typing
+    description: |-
+      Consolidation punchlist folding three finish/multi-repo tails (epic-162 consolidation). Punchlist:
+      - 162-32: resolver guards for _resolve_story_repos — existence-check the resolved cwd (uncloned topology entry).
+      - 162-33: multi-repo session schema + finish edge-cases — document per-repo PR-field syntax in schemas/session-schema.md.
+      - 162-70: TypedDict snapshot for PR-view fields so the registry and its consumers are type-connected (162-18 review R5).
+    points: 3
+    priority: p1
+    status: backlog
+    repos: pennyfarthing
+    workflow: tdd
+    type: bug
+  - id: 162-93
     title: "162-88 review follow-up: data_proxy default-fill test-hardening tail — (1) add default_branch:\"\"/remote_name:\"\" explicit-empty-string coverage to _get_repos_config (key-present-but-empty distinct from key-absent; guards a future 'is None' refactor); (2) tighten the two root-warning tests to also pin actionable fix text (path '.' / repos.yaml), not just the trigger word 'root'"
     description: 'Non-blocking Reviewer deferrals from 162-88 (test-only, green-on-arrival). Target: pennyfarthing-dist/src/pf/tests/test_162_87_data_proxy_polish.py. AC2 empty-string edge = reviewer-test-analyzer medium; actionable-text pin = low. Use trivial workflow (green-on-arrival hardening, no honest RED — same class as 162-88).'
     points: 1
