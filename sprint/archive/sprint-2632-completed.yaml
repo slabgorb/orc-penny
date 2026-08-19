@@ -336,3 +336,8 @@ completed_stories:
     title: Implement ADR-0043 review-finding disposition gate
     points: 5
     completed: '2026-08-18'
+  - id: 162-15
+    epic: '162'
+    title: 'Revert Ghostty tab-title feature (PR #154): inert under Claude Code'
+    points: 2
+    completed: '2026-08-18'
